@@ -1,5 +1,6 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useTranslation } from 'react-i18next'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form'
 import { Input } from '@/shared/ui/input'
 import { Button } from '@/shared/ui/button'
@@ -12,6 +13,7 @@ import { Label } from '@/shared/ui/label'
 import { Slider } from '@/shared/ui/slider'
 
 export function NodeMetadataForm({ node, onSubmit, isPending }: NodeMetadataFormProps) {
+  const { t } = useTranslation()
   const form = useForm<NodeMetadataFormValues>({
     resolver: zodResolver(nodeMetadataFormSchema),
     defaultValues: {
@@ -25,15 +27,15 @@ export function NodeMetadataForm({ node, onSubmit, isPending }: NodeMetadataForm
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
           name="label"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Label</FormLabel>
+              <FormLabel>{t('form.metadata.label')}</FormLabel>
               <FormControl>
-                <Input placeholder="Enter node label..." {...field} />
+                <Input placeholder={t('form.metadata.labelPlaceholder')} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -84,7 +86,7 @@ export function NodeMetadataForm({ node, onSubmit, isPending }: NodeMetadataForm
           name="confidence"
           render={({ field }) => (
             <FormItem>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <FormLabel>Confidence</FormLabel>
                   <span className="text-sm text-muted-foreground">
@@ -107,7 +109,7 @@ export function NodeMetadataForm({ node, onSubmit, isPending }: NodeMetadataForm
         />
 
         <Button type="submit" disabled={isPending} className="w-full">
-          {isPending ? 'Saving...' : 'Save Changes'}
+          {isPending ? t('form.metadata.saving') : t('form.metadata.save')}
         </Button>
       </form>
     </Form>

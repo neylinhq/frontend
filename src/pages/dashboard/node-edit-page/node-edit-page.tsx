@@ -2,6 +2,7 @@ import type { JSONContent } from '@tiptap/react'
 import { AlertTriangle, ArrowLeft, Loader2, PanelRightClose, PanelRightOpen } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
 import { useFullMap, useUpdateNode } from '@/entities/map'
@@ -15,16 +16,17 @@ import { Badge } from '@/shared/ui/badge'
 import { Button } from '@/shared/ui/button'
 import { Card } from '@/shared/ui/card'
 
-const NODE_TYPE_CONFIG: Record<NodeType, { label: string; color: string }> = {
-  concept: { label: 'Concept', color: 'bg-blue-500/10 text-blue-600 dark:text-blue-400' },
-  fact: { label: 'Fact', color: 'bg-green-500/10 text-green-600 dark:text-green-400' },
-  theory: { label: 'Theory', color: 'bg-purple-500/10 text-purple-600 dark:text-purple-400' },
-  example: { label: 'Example', color: 'bg-orange-500/10 text-orange-600 dark:text-orange-400' },
-  question: { label: 'Question', color: 'bg-yellow-500/10 text-yellow-600 dark:text-yellow-400' },
-  hypothesis: { label: 'Hypothesis', color: 'bg-pink-500/10 text-pink-600 dark:text-pink-400' }
+const NODE_TYPE_COLORS: Record<NodeType, string> = {
+  concept: 'bg-blue-500/10 text-blue-600 dark:text-blue-400',
+  fact: 'bg-green-500/10 text-green-600 dark:text-green-400',
+  theory: 'bg-purple-500/10 text-purple-600 dark:text-purple-400',
+  example: 'bg-orange-500/10 text-orange-600 dark:text-orange-400',
+  question: 'bg-yellow-500/10 text-yellow-600 dark:text-yellow-400',
+  hypothesis: 'bg-pink-500/10 text-pink-600 dark:text-pink-400'
 }
 
 export function NodeEditPage() {
+  const { t } = useTranslation()
   const { mapId, nodeId } = useParams<{ mapId: string; nodeId: string }>()
   const { data: fullMap, isLoading, isError } = useFullMap(mapId || '')
   const updateNodeMutation = useUpdateNode(mapId || '')
@@ -57,7 +59,7 @@ export function NodeEditPage() {
     if (newTitle.trim() && newTitle !== currentNode?.label) {
       updateNodeMutation.mutate(
         { id: nodeId, data: { label: newTitle.trim() } },
-        { onError: () => toast.error('Failed to save title') }
+        { onError: () => toast.error(t('errors.failedSaveTitle')) }
       )
     }
   }, 1000)
@@ -67,7 +69,7 @@ export function NodeEditPage() {
     if (!nodeId) return
     updateNodeMutation.mutate(
       { id: nodeId, data: { description: content } },
-      { onError: () => toast.error('Failed to save') }
+      { onError: () => toast.error(t('errors.failedSave')) }
     )
   }, 2000)
 
@@ -96,8 +98,8 @@ export function NodeEditPage() {
       <div className="flex h-[400px] items-center justify-center">
         <Card className="p-8 text-center">
           <AlertTriangle className="mx-auto mb-4 h-12 w-12 text-destructive" />
-          <h2 className="mb-2 text-lg font-semibold text-destructive">Navigation Error</h2>
-          <p className="text-muted-foreground">Map ID or Node ID is missing</p>
+          <h2 className="mb-2 text-lg font-semibold text-destructive">{t('errors.navigationError')}</h2>
+          <p className="text-muted-foreground">{t('errors.mapIdOrNodeMissing')}</p>
         </Card>
       </div>
     )
@@ -109,8 +111,8 @@ export function NodeEditPage() {
         <div className="space-y-4 text-center">
           <Loader2 className="mx-auto h-12 w-12 animate-spin text-primary" />
           <div>
-            <h3 className="text-lg font-semibold">Loading Node</h3>
-            <p className="text-muted-foreground">Please wait...</p>
+            <h3 className="text-lg font-semibold">{t('errors.loadingNode')}</h3>
+            <p className="text-muted-foreground">{t('errors.pleaseWait')}</p>
           </div>
         </div>
       </div>
@@ -122,14 +124,14 @@ export function NodeEditPage() {
       <div className="flex h-[600px] items-center justify-center">
         <Card className="max-w-md p-8 text-center">
           <AlertTriangle className="mx-auto mb-4 h-16 w-16 text-destructive" />
-          <h2 className="mb-2 text-xl font-semibold text-destructive">Node Not Found</h2>
+          <h2 className="mb-2 text-xl font-semibold text-destructive">{t('errors.nodeNotFound')}</h2>
           <p className="mb-6 text-muted-foreground">
-            The requested node could not be found or does not exist.
+            {t('errors.nodeNotFoundDesc')}
           </p>
           <Button asChild>
             <Link to={`/dashboard/maps/${mapId}/view`}>
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Map
+              {t('errors.backToMap')}
             </Link>
           </Button>
         </Card>
@@ -188,7 +190,7 @@ export function NodeEditPage() {
               {updateNodeMutation.isPending && (
                 <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <Loader2 className="h-3 w-3 animate-spin" />
-                  Saving...
+                  {t('errors.saving')}
                 </span>
               )}
             </div>
@@ -213,7 +215,7 @@ export function NodeEditPage() {
               value={title}
               onChange={handleTitleChange}
               onKeyDown={handleTitleKeyDown}
-              placeholder="Untitled"
+              placeholder={t('nodeEdit.untitledPlaceholder')}
               rows={1}
               className="w-full resize-none overflow-hidden border-none bg-transparent text-4xl font-bold leading-tight tracking-tight text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-0"
             />
@@ -222,7 +224,7 @@ export function NodeEditPage() {
           {/* Editor */}
           <BlockEditor
             onChange={handleEditorChange}
-            placeholder="Start writing, or type '/' for commands..."
+            placeholder={t('nodeEdit.editorPlaceholder')}
             className="min-h-[500px]"
           />
         </div>
@@ -238,7 +240,7 @@ export function NodeEditPage() {
         <div className="flex h-full flex-col">
           {/* Sidebar Header */}
           <div className="flex items-center justify-between border-b border-border/50 px-4 py-3">
-            <h2 className="text-sm font-semibold">Properties</h2>
+            <h2 className="text-sm font-semibold">{t('nodeEdit.properties')}</h2>
           </div>
 
           {/* Sidebar Content */}
@@ -255,7 +257,7 @@ export function NodeEditPage() {
             {/* Connections */}
             <div className="p-4">
               <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Connections
+                {t('nodeEdit.connections')}
               </h3>
               <NodeConnectionsPanel
                 node={currentNode}

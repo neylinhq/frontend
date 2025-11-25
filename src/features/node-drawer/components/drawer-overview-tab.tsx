@@ -94,7 +94,7 @@ export const DrawerOverviewTab = memo(({ node, className }: DrawerOverviewTabPro
           </div>
 
           {/* Повторения */}
-          {node.metadata.reviewCount > 0 && (
+          {(node.metadata.reviewCount ?? 0) > 0 && (
             <div className="flex items-center gap-2">
               <span className="text-xs text-muted-foreground w-20">{t('nodeDrawer.overview.reviews')}:</span>
               <span className="text-xs font-medium">{node.metadata.reviewCount}</span>

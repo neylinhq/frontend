@@ -8,10 +8,10 @@ import {
   ReactFlowProvider,
   useEdgesState,
   useNodesState,
-  useReactFlow
+  useReactFlow,
 } from '@xyflow/react'
 import { Loader2 } from 'lucide-react'
-import { memo, useCallback, useEffect, useMemo } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useFullMap } from '@/entities/map'
 import { cn } from '@/shared/lib/cn'
@@ -23,71 +23,189 @@ import { NodeDrawer } from '@/features/node-drawer'
 import { GraphToolbar } from './graph-toolbar'
 import { KnowledgeEdge } from './knowledge-edge'
 import { KnowledgeNode } from './knowledge-node'
+import {
+  layoutEvent,
+  applyLayout,
+  getNodesWithinDepth,
+  useGraphKeyboard,
+  useViewMode,
+  useFocusMode,
+  useFilters,
+  useGraphUI,
+} from '@/features/graph-view'
 
 const nodeTypes = {
-  knowledgeNode: KnowledgeNode
+  knowledgeNode: KnowledgeNode,
 }
 
 const edgeTypes = {
-  knowledgeEdge: KnowledgeEdge
+  knowledgeEdge: KnowledgeEdge,
 }
 
 interface GraphVisualizationProps {
   mapId: string
   className?: string
-  showMinimap?: boolean
   interactive?: boolean
 }
 
 function GraphVisualizationContent({
   mapId,
   className,
-  interactive = true
+  interactive = true,
 }: GraphVisualizationProps) {
   const { t } = useTranslation()
   const { data: fullMap, isLoading, isError } = useFullMap(mapId)
   const { selectedElements, handleSelectionChange, clearSelection, selectedNodeId, selectNode } =
     useNodeSelection()
-  const { controls, setZoom, toggleFullscreen, toggleMinimap } = useGraphControls()
+  const { controls, setZoom, toggleFullscreen } = useGraphControls()
+  const layoutAppliedRef = useRef(false)
 
   const { zoomIn, zoomOut, fitView } = useReactFlow()
 
-  // Преобразуем узлы для XYFlow с обработчиком выбора
-  const nodes = useMemo(() => {
-    if (!fullMap) return []
-    return transformNodesToFlow(fullMap.nodes, selectedElements.nodes, selectNode)
-  }, [fullMap, selectedElements.nodes, selectNode])
+  // Store hooks for view settings
+  const { viewMode } = useViewMode()
+  const { focusedNodeId, focusDepth, focusNode } = useFocusMode()
+  const { visibleNodeTypes, visibleEdgeTypes } = useFilters()
+  const { showMinimap } = useGraphUI()
 
-  // Преобразуем связи для XYFlow
-  const edges = useMemo(() => {
-    if (!fullMap) return []
-    return transformEdgesToFlow(fullMap.edges, selectedElements.edges)
-  }, [fullMap, selectedElements.edges])
+  // Filter nodes based on visibility settings and focus mode
+  const filteredData = useMemo(() => {
+    if (!fullMap) return { nodes: [], edges: [] }
 
-  const [reactFlowNodes, setNodes, onNodesChange] = useNodesState(nodes)
-  const [reactFlowEdges, setEdges, onEdgesChange] = useEdgesState(edges)
+    // Start with type-filtered nodes
+    let visibleNodes = fullMap.nodes.filter((node) =>
+      visibleNodeTypes.has(node.type)
+    )
 
-  // Синхронизируем только при изменении ID узлов (не позиций!)
-  useEffect(() => {
-    const currentIds = reactFlowNodes.map(n => n.id).sort().join(',')
-    const newIds = nodes.map(n => n.id).sort().join(',')
+    // Filter edges by type
+    let visibleEdges = fullMap.edges.filter((edge) =>
+      visibleEdgeTypes.has(edge.relationType)
+    )
 
-    // Обновляем только если изменился состав узлов
-    if (currentIds !== newIds) {
-      setNodes(nodes)
+    // In focus mode, further filter to nodes within depth
+    if (viewMode === 'focus' && focusedNodeId) {
+      // Get flow edges for depth calculation
+      const flowEdges = visibleEdges.map((e) => ({
+        id: e.id,
+        source: e.sourceNodeId,
+        target: e.targetNodeId,
+      }))
+
+      const nodesInRange = getNodesWithinDepth(focusedNodeId, flowEdges, focusDepth)
+
+      visibleNodes = visibleNodes.filter((n) => nodesInRange.has(n.id))
+      visibleEdges = visibleEdges.filter(
+        (e) => nodesInRange.has(e.sourceNodeId) && nodesInRange.has(e.targetNodeId)
+      )
     }
-  }, [nodes, reactFlowNodes, setNodes])
 
+    return { nodes: visibleNodes, edges: visibleEdges }
+  }, [fullMap, visibleNodeTypes, visibleEdgeTypes, viewMode, focusedNodeId, focusDepth])
+
+  // Handle node click - in focus mode, focus on clicked node
+  const handleNodeClick = useCallback(
+    (nodeId: string) => {
+      if (viewMode === 'focus') {
+        focusNode(nodeId)
+      }
+      selectNode(nodeId)
+    },
+    [viewMode, focusNode, selectNode]
+  )
+
+  // Transform nodes for XYFlow
+  const initialNodes = useMemo(() => {
+    return transformNodesToFlow(
+      filteredData.nodes,
+      selectedElements.nodes,
+      handleNodeClick,
+      focusedNodeId
+    )
+  }, [filteredData.nodes, selectedElements.nodes, handleNodeClick, focusedNodeId])
+
+  // Transform edges for XYFlow
+  const initialEdges = useMemo(() => {
+    return transformEdgesToFlow(filteredData.edges, selectedElements.edges)
+  }, [filteredData.edges, selectedElements.edges])
+
+  const [reactFlowNodes, setNodes, onNodesChange] = useNodesState(initialNodes)
+  const [reactFlowEdges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
+
+  // Apply auto-layout function
+  const doApplyLayout = useCallback(() => {
+    if (reactFlowNodes.length === 0) return
+
+    const result = applyLayout(reactFlowNodes, reactFlowEdges, {
+      viewMode,
+      focusedNodeId,
+    })
+
+    setNodes(result.nodes)
+    // Fit view after layout with a small delay for animations
+    setTimeout(() => fitView({ padding: 0.2, duration: 300 }), 50)
+  }, [reactFlowNodes, reactFlowEdges, viewMode, focusedNodeId, setNodes, fitView])
+
+  // Apply initial auto-layout when nodes are first loaded
   useEffect(() => {
-    const currentIds = reactFlowEdges.map(e => e.id).sort().join(',')
-    const newIds = edges.map(e => e.id).sort().join(',')
-
-    if (currentIds !== newIds) {
-      setEdges(edges)
+    if (!layoutAppliedRef.current && initialNodes.length > 0 && fullMap) {
+      layoutAppliedRef.current = true
+      // Apply layout on initial load
+      const result = applyLayout(initialNodes, initialEdges, {
+        viewMode,
+        focusedNodeId,
+      })
+      setNodes(result.nodes)
     }
-  }, [edges, reactFlowEdges, setEdges])
+  }, [initialNodes.length, fullMap, initialNodes, initialEdges, viewMode, focusedNodeId, setNodes])
 
-  // Обработчик изменения узлов
+  // Listen for layout events from the store
+  useEffect(() => {
+    const handleLayoutEvent = () => {
+      doApplyLayout()
+    }
+
+    layoutEvent.addEventListener('layout', handleLayoutEvent)
+    return () => layoutEvent.removeEventListener('layout', handleLayoutEvent)
+  }, [doApplyLayout])
+
+  // Sync nodes when filtered data changes
+  const prevNodeIdsRef = useRef<string>('')
+  useEffect(() => {
+    const nodeIds = initialNodes.map((n) => n.id).sort().join(',')
+    if (prevNodeIdsRef.current !== nodeIds) {
+      if (prevNodeIdsRef.current !== '') {
+        // Nodes changed - apply layout for new set
+        const result = applyLayout(initialNodes, initialEdges, {
+          viewMode,
+          focusedNodeId,
+        })
+        setNodes(result.nodes)
+        setTimeout(() => fitView({ padding: 0.2, duration: 300 }), 50)
+      }
+      prevNodeIdsRef.current = nodeIds
+    }
+  }, [initialNodes, initialEdges, viewMode, focusedNodeId, setNodes, fitView])
+
+  // Sync edges when data changes
+  const prevEdgeIdsRef = useRef<string>('')
+  useEffect(() => {
+    const edgeIds = initialEdges.map((e) => e.id).sort().join(',')
+    if (prevEdgeIdsRef.current !== edgeIds && prevEdgeIdsRef.current !== '') {
+      setEdges(initialEdges)
+    }
+    prevEdgeIdsRef.current = edgeIds
+  }, [initialEdges, setEdges])
+
+  // Keyboard shortcuts
+  useGraphKeyboard({
+    selectedNodeId,
+    onFitView: () => fitView({ padding: 0.2, duration: 300 }),
+    onZoomIn: zoomIn,
+    onZoomOut: zoomOut,
+    enabled: interactive,
+  })
+
+  // Handle node changes
   const handleNodesChange = useCallback(
     (changes: any) => {
       if (!interactive) return
@@ -96,7 +214,7 @@ function GraphVisualizationContent({
     [onNodesChange, interactive]
   )
 
-  // Обработчик изменения связей
+  // Handle edge changes
   const handleEdgesChange = useCallback(
     (changes: any) => {
       if (!interactive) return
@@ -105,11 +223,11 @@ function GraphVisualizationContent({
     [onEdgesChange, interactive]
   )
 
-  // Обработчик новых соединений
+  // Handle new connections
   const onConnect = useCallback(
     (params: Connection) => {
       if (!interactive) return
-      setEdges(eds => addEdge({ ...params, type: 'knowledgeEdge' }, eds))
+      setEdges((eds) => addEdge({ ...params, type: 'knowledgeEdge' }, eds))
     },
     [setEdges, interactive]
   )
@@ -151,7 +269,7 @@ function GraphVisualizationContent({
     )
   }
 
-  const selectedNode = fullMap.nodes.find(n => n.id === selectedNodeId) || null
+  const selectedNode = fullMap.nodes.find((n) => n.id === selectedNodeId) || null
 
   return (
     <div
@@ -183,9 +301,9 @@ function GraphVisualizationContent({
       >
         <Background color="#e2e8f0" size={1} />
 
-        {controls.showMinimap && (
+        {showMinimap && (
           <MiniMap
-            nodeColor={node => {
+            nodeColor={(node) => {
               switch (node.data?.type) {
                 case 'concept':
                   return '#3b82f6'
@@ -202,21 +320,24 @@ function GraphVisualizationContent({
         )}
       </ReactFlow>
 
-      {/* Toolbar внизу */}
+      {/* Toolbar */}
       <GraphToolbar
         zoom={controls.zoom}
         isFullscreen={controls.isFullscreen}
-        showMinimap={controls.showMinimap}
         mapId={mapId}
         onZoomIn={handleZoomIn}
         onZoomOut={handleZoomOut}
         onCenter={handleCenter}
         onToggleFullscreen={toggleFullscreen}
-        onToggleMinimap={toggleMinimap}
       />
 
       {/* Node drawer */}
-      <NodeDrawer node={selectedNode} edges={fullMap.edges} nodes={fullMap.nodes} onClose={clearSelection} />
+      <NodeDrawer
+        node={selectedNode}
+        edges={fullMap.edges}
+        nodes={fullMap.nodes}
+        onClose={clearSelection}
+      />
     </div>
   )
 }

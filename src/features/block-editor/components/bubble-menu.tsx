@@ -13,6 +13,7 @@ import {
   Underline
 } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { cn } from '@/shared/lib/cn'
 import { Button } from '@/shared/ui/button'
@@ -48,6 +49,7 @@ interface EditorBubbleMenuProps {
 }
 
 export function EditorBubbleMenu({ editor }: EditorBubbleMenuProps) {
+  const { t } = useTranslation()
   const [isVisible, setIsVisible] = useState(false)
   const [position, setPosition] = useState({ top: 0, left: 0 })
   const [isLinkInputOpen, setIsLinkInputOpen] = useState(false)
@@ -140,11 +142,11 @@ export function EditorBubbleMenu({ editor }: EditorBubbleMenuProps) {
           value={linkUrl}
           onChange={(e) => setLinkUrl(e.target.value)}
           onKeyDown={handleLinkKeyDown}
-          placeholder="Enter URL..."
+          placeholder={t('editor.bubble.urlPlaceholder')}
           className="h-8 w-48 rounded-md border-none bg-transparent px-2 text-sm outline-none placeholder:text-muted-foreground"
         />
         <Button variant="ghost" size="sm" onClick={setLink} className="h-8 px-2 text-xs">
-          Save
+          {t('editor.bubble.save')}
         </Button>
         <Button
           variant="ghost"
@@ -155,7 +157,7 @@ export function EditorBubbleMenu({ editor }: EditorBubbleMenuProps) {
           }}
           className="h-8 px-2 text-xs"
         >
-          Cancel
+          {t('editor.bubble.cancel')}
         </Button>
       </div>
     )
@@ -244,7 +246,7 @@ export function EditorBubbleMenu({ editor }: EditorBubbleMenuProps) {
         {isColorPickerOpen && (
           <div className="absolute left-0 top-full mt-1 z-50 min-w-[200px] rounded-lg border border-border bg-popover p-2 shadow-lg">
             <div className="mb-2">
-              <p className="text-xs font-medium text-muted-foreground mb-1">Text Color</p>
+              <p className="text-xs font-medium text-muted-foreground mb-1">{t('editor.bubble.textColor')}</p>
               <div className="flex flex-wrap gap-1">
                 {TEXT_COLORS.map((item) => (
                   <button
@@ -269,7 +271,7 @@ export function EditorBubbleMenu({ editor }: EditorBubbleMenuProps) {
               </div>
             </div>
             <div>
-              <p className="text-xs font-medium text-muted-foreground mb-1">Highlight</p>
+              <p className="text-xs font-medium text-muted-foreground mb-1">{t('editor.bubble.highlight')}</p>
               <div className="flex flex-wrap gap-1">
                 {HIGHLIGHT_COLORS.map((item) => (
                   <button

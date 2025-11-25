@@ -1,6 +1,7 @@
 import type { Editor } from '@tiptap/react'
 import { GripVertical, Plus } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { cn } from '@/shared/lib/cn'
 
@@ -10,6 +11,7 @@ interface FloatingMenuProps {
 }
 
 export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
+  const { t } = useTranslation()
   const [position, setPosition] = useState({ top: 0 })
   const [shouldShow, setShouldShow] = useState(false)
 
@@ -71,7 +73,7 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
 
   return (
     <div
-      className="absolute left-2 flex items-center gap-0.5 opacity-50 transition-opacity hover:opacity-100"
+      className="absolute -left-2 flex items-center gap-0.5 opacity-50 transition-opacity hover:opacity-100"
       style={{
         top: position.top
       }}
@@ -84,7 +86,7 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
           'flex h-6 w-6 items-center justify-center rounded transition-colors',
           'text-muted-foreground hover:bg-accent hover:text-foreground'
         )}
-        title="Add block"
+        title={t('editor.floating.addBlock')}
       >
         <Plus className="h-4 w-4" />
       </button>
@@ -95,7 +97,7 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
           'flex h-6 w-6 cursor-grab items-center justify-center rounded transition-colors',
           'text-muted-foreground hover:bg-accent hover:text-foreground'
         )}
-        title="Drag to move"
+        title={t('editor.floating.dragToMove')}
       >
         <GripVertical className="h-4 w-4" />
       </button>

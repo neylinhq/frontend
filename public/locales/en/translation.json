@@ -121,6 +121,11 @@
     "loading": "Loading knowledge graph...",
     "loadingError": "Loading error",
     "loadingErrorMessage": "Failed to load knowledge map",
+    "viewModes": {
+      "overview": "Overview",
+      "focus": "Focus",
+      "path": "Path"
+    },
     "toolbar": {
       "aiAnalysis": "AI Analysis",
       "center": "Center",
@@ -133,12 +138,31 @@
       "exitFullscreen": "Exit fullscreen",
       "focusMode": "Focus",
       "selectLayout": "Select layout",
-      "clearFilters": "Clear all"
+      "clearFilters": "Clear all",
+      "filters": "Filters",
+      "depth": "Depth",
+      "clearFocus": "Clear",
+      "focusHint": "Click a node to focus"
+    },
+    "filters": {
+      "nodeTypes": "Node types",
+      "edgeTypes": "Edge types"
+    },
+    "nodeTypes": {
+      "concept": "Concept",
+      "fact": "Fact",
+      "theory": "Theory",
+      "example": "Example",
+      "question": "Question",
+      "hypothesis": "Hypothesis",
+      "person": "Person",
+      "school": "School"
     },
     "nodeControls": {
       "title": "View Controls",
       "focusMode": "Focus mode",
       "focusModeDescription": "Show only connected nodes",
+      "clearFocus": "Clear focus",
       "connectionDepth": "Connection depth",
       "hops": "hops",
       "edgeDirection": "Edge direction",
@@ -189,7 +213,8 @@
       "all": "All",
       "incoming": "Incoming",
       "outgoing": "Outgoing"
-    }
+    },
+    "edit": "Edit"
   },
   "mapView": {
     "navigationError": "Navigation error",
@@ -446,6 +471,152 @@
     "description": "Sorry, the page you're looking for doesn't exist or has been moved",
     "backToHome": "Back to home",
     "goToDashboard": "Go to dashboard"
+  },
+  "nodeTypes": {
+    "concept": "Concept",
+    "fact": "Fact",
+    "theory": "Theory",
+    "example": "Example",
+    "question": "Question",
+    "hypothesis": "Hypothesis"
+  },
+  "editor": {
+    "floating": {
+      "addBlock": "Add block",
+      "dragToMove": "Drag to move"
+    },
+    "slash": {
+      "categories": {
+        "basic": "Basic blocks",
+        "lists": "Lists",
+        "media": "Media",
+        "advanced": "Advanced"
+      },
+      "text": {
+        "title": "Text",
+        "description": "Just start writing with plain text"
+      },
+      "heading1": {
+        "title": "Heading 1",
+        "description": "Big section heading"
+      },
+      "heading2": {
+        "title": "Heading 2",
+        "description": "Medium section heading"
+      },
+      "heading3": {
+        "title": "Heading 3",
+        "description": "Small section heading"
+      },
+      "bulletList": {
+        "title": "Bullet List",
+        "description": "Create a simple bullet list"
+      },
+      "numberedList": {
+        "title": "Numbered List",
+        "description": "Create a numbered list"
+      },
+      "todoList": {
+        "title": "To-do List",
+        "description": "Track tasks with a to-do list"
+      },
+      "toggle": {
+        "title": "Toggle",
+        "description": "Collapsible content block"
+      },
+      "quote": {
+        "title": "Quote",
+        "description": "Capture a quote"
+      },
+      "code": {
+        "title": "Code",
+        "description": "Code block with syntax highlighting"
+      },
+      "divider": {
+        "title": "Divider",
+        "description": "Visually divide blocks"
+      },
+      "image": {
+        "title": "Image",
+        "description": "Upload or embed an image"
+      },
+      "table": {
+        "title": "Table",
+        "description": "Add a table"
+      },
+      "calloutInfo": {
+        "title": "Info",
+        "description": "Highlight important information"
+      },
+      "calloutWarning": {
+        "title": "Warning",
+        "description": "Highlight warnings and cautions"
+      },
+      "calloutSuccess": {
+        "title": "Success",
+        "description": "Highlight successful outcomes"
+      },
+      "calloutError": {
+        "title": "Error",
+        "description": "Highlight errors and problems"
+      },
+      "calloutTip": {
+        "title": "Tip",
+        "description": "Share helpful tips and tricks"
+      },
+      "imagePrompt": "Enter image URL"
+    },
+    "bubble": {
+      "urlPlaceholder": "Enter URL...",
+      "save": "Save",
+      "cancel": "Cancel",
+      "textColor": "Text Color",
+      "highlight": "Highlight"
+    }
+  },
+  "form": {
+    "complexity": {
+      "label": "Complexity",
+      "placeholder": "Select complexity level",
+      "basic": "Basic",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    },
+    "metadata": {
+      "label": "Label",
+      "labelPlaceholder": "Enter node label...",
+      "save": "Save Changes",
+      "saving": "Saving..."
+    },
+    "tags": {
+      "label": "Tags",
+      "placeholder": "Add a tag...",
+      "add": "Add"
+    },
+    "nodeType": {
+      "label": "Node Type"
+    }
+  },
+  "languageSwitcher": {
+    "toggleLanguage": "Toggle language"
+  },
+  "errors": {
+    "navigationError": "Navigation Error",
+    "mapIdOrNodeMissing": "Map ID or Node ID is missing",
+    "loadingNode": "Loading Node",
+    "pleaseWait": "Please wait...",
+    "nodeNotFound": "Node Not Found",
+    "nodeNotFoundDesc": "The requested node could not be found or does not exist.",
+    "backToMap": "Back to Map",
+    "failedSaveTitle": "Failed to save title",
+    "failedSave": "Failed to save",
+    "saving": "Saving..."
+  },
+  "nodeEdit": {
+    "untitledPlaceholder": "Untitled",
+    "editorPlaceholder": "Start writing, or type '/' for commands...",
+    "properties": "Properties",
+    "connections": "Connections"
   },
   "settings": {
     "title": "Settings",

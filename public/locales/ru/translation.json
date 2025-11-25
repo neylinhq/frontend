@@ -121,6 +121,11 @@
     "loading": "Загрузка графа знаний...",
     "loadingError": "Ошибка загрузки",
     "loadingErrorMessage": "Не удалось загрузить карту знаний",
+    "viewModes": {
+      "overview": "Обзор",
+      "focus": "Фокус",
+      "path": "Путь"
+    },
     "toolbar": {
       "aiAnalysis": "ИИ-анализ",
       "center": "Центр",
@@ -133,12 +138,31 @@
       "exitFullscreen": "Выход из полноэкранного режима",
       "focusMode": "Фокус",
       "selectLayout": "Выбрать макет",
-      "clearFilters": "Очистить всё"
+      "clearFilters": "Очистить всё",
+      "filters": "Фильтры",
+      "depth": "Глубина",
+      "clearFocus": "Сбросить",
+      "focusHint": "Нажмите на узел для фокусировки"
+    },
+    "filters": {
+      "nodeTypes": "Типы узлов",
+      "edgeTypes": "Типы связей"
+    },
+    "nodeTypes": {
+      "concept": "Концепция",
+      "fact": "Факт",
+      "theory": "Теория",
+      "example": "Пример",
+      "question": "Вопрос",
+      "hypothesis": "Гипотеза",
+      "person": "Персона",
+      "school": "Школа"
     },
     "nodeControls": {
       "title": "Управление видом",
       "focusMode": "Режим фокуса",
       "focusModeDescription": "Показывать только связанные узлы",
+      "clearFocus": "Сбросить фокус",
       "connectionDepth": "Глубина связей",
       "hops": "шагов",
       "edgeDirection": "Направление связей",
@@ -189,7 +213,8 @@
       "all": "Все",
       "incoming": "Входящие",
       "outgoing": "Исходящие"
-    }
+    },
+    "edit": "Редактировать"
   },
   "mapView": {
     "navigationError": "Ошибка навигации",
@@ -355,7 +380,7 @@
       }
     },
     "cookies": {
-      "title": "Политика использования Cookie",
+      "title": "Политика по Cookie",
       "description": "Информация о том, как мы используем cookies для улучшения вашего опыта",
       "sections": {
         "what": {
@@ -472,6 +497,152 @@
     "description": "К сожалению, запрашиваемая страница не существует или была перемещена",
     "backToHome": "Вернуться на главную",
     "goToDashboard": "Перейти к обзору"
+  },
+  "nodeTypes": {
+    "concept": "Концепция",
+    "fact": "Факт",
+    "theory": "Теория",
+    "example": "Пример",
+    "question": "Вопрос",
+    "hypothesis": "Гипотеза"
+  },
+  "editor": {
+    "floating": {
+      "addBlock": "Добавить блок",
+      "dragToMove": "Перетащить"
+    },
+    "slash": {
+      "categories": {
+        "basic": "Основные блоки",
+        "lists": "Списки",
+        "media": "Медиа",
+        "advanced": "Дополнительные"
+      },
+      "text": {
+        "title": "Текст",
+        "description": "Просто начните писать обычный текст"
+      },
+      "heading1": {
+        "title": "Заголовок 1",
+        "description": "Большой заголовок раздела"
+      },
+      "heading2": {
+        "title": "Заголовок 2",
+        "description": "Средний заголовок раздела"
+      },
+      "heading3": {
+        "title": "Заголовок 3",
+        "description": "Маленький заголовок раздела"
+      },
+      "bulletList": {
+        "title": "Маркированный список",
+        "description": "Создать простой маркированный список"
+      },
+      "numberedList": {
+        "title": "Нумерованный список",
+        "description": "Создать нумерованный список"
+      },
+      "todoList": {
+        "title": "Список задач",
+        "description": "Отслеживать задачи с помощью списка задач"
+      },
+      "toggle": {
+        "title": "Сворачиваемый блок",
+        "description": "Блок со сворачиваемым содержимым"
+      },
+      "quote": {
+        "title": "Цитата",
+        "description": "Вставить цитату"
+      },
+      "code": {
+        "title": "Код",
+        "description": "Блок кода с подсветкой синтаксиса"
+      },
+      "divider": {
+        "title": "Разделитель",
+        "description": "Визуально разделить блоки"
+      },
+      "image": {
+        "title": "Изображение",
+        "description": "Загрузить или встроить изображение"
+      },
+      "table": {
+        "title": "Таблица",
+        "description": "Добавить таблицу"
+      },
+      "calloutInfo": {
+        "title": "Информация",
+        "description": "Выделить важную информацию"
+      },
+      "calloutWarning": {
+        "title": "Предупреждение",
+        "description": "Выделить предупреждения"
+      },
+      "calloutSuccess": {
+        "title": "Успех",
+        "description": "Выделить успешные результаты"
+      },
+      "calloutError": {
+        "title": "Ошибка",
+        "description": "Выделить ошибки и проблемы"
+      },
+      "calloutTip": {
+        "title": "Совет",
+        "description": "Поделиться полезными советами"
+      },
+      "imagePrompt": "Введите URL изображения"
+    },
+    "bubble": {
+      "urlPlaceholder": "Введите URL...",
+      "save": "Сохранить",
+      "cancel": "Отмена",
+      "textColor": "Цвет текста",
+      "highlight": "Выделение"
+    }
+  },
+  "form": {
+    "complexity": {
+      "label": "Сложность",
+      "placeholder": "Выберите уровень сложности",
+      "basic": "Базовая",
+      "intermediate": "Средняя",
+      "advanced": "Продвинутая"
+    },
+    "metadata": {
+      "label": "Название",
+      "labelPlaceholder": "Введите название узла...",
+      "save": "Сохранить изменения",
+      "saving": "Сохранение..."
+    },
+    "tags": {
+      "label": "Теги",
+      "placeholder": "Добавить тег...",
+      "add": "Добавить"
+    },
+    "nodeType": {
+      "label": "Тип узла"
+    }
+  },
+  "languageSwitcher": {
+    "toggleLanguage": "Переключить язык"
+  },
+  "errors": {
+    "navigationError": "Ошибка навигации",
+    "mapIdOrNodeMissing": "ID карты или ID узла отсутствует",
+    "loadingNode": "Загрузка узла",
+    "pleaseWait": "Пожалуйста, подождите...",
+    "nodeNotFound": "Узел не найден",
+    "nodeNotFoundDesc": "Запрошенный узел не найден или не существует.",
+    "backToMap": "Вернуться на карту",
+    "failedSaveTitle": "Не удалось сохранить название",
+    "failedSave": "Не удалось сохранить",
+    "saving": "Сохранение..."
+  },
+  "nodeEdit": {
+    "untitledPlaceholder": "Без названия",
+    "editorPlaceholder": "Начните писать или введите '/' для команд...",
+    "properties": "Свойства",
+    "connections": "Связи"
   },
   "settings": {
     "title": "Настройки",

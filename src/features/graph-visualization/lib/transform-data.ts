@@ -4,7 +4,8 @@ import type { Edge, Node } from '@/entities/map'
 export function transformNodesToFlow(
   nodes: Node[],
   selectedNodeIds: string[] = [],
-  onSelect?: (id: string) => void
+  onSelect?: (id: string) => void,
+  focusedNodeId?: string | null
 ): FlowNode[] {
   return nodes.map(node => ({
     id: node.id,
@@ -13,8 +14,9 @@ export function transformNodesToFlow(
     data: {
       ...node,
       selected: selectedNodeIds.includes(node.id),
-      onSelect
-    }
+      isFocused: focusedNodeId === node.id,
+      onSelect,
+    },
   }))
 }
 

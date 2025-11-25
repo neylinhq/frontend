@@ -50,7 +50,7 @@ export const LegalLayout = ({ children, pageType }: LegalLayoutProps) => {
           </Link>
 
           {/* Content Card */}
-          <div className="bg-card rounded-3xl shadow-lg p-10 md:p-16">
+          <div className="pt-10 md:pt-16">
             {pageType && (
               <div className="flex items-center gap-4 mb-10">
                 <div className="h-16 w-16 rounded-2xl bg-primary/10 flex items-center justify-center">

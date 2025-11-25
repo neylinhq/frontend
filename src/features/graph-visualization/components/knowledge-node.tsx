@@ -9,7 +9,12 @@ import { Card } from '@/shared/ui/card'
 import { getComplexityColor, getNodeBorderColor, getNodeIcon } from '../lib/get-node-style'
 
 interface KnowledgeNodeProps {
-  data: Node & { selected?: boolean; onSelect?: (id: string) => void }
+  data: Node & {
+    selected?: boolean
+    onSelect?: (id: string) => void
+    isDimmed?: boolean
+    isFocused?: boolean
+  }
   id: string
 }
 
@@ -17,6 +22,8 @@ export const KnowledgeNode = memo(({ data, id }: KnowledgeNodeProps) => {
   const { t, i18n } = useTranslation()
   const Icon = getNodeIcon(data.type)
   const isSelected = data.selected
+  const isDimmed = data.isDimmed
+  const isFocused = data.isFocused
 
   const handleInfoClick = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -36,6 +43,14 @@ export const KnowledgeNode = memo(({ data, id }: KnowledgeNodeProps) => {
         'border-l-[3px]',
         getNodeBorderColor(data.type),
         'hover:shadow-md hover:scale-[1.01]',
+        // Dimmed state - reduced opacity and grayscale
+        isDimmed && 'opacity-40 grayscale hover:opacity-60 hover:grayscale-0',
+        // Focused state - highlighted with glow effect
+        isFocused && [
+          'ring-2 ring-primary/70 shadow-lg shadow-primary/20 scale-[1.03]',
+          'animate-pulse-subtle'
+        ],
+        // Selected state
         isSelected && [
           'ring-2 ring-primary shadow-lg scale-[1.02]',
           'dark:ring-offset-background ring-offset-1'
@@ -113,7 +128,7 @@ export const KnowledgeNode = memo(({ data, id }: KnowledgeNodeProps) => {
           {/* Статистика */}
           <div className="flex justify-between text-xs opacity-70">
             <span>{t('common.created')}: {new Date(data.createdAt).toLocaleDateString(i18n.language)}</span>
-            {data.metadata.reviewCount > 0 && <span>{t('graph.node.reviews')}: {data.metadata.reviewCount}</span>}
+            {(data.metadata.reviewCount ?? 0) > 0 && <span>{t('graph.node.reviews')}: {data.metadata.reviewCount}</span>}
           </div>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import { Extension } from '@tiptap/core'
+import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight'
 import { Color } from '@tiptap/extension-color'
 import { Highlight } from '@tiptap/extension-highlight'
 import { Image } from '@tiptap/extension-image'
@@ -17,6 +18,13 @@ import { TextStyle } from '@tiptap/extension-text-style'
 import { Typography } from '@tiptap/extension-typography'
 import { Underline } from '@tiptap/extension-underline'
 import { StarterKit } from '@tiptap/starter-kit'
+import { common, createLowlight } from 'lowlight'
+
+import { Callout } from './callout-extension'
+import { Details, DetailsContent, DetailsSummary } from './details-extension'
+
+// Create lowlight instance with common languages
+const lowlight = createLowlight(common)
 
 export const createExtensions = (placeholder?: string) => [
   StarterKit.configure({
@@ -30,7 +38,8 @@ export const createExtensions = (placeholder?: string) => [
     orderedList: {
       keepMarks: true,
       keepAttributes: false
-    }
+    },
+    codeBlock: false // Disable default codeBlock, use CodeBlockLowlight instead
   }),
   Placeholder.configure({
     placeholder: ({ node }) => {
@@ -87,6 +96,20 @@ export const createExtensions = (placeholder?: string) => [
   Color,
   Subscript,
   Superscript,
+  // Code block with syntax highlighting
+  CodeBlockLowlight.configure({
+    lowlight,
+    defaultLanguage: 'plaintext',
+    HTMLAttributes: {
+      class: 'editor-code-block'
+    }
+  }),
+  // Callout blocks (info, warning, success, error, tip)
+  Callout,
+  // Collapsible/Toggle blocks
+  Details,
+  DetailsSummary,
+  DetailsContent,
   // Custom extension for keyboard shortcuts
   Extension.create({
     name: 'customKeymap',

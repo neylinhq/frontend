@@ -2,6 +2,7 @@
 
 import { EditorContent, useEditor } from '@tiptap/react'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { useTheme } from '@/app/theme'
 import { cn } from '@/shared/lib/cn'
@@ -20,6 +21,7 @@ export function BlockEditor({
   placeholder
 }: BlockEditorProps) {
   const { theme } = useTheme()
+  const { t } = useTranslation()
   const [showSlashMenu, setShowSlashMenu] = useState(false)
   const [slashMenuPosition, setSlashMenuPosition] = useState({ top: 0, left: 0 })
   const [slashMenuQuery, setSlashMenuQuery] = useState('')
@@ -101,7 +103,7 @@ export function BlockEditor({
   }, [showSlashMenu])
 
   // Get filtered slash menu items
-  const slashItems = getSlashMenuItems(editor).filter((item) =>
+  const slashItems = getSlashMenuItems(editor, t).filter((item) =>
     item.title.toLowerCase().includes(slashMenuQuery.toLowerCase())
   )
 

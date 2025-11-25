@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Label } from '@/shared/ui/label'
 import { Input } from '@/shared/ui/input'
 import { Badge } from '@/shared/ui/badge'
@@ -11,6 +12,7 @@ interface NodeTagsInputProps {
 }
 
 export function NodeTagsInput({ value, onChange }: NodeTagsInputProps) {
+  const { t } = useTranslation()
   const [inputValue, setInputValue] = useState('')
 
   const handleAddTag = () => {
@@ -33,18 +35,18 @@ export function NodeTagsInput({ value, onChange }: NodeTagsInputProps) {
   }
 
   return (
-    <div className="space-y-2">
-      <Label htmlFor="tags">Tags</Label>
+    <div className="space-y-3">
+      <Label htmlFor="tags">{t('form.tags.label')}</Label>
       <div className="flex gap-2">
         <Input
           id="tags"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Add a tag..."
+          placeholder={t('form.tags.placeholder')}
         />
         <Button type="button" onClick={handleAddTag} variant="secondary" size="sm">
-          Add
+          {t('form.tags.add')}
         </Button>
       </div>
       {value.length > 0 && (

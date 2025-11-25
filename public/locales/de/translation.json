@@ -356,6 +356,152 @@
     "backToHome": "Zurück zur Startseite",
     "goToDashboard": "Zum Dashboard"
   },
+  "nodeTypes": {
+    "concept": "Konzept",
+    "fact": "Fakt",
+    "theory": "Theorie",
+    "example": "Beispiel",
+    "question": "Frage",
+    "hypothesis": "Hypothese"
+  },
+  "editor": {
+    "floating": {
+      "addBlock": "Block hinzufügen",
+      "dragToMove": "Zum Verschieben ziehen"
+    },
+    "slash": {
+      "categories": {
+        "basic": "Grundlegende Blöcke",
+        "lists": "Listen",
+        "media": "Medien",
+        "advanced": "Erweitert"
+      },
+      "text": {
+        "title": "Text",
+        "description": "Beginnen Sie mit dem Schreiben von einfachem Text"
+      },
+      "heading1": {
+        "title": "Überschrift 1",
+        "description": "Große Abschnittsüberschrift"
+      },
+      "heading2": {
+        "title": "Überschrift 2",
+        "description": "Mittlere Abschnittsüberschrift"
+      },
+      "heading3": {
+        "title": "Überschrift 3",
+        "description": "Kleine Abschnittsüberschrift"
+      },
+      "bulletList": {
+        "title": "Aufzählung",
+        "description": "Erstellen Sie eine einfache Aufzählung"
+      },
+      "numberedList": {
+        "title": "Nummerierte Liste",
+        "description": "Erstellen Sie eine nummerierte Liste"
+      },
+      "todoList": {
+        "title": "Aufgabenliste",
+        "description": "Aufgaben mit einer Aufgabenliste verfolgen"
+      },
+      "toggle": {
+        "title": "Umschalten",
+        "description": "Einklappbarer Inhaltsblock"
+      },
+      "quote": {
+        "title": "Zitat",
+        "description": "Ein Zitat hinzufügen"
+      },
+      "code": {
+        "title": "Code",
+        "description": "Codeblock mit Syntaxhervorhebung"
+      },
+      "divider": {
+        "title": "Trennlinie",
+        "description": "Blöcke visuell trennen"
+      },
+      "image": {
+        "title": "Bild",
+        "description": "Ein Bild hochladen oder einbetten"
+      },
+      "table": {
+        "title": "Tabelle",
+        "description": "Eine Tabelle hinzufügen"
+      },
+      "calloutInfo": {
+        "title": "Info",
+        "description": "Wichtige Informationen hervorheben"
+      },
+      "calloutWarning": {
+        "title": "Warnung",
+        "description": "Warnungen und Vorsichtsmaßnahmen hervorheben"
+      },
+      "calloutSuccess": {
+        "title": "Erfolg",
+        "description": "Erfolgreiche Ergebnisse hervorheben"
+      },
+      "calloutError": {
+        "title": "Fehler",
+        "description": "Fehler und Probleme hervorheben"
+      },
+      "calloutTip": {
+        "title": "Tipp",
+        "description": "Hilfreiche Tipps und Tricks teilen"
+      },
+      "imagePrompt": "Bild-URL eingeben"
+    },
+    "bubble": {
+      "urlPlaceholder": "URL eingeben...",
+      "save": "Speichern",
+      "cancel": "Abbrechen",
+      "textColor": "Textfarbe",
+      "highlight": "Hervorhebung"
+    }
+  },
+  "form": {
+    "complexity": {
+      "label": "Komplexität",
+      "placeholder": "Wählen Sie die Komplexitätsstufe aus",
+      "basic": "Grundlegend",
+      "intermediate": "Mittelstufe",
+      "advanced": "Fortgeschritten"
+    },
+    "metadata": {
+      "label": "Titel",
+      "labelPlaceholder": "Knotentitel eingeben...",
+      "save": "Änderungen speichern",
+      "saving": "Wird gespeichert..."
+    },
+    "tags": {
+      "label": "Tags",
+      "placeholder": "Ein Tag hinzufügen...",
+      "add": "Hinzufügen"
+    },
+    "nodeType": {
+      "label": "Knotentyp"
+    }
+  },
+  "languageSwitcher": {
+    "toggleLanguage": "Sprache wechseln"
+  },
+  "errors": {
+    "navigationError": "Navigationsfehler",
+    "mapIdOrNodeMissing": "Karten-ID oder Knoten-ID fehlt",
+    "loadingNode": "Knoten wird geladen",
+    "pleaseWait": "Bitte warten...",
+    "nodeNotFound": "Knoten nicht gefunden",
+    "nodeNotFoundDesc": "Der angeforderte Knoten konnte nicht gefunden werden oder existiert nicht.",
+    "backToMap": "Zurück zur Karte",
+    "failedSaveTitle": "Fehler beim Speichern des Titels",
+    "failedSave": "Fehler beim Speichern",
+    "saving": "Wird gespeichert..."
+  },
+  "nodeEdit": {
+    "untitledPlaceholder": "Ohne Titel",
+    "editorPlaceholder": "Beginnen Sie zu schreiben oder geben Sie '/' für Befehle ein...",
+    "properties": "Eigenschaften",
+    "connections": "Verbindungen"
+  },
   "graph": {
     "loading": "Wissensgraph wird geladen...",
     "loadingError": "Ladefehler",

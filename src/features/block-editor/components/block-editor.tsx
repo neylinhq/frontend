@@ -9,6 +9,7 @@ import { cn } from '@/shared/lib/cn'
 import { createExtensions } from '../lib/extensions'
 import type { BlockEditorProps } from '../model/block-editor.types'
 import { EditorBubbleMenu } from './bubble-menu'
+import { EditorFloatingMenu } from './floating-menu'
 import { getSlashMenuItems, SlashMenu } from './slash-menu'
 
 export function BlockEditor({
@@ -127,6 +128,12 @@ export function BlockEditor({
     [editor]
   )
 
+  const handleAddBlock = useCallback(() => {
+    if (!editor) return
+    // Insert slash to trigger the menu
+    editor.chain().focus().insertContent('/').run()
+  }, [editor])
+
   if (!editor) {
     return null
   }
@@ -135,12 +142,13 @@ export function BlockEditor({
     <div
       ref={editorRef}
       className={cn(
-        'tiptap-editor relative',
+        'tiptap-editor group/editor relative pl-12',
         theme === 'dark' && 'dark',
         className
       )}
     >
       <EditorBubbleMenu editor={editor} />
+      <EditorFloatingMenu editor={editor} onAddClick={handleAddBlock} />
 
       <EditorContent editor={editor} />
 

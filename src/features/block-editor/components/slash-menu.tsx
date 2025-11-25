@@ -4,10 +4,12 @@ import {
   Heading1,
   Heading2,
   Heading3,
+  Image,
   List,
   ListOrdered,
   Minus,
   Quote,
+  Table,
   Type
 } from 'lucide-react'
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
@@ -169,6 +171,23 @@ export const getSlashMenuItems = (editor: ReturnType<typeof import('@tiptap/reac
       description: 'Visually divide blocks',
       icon: <Minus className="h-5 w-5" />,
       command: () => editor.chain().focus().setHorizontalRule().run()
+    },
+    {
+      title: 'Image',
+      description: 'Upload or embed an image',
+      icon: <Image className="h-5 w-5" />,
+      command: () => {
+        const url = window.prompt('Enter image URL')
+        if (url) {
+          editor.chain().focus().setImage({ src: url }).run()
+        }
+      }
+    },
+    {
+      title: 'Table',
+      description: 'Add a table',
+      icon: <Table className="h-5 w-5" />,
+      command: () => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
     }
   ]
 }

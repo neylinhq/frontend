@@ -1,13 +1,22 @@
 import { Extension } from '@tiptap/core'
-import StarterKit from '@tiptap/starter-kit'
-import Placeholder from '@tiptap/extension-placeholder'
-import TaskList from '@tiptap/extension-task-list'
-import TaskItem from '@tiptap/extension-task-item'
-import Link from '@tiptap/extension-link'
-import Typography from '@tiptap/extension-typography'
-import Underline from '@tiptap/extension-underline'
-import TextAlign from '@tiptap/extension-text-align'
-import Highlight from '@tiptap/extension-highlight'
+import { Color } from '@tiptap/extension-color'
+import { Highlight } from '@tiptap/extension-highlight'
+import { Image } from '@tiptap/extension-image'
+import { Link } from '@tiptap/extension-link'
+import { Placeholder } from '@tiptap/extension-placeholder'
+import { Subscript } from '@tiptap/extension-subscript'
+import { Superscript } from '@tiptap/extension-superscript'
+import { Table } from '@tiptap/extension-table'
+import { TableCell } from '@tiptap/extension-table-cell'
+import { TableHeader } from '@tiptap/extension-table-header'
+import { TableRow } from '@tiptap/extension-table-row'
+import { TaskItem } from '@tiptap/extension-task-item'
+import { TaskList } from '@tiptap/extension-task-list'
+import { TextAlign } from '@tiptap/extension-text-align'
+import { TextStyle } from '@tiptap/extension-text-style'
+import { Typography } from '@tiptap/extension-typography'
+import { Underline } from '@tiptap/extension-underline'
+import { StarterKit } from '@tiptap/starter-kit'
 
 export const createExtensions = (placeholder?: string) => [
   StarterKit.configure({
@@ -56,8 +65,28 @@ export const createExtensions = (placeholder?: string) => [
     types: ['heading', 'paragraph']
   }),
   Highlight.configure({
-    multicolor: false
+    multicolor: true
   }),
+  Image.configure({
+    inline: false,
+    allowBase64: true,
+    HTMLAttributes: {
+      class: 'editor-image'
+    }
+  }),
+  Table.configure({
+    resizable: true,
+    HTMLAttributes: {
+      class: 'editor-table'
+    }
+  }),
+  TableRow,
+  TableCell,
+  TableHeader,
+  TextStyle,
+  Color,
+  Subscript,
+  Superscript,
   // Custom extension for keyboard shortcuts
   Extension.create({
     name: 'customKeymap',

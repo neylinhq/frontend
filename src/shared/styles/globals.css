@@ -334,3 +334,88 @@
 .tippy-box[data-theme~='custom'] .tippy-content {
   padding: 0;
 }
+
+/* Image styling */
+.tiptap-editor .editor-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+}
+
+.tiptap-editor .editor-image.ProseMirror-selectednode {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+/* Table styling */
+.tiptap-editor .editor-table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1rem 0;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  border: 1px solid hsl(var(--border));
+}
+
+.tiptap-editor table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.tiptap-editor th,
+.tiptap-editor td {
+  border: 1px solid hsl(var(--border));
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+  position: relative;
+  min-width: 100px;
+}
+
+.tiptap-editor th {
+  background-color: hsl(var(--muted));
+  font-weight: 600;
+}
+
+.tiptap-editor td {
+  background-color: transparent;
+}
+
+.tiptap-editor .selectedCell {
+  background-color: hsl(var(--primary) / 0.1);
+}
+
+.tiptap-editor th p,
+.tiptap-editor td p {
+  margin: 0;
+}
+
+/* Table resize handle */
+.tiptap-editor .column-resize-handle {
+  position: absolute;
+  right: -2px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: hsl(var(--primary));
+  cursor: col-resize;
+  z-index: 10;
+}
+
+.tiptap-editor .tableWrapper {
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+/* Subscript and Superscript */
+.tiptap-editor sub {
+  font-size: 0.75em;
+  vertical-align: sub;
+}
+
+.tiptap-editor sup {
+  font-size: 0.75em;
+  vertical-align: super;
+}

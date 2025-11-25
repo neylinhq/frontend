@@ -12,6 +12,7 @@ export default [
 
   // Dashboard Routes
   layout('routes/dashboard/layout.tsx', [
-    route('dashboard/overview', 'routes/dashboard/overview.tsx')
+    route('dashboard/overview', 'routes/dashboard/overview.tsx'),
+    route('dashboard/maps/:mapId/view', 'routes/dashboard/maps/$mapId/view.tsx')
   ])
 ] satisfies RouteConfig

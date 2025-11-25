@@ -8,22 +8,22 @@ export interface SidebarItem {
 
 export const DASHBOARD_SIDEBAR_ITEMS: SidebarItem[] = [
   {
-    title: 'Обзор',
+    title: 'nav.overview',
     href: '/dashboard/overview',
     icon: LayoutDashboard
   },
   {
-    title: 'Мои карты',
+    title: 'nav.myMaps',
     href: '/dashboard/maps/new',
     icon: Network
   },
   {
-    title: 'AI Лаборатория',
+    title: 'nav.aiLab',
     href: '/dashboard/ai-lab',
     icon: Beaker
   },
   {
-    title: 'База знаний',
+    title: 'nav.knowledgeBase',
     href: '/dashboard/knowledge-base/concepts',
     icon: BookOpen
   }

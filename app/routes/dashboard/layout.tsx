@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { type LoaderFunctionArgs, redirect } from 'react-router'
 import { useSessionStore } from '@/entities/session'
 import { getSession } from '@/entities/session/session.server'
-import { DashboardLayout } from '@/widgets/dashboard-layout/dashboard-layout'
+import { DashboardLayout } from '@/widgets/dashboard-layout/ui/dashboard-layout'
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const session = await getSession(request)

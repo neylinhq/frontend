@@ -1,8 +1,8 @@
 import { OverviewPage } from '@/pages/dashboard/overview-page/overview-page'
-import type { Route } from './+types/overview'
+import { getMeta } from '@/shared/lib/get-meta'
 
-export function meta({}: Route.MetaArgs) {
-  return [{ title: 'Arbor - Обзор' }, { name: 'description', content: 'Ваши карты знаний' }]
+export function meta() {
+  return getMeta('overview')
 }
 
 export default function DashboardOverviewRoute() {

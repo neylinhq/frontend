@@ -1,0 +1,38 @@
+import { useCallback, useState } from 'react'
+import type { Node as FlowNode, Edge as FlowEdge } from '@xyflow/react'
+import type { SelectedElements } from './graph-visualization.types'
+
+export function useNodeSelection() {
+  const [selectedElements, setSelectedElements] = useState<SelectedElements>({
+    nodes: [],
+    edges: []
+  })
+  const [drawerNodeId, setDrawerNodeId] = useState<string | null>(null)
+
+  const handleSelectionChange = useCallback(
+    ({ nodes, edges }: { nodes: FlowNode[]; edges: FlowEdge[] }) => {
+      setSelectedElements({
+        nodes: nodes.map(n => n.id),
+        edges: edges.map(e => e.id)
+      })
+    },
+    []
+  )
+
+  const clearSelection = useCallback(() => {
+    setSelectedElements({ nodes: [], edges: [] })
+    setDrawerNodeId(null)
+  }, [])
+
+  const selectNode = useCallback((nodeId: string) => {
+    setDrawerNodeId(nodeId)
+  }, [])
+
+  return {
+    selectedElements,
+    handleSelectionChange,
+    clearSelection,
+    selectNode,
+    selectedNodeId: drawerNodeId
+  }
+}

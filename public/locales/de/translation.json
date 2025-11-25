@@ -57,6 +57,18 @@
       "createMap": "Karte erstellen",
       "loadingError": "Fehler beim Laden der Karten",
       "tryAgain": "Versuchen Sie, die Seite zu aktualisieren"
+    },
+    "createMap": {
+      "title": "Neue Karte",
+      "description": "Von Grund auf neu beginnen oder KI-Generierung verwenden"
+    },
+    "mapCard": {
+      "menu": "Menü",
+      "edit": "Bearbeiten",
+      "delete": "Löschen",
+      "noDescription": "Keine Beschreibung",
+      "concepts": "Konzepte",
+      "updated": "Aktualisiert"
     }
   }
 }

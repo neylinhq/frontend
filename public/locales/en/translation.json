@@ -46,7 +46,12 @@
     "billing": "Billing",
     "logout": "Log out",
     "theme": "Theme",
-    "language": "Language"
+    "language": "Language",
+    "menu": "Menu",
+    "overview": "Overview",
+    "myMaps": "My Maps",
+    "aiLab": "AI Lab",
+    "knowledgeBase": "Knowledge Base"
   },
   "theme": {
     "light": "Light",
@@ -55,7 +60,11 @@
   },
   "common": {
     "loading": "Loading...",
-    "error": "Error"
+    "error": "Error",
+    "created": "Created",
+    "updated": "Updated",
+    "all": "All",
+    "backToOverview": "Back to overview"
   },
   "dashboard": {
     "overview": {
@@ -64,6 +73,84 @@
       "createMap": "Create map",
       "loadingError": "Error loading maps",
       "tryAgain": "Try refreshing the page"
+    },
+    "createMap": {
+      "title": "New map",
+      "description": "Start from scratch or use AI generation"
+    },
+    "mapCard": {
+      "menu": "Menu",
+      "edit": "Edit",
+      "delete": "Delete",
+      "noDescription": "No description",
+      "concepts": "concepts",
+      "updated": "Updated"
     }
+  },
+  "graph": {
+    "loading": "Loading knowledge graph...",
+    "loadingError": "Loading error",
+    "loadingErrorMessage": "Failed to load knowledge map",
+    "toolbar": {
+      "aiAnalysis": "AI Analysis",
+      "center": "Center",
+      "centerTooltip": "Center view",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "showMinimap": "Show minimap",
+      "hideMinimap": "Hide minimap",
+      "fullscreen": "Fullscreen mode",
+      "exitFullscreen": "Exit fullscreen"
+    },
+    "node": {
+      "moreDetails": "More details",
+      "confidence": "Confidence",
+      "reviews": "Reviews"
+    },
+    "edge": {
+      "strong": "strong",
+      "weak": "weak"
+    },
+    "edgeTypes": {
+      "is-a": "is a",
+      "has-a": "has",
+      "causes": "causes",
+      "explains": "explains",
+      "related-to": "related to",
+      "influences": "influences",
+      "part-of": "part of",
+      "prerequisite": "prerequisite",
+      "contradicts": "contradicts",
+      "similar-to": "similar to"
+    }
+  },
+  "nodeDrawer": {
+    "tabs": {
+      "overview": "Overview",
+      "connections": "Connections"
+    },
+    "overview": {
+      "description": "Description",
+      "metadata": "Metadata",
+      "type": "Type",
+      "complexity": "Complexity",
+      "confidence": "Confidence",
+      "tags": "Tags",
+      "reviews": "Reviews"
+    },
+    "connections": {
+      "noConnections": "No connections with this node",
+      "all": "All",
+      "incoming": "Incoming",
+      "outgoing": "Outgoing"
+    }
+  },
+  "mapView": {
+    "navigationError": "Navigation error",
+    "mapIdMissing": "Map ID not specified in URL",
+    "loadingTitle": "Loading knowledge map",
+    "loadingMessage": "Fetching nodes and connections...",
+    "notFoundTitle": "Map not found",
+    "notFoundMessage": "The map may have been deleted or you don't have access to it"
   }
 }

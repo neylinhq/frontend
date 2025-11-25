@@ -41,23 +41,14 @@ export function UserNav() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          className="relative h-14 w-full justify-start gap-3 px-3 hover:bg-accent rounded-none"
-        >
-          <Avatar className="h-9 w-9">
+        <Button variant="ghost" size="icon" className="rounded-full">
+          <Avatar className="h-8 w-8">
             <AvatarImage src={user.avatarUrl} alt={user.email} />
             <AvatarFallback>{user.firstName?.[0] || 'U'}</AvatarFallback>
           </Avatar>
-          <div className="flex flex-col items-start text-sm">
-            <span className="font-medium">
-              {user.firstName} {user.lastName}
-            </span>
-            <span className="text-xs text-muted-foreground">{user.email}</span>
-          </div>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="start" forceMount side="top" sideOffset={4}>
+      <DropdownMenuContent className="w-56" align="end" forceMount side="bottom" sideOffset={8}>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">

@@ -2,6 +2,11 @@ import { type ActionFunctionArgs, redirect } from 'react-router'
 import { commitSession } from '@/entities/session/session.server'
 import type { User } from '@/entities/user'
 import { SignInPage } from '@/pages/auth/sign-in-page' // Используем Page, а не Form напрямую!
+import { getMeta } from '@/shared/lib/get-meta'
+
+export function meta() {
+  return getMeta('signIn')
+}
 
 // Mock User
 const MOCK_USER: User = {

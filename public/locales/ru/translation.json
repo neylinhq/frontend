@@ -46,7 +46,12 @@
     "billing": "Биллинг",
     "logout": "Выйти",
     "theme": "Тема",
-    "language": "Язык"
+    "language": "Язык",
+    "menu": "Меню",
+    "overview": "Обзор",
+    "myMaps": "Мои карты",
+    "aiLab": "AI Лаборатория",
+    "knowledgeBase": "База знаний"
   },
   "theme": {
     "light": "Светлая",
@@ -55,7 +60,11 @@
   },
   "common": {
     "loading": "Загрузка...",
-    "error": "Ошибка"
+    "error": "Ошибка",
+    "created": "Создан",
+    "updated": "Обновлен",
+    "all": "Все",
+    "backToOverview": "Вернуться к обзору"
   },
   "dashboard": {
     "overview": {
@@ -64,6 +73,110 @@
       "createMap": "Создать карту",
       "loadingError": "Ошибка загрузки карт",
       "tryAgain": "Попробуйте обновить страницу"
+    },
+    "createMap": {
+      "title": "Новая карта",
+      "description": "Начать с чистого листа или AI-генерации"
+    },
+    "mapCard": {
+      "menu": "Меню",
+      "edit": "Редактировать",
+      "delete": "Удалить",
+      "noDescription": "Нет описания",
+      "concepts": "концептов",
+      "updated": "Изменено"
+    }
+  },
+  "graph": {
+    "loading": "Загрузка графа знаний...",
+    "loadingError": "Ошибка загрузки",
+    "loadingErrorMessage": "Не удалось загрузить карту знаний",
+    "toolbar": {
+      "aiAnalysis": "ИИ-анализ",
+      "center": "Центр",
+      "centerTooltip": "Центрировать",
+      "zoomIn": "Увеличить",
+      "zoomOut": "Уменьшить",
+      "showMinimap": "Показать миникарту",
+      "hideMinimap": "Скрыть миникарту",
+      "fullscreen": "Полноэкранный режим",
+      "exitFullscreen": "Выход из полноэкранного режима"
+    },
+    "node": {
+      "moreDetails": "Подробнее",
+      "confidence": "Уверенность",
+      "reviews": "Повторений"
+    },
+    "edge": {
+      "strong": "сильная",
+      "weak": "слабая"
+    },
+    "edgeTypes": {
+      "is-a": "является",
+      "has-a": "имеет",
+      "causes": "вызывает",
+      "explains": "объясняет",
+      "related-to": "связан с",
+      "influences": "влияет на",
+      "part-of": "часть",
+      "prerequisite": "предпосылка",
+      "contradicts": "противоречит",
+      "similar-to": "похож на"
+    }
+  },
+  "nodeDrawer": {
+    "tabs": {
+      "overview": "Обзор",
+      "connections": "Связи"
+    },
+    "overview": {
+      "description": "Описание",
+      "metadata": "Метаданные",
+      "type": "Тип",
+      "complexity": "Сложность",
+      "confidence": "Уверенность",
+      "tags": "Теги",
+      "reviews": "Повторений"
+    },
+    "connections": {
+      "noConnections": "Нет связей с этим узлом",
+      "all": "Все",
+      "incoming": "Входящие",
+      "outgoing": "Исходящие"
+    }
+  },
+  "mapView": {
+    "navigationError": "Ошибка навигации",
+    "mapIdMissing": "ID карты не указан в URL",
+    "loadingTitle": "Загрузка карты знаний",
+    "loadingMessage": "Получаем узлы и связи...",
+    "notFoundTitle": "Карта не найдена",
+    "notFoundMessage": "Возможно, карта была удалена или у вас нет к ней доступа"
+  },
+  "meta": {
+    "home": {
+      "title": "Arbor — Главная",
+      "description": "Платформа для управления знаниями"
+    },
+    "overview": {
+      "title": "Arbor — Обзор",
+      "description": "Ваши карты знаний"
+    },
+    "mapView": {
+      "title": "Arbor — Карта знаний",
+      "description": "Визуализация графа знаний"
+    },
+    "signIn": {
+      "title": "Arbor — Вход",
+      "description": "Войдите в свой аккаунт"
+    },
+    "signUp": {
+      "title": "Arbor — Регистрация",
+      "description": "Создайте новый аккаунт"
+    },
+    "resetPassword": {
+      "title": "Arbor — Сброс пароля",
+      "description": "Восстановите доступ к аккаунту"
     }
   }
 }

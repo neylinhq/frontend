@@ -1,5 +1,10 @@
 import type { ActionFunctionArgs } from 'react-router'
 import { ResetPasswordPage } from '@/pages/auth/reset-password-page'
+import { getMeta } from '@/shared/lib/get-meta'
+
+export function meta() {
+  return getMeta('resetPassword')
+}
 
 export async function action({ request }: ActionFunctionArgs) {
   // Mock reset password logic

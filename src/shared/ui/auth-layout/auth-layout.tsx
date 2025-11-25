@@ -1,6 +1,7 @@
 import type * as React from 'react'
 import { ThemeToggle } from '@/app/theme/components/theme-toggle'
 import { LanguageSwitcher } from '@/features/language-switcher'
+import { APP_NAME } from '@/shared/config'
 
 interface AuthLayoutProps {
   children: React.ReactNode
@@ -27,7 +28,7 @@ export const AuthLayout = ({ children }: AuthLayoutProps) => {
         />
         <div className="relative z-20 flex items-center gap-2 text-lg font-medium">
           <div className="h-6 w-6 rounded bg-white" /> {/* Logo placeholder (white for contrast) */}
-          Arbor
+          {APP_NAME}
         </div>
         <div className="relative z-20 mt-auto">
           <blockquote className="space-y-2">

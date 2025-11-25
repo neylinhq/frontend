@@ -9,7 +9,7 @@ export const SignUpPage = () => {
   return (
     <AuthLayout>
       <div className="space-y-6">
-        <div className="flex flex-col space-y-2 text-center">
+        <div className="flex flex-col space-y-2 text-center text-balance">
           <h1 className="text-2xl font-semibold tracking-tight">{t('auth.signUp.title')}</h1>
           <p className="text-sm text-muted-foreground">{t('auth.signUp.description')}</p>
         </div>

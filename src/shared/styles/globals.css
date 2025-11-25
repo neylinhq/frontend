@@ -112,6 +112,7 @@
   }
   body {
     @apply bg-background text-foreground antialiased;
+    min-width: 390px;
   }
 
   /* Custom Scrollbar */
@@ -131,4 +132,205 @@
   ::-webkit-scrollbar-corner {
     background: transparent;
   }
+}
+
+/* Tiptap Editor Customization */
+.tiptap-editor {
+  width: 100%;
+}
+
+.tiptap-editor .ProseMirror {
+  color: hsl(var(--foreground));
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.tiptap-editor .ProseMirror > * + * {
+  margin-top: 0.75em;
+}
+
+/* Headings */
+.tiptap-editor h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.tiptap-editor h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  margin-top: 1.25em;
+  margin-bottom: 0.5em;
+}
+
+.tiptap-editor h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
+
+/* Paragraphs */
+.tiptap-editor p {
+  margin: 0;
+}
+
+/* Lists */
+.tiptap-editor ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+}
+
+.tiptap-editor ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+}
+
+.tiptap-editor li {
+  margin: 0.25em 0;
+}
+
+.tiptap-editor li p {
+  margin: 0;
+}
+
+/* Blockquote */
+.tiptap-editor blockquote {
+  border-left: 3px solid hsl(var(--border));
+  padding-left: 1rem;
+  margin-left: 0;
+  margin-right: 0;
+  font-style: italic;
+  color: hsl(var(--muted-foreground));
+}
+
+/* Placeholder styling */
+.tiptap-editor .is-editor-empty:first-child::before {
+  color: hsl(var(--muted-foreground));
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.tiptap-editor .is-empty::before {
+  color: hsl(var(--muted-foreground));
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Task list styling */
+.tiptap-editor .task-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.tiptap-editor .task-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.tiptap-editor .task-item > label {
+  margin-top: 0.25rem;
+}
+
+.tiptap-editor .task-item > label input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.25rem;
+  border: 1px solid hsl(var(--border));
+  cursor: pointer;
+  accent-color: hsl(var(--primary));
+}
+
+.tiptap-editor .task-item > div {
+  flex: 1;
+}
+
+.tiptap-editor .task-item[data-checked="true"] > div {
+  text-decoration: line-through;
+  color: hsl(var(--muted-foreground));
+}
+
+/* Link styling */
+.tiptap-editor .editor-link {
+  color: hsl(var(--primary));
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.tiptap-editor .editor-link:hover {
+  opacity: 0.8;
+}
+
+/* Code block styling */
+.tiptap-editor pre {
+  background-color: hsl(var(--muted));
+  border-radius: 0.5rem;
+  border: 1px solid hsl(var(--border));
+  padding: 1rem;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.875rem;
+  overflow-x: auto;
+}
+
+.tiptap-editor pre code {
+  background: none;
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+}
+
+/* Inline code */
+.tiptap-editor code {
+  background-color: hsl(var(--muted));
+  border-radius: 0.25rem;
+  padding: 0.125rem 0.375rem;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.875em;
+}
+
+/* Highlight */
+.tiptap-editor mark {
+  background-color: hsl(50 100% 70%);
+  border-radius: 0.125rem;
+  padding: 0.125rem 0;
+}
+
+.dark .tiptap-editor mark {
+  background-color: hsl(50 100% 30%);
+}
+
+/* Horizontal rule */
+.tiptap-editor hr {
+  border: none;
+  border-top: 1px solid hsl(var(--border));
+  margin: 1.5rem 0;
+}
+
+/* Selection */
+.tiptap-editor ::selection {
+  background-color: hsl(var(--primary) / 0.2);
+}
+
+/* Focus styling */
+.tiptap-editor .ProseMirror:focus {
+  outline: none;
+}
+
+/* Tippy tooltip (bubble menu) styling */
+.tippy-box[data-theme~='custom'] {
+  background-color: transparent;
+  padding: 0;
+}
+
+.tippy-box[data-theme~='custom'] .tippy-content {
+  padding: 0;
 }

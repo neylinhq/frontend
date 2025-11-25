@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { useNavigation, useSubmit } from 'react-router'
+import { Link, useNavigation, useSubmit } from 'react-router'
 import { z } from 'zod'
 import { Button } from '@/shared/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form'
@@ -92,6 +92,17 @@ export function SignUpForm() {
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {t('auth.signUp.submitButton')}
           </Button>
+
+          <p className="text-xs text-center text-muted-foreground text-balance">
+            {t('auth.signUp.consent')}{' '}
+            <Link to="/legal/terms" className="underline underline-offset-4 hover:text-primary">
+              {t('auth.signUp.termsLink')}
+            </Link>{' '}
+            {t('auth.signUp.and')}{' '}
+            <Link to="/legal/privacy" className="underline underline-offset-4 hover:text-primary">
+              {t('auth.signUp.privacyLink')}
+            </Link>
+          </p>
 
           <FormDivider>{t('auth.signIn.orDivider')}</FormDivider>
 

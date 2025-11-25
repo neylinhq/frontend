@@ -15,6 +15,10 @@ const META_TRANSLATIONS = {
       title: 'Карта знаний',
       description: 'Визуализация графа знаний'
     },
+    nodeEdit: {
+      title: 'Редактирование узла',
+      description: 'Редактирование узла карты знаний'
+    },
     signIn: {
       title: 'Вход',
       description: 'Войдите в свой аккаунт'
@@ -26,6 +30,26 @@ const META_TRANSLATIONS = {
     resetPassword: {
       title: 'Сброс пароля',
       description: 'Восстановите доступ к аккаунту'
+    },
+    terms: {
+      title: 'Условия использования',
+      description: 'Пожалуйста, внимательно прочитайте эти условия перед использованием нашего сервиса'
+    },
+    privacy: {
+      title: 'Политика конфиденциальности',
+      description: 'Узнайте, как мы собираем, используем и защищаем ваши персональные данные'
+    },
+    cookies: {
+      title: 'Политика использования Cookie',
+      description: 'Информация о том, как мы используем cookies для улучшения вашего опыта'
+    },
+    license: {
+      title: 'Лицензионное соглашение',
+      description: 'Условия лицензирования программного обеспечения Arbor'
+    },
+    notFound: {
+      title: 'Страница не найдена',
+      description: 'К сожалению, запрашиваемая страница не существует или была перемещена'
     }
   },
   en: {
@@ -41,6 +65,10 @@ const META_TRANSLATIONS = {
       title: 'Knowledge Map',
       description: 'Knowledge graph visualization'
     },
+    nodeEdit: {
+      title: 'Edit Node',
+      description: 'Edit knowledge map node'
+    },
     signIn: {
       title: 'Sign In',
       description: 'Sign in to your account'
@@ -52,6 +80,26 @@ const META_TRANSLATIONS = {
     resetPassword: {
       title: 'Reset Password',
       description: 'Restore access to your account'
+    },
+    terms: {
+      title: 'Terms of Service',
+      description: 'Please read these terms carefully before using our service'
+    },
+    privacy: {
+      title: 'Privacy Policy',
+      description: 'Learn how we collect, use, and protect your personal data'
+    },
+    cookies: {
+      title: 'Cookie Policy',
+      description: 'Information about how we use cookies to improve your experience'
+    },
+    license: {
+      title: 'License Agreement',
+      description: 'Arbor software licensing terms'
+    },
+    notFound: {
+      title: 'Page Not Found',
+      description: 'Sorry, the page you\'re looking for doesn\'t exist or has been moved'
     }
   },
   de: {
@@ -67,6 +115,10 @@ const META_TRANSLATIONS = {
       title: 'Wissenskarte',
       description: 'Visualisierung des Wissensgraphen'
     },
+    nodeEdit: {
+      title: 'Knoten bearbeiten',
+      description: 'Wissenskarte Knoten bearbeiten'
+    },
     signIn: {
       title: 'Anmelden',
       description: 'Melden Sie sich bei Ihrem Konto an'
@@ -78,6 +130,26 @@ const META_TRANSLATIONS = {
     resetPassword: {
       title: 'Passwort zurücksetzen',
       description: 'Stellen Sie den Zugriff auf Ihr Konto wieder her'
+    },
+    terms: {
+      title: 'Nutzungsbedingungen',
+      description: 'Bitte lesen Sie diese Bedingungen sorgfältig durch, bevor Sie unseren Service nutzen'
+    },
+    privacy: {
+      title: 'Datenschutzerklärung',
+      description: 'Erfahren Sie, wie wir Ihre personenbezogenen Daten erheben, verwenden und schützen'
+    },
+    cookies: {
+      title: 'Cookie-Richtlinie',
+      description: 'Informationen darüber, wie wir Cookies verwenden, um Ihr Erlebnis zu verbessern'
+    },
+    license: {
+      title: 'Lizenzvereinbarung',
+      description: 'Lizenzbedingungen für die Arbor-Software'
+    },
+    notFound: {
+      title: 'Seite nicht gefunden',
+      description: 'Leider existiert die gesuchte Seite nicht oder wurde verschoben'
     }
   }
 } as const

@@ -21,7 +21,11 @@
       "confirmPasswordLabel": "Passwort bestätigen",
       "submitButton": "Konto erstellen",
       "hasAccount": "Haben Sie bereits ein Konto?",
-      "signInLink": "Anmelden"
+      "signInLink": "Anmelden",
+      "consent": "Mit der Registrierung stimmen Sie unseren",
+      "termsLink": "Nutzungsbedingungen",
+      "and": "und der",
+      "privacyLink": "Datenschutzerklärung zu"
     },
     "resetPassword": {
       "title": "Passwort zurücksetzen",
@@ -49,7 +53,40 @@
     "language": "Sprache"
   },
   "theme": { "light": "Hell", "dark": "Dunkel", "system": "System" },
-  "common": { "loading": "Laden...", "error": "Fehler" },
+  "common": {
+    "loading": "Laden...",
+    "error": "Fehler",
+    "created": "Erstellt",
+    "updated": "Aktualisiert",
+    "all": "Alle",
+    "backToOverview": "Zurück zur Übersicht",
+    "save": "Änderungen speichern",
+    "cancel": "Abbrechen",
+    "enable": "Aktivieren",
+    "disable": "Deaktivieren"
+  },
+  "home": {
+    "tagline": "Visualisieren und strukturieren Sie Ihr Wissen mit interaktiven kognitiven Karten",
+    "features": {
+      "visual": {
+        "title": "Visuelles Denken",
+        "description": "Verwandeln Sie komplexe Konzepte in intuitive Wissensgraphen"
+      },
+      "connected": {
+        "title": "Vernetzte Ideen",
+        "description": "Entdecken Sie verborgene Beziehungen zwischen Konzepten und stärken Sie das Verständnis"
+      },
+      "ai": {
+        "title": "KI-Assistent",
+        "description": "Intelligenter Begleiter zum Analysieren und Erweitern Ihrer Wissenskarten"
+      }
+    },
+    "cta": {
+      "getStarted": "Jetzt starten",
+      "signIn": "Anmelden"
+    },
+    "alphaNotice": "🚀 Derzeit in Alpha-Tests. Einige Funktionen können instabil sein."
+  },
   "dashboard": {
     "overview": {
       "title": "Übersicht",
@@ -69,6 +106,450 @@
       "noDescription": "Keine Beschreibung",
       "concepts": "Konzepte",
       "updated": "Aktualisiert"
+    }
+  },
+  "legal": {
+    "backToHome": "Zurück zur Startseite",
+    "lastUpdated": "Zuletzt aktualisiert",
+    "terms": {
+      "title": "Nutzungsbedingungen",
+      "description": "Bitte lesen Sie diese Bedingungen sorgfältig durch, bevor Sie unseren Service nutzen",
+      "sections": {
+        "acceptance": {
+          "title": "Annahme der Bedingungen",
+          "content": "Durch den Zugriff auf und die Nutzung von Arbor akzeptieren und erklären Sie sich mit den Bedingungen und Bestimmungen dieser Vereinbarung einverstanden. Wenn Sie nicht mit den oben genannten Bedingungen einverstanden sind, nutzen Sie diesen Service bitte nicht."
+        },
+        "license": {
+          "title": "Nutzungslizenz",
+          "intro": "Es wird die Erlaubnis erteilt, vorübergehend eine Kopie von Arbor pro Gerät nur für persönliche, nicht-kommerzielle vorübergehende Ansichtszwecke herunterzuladen. Dies ist die Gewährung einer Lizenz, keine Eigentumsübertragung, und unter dieser Lizenz dürfen Sie nicht:",
+          "items": [
+            "Die Materialien ändern oder kopieren",
+            "Die Materialien für kommerzielle Zwecke oder öffentliche Präsentationen verwenden",
+            "Versuchen, in Arbor enthaltene Software zurückzuentwickeln",
+            "Urheberrechts- oder andere Eigentumshinweise von den Materialien entfernen",
+            "Die Materialien an eine andere Person übertragen oder auf einem anderen Server \"spiegeln\""
+          ]
+        },
+        "disclaimer": {
+          "title": "Haftungsausschluss",
+          "content": "Die Materialien auf Arbor werden auf \"wie besehen\"-Basis bereitgestellt. Arbor gibt keine Garantien, weder ausdrücklich noch stillschweigend, und lehnt hiermit alle anderen Garantien ab, einschließlich, ohne Einschränkung, stillschweigender Garantien oder Bedingungen der Marktgängigkeit, Eignung für einen bestimmten Zweck oder Nichtverletzung von geistigem Eigentum oder anderen Rechten."
+        },
+        "limitations": {
+          "title": "Haftungsbeschränkungen",
+          "content": "In keinem Fall haften Arbor oder seine Lieferanten für Schäden (einschließlich, ohne Einschränkung, Schäden durch Datenverlust oder Gewinnausfall oder durch Geschäftsunterbrechung), die sich aus der Nutzung oder Unmöglichkeit der Nutzung von Arbor ergeben, selbst wenn Arbor oder ein autorisierter Vertreter mündlich oder schriftlich über die Möglichkeit solcher Schäden informiert wurde."
+        },
+        "accuracy": {
+          "title": "Genauigkeit der Materialien",
+          "content": "Die in Arbor erscheinenden Materialien können technische, typografische oder fotografische Fehler enthalten. Arbor garantiert nicht, dass die Materialien in seinem Service genau, vollständig oder aktuell sind. Arbor kann jederzeit ohne Vorankündigung Änderungen an den in seinem Service enthaltenen Materialien vornehmen."
+        },
+        "links": {
+          "title": "Links",
+          "content": "Arbor hat nicht alle mit seinem Service verlinkten Websites überprüft und ist nicht verantwortlich für den Inhalt solcher verlinkten Websites. Die Aufnahme eines Links bedeutet keine Empfehlung durch Arbor. Die Nutzung solcher verlinkten Websites erfolgt auf eigenes Risiko des Nutzers."
+        },
+        "modifications": {
+          "title": "Änderungen",
+          "content": "Arbor kann diese Nutzungsbedingungen jederzeit ohne Vorankündigung überarbeiten. Durch die Nutzung dieses Services erklären Sie sich damit einverstanden, an die jeweils aktuelle Version dieser Nutzungsbedingungen gebunden zu sein."
+        },
+        "governingLaw": {
+          "title": "Geltendes Recht",
+          "content": "Diese Bedingungen und Konditionen unterliegen den Gesetzen und werden in Übereinstimmung mit diesen ausgelegt, und Sie unterwerfen sich unwiderruflich der ausschließlichen Gerichtsbarkeit der Gerichte an diesem Ort."
+        },
+        "contact": {
+          "title": "Kontaktinformationen",
+          "content": "Wenn Sie Fragen zu diesen Bedingungen haben, kontaktieren Sie uns bitte unter"
+        }
+      }
+    },
+    "privacy": {
+      "title": "Datenschutzerklärung",
+      "description": "Erfahren Sie, wie wir Ihre personenbezogenen Daten erheben, verwenden und schützen",
+      "sections": {
+        "collection": {
+          "title": "Informationen, die wir sammeln",
+          "intro": "Wir sammeln Informationen, die Sie uns direkt zur Verfügung stellen, einschließlich wenn Sie ein Konto erstellen, unsere Dienste nutzen oder mit uns kommunizieren. Dies kann umfassen:",
+          "items": [
+            "Name und Kontaktinformationen (E-Mail-Adresse)",
+            "Anmeldedaten (Benutzername und Passwort)",
+            "Wissenskarten und Inhalte, die Sie erstellen",
+            "Nutzungsdaten und Präferenzen",
+            "Geräte- und Browser-Informationen"
+          ]
+        },
+        "usage": {
+          "title": "Wie wir Ihre Informationen verwenden",
+          "intro": "Wir verwenden die gesammelten Informationen, um:",
+          "items": [
+            "Unsere Dienste bereitzustellen, zu warten und zu verbessern",
+            "Ihre Transaktionen zu verarbeiten und zugehörige Informationen zu senden",
+            "Ihnen technische Hinweise, Updates und Support-Nachrichten zu senden",
+            "Auf Ihre Kommentare und Fragen zu antworten",
+            "Trends, Nutzung und Aktivitäten zu überwachen und zu analysieren",
+            "Betrügerische Transaktionen und andere illegale Aktivitäten zu erkennen, zu untersuchen und zu verhindern",
+            "Ihr Erlebnis zu personalisieren und zu verbessern"
+          ]
+        },
+        "sharing": {
+          "title": "Weitergabe und Offenlegung von Informationen",
+          "intro": "Wir verkaufen, handeln oder vermieten Ihre persönlichen Informationen nicht an Dritte. Wir können Ihre Informationen nur unter den folgenden Umständen weitergeben:",
+          "items": [
+            "Mit Ihrer Zustimmung",
+            "Mit Dienstleistern, die Dienste in unserem Namen erbringen",
+            "Um gesetzlichen Verpflichtungen nachzukommen",
+            "Um unsere Rechte und unser Eigentum zu schützen und zu verteidigen",
+            "Im Zusammenhang mit einer Fusion, einem Verkauf oder einer Übernahme"
+          ]
+        },
+        "security": {
+          "title": "Datensicherheit",
+          "content": "Wir ergreifen angemessene Maßnahmen, um Ihre persönlichen Informationen vor Verlust, Diebstahl, Missbrauch, unbefugtem Zugriff, Offenlegung, Änderung und Zerstörung zu schützen. Allerdings ist keine Internet- oder E-Mail-Übertragung jemals vollständig sicher oder fehlerfrei."
+        },
+        "retention": {
+          "title": "Datenaufbewahrung",
+          "content": "Wir bewahren Ihre persönlichen Informationen so lange auf, wie es zur Erfüllung der in dieser Datenschutzerklärung dargelegten Zwecke erforderlich ist, es sei denn, eine längere Aufbewahrungsfrist ist gesetzlich vorgeschrieben oder zulässig."
+        },
+        "rights": {
+          "title": "Ihre Rechte",
+          "intro": "Abhängig von Ihrem Standort haben Sie möglicherweise bestimmte Rechte in Bezug auf Ihre persönlichen Informationen:",
+          "items": [
+            "Zugriff auf Ihre persönlichen Daten",
+            "Korrektur ungenauer Daten",
+            "Löschung Ihrer Daten",
+            "Datenportabilität",
+            "Widerspruch gegen die Verarbeitung",
+            "Widerruf der Einwilligung"
+          ]
+        },
+        "cookies": {
+          "title": "Cookies und Tracking-Technologien",
+          "content": "Wir verwenden Cookies und ähnliche Tracking-Technologien, um Informationen über Ihre Nutzung unserer Dienste zu sammeln und zu verfolgen. Weitere Informationen finden Sie in unserer Cookie-Richtlinie."
+        },
+        "children": {
+          "title": "Datenschutz für Kinder",
+          "content": "Unsere Dienste sind nicht für Kinder unter 13 Jahren bestimmt. Wir sammeln wissentlich keine persönlichen Informationen von Kindern unter 13 Jahren."
+        },
+        "changes": {
+          "title": "Änderungen an dieser Datenschutzerklärung",
+          "content": "Wir können diese Datenschutzerklärung von Zeit zu Zeit aktualisieren. Wir werden Sie über Änderungen informieren, indem wir die neue Datenschutzerklärung auf dieser Seite veröffentlichen und das Datum \"Zuletzt aktualisiert\" aktualisieren."
+        },
+        "contact": {
+          "title": "Kontaktieren Sie uns",
+          "content": "Wenn Sie Fragen zu dieser Datenschutzerklärung haben, kontaktieren Sie uns bitte unter"
+        }
+      }
+    },
+    "cookies": {
+      "title": "Cookie-Richtlinie",
+      "description": "Informationen darüber, wie wir Cookies verwenden, um Ihr Erlebnis zu verbessern",
+      "sections": {
+        "what": {
+          "title": "Was sind Cookies",
+          "content": "Cookies sind kleine Textdateien, die auf Ihrem Gerät abgelegt werden, wenn Sie eine Website besuchen. Sie werden weithin verwendet, um Websites effizienter zu machen und Website-Besitzern Informationen zur Verfügung zu stellen."
+        },
+        "how": {
+          "title": "Wie wir Cookies verwenden",
+          "intro": "Wir verwenden Cookies für folgende Zwecke:",
+          "essential": {
+            "title": "Notwendige Cookies",
+            "description": "Diese Cookies sind für die Funktion der Website notwendig und können nicht deaktiviert werden. Sie werden normalerweise nur als Reaktion auf Ihre Aktionen gesetzt, wie z.B. das Festlegen Ihrer Datenschutzeinstellungen, das Anmelden oder das Ausfüllen von Formularen."
+          },
+          "preference": {
+            "title": "Präferenz-Cookies",
+            "description": "Diese Cookies ermöglichen es der Website, sich an von Ihnen getroffene Entscheidungen zu erinnern (wie z.B. Ihre Sprache oder Ihr Thema) und erweiterte, persönlichere Funktionen bereitzustellen."
+          },
+          "analytics": {
+            "title": "Analyse-Cookies",
+            "description": "Diese Cookies helfen uns zu verstehen, wie Besucher mit unserer Website interagieren, indem sie Informationen anonym sammeln und melden."
+          },
+          "performance": {
+            "title": "Leistungs-Cookies",
+            "description": "Diese Cookies helfen uns, die Leistung unserer Website zu verbessern, indem sie verstehen, welche Seiten am beliebtesten und am wenigsten beliebt sind."
+          }
+        },
+        "types": {
+          "title": "Arten von Cookies, die wir verwenden",
+          "table": {
+            "name": "Cookie-Name",
+            "purpose": "Zweck",
+            "duration": "Dauer",
+            "language": {
+              "name": "i18nextLng",
+              "purpose": "Speichert Ihre Sprachpräferenz",
+              "duration": "Dauerhaft"
+            },
+            "theme": {
+              "name": "theme",
+              "purpose": "Speichert Ihre Theme-Präferenz (hell/dunkel)",
+              "duration": "Dauerhaft"
+            },
+            "auth": {
+              "name": "auth_token",
+              "purpose": "Authentifizierungs-Sitzungstoken",
+              "duration": "Sitzung"
+            }
+          }
+        },
+        "thirdParty": {
+          "title": "Drittanbieter-Cookies",
+          "content": "Zusätzlich zu unseren eigenen Cookies können wir auch verschiedene Drittanbieter-Cookies verwenden, um Nutzungsstatistiken des Services zu melden und Werbung in und über den Service zu liefern."
+        },
+        "managing": {
+          "title": "Verwaltung von Cookies",
+          "intro": "Die meisten Webbrowser ermöglichen es Ihnen, Cookies über ihre Einstellungen zu kontrollieren. Wenn Sie jedoch die Möglichkeit von Websites einschränken, Cookies zu setzen, können Sie Ihr gesamtes Nutzererlebnis verschlechtern, da einige Funktionen möglicherweise nicht mehr richtig funktionieren.",
+          "subtitle": "Browser-Steuerungen",
+          "browsers": {
+            "chrome": "Chrome: Einstellungen → Datenschutz und Sicherheit → Cookies und andere Website-Daten",
+            "firefox": "Firefox: Optionen → Datenschutz & Sicherheit → Cookies und Website-Daten",
+            "safari": "Safari: Einstellungen → Datenschutz → Cookies und Website-Daten",
+            "edge": "Edge: Einstellungen → Cookies und Websiteberechtigungen → Cookies und Websitedaten"
+          }
+        },
+        "dnt": {
+          "title": "Do-Not-Track-Signale",
+          "content": "Einige Browser integrieren eine \"Do Not Track\" (DNT)-Funktion, die Websites signalisiert, dass Sie nicht verfolgt werden möchten. Wir reagieren derzeit nicht auf DNT-Signale."
+        },
+        "updates": {
+          "title": "Updates dieser Cookie-Richtlinie",
+          "content": "Wir können diese Cookie-Richtlinie von Zeit zu Zeit aktualisieren, um Änderungen in der Technologie oder Gesetzgebung widerzuspiegeln. Bitte überprüfen Sie diese Seite regelmäßig auf die neuesten Informationen."
+        },
+        "contact": {
+          "title": "Kontaktieren Sie uns",
+          "content": "Wenn Sie Fragen zu unserer Verwendung von Cookies haben, kontaktieren Sie uns bitte unter"
+        }
+      }
+    },
+    "license": {
+      "title": "Lizenzvereinbarung",
+      "description": "Lizenzbedingungen für die Arbor-Software",
+      "sections": {
+        "mit": {
+          "title": "MIT-Lizenz",
+          "copyright": "Copyright (c) {{year}} Arbor",
+          "permission": "Hiermit wird unentgeltlich jeder Person, die eine Kopie dieser Software und der zugehörigen Dokumentationsdateien (die \"Software\") erhält, die Erlaubnis erteilt, sie uneingeschränkt zu nutzen, einschließlich und ohne Einschränkung der Rechte zur Nutzung, zum Kopieren, Modifizieren, Zusammenführen, Veröffentlichen, Verbreiten, Unterlizenzieren und/oder Verkaufen von Kopien der Software, und Personen, denen diese Software überlassen wird, dies unter den folgenden Bedingungen zu gestatten:",
+          "notice": "Der obige Urheberrechtsvermerk und dieser Erlaubnishinweis sind in allen Kopien oder wesentlichen Teilen der Software beizulegen.",
+          "warranty": "DIE SOFTWARE WIRD OHNE MÄNGELGEWÄHR UND OHNE JEGLICHE AUSDRÜCKLICHE ODER STILLSCHWEIGENDE GEWÄHRLEISTUNG, EINSCHLIEẞLICH, ABER NICHT BESCHRÄNKT AUF DIE GEWÄHRLEISTUNG DER MARKTGÄNGIGKEIT, DER EIGNUNG FÜR EINEN BESTIMMTEN ZWECK UND DER NICHTVERLETZUNG VON RECHTEN DRITTER, ZUR VERFÜGUNG GESTELLT. DIE AUTOREN ODER URHEBERRECHTSINHABER SIND IN KEINEM FALL HAFTBAR FÜR ANSPRÜCHE, SCHÄDEN ODER ANDERE VERPFLICHTUNGEN, OB IN EINER VERTRAGS- ODER HAFTUNGSKLAGE, EINER UNERLAUBTEN HANDLUNG ODER ANDERWEITIG, DIE SICH AUS, AUS ODER IN VERBINDUNG MIT DER SOFTWARE ODER DER NUTZUNG ODER ANDEREN GESCHÄFTEN MIT DER SOFTWARE ERGEBEN."
+        },
+        "thirdParty": {
+          "title": "Drittanbieter-Lizenzen",
+          "intro": "Arbor verwendet verschiedene Open-Source-Bibliotheken und -Komponenten von Drittanbietern. Jede hat ihre eigene Lizenz, die der Bibliothek beiliegt.",
+          "react": "MIT-Lizenz - Copyright (c) Meta Platforms, Inc. und Tochtergesellschaften.",
+          "reactRouter": "MIT-Lizenz - Copyright (c) Remix Software Inc.",
+          "tanstack": "MIT-Lizenz - Copyright (c) TanStack",
+          "reactflow": "MIT-Lizenz - Copyright (c) webkid GmbH",
+          "tailwind": "MIT-Lizenz - Copyright (c) Tailwind Labs, Inc.",
+          "lucide": "ISC-Lizenz - Copyright (c) Lucide Contributors",
+          "viewLicense": "Lizenz ansehen"
+        },
+        "attribution": {
+          "title": "Namensnennung",
+          "content": "Bei der Weiterverbreitung oder Verwendung von Arbor in abgeleiteten Werken fügen Sie bitte eine entsprechende Namensnennung und einen Link zum Originalprojekt hinzu."
+        },
+        "contact": {
+          "title": "Kontakt",
+          "content": "Für Lizenzanfragen kontaktieren Sie uns bitte unter"
+        }
+      }
+    }
+  },
+  "notFound": {
+    "title": "Seite nicht gefunden",
+    "description": "Leider existiert die gesuchte Seite nicht oder wurde verschoben",
+    "backToHome": "Zurück zur Startseite",
+    "goToDashboard": "Zum Dashboard"
+  },
+  "graph": {
+    "loading": "Wissensgraph wird geladen...",
+    "loadingError": "Ladefehler",
+    "loadingErrorMessage": "Wissensgraph konnte nicht geladen werden",
+    "toolbar": {
+      "aiAnalysis": "KI-Analyse",
+      "center": "Zentrieren",
+      "centerTooltip": "Zentrieren",
+      "zoomIn": "Vergrößern",
+      "zoomOut": "Verkleinern",
+      "showMinimap": "Minimap anzeigen",
+      "hideMinimap": "Minimap ausblenden",
+      "fullscreen": "Vollbildmodus",
+      "exitFullscreen": "Vollbild beenden",
+      "focusMode": "Fokus",
+      "selectLayout": "Layout wählen",
+      "clearFilters": "Alle löschen"
+    },
+    "nodeControls": {
+      "title": "Ansichtssteuerung",
+      "focusMode": "Fokusmodus",
+      "focusModeDescription": "Nur verbundene Knoten anzeigen",
+      "connectionDepth": "Verbindungstiefe",
+      "hops": "Schritte",
+      "edgeDirection": "Kantenrichtung",
+      "incoming": "Eingehend",
+      "outgoing": "Ausgehend",
+      "all": "Alle",
+      "edgeTypes": "Verbindungstypen"
+    },
+    "node": {
+      "moreDetails": "Mehr Details",
+      "confidence": "Vertrauen",
+      "reviews": "Wiederholungen"
+    },
+    "edge": {
+      "strong": "stark",
+      "weak": "schwach"
+    },
+    "edgeTypes": {
+      "is-a": "ist ein",
+      "has-a": "hat",
+      "causes": "verursacht",
+      "explains": "erklärt",
+      "related-to": "verwandt mit",
+      "influences": "beeinflusst",
+      "part-of": "Teil von",
+      "prerequisite": "Voraussetzung",
+      "contradicts": "widerspricht",
+      "similar-to": "ähnlich wie"
+    }
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "description": "Verwalten Sie Ihre Kontoeinstellungen und Präferenzen",
+    "nav": {
+      "profile": "Profil",
+      "preferences": "Präferenzen",
+      "theme": "Design",
+      "integrations": "Integrationen",
+      "security": "Sicherheit"
+    },
+    "profile": {
+      "title": "Profil",
+      "description": "Verwalten Sie Ihre öffentlichen Profilinformationen",
+      "avatar": {
+        "title": "Profilbild",
+        "description": "Aktualisieren Sie Ihr Profilbild",
+        "upload": "Neues Foto hochladen",
+        "requirements": "JPG, PNG oder WebP. Maximal 2MB."
+      },
+      "personal": {
+        "title": "Persönliche Informationen",
+        "description": "Aktualisieren Sie Ihre persönlichen Daten",
+        "displayName": "Anzeigename",
+        "displayNameHint": "So sehen Sie andere",
+        "username": "Benutzername",
+        "usernameHint": "Ihre eindeutige Kennung",
+        "bio": "Biografie",
+        "bioPlaceholder": "Erzählen Sie uns etwas über sich...",
+        "bioHint": "Kurze Beschreibung für Ihr Profil. Maximal 200 Zeichen."
+      }
+    },
+    "preferences": {
+      "title": "Präferenzen",
+      "description": "Passen Sie Ihr Nutzererlebnis an",
+      "notifications": {
+        "title": "Benachrichtigungen",
+        "description": "Verwalten Sie, wie Sie Benachrichtigungen erhalten",
+        "email": "E-Mail-Benachrichtigungen",
+        "emailDescription": "E-Mails über Ihre Kontoaktivitäten erhalten",
+        "marketing": "Marketing-E-Mails",
+        "marketingDescription": "E-Mails über neue Funktionen und Updates erhalten",
+        "updates": "Produkt-Updates",
+        "updatesDescription": "Benachrichtigungen über Produkt-Updates erhalten"
+      },
+      "interface": {
+        "title": "Benutzeroberfläche",
+        "description": "Passen Sie das Aussehen und Verhalten der Oberfläche an",
+        "density": "Anzeigedichte",
+        "densityCompact": "Kompakt",
+        "densityComfortable": "Komfortabel",
+        "densitySpacious": "Geräumig",
+        "animations": "Animationen",
+        "animationsDescription": "Oberflächenanimationen aktivieren",
+        "sound": "Soundeffekte",
+        "soundDescription": "Soundeffekte für Aktionen abspielen"
+      }
+    },
+    "theme": {
+      "title": "Design",
+      "description": "Passen Sie das Erscheinungsbild der Anwendung an",
+      "appearance": {
+        "title": "Erscheinungsbild",
+        "description": "Wählen Sie Ihren bevorzugten Design-Modus",
+        "mode": "Design-Modus",
+        "modeDescription": "Wählen Sie zwischen hellem, dunklem oder System-Design"
+      },
+      "language": {
+        "title": "Sprache",
+        "description": "Wählen Sie Ihre bevorzugte Sprache",
+        "current": "Aktuelle Sprache",
+        "currentDescription": "Ändern Sie die Sprache der Benutzeroberfläche"
+      },
+      "customization": {
+        "title": "Anpassung",
+        "description": "Personalisieren Sie Ihr visuelles Erlebnis",
+        "accentColor": "Akzentfarbe",
+        "accentColorHint": "Wählen Sie Ihre bevorzugte Akzentfarbe für die Oberfläche"
+      }
+    },
+    "integrations": {
+      "title": "Integrationen",
+      "description": "Externe Dienste und Tools verbinden",
+      "connected": "Verbunden",
+      "connect": "Verbinden",
+      "disconnect": "Trennen",
+      "github": {
+        "description": "Synchronisieren Sie Ihre Wissenskarten mit GitHub-Repositories"
+      },
+      "slack": {
+        "description": "Erhalten Sie Benachrichtigungen und Updates in Slack"
+      },
+      "chrome": {
+        "description": "Speichern Sie Inhalte direkt aus Ihrem Browser"
+      },
+      "zapier": {
+        "description": "Automatisieren Sie Workflows mit Tausenden von Apps"
+      },
+      "api": {
+        "title": "API-Zugriff",
+        "description": "Verwalten Sie Ihre API-Tokens für programmatischen Zugriff",
+        "token": "API-Token",
+        "regenerate": "Neu generieren",
+        "hint": "Halten Sie Ihren API-Token geheim und sicher"
+      }
+    },
+    "security": {
+      "title": "Sicherheit",
+      "description": "Verwalten Sie Ihre Kontosicherheit und Privatsphäre",
+      "email": {
+        "title": "E-Mail-Adresse",
+        "description": "Aktualisieren Sie Ihre E-Mail-Adresse",
+        "current": "Aktuelle E-Mail",
+        "new": "Neue E-Mail",
+        "update": "E-Mail aktualisieren"
+      },
+      "password": {
+        "title": "Passwort",
+        "description": "Ändern Sie Ihr Kontopasswort",
+        "current": "Aktuelles Passwort",
+        "new": "Neues Passwort",
+        "confirm": "Passwort bestätigen",
+        "update": "Passwort aktualisieren"
+      },
+      "sessions": {
+        "title": "Aktive Sitzungen",
+        "description": "Verwalten Sie Ihre aktiven Sitzungen auf verschiedenen Geräten",
+        "current": "Aktuelle Sitzung",
+        "lastActive": "Zuletzt aktiv",
+        "revoke": "Widerrufen"
+      },
+      "danger": {
+        "title": "Gefahrenbereich",
+        "description": "Unwiderrufliche und zerstörerische Aktionen",
+        "deleteAccount": "Konto löschen"
+      }
+    },
+    "nodeDrawer": {
+      "tabs": {
+        "overview": "Übersicht",
+        "connections": "Verbindungen",
+        "view": "Ansicht"
+      }
     }
   }
 }

@@ -21,7 +21,11 @@
       "confirmPasswordLabel": "Confirm password",
       "submitButton": "Create account",
       "hasAccount": "Already have an account?",
-      "signInLink": "Sign in"
+      "signInLink": "Sign in",
+      "consent": "By signing up, you agree to our",
+      "termsLink": "Terms of Service",
+      "and": "and",
+      "privacyLink": "Privacy Policy"
     },
     "resetPassword": {
       "title": "Reset password",
@@ -64,7 +68,33 @@
     "created": "Created",
     "updated": "Updated",
     "all": "All",
-    "backToOverview": "Back to overview"
+    "backToOverview": "Back to overview",
+    "save": "Save changes",
+    "cancel": "Cancel",
+    "enable": "Enable",
+    "disable": "Disable"
+  },
+  "home": {
+    "tagline": "Visualize and structure your knowledge with interactive cognitive maps",
+    "features": {
+      "visual": {
+        "title": "Visual Thinking",
+        "description": "Transform complex concepts into intuitive knowledge graphs"
+      },
+      "connected": {
+        "title": "Connected Ideas",
+        "description": "Discover hidden relationships between concepts and strengthen understanding"
+      },
+      "ai": {
+        "title": "AI Assistant",
+        "description": "Smart companion for analyzing and expanding your knowledge maps"
+      }
+    },
+    "cta": {
+      "getStarted": "Get Started",
+      "signIn": "Sign In"
+    },
+    "alphaNotice": "🚀 Currently in alpha testing. Some features may be unstable."
   },
   "dashboard": {
     "overview": {
@@ -100,7 +130,22 @@
       "showMinimap": "Show minimap",
       "hideMinimap": "Hide minimap",
       "fullscreen": "Fullscreen mode",
-      "exitFullscreen": "Exit fullscreen"
+      "exitFullscreen": "Exit fullscreen",
+      "focusMode": "Focus",
+      "selectLayout": "Select layout",
+      "clearFilters": "Clear all"
+    },
+    "nodeControls": {
+      "title": "View Controls",
+      "focusMode": "Focus mode",
+      "focusModeDescription": "Show only connected nodes",
+      "connectionDepth": "Connection depth",
+      "hops": "hops",
+      "edgeDirection": "Edge direction",
+      "incoming": "In",
+      "outgoing": "Out",
+      "all": "All",
+      "edgeTypes": "Connection types"
     },
     "node": {
       "moreDetails": "More details",
@@ -127,7 +172,8 @@
   "nodeDrawer": {
     "tabs": {
       "overview": "Overview",
-      "connections": "Connections"
+      "connections": "Connections",
+      "view": "View"
     },
     "overview": {
       "description": "Description",
@@ -152,5 +198,390 @@
     "loadingMessage": "Fetching nodes and connections...",
     "notFoundTitle": "Map not found",
     "notFoundMessage": "The map may have been deleted or you don't have access to it"
+  },
+  "legal": {
+    "backToHome": "Back to home",
+    "lastUpdated": "Last updated",
+    "terms": {
+      "title": "Terms of Service",
+      "description": "Please read these terms carefully before using our service",
+      "sections": {
+        "acceptance": {
+          "title": "Acceptance of Terms",
+          "content": "By accessing and using Arbor, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service."
+        },
+        "license": {
+          "title": "Use License",
+          "intro": "Permission is granted to temporarily download one copy of Arbor per device for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, and under this license you may not:",
+          "items": [
+            "Modify or copy the materials",
+            "Use the materials for any commercial purpose or public display",
+            "Attempt to reverse engineer any software contained in Arbor",
+            "Remove any copyright or other proprietary notations from the materials",
+            "Transfer the materials to another person or \"mirror\" the materials on any other server"
+          ]
+        },
+        "disclaimer": {
+          "title": "Disclaimer",
+          "content": "The materials on Arbor are provided on an 'as is' basis. Arbor makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights."
+        },
+        "limitations": {
+          "title": "Limitations",
+          "content": "In no event shall Arbor or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use Arbor, even if Arbor or an authorized representative has been notified orally or in writing of the possibility of such damage."
+        },
+        "accuracy": {
+          "title": "Accuracy of Materials",
+          "content": "The materials appearing in Arbor could include technical, typographical, or photographic errors. Arbor does not warrant that any of the materials on its service are accurate, complete or current. Arbor may make changes to the materials contained in its service at any time without notice."
+        },
+        "links": {
+          "title": "Links",
+          "content": "Arbor has not reviewed all of the sites linked to its service and is not responsible for the contents of any such linked site. The inclusion of any link does not imply endorsement by Arbor of the site. Use of any such linked website is at the user's own risk."
+        },
+        "modifications": {
+          "title": "Modifications",
+          "content": "Arbor may revise these terms of service at any time without notice. By using this service you are agreeing to be bound by the then current version of these terms of service."
+        },
+        "governingLaw": {
+          "title": "Governing Law",
+          "content": "These terms and conditions are governed by and construed in accordance with the laws and you irrevocably submit to the exclusive jurisdiction of the courts in that location."
+        },
+        "contact": {
+          "title": "Contact Information",
+          "content": "If you have any questions about these Terms, please contact us at"
+        }
+      }
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "description": "Learn how we collect, use, and protect your personal data",
+      "sections": {
+        "collection": {
+          "title": "Information We Collect",
+          "intro": "We collect information that you provide directly to us, including when you create an account, use our services, or communicate with us. This may include:",
+          "items": [
+            "Name and contact information (email address)",
+            "Account credentials (username and password)",
+            "Knowledge maps and content you create",
+            "Usage data and preferences",
+            "Device and browser information"
+          ]
+        },
+        "usage": {
+          "title": "How We Use Your Information",
+          "intro": "We use the information we collect to:",
+          "items": [
+            "Provide, maintain, and improve our services",
+            "Process your transactions and send related information",
+            "Send you technical notices, updates, and support messages",
+            "Respond to your comments and questions",
+            "Monitor and analyze trends, usage, and activities",
+            "Detect, investigate and prevent fraudulent transactions and other illegal activities",
+            "Personalize and improve your experience"
+          ]
+        },
+        "sharing": {
+          "title": "Information Sharing and Disclosure",
+          "intro": "We do not sell, trade, or rent your personal information to third parties. We may share your information only in the following circumstances:",
+          "items": [
+            "With your consent",
+            "With service providers who perform services on our behalf",
+            "To comply with legal obligations",
+            "To protect and defend our rights and property",
+            "In connection with a merger, sale, or acquisition"
+          ]
+        },
+        "security": {
+          "title": "Data Security",
+          "content": "We take reasonable measures to help protect your personal information from loss, theft, misuse, unauthorized access, disclosure, alteration, and destruction. However, no Internet or email transmission is ever fully secure or error-free."
+        },
+        "retention": {
+          "title": "Data Retention",
+          "content": "We retain your personal information for as long as necessary to fulfill the purposes outlined in this Privacy Policy, unless a longer retention period is required or permitted by law."
+        },
+        "rights": {
+          "title": "Your Rights",
+          "intro": "Depending on your location, you may have certain rights regarding your personal information:",
+          "items": [
+            "Access to your personal data",
+            "Correction of inaccurate data",
+            "Deletion of your data",
+            "Data portability",
+            "Objection to processing",
+            "Withdrawal of consent"
+          ]
+        },
+        "cookies": {
+          "title": "Cookies and Tracking Technologies",
+          "content": "We use cookies and similar tracking technologies to collect and track information about your use of our services. See our Cookie Policy for more information."
+        },
+        "children": {
+          "title": "Children's Privacy",
+          "content": "Our services are not intended for children under 13 years of age. We do not knowingly collect personal information from children under 13."
+        },
+        "changes": {
+          "title": "Changes to This Privacy Policy",
+          "content": "We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the \"Last Updated\" date."
+        },
+        "contact": {
+          "title": "Contact Us",
+          "content": "If you have any questions about this Privacy Policy, please contact us at"
+        }
+      }
+    },
+    "cookies": {
+      "title": "Cookie Policy",
+      "description": "Information about how we use cookies to improve your experience",
+      "sections": {
+        "what": {
+          "title": "What Are Cookies",
+          "content": "Cookies are small text files that are placed on your device when you visit a website. They are widely used to make websites work more efficiently and provide information to website owners."
+        },
+        "how": {
+          "title": "How We Use Cookies",
+          "intro": "We use cookies for the following purposes:",
+          "essential": {
+            "title": "Essential Cookies",
+            "description": "These cookies are necessary for the website to function and cannot be switched off. They are usually only set in response to actions made by you, such as setting your privacy preferences, logging in, or filling in forms."
+          },
+          "preference": {
+            "title": "Preference Cookies",
+            "description": "These cookies allow the website to remember choices you make (such as your language or theme preference) and provide enhanced, more personal features."
+          },
+          "analytics": {
+            "title": "Analytics Cookies",
+            "description": "These cookies help us understand how visitors interact with our website by collecting and reporting information anonymously."
+          },
+          "performance": {
+            "title": "Performance Cookies",
+            "description": "These cookies help us improve the performance of our website by understanding which pages are the most and least popular."
+          }
+        },
+        "types": {
+          "title": "Types of Cookies We Use",
+          "table": {
+            "name": "Cookie Name",
+            "purpose": "Purpose",
+            "duration": "Duration",
+            "language": {
+              "name": "i18nextLng",
+              "purpose": "Stores your language preference",
+              "duration": "Persistent"
+            },
+            "theme": {
+              "name": "theme",
+              "purpose": "Stores your theme preference (light/dark)",
+              "duration": "Persistent"
+            },
+            "auth": {
+              "name": "auth_token",
+              "purpose": "Authentication session token",
+              "duration": "Session"
+            }
+          }
+        },
+        "thirdParty": {
+          "title": "Third-Party Cookies",
+          "content": "In addition to our own cookies, we may also use various third-party cookies to report usage statistics of the service and deliver advertisements on and through the service."
+        },
+        "managing": {
+          "title": "Managing Cookies",
+          "intro": "Most web browsers allow you to control cookies through their settings preferences. However, if you limit the ability of websites to set cookies, you may worsen your overall user experience, as some features may no longer function properly.",
+          "subtitle": "Browser Controls",
+          "browsers": {
+            "chrome": "Chrome: Settings → Privacy and security → Cookies and other site data",
+            "firefox": "Firefox: Options → Privacy & Security → Cookies and Site Data",
+            "safari": "Safari: Preferences → Privacy → Cookies and website data",
+            "edge": "Edge: Settings → Cookies and site permissions → Cookies and site data"
+          }
+        },
+        "dnt": {
+          "title": "Do Not Track Signals",
+          "content": "Some browsers incorporate a \"Do Not Track\" (DNT) feature that signals to websites you visit that you do not want to have your online activity tracked. We currently do not respond to DNT signals."
+        },
+        "updates": {
+          "title": "Updates to This Cookie Policy",
+          "content": "We may update this Cookie Policy from time to time to reflect changes in technology or legislation. Please review this page periodically for the latest information."
+        },
+        "contact": {
+          "title": "Contact Us",
+          "content": "If you have questions about our use of cookies, please contact us at"
+        }
+      }
+    },
+    "license": {
+      "title": "License Agreement",
+      "description": "Arbor software licensing terms",
+      "sections": {
+        "mit": {
+          "title": "MIT License",
+          "copyright": "Copyright (c) {{year}} Arbor",
+          "permission": "Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:",
+          "notice": "The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.",
+          "warranty": "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+        },
+        "thirdParty": {
+          "title": "Third-Party Licenses",
+          "intro": "Arbor uses various third-party open source libraries and components. Each has its own license, which is included with the library.",
+          "react": "MIT License - Copyright (c) Meta Platforms, Inc. and affiliates.",
+          "reactRouter": "MIT License - Copyright (c) Remix Software Inc.",
+          "tanstack": "MIT License - Copyright (c) TanStack",
+          "reactflow": "MIT License - Copyright (c) webkid GmbH",
+          "tailwind": "MIT License - Copyright (c) Tailwind Labs, Inc.",
+          "lucide": "ISC License - Copyright (c) Lucide Contributors",
+          "viewLicense": "View License"
+        },
+        "attribution": {
+          "title": "Attribution",
+          "content": "When redistributing or using Arbor in derivative works, please include appropriate attribution and a link back to the original project."
+        },
+        "contact": {
+          "title": "Contact",
+          "content": "For licensing inquiries, please contact us at"
+        }
+      }
+    }
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "description": "Sorry, the page you're looking for doesn't exist or has been moved",
+    "backToHome": "Back to home",
+    "goToDashboard": "Go to dashboard"
+  },
+  "settings": {
+    "title": "Settings",
+    "description": "Manage your account settings and preferences",
+    "nav": {
+      "profile": "Profile",
+      "preferences": "Preferences",
+      "theme": "Theme",
+      "integrations": "Integrations",
+      "security": "Security"
+    },
+    "profile": {
+      "title": "Profile",
+      "description": "Manage your public profile information",
+      "avatar": {
+        "title": "Profile Picture",
+        "description": "Update your profile picture",
+        "upload": "Upload new photo",
+        "requirements": "JPG, PNG or WebP. Max 2MB."
+      },
+      "personal": {
+        "title": "Personal Information",
+        "description": "Update your personal details",
+        "displayName": "Display name",
+        "displayNameHint": "This is how others will see you",
+        "username": "Username",
+        "usernameHint": "Your unique identifier",
+        "bio": "Bio",
+        "bioPlaceholder": "Tell us about yourself...",
+        "bioHint": "Brief description for your profile. Max 200 characters."
+      }
+    },
+    "preferences": {
+      "title": "Preferences",
+      "description": "Customize your experience",
+      "notifications": {
+        "title": "Notifications",
+        "description": "Manage how you receive notifications",
+        "email": "Email notifications",
+        "emailDescription": "Receive email about your account activity",
+        "marketing": "Marketing emails",
+        "marketingDescription": "Receive emails about new features and updates",
+        "updates": "Product updates",
+        "updatesDescription": "Receive notifications about product updates"
+      },
+      "interface": {
+        "title": "Interface",
+        "description": "Customize how the interface looks and feels",
+        "density": "Display density",
+        "densityCompact": "Compact",
+        "densityComfortable": "Comfortable",
+        "densitySpacious": "Spacious",
+        "animations": "Animations",
+        "animationsDescription": "Enable interface animations",
+        "sound": "Sound effects",
+        "soundDescription": "Play sound effects for actions"
+      }
+    },
+    "theme": {
+      "title": "Theme",
+      "description": "Customize the appearance of the application",
+      "appearance": {
+        "title": "Appearance",
+        "description": "Select your preferred theme mode",
+        "mode": "Theme mode",
+        "modeDescription": "Choose between light, dark, or system theme"
+      },
+      "language": {
+        "title": "Language",
+        "description": "Select your preferred language",
+        "current": "Current language",
+        "currentDescription": "Change the language of the interface"
+      },
+      "customization": {
+        "title": "Customization",
+        "description": "Personalize your visual experience",
+        "accentColor": "Accent color",
+        "accentColorHint": "Choose your preferred accent color for the interface"
+      }
+    },
+    "integrations": {
+      "title": "Integrations",
+      "description": "Connect external services and tools",
+      "connected": "Connected",
+      "connect": "Connect",
+      "disconnect": "Disconnect",
+      "github": {
+        "description": "Sync your knowledge maps with GitHub repositories"
+      },
+      "slack": {
+        "description": "Get notifications and updates in Slack"
+      },
+      "chrome": {
+        "description": "Save content directly from your browser"
+      },
+      "zapier": {
+        "description": "Automate workflows with thousands of apps"
+      },
+      "api": {
+        "title": "API Access",
+        "description": "Manage your API tokens for programmatic access",
+        "token": "API Token",
+        "regenerate": "Regenerate",
+        "hint": "Keep your API token secret and secure"
+      }
+    },
+    "security": {
+      "title": "Security",
+      "description": "Manage your account security and privacy",
+      "email": {
+        "title": "Email Address",
+        "description": "Update your email address",
+        "current": "Current email",
+        "new": "New email",
+        "update": "Update email"
+      },
+      "password": {
+        "title": "Password",
+        "description": "Change your account password",
+        "current": "Current password",
+        "new": "New password",
+        "confirm": "Confirm password",
+        "update": "Update password"
+      },
+      "sessions": {
+        "title": "Active Sessions",
+        "description": "Manage your active sessions across devices",
+        "current": "Current session",
+        "lastActive": "Last active",
+        "revoke": "Revoke"
+      },
+      "danger": {
+        "title": "Danger Zone",
+        "description": "Irreversible and destructive actions",
+        "deleteAccount": "Delete account"
+      }
+    }
   }
 }

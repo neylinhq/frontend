@@ -1,6 +1,7 @@
 import { Menu } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/shared/ui/button'
+import { Logo } from '@/shared/ui/logo'
 import { Sheet, SheetContent, SheetTrigger } from '@/shared/ui/sheet'
 import { UserNav } from '@/widgets/user-nav'
 import { Sidebar } from './sidebar'
@@ -25,6 +26,9 @@ export function DashboardHeader() {
               <Sidebar className="h-full border-none" isExpanded={true} />
             </SheetContent>
           </Sheet>
+
+          {/* Logo */}
+          <Logo size="sm" href="/dashboard/overview" />
         </div>
 
         {/* Right: User Nav */}

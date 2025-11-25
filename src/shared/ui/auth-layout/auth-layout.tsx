@@ -1,7 +1,7 @@
 import type * as React from 'react'
 import { ThemeToggle } from '@/app/theme/components/theme-toggle'
 import { LanguageSwitcher } from '@/features/language-switcher'
-import { APP_NAME } from '@/shared/config'
+import { Logo } from '@/shared/ui/logo'
 
 interface AuthLayoutProps {
   children: React.ReactNode
@@ -26,9 +26,8 @@ export const AuthLayout = ({ children }: AuthLayoutProps) => {
               'url(https://images.unsplash.com/photo-1590069261209-f8e9b8642343?ixlib=rb-4.0.3&auto=format&fit=crop&w=1376&q=80)'
           }}
         />
-        <div className="relative z-20 flex items-center gap-2 text-lg font-medium">
-          <div className="h-6 w-6 rounded bg-white" /> {/* Logo placeholder (white for contrast) */}
-          {APP_NAME}
+        <div className="relative z-20 flex items-center text-white">
+          <Logo size="xl" href={false} />
         </div>
         <div className="relative z-20 mt-auto">
           <blockquote className="space-y-2">

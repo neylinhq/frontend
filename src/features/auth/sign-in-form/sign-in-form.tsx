@@ -95,6 +95,16 @@ export function SignInForm() {
           </Button>
         </form>
       </Form>
+
+      <div className="flex flex-wrap justify-center gap-3 text-xs text-muted-foreground">
+        <Link to="/legal/terms" className="hover:text-primary hover:underline">
+          {t('legal.terms.title')}
+        </Link>
+        <span>•</span>
+        <Link to="/legal/privacy" className="hover:text-primary hover:underline">
+          {t('legal.privacy.title')}
+        </Link>
+      </div>
     </div>
   )
 }

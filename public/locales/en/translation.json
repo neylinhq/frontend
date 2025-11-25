@@ -1,0 +1,60 @@
+{
+  "auth": {
+    "signIn": {
+      "title": "Sign in to your account",
+      "description": "Enter your email below to login to your account",
+      "emailLabel": "Email",
+      "emailPlaceholder": "name@example.com",
+      "passwordLabel": "Password",
+      "forgotPassword": "Forgot password?",
+      "submitButton": "Sign In",
+      "orDivider": "or",
+      "githubButton": "Continue with GitHub",
+      "noAccount": "Don't have an account?",
+      "signUpLink": "Sign up"
+    },
+    "signUp": {
+      "title": "Create an account",
+      "description": "Enter your email to create a new account",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "confirmPasswordLabel": "Confirm password",
+      "submitButton": "Create account",
+      "hasAccount": "Already have an account?",
+      "signInLink": "Sign in"
+    },
+    "resetPassword": {
+      "title": "Reset password",
+      "description": "Enter your email address and we will send you a link to reset your password.",
+      "emailLabel": "Email",
+      "submitButton": "Reset password",
+      "rememberPassword": "Remember your password?",
+      "signInLink": "Sign in",
+      "checkEmailTitle": "Check your email",
+      "backToSignIn": "Back to sign in"
+    }
+  },
+  "validation": {
+    "email": "Invalid email address",
+    "passwordMin": "Password must be at least {{min}} characters",
+    "passwordMismatch": "Passwords do not match",
+    "required": "Required field"
+  },
+  "nav": {
+    "subscription": "Subscription",
+    "settings": "Settings",
+    "billing": "Billing",
+    "logout": "Log out",
+    "theme": "Theme",
+    "language": "Language"
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error"
+  }
+}

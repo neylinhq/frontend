@@ -1,4 +1,6 @@
 import type * as React from 'react'
+import { ThemeToggle } from '@/app/theme/components/theme-toggle'
+import { LanguageSwitcher } from '@/features/language-switcher'
 
 interface AuthLayoutProps {
   children: React.ReactNode
@@ -7,6 +9,12 @@ interface AuthLayoutProps {
 export const AuthLayout = ({ children }: AuthLayoutProps) => {
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
+      {/* Navbar for mobile/desktop auth pages */}
+      <div className="absolute top-4 right-4 z-50 flex items-center gap-2">
+        <LanguageSwitcher />
+        <ThemeToggle />
+      </div>
+
       {/* Left: Decorative */}
       <div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
         <div className="absolute inset-0 bg-zinc-900" />
@@ -23,7 +31,7 @@ export const AuthLayout = ({ children }: AuthLayoutProps) => {
         </div>
         <div className="relative z-20 mt-auto">
           <blockquote className="space-y-2">
-            <p className="text-lg">
+            <p className="text-lg text-balance">
               &ldquo;This library has saved me countless hours of work and helped me deliver
               stunning designs to my clients faster than ever before.&rdquo;
             </p>

@@ -1,6 +1,9 @@
-import { Link, useFetcher } from 'react-router' // используем fetcher для отправки POST запроса без перехода
+import { Globe } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import { Link, useFetcher } from 'react-router'
 import { ThemeToggle } from '@/app/theme/components/theme-toggle'
 import { useSessionStore } from '@/entities/session'
+import { LANGUAGES } from '@/features/language-switcher/language-switcher.constants'
 import { getShortcut } from '@/shared/lib/platform'
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar'
 import { Button } from '@/shared/ui/button'
@@ -10,20 +13,29 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuPortal,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger
 } from '@/shared/ui/dropdown-menu'
 import { USER_NAV_LOGOUT_ITEM, USER_NAV_MAIN_SECTION } from './user-nav.constants'
 
 export function UserNav() {
   const { user } = useSessionStore()
-  const fetcher = useFetcher() // React Router Fetcher
+  const fetcher = useFetcher()
+  const { t, i18n } = useTranslation()
 
   if (!user) return null
 
   const handleLogout = () => {
     fetcher.submit(null, { method: 'post', action: '/auth/logout' })
+  }
+
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng)
   }
 
   return (
@@ -65,7 +77,7 @@ export function UserNav() {
                 <DropdownMenuItem key={item.title} asChild>
                   <Link to={item.href}>
                     <Icon className="mr-2 h-4 w-4" />
-                    <span>{item.title}</span>
+                    <span>{t(item.title)}</span>
                     {shortcut && <DropdownMenuShortcut>{shortcut}</DropdownMenuShortcut>}
                   </Link>
                 </DropdownMenuItem>
@@ -75,21 +87,49 @@ export function UserNav() {
             return (
               <DropdownMenuItem key={item.title}>
                 <Icon className="mr-2 h-4 w-4" />
-                <span>{item.title}</span>
+                <span>{t(item.title)}</span>
                 {shortcut && <DropdownMenuShortcut>{shortcut}</DropdownMenuShortcut>}
               </DropdownMenuItem>
             )
           })}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <div className="p-2 flex items-center justify-between">
-          <span className="text-xs text-muted-foreground px-2">Тема</span>
-          <ThemeToggle />
-        </div>
+
+        <DropdownMenuGroup>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>
+              <Globe className="mr-2 h-4 w-4" />
+              <span>{t('nav.language')}</span>
+            </DropdownMenuSubTrigger>
+            <DropdownMenuPortal>
+              <DropdownMenuSubContent>
+                {LANGUAGES.map(lang => (
+                  <DropdownMenuItem
+                    key={lang.id}
+                    onSelect={e => {
+                      e.preventDefault()
+                      changeLanguage(lang.id)
+                    }}
+                  >
+                    <lang.Flag className="mr-2 h-5 w-5 rounded-full object-cover border border-black/30 dark:border-white/30" />
+                    {lang.label}
+                    {i18n.language === lang.id && <span className="ml-auto text-xs">✓</span>}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuSubContent>
+            </DropdownMenuPortal>
+          </DropdownMenuSub>
+
+          <div className="p-2 flex items-center justify-between">
+            <span className="text-xs text-muted-foreground px-2">{t('nav.theme')}</span>
+            <ThemeToggle />
+          </div>
+        </DropdownMenuGroup>
+
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout}>
           <USER_NAV_LOGOUT_ITEM.icon className="mr-2 h-4 w-4" />
-          <span>{USER_NAV_LOGOUT_ITEM.title}</span>
+          <span>{t(USER_NAV_LOGOUT_ITEM.title)}</span>
           <DropdownMenuShortcut>{getShortcut(USER_NAV_LOGOUT_ITEM.shortcut)}</DropdownMenuShortcut>
         </DropdownMenuItem>
       </DropdownMenuContent>

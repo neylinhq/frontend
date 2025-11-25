@@ -1,0 +1,60 @@
+{
+  "auth": {
+    "signIn": {
+      "title": "Вход в аккаунт",
+      "description": "Введите ваш email для входа в систему",
+      "emailLabel": "Email",
+      "emailPlaceholder": "name@example.com",
+      "passwordLabel": "Пароль",
+      "forgotPassword": "Забыли пароль?",
+      "submitButton": "Войти",
+      "orDivider": "или",
+      "githubButton": "Войти через GitHub",
+      "noAccount": "Нет аккаунта?",
+      "signUpLink": "Регистрация"
+    },
+    "signUp": {
+      "title": "Создать аккаунт",
+      "description": "Введите email для создания новой учетной записи",
+      "emailLabel": "Email",
+      "passwordLabel": "Пароль",
+      "confirmPasswordLabel": "Повторите пароль",
+      "submitButton": "Создать аккаунт",
+      "hasAccount": "Уже есть аккаунт?",
+      "signInLink": "Войти"
+    },
+    "resetPassword": {
+      "title": "Сброс пароля",
+      "description": "Введите ваш email, и мы отправим вам ссылку для сброса пароля.",
+      "emailLabel": "Email",
+      "submitButton": "Сбросить пароль",
+      "rememberPassword": "Вспомнили пароль?",
+      "signInLink": "Войти",
+      "checkEmailTitle": "Проверьте почту",
+      "backToSignIn": "Вернуться ко входу"
+    }
+  },
+  "validation": {
+    "email": "Некорректный email адрес",
+    "passwordMin": "Минимум {{min}} символов",
+    "passwordMismatch": "Пароли не совпадают",
+    "required": "Обязательное поле"
+  },
+  "nav": {
+    "subscription": "Подписка",
+    "settings": "Настройки",
+    "billing": "Биллинг",
+    "logout": "Выйти",
+    "theme": "Тема",
+    "language": "Язык"
+  },
+  "theme": {
+    "light": "Светлая",
+    "dark": "Темная",
+    "system": "Системная"
+  },
+  "common": {
+    "loading": "Загрузка...",
+    "error": "Ошибка"
+  }
+}

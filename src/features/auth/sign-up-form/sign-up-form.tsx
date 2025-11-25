@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { useNavigation, useSubmit } from 'react-router'
 import { z } from 'zod'
 import { Button } from '@/shared/ui/button'
@@ -8,22 +9,24 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { FormDivider } from '@/shared/ui/form-divider'
 import { Input } from '@/shared/ui/input'
 
-const signUpSchema = z
-  .object({
-    email: z.string().email('Некорректный email'),
-    password: z.string().min(8, 'Минимум 8 символов'),
-    confirmPassword: z.string()
-  })
-  .refine(data => data.password === data.confirmPassword, {
-    message: 'Пароли не совпадают',
-    path: ['confirmPassword']
-  })
-
 export function SignUpForm() {
+  const { t } = useTranslation()
   const navigation = useNavigation()
   const submit = useSubmit()
 
   const isLoading = navigation.state === 'submitting'
+
+  // Define schema inside component to use t()
+  const signUpSchema = z
+    .object({
+      email: z.string().email(t('validation.email')),
+      password: z.string().min(8, t('validation.passwordMin', { min: 8 })),
+      confirmPassword: z.string().min(1, t('validation.required'))
+    })
+    .refine(data => data.password === data.confirmPassword, {
+      message: t('validation.passwordMismatch'),
+      path: ['confirmPassword']
+    })
 
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
@@ -48,9 +51,9 @@ export function SignUpForm() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>{t('auth.signUp.emailLabel')}</FormLabel>
                 <FormControl>
-                  <Input placeholder="name@example.com" {...field} />
+                  <Input placeholder={t('auth.signIn.emailPlaceholder')} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -62,7 +65,7 @@ export function SignUpForm() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Пароль</FormLabel>
+                <FormLabel>{t('auth.signUp.passwordLabel')}</FormLabel>
                 <FormControl>
                   <Input type="password" {...field} />
                 </FormControl>
@@ -76,7 +79,7 @@ export function SignUpForm() {
             name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Повторите пароль</FormLabel>
+                <FormLabel>{t('auth.signUp.confirmPasswordLabel')}</FormLabel>
                 <FormControl>
                   <Input type="password" {...field} />
                 </FormControl>
@@ -87,13 +90,13 @@ export function SignUpForm() {
 
           <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Создать аккаунт
+            {t('auth.signUp.submitButton')}
           </Button>
 
-          <FormDivider>или</FormDivider>
+          <FormDivider>{t('auth.signIn.orDivider')}</FormDivider>
 
           <Button variant="outline" className="w-full" type="button">
-            Войти через GitHub
+            {t('auth.signIn.githubButton')}
           </Button>
         </form>
       </Form>

@@ -25,7 +25,7 @@ import { CreditCard, LogOut, Settings, Sparkles } from 'lucide-react'
 
 export const USER_NAV_MAIN_SECTION: UserNavItem[] = [
   {
-    title: 'Подписка',
+    title: 'nav.subscription',
     icon: Sparkles,
     action: 'subscription',
     shortcut: {
@@ -34,7 +34,7 @@ export const USER_NAV_MAIN_SECTION: UserNavItem[] = [
     }
   },
   {
-    title: 'Настройки',
+    title: 'nav.settings',
     href: '/dashboard/settings/profile',
     icon: Settings,
     shortcut: {
@@ -43,14 +43,14 @@ export const USER_NAV_MAIN_SECTION: UserNavItem[] = [
     }
   },
   {
-    title: 'Биллинг',
+    title: 'nav.billing',
     icon: CreditCard,
     action: 'billing'
   }
 ]
 
 export const USER_NAV_LOGOUT_ITEM: UserNavItem = {
-  title: 'Выйти',
+  title: 'nav.logout',
   icon: LogOut,
   action: 'logout',
   shortcut: {

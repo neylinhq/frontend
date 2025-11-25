@@ -1,8 +1,6 @@
 import { Link } from 'react-router'
+import { ResetPasswordForm } from '@/features/auth/reset-password-form'
 import { AuthLayout } from '@/shared/ui/auth-layout'
-import { Button } from '@/shared/ui/button'
-import { Input } from '@/shared/ui/input'
-import { Label } from '@/shared/ui/label'
 
 export const ResetPasswordPage = () => {
   return (
@@ -14,15 +12,9 @@ export const ResetPasswordPage = () => {
             Enter your email address and we will send you a link to reset your password.
           </p>
         </div>
-        <div className="grid gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="m@example.com" required />
-          </div>
-          <Button type="submit" className="w-full">
-            Send Reset Link
-          </Button>
-        </div>
+
+        <ResetPasswordForm />
+
         <div className="mt-4 text-center text-sm">
           Remember your password?{' '}
           <Link to="/auth/sign-in" className="underline hover:text-primary">

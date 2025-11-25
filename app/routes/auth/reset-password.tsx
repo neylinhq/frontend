@@ -1,1 +1,1 @@
-export { ResetPasswordPage as default } from '@/pages/reset-password-page'
+export { ResetPasswordPage as default } from '@/pages/auth/reset-password-page'

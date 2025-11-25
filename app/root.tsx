@@ -1,5 +1,6 @@
 import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router'
 
+import { QueryProvider } from '@/app/providers/query-provider'
 import { ThemeProvider } from '@/app/theme'
 import '@/shared/styles/globals.css'
 import type { Route } from './+types/root'
@@ -27,7 +28,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <ThemeProvider>{children}</ThemeProvider>
+        <QueryProvider>
+          <ThemeProvider>{children}</ThemeProvider>
+        </QueryProvider>
         <ScrollRestoration />
         <Scripts />
       </body>

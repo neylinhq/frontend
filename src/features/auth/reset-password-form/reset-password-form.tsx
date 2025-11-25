@@ -59,9 +59,6 @@ export const ResetPasswordForm = () => {
             </div>
           </div>
           <h3 className="text-xl font-semibold">Check your email</h3>
-          <p className="text-sm text-muted-foreground">
-            We have sent a password reset link to your email address.
-          </p>
         </div>
         <Button asChild className="w-full" size="lg">
           <Link to="/auth/sign-in">Back to Login</Link>

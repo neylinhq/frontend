@@ -8,7 +8,7 @@ export const ResetPasswordPage = () => {
       <div className="space-y-6">
         <div className="flex flex-col space-y-2 text-center">
           <h1 className="text-2xl font-semibold tracking-tight">Reset password</h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground text-balance">
             Enter your email address and we will send you a link to reset your password.
           </p>
         </div>

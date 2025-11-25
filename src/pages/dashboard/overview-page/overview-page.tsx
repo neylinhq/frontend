@@ -1,4 +1,5 @@
 import { Loader2, Plus } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { useMaps } from '@/entities/map'
 import { CreateMapCard } from '@/features/maps/create-map-button'
@@ -6,6 +7,7 @@ import { MapCard } from '@/features/maps/map-card/map-card'
 import { Button } from '@/shared/ui/button'
 
 export function OverviewPage() {
+  const { t } = useTranslation()
   const { data: maps, isLoading, isError } = useMaps()
 
   if (isLoading) {
@@ -19,8 +21,8 @@ export function OverviewPage() {
   if (isError) {
     return (
       <div className="container mx-auto py-8 px-4 text-center">
-        <h2 className="text-lg font-semibold">Ошибка загрузки карт</h2>
-        <p className="text-muted-foreground">Попробуйте обновить страницу</p>
+        <h2 className="text-lg font-semibold">{t('dashboard.overview.loadingError')}</h2>
+        <p className="text-muted-foreground">{t('dashboard.overview.tryAgain')}</p>
       </div>
     )
   }
@@ -29,15 +31,13 @@ export function OverviewPage() {
     <div className="container mx-auto py-8 px-4 md:px-8">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Обзор</h1>
-          <p className="text-muted-foreground mt-1">
-            Ваша когнитивная карта и последние активности.
-          </p>
+          <h1 className="text-3xl font-bold tracking-tight">{t('dashboard.overview.title')}</h1>
+          <p className="text-muted-foreground mt-1">{t('dashboard.overview.description')}</p>
         </div>
         <Button asChild>
           <Link to="/dashboard/maps/new">
             <Plus className="mr-2 h-4 w-4" />
-            Создать карту
+            {t('dashboard.overview.createMap')}
           </Link>
         </Button>
       </div>

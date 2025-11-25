@@ -24,6 +24,30 @@ export function FlagRU(props: SVGProps<SVGSVGElement>) {
   )
 }
 
+export function FlagDE(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 512 512"
+      width="1em"
+      height="1em"
+      {...props}
+    >
+      <circle cx="256" cy="256" r="256" fill="#f5f5f5" />
+      <g clipPath="url(#de-circle)">
+        <path fill="#000" d="M0 0h512v170.7H0z" />
+        <path fill="#dd0000" d="M0 170.7h512v170.6H0z" />
+        <path fill="#ffce00" d="M0 341.3h512V512H0z" />
+      </g>
+      <defs>
+        <clipPath id="de-circle">
+          <circle cx="256" cy="256" r="256" />
+        </clipPath>
+      </defs>
+    </svg>
+  )
+}
+
 export function FlagUS(props: SVGProps<SVGSVGElement>) {
   return (
     <svg

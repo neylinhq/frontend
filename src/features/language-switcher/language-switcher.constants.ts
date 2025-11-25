@@ -1,4 +1,4 @@
-import { FlagRU, FlagUS } from '@/shared/ui/icons'
+import { FlagDE, FlagRU, FlagUS } from '@/shared/ui/icons'
 
 export const LANGUAGES = [
   {
@@ -10,5 +10,10 @@ export const LANGUAGES = [
     id: 'en',
     label: 'English',
     Flag: FlagUS
+  },
+  {
+    id: 'de',
+    label: 'Deutsch',
+    Flag: FlagDE
   }
 ]

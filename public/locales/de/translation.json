@@ -1,0 +1,62 @@
+{
+  "auth": {
+    "signIn": {
+      "title": "In Ihr Konto anmelden",
+      "description": "Geben Sie unten Ihre E-Mail ein, um sich bei Ihrem Konto anzumelden",
+      "emailLabel": "E-Mail",
+      "emailPlaceholder": "name@example.com",
+      "passwordLabel": "Passwort",
+      "forgotPassword": "Passwort vergessen?",
+      "submitButton": "Anmelden",
+      "orDivider": "oder",
+      "githubButton": "Mit GitHub fortfahren",
+      "noAccount": "Haben Sie kein Konto?",
+      "signUpLink": "Registrieren"
+    },
+    "signUp": {
+      "title": "Ein Konto erstellen",
+      "description": "Geben Sie Ihre E-Mail ein, um ein neues Konto zu erstellen",
+      "emailLabel": "E-Mail",
+      "passwordLabel": "Passwort",
+      "confirmPasswordLabel": "Passwort bestätigen",
+      "submitButton": "Konto erstellen",
+      "hasAccount": "Haben Sie bereits ein Konto?",
+      "signInLink": "Anmelden"
+    },
+    "resetPassword": {
+      "title": "Passwort zurücksetzen",
+      "description": "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum Zurücksetzen Ihres Passworts.",
+      "emailLabel": "E-Mail",
+      "submitButton": "Passwort zurücksetzen",
+      "rememberPassword": "Passwort wiedererinnert?",
+      "signInLink": "Anmelden",
+      "checkEmailTitle": "Überprüfen Sie Ihre E-Mail",
+      "backToSignIn": "Zurück zur Anmeldung"
+    }
+  },
+  "validation": {
+    "email": "Ungültige E-Mail-Adresse",
+    "passwordMin": "Passwort muss mindestens {{min}} Zeichen haben",
+    "passwordMismatch": "Passwörter stimmen nicht überein",
+    "required": "Pflichtfeld"
+  },
+  "nav": {
+    "subscription": "Abonnement",
+    "settings": "Einstellungen",
+    "billing": "Abrechnung",
+    "logout": "Abmelden",
+    "theme": "Design",
+    "language": "Sprache"
+  },
+  "theme": { "light": "Hell", "dark": "Dunkel", "system": "System" },
+  "common": { "loading": "Laden...", "error": "Fehler" },
+  "dashboard": {
+    "overview": {
+      "title": "Übersicht",
+      "description": "Ihre kognitive Karte und letzte Aktivitäten.",
+      "createMap": "Karte erstellen",
+      "loadingError": "Fehler beim Laden der Karten",
+      "tryAgain": "Versuchen Sie, die Seite zu aktualisieren"
+    }
+  }
+}

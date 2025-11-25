@@ -56,5 +56,14 @@
   "common": {
     "loading": "Loading...",
     "error": "Error"
+  },
+  "dashboard": {
+    "overview": {
+      "title": "Overview",
+      "description": "Your cognitive map and recent activities.",
+      "createMap": "Create map",
+      "loadingError": "Error loading maps",
+      "tryAgain": "Try refreshing the page"
+    }
   }
 }

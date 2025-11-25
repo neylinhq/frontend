@@ -1,92 +1,71 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
+import { Loader2, MailCheck } from 'lucide-react'
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router'
+import { useActionData, useNavigation, useSubmit } from 'react-router' // Используем нативный action
 import { z } from 'zod'
-
-import { useResetPasswordMutation } from '@/entities/session'
 import { Button } from '@/shared/ui/button'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form'
 import { Input } from '@/shared/ui/input'
-import { Label } from '@/shared/ui/label'
 
-const resetSchema = z.object({
-  email: z.string().email()
+const resetPasswordSchema = z.object({
+  email: z.string().email('Некорректный email')
 })
 
-type ResetValues = z.infer<typeof resetSchema>
+export function ResetPasswordForm() {
+  const navigation = useNavigation()
+  const actionData = useActionData<{ success?: boolean }>()
+  const submit = useSubmit()
 
-export const ResetPasswordForm = () => {
-  const [isSuccess, setIsSuccess] = useState(false)
-  const resetMutation = useResetPasswordMutation()
+  const isLoading = navigation.state === 'submitting'
+  const isSuccess = actionData?.success
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors }
-  } = useForm<ResetValues>({
-    resolver: zodResolver(resetSchema)
+  const form = useForm<z.infer<typeof resetPasswordSchema>>({
+    resolver: zodResolver(resetPasswordSchema),
+    defaultValues: {
+      email: ''
+    }
   })
-
-  const onSubmit = (data: ResetValues) => {
-    resetMutation.mutate(data.email, {
-      onSuccess: () => setIsSuccess(true)
-    })
-  }
-
-  const isSubmitting = resetMutation.isPending
 
   if (isSuccess) {
     return (
-      <div className="grid gap-6 text-center">
-        <div className="space-y-2">
-          <div className="flex justify-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
-              <svg
-                className="h-6 w-6"
-                fill="none"
-                height="24"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-                width="24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                <polyline points="22 4 12 14.01 9 11.01" />
-              </svg>
-            </div>
-          </div>
-          <h3 className="text-xl font-semibold">Check your email</h3>
+      <div className="text-center space-y-4 flex flex-col items-center">
+        <div className="h-16 w-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-4">
+          <MailCheck className="h-8 w-8 text-green-600 dark:text-green-400" />
         </div>
-        <Button asChild className="w-full" size="lg">
-          <Link to="/auth/sign-in">Back to Login</Link>
+        {/* <h3 className="text-md font-medium text-muted-foreground">проверьте почту</h3> */}
+        <Button variant="outline" className="w-full" asChild>
+          <a href="/auth/sign-in">Вернуться ко входу</a>
         </Button>
       </div>
     )
   }
 
   return (
-    <div className="grid gap-6">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="grid gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="m@example.com"
-              disabled={isSubmitting}
-              {...register('email')}
-            />
-            {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
-          </div>
-          <Button type="submit" disabled={isSubmitting} className="w-full">
-            {isSubmitting ? 'Sending...' : 'Send Reset Link'}
-          </Button>
-        </div>
+    <Form {...form}>
+      <form
+        className="grid gap-4"
+        onSubmit={form.handleSubmit(data => {
+          submit(data, { method: 'post' })
+        })}
+      >
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input placeholder="name@example.com" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          Сбросить пароль
+        </Button>
       </form>
-    </div>
+    </Form>
   )
 }

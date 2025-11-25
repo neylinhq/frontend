@@ -1,0 +1,12 @@
+import type { User } from '@/entities/user'
+
+export interface SessionData {
+  token: string
+  user: User
+}
+
+export interface SessionState {
+  user: User | null
+  isAuthenticated: boolean
+  setUser: (user: User | null) => void
+}

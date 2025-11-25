@@ -8,12 +8,10 @@ export default [
   route('auth/sign-in', 'routes/auth/sign-in.tsx'),
   route('auth/sign-up', 'routes/auth/sign-up.tsx'),
   route('auth/reset-password', 'routes/auth/reset-password.tsx'),
+  route('auth/logout', 'routes/auth/logout.ts'), // Logout action route
 
   // Dashboard Routes
   layout('routes/dashboard/layout.tsx', [
     route('dashboard/overview', 'routes/dashboard/overview.tsx')
-    // Будущие роуты:
-    // route('dashboard/maps/new', 'routes/dashboard/maps/new.tsx'),
-    // route('dashboard/maps/:mapId/view', 'routes/dashboard/maps/view.tsx'),
   ])
 ] satisfies RouteConfig

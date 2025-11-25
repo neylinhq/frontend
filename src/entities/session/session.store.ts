@@ -1,26 +1,9 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
-import type { User } from '@/entities/user'
+import type { SessionState } from './session.types'
 
-interface SessionState {
-  isAuthenticated: boolean
-  user: User | null
-  token: string | null
-  login: (user: User, token: string) => void
-  logout: () => void
-}
-
-export const useSessionStore = create<SessionState>()(
-  persist(
-    set => ({
-      isAuthenticated: false,
-      user: null,
-      token: null,
-      login: (user, token) => set({ isAuthenticated: true, user, token }),
-      logout: () => set({ isAuthenticated: false, user: null, token: null })
-    }),
-    {
-      name: 'arbor-session-storage'
-    }
-  )
-)
+// Store теперь "глупый", он просто хранит то, что пришло с сервера (гидратация)
+export const useSessionStore = create<SessionState>(set => ({
+  user: null,
+  isAuthenticated: false,
+  setUser: user => set({ user, isAuthenticated: !!user })
+}))

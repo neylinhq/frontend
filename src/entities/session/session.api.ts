@@ -7,6 +7,7 @@ const MOCK_USER: User = {
   firstName: 'Max',
   lastName: 'Robinson',
   role: 'user',
+  avatarUrl: 'https://github.com/shadcn.png',
   createdAt: new Date().toISOString()
 }
 

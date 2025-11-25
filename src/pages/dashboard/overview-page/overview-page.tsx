@@ -1,39 +1,30 @@
-import { Plus } from 'lucide-react'
+import { Loader2, Plus } from 'lucide-react'
 import { Link } from 'react-router'
-import type { MapEntity } from '@/entities/map'
+import { useMaps } from '@/entities/map'
 import { CreateMapCard } from '@/features/maps/create-map-button'
 import { MapCard } from '@/features/maps/map-card/map-card'
 import { Button } from '@/shared/ui/button'
 
-// Временные данные
-const MOCK_MAPS: MapEntity[] = [
-  {
-    id: '1',
-    title: 'Основы нейросетей',
-    description: 'Разбор архитектур трансформеров и их применение в NLP.',
-    createdAt: '2024-03-10T10:00:00Z',
-    updatedAt: '2024-03-20T15:30:00Z',
-    nodesCount: 42
-  },
-  {
-    id: '2',
-    title: 'История философии',
-    description: 'Связи между античными школами и современным экзистенциализмом.',
-    createdAt: '2024-02-15T09:00:00Z',
-    updatedAt: '2024-03-18T12:00:00Z',
-    nodesCount: 156
-  },
-  {
-    id: '3',
-    title: 'Мой стартап',
-    description: '',
-    createdAt: '2024-03-21T08:00:00Z',
-    updatedAt: '2024-03-21T08:05:00Z',
-    nodesCount: 3
-  }
-]
-
 export function OverviewPage() {
+  const { data: maps, isLoading, isError } = useMaps()
+
+  if (isLoading) {
+    return (
+      <div className="flex h-[calc(100vh-4rem)] items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    )
+  }
+
+  if (isError) {
+    return (
+      <div className="container mx-auto py-8 px-4 text-center">
+        <h2 className="text-lg font-semibold">Ошибка загрузки карт</h2>
+        <p className="text-muted-foreground">Попробуйте обновить страницу</p>
+      </div>
+    )
+  }
+
   return (
     <div className="container mx-auto py-8 px-4 md:px-8">
       <div className="flex items-center justify-between mb-8">
@@ -52,7 +43,7 @@ export function OverviewPage() {
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {MOCK_MAPS.map(map => (
+        {maps?.map(map => (
           <MapCard key={map.id} map={map} />
         ))}
 

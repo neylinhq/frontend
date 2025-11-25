@@ -1,4 +1,7 @@
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
+// Мы можем переиспользовать VITE_API_URL из shared/config, но пока что здесь старый код.
+// Рефакторинг api-client лучше делать отдельным шагом, чтобы не сломать типизацию ApiError.
+// Оставлю пока как есть, чтобы не трогать лишнего, но в будущем надо заменить на импорт из config.
 
 type RequestOptions = RequestInit & {
   json?: unknown

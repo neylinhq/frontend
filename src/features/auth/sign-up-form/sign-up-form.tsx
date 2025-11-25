@@ -1,80 +1,102 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
+import { useNavigation, useSubmit } from 'react-router'
 import { z } from 'zod'
-
-import { useRegisterMutation } from '@/entities/session'
 import { Button } from '@/shared/ui/button'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form'
 import { FormDivider } from '@/shared/ui/form-divider'
 import { Input } from '@/shared/ui/input'
-import { Label } from '@/shared/ui/label'
 
-const signUpSchema = z.object({
-  firstName: z.string().min(1, 'Required'),
-  lastName: z.string().min(1, 'Required'),
-  email: z.string().email(),
-  password: z.string().min(6, 'Min 6 chars')
-})
-
-type SignUpValues = z.infer<typeof signUpSchema>
-
-export const SignUpForm = () => {
-  const registerMutation = useRegisterMutation()
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors }
-  } = useForm<SignUpValues>({
-    resolver: zodResolver(signUpSchema)
+const signUpSchema = z
+  .object({
+    email: z.string().email('Некорректный email'),
+    password: z.string().min(8, 'Минимум 8 символов'),
+    confirmPassword: z.string()
+  })
+  .refine(data => data.password === data.confirmPassword, {
+    message: 'Пароли не совпадают',
+    path: ['confirmPassword']
   })
 
-  const onSubmit = (data: SignUpValues) => {
-    registerMutation.mutate(data)
-  }
+export function SignUpForm() {
+  const navigation = useNavigation()
+  const submit = useSubmit()
 
-  const isSubmitting = registerMutation.isPending
+  const isLoading = navigation.state === 'submitting'
+
+  const form = useForm<z.infer<typeof signUpSchema>>({
+    resolver: zodResolver(signUpSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+      confirmPassword: ''
+    }
+  })
 
   return (
     <div className="grid gap-6">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="grid gap-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="firstName">First name</Label>
-              <Input id="firstName" placeholder="Max" {...register('firstName')} />
-              {errors.firstName && (
-                <p className="text-sm text-destructive">{errors.firstName.message}</p>
-              )}
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="lastName">Last name</Label>
-              <Input id="lastName" placeholder="Robinson" {...register('lastName')} />
-              {errors.lastName && (
-                <p className="text-sm text-destructive">{errors.lastName.message}</p>
-              )}
-            </div>
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="m@example.com" {...register('email')} />
-            {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" {...register('password')} />
-            {errors.password && (
-              <p className="text-sm text-destructive">{errors.password.message}</p>
+      <Form {...form}>
+        <form
+          className="grid gap-4"
+          onSubmit={form.handleSubmit(data => {
+            submit(data, { method: 'post' })
+          })}
+        >
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input placeholder="name@example.com" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             )}
-          </div>
-          <Button type="submit" disabled={isSubmitting} className="w-full">
-            {isSubmitting ? 'Creating account...' : 'Create account'}
+          />
+
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Пароль</FormLabel>
+                <FormControl>
+                  <Input type="password" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Повторите пароль</FormLabel>
+                <FormControl>
+                  <Input type="password" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Создать аккаунт
           </Button>
-        </div>
-      </form>
-      <FormDivider>Or continue with</FormDivider>
-      <Button variant="outline" type="button" disabled={isSubmitting} className="w-full">
-        Sign up with Google
-      </Button>
+
+          <FormDivider>или</FormDivider>
+
+          <Button variant="outline" className="w-full" type="button">
+            Войти через GitHub
+          </Button>
+        </form>
+      </Form>
     </div>
   )
 }

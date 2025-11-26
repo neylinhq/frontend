@@ -9,7 +9,7 @@
       "forgotPassword": "Passwort vergessen?",
       "submitButton": "Anmelden",
       "orDivider": "oder",
-      "githubButton": "Mit GitHub fortfahren",
+      "githubButton": "GitHub",
       "noAccount": "Haben Sie kein Konto?",
       "signUpLink": "Registrieren"
     },
@@ -18,24 +18,24 @@
       "description": "Geben Sie Ihre E-Mail ein, um ein neues Konto zu erstellen",
       "emailLabel": "E-Mail",
       "passwordLabel": "Passwort",
-      "confirmPasswordLabel": "Passwort bestätigen",
-      "submitButton": "Konto erstellen",
+      "confirmPasswordLabel": "Bestätigen",
+      "submitButton": "Erstellen",
       "hasAccount": "Haben Sie bereits ein Konto?",
       "signInLink": "Anmelden",
       "consent": "Mit der Registrierung stimmen Sie unseren",
-      "termsLink": "Nutzungsbedingungen",
+      "termsLink": "Bedingungen",
       "and": "und der",
-      "privacyLink": "Datenschutzerklärung zu"
+      "privacyLink": "Datenschutz"
     },
     "resetPassword": {
       "title": "Passwort zurücksetzen",
       "description": "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum Zurücksetzen Ihres Passworts.",
       "emailLabel": "E-Mail",
-      "submitButton": "Passwort zurücksetzen",
+      "submitButton": "Zurücksetzen",
       "rememberPassword": "Passwort wiedererinnert?",
       "signInLink": "Anmelden",
       "checkEmailTitle": "Überprüfen Sie Ihre E-Mail",
-      "backToSignIn": "Zurück zur Anmeldung"
+      "backToSignIn": "Zurück"
     }
   },
   "validation": {
@@ -50,20 +50,29 @@
     "billing": "Abrechnung",
     "logout": "Abmelden",
     "theme": "Design",
-    "language": "Sprache"
+    "language": "Sprache",
+    "menu": "Menü",
+    "overview": "Übersicht",
+    "myMaps": "Karten",
+    "aiLab": "AI Lab",
+    "knowledgeBase": "Wissen"
   },
-  "theme": { "light": "Hell", "dark": "Dunkel", "system": "System" },
+  "theme": {
+    "light": "Hell",
+    "dark": "Dunkel",
+    "system": "System"
+  },
   "common": {
-    "loading": "Laden...",
+    "loading": "Laden",
     "error": "Fehler",
     "created": "Erstellt",
     "updated": "Aktualisiert",
     "all": "Alle",
-    "backToOverview": "Zurück zur Übersicht",
-    "save": "Änderungen speichern",
+    "backToOverview": "Zurück",
+    "save": "Speichern",
     "cancel": "Abbrechen",
-    "enable": "Aktivieren",
-    "disable": "Deaktivieren"
+    "enable": "An",
+    "disable": "Aus"
   },
   "home": {
     "tagline": "Visualisieren und strukturieren Sie Ihr Wissen mit interaktiven kognitiven Karten",
@@ -82,7 +91,7 @@
       }
     },
     "cta": {
-      "getStarted": "Jetzt starten",
+      "getStarted": "Start",
       "signIn": "Anmelden"
     },
     "alphaNotice": "🚀 Derzeit in Alpha-Tests. Einige Funktionen können instabil sein."
@@ -91,9 +100,9 @@
     "overview": {
       "title": "Übersicht",
       "description": "Ihre kognitive Karte und letzte Aktivitäten.",
-      "createMap": "Karte erstellen",
-      "loadingError": "Fehler beim Laden der Karten",
-      "tryAgain": "Versuchen Sie, die Seite zu aktualisieren"
+      "createMap": "Erstellen",
+      "loadingError": "Fehler",
+      "tryAgain": "Aktualisieren"
     },
     "createMap": {
       "title": "Neue Karte",
@@ -101,10 +110,10 @@
     },
     "mapCard": {
       "menu": "Menü",
-      "edit": "Bearbeiten",
+      "edit": "Ändern",
       "delete": "Löschen",
-      "noDescription": "Keine Beschreibung",
-      "concepts": "Konzepte",
+      "noDescription": "—",
+      "concepts": "Elemente",
       "updated": "Aktualisiert"
     }
   },
@@ -528,24 +537,24 @@
   "form": {
     "complexity": {
       "label": "Komplexität",
-      "placeholder": "Wählen Sie die Komplexitätsstufe aus",
+      "placeholder": "Stufe",
       "basic": "Grundlegend",
       "intermediate": "Mittelstufe",
       "advanced": "Fortgeschritten"
     },
     "metadata": {
       "label": "Titel",
-      "labelPlaceholder": "Knotentitel eingeben...",
-      "save": "Änderungen speichern",
-      "saving": "Wird gespeichert..."
+      "labelPlaceholder": "Titel...",
+      "save": "Speichern",
+      "saving": "Speichern"
     },
     "tags": {
       "label": "Tags",
-      "placeholder": "Ein Tag hinzufügen...",
+      "placeholder": "Tag...",
       "add": "Hinzufügen"
     },
     "nodeType": {
-      "label": "Knotentyp"
+      "label": "Typ"
     }
   },
   "languageSwitcher": {
@@ -574,38 +583,38 @@
     "loadingError": "Ladefehler",
     "loadingErrorMessage": "Wissensgraph konnte nicht geladen werden",
     "toolbar": {
-      "aiAnalysis": "KI-Analyse",
-      "center": "Zentrieren",
-      "centerTooltip": "Zentrieren",
+      "aiAnalysis": "KI",
+      "center": "Mitte",
+      "centerTooltip": "Mitte",
       "zoomIn": "Vergrößern",
       "zoomOut": "Verkleinern",
-      "showMinimap": "Minimap anzeigen",
-      "hideMinimap": "Minimap ausblenden",
-      "fullscreen": "Vollbildmodus",
-      "exitFullscreen": "Vollbild beenden",
+      "showMinimap": "Karte",
+      "hideMinimap": "Ohne Karte",
+      "fullscreen": "Vollbild",
+      "exitFullscreen": "Beenden",
       "focusMode": "Fokus",
-      "selectLayout": "Layout wählen",
-      "clearFilters": "Alle löschen",
+      "selectLayout": "Layout",
+      "clearFilters": "Reset",
       "filters": "Filter",
       "depth": "Tiefe",
-      "clearFocus": "Zurücksetzen",
-      "focusHint": "Klicken Sie auf einen Knoten zum Fokussieren",
+      "clearFocus": "Reset",
+      "focusHint": "Knoten klicken",
       "spacing": "Abstand",
-      "layoutSettings": "Layout-Einstellungen",
+      "layoutSettings": "Einstellungen",
       "direction": "Richtung",
       "directionHint": "0 = weniger Kreuzungen, 200 = natürlicher Fluss"
     },
     "nodeControls": {
-      "title": "Ansichtssteuerung",
-      "focusMode": "Fokusmodus",
+      "title": "Steuerung",
+      "focusMode": "Fokus",
       "focusModeDescription": "Nur verbundene Knoten anzeigen",
-      "connectionDepth": "Verbindungstiefe",
+      "connectionDepth": "Tiefe",
       "hops": "Schritte",
-      "edgeDirection": "Kantenrichtung",
-      "incoming": "Eingehend",
-      "outgoing": "Ausgehend",
+      "edgeDirection": "Richtung",
+      "incoming": "Ein",
+      "outgoing": "Aus",
       "all": "Alle",
-      "edgeTypes": "Verbindungstypen"
+      "edgeTypes": "Typen"
     },
     "node": {
       "moreDetails": "Mehr Details",
@@ -767,26 +776,26 @@
       }
     },
     "billing": {
-      "title": "Abrechnung & Abonnement",
+      "title": "Abrechnung",
       "description": "Verwalten Sie Ihr Abonnement und Zahlungsdetails",
       "tabs": {
         "overview": "Übersicht",
         "plans": "Tarife",
-        "paymentMethods": "Zahlungsmethoden",
+        "paymentMethods": "Zahlung",
         "history": "Verlauf"
       },
       "currentPlan": {
-        "title": "Aktueller Tarif",
+        "title": "Tarif",
         "description": "Ihr aktives Abonnement"
       },
-      "managePlan": "Tarif verwalten",
-      "cancelSubscription": "Abonnement kündigen",
-      "cancelScheduled": "Ihr Abonnement wird am {{date}} gekündigt",
+      "managePlan": "Verwalten",
+      "cancelSubscription": "Kündigen",
+      "cancelScheduled": "Wird {{date}} gekündigt",
       "paymentMethods": {
-        "title": "Zahlungsmethoden",
+        "title": "Zahlung",
         "description": "Verwalten Sie Ihre Zahlungsmethoden",
-        "add": "Zahlungsmethode hinzufügen",
-        "empty": "Noch keine Zahlungsmethoden hinzugefügt"
+        "add": "Hinzufügen",
+        "empty": "Keine"
       }
     }
   },

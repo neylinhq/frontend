@@ -5,7 +5,7 @@ export function PrivacyPage() {
   const { t } = useTranslation()
 
   return (
-    <LegalLayout pageType="privacy">
+    <LegalLayout>
       <h1>{t('legal.privacy.title')}</h1>
       <p className="lead">{t('legal.privacy.description')}</p>
 

@@ -9,7 +9,7 @@
       "forgotPassword": "Забыли пароль?",
       "submitButton": "Войти",
       "orDivider": "или",
-      "githubButton": "Войти через GitHub",
+      "githubButton": "GitHub",
       "noAccount": "Нет аккаунта?",
       "signUpLink": "Регистрация"
     },
@@ -18,24 +18,24 @@
       "description": "Введите email для создания новой учетной записи",
       "emailLabel": "Email",
       "passwordLabel": "Пароль",
-      "confirmPasswordLabel": "Повторите пароль",
-      "submitButton": "Создать аккаунт",
+      "confirmPasswordLabel": "Пароль еще раз",
+      "submitButton": "Создать",
       "hasAccount": "Уже есть аккаунт?",
       "signInLink": "Войти",
       "consent": "Регистрируясь, вы соглашаетесь с",
-      "termsLink": "Условиями использования",
+      "termsLink": "Условиями",
       "and": "и",
-      "privacyLink": "Политикой конфиденциальности"
+      "privacyLink": "Политикой"
     },
     "resetPassword": {
       "title": "Сброс пароля",
       "description": "Введите ваш email, и мы отправим вам ссылку для сброса пароля.",
       "emailLabel": "Email",
-      "submitButton": "Сбросить пароль",
+      "submitButton": "Сбросить",
       "rememberPassword": "Вспомнили пароль?",
       "signInLink": "Войти",
       "checkEmailTitle": "Проверьте почту",
-      "backToSignIn": "Вернуться ко входу"
+      "backToSignIn": "Вернуться"
     }
   },
   "validation": {
@@ -53,51 +53,51 @@
     "language": "Язык",
     "menu": "Меню",
     "overview": "Обзор",
-    "myMaps": "Мои карты",
-    "aiLab": "AI Лаборатория",
-    "knowledgeBase": "База знаний"
+    "myMaps": "Карты",
+    "aiLab": "AI Лаб",
+    "knowledgeBase": "Знания"
   },
   "theme": {
     "light": "Светлая",
     "dark": "Темная",
-    "system": "Системная"
+    "system": "Система"
   },
   "common": {
-    "loading": "Загрузка...",
+    "loading": "Загрузка",
     "error": "Ошибка",
     "created": "Создан",
     "updated": "Обновлен",
     "all": "Все",
-    "backToOverview": "Вернуться к обзору",
-    "save": "Сохранить изменения",
+    "backToOverview": "Обзор",
+    "save": "Сохранить",
     "cancel": "Отмена",
-    "enable": "Включить",
-    "disable": "Отключить"
+    "enable": "Вкл",
+    "disable": "Откл"
   },
   "home": {
     "tagline": "Визуализируйте и структурируйте свои знания с помощью интерактивных когнитивных карт. Создавайте, связывайте и исследуйте свои идеи в интуитивном граф-пространстве.",
     "headline": "Мысли графами,",
     "headlinePart2": "не списками",
-    "headlineSub": "Строй связи.",
-    "alphaNotice": "Сейчас в альфа-тестировании",
-    "badge": "Открытая альфа",
+    "headlineSub": "Строй связи",
+    "alphaNotice": "В альфа-тестировании",
+    "badge": "Альфа",
     "subheadline": "Визуальное пространство для организации знаний и поиска связей.",
     "productDemo": "Демонстрация продукта",
     "nav": {
       "features": "Функции",
-      "howItWorks": "Как это работает",
-      "pricing": "Тарифы",
+      "howItWorks": "Как это",
+      "pricing": "Цены",
       "home": "Главная"
     },
     "cta": {
-      "getStarted": "Начать работу",
+      "getStarted": "Начать",
       "signIn": "Войти",
-      "startFree": "Начать бесплатно",
-      "seeHow": "Узнать как это работает",
-      "getStartedFree": "Начать бесплатно",
+      "startFree": "Начать",
+      "seeHow": "Узнать как",
+      "getStartedFree": "Начать",
       "ready": "Готовы начать?",
       "freeInfo": "Бесплатный тариф. Карта не требуется.",
-      "createAccount": "Создать бесплатный аккаунт"
+      "createAccount": "Создать"
     },
     "stats": {
       "users": "Пользователей",
@@ -186,9 +186,9 @@
     "overview": {
       "title": "Обзор",
       "description": "Ваша когнитивная карта и последние активности.",
-      "createMap": "Создать карту",
-      "loadingError": "Ошибка загрузки карт",
-      "tryAgain": "Попробуйте обновить страницу"
+      "createMap": "Создать",
+      "loadingError": "Ошибка",
+      "tryAgain": "Обновить"
     },
     "createMap": {
       "title": "Новая карта",
@@ -196,10 +196,10 @@
     },
     "mapCard": {
       "menu": "Меню",
-      "edit": "Редактировать",
+      "edit": "Изменить",
       "delete": "Удалить",
-      "noDescription": "Нет описания",
-      "concepts": "концептов",
+      "noDescription": "—",
+      "concepts": "элементов",
       "updated": "Изменено"
     }
   },
@@ -213,24 +213,24 @@
       "path": "Путь"
     },
     "toolbar": {
-      "aiAnalysis": "ИИ-анализ",
+      "aiAnalysis": "AI",
       "center": "Центр",
-      "centerTooltip": "Центрировать",
+      "centerTooltip": "Центр",
       "zoomIn": "Увеличить",
       "zoomOut": "Уменьшить",
-      "showMinimap": "Показать миникарту",
-      "hideMinimap": "Скрыть миникарту",
-      "fullscreen": "Полноэкранный режим",
-      "exitFullscreen": "Выход из полноэкранного режима",
+      "showMinimap": "Карта",
+      "hideMinimap": "Без карты",
+      "fullscreen": "На весь экран",
+      "exitFullscreen": "Выход",
       "focusMode": "Фокус",
-      "selectLayout": "Выбрать макет",
-      "clearFilters": "Очистить всё",
+      "selectLayout": "Макет",
+      "clearFilters": "Сброс",
       "filters": "Фильтры",
       "depth": "Глубина",
-      "clearFocus": "Сбросить",
-      "focusHint": "Нажмите на узел для фокусировки",
+      "clearFocus": "Сброс",
+      "focusHint": "Нажмите на узел",
       "spacing": "Отступы",
-      "layoutSettings": "Настройки макета",
+      "layoutSettings": "Настройки",
       "direction": "Направление",
       "directionHint": "0 = меньше пересечений, 200 = естественный поток"
     },
@@ -249,17 +249,17 @@
       "school": "Школа"
     },
     "nodeControls": {
-      "title": "Управление видом",
-      "focusMode": "Режим фокуса",
+      "title": "Управление",
+      "focusMode": "Фокус",
       "focusModeDescription": "Показывать только связанные узлы",
-      "clearFocus": "Сбросить фокус",
-      "connectionDepth": "Глубина связей",
+      "clearFocus": "Сброс",
+      "connectionDepth": "Глубина",
       "hops": "шагов",
-      "edgeDirection": "Направление связей",
+      "edgeDirection": "Направление",
       "incoming": "Вход",
       "outgoing": "Выход",
       "all": "Все",
-      "edgeTypes": "Типы связей"
+      "edgeTypes": "Связи"
     },
     "node": {
       "moreDetails": "Подробнее",
@@ -299,12 +299,12 @@
       "reviews": "Повторений"
     },
     "connections": {
-      "noConnections": "Нет связей с этим узлом",
+      "noConnections": "Нет связей",
       "all": "Все",
       "incoming": "Входящие",
       "outgoing": "Исходящие"
     },
-    "edit": "Редактировать"
+    "edit": "Изменить"
   },
   "mapView": {
     "navigationError": "Ошибка навигации",
@@ -760,24 +760,24 @@
   "form": {
     "complexity": {
       "label": "Сложность",
-      "placeholder": "Выберите уровень сложности",
+      "placeholder": "Уровень",
       "basic": "Базовая",
       "intermediate": "Средняя",
       "advanced": "Продвинутая"
     },
     "metadata": {
       "label": "Название",
-      "labelPlaceholder": "Введите название узла...",
-      "save": "Сохранить изменения",
-      "saving": "Сохранение..."
+      "labelPlaceholder": "Название...",
+      "save": "Сохранить",
+      "saving": "Сохранение"
     },
     "tags": {
       "label": "Теги",
-      "placeholder": "Добавить тег...",
+      "placeholder": "Тег...",
       "add": "Добавить"
     },
     "nodeType": {
-      "label": "Тип узла"
+      "label": "Тип"
     }
   },
   "languageSwitcher": {
@@ -939,26 +939,26 @@
       }
     },
     "billing": {
-      "title": "Биллинг и подписка",
+      "title": "Биллинг",
       "description": "Управление подпиской и платежными данными",
       "tabs": {
         "overview": "Обзор",
         "plans": "Тарифы",
-        "paymentMethods": "Способы оплаты",
+        "paymentMethods": "Оплата",
         "history": "История"
       },
       "currentPlan": {
-        "title": "Текущий тариф",
+        "title": "Тариф",
         "description": "Ваша активная подписка"
       },
-      "managePlan": "Управление тарифом",
-      "cancelSubscription": "Отменить подписку",
-      "cancelScheduled": "Ваша подписка будет отменена {{date}}",
+      "managePlan": "Управление",
+      "cancelSubscription": "Отменить",
+      "cancelScheduled": "Отменяется {{date}}",
       "paymentMethods": {
-        "title": "Способы оплаты",
+        "title": "Оплата",
         "description": "Управление способами оплаты",
-        "add": "Добавить способ оплаты",
-        "empty": "Способы оплаты не добавлены"
+        "add": "Добавить",
+        "empty": "Нет"
       }
     }
   },

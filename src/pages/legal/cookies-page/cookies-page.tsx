@@ -5,7 +5,7 @@ export function CookiesPage() {
   const { t } = useTranslation()
 
   return (
-    <LegalLayout pageType="cookies">
+    <LegalLayout>
       <h1>{t('legal.cookies.title')}</h1>
       <p className="lead">{t('legal.cookies.description')}</p>
 

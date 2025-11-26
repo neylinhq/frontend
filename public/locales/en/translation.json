@@ -7,9 +7,9 @@
       "emailPlaceholder": "name@example.com",
       "passwordLabel": "Password",
       "forgotPassword": "Forgot password?",
-      "submitButton": "Sign In",
+      "submitButton": "Sign in",
       "orDivider": "or",
-      "githubButton": "Continue with GitHub",
+      "githubButton": "GitHub",
       "noAccount": "Don't have an account?",
       "signUpLink": "Sign up"
     },
@@ -18,24 +18,24 @@
       "description": "Enter your email to create a new account",
       "emailLabel": "Email",
       "passwordLabel": "Password",
-      "confirmPasswordLabel": "Confirm password",
-      "submitButton": "Create account",
+      "confirmPasswordLabel": "Confirm",
+      "submitButton": "Create",
       "hasAccount": "Already have an account?",
       "signInLink": "Sign in",
       "consent": "By signing up, you agree to our",
-      "termsLink": "Terms of Service",
+      "termsLink": "Terms",
       "and": "and",
-      "privacyLink": "Privacy Policy"
+      "privacyLink": "Privacy"
     },
     "resetPassword": {
       "title": "Reset password",
       "description": "Enter your email address and we will send you a link to reset your password.",
       "emailLabel": "Email",
-      "submitButton": "Reset password",
+      "submitButton": "Reset",
       "rememberPassword": "Remember your password?",
       "signInLink": "Sign in",
       "checkEmailTitle": "Check your email",
-      "backToSignIn": "Back to sign in"
+      "backToSignIn": "Back"
     }
   },
   "validation": {
@@ -53,9 +53,9 @@
     "language": "Language",
     "menu": "Menu",
     "overview": "Overview",
-    "myMaps": "My Maps",
+    "myMaps": "Maps",
     "aiLab": "AI Lab",
-    "knowledgeBase": "Knowledge Base"
+    "knowledgeBase": "Knowledge"
   },
   "theme": {
     "light": "Light",
@@ -63,16 +63,16 @@
     "system": "System"
   },
   "common": {
-    "loading": "Loading...",
+    "loading": "Loading",
     "error": "Error",
     "created": "Created",
     "updated": "Updated",
     "all": "All",
-    "backToOverview": "Back to overview",
-    "save": "Save changes",
+    "backToOverview": "Overview",
+    "save": "Save",
     "cancel": "Cancel",
-    "enable": "Enable",
-    "disable": "Disable"
+    "enable": "On",
+    "disable": "Off"
   },
   "home": {
     "tagline": "Visualize and structure your knowledge with interactive cognitive maps. Create, connect, and explore your ideas in an intuitive graph-based workspace.",
@@ -85,19 +85,19 @@
     "productDemo": "Product Demo",
     "nav": {
       "features": "Features",
-      "howItWorks": "How it works",
+      "howItWorks": "How it",
       "pricing": "Pricing",
       "home": "Home"
     },
     "cta": {
       "getStarted": "Get Started",
       "signIn": "Sign in",
-      "startFree": "Start for free",
-      "seeHow": "See how it works",
-      "getStartedFree": "Get Started Free",
+      "startFree": "Start Free",
+      "seeHow": "See how",
+      "getStartedFree": "Get Started",
       "ready": "Ready to start?",
       "freeInfo": "Free tier available. No credit card required.",
-      "createAccount": "Create Free Account"
+      "createAccount": "Create"
     },
     "stats": {
       "users": "Users",
@@ -133,6 +133,22 @@
       "analytics": {
         "title": "Analytics",
         "description": "Track your knowledge growth with detailed insights and patterns."
+      },
+      "graphThinking": {
+        "title": "Graph thinking",
+        "description": "Visualize connections between ideas. See patterns emerge naturally."
+      },
+      "hierarchy": {
+        "title": "Hierarchy",
+        "description": "Organize thoughts with nested nodes. Zoom in or zoom out."
+      },
+      "performance": {
+        "title": "Fast",
+        "description": "Built with React Flow. Handles thousands of nodes smoothly."
+      },
+      "localFirst": {
+        "title": "Local-first",
+        "description": "Your data stays on your machine. Export anytime."
       }
     },
     "howItWorks": {
@@ -186,9 +202,9 @@
     "overview": {
       "title": "Overview",
       "description": "Your cognitive map and recent activities.",
-      "createMap": "Create map",
-      "loadingError": "Error loading maps",
-      "tryAgain": "Try refreshing the page"
+      "createMap": "Create",
+      "loadingError": "Error",
+      "tryAgain": "Refresh"
     },
     "createMap": {
       "title": "New map",
@@ -198,8 +214,8 @@
       "menu": "Menu",
       "edit": "Edit",
       "delete": "Delete",
-      "noDescription": "No description",
-      "concepts": "concepts",
+      "noDescription": "—",
+      "concepts": "items",
       "updated": "Updated"
     }
   },
@@ -213,24 +229,24 @@
       "path": "Path"
     },
     "toolbar": {
-      "aiAnalysis": "AI Analysis",
+      "aiAnalysis": "AI",
       "center": "Center",
-      "centerTooltip": "Center view",
+      "centerTooltip": "Center",
       "zoomIn": "Zoom in",
       "zoomOut": "Zoom out",
-      "showMinimap": "Show minimap",
-      "hideMinimap": "Hide minimap",
-      "fullscreen": "Fullscreen mode",
-      "exitFullscreen": "Exit fullscreen",
+      "showMinimap": "Map",
+      "hideMinimap": "No map",
+      "fullscreen": "Full screen",
+      "exitFullscreen": "Exit",
       "focusMode": "Focus",
-      "selectLayout": "Select layout",
-      "clearFilters": "Clear all",
+      "selectLayout": "Layout",
+      "clearFilters": "Reset",
       "filters": "Filters",
       "depth": "Depth",
-      "clearFocus": "Clear",
-      "focusHint": "Click a node to focus",
+      "clearFocus": "Reset",
+      "focusHint": "Click node",
       "spacing": "Spacing",
-      "layoutSettings": "Layout settings",
+      "layoutSettings": "Settings",
       "direction": "Direction",
       "directionHint": "0 = less crossings, 200 = natural flow"
     },
@@ -249,17 +265,17 @@
       "school": "School"
     },
     "nodeControls": {
-      "title": "View Controls",
-      "focusMode": "Focus mode",
+      "title": "Controls",
+      "focusMode": "Focus",
       "focusModeDescription": "Show only connected nodes",
-      "clearFocus": "Clear focus",
-      "connectionDepth": "Connection depth",
+      "clearFocus": "Reset",
+      "connectionDepth": "Depth",
       "hops": "hops",
-      "edgeDirection": "Edge direction",
+      "edgeDirection": "Direction",
       "incoming": "In",
       "outgoing": "Out",
       "all": "All",
-      "edgeTypes": "Connection types"
+      "edgeTypes": "Types"
     },
     "node": {
       "moreDetails": "More details",
@@ -734,24 +750,24 @@
   "form": {
     "complexity": {
       "label": "Complexity",
-      "placeholder": "Select complexity level",
+      "placeholder": "Level",
       "basic": "Basic",
       "intermediate": "Intermediate",
       "advanced": "Advanced"
     },
     "metadata": {
       "label": "Label",
-      "labelPlaceholder": "Enter node label...",
-      "save": "Save Changes",
-      "saving": "Saving..."
+      "labelPlaceholder": "Label...",
+      "save": "Save",
+      "saving": "Saving"
     },
     "tags": {
       "label": "Tags",
-      "placeholder": "Add a tag...",
+      "placeholder": "Tag...",
       "add": "Add"
     },
     "nodeType": {
-      "label": "Node Type"
+      "label": "Type"
     }
   },
   "languageSwitcher": {

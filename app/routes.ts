@@ -1,15 +1,26 @@
 import { index, layout, type RouteConfig, route } from '@react-router/dev/routes'
 
 export default [
-  index('routes/home.tsx'),
-  route('ui', 'routes/ui.tsx'),
-  route('pricing', 'routes/pricing.tsx'),
+  // Public Routes (with shared header/footer)
+  layout('routes/public/layout.tsx', [
+    index('routes/home.tsx'),
+    route('pricing', 'routes/pricing.tsx'),
+    route('legal/terms', 'routes/legal/terms.tsx'),
+    route('legal/privacy', 'routes/legal/privacy.tsx'),
+    route('legal/cookies', 'routes/legal/cookies.tsx'),
+    route('legal/license', 'routes/legal/license.tsx')
+  ]),
 
-  // Auth Routes
-  route('auth/sign-in', 'routes/auth/sign-in.tsx'),
-  route('auth/sign-up', 'routes/auth/sign-up.tsx'),
-  route('auth/reset-password', 'routes/auth/reset-password.tsx'),
-  route('auth/logout', 'routes/auth/logout.ts'), // Logout action route
+  // UI Showcase (standalone)
+  route('ui', 'routes/ui.tsx'),
+
+  // Auth Routes (with header, no footer, centered)
+  layout('routes/auth/layout.tsx', [
+    route('auth/sign-in', 'routes/auth/sign-in.tsx'),
+    route('auth/sign-up', 'routes/auth/sign-up.tsx'),
+    route('auth/reset-password', 'routes/auth/reset-password.tsx')
+  ]),
+  route('auth/logout', 'routes/auth/logout.ts'),
 
   // Dashboard Routes
   layout('routes/dashboard/layout.tsx', [
@@ -27,12 +38,6 @@ export default [
       route('dashboard/settings/billing', 'routes/dashboard/settings/billing.tsx')
     ])
   ]),
-
-  // Legal Routes
-  route('legal/terms', 'routes/legal/terms.tsx'),
-  route('legal/privacy', 'routes/legal/privacy.tsx'),
-  route('legal/cookies', 'routes/legal/cookies.tsx'),
-  route('legal/license', 'routes/legal/license.tsx'),
 
   // 404 Route
   route('*', 'routes/404.tsx')

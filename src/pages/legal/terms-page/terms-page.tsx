@@ -5,7 +5,7 @@ export function TermsPage() {
   const { t } = useTranslation()
 
   return (
-    <LegalLayout pageType="terms">
+    <LegalLayout>
       <h1>{t('legal.terms.title')}</h1>
       <p className="lead">{t('legal.terms.description')}</p>
 

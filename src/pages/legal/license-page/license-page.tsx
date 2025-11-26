@@ -5,7 +5,7 @@ export function LicensePage() {
   const { t } = useTranslation()
 
   return (
-    <LegalLayout pageType="license">
+    <LegalLayout>
       <h1>{t('legal.license.title')}</h1>
       <p className="lead">{t('legal.license.description')}</p>
 

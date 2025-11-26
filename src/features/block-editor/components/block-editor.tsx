@@ -1,6 +1,5 @@
 'use client'
 
-import { TextSelection } from '@tiptap/pm/state'
 import { EditorContent, useEditor } from '@tiptap/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -75,46 +74,9 @@ export function BlockEditor({
 
         return false
       },
-      handleTripleClick: (view, pos) => {
-        // Skip on touch devices
-        if (window.matchMedia('(pointer: coarse)').matches) return false
-
-        const $pos = view.state.doc.resolve(pos)
-
-        if ($pos.depth >= 1) {
-          const blockStart = $pos.before(1)
-          const blockEnd = $pos.after(1)
-          const blockDom = view.nodeDOM(blockStart) as HTMLElement
-
-          if (blockDom) {
-            // Remove previous selection
-            document.querySelectorAll('.block-selected').forEach(el => {
-              el.classList.remove('block-selected')
-            })
-
-            // Add class
-            blockDom.classList.add('block-selected')
-
-            // Cleanup on next action
-            const cleanup = () => {
-              blockDom.classList.remove('block-selected')
-              view.dom.removeEventListener('mousedown', cleanup)
-              view.dom.removeEventListener('keydown', cleanup)
-            }
-
-            view.dom.addEventListener('mousedown', cleanup)
-            view.dom.addEventListener('keydown', cleanup)
-          }
-
-          // Select entire block text
-          const selection = TextSelection.create(view.state.doc, blockStart + 1, blockEnd - 1)
-          view.dispatch(view.state.tr.setSelection(selection))
-
-          return true // Prevent default triple-click behavior
-        }
-
-        return false
-      }
+      // Triple-click: let default behavior select paragraph text
+      // TODO: Block highlight requires ProseMirror Decoration for proper implementation
+      handleTripleClick: () => false
     },
     onUpdate: ({ editor }) => {
       if (onChange) {

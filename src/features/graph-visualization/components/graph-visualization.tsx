@@ -18,6 +18,7 @@ import { useFullMap, type FullMap } from '@/entities/map'
 import { cn } from '@/shared/lib/cn'
 import { Card } from '@/shared/ui/card'
 import { transformEdgesToFlow, transformNodesToFlow } from '../lib/transform-data'
+import { useAnimatedLayout } from '../lib/use-animated-layout'
 import { useGraphControls } from '../model/graph-controls.hooks'
 import { useNodeSelection } from '../model/node-selection.hooks'
 import { NodeDrawer } from '@/features/node-drawer'
@@ -91,6 +92,7 @@ function GraphVisualizationContent({
   const { visibleNodeTypes, visibleEdgeTypes } = useFilters()
   const { showMinimap } = useGraphUI()
   const { nodeSpacing, directionStrength } = useNodeSpacing()
+  const { animateToPositions } = useAnimatedLayout()
 
   // Use refs for layout params to avoid stale closures when triggerLayout fires
   const layoutParamsRef = useRef({ nodeSpacing, viewMode, focusedNodeId, directionStrength })
@@ -214,28 +216,28 @@ function GraphVisualizationContent({
       directionStrength: params.directionStrength,
     })
 
-    // Add transition style for smooth animation when layout changes
-    const nodesWithAnimation = animated
-      ? result.nodes.map(node => ({
-          ...node,
-          style: { ...node.style, transition: 'transform 0.3s ease-out' },
-        }))
-      : result.nodes
-
-    setNodes(nodesWithAnimation)
-
-    // If anchor node specified, center on it after layout
-    if (anchorNodeId) {
-      const anchorNode = result.nodes.find(n => n.id === anchorNodeId)
-      if (anchorNode) {
-        const x = anchorNode.position.x + (anchorNode.measured?.width ?? 200) / 2
-        const y = anchorNode.position.y + (anchorNode.measured?.height ?? 100) / 2
-        setTimeout(() => setCenter(x, y, { zoom: viewportZoom, duration: 200 }), 50)
+    if (animated) {
+      // Smooth animation with synchronized camera
+      animateToPositions(reactFlowNodes, result.nodes, anchorNodeId ?? null)
+      // If no anchor but need to fit view, do it after animation completes
+      if (!anchorNodeId && shouldFitView) {
+        setTimeout(() => fitView({ padding: 0.2, duration: 300 }), 350)
       }
-    } else if (shouldFitView) {
-      setTimeout(() => fitView({ padding: 0.2, duration: 300 }), 50)
+    } else {
+      // Instant update
+      setNodes(result.nodes)
+      if (anchorNodeId) {
+        const anchorNode = result.nodes.find(n => n.id === anchorNodeId)
+        if (anchorNode) {
+          const x = anchorNode.position.x + (anchorNode.measured?.width ?? 200) / 2
+          const y = anchorNode.position.y + (anchorNode.measured?.height ?? 100) / 2
+          setCenter(x, y, { zoom: viewportZoom, duration: 300 })
+        }
+      } else if (shouldFitView) {
+        fitView({ padding: 0.2, duration: 300 })
+      }
     }
-  }, [reactFlowNodes, reactFlowEdges, setNodes, fitView, setCenter, viewportZoom])
+  }, [reactFlowNodes, reactFlowEdges, setNodes, fitView, setCenter, viewportZoom, animateToPositions])
 
   // Apply initial auto-layout when nodes are first loaded
   useEffect(() => {
@@ -281,16 +283,13 @@ function GraphVisualizationContent({
           spacingPercent: nodeSpacing,
           directionStrength,
         })
-        const nodesWithAnimation = result.nodes.map(node => ({
-          ...node,
-          style: { ...node.style, transition: 'transform 0.3s ease-out' },
-        }))
-        setNodes(nodesWithAnimation)
-        setTimeout(() => fitView({ padding: 0.2, duration: 300 }), 50)
+        // Animate to new positions
+        animateToPositions(reactFlowNodes, result.nodes, null)
+        setTimeout(() => fitView({ padding: 0.2, duration: 300 }), 350)
       }
       prevNodeIdsRef.current = nodeIds
     }
-  }, [initialNodes, initialEdges, viewMode, focusedNodeId, nodeSpacing, directionStrength, setNodes, fitView])
+  }, [initialNodes, initialEdges, viewMode, focusedNodeId, nodeSpacing, directionStrength, reactFlowNodes, animateToPositions, fitView])
 
   // Sync edges when data changes
   const prevEdgeIdsRef = useRef<string>('')

@@ -32,7 +32,7 @@ export const KnowledgeNode = memo(({ data }: KnowledgeNodeProps) => {
         'transition-all duration-200 hover:shadow-sm',
         // Dimmed state - reduced opacity
         isDimmed && 'opacity-40',
-        // Focused state - pulsing glow effect using brand color (indigo-500)
+        // Focused state - pulsing glow (indigo on light, white on dark)
         isFocused && 'animate-glow-pulse',
         // Selected state
         isSelected && !isFocused && 'ring-2 ring-primary shadow-lg'

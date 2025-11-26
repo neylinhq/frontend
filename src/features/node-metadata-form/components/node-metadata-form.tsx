@@ -88,7 +88,7 @@ export function NodeMetadataForm({ node, onSubmit, isPending }: NodeMetadataForm
             <FormItem>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <FormLabel>Confidence</FormLabel>
+                  <FormLabel>{t('form.confidence.label', 'Confidence')}</FormLabel>
                   <span className="text-sm text-muted-foreground">
                     {field.value ? Math.round(field.value * 100) : 0}%
                   </span>

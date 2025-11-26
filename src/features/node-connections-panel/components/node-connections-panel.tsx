@@ -1,4 +1,5 @@
 import { memo } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { Edge } from '@/entities/edge'
 import type { Node } from '@/entities/node'
 import { Button } from '@/shared/ui/button'
@@ -14,6 +15,7 @@ interface NodeConnectionsPanelProps {
 }
 
 export const NodeConnectionsPanel = memo(({ node, edges, allNodes, className }: NodeConnectionsPanelProps) => {
+  const { t } = useTranslation()
   const { filter, changeFilter, filteredEdges, incomingCount, outgoingCount, totalCount } = useConnectionFilter(
     node.id,
     edges
@@ -24,7 +26,7 @@ export const NodeConnectionsPanel = memo(({ node, edges, allNodes, className }: 
   if (totalCount === 0) {
     return (
       <div className={cn('flex items-center justify-center py-12', className)}>
-        <p className="text-sm text-muted-foreground">No connections</p>
+        <p className="text-sm text-muted-foreground">{t('nodeDrawer.connections.noConnections')}</p>
       </div>
     )
   }
@@ -39,7 +41,7 @@ export const NodeConnectionsPanel = memo(({ node, edges, allNodes, className }: 
           onClick={() => changeFilter('all')}
           className="h-8 text-xs"
         >
-          All ({totalCount})
+          {t('nodeDrawer.connections.all')} ({totalCount})
         </Button>
         <Button
           variant={filter === 'incoming' ? 'default' : 'outline'}
@@ -47,7 +49,7 @@ export const NodeConnectionsPanel = memo(({ node, edges, allNodes, className }: 
           onClick={() => changeFilter('incoming')}
           className="h-8 text-xs"
         >
-          Incoming ({incomingCount})
+          {t('nodeDrawer.connections.incoming')} ({incomingCount})
         </Button>
         <Button
           variant={filter === 'outgoing' ? 'default' : 'outline'}
@@ -55,7 +57,7 @@ export const NodeConnectionsPanel = memo(({ node, edges, allNodes, className }: 
           onClick={() => changeFilter('outgoing')}
           className="h-8 text-xs"
         >
-          Outgoing ({outgoingCount})
+          {t('nodeDrawer.connections.outgoing')} ({outgoingCount})
         </Button>
       </div>
 

@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { subscriptionApi } from './subscription.api'
 import type { PlanType } from './subscription.schema'
+import type { AddPaymentMethodInput } from './subscription.types'
 
 // Query key factory - Following mapKeys pattern exactly
 export const subscriptionKeys = {
@@ -96,7 +97,7 @@ export const useAddPaymentMethod = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (token: string) => subscriptionApi.addPaymentMethod(token),
+    mutationFn: (input: AddPaymentMethodInput) => subscriptionApi.addPaymentMethod(input),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: subscriptionKeys.paymentMethods() })
     }

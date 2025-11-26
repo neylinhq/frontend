@@ -9,3 +9,12 @@ export interface CheckoutSession {
   url: string
   sessionId: string
 }
+
+// Input for adding a new payment method
+export interface AddPaymentMethodInput {
+  cardholderName: string
+  cardNumber: string // Last 4 digits only
+  brand: string
+  expiryMonth: number
+  expiryYear: number
+}

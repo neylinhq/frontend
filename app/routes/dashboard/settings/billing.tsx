@@ -1,10 +1,12 @@
 import { useTranslation } from 'react-i18next'
+import { useLoaderData } from 'react-router'
 import {
-  usePaymentHistory,
-  usePaymentMethods,
+  subscriptionApi,
   useRemovePaymentMethod,
   useSetDefaultPaymentMethod,
-  useAddPaymentMethod
+  useAddPaymentMethod,
+  type PaymentMethod,
+  type PaymentHistory
 } from '@/entities/subscription'
 import {
   PaymentHistoryTable,
@@ -13,23 +15,26 @@ import {
 } from '@/features/billing'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
 
+export async function loader() {
+  const [paymentMethods, paymentHistory] = await Promise.all([
+    subscriptionApi.getPaymentMethods(),
+    subscriptionApi.getPaymentHistory()
+  ])
+  return { paymentMethods, paymentHistory }
+}
+
+interface LoaderData {
+  paymentMethods: PaymentMethod[]
+  paymentHistory: PaymentHistory[]
+}
+
 export default function BillingPage() {
   const { t } = useTranslation()
-
-  const { data: paymentHistory, isLoading: historyLoading } = usePaymentHistory()
-  const { data: paymentMethods, isLoading: methodsLoading } = usePaymentMethods()
+  const { paymentMethods, paymentHistory } = useLoaderData() as LoaderData
 
   const addPaymentMethod = useAddPaymentMethod()
   const removePaymentMethod = useRemovePaymentMethod()
   const setDefaultPaymentMethod = useSetDefaultPaymentMethod()
-
-  if (historyLoading || methodsLoading) {
-    return (
-      <div className="flex items-center justify-center py-8">
-        <p className="text-muted-foreground">{t('common.loading')}</p>
-      </div>
-    )
-  }
 
   return (
     <div className="space-y-6">
@@ -53,7 +58,7 @@ export default function BillingPage() {
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          {paymentMethods && paymentMethods.length > 0 ? (
+          {paymentMethods.length > 0 ? (
             paymentMethods.map(method => (
               <PaymentMethodCard
                 key={method.id}
@@ -72,7 +77,7 @@ export default function BillingPage() {
       </Card>
 
       {/* Payment History */}
-      {paymentHistory && <PaymentHistoryTable payments={paymentHistory} />}
+      <PaymentHistoryTable payments={paymentHistory} />
     </div>
   )
 }

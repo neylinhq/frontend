@@ -2,12 +2,13 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { Link, useNavigation, useSubmit } from 'react-router'
+import { useNavigation, useSubmit } from 'react-router'
 import { z } from 'zod'
 import { Button } from '@/shared/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form'
 import { FormDivider } from '@/shared/ui/form-divider'
 import { Input } from '@/shared/ui/input'
+import { LegalLinks } from '@/shared/ui/legal-links'
 
 export function SignUpForm() {
   const { t } = useTranslation()
@@ -95,13 +96,7 @@ export function SignUpForm() {
 
           <p className="text-xs text-center text-muted-foreground text-balance">
             {t('auth.signUp.consent')}{' '}
-            <Link to="/legal/terms" className="underline underline-offset-4 hover:text-primary">
-              {t('auth.signUp.termsLink')}
-            </Link>{' '}
-            {t('auth.signUp.and')}{' '}
-            <Link to="/legal/privacy" className="underline underline-offset-4 hover:text-primary">
-              {t('auth.signUp.privacyLink')}
-            </Link>
+            <LegalLinks variant="embedded" />
           </p>
 
           <FormDivider>{t('auth.signIn.orDivider')}</FormDivider>

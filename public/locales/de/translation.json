@@ -70,9 +70,14 @@
     "all": "Alle",
     "backToOverview": "Zurück",
     "save": "Speichern",
+    "saved": "Gespeichert",
+    "saving": "Speichern...",
     "cancel": "Abbrechen",
     "enable": "An",
-    "disable": "Aus"
+    "disable": "Aus",
+    "uploading": "Hochladen...",
+    "deleting": "Löschen...",
+    "comingSoon": "Demnächst"
   },
   "home": {
     "tagline": "Visualisieren und strukturieren Sie Ihr Wissen mit interaktiven kognitiven Karten",
@@ -88,6 +93,22 @@
       "ai": {
         "title": "KI-Assistent",
         "description": "Intelligenter Begleiter zum Analysieren und Erweitern Ihrer Wissenskarten"
+      },
+      "graphThinking": {
+        "title": "Graf-Denken",
+        "description": "Verbindungen zwischen Ideen visualisieren. Muster entstehen natürlich."
+      },
+      "hierarchy": {
+        "title": "Hierarchie",
+        "description": "Gedanken mit Knoten organisieren. Details oder Gesamtbild."
+      },
+      "performance": {
+        "title": "Schnell",
+        "description": "Mit React Flow gebaut. Tausende Knoten — flüssig."
+      },
+      "localFirst": {
+        "title": "Lokal",
+        "description": "Ihre Daten bleiben auf Ihrem Gerät. Jederzeit exportieren."
       }
     },
     "cta": {
@@ -371,7 +392,9 @@
     "theory": "Theorie",
     "example": "Beispiel",
     "question": "Frage",
-    "hypothesis": "Hypothese"
+    "hypothesis": "Hypothese",
+    "person": "Person",
+    "school": "Schule"
   },
   "editor": {
     "floating": {
@@ -542,11 +565,26 @@
       "intermediate": "Mittelstufe",
       "advanced": "Fortgeschritten"
     },
+    "confidence": {
+      "label": "Vertrauen"
+    },
     "metadata": {
       "label": "Titel",
       "labelPlaceholder": "Titel...",
       "save": "Speichern",
       "saving": "Speichern"
+    },
+    "placeholders": {
+      "name": "Max Mustermann",
+      "username": "maxm",
+      "email": "name@example.com",
+      "newEmail": "neu@example.com",
+      "password": "••••••••",
+      "card": "1234 5678 9012 3456",
+      "month": "MM",
+      "year": "JJJJ",
+      "cvc": "123",
+      "startTyping": "Schreiben..."
     },
     "tags": {
       "label": "Tags",
@@ -570,6 +608,8 @@
     "backToMap": "Zurück zur Karte",
     "failedSaveTitle": "Fehler beim Speichern des Titels",
     "failedSave": "Fehler beim Speichern",
+    "failedUpload": "Hochladen fehlgeschlagen",
+    "failedDelete": "Löschen fehlgeschlagen",
     "saving": "Wird gespeichert..."
   },
   "nodeEdit": {
@@ -656,7 +696,8 @@
         "title": "Profilbild",
         "description": "Aktualisieren Sie Ihr Profilbild",
         "upload": "Neues Foto hochladen",
-        "requirements": "JPG, PNG oder WebP. Maximal 2MB."
+        "requirements": "JPG, PNG oder WebP. Maximal 2MB.",
+        "uploaded": "Foto erfolgreich hochgeladen"
       },
       "personal": {
         "title": "Persönliche Informationen",
@@ -687,6 +728,7 @@
         "title": "Benutzeroberfläche",
         "description": "Passen Sie das Aussehen und Verhalten der Oberfläche an",
         "density": "Anzeigedichte",
+        "densityDescription": "Abstände und Größen der Oberflächenelemente steuern",
         "densityCompact": "Kompakt",
         "densityComfortable": "Komfortabel",
         "densitySpacious": "Geräumig",
@@ -736,6 +778,8 @@
       "zapier": {
         "description": "Automatisieren Sie Workflows mit Tausenden von Apps"
       },
+      "comingSoonDescription": "Wir arbeiten an leistungsstarken Integrationen für Sie",
+      "comingSoonMessage": "Schauen Sie bald wieder vorbei für Updates zu verfügbaren Integrationen",
       "api": {
         "title": "API-Zugriff",
         "description": "Verwalten Sie Ihre API-Tokens für programmatischen Zugriff",
@@ -752,7 +796,9 @@
         "description": "Aktualisieren Sie Ihre E-Mail-Adresse",
         "current": "Aktuelle E-Mail",
         "new": "Neue E-Mail",
-        "update": "E-Mail aktualisieren"
+        "update": "E-Mail aktualisieren",
+        "success": "E-Mail erfolgreich aktualisiert",
+        "confirmPassword": "Geben Sie Ihr Passwort zur Bestätigung ein"
       },
       "password": {
         "title": "Passwort",
@@ -760,7 +806,8 @@
         "current": "Aktuelles Passwort",
         "new": "Neues Passwort",
         "confirm": "Passwort bestätigen",
-        "update": "Passwort aktualisieren"
+        "update": "Passwort aktualisieren",
+        "success": "Passwort erfolgreich geändert"
       },
       "sessions": {
         "title": "Aktive Sitzungen",
@@ -772,7 +819,12 @@
       "danger": {
         "title": "Gefahrenbereich",
         "description": "Unwiderrufliche und zerstörerische Aktionen",
-        "deleteAccount": "Konto löschen"
+        "deleteAccount": "Konto löschen",
+        "confirmTitle": "Konto löschen",
+        "confirmDescription": "Diese Aktion kann nicht rückgängig gemacht werden. Alle Ihre Daten werden dauerhaft von unseren Servern gelöscht.",
+        "confirmPassword": "Geben Sie Ihr Passwort zur Bestätigung ein",
+        "typeDelete": "Geben Sie DELETE zur Bestätigung ein",
+        "deleted": "Konto erfolgreich gelöscht"
       }
     },
     "billing": {
@@ -843,25 +895,48 @@
       "description": "Fügen Sie Ihrem Konto eine neue Zahlungsmethode hinzu",
       "cardholderName": "Name des Karteninhabers",
       "cardNumber": "Kartennummer",
+      "expiry": "Ablaufdatum",
       "expiryMonth": "Monat",
       "expiryYear": "Jahr",
       "cvc": "CVC",
-      "submit": "Karte hinzufügen"
+      "submit": "Karte hinzufügen",
+      "securityNotice": "Ihre Kartendaten werden verschlüsselt und sicher übertragen. Wir speichern niemals Ihre vollständige Kartennummer."
+    },
+    "removePaymentMethod": {
+      "title": "Zahlungsmethode entfernen",
+      "description": "Sind Sie sicher, dass Sie die Karte {{brand}} mit der Endung {{last4}} entfernen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "confirm": "Entfernen"
     }
   },
   "pricing": {
     "title": "Wählen Sie Ihren Tarif",
     "subtitle": "Starten Sie kostenlos und erweitern Sie nach Bedarf",
-    "popular": "Am beliebtesten",
-    "getStarted": "Loslegen",
-    "questions": "Haben Sie Fragen?",
-    "contactUs": "Kontaktieren Sie uns"
+    "popular": "Beliebt",
+    "getStarted": "Start",
+    "questions": "Fragen?",
+    "contactUs": "Kontakt"
   },
   "nodeDrawer": {
     "tabs": {
       "overview": "Übersicht",
       "connections": "Verbindungen",
       "view": "Ansicht"
-    }
+    },
+    "overview": {
+      "description": "Beschreibung",
+      "metadata": "Metadaten",
+      "type": "Typ",
+      "complexity": "Komplexität",
+      "confidence": "Vertrauen",
+      "tags": "Tags",
+      "reviews": "Wiederholungen"
+    },
+    "connections": {
+      "noConnections": "Keine Verbindungen",
+      "all": "Alle",
+      "incoming": "Eingehend",
+      "outgoing": "Ausgehend"
+    },
+    "edit": "Bearbeiten"
   }
 }

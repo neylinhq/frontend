@@ -1,45 +1,26 @@
-import { Link, Outlet, useLocation } from 'react-router'
-import { User, Settings2, Palette, Puzzle, Shield, CreditCard } from 'lucide-react'
+import { Link, Outlet, useLoaderData, useLocation } from 'react-router'
 import { useTranslation } from 'react-i18next'
 
 import { cn } from '@/shared/lib/cn'
+import { userApi, type User } from '@/entities/user'
+import { SETTINGS_NAV_ITEMS } from '@/features/settings'
+import type { Route } from './+types/layout'
 
-const settingsNavItems = [
-  {
-    title: 'settings.nav.profile',
-    href: '/dashboard/settings/profile',
-    icon: User
-  },
-  {
-    title: 'settings.nav.preferences',
-    href: '/dashboard/settings/preferences',
-    icon: Settings2
-  },
-  {
-    title: 'settings.nav.theme',
-    href: '/dashboard/settings/theme',
-    icon: Palette
-  },
-  {
-    title: 'settings.nav.integrations',
-    href: '/dashboard/settings/integrations',
-    icon: Puzzle
-  },
-  {
-    title: 'settings.nav.security',
-    href: '/dashboard/settings/security',
-    icon: Shield
-  },
-  {
-    title: 'settings.nav.billing',
-    href: '/dashboard/settings/billing',
-    icon: CreditCard
-  }
-]
+// SSR loader - fetch user data on the server
+export async function loader(_args: Route.LoaderArgs) {
+  const user = await userApi.getCurrentUser()
+  return { user }
+}
+
+// Context type for child routes
+export type SettingsContext = {
+  user: User
+}
 
 export default function SettingsLayout() {
   const { t } = useTranslation()
   const location = useLocation()
+  const { user } = useLoaderData<typeof loader>()
 
   return (
     <div className="container max-w-6xl mx-auto py-10 px-4 md:px-6 lg:px-8">
@@ -52,7 +33,7 @@ export default function SettingsLayout() {
         {/* Sidebar Navigation */}
         <aside className="md:w-56 flex-shrink-0">
           <nav className="space-y-1 sticky top-20">
-            {settingsNavItems.map((item) => {
+            {SETTINGS_NAV_ITEMS.map((item) => {
               const Icon = item.icon
               const isActive = location.pathname === item.href
 
@@ -77,7 +58,7 @@ export default function SettingsLayout() {
 
         {/* Content Area */}
         <main className="flex-1 min-w-0 max-w-3xl">
-          <Outlet />
+          <Outlet context={{ user } satisfies SettingsContext} />
         </main>
       </div>
     </div>

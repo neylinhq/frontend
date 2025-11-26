@@ -51,6 +51,7 @@ export function BlockEditor({
     extensions: createExtensions(placeholder),
     content: initialContent,
     editable,
+    immediatelyRender: false,
     editorProps: {
       attributes: {
         class: 'focus:outline-none min-h-[200px]'
@@ -295,7 +296,7 @@ export function BlockEditor({
   // Loading state while editor initializes
   if (!editor) {
     return (
-      <div className={cn('tiptap-editor pl-12', className)}>
+      <div className={cn('tiptap-editor pl-8', className)}>
         <div className="animate-pulse space-y-4">
           <div className="h-6 bg-muted rounded w-3/4" />
           <div className="h-4 bg-muted rounded w-full" />
@@ -310,7 +311,7 @@ export function BlockEditor({
     <div
       ref={editorRef}
       className={cn(
-        'tiptap-editor group/editor relative pl-12',
+        'tiptap-editor group/editor relative pl-8',
         theme === 'dark' && 'dark',
         className
       )}

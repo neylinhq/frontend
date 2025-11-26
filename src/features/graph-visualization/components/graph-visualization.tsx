@@ -14,7 +14,7 @@ import {
 import { Loader2 } from 'lucide-react'
 import { memo, useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useFullMap } from '@/entities/map'
+import { useFullMap, type FullMap } from '@/entities/map'
 import { cn } from '@/shared/lib/cn'
 import { Card } from '@/shared/ui/card'
 import { transformEdgesToFlow, transformNodesToFlow } from '../lib/transform-data'
@@ -54,15 +54,19 @@ interface GraphVisualizationProps {
   mapId: string
   className?: string
   interactive?: boolean
+  initialData?: FullMap
 }
 
 function GraphVisualizationContent({
   mapId,
   className,
   interactive = true,
+  initialData,
 }: GraphVisualizationProps) {
   const { t } = useTranslation()
-  const { data: fullMap, isLoading, isError } = useFullMap(mapId)
+  // Use initialData if provided (SSR), otherwise fetch client-side
+  const { data: fetchedMap, isLoading, isError } = useFullMap(mapId, { enabled: !initialData })
+  const fullMap = initialData ?? fetchedMap
   const { selectedElements, handleSelectionChange, clearSelection, selectedNodeId, selectNode } =
     useNodeSelection()
   const { controls, toggleFullscreen } = useGraphControls()
@@ -270,14 +274,18 @@ function GraphVisualizationContent({
     const nodeIds = initialNodes.map((n) => n.id).sort().join(',')
     if (prevNodeIdsRef.current !== nodeIds) {
       if (prevNodeIdsRef.current !== '') {
-        // Nodes changed - apply layout for new set
+        // Nodes changed - apply layout for new set with animation
         const result = applyLayout(initialNodes, initialEdges, {
           viewMode,
           focusedNodeId,
           spacingPercent: nodeSpacing,
           directionStrength,
         })
-        setNodes(result.nodes)
+        const nodesWithAnimation = result.nodes.map(node => ({
+          ...node,
+          style: { ...node.style, transition: 'transform 0.3s ease-out' },
+        }))
+        setNodes(nodesWithAnimation)
         setTimeout(() => fitView({ padding: 0.2, duration: 300 }), 50)
       }
       prevNodeIdsRef.current = nodeIds
@@ -343,7 +351,8 @@ function GraphVisualizationContent({
     fitView({ padding: 0.2, duration: 300 })
   }, [fitView])
 
-  if (isLoading) {
+  // Show loading only when fetching client-side (no initialData)
+  if (!initialData && isLoading) {
     return (
       <div className={cn('flex items-center justify-center h-[600px]', className)}>
         <div className="text-center space-y-3">
@@ -354,7 +363,7 @@ function GraphVisualizationContent({
     )
   }
 
-  if (isError || !fullMap) {
+  if (!initialData && (isError || !fullMap)) {
     return (
       <div className={cn('flex items-center justify-center h-[600px]', className)}>
         <Card className="p-8 text-center">
@@ -364,6 +373,9 @@ function GraphVisualizationContent({
       </div>
     )
   }
+
+  // At this point fullMap is guaranteed to be defined (either from initialData or fetchedMap)
+  if (!fullMap) return null
 
   const selectedNode = fullMap.nodes.find((n) => n.id === selectedNodeId) || null
 

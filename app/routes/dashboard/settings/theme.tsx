@@ -49,50 +49,6 @@ export default function ThemePage() {
           </div>
         </CardContent>
       </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>{t('settings.theme.customization.title')}</CardTitle>
-          <CardDescription>{t('settings.theme.customization.description')}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label>{t('settings.theme.customization.accentColor')}</Label>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  className="h-8 w-8 rounded-md bg-zinc-900 dark:bg-zinc-100 border-2 border-primary"
-                  aria-label="Zinc"
-                />
-                <button
-                  type="button"
-                  className="h-8 w-8 rounded-md bg-blue-500 border-2 border-transparent hover:border-primary"
-                  aria-label="Blue"
-                />
-                <button
-                  type="button"
-                  className="h-8 w-8 rounded-md bg-green-500 border-2 border-transparent hover:border-primary"
-                  aria-label="Green"
-                />
-                <button
-                  type="button"
-                  className="h-8 w-8 rounded-md bg-orange-500 border-2 border-transparent hover:border-primary"
-                  aria-label="Orange"
-                />
-                <button
-                  type="button"
-                  className="h-8 w-8 rounded-md bg-rose-500 border-2 border-transparent hover:border-primary"
-                  aria-label="Rose"
-                />
-              </div>
-              <p className="text-xs text-muted-foreground">
-                {t('settings.theme.customization.accentColorHint')}
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   )
 }

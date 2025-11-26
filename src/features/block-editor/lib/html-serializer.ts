@@ -13,8 +13,15 @@ export function editorToHTML(editor: Editor): string {
 /**
  * Convert HTML string to TipTap JSONContent format
  * Used when loading saved HTML content into the editor
+ *
+ * NOTE: This function requires DOM API and will return undefined during SSR
  */
 export function htmlToEditor(html: string) {
+  // Guard: generateJSON requires window/DOM, not available during SSR
+  if (typeof window === 'undefined') {
+    return undefined
+  }
+
   const extensions = createExtensions()
   return generateJSON(html, extensions)
 }

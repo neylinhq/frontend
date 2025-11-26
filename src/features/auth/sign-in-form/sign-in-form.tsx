@@ -2,12 +2,13 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { Link, useActionData, useNavigation, useSubmit } from 'react-router'
+import { Link as RouterLink, useActionData, useNavigation, useSubmit } from 'react-router'
 import { z } from 'zod'
 import { Button } from '@/shared/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form'
 import { FormDivider } from '@/shared/ui/form-divider'
 import { Input } from '@/shared/ui/input'
+import { LegalLinks } from '@/shared/ui/legal-links'
 
 export function SignInForm() {
   const { t } = useTranslation()
@@ -67,13 +68,13 @@ export function SignInForm() {
               <FormItem>
                 <div className="flex items-center">
                   <FormLabel>{t('auth.signIn.passwordLabel')}</FormLabel>
-                  <Link
+                  <RouterLink
                     to="/auth/reset-password"
                     className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                     prefetch="intent"
                   >
                     {t('auth.signIn.forgotPassword')}
-                  </Link>
+                  </RouterLink>
                 </div>
                 <FormControl>
                   <Input type="password" {...field} />
@@ -96,15 +97,7 @@ export function SignInForm() {
         </form>
       </Form>
 
-      <div className="flex flex-wrap justify-center gap-3 text-xs text-muted-foreground">
-        <Link to="/legal/terms" className="hover:text-primary hover:underline">
-          {t('legal.terms.title')}
-        </Link>
-        <span>•</span>
-        <Link to="/legal/privacy" className="hover:text-primary hover:underline">
-          {t('legal.privacy.title')}
-        </Link>
-      </div>
+      <LegalLinks variant="inline" separator />
     </div>
   )
 }

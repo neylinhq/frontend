@@ -70,9 +70,14 @@
     "all": "All",
     "backToOverview": "Overview",
     "save": "Save",
+    "saved": "Saved",
+    "saving": "Saving...",
     "cancel": "Cancel",
     "enable": "On",
-    "disable": "Off"
+    "disable": "Off",
+    "uploading": "Uploading...",
+    "deleting": "Deleting...",
+    "comingSoon": "Coming Soon"
   },
   "home": {
     "tagline": "Visualize and structure your knowledge with interactive cognitive maps. Create, connect, and explore your ideas in an intuitive graph-based workspace.",
@@ -584,7 +589,9 @@
     "theory": "Theory",
     "example": "Example",
     "question": "Question",
-    "hypothesis": "Hypothesis"
+    "hypothesis": "Hypothesis",
+    "person": "Person",
+    "school": "School"
   },
   "editor": {
     "floating": {
@@ -755,11 +762,26 @@
       "intermediate": "Intermediate",
       "advanced": "Advanced"
     },
+    "confidence": {
+      "label": "Confidence"
+    },
     "metadata": {
       "label": "Label",
       "labelPlaceholder": "Label...",
       "save": "Save",
       "saving": "Saving"
+    },
+    "placeholders": {
+      "name": "John Doe",
+      "username": "johndoe",
+      "email": "name@example.com",
+      "newEmail": "new@example.com",
+      "password": "••••••••",
+      "card": "1234 5678 9012 3456",
+      "month": "MM",
+      "year": "YYYY",
+      "cvc": "123",
+      "startTyping": "Start typing..."
     },
     "tags": {
       "label": "Tags",
@@ -783,6 +805,8 @@
     "backToMap": "Back to Map",
     "failedSaveTitle": "Failed to save title",
     "failedSave": "Failed to save",
+    "failedUpload": "Failed to upload",
+    "failedDelete": "Failed to delete",
     "saving": "Saving..."
   },
   "nodeEdit": {
@@ -809,7 +833,8 @@
         "title": "Profile Picture",
         "description": "Update your profile picture",
         "upload": "Upload new photo",
-        "requirements": "JPG, PNG or WebP. Max 2MB."
+        "requirements": "JPG, PNG or WebP. Max 2MB.",
+        "uploaded": "Photo uploaded successfully"
       },
       "personal": {
         "title": "Personal Information",
@@ -840,6 +865,7 @@
         "title": "Interface",
         "description": "Customize how the interface looks and feels",
         "density": "Display density",
+        "densityDescription": "Control spacing and sizing of interface elements",
         "densityCompact": "Compact",
         "densityComfortable": "Comfortable",
         "densitySpacious": "Spacious",
@@ -889,6 +915,8 @@
       "zapier": {
         "description": "Automate workflows with thousands of apps"
       },
+      "comingSoonDescription": "We're working on bringing you powerful integrations",
+      "comingSoonMessage": "Check back soon for updates on available integrations",
       "api": {
         "title": "API Access",
         "description": "Manage your API tokens for programmatic access",
@@ -905,7 +933,9 @@
         "description": "Update your email address",
         "current": "Current email",
         "new": "New email",
-        "update": "Update email"
+        "update": "Update email",
+        "success": "Email updated successfully",
+        "confirmPassword": "Enter your password to confirm"
       },
       "password": {
         "title": "Password",
@@ -913,7 +943,8 @@
         "current": "Current password",
         "new": "New password",
         "confirm": "Confirm password",
-        "update": "Update password"
+        "update": "Update password",
+        "success": "Password changed successfully"
       },
       "sessions": {
         "title": "Active Sessions",
@@ -925,7 +956,12 @@
       "danger": {
         "title": "Danger Zone",
         "description": "Irreversible and destructive actions",
-        "deleteAccount": "Delete account"
+        "deleteAccount": "Delete account",
+        "confirmTitle": "Delete Account",
+        "confirmDescription": "This action cannot be undone. This will permanently delete your account and remove all your data from our servers.",
+        "confirmPassword": "Enter your password to confirm",
+        "typeDelete": "Type DELETE to confirm",
+        "deleted": "Account deleted successfully"
       }
     },
     "billing": {
@@ -996,18 +1032,25 @@
       "description": "Add a new payment method to your account",
       "cardholderName": "Cardholder Name",
       "cardNumber": "Card Number",
+      "expiry": "Expiry Date",
       "expiryMonth": "Month",
       "expiryYear": "Year",
       "cvc": "CVC",
-      "submit": "Add Card"
+      "submit": "Add Card",
+      "securityNotice": "Your card information is encrypted and securely transmitted. We never store your full card number."
+    },
+    "removePaymentMethod": {
+      "title": "Remove Payment Method",
+      "description": "Are you sure you want to remove {{brand}} ending in {{last4}}? This action cannot be undone.",
+      "confirm": "Remove"
     }
   },
   "pricing": {
     "title": "Choose Your Plan",
     "subtitle": "Start free and upgrade as you grow",
-    "popular": "Most Popular",
-    "getStarted": "Get Started",
-    "questions": "Have questions?",
-    "contactUs": "Contact us"
+    "popular": "Popular",
+    "getStarted": "Start",
+    "questions": "Questions?",
+    "contactUs": "Contact"
   }
 }

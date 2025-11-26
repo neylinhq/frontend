@@ -1,13 +1,12 @@
-import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router'
+import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from 'react-router'
 import { QueryProvider } from '@/app/providers/query-provider'
 import { ThemeProvider } from '@/app/theme'
+import { Toaster } from 'sonner'
 import '@/shared/styles/globals.css'
-import { Loader2 } from 'lucide-react'
 import type React from 'react'
-import { useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useEffect, useRef } from 'react'
 import type { Route } from './+types/root'
-import '@/shared/config/i18n'
+import { initI18n, type I18nInitData } from '@/shared/config/i18n'
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -16,26 +15,16 @@ export const links: Route.LinksFunction = () => [
     rel: 'stylesheet',
     href: 'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap'
   }
-  // Alternatives:
-  // Nunito Sans: 'https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap'
-  // Geist: 'https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.css'
 ]
 
+export async function loader({ request }: Route.LoaderArgs) {
+  // Dynamic import to avoid bundling Node.js fs module for client
+  const { getI18nData } = await import('@/shared/config/i18n/i18n.server')
+  const i18nData = getI18nData(request)
+  return { i18n: i18nData }
+}
+
 export function Layout({ children }: { children: React.ReactNode }) {
-  const [isMounted, setIsMounted] = useState(false)
-  const { ready } = useTranslation('translation', { useSuspense: false })
-  const [i18nReady, setI18nReady] = useState(false)
-
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
-
-  useEffect(() => {
-    if (ready) setI18nReady(true)
-  }, [ready])
-
-  const showLoader = !isMounted || !i18nReady
-
   return (
     // suppressHydrationWarning нужен для html, так как мы меняем класс dark скриптом
     <html lang="en" suppressHydrationWarning>
@@ -50,10 +39,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
             __html: `
               (function() {
                 try {
-                  var storageKey = 'vite-ui-theme'; // Ключ, который использует ThemeProvider (shadcn)
+                  var storageKey = 'vite-ui-theme';
                   var theme = localStorage.getItem(storageKey);
                   var systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                  
+
                   if (theme === 'dark' || (!theme && systemTheme)) {
                     document.documentElement.classList.add('dark');
                   } else {
@@ -66,20 +55,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
         />
       </head>
       <body className="bg-background text-foreground">
-        {' '}
-        {/* Явно задаем классы фона */}
-        {showLoader ? (
-          <div className="flex h-screen items-center justify-center bg-background">
-            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-          </div>
-        ) : (
-          <>
-            <QueryProvider>
-              <ThemeProvider>{children}</ThemeProvider>
-            </QueryProvider>
-            <ScrollRestoration />
-          </>
-        )}
+        {children}
+        <ScrollRestoration />
         <Scripts />
       </body>
     </html>
@@ -87,7 +64,28 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />
+  const { i18n: i18nData } = useLoaderData<typeof loader>()
+  const initializedRef = useRef(false)
+
+  // Initialize i18n with SSR data on first render
+  if (!initializedRef.current) {
+    initI18n(i18nData as I18nInitData)
+    initializedRef.current = true
+  }
+
+  // Sync locale to html lang attribute
+  useEffect(() => {
+    document.documentElement.lang = i18nData.locale
+  }, [i18nData.locale])
+
+  return (
+    <QueryProvider>
+      <ThemeProvider>
+        <Outlet />
+        <Toaster richColors position="top-right" />
+      </ThemeProvider>
+    </QueryProvider>
+  )
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {

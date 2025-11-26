@@ -61,31 +61,30 @@ export function HomePage() {
 
           <div className="grid sm:grid-cols-2 gap-x-12 gap-y-8">
             <div>
-              <h3 className="font-medium mb-1">Graph-based thinking</h3>
+              <h3 className="font-medium mb-1">{t('home.features.graphThinking.title')}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Visualize connections between ideas. See patterns emerge naturally as your knowledge base
-                grows.
+                {t('home.features.graphThinking.description')}
               </p>
             </div>
 
             <div>
-              <h3 className="font-medium mb-1">Hierarchical structure</h3>
+              <h3 className="font-medium mb-1">{t('home.features.hierarchy.title')}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Organize thoughts with nested nodes. Zoom in on details or zoom out for the big picture.
+                {t('home.features.hierarchy.description')}
               </p>
             </div>
 
             <div>
-              <h3 className="font-medium mb-1">Fast and responsive</h3>
+              <h3 className="font-medium mb-1">{t('home.features.performance.title')}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Built with React Flow. Handles thousands of nodes with smooth 60fps interactions.
+                {t('home.features.performance.description')}
               </p>
             </div>
 
             <div>
-              <h3 className="font-medium mb-1">Local-first</h3>
+              <h3 className="font-medium mb-1">{t('home.features.localFirst.title')}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Your data stays on your machine. Export anytime in standard formats.
+                {t('home.features.localFirst.description')}
               </p>
             </div>
           </div>

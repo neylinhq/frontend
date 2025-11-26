@@ -112,13 +112,13 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
   // Handle mouse move to show menu on block hover (throttled for performance)
   useEffect(() => {
     // Guard: editor view must be mounted before accessing DOM
-    if (!editor.view?.dom) return
+    if (!editor.view?.dom || editor.isDestroyed) return
 
     const editorElement = editor.view.dom.closest('.tiptap-editor') as HTMLElement
     if (!editorElement) return
 
     const processMouseMove = (e: MouseEvent) => {
-      if (isDragging || isHoveringMenuRef.current) return
+      if (isDragging || isHoveringMenuRef.current || editor.isDestroyed) return
 
       const proseMirror = editorElement.querySelector('.ProseMirror')
       if (!proseMirror) return
@@ -226,12 +226,12 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
   // Handle drag events using ProseMirror API
   useEffect(() => {
     // Guard: editor view must be mounted before accessing DOM
-    if (!editor.view?.dom) return
+    if (!editor.view?.dom || editor.isDestroyed) return
 
     const view = editor.view
 
     const handleDragOver = (e: DragEvent) => {
-      if (!isDraggingRef.current || dragStartPosRef.current === null) return
+      if (!isDraggingRef.current || dragStartPosRef.current === null || editor.isDestroyed) return
 
       e.preventDefault()
       if (e.dataTransfer) {
@@ -275,7 +275,7 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
         e.stopPropagation()
       }
 
-      if (!isDraggingRef.current || dragStartPosRef.current === null) {
+      if (!isDraggingRef.current || dragStartPosRef.current === null || editor.isDestroyed) {
         return
       }
 
@@ -366,9 +366,11 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
         view.dispatch(tr)
 
         // Hide caret after drop
-        const editorEl = view.dom.closest('.tiptap-editor')
-        editorEl?.classList.add('just-dropped')
-        setTimeout(() => editorEl?.classList.remove('just-dropped'), 500)
+        if (!editor.isDestroyed && view.dom) {
+          const editorEl = view.dom.closest('.tiptap-editor')
+          editorEl?.classList.add('just-dropped')
+          setTimeout(() => editorEl?.classList.remove('just-dropped'), 500)
+        }
       } catch (err) {
         console.error('[Drop] Transaction error:', err)
       }
@@ -379,7 +381,9 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
     const cleanupDrag = () => {
       removeDropIndicator()
       dragBlockRef.current?.classList.remove('is-dragging')
-      view.dom.closest('.tiptap-editor')?.classList.remove('dragging')
+      if (!editor.isDestroyed && view.dom) {
+        view.dom.closest('.tiptap-editor')?.classList.remove('dragging')
+      }
       dragBlockRef.current = null
       dragStartPosRef.current = null
       isDraggingRef.current = false
@@ -426,7 +430,7 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
 
     const block = hoveredBlock
 
-    if (!block) {
+    if (!block || editor.isDestroyed || !editor.view?.dom) {
       e.preventDefault()
       return
     }
@@ -493,7 +497,9 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
   const handleDragEnd = () => {
     removeDropIndicator()
     dragBlockRef.current?.classList.remove('is-dragging')
-    editor.view.dom.closest('.tiptap-editor')?.classList.remove('dragging')
+    if (!editor.isDestroyed && editor.view?.dom) {
+      editor.view.dom.closest('.tiptap-editor')?.classList.remove('dragging')
+    }
     dragBlockRef.current = null
     dragStartPosRef.current = null
     isDraggingRef.current = false

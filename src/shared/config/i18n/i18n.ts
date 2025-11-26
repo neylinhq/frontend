@@ -10,30 +10,78 @@ const detectionOptions = {
   caches: ['localStorage']
 }
 
-i18n
-  // загружаем переводы через http (public/locales)
-  .use(Backend)
-  // определяем язык пользователя
-  .use(LanguageDetector)
-  // передаем i18n в react-i18next
-  .use(initReactI18next)
-  // инициализируем
-  .init({
-    fallbackLng: 'en',
-    debug: import.meta.env.DEV,
-    detection: detectionOptions,
+export interface I18nInitData {
+  locale: string
+  translations: Record<string, unknown>
+}
 
-    react: {
-      useSuspense: true // Включаем Suspense
-    },
+let initialized = false
 
-    interpolation: {
-      escapeValue: false
-    },
+/**
+ * Initialize i18n with SSR data (translations from server)
+ */
+export function initI18n(data?: I18nInitData) {
+  if (initialized) return i18n
 
-    backend: {
-      loadPath: '/locales/{{lng}}/{{ns}}.json'
-    }
-  })
+  if (data?.translations) {
+    // SSR mode: use pre-loaded translations
+    i18n
+      .use(Backend) // For loading other languages on demand
+      .use(LanguageDetector)
+      .use(initReactI18next)
+      .init({
+        lng: data.locale,
+        fallbackLng: 'en',
+        debug: import.meta.env.DEV,
+        detection: detectionOptions,
+
+        resources: {
+          [data.locale]: {
+            translation: data.translations
+          }
+        },
+
+        react: {
+          useSuspense: false // Уже есть данные, Suspense не нужен
+        },
+
+        interpolation: {
+          escapeValue: false
+        },
+
+        // Загружаем остальные языки по требованию при смене языка
+        partialBundledLanguages: true,
+        backend: {
+          loadPath: '/locales/{{lng}}/{{ns}}.json'
+        }
+      })
+  } else {
+    // Client-only mode (fallback): load translations via HTTP
+    i18n
+      .use(Backend)
+      .use(LanguageDetector)
+      .use(initReactI18next)
+      .init({
+        fallbackLng: 'en',
+        debug: import.meta.env.DEV,
+        detection: detectionOptions,
+
+        react: {
+          useSuspense: true
+        },
+
+        interpolation: {
+          escapeValue: false
+        },
+
+        backend: {
+          loadPath: '/locales/{{lng}}/{{ns}}.json'
+        }
+      })
+  }
+
+  initialized = true
+  return i18n
+}
 
 export default i18n

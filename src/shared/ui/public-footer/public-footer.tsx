@@ -1,10 +1,7 @@
-import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router'
-
 import { APP_NAME, CURRENT_YEAR } from '@/shared/config/app'
+import { LegalLinks } from '../legal-links'
 
 export function PublicFooter() {
-  const { t } = useTranslation()
 
   return (
     <footer className="py-6 border-t">
@@ -12,14 +9,7 @@ export function PublicFooter() {
         <span>
           © {CURRENT_YEAR} {APP_NAME}
         </span>
-        <div className="flex gap-6">
-          <Link to="/legal/terms" className="hover:text-foreground transition-colors">
-            {t('legal.terms.title', 'Terms')}
-          </Link>
-          <Link to="/legal/privacy" className="hover:text-foreground transition-colors">
-            {t('legal.privacy.title', 'Privacy')}
-          </Link>
-        </div>
+        <LegalLinks variant="footer" />
       </div>
     </footer>
   )

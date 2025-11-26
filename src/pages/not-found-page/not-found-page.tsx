@@ -5,6 +5,7 @@ import { Link } from 'react-router'
 import { ThemeToggle } from '@/app/theme/components/theme-toggle'
 import { LanguageSwitcher } from '@/features/language-switcher'
 import { Button } from '@/shared/ui/button'
+import { LegalLinks } from '@/shared/ui/legal-links'
 import { Logo } from '@/shared/ui/logo'
 
 export function NotFoundPage() {
@@ -65,20 +66,7 @@ export function NotFoundPage() {
 
           {/* Helpful Links */}
           <div className="pt-8 border-t">
-            <div className="flex flex-wrap justify-center gap-4 text-sm">
-              <Link to="/legal/terms" className="text-primary hover:underline">
-                {t('legal.terms.title')}
-              </Link>
-              <Link to="/legal/privacy" className="text-primary hover:underline">
-                {t('legal.privacy.title')}
-              </Link>
-              <Link to="/legal/cookies" className="text-primary hover:underline">
-                {t('legal.cookies.title')}
-              </Link>
-              <Link to="/legal/license" className="text-primary hover:underline">
-                {t('legal.license.title')}
-              </Link>
-            </div>
+            <LegalLinks variant="full" />
           </div>
         </div>
       </main>

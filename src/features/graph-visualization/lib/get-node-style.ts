@@ -45,9 +45,9 @@ export function getComplexityColor(
   if (!complexity) return ''
 
   const colors = {
-    basic: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200',
-    intermediate: 'bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-blue-200',
-    advanced: 'bg-rose-100 text-rose-700 dark:bg-rose-900/60 dark:text-rose-200',
+    basic: 'bg-slate-200 text-slate-800 dark:bg-slate-800 dark:text-slate-200',
+    intermediate: 'bg-blue-200 text-blue-800 dark:bg-blue-900/60 dark:text-blue-200',
+    advanced: 'bg-rose-200 text-rose-800 dark:bg-rose-900/60 dark:text-rose-200',
   }
   return colors[complexity]
 }

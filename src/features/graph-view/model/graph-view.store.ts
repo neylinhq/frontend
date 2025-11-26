@@ -139,8 +139,9 @@ export const useGraphViewStore = create<GraphViewState & GraphViewActions>()(
       },
 
       setFocusDepth: (depth) => {
+        // Just update state - the graph component's useEffect handles
+        // re-layout when the visible node set changes
         set({ focusDepth: Math.max(1, Math.min(5, depth)) })
-        triggerLayout()
       },
 
       // Filter actions

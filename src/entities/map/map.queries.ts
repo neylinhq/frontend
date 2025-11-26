@@ -154,11 +154,15 @@ export const useDeleteEdge = (mapId: string) => {
 }
 
 // ====== Хуки для полных карт и анализа ======
-export const useFullMap = (mapId: string) => {
+interface UseFullMapOptions {
+  enabled?: boolean
+}
+
+export const useFullMap = (mapId: string, options?: UseFullMapOptions) => {
   return useQuery({
     queryKey: mapKeys.fullMap(mapId),
     queryFn: () => mapApi.getFullMap(mapId),
-    enabled: !!mapId
+    enabled: (options?.enabled ?? true) && !!mapId
   })
 }
 

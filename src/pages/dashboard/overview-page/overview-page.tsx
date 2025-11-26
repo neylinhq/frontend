@@ -1,7 +1,7 @@
 import { Plus } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-import type { Map as MapEntity } from '@/entities/map'
+import type { MapEntity } from '@/entities/map'
 import { CreateMapCard } from '@/features/maps/create-map-button'
 import { MapCard } from '@/features/maps/map-card/map-card'
 import { Button } from '@/shared/ui/button'

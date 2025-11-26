@@ -5,6 +5,7 @@ import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin'
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin'
 import { ListPlugin } from '@lexical/react/LexicalListPlugin'
 import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/shared/lib/cn'
 import { createEditorConfig } from '../lib/editor-config'
 import type { NodeEditorProps } from '../model/editor.types'
@@ -12,10 +13,10 @@ import { AutoSavePlugin } from './auto-save-plugin'
 import { EditorToolbar } from './editor-toolbar'
 import { MarkdownShortcutsPlugin } from './markdown-shortcuts-plugin'
 
-function Placeholder() {
+function Placeholder({ text }: { text: string }) {
   return (
     <div className="pointer-events-none absolute left-4 top-4 text-sm text-muted-foreground">
-      Start writing your node description...
+      {text}
     </div>
   )
 }
@@ -28,6 +29,7 @@ export function NodeEditor({
   autoSaveDelay = 2000,
   className
 }: NodeEditorProps) {
+  const { t } = useTranslation()
   const editorConfig = createEditorConfig('NodeEditor', true)
 
   const handleSave = (content: string) => {
@@ -50,7 +52,7 @@ export function NodeEditor({
             contentEditable={
               <ContentEditable className="min-h-[400px] resize-none p-4 text-sm outline-none" />
             }
-            placeholder={<Placeholder />}
+            placeholder={<Placeholder text={t('form.placeholders.startTyping')} />}
             ErrorBoundary={LexicalErrorBoundary}
           />
         </div>

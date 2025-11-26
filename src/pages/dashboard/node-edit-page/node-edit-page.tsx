@@ -1,11 +1,12 @@
 import type { Editor } from '@tiptap/react'
-import { AlertTriangle, ArrowLeft, Loader2, PanelRightClose, PanelRightOpen } from 'lucide-react'
+import { ArrowLeft, Loader2, PanelRightClose, PanelRightOpen } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Link, useParams } from 'react-router'
+import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
-import { useLightweightMap, useNodeWithContent, useUpdateNode } from '@/entities/map'
+import type { FullMap, Node } from '@/entities/map'
+import { useUpdateNode } from '@/entities/map'
 import type { NodeType } from '@/entities/node'
 import { BlockEditor } from '@/features/block-editor'
 import { editorToHTML, htmlToEditor, htmlToPlainText } from '@/features/block-editor/lib/html-serializer'
@@ -15,7 +16,6 @@ import { NodeMetadataForm, type NodeMetadataFormValues } from '@/features/node-m
 import { cn } from '@/shared/lib/cn'
 import { Badge } from '@/shared/ui/badge'
 import { Button } from '@/shared/ui/button'
-import { Card } from '@/shared/ui/card'
 
 const NODE_TYPE_CONFIG: Record<NodeType, { color: string; label: string }> = {
   concept: { color: 'bg-blue-500/10 text-blue-600 dark:text-blue-400', label: 'Concept' },
@@ -28,12 +28,16 @@ const NODE_TYPE_CONFIG: Record<NodeType, { color: string; label: string }> = {
   school: { color: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400', label: 'School' },
 }
 
-export function NodeEditPage() {
+interface NodeEditPageProps {
+  node: Node
+  map: FullMap
+  mapId: string
+  nodeId: string
+}
+
+export function NodeEditPage({ node: currentNode, map: lightweightMap, mapId, nodeId }: NodeEditPageProps) {
   const { t } = useTranslation()
-  const { mapId, nodeId } = useParams<{ mapId: string; nodeId: string }>()
-  const { data: currentNode, isLoading, isError } = useNodeWithContent(nodeId || '')
-  const { data: lightweightMap } = useLightweightMap(mapId || '')
-  const updateNodeMutation = useUpdateNode(mapId || '')
+  const updateNodeMutation = useUpdateNode(mapId)
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [title, setTitle] = useState('')
   const titleInputRef = useRef<HTMLTextAreaElement>(null)
@@ -105,53 +109,6 @@ export function NodeEditPage() {
     [debouncedContentSave]
   )
 
-  // Validation
-  if (!mapId || !nodeId) {
-    return (
-      <div className="flex h-[400px] items-center justify-center">
-        <Card className="p-8 text-center">
-          <AlertTriangle className="mx-auto mb-4 h-12 w-12 text-destructive" />
-          <h2 className="mb-2 text-lg font-semibold text-destructive">{t('errors.navigationError')}</h2>
-          <p className="text-muted-foreground">{t('errors.mapIdOrNodeMissing')}</p>
-        </Card>
-      </div>
-    )
-  }
-
-  if (isLoading) {
-    return (
-      <div className="flex h-[600px] items-center justify-center">
-        <div className="space-y-4 text-center">
-          <Loader2 className="mx-auto h-12 w-12 animate-spin text-primary" />
-          <div>
-            <h3 className="text-lg font-semibold">{t('errors.loadingNode')}</h3>
-            <p className="text-muted-foreground">{t('errors.pleaseWait')}</p>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  if (isError || !currentNode) {
-    return (
-      <div className="flex h-[600px] items-center justify-center">
-        <Card className="max-w-md p-8 text-center">
-          <AlertTriangle className="mx-auto mb-4 h-16 w-16 text-destructive" />
-          <h2 className="mb-2 text-xl font-semibold text-destructive">{t('errors.nodeNotFound')}</h2>
-          <p className="mb-6 text-muted-foreground">
-            {t('errors.nodeNotFoundDesc')}
-          </p>
-          <Button asChild>
-            <Link to={`/dashboard/maps/${mapId}/view`}>
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              {t('errors.backToMap')}
-            </Link>
-          </Button>
-        </Card>
-      </div>
-    )
-  }
-
   // Handler for metadata form submit
   const handleMetadataSubmit = (values: NodeMetadataFormValues) => {
     updateNodeMutation.mutate(
@@ -178,9 +135,9 @@ export function NodeEditPage() {
   return (
     <div className="flex h-[calc(100vh-3.5rem)]">
       {/* Main Editor Area */}
-      <main className="flex-1 min-w-0 overflow-y-auto">
+      <main className="flex-1 min-w-0 overflow-y-auto overflow-x-hidden">
         {/* Editor Content */}
-        <div className="mx-auto max-w-3xl px-6 py-12">
+        <div className="mx-auto max-w-3xl px-4 sm:px-8 py-8">
           {/* Breadcrumb & Actions */}
           <div className="mb-8 flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -217,7 +174,7 @@ export function NodeEditPage() {
           </div>
 
           {/* Editable Title */}
-          <div className="mb-6">
+          <div className="mb-6 pl-8">
             <textarea
               ref={titleInputRef}
               value={title}
@@ -264,13 +221,11 @@ export function NodeEditPage() {
                 <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   {t('nodeEdit.connections')}
                 </h3>
-                {lightweightMap && (
-                  <NodeConnectionsPanel
-                    node={currentNode}
-                    edges={lightweightMap.edges}
-                    allNodes={lightweightMap.nodes}
-                  />
-                )}
+                <NodeConnectionsPanel
+                  node={currentNode}
+                  edges={lightweightMap.edges}
+                  allNodes={lightweightMap.nodes}
+                />
               </div>
             </div>
           </div>

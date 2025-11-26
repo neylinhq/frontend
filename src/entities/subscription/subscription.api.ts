@@ -6,7 +6,7 @@ import type {
   PaymentHistory,
   PlanType
 } from './subscription.schema'
-import type { BillingPortalSession, CheckoutSession } from './subscription.types'
+import type { BillingPortalSession, CheckoutSession, AddPaymentMethodInput } from './subscription.types'
 
 // Mock Data
 const MOCK_PLANS: PlanDetails[] = [
@@ -220,15 +220,15 @@ export const subscriptionApi = {
   },
 
   // Add payment method
-  addPaymentMethod: async (token: string): Promise<PaymentMethod> => {
+  addPaymentMethod: async (input: AddPaymentMethodInput): Promise<PaymentMethod> => {
     await new Promise(resolve => setTimeout(resolve, 1000))
     return {
       id: `pm-${Date.now()}`,
       type: 'card',
-      last4: token.slice(-4),
-      brand: 'visa',
-      expiryMonth: 12,
-      expiryYear: 2027,
+      last4: input.cardNumber,
+      brand: input.brand,
+      expiryMonth: input.expiryMonth,
+      expiryYear: input.expiryYear,
       isDefault: MOCK_PAYMENT_METHODS.length === 0,
       createdAt: new Date().toISOString()
     }

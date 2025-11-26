@@ -34,4 +34,4 @@ export {
   PaymentHistorySchema,
   PlanTypeEnum
 } from './subscription.schema'
-export type { BillingPortalSession, CheckoutSession } from './subscription.types'
+export type { BillingPortalSession, CheckoutSession, AddPaymentMethodInput } from './subscription.types'

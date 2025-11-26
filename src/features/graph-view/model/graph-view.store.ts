@@ -5,7 +5,7 @@ import type { NodeType } from '@/entities/node'
 import type { RelationType } from '@/entities/edge'
 
 // View modes
-export type GraphViewMode = 'overview' | 'focus' | 'path'
+export type ViewMode = 'overview' | 'focus' | 'path'
 
 // All available types
 export const ALL_NODE_TYPES: NodeType[] = ['concept', 'fact', 'theory', 'example', 'question', 'hypothesis', 'person', 'school']
@@ -13,7 +13,7 @@ export const ALL_EDGE_TYPES: RelationType[] = ['is-a', 'has-a', 'causes', 'expla
 
 export interface GraphViewState {
   // View mode
-  viewMode: GraphViewMode
+  viewMode: ViewMode
 
   // Focus mode
   focusedNodeId: string | null
@@ -33,7 +33,7 @@ export interface GraphViewState {
 
 interface GraphViewActions {
   // View mode
-  setViewMode: (mode: GraphViewMode) => void
+  setViewMode: (mode: ViewMode) => void
 
   // Focus
   focusNode: (nodeId: string) => void
@@ -79,11 +79,11 @@ const setSerializer = {
     visibleEdgeTypes: Array.from(state.visibleEdgeTypes),
   }),
   deserialize: (stored: Record<string, unknown>): GraphViewState => ({
-    viewMode: (stored.viewMode as GraphViewMode) || 'overview',
+    viewMode: (stored.viewMode as ViewMode) || 'overview',
     focusedNodeId: (stored.focusedNodeId as string | null) || null,
     focusDepth: (stored.focusDepth as number) || 2,
-    visibleNodeTypes: new Set((stored.visibleNodeTypes as NodeType[]) || ALL_NODE_TYPES),
-    visibleEdgeTypes: new Set((stored.visibleEdgeTypes as RelationType[]) || ALL_EDGE_TYPES),
+    visibleNodeTypes: new Set((stored.visibleNodeTypes as NodeType[])?.length ? (stored.visibleNodeTypes as NodeType[]) : ALL_NODE_TYPES),
+    visibleEdgeTypes: new Set((stored.visibleEdgeTypes as RelationType[])?.length ? (stored.visibleEdgeTypes as RelationType[]) : ALL_EDGE_TYPES),
     showMinimap: stored.showMinimap !== false,
     nodeSpacing: (stored.nodeSpacing as number) || 100,
     directionStrength: (stored.directionStrength as number) ?? 100,

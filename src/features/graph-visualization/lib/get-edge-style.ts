@@ -2,7 +2,7 @@ import type { RelationType } from '@/entities/edge'
 
 // Colors for edge lines based on relation type
 const EDGE_COLORS: Record<RelationType, string> = {
-  'prerequisite': '#f97316', // orange-500 - important dependency
+  'prerequisite': '#f97316', // orange-500 - важная зависимость
   'causes': '#ef4444',       // red-500
   'explains': '#8b5cf6',     // violet-500
   'is-a': '#6366f1',         // indigo-500
@@ -19,17 +19,17 @@ export function getEdgeStrokeByType(relationType: RelationType): string {
 }
 
 export function getEdgeStroke(confidence: number): string {
-  // High confidence - blue, low - gray
+  // Высокая уверенность - синий, низкая - серый
   return confidence > 0.7 ? '#3b82f6' : '#94a3b8' // blue-500 : slate-400
 }
 
 export function getEdgeWidth(strength: number): number {
-  // Connection strength affects line width
+  // Сила связи влияет на толщину линии
   return strength * 2 + 1
 }
 
 export function getEdgeDashArray(confidence: number): string | undefined {
-  // Dashed line for low confidence
+  // Пунктир при низкой уверенности
   return confidence < 0.5 ? '5,5' : undefined
 }
 

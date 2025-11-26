@@ -3,9 +3,7 @@ import {
   addEdge,
   Background,
   type Connection,
-  type EdgeChange,
   MiniMap,
-  type NodeChange,
   ReactFlow,
   ReactFlowProvider,
   useEdgesState,
@@ -290,7 +288,7 @@ function GraphVisualizationContent({
   const prevEdgeIdsRef = useRef<string>('')
   useEffect(() => {
     const edgeIds = initialEdges.map((e) => e.id).sort().join(',')
-    if (prevEdgeIdsRef.current !== edgeIds && prevEdgeIdsRef.current !== '') {
+    if (prevEdgeIdsRef.current !== edgeIds) {
       setEdges(initialEdges)
     }
     prevEdgeIdsRef.current = edgeIds
@@ -307,7 +305,7 @@ function GraphVisualizationContent({
 
   // Handle node changes
   const handleNodesChange = useCallback(
-    (changes: NodeChange[]) => {
+    (changes: any) => {
       if (!interactive) return
       onNodesChange(changes)
     },
@@ -316,7 +314,7 @@ function GraphVisualizationContent({
 
   // Handle edge changes
   const handleEdgesChange = useCallback(
-    (changes: EdgeChange[]) => {
+    (changes: any) => {
       if (!interactive) return
       onEdgesChange(changes)
     },

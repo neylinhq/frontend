@@ -1,4 +1,4 @@
-import { BaseEdge, EdgeLabelRenderer, getBezierPath, type Position } from '@xyflow/react'
+import { BaseEdge, EdgeLabelRenderer, getBezierPath } from '@xyflow/react'
 import {
   AlertTriangle,
   ArrowRight,
@@ -57,12 +57,12 @@ interface KnowledgeEdgeProps {
   id: string
   sourceX: number
   sourceY: number
-  sourcePosition: Position
+  sourcePosition: any
   targetX: number
   targetY: number
-  targetPosition: Position
-  style?: React.CSSProperties
-  markerEnd?: string
+  targetPosition: any
+  style?: any
+  markerEnd?: any
   data: Edge & { selected?: boolean }
 }
 

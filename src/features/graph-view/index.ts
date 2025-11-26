@@ -26,7 +26,7 @@ export {
   useGraphViewStore,
   useNodeSpacing,
   useViewMode,
-  type GraphViewMode
+  type ViewMode
 } from './model/graph-view.store'
 // UI Components
 export { NodeContextMenu } from './ui/node-context-menu'

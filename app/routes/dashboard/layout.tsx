@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { type LoaderFunctionArgs, redirect } from 'react-router'
+import { type LoaderFunctionArgs, redirect, useLoaderData } from 'react-router'
 import { useSessionStore } from '@/entities/session'
 import { getSession } from '@/entities/session/session.server'
 import { DashboardLayout } from '@/widgets/dashboard-layout/ui/dashboard-layout'
@@ -18,16 +18,16 @@ export async function loader({ request }: LoaderFunctionArgs) {
   return { user: session.user }
 }
 
-export default function DashboardRoute({ loaderData }: { loaderData: any }) {
-  // TODO: fix typing
+export default function DashboardRoute() {
+  const { user } = useLoaderData<typeof loader>()
   const setUser = useSessionStore(state => state.setUser)
 
   // Гидратация стора данными с сервера
   useEffect(() => {
-    if (loaderData?.user) {
-      setUser(loaderData.user)
+    if (user) {
+      setUser(user)
     }
-  }, [loaderData, setUser])
+  }, [user, setUser])
 
   return <DashboardLayout />
 }

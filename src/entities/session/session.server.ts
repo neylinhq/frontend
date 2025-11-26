@@ -1,5 +1,6 @@
 import { createCookie } from 'react-router'
 import { IS_PROD, SESSION_SECRET } from '@/shared/config'
+import type { SessionData } from './session.types'
 
 export const sessionCookie = createCookie('arbor_session', {
   secrets: [SESSION_SECRET],
@@ -10,12 +11,27 @@ export const sessionCookie = createCookie('arbor_session', {
   maxAge: 60 * 60 * 24 * 30 // 30 days
 })
 
-export async function getSession(request: Request) {
-  const cookieHeader = request.headers.get('Cookie')
-  return (await sessionCookie.parse(cookieHeader)) || null
+function isValidSession(value: unknown): value is SessionData {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'user' in value &&
+    'token' in value
+  )
 }
 
-export async function commitSession(session: any) {
+export async function getSession(request: Request): Promise<SessionData | null> {
+  const cookieHeader = request.headers.get('Cookie')
+  const session = await sessionCookie.parse(cookieHeader)
+
+  if (!session || !isValidSession(session)) {
+    return null
+  }
+
+  return session as SessionData
+}
+
+export async function commitSession(session: SessionData) {
   return await sessionCookie.serialize(session)
 }
 

@@ -347,8 +347,49 @@ function GraphVisualizationContent({
   }, [zoomOut])
 
   const handleCenter = useCallback(() => {
+    if (reactFlowNodes.length === 0) {
+      fitView({ padding: 0.2, duration: 300 })
+      return
+    }
+
+    // Calculate geometric center of all nodes (canvas center)
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity
+    for (const node of reactFlowNodes) {
+      const w = node.measured?.width ?? 200
+      const h = node.measured?.height ?? 100
+      minX = Math.min(minX, node.position.x)
+      maxX = Math.max(maxX, node.position.x + w)
+      minY = Math.min(minY, node.position.y)
+      maxY = Math.max(maxY, node.position.y + h)
+    }
+    const canvasCenterX = (minX + maxX) / 2
+    const canvasCenterY = (minY + maxY) / 2
+
+    // Find node closest to canvas center
+    let closestNodeId: string | null = null
+    let minDist = Infinity
+    for (const node of reactFlowNodes) {
+      const nodeCenterX = node.position.x + (node.measured?.width ?? 200) / 2
+      const nodeCenterY = node.position.y + (node.measured?.height ?? 100) / 2
+      const dist = Math.hypot(canvasCenterX - nodeCenterX, canvasCenterY - nodeCenterY)
+      if (dist < minDist) {
+        minDist = dist
+        closestNodeId = node.id
+      }
+    }
+
+    if (closestNodeId) {
+      const node = getNode(closestNodeId)
+      if (node) {
+        const x = node.position.x + (node.measured?.width ?? 200) / 2
+        const y = node.position.y + (node.measured?.height ?? 100) / 2
+        setCenter(x, y, { zoom: viewportZoom, duration: 300 })
+        return
+      }
+    }
+
     fitView({ padding: 0.2, duration: 300 })
-  }, [fitView])
+  }, [reactFlowNodes, getNode, setCenter, viewportZoom, fitView])
 
   // Show loading only when fetching client-side (no initialData)
   if (!initialData && isLoading) {

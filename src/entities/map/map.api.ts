@@ -1,9 +1,9 @@
+import type { LightweightNode } from '../node'
 import { GRAPH_PRESETS, generateMockGraph } from './lib/generate-mock-graph'
 import type { Edge, FullMap, MapEntity, Node } from './map.schema'
-import type { LightweightNode } from '../node'
 
 // Generated test graph
-const GENERATED_GRAPH = generateMockGraph({ ...GRAPH_PRESETS.mixed, mapId: '4', nodeCount: 300 })
+const GENERATED_GRAPH = generateMockGraph({ ...GRAPH_PRESETS.mixed, mapId: '4', nodeCount: 100 })
 
 // Mock Data
 const MOCK_MAPS: MapEntity[] = [
@@ -1900,7 +1900,8 @@ const MOCK_NODE_WITH_CONTENT: Node = {
   id: 'mock-editor',
   mapId: '1',
   label: 'Пример узла с контентом',
-  description: 'Демонстрация всех возможностей редактора: форматирование, списки, таблицы, формулы, callouts',
+  description:
+    'Демонстрация всех возможностей редактора: форматирование, списки, таблицы, формулы, callouts',
   content: `<h1>Пример контента</h1>
 <p>Это <strong>демонстрационный узел</strong> с богатым контентом для тестирования всех возможностей редактора.</p>
 <h2>Форматирование текста</h2>
@@ -1990,9 +1991,7 @@ export const mapApi = {
   // ====== Работа с узлами ======
   getNodes: async (mapId: string): Promise<LightweightNode[]> => {
     await new Promise(resolve => setTimeout(resolve, 300))
-    return MOCK_NODES
-      .filter(node => node.mapId === mapId)
-      .map(({ content, ...rest }) => rest) // Strip content for performance
+    return MOCK_NODES.filter(node => node.mapId === mapId).map(({ content, ...rest }) => rest) // Strip content for performance
   },
 
   getNodeWithContent: async (nodeId: string): Promise<Node> => {

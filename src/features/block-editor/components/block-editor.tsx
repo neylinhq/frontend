@@ -73,10 +73,7 @@ export function BlockEditor({
         }
 
         return false
-      },
-      // Triple-click: let default behavior select paragraph text
-      // TODO: Block highlight requires ProseMirror Decoration for proper implementation
-      handleTripleClick: () => false
+      }
     },
     onUpdate: ({ editor }) => {
       if (onChange) {
@@ -210,7 +207,7 @@ export function BlockEditor({
 
   // Memoize full slash menu items (avoids recreation on every render)
   const allSlashItems = useMemo(
-    () => getSlashMenuItems(editor, t, openMathDialog, openMediaDialog),
+    () => (editor ? getSlashMenuItems(editor, t, openMathDialog, openMediaDialog) : []),
     [editor, t, openMathDialog, openMediaDialog]
   )
 

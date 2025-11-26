@@ -20,6 +20,7 @@ import { Underline } from '@tiptap/extension-underline'
 import { StarterKit } from '@tiptap/starter-kit'
 import { common, createLowlight } from 'lowlight'
 
+import { BlockSelection } from './block-selection-extension'
 import { Callout } from './callout-extension'
 import { Column, Columns } from './columns-extension'
 import { Details, DetailsContent, DetailsSummary } from './details-extension'
@@ -128,6 +129,8 @@ export const createExtensions = (placeholder?: string) => [
   // Math/LaTeX formulas
   MathBlock,
   MathInline,
+  // Block selection (triple-click highlight)
+  BlockSelection,
   // Custom extension for keyboard shortcuts
   Extension.create({
     name: 'customKeymap',

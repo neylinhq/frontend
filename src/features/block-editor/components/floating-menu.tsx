@@ -67,6 +67,14 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
   const dragStartPosRef = useRef<number | null>(null)
   const dragBlockRef = useRef<HTMLElement | null>(null)
 
+  // Store drop target info for nested list support
+  const dropTargetRef = useRef<{
+    pos: number
+    insertAfter: boolean
+    isNested: boolean
+    listItemDepth: number
+  } | null>(null)
+
   // Cleanup timeouts on unmount
   useEffect(() => {
     return () => {
@@ -77,27 +85,39 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
 
   // Drop indicator helpers (use ref instead of global singleton)
   const showDropIndicator = useCallback(
-    (container: HTMLElement, y: number, left: number, width: number) => {
+    (
+      container: HTMLElement,
+      y: number,
+      left: number,
+      width: number,
+      options: { nestingLevel?: number; isNested?: boolean } = {}
+    ) => {
+      const { nestingLevel = 0, isNested = false } = options
+      const indent = nestingLevel * 24
+
       if (!dropIndicatorRef.current) {
         const indicator = document.createElement('div')
         indicator.className = 'editor-drop-indicator'
-        indicator.style.cssText = `
-        position: absolute;
-        height: 2px;
-        background: hsl(var(--primary) / 0.5);
-        border-radius: 1px;
-        pointer-events: none;
-        z-index: 100;
-        opacity: 0;
-        transition: opacity 0.15s ease;
-      `
         dropIndicatorRef.current = indicator
         container.appendChild(indicator)
       }
-      dropIndicatorRef.current.style.top = `${y}px`
-      dropIndicatorRef.current.style.left = `${left}px`
-      dropIndicatorRef.current.style.width = `${width}px`
-      dropIndicatorRef.current.style.opacity = '1'
+
+      // Brighter accent when nesting
+      const opacity = isNested ? 1 : 0.7
+
+      dropIndicatorRef.current.style.cssText = `
+        position: absolute;
+        top: ${y}px;
+        left: ${left + indent}px;
+        width: ${width - indent}px;
+        height: 2px;
+        background: hsl(var(--brand) / ${opacity});
+        border-radius: 1px;
+        pointer-events: none;
+        z-index: 100;
+        transition: left 0.1s ease, width 0.1s ease, opacity 0.1s ease;
+        ${isNested ? 'box-shadow: 0 0 8px hsl(var(--brand) / 0.4);' : ''}
+      `
     },
     []
   )
@@ -248,21 +268,93 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
       const editorRect = editorElement.getBoundingClientRect()
       const $pos = view.state.doc.resolve(posResult.pos)
 
-      if ($pos.depth >= 1) {
-        const targetPos = $pos.before(1)
-        const targetDom = view.nodeDOM(targetPos) as HTMLElement
+      // Find nearest list item in ancestry
+      let listItemDepth = -1
+      for (let d = $pos.depth; d > 0; d--) {
+        const node = $pos.node(d)
+        if (node.type.name === 'listItem' || node.type.name === 'taskItem') {
+          listItemDepth = d
+          break
+        }
+      }
+
+      let targetPos: number | undefined
+      let targetDom: HTMLElement | null = null
+      let nestingLevel = 0
+      let isNested = false
+      let insertAfter = false
+
+      if (listItemDepth > 0) {
+        // Inside a list item - determine drop zone
+        targetPos = $pos.before(listItemDepth)
+        targetDom = view.nodeDOM(targetPos) as HTMLElement
+
+        if (targetDom) {
+          const rect = targetDom.getBoundingClientRect()
+          const relY = (e.clientY - rect.top) / rect.height
+          const relX = e.clientX - rect.left
+
+          // Count current nesting level by walking up DOM
+          let parent = targetDom.parentElement
+          while (parent && parent !== view.dom) {
+            if (parent.tagName === 'UL' || parent.tagName === 'OL') {
+              nestingLevel++
+            }
+            parent = parent.parentElement
+          }
+
+          // Determine zone: top 30% = before, middle 40% = nest, bottom 30% = after
+          const isInNestZone = relX < 40 // left 40px triggers nest more easily
+
+          if (relY < 0.3) {
+            // Top zone - insert before
+            isNested = false
+            insertAfter = false
+          } else if (relY > 0.7) {
+            // Bottom zone - insert after
+            isNested = false
+            insertAfter = true
+          } else if (isInNestZone || (relY > 0.35 && relY < 0.65)) {
+            // Middle zone or left edge - nest inside
+            isNested = true
+            nestingLevel++ // +1 for indicator
+            insertAfter = true // Will insert at end of list item
+          } else {
+            // Default to before/after based on Y
+            insertAfter = relY > 0.5
+          }
+        }
+      } else if ($pos.depth >= 1) {
+        // Regular block (not in list)
+        targetPos = $pos.before(1)
+        targetDom = view.nodeDOM(targetPos) as HTMLElement
         if (targetDom) {
           const targetRect = targetDom.getBoundingClientRect()
-          const insertAfter = e.clientY > targetRect.top + targetRect.height / 2
+          insertAfter = e.clientY > targetRect.top + targetRect.height / 2
+        }
+      }
 
-          const indicatorY = insertAfter
-            ? targetRect.bottom - editorRect.top
-            : targetRect.top - editorRect.top
+      if (targetDom && targetPos !== undefined) {
+        const targetRect = targetDom.getBoundingClientRect()
 
-          const indicatorLeft = targetRect.left - editorRect.left
-          const indicatorWidth = targetRect.width
+        const indicatorY = insertAfter
+          ? targetRect.bottom - editorRect.top
+          : targetRect.top - editorRect.top
 
-          showDropIndicator(editorElement, indicatorY, indicatorLeft, indicatorWidth)
+        showDropIndicator(
+          editorElement,
+          indicatorY,
+          targetRect.left - editorRect.left,
+          targetRect.width,
+          { nestingLevel, isNested }
+        )
+
+        // Save for handleDrop
+        dropTargetRef.current = {
+          pos: targetPos,
+          insertAfter,
+          isNested,
+          listItemDepth
         }
       }
     }
@@ -276,6 +368,12 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
       }
 
       if (!isDraggingRef.current || dragStartPosRef.current === null || editor.isDestroyed) {
+        return
+      }
+
+      const target = dropTargetRef.current
+      if (!target) {
+        cleanupDrag()
         return
       }
 
@@ -313,55 +411,71 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
         return
       }
 
-      // Find target position using posAtCoords
-      const coords = { left: e.clientX, top: e.clientY }
-      const posResult = view.posAtCoords(coords)
+      const { pos: targetPos, insertAfter, isNested, listItemDepth } = target
 
-      if (!posResult) {
-        cleanupDrag()
-        return
-      }
-
-      const $targetPos = view.state.doc.resolve(posResult.pos)
-
-      // Find the target top-level block
-      let insertPos: number
-
-      if ($targetPos.depth >= 1) {
-        const targetNode = $targetPos.node(1)
-        const targetPos = $targetPos.before(1)
-
-        // Determine if inserting before or after
-        const targetDom = view.nodeDOM(targetPos) as HTMLElement
-        if (targetDom) {
-          const targetRect = targetDom.getBoundingClientRect()
-          const insertAfter = e.clientY > targetRect.top + targetRect.height / 2
-          insertPos = insertAfter ? targetPos + targetNode.nodeSize : targetPos
-        } else {
-          insertPos = targetPos
-        }
-      } else {
-        insertPos = posResult.pos
-      }
-
-      // Check if dropping in same position
-      if (insertPos >= sourceStart && insertPos <= sourceEnd) {
-        cleanupDrag()
-        return
-      }
-
-      // Execute transaction with mapping (Gemini's recommended approach)
       try {
         const tr = view.state.tr
 
-        // Delete source first
-        tr.delete(sourceStart, sourceEnd)
+        if (isNested && listItemDepth > 0) {
+          // Insert as nested child in list item
+          const $targetPos = view.state.doc.resolve(targetPos)
+          const listItemEnd = $targetPos.after(listItemDepth)
 
-        // Map the insert position after deletion
-        const mappedInsertPos = tr.mapping.map(insertPos)
+          // Delete source first
+          tr.delete(sourceStart, sourceEnd)
 
-        // Insert at mapped position
-        tr.insert(mappedInsertPos, sourceNode)
+          // Map position after deletion
+          const mappedEnd = tr.mapping.map(listItemEnd - 1)
+
+          // Determine list type from parent
+          const parentListNode = $targetPos.node(listItemDepth - 1)
+          const listTypeName = parentListNode?.type.name || 'bulletList'
+          const listType = view.state.schema.nodes[listTypeName]
+          const listItemType = view.state.schema.nodes.listItem || view.state.schema.nodes.taskItem
+
+          if (!listType || !listItemType) {
+            // Fallback to simple insert if schema doesn't have list types
+            tr.insert(mappedEnd, sourceNode)
+          } else {
+            // Wrap content in list structure
+            let contentToInsert
+            if (sourceNode.type.name === 'listItem' || sourceNode.type.name === 'taskItem') {
+              // Source is already a list item - wrap in list
+              contentToInsert = listType.create(null, sourceNode)
+            } else {
+              // Source is regular block - wrap in listItem, then list
+              contentToInsert = listType.create(null, listItemType.create(null, sourceNode))
+            }
+            tr.insert(mappedEnd, contentToInsert)
+          }
+        } else {
+          // Standard before/after insertion
+          const $targetPos = view.state.doc.resolve(targetPos)
+          const targetNode = $targetPos.nodeAfter || $targetPos.nodeBefore
+          const targetNodeSize = targetNode?.nodeSize || 0
+
+          let insertPos: number
+          if (insertAfter) {
+            insertPos = targetPos + targetNodeSize
+          } else {
+            insertPos = targetPos
+          }
+
+          // Check if dropping in same position
+          if (insertPos >= sourceStart && insertPos <= sourceEnd) {
+            cleanupDrag()
+            return
+          }
+
+          // Delete source first
+          tr.delete(sourceStart, sourceEnd)
+
+          // Map the insert position after deletion
+          const mappedInsertPos = tr.mapping.map(insertPos)
+
+          // Insert at mapped position
+          tr.insert(mappedInsertPos, sourceNode)
+        }
 
         view.dispatch(tr)
 
@@ -386,6 +500,7 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
       }
       dragBlockRef.current = null
       dragStartPosRef.current = null
+      dropTargetRef.current = null
       isDraggingRef.current = false
       setIsDragging(false)
     }
@@ -534,7 +649,7 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
     <div
       ref={menuRef}
       role="toolbar"
-      className="absolute -left-2 flex items-center gap-0.5 opacity-50 transition-opacity hover:opacity-100"
+      className="editor-floating-menu absolute -left-10 flex items-center gap-0.5 opacity-50 transition-opacity hover:opacity-100"
       style={{
         top: Math.max(0, menuTop)
       }}

@@ -11,6 +11,7 @@ import {
   SelectValue
 } from '@/shared/ui/select'
 import { type User, type UserPreferences, defaultUserPreferences, useUpdatePreferences } from '@/entities/user'
+import { NOTIFICATION_SETTINGS, INTERFACE_SWITCH_SETTINGS, DENSITY_OPTIONS } from '../preferences-form.constants'
 
 interface PreferencesFormProps {
   user: User
@@ -60,52 +61,22 @@ export function PreferencesForm({ user }: PreferencesFormProps) {
           <CardDescription>{t('settings.preferences.notifications.description')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label htmlFor="email-notifications">
-                {t('settings.preferences.notifications.email')}
-              </Label>
-              <p className="text-sm text-muted-foreground">
-                {t('settings.preferences.notifications.emailDescription')}
-              </p>
+          {NOTIFICATION_SETTINGS.map((setting) => (
+            <div key={setting.id} className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <Label htmlFor={setting.id}>{t(setting.labelKey)}</Label>
+                <p className="text-sm text-muted-foreground">
+                  {t(setting.descriptionKey)}
+                </p>
+              </div>
+              <Switch
+                id={setting.id}
+                checked={preferences.notifications[setting.field]}
+                onCheckedChange={(checked) => handleChange('notifications', setting.field, checked)}
+                disabled={updatePreferences.isPending}
+              />
             </div>
-            <Switch
-              id="email-notifications"
-              checked={preferences.notifications.email}
-              onCheckedChange={(checked) => handleChange('notifications', 'email', checked)}
-              disabled={updatePreferences.isPending}
-            />
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label htmlFor="marketing">{t('settings.preferences.notifications.marketing')}</Label>
-              <p className="text-sm text-muted-foreground">
-                {t('settings.preferences.notifications.marketingDescription')}
-              </p>
-            </div>
-            <Switch
-              id="marketing"
-              checked={preferences.notifications.marketing}
-              onCheckedChange={(checked) => handleChange('notifications', 'marketing', checked)}
-              disabled={updatePreferences.isPending}
-            />
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label htmlFor="updates">{t('settings.preferences.notifications.updates')}</Label>
-              <p className="text-sm text-muted-foreground">
-                {t('settings.preferences.notifications.updatesDescription')}
-              </p>
-            </div>
-            <Switch
-              id="updates"
-              checked={preferences.notifications.updates}
-              onCheckedChange={(checked) => handleChange('notifications', 'updates', checked)}
-              disabled={updatePreferences.isPending}
-            />
-          </div>
+          ))}
         </CardContent>
       </Card>
 
@@ -133,48 +104,31 @@ export function PreferencesForm({ user }: PreferencesFormProps) {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="compact">
-                  {t('settings.preferences.interface.densityCompact')}
-                </SelectItem>
-                <SelectItem value="comfortable">
-                  {t('settings.preferences.interface.densityComfortable')}
-                </SelectItem>
-                <SelectItem value="spacious">
-                  {t('settings.preferences.interface.densitySpacious')}
-                </SelectItem>
+                {DENSITY_OPTIONS.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {t(option.labelKey)}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
 
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label htmlFor="animations">{t('settings.preferences.interface.animations')}</Label>
-              <p className="text-sm text-muted-foreground">
-                {t('settings.preferences.interface.animationsDescription')}
-              </p>
+          {INTERFACE_SWITCH_SETTINGS.map((setting) => (
+            <div key={setting.id} className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <Label htmlFor={setting.id}>{t(setting.labelKey)}</Label>
+                <p className="text-sm text-muted-foreground">
+                  {t(setting.descriptionKey)}
+                </p>
+              </div>
+              <Switch
+                id={setting.id}
+                checked={preferences.interface[setting.field]}
+                onCheckedChange={(checked) => handleChange('interface', setting.field, checked)}
+                disabled={updatePreferences.isPending}
+              />
             </div>
-            <Switch
-              id="animations"
-              checked={preferences.interface.animations}
-              onCheckedChange={(checked) => handleChange('interface', 'animations', checked)}
-              disabled={updatePreferences.isPending}
-            />
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label htmlFor="sound">{t('settings.preferences.interface.sound')}</Label>
-              <p className="text-sm text-muted-foreground">
-                {t('settings.preferences.interface.soundDescription')}
-              </p>
-            </div>
-            <Switch
-              id="sound"
-              checked={preferences.interface.sound}
-              onCheckedChange={(checked) => handleChange('interface', 'sound', checked)}
-              disabled={updatePreferences.isPending}
-            />
-          </div>
+          ))}
         </CardContent>
       </Card>
     </div>

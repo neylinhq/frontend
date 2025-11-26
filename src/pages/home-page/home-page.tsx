@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
 import { Button } from '@/shared/ui/button'
+import { HOME_FEATURES } from './home-page.constants'
 
 export function HomePage() {
   const { t } = useTranslation()
@@ -60,33 +61,14 @@ export function HomePage() {
           <h2 className="text-xl font-semibold mb-8">{t('home.features.title', 'Built for deep work')}</h2>
 
           <div className="grid sm:grid-cols-2 gap-x-12 gap-y-8">
-            <div>
-              <h3 className="font-medium mb-1">{t('home.features.graphThinking.title')}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                {t('home.features.graphThinking.description')}
-              </p>
-            </div>
-
-            <div>
-              <h3 className="font-medium mb-1">{t('home.features.hierarchy.title')}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                {t('home.features.hierarchy.description')}
-              </p>
-            </div>
-
-            <div>
-              <h3 className="font-medium mb-1">{t('home.features.performance.title')}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                {t('home.features.performance.description')}
-              </p>
-            </div>
-
-            <div>
-              <h3 className="font-medium mb-1">{t('home.features.localFirst.title')}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                {t('home.features.localFirst.description')}
-              </p>
-            </div>
+            {HOME_FEATURES.map((feature) => (
+              <div key={feature.titleKey}>
+                <h3 className="font-medium mb-1">{t(feature.titleKey)}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {t(feature.descriptionKey)}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>

@@ -1,4 +1,4 @@
-import { Home, LayoutDashboard, Search } from 'lucide-react'
+import { Search } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
@@ -7,6 +7,7 @@ import { LanguageSwitcher } from '@/features/language-switcher'
 import { Button } from '@/shared/ui/button'
 import { LegalLinks } from '@/shared/ui/legal-links'
 import { Logo } from '@/shared/ui/logo'
+import { ACTION_BUTTONS } from './not-found-page.constants'
 
 export function NotFoundPage() {
   const { t } = useTranslation()
@@ -50,18 +51,23 @@ export function NotFoundPage() {
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center pt-4">
-            <Button asChild size="lg" className="w-full sm:w-auto">
-              <Link to="/">
-                <Home className="mr-2 h-4 w-4" />
-                {t('notFound.backToHome')}
-              </Link>
-            </Button>
-            <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
-              <Link to="/dashboard/overview">
-                <LayoutDashboard className="mr-2 h-4 w-4" />
-                {t('notFound.goToDashboard')}
-              </Link>
-            </Button>
+            {ACTION_BUTTONS.map((button) => {
+              const Icon = button.icon
+              return (
+                <Button
+                  key={button.href}
+                  asChild
+                  size="lg"
+                  variant={button.variant}
+                  className="w-full sm:w-auto"
+                >
+                  <Link to={button.href}>
+                    <Icon className="mr-2 h-4 w-4" />
+                    {t(button.labelKey)}
+                  </Link>
+                </Button>
+              )
+            })}
           </div>
 
           {/* Helpful Links */}

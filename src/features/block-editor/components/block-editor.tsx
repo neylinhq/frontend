@@ -1,5 +1,6 @@
 'use client'
 
+import { TextSelection } from '@tiptap/pm/state'
 import { EditorContent, useEditor } from '@tiptap/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -70,6 +71,46 @@ export function BlockEditor({
         if (event.key === 'Escape' && showSlashMenu) {
           setShowSlashMenu(false)
           return true
+        }
+
+        return false
+      },
+      handleTripleClick: (view, pos) => {
+        // Skip on touch devices
+        if (window.matchMedia('(pointer: coarse)').matches) return false
+
+        const $pos = view.state.doc.resolve(pos)
+
+        if ($pos.depth >= 1) {
+          const blockStart = $pos.before(1)
+          const blockEnd = $pos.after(1)
+          const blockDom = view.nodeDOM(blockStart) as HTMLElement
+
+          if (blockDom) {
+            // Remove previous selection
+            document.querySelectorAll('.block-selected').forEach(el => {
+              el.classList.remove('block-selected')
+            })
+
+            // Add class
+            blockDom.classList.add('block-selected')
+
+            // Cleanup on next action
+            const cleanup = () => {
+              blockDom.classList.remove('block-selected')
+              view.dom.removeEventListener('mousedown', cleanup)
+              view.dom.removeEventListener('keydown', cleanup)
+            }
+
+            view.dom.addEventListener('mousedown', cleanup)
+            view.dom.addEventListener('keydown', cleanup)
+          }
+
+          // Select entire block text
+          const selection = TextSelection.create(view.state.doc, blockStart + 1, blockEnd - 1)
+          view.dispatch(view.state.tr.setSelection(selection))
+
+          return true // Prevent default triple-click behavior
         }
 
         return false
@@ -296,7 +337,7 @@ export function BlockEditor({
   // Loading state while editor initializes
   if (!editor) {
     return (
-      <div className={cn('tiptap-editor pl-8', className)}>
+      <div className={cn('tiptap-editor md:pl-8', className)}>
         <div className="animate-pulse space-y-4">
           <div className="h-6 bg-muted rounded w-3/4" />
           <div className="h-4 bg-muted rounded w-full" />
@@ -311,7 +352,7 @@ export function BlockEditor({
     <div
       ref={editorRef}
       className={cn(
-        'tiptap-editor group/editor relative pl-8',
+        'tiptap-editor group/editor relative md:pl-8',
         theme === 'dark' && 'dark',
         className
       )}

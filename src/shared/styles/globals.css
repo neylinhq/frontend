@@ -213,6 +213,8 @@
   color: hsl(var(--foreground));
   font-size: 1rem;
   line-height: 1.75;
+  max-width: 100%;
+  overflow-wrap: break-word;
 }
 
 .tiptap-editor .ProseMirror > * + * {
@@ -387,7 +389,26 @@
 
 /* Selection */
 .tiptap-editor ::selection {
-  background-color: hsl(var(--primary) / 0.2);
+  background-color: hsl(var(--brand) / 0.2);
+}
+
+/* Block selection on triple-click */
+.tiptap-editor .ProseMirror > .block-selected {
+  background: hsl(var(--brand) / 0.08);
+  border-radius: 0.25rem;
+  margin: -2px -4px;
+  padding: 2px 4px;
+}
+
+/* Floating menu - hide on touch devices */
+.editor-floating-menu {
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .editor-floating-menu {
+    display: flex;
+  }
 }
 
 /* Focus styling */
@@ -1105,4 +1126,33 @@
 
 .dark .editor-math-inline:hover {
   background: hsl(var(--muted) / 0.5);
+}
+
+/* Focus node glow pulse animation */
+/* Light theme: indigo glow (brand color) */
+@keyframes glow-pulse-light {
+  0%, 100% {
+    box-shadow: 0 0 35px rgba(99, 102, 241, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 50px rgba(99, 102, 241, 0.65);
+  }
+}
+
+/* Dark theme: white glow, more subtle */
+@keyframes glow-pulse-dark {
+  0%, 100% {
+    box-shadow: 0 0 35px rgba(255, 255, 255, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 50px rgba(255, 255, 255, 0.25);
+  }
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse-light 2s ease-in-out infinite;
+}
+
+.dark .animate-glow-pulse {
+  animation: glow-pulse-dark 2s ease-in-out infinite;
 }

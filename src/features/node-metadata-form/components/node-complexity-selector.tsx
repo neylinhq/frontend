@@ -7,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/shared/ui/select'
+import { COMPLEXITY_OPTIONS } from './node-complexity-selector.constants'
 
 interface NodeComplexitySelectorProps {
   value?: string
@@ -24,9 +25,11 @@ export function NodeComplexitySelector({ value, onChange }: NodeComplexitySelect
           <SelectValue placeholder={t('form.complexity.placeholder')} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="basic">{t('form.complexity.basic')}</SelectItem>
-          <SelectItem value="intermediate">{t('form.complexity.intermediate')}</SelectItem>
-          <SelectItem value="advanced">{t('form.complexity.advanced')}</SelectItem>
+          {COMPLEXITY_OPTIONS.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {t(option.labelKey)}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
     </div>

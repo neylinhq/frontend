@@ -137,7 +137,7 @@ export function NodeEditPage({ node: currentNode, map: lightweightMap, mapId, no
       {/* Main Editor Area */}
       <main className="flex-1 min-w-0 overflow-y-auto overflow-x-hidden">
         {/* Editor Content */}
-        <div className="mx-auto max-w-3xl px-4 sm:px-8 py-8">
+        <div className="mx-auto max-w-3xl px-4 md:px-8 py-6 md:py-8">
           {/* Breadcrumb & Actions */}
           <div className="mb-8 flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -174,7 +174,7 @@ export function NodeEditPage({ node: currentNode, map: lightweightMap, mapId, no
           </div>
 
           {/* Editable Title */}
-          <div className="mb-6 pl-8">
+          <div className="mb-4 md:mb-6 md:pl-8">
             <textarea
               ref={titleInputRef}
               value={title}

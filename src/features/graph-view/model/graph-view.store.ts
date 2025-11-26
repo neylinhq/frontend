@@ -92,11 +92,12 @@ const setSerializer = {
 
 // Event for triggering layout recalculation
 export const layoutEvent = new EventTarget()
-export const triggerLayout = (options?: { fitView?: boolean; anchorToCenter?: boolean }) => {
+export const triggerLayout = (options?: { fitView?: boolean; anchorToCenter?: boolean; animated?: boolean }) => {
   const event = new CustomEvent('layout', {
     detail: {
       fitView: options?.fitView ?? true,
       anchorToCenter: options?.anchorToCenter ?? false,
+      animated: options?.animated ?? false,
     }
   })
   layoutEvent.dispatchEvent(event)
@@ -188,14 +189,15 @@ export const useGraphViewStore = create<GraphViewState & GraphViewActions>()(
 
       // Layout - defer triggerLayout to next tick so React can update refs first
       // anchorToCenter: true to keep focus on the node closest to viewport center
+      // animated: true for smooth transition when slider changes
       setNodeSpacing: (spacing) => {
         set({ nodeSpacing: Math.max(50, Math.min(200, spacing)) })
-        setTimeout(() => triggerLayout({ fitView: false, anchorToCenter: true }), 0)
+        setTimeout(() => triggerLayout({ fitView: false, anchorToCenter: true, animated: true }), 0)
       },
 
       setDirectionStrength: (strength) => {
         set({ directionStrength: Math.max(0, Math.min(200, strength)) })
-        setTimeout(() => triggerLayout({ fitView: false, anchorToCenter: true }), 0)
+        setTimeout(() => triggerLayout({ fitView: false, anchorToCenter: true, animated: true }), 0)
       },
 
       // Helpers

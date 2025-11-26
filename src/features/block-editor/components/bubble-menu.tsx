@@ -24,11 +24,53 @@ import {
   Type,
   Underline
 } from 'lucide-react'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useReducer, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { cn } from '@/shared/lib/cn'
 import { Button } from '@/shared/ui/button'
+
+// Constants for menu dimensions (approximate)
+const MENU_HEIGHT = 44
+const MENU_MIN_WIDTH = 400
+const VIEWPORT_PADDING = 8
+
+// Menu state management with reducer (cleaner than 4 separate booleans)
+type MenuType = 'closed' | 'link' | 'color' | 'turnInto' | 'more'
+
+interface MenuState {
+  activeMenu: MenuType
+  linkUrl: string
+}
+
+type MenuAction =
+  | { type: 'OPEN_MENU'; menu: MenuType }
+  | { type: 'CLOSE_ALL' }
+  | { type: 'SET_LINK_URL'; url: string }
+  | { type: 'TOGGLE_MENU'; menu: MenuType }
+
+function menuReducer(state: MenuState, action: MenuAction): MenuState {
+  switch (action.type) {
+    case 'OPEN_MENU':
+      return { ...state, activeMenu: action.menu }
+    case 'CLOSE_ALL':
+      return { activeMenu: 'closed', linkUrl: '' }
+    case 'SET_LINK_URL':
+      return { ...state, linkUrl: action.url }
+    case 'TOGGLE_MENU':
+      return {
+        ...state,
+        activeMenu: state.activeMenu === action.menu ? 'closed' : action.menu
+      }
+    default:
+      return state
+  }
+}
+
+const initialMenuState: MenuState = {
+  activeMenu: 'closed',
+  linkUrl: ''
+}
 
 // Block types for Turn Into dropdown
 const BLOCK_TYPES = [
@@ -77,13 +119,15 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
   const { t } = useTranslation()
   const [isVisible, setIsVisible] = useState(false)
   const [position, setPosition] = useState({ top: 0, left: 0 })
-  const [isLinkInputOpen, setIsLinkInputOpen] = useState(false)
-  const [isColorPickerOpen, setIsColorPickerOpen] = useState(false)
-  const [isTurnIntoOpen, setIsTurnIntoOpen] = useState(false)
-  const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false)
-  const [linkUrl, setLinkUrl] = useState('')
+  const [menuState, dispatch] = useReducer(menuReducer, initialMenuState)
   const menuRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+
+  // Derived state for cleaner checks
+  const isLinkInputOpen = menuState.activeMenu === 'link'
+  const isColorPickerOpen = menuState.activeMenu === 'color'
+  const isTurnIntoOpen = menuState.activeMenu === 'turnInto'
+  const isMoreMenuOpen = menuState.activeMenu === 'more'
 
   useEffect(() => {
     if (isLinkInputOpen && inputRef.current) {
@@ -99,9 +143,7 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
       // Hide menu if selection is empty or is a node selection
       if (empty || from === to) {
         setIsVisible(false)
-        setIsColorPickerOpen(false)
-        setIsTurnIntoOpen(false)
-        setIsMoreMenuOpen(false)
+        dispatch({ type: 'CLOSE_ALL' })
         return
       }
 
@@ -110,9 +152,35 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
       const start = view.coordsAtPos(from)
       const end = view.coordsAtPos(to)
 
-      // Calculate position (center above selection)
-      const left = (start.left + end.left) / 2
-      const top = start.top - 10
+      // Calculate initial position (center above selection)
+      let left = (start.left + end.left) / 2
+      let top = start.top - 10
+
+      // Viewport boundary checking
+      const viewportWidth = window.innerWidth
+      const viewportHeight = window.innerHeight
+      const halfMenuWidth = MENU_MIN_WIDTH / 2
+
+      // Check if menu would go off the left edge
+      if (left - halfMenuWidth < VIEWPORT_PADDING) {
+        left = halfMenuWidth + VIEWPORT_PADDING
+      }
+      // Check if menu would go off the right edge
+      else if (left + halfMenuWidth > viewportWidth - VIEWPORT_PADDING) {
+        left = viewportWidth - halfMenuWidth - VIEWPORT_PADDING
+      }
+
+      // Check if menu would go above viewport - if so, position below selection
+      if (top - MENU_HEIGHT < VIEWPORT_PADDING) {
+        const bottomPosition = end.bottom + 10
+        // Check if positioning below would also go off-screen
+        if (bottomPosition + MENU_HEIGHT > viewportHeight - VIEWPORT_PADDING) {
+          // Both positions are off-screen, choose the one with more visible area
+          top = Math.max(VIEWPORT_PADDING + MENU_HEIGHT, start.top - 10)
+        } else {
+          top = bottomPosition
+        }
+      }
 
       setPosition({ top, left })
       setIsVisible(true)
@@ -128,16 +196,15 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
   }, [editor])
 
   const setLink = useCallback(() => {
-    if (linkUrl === '') {
+    if (menuState.linkUrl === '') {
       editor.chain().focus().extendMarkRange('link').unsetLink().run()
       return
     }
 
-    const url = linkUrl.startsWith('http') ? linkUrl : `https://${linkUrl}`
+    const url = menuState.linkUrl.startsWith('http') ? menuState.linkUrl : `https://${menuState.linkUrl}`
     editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run()
-    setLinkUrl('')
-    setIsLinkInputOpen(false)
-  }, [editor, linkUrl])
+    dispatch({ type: 'CLOSE_ALL' })
+  }, [editor, menuState.linkUrl])
 
   const handleLinkKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
@@ -145,8 +212,7 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
       setLink()
     }
     if (e.key === 'Escape') {
-      setIsLinkInputOpen(false)
-      setLinkUrl('')
+      dispatch({ type: 'CLOSE_ALL' })
     }
   }
 
@@ -183,8 +249,8 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
         <input
           ref={inputRef}
           type="text"
-          value={linkUrl}
-          onChange={(e) => setLinkUrl(e.target.value)}
+          value={menuState.linkUrl}
+          onChange={(e) => dispatch({ type: 'SET_LINK_URL', url: e.target.value })}
           onKeyDown={handleLinkKeyDown}
           placeholder={t('editor.bubble.urlPlaceholder')}
           className="h-8 w-48 rounded-md border-none bg-transparent px-2 text-sm outline-none placeholder:text-muted-foreground"
@@ -195,10 +261,7 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => {
-            setIsLinkInputOpen(false)
-            setLinkUrl('')
-          }}
+          onClick={() => dispatch({ type: 'CLOSE_ALL' })}
           className="h-8 px-2 text-xs"
         >
           {t('editor.bubble.cancel')}
@@ -221,10 +284,7 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
       <div className="relative">
         <button
           type="button"
-          onClick={() => {
-            setIsTurnIntoOpen(!isTurnIntoOpen)
-            setIsColorPickerOpen(false)
-          }}
+          onClick={() => dispatch({ type: 'TOGGLE_MENU', menu: 'turnInto' })}
           className={cn(
             'flex h-8 items-center gap-1 rounded-md px-2 transition-colors',
             isTurnIntoOpen
@@ -248,7 +308,7 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
                   type="button"
                   onClick={() => {
                     blockType.command(editor)
-                    setIsTurnIntoOpen(false)
+                    dispatch({ type: 'CLOSE_ALL' })
                   }}
                   className={cn(
                     'flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors',
@@ -331,7 +391,7 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
       {/* Color Picker */}
       <div className="relative">
         <ToolbarButton
-          onClick={() => setIsColorPickerOpen(!isColorPickerOpen)}
+          onClick={() => dispatch({ type: 'TOGGLE_MENU', menu: 'color' })}
           isActive={isColorPickerOpen}
         >
           <Palette className="h-4 w-4" />
@@ -353,7 +413,7 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
                       } else {
                         editor.chain().focus().unsetColor().run()
                       }
-                      setIsColorPickerOpen(false)
+                      dispatch({ type: 'CLOSE_ALL' })
                     }}
                     className={cn(
                       'h-6 w-6 rounded border border-border transition-transform hover:scale-110',
@@ -378,7 +438,7 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
                       } else {
                         editor.chain().focus().unsetHighlight().run()
                       }
-                      setIsColorPickerOpen(false)
+                      dispatch({ type: 'CLOSE_ALL' })
                     }}
                     className={cn(
                       'h-6 w-6 rounded border border-border transition-transform hover:scale-110',
@@ -399,8 +459,8 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
       <ToolbarButton
         onClick={() => {
           const previousUrl = editor.getAttributes('link').href
-          setLinkUrl(previousUrl || '')
-          setIsLinkInputOpen(true)
+          dispatch({ type: 'SET_LINK_URL', url: previousUrl || '' })
+          dispatch({ type: 'OPEN_MENU', menu: 'link' })
         }}
         isActive={editor.isActive('link')}
       >
@@ -419,11 +479,7 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
       {/* More Menu */}
       <div className="relative">
         <ToolbarButton
-          onClick={() => {
-            setIsMoreMenuOpen(!isMoreMenuOpen)
-            setIsColorPickerOpen(false)
-            setIsTurnIntoOpen(false)
-          }}
+          onClick={() => dispatch({ type: 'TOGGLE_MENU', menu: 'more' })}
           isActive={isMoreMenuOpen}
         >
           <MoreHorizontal className="h-4 w-4" />
@@ -437,7 +493,7 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
                 const { from, to } = editor.state.selection
                 const text = editor.state.doc.textBetween(from, to, ' ')
                 navigator.clipboard.writeText(text)
-                setIsMoreMenuOpen(false)
+                dispatch({ type: 'CLOSE_ALL' })
               }}
               className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-foreground hover:bg-accent/50 transition-colors"
             >
@@ -448,7 +504,7 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
               type="button"
               onClick={() => {
                 editor.chain().focus().deleteSelection().run()
-                setIsMoreMenuOpen(false)
+                dispatch({ type: 'CLOSE_ALL' })
               }}
               className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-destructive hover:bg-destructive/10 transition-colors"
             >

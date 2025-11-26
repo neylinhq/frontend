@@ -91,13 +91,17 @@ function forceDirectedLayout(
   const coolingFactor = 0.97
 
   // Initialize positions
-  const positions = nodes.map((n, i) => ({
-    id: n.id,
-    x: n.position?.x ?? (Math.cos(i * 2.4) * 200 + Math.random() * 50),
-    y: n.position?.y ?? (Math.sin(i * 2.4) * 200 + Math.random() * 50),
-    vx: 0,
-    vy: 0,
-  }))
+  // Note: check for valid position (not 0,0) since mock data uses {x:0, y:0} as default
+  const positions = nodes.map((n, i) => {
+    const hasValidPosition = n.position && (n.position.x !== 0 || n.position.y !== 0)
+    return {
+      id: n.id,
+      x: hasValidPosition ? n.position.x : (Math.cos(i * 2.4) * 200 + Math.random() * 50),
+      y: hasValidPosition ? n.position.y : (Math.sin(i * 2.4) * 200 + Math.random() * 50),
+      vx: 0,
+      vy: 0,
+    }
+  })
 
   const posMap = new Map(positions.map(p => [p.id, p]))
 
@@ -150,9 +154,23 @@ function forceDirectedLayout(
       // Direction force: source should be ABOVE target (source.y < target.y)
       // This creates hierarchical layout where edges flow top-to-bottom
       if (options.directionStrength > 0) {
-        const verticalForce = idealDistance * 2.5 * options.directionStrength * weight
+        const verticalForce = idealDistance * 1.2 * options.directionStrength * weight
         source.vy -= verticalForce  // push source UP (decrease y)
         target.vy += verticalForce  // push target DOWN (increase y)
+
+        // Add horizontal spread to prevent vertical collapse
+        // Nodes at similar Y should spread horizontally
+        const yDiff = Math.abs(target.y - source.y)
+        if (yDiff < idealDistance * 0.5) {
+          const spreadForce = idealDistance * 0.3 * options.directionStrength
+          if (source.x <= target.x) {
+            source.vx -= spreadForce
+            target.vx += spreadForce
+          } else {
+            source.vx += spreadForce
+            target.vx -= spreadForce
+          }
+        }
       }
     })
 

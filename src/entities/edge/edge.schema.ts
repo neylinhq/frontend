@@ -25,7 +25,7 @@ export const EdgeMetadataSchema = z
     createdBy: z.enum(['user', 'ai', 'both']).default('user'),
     lastValidated: z.string().optional()
   })
-  .default({})
+  .default({ confidence: 0.5, createdBy: 'user' })
 
 export type EdgeMetadata = z.infer<typeof EdgeMetadataSchema>
 

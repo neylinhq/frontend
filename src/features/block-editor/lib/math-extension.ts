@@ -16,6 +16,31 @@ declare module '@tiptap/core' {
   }
 }
 
+// Helper to safely render math with proper error handling (no XSS)
+function renderMathSafe(latex: string, displayMode: boolean): { html: string; isError: boolean } {
+  try {
+    return {
+      html: katex.renderToString(latex, {
+        displayMode,
+        throwOnError: false,
+        strict: false
+      }),
+      isError: false
+    }
+  } catch {
+    // Escape latex to prevent XSS
+    const escaped = latex
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+    return {
+      html: `<span class="math-error">${escaped}</span>`,
+      isError: true
+    }
+  }
+}
+
 // Block Math (display mode) - for equations on their own line
 export const MathBlock = Node.create<MathBlockOptions>({
   name: 'mathBlock',
@@ -54,17 +79,7 @@ export const MathBlock = Node.create<MathBlockOptions>({
 
   renderHTML({ HTMLAttributes, node }) {
     const latex = node.attrs.latex || ''
-    let renderedMath = ''
-
-    try {
-      renderedMath = katex.renderToString(latex, {
-        displayMode: true,
-        throwOnError: false,
-        strict: false
-      })
-    } catch {
-      renderedMath = `<span class="math-error">${latex}</span>`
-    }
+    const { html } = renderMathSafe(latex, true)
 
     return [
       'div',
@@ -73,7 +88,7 @@ export const MathBlock = Node.create<MathBlockOptions>({
         class: 'editor-math-block',
         contenteditable: 'false'
       }),
-      ['div', { class: 'math-content', innerHTML: renderedMath }]
+      ['div', { class: 'math-content', innerHTML: html }]
     ]
   },
 
@@ -93,7 +108,7 @@ export const MathBlock = Node.create<MathBlockOptions>({
   },
 
   addNodeView() {
-    return ({ node, getPos, editor }) => {
+    return ({ node, getPos }) => {
       const dom = document.createElement('div')
       dom.className = 'editor-math-block'
       dom.setAttribute('data-math-block', '')
@@ -102,45 +117,38 @@ export const MathBlock = Node.create<MathBlockOptions>({
       const content = document.createElement('div')
       content.className = 'math-content'
 
-      const renderMath = () => {
+      const updateContent = () => {
         const latex = node.attrs.latex || ''
-        try {
-          content.innerHTML = katex.renderToString(latex, {
-            displayMode: true,
-            throwOnError: false,
-            strict: false
-          })
-        } catch {
-          content.innerHTML = `<span class="math-error">${latex}</span>`
-        }
+        const { html } = renderMathSafe(latex, true)
+        content.innerHTML = html
       }
 
-      renderMath()
+      updateContent()
       dom.appendChild(content)
 
       // Double click to edit - dispatch custom event
-      dom.addEventListener('dblclick', () => {
+      const handleDblClick = () => {
         const latex = node.attrs.latex || ''
         const pos = typeof getPos === 'function' ? getPos() : null
         if (pos !== null) {
-          const event = new CustomEvent('edit-math', {
-            detail: {
-              latex,
-              pos,
-              mode: 'block' as const
-            }
-          })
-          document.dispatchEvent(event)
+          document.dispatchEvent(new CustomEvent('edit-math', {
+            detail: { latex, pos, mode: 'block' as const }
+          }))
         }
-      })
+      }
+
+      dom.addEventListener('dblclick', handleDblClick)
 
       return {
         dom,
         update: (updatedNode) => {
           if (updatedNode.type.name !== this.name) return false
           node = updatedNode
-          renderMath()
+          updateContent()
           return true
+        },
+        destroy: () => {
+          dom.removeEventListener('dblclick', handleDblClick)
         }
       }
     }
@@ -179,17 +187,7 @@ export const MathInline = Node.create({
 
   renderHTML({ HTMLAttributes, node }) {
     const latex = node.attrs.latex || ''
-    let renderedMath = ''
-
-    try {
-      renderedMath = katex.renderToString(latex, {
-        displayMode: false,
-        throwOnError: false,
-        strict: false
-      })
-    } catch {
-      renderedMath = `<span class="math-error">${latex}</span>`
-    }
+    const { html } = renderMathSafe(latex, false)
 
     return [
       'span',
@@ -198,7 +196,7 @@ export const MathInline = Node.create({
         class: 'editor-math-inline',
         contenteditable: 'false'
       }),
-      ['span', { innerHTML: renderedMath }]
+      ['span', { innerHTML: html }]
     ]
   },
 
@@ -218,52 +216,45 @@ export const MathInline = Node.create({
   },
 
   addNodeView() {
-    return ({ node, getPos, editor }) => {
+    return ({ node, getPos }) => {
       const dom = document.createElement('span')
       dom.className = 'editor-math-inline'
       dom.setAttribute('data-math-inline', '')
       dom.setAttribute('contenteditable', 'false')
 
-      const renderMath = () => {
+      const updateContent = () => {
         const latex = node.attrs.latex || ''
-        try {
-          dom.innerHTML = katex.renderToString(latex, {
-            displayMode: false,
-            throwOnError: false,
-            strict: false
-          })
-        } catch {
-          dom.innerHTML = `<span class="math-error">${latex}</span>`
-        }
+        const { html } = renderMathSafe(latex, false)
+        dom.innerHTML = html
       }
 
-      renderMath()
+      updateContent()
 
       // Double click to edit - dispatch custom event
-      dom.addEventListener('dblclick', (e) => {
+      const handleDblClick = (e: MouseEvent) => {
         e.preventDefault()
         e.stopPropagation()
         const latex = node.attrs.latex || ''
         const pos = typeof getPos === 'function' ? getPos() : null
         if (pos !== null) {
-          const event = new CustomEvent('edit-math', {
-            detail: {
-              latex,
-              pos,
-              mode: 'inline' as const
-            }
-          })
-          document.dispatchEvent(event)
+          document.dispatchEvent(new CustomEvent('edit-math', {
+            detail: { latex, pos, mode: 'inline' as const }
+          }))
         }
-      })
+      }
+
+      dom.addEventListener('dblclick', handleDblClick)
 
       return {
         dom,
         update: (updatedNode) => {
-          if (updatedNode.type.name !== 'mathInline') return false
+          if (updatedNode.type.name !== this.name) return false
           node = updatedNode
-          renderMath()
+          updateContent()
           return true
+        },
+        destroy: () => {
+          dom.removeEventListener('dblclick', handleDblClick)
         }
       }
     }

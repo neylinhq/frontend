@@ -27,7 +27,8 @@ import { KnowledgeEdge } from './knowledge-edge'
 import { KnowledgeNode } from './knowledge-node'
 import {
   layoutEvent,
-  applyLayout,
+  applyLayout as applyLayoutOriginal,
+  applyLayoutD3,
   getNodesWithinDepth,
   useGraphKeyboard,
   useViewMode,
@@ -35,7 +36,11 @@ import {
   useFilters,
   useGraphUI,
   useNodeSpacing,
+  USE_D3_LAYOUT,
 } from '@/features/graph-view'
+
+// Switch between implementations via USE_D3_LAYOUT flag
+const applyLayout = USE_D3_LAYOUT ? applyLayoutD3 : applyLayoutOriginal
 
 const nodeTypes = {
   knowledgeNode: KnowledgeNode,
@@ -194,7 +199,7 @@ function GraphVisualizationContent({
   }, [reactFlowNodes, screenToFlowPosition])
 
   // Apply auto-layout function - uses ref to get latest params when triggered by store events
-  const doApplyLayout = useCallback((shouldFitView = true, anchorNodeId?: string | null) => {
+  const doApplyLayout = useCallback((shouldFitView = true, anchorNodeId?: string | null, animated = false) => {
     if (reactFlowNodes.length === 0) return
 
     const params = layoutParamsRef.current
@@ -205,7 +210,15 @@ function GraphVisualizationContent({
       directionStrength: params.directionStrength,
     })
 
-    setNodes(result.nodes)
+    // Add transition style for smooth animation when layout changes
+    const nodesWithAnimation = animated
+      ? result.nodes.map(node => ({
+          ...node,
+          style: { ...node.style, transition: 'transform 0.3s ease-out' },
+        }))
+      : result.nodes
+
+    setNodes(nodesWithAnimation)
 
     // If anchor node specified, center on it after layout
     if (anchorNodeId) {
@@ -238,12 +251,13 @@ function GraphVisualizationContent({
   // Listen for layout events from the store
   useEffect(() => {
     const handleLayoutEvent = (e: Event) => {
-      const customEvent = e as CustomEvent<{ fitView?: boolean; anchorToCenter?: boolean }>
+      const customEvent = e as CustomEvent<{ fitView?: boolean; anchorToCenter?: boolean; animated?: boolean }>
       const shouldFitView = customEvent.detail?.fitView ?? true
       const anchorToCenter = customEvent.detail?.anchorToCenter ?? false
+      const animated = customEvent.detail?.animated ?? false
 
       const anchorNodeId = anchorToCenter ? getClosestNodeToViewportCenter() : null
-      doApplyLayout(shouldFitView, anchorNodeId)
+      doApplyLayout(shouldFitView, anchorNodeId, animated)
     }
 
     layoutEvent.addEventListener('layout', handleLayoutEvent)

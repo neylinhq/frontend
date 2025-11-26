@@ -83,61 +83,97 @@ export const TableOfContents = Node.create<TableOfContentsOptions>({
     return [
       new Plugin({
         key: new PluginKey('tableOfContentsUpdate'),
-        view: () => ({
-          update: (view) => {
-            const { doc } = view.state
-            const tocNodes: { node: Node; pos: number }[] = []
-            const headings: TocItem[] = []
+        view: (view) => {
+          // Use event delegation to avoid memory leaks
+          const handleTocClick = (e: Event) => {
+            const target = e.target as HTMLElement
+            if (target.tagName !== 'A') return
 
-            // Find all TOC nodes and headings
+            const headingId = target.getAttribute('data-heading-id')
+            if (!headingId) return
+
+            e.preventDefault()
+
+            // Find current heading position (recalculate to handle document changes)
+            const { doc } = view.state
+            let targetPos: number | null = null
+
             doc.descendants((node, pos) => {
-              if (node.type.name === extensionThis.name) {
-                tocNodes.push({ node: node as unknown as Node, pos })
-              }
               if (node.type.name === 'heading') {
                 const text = node.textContent
                 const id = slugify(text) || `heading-${pos}`
-                headings.push({
-                  level: node.attrs.level,
-                  text,
-                  id,
-                  pos
-                })
+                if (id === headingId) {
+                  targetPos = pos
+                  return false // Stop iteration
+                }
               }
             })
 
-            // Update TOC content in the DOM
-            if (tocNodes.length > 0 && headings.length > 0) {
-              const tocElements = view.dom.querySelectorAll('.editor-toc-list')
-              tocElements.forEach((tocList) => {
-                // Clear existing content
-                tocList.innerHTML = ''
-
-                // Add heading links
-                headings.forEach((heading) => {
-                  const li = document.createElement('li')
-                  li.className = `editor-toc-item editor-toc-item-${heading.level}`
-
-                  const link = document.createElement('a')
-                  link.href = `#${heading.id}`
-                  link.textContent = heading.text
-                  link.addEventListener('click', (e) => {
-                    e.preventDefault()
-                    // Scroll to heading position
-                    const coords = view.coordsAtPos(heading.pos)
-                    window.scrollTo({
-                      top: coords.top - 100,
-                      behavior: 'smooth'
-                    })
-                  })
-
-                  li.appendChild(link)
-                  tocList.appendChild(li)
-                })
+            if (targetPos !== null) {
+              const coords = view.coordsAtPos(targetPos)
+              window.scrollTo({
+                top: coords.top - 100,
+                behavior: 'smooth'
               })
             }
           }
-        })
+
+          // Add delegated event listener
+          const editorDom = view.dom
+          editorDom.addEventListener('click', handleTocClick)
+
+          return {
+            update: () => {
+              const { doc } = view.state
+              const tocNodes: { pos: number }[] = []
+              const headings: TocItem[] = []
+
+              // Find all TOC nodes and headings
+              doc.descendants((node, pos) => {
+                if (node.type.name === extensionThis.name) {
+                  tocNodes.push({ pos })
+                }
+                if (node.type.name === 'heading') {
+                  const text = node.textContent
+                  const id = slugify(text) || `heading-${pos}`
+                  headings.push({
+                    level: node.attrs.level,
+                    text,
+                    id,
+                    pos
+                  })
+                }
+              })
+
+              // Update TOC content in the DOM
+              if (tocNodes.length > 0 && headings.length > 0) {
+                const tocElements = view.dom.querySelectorAll('.editor-toc-list')
+                tocElements.forEach((tocList) => {
+                  // Clear existing content
+                  tocList.innerHTML = ''
+
+                  // Add heading links (no individual listeners - using delegation)
+                  headings.forEach((heading) => {
+                    const li = document.createElement('li')
+                    li.className = `editor-toc-item editor-toc-item-${heading.level}`
+
+                    const link = document.createElement('a')
+                    link.href = `#${heading.id}`
+                    link.textContent = heading.text
+                    link.setAttribute('data-heading-id', heading.id)
+
+                    li.appendChild(link)
+                    tocList.appendChild(li)
+                  })
+                })
+              }
+            },
+            destroy: () => {
+              // Clean up delegated event listener
+              editorDom.removeEventListener('click', handleTocClick)
+            }
+          }
+        }
       })
     ]
   }

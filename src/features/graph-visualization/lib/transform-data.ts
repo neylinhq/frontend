@@ -5,7 +5,8 @@ export function transformNodesToFlow(
   nodes: Node[],
   selectedNodeIds: string[] = [],
   onSelect?: (id: string) => void,
-  focusedNodeId?: string | null
+  focusedNodeId?: string | null,
+  animated?: boolean
 ): FlowNode[] {
   return nodes.map(node => ({
     id: node.id,
@@ -17,6 +18,8 @@ export function transformNodesToFlow(
       isFocused: focusedNodeId === node.id,
       onSelect,
     },
+    // Smooth transition when layout changes
+    style: animated ? { transition: 'transform 0.3s ease-out' } : undefined,
   }))
 }
 

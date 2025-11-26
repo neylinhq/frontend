@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next'
 import { Label } from '@/shared/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/shared/ui/radio-group'
-import { Brain, FileText, Lightbulb, BookOpen, HelpCircle, FlaskConical } from 'lucide-react'
+import { Brain, FileText, Lightbulb, BookOpen, HelpCircle, FlaskConical, User, GraduationCap } from 'lucide-react'
 import type { NodeType } from '@/entities/node'
 
-const nodeTypeValues: NodeType[] = ['concept', 'fact', 'theory', 'example', 'question', 'hypothesis']
+const nodeTypeValues: NodeType[] = ['concept', 'fact', 'theory', 'example', 'question', 'hypothesis', 'person', 'school']
 
 const nodeTypeIcons: Record<NodeType, React.ReactNode> = {
   concept: <Brain className="h-4 w-4" />,
@@ -12,7 +12,9 @@ const nodeTypeIcons: Record<NodeType, React.ReactNode> = {
   theory: <Lightbulb className="h-4 w-4" />,
   example: <BookOpen className="h-4 w-4" />,
   question: <HelpCircle className="h-4 w-4" />,
-  hypothesis: <FlaskConical className="h-4 w-4" />
+  hypothesis: <FlaskConical className="h-4 w-4" />,
+  person: <User className="h-4 w-4" />,
+  school: <GraduationCap className="h-4 w-4" />,
 }
 
 interface NodeTypeSelectorProps {

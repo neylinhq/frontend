@@ -59,7 +59,7 @@ export function MapViewPage() {
 
   return (
     <div className="h-[calc(100vh-3.5rem)] p-2 md:p-4">
-      <GraphVisualization mapId={mapId} className="h-full w-full" showMinimap={true} interactive={true} />
+      <GraphVisualization mapId={mapId} className="h-full w-full" interactive={true} />
     </div>
   )
 }

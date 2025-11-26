@@ -22,7 +22,9 @@ const NODE_TYPE_CONFIG: Record<NodeType, { color: string; label: string }> = {
   theory: { color: 'bg-purple-500/10 text-purple-600 dark:text-purple-400', label: 'Theory' },
   example: { color: 'bg-orange-500/10 text-orange-600 dark:text-orange-400', label: 'Example' },
   question: { color: 'bg-yellow-500/10 text-yellow-600 dark:text-yellow-400', label: 'Question' },
-  hypothesis: { color: 'bg-pink-500/10 text-pink-600 dark:text-pink-400', label: 'Hypothesis' }
+  hypothesis: { color: 'bg-pink-500/10 text-pink-600 dark:text-pink-400', label: 'Hypothesis' },
+  person: { color: 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400', label: 'Person' },
+  school: { color: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400', label: 'School' },
 }
 
 export function NodeEditPage() {
@@ -161,8 +163,8 @@ export function NodeEditPage() {
         }
       },
       {
-        onSuccess: () => toast.success('Saved'),
-        onError: () => toast.error('Failed to save')
+        onSuccess: () => toast.success(t('common.saved')),
+        onError: () => toast.error(t('errors.failedSave'))
       }
     )
   }
@@ -170,7 +172,7 @@ export function NodeEditPage() {
   return (
     <div className="flex h-[calc(100vh-3.5rem)]">
       {/* Main Editor Area */}
-      <main className="relative flex-1 overflow-y-auto">
+      <main className="flex-1 min-w-0 overflow-y-auto">
         {/* Editor Content */}
         <div className="mx-auto max-w-3xl px-6 py-12">
           {/* Breadcrumb & Actions */}
@@ -223,6 +225,7 @@ export function NodeEditPage() {
 
           {/* Editor */}
           <BlockEditor
+            initialContent={currentNode.description ? JSON.parse(currentNode.description) : undefined}
             onChange={handleEditorChange}
             placeholder={t('nodeEdit.editorPlaceholder')}
             className="min-h-[500px]"
@@ -231,43 +234,40 @@ export function NodeEditPage() {
       </main>
 
       {/* Right Sidebar */}
-      <aside
-        className={cn(
-          'flex-shrink-0 border-l border-border transition-all duration-200',
-          sidebarOpen ? 'w-80' : 'w-0 overflow-hidden'
-        )}
-      >
-        <div className="flex h-full flex-col">
-          {/* Sidebar Header */}
-          <div className="flex items-center justify-between border-b border-border/50 px-4 py-3">
-            <h2 className="text-sm font-semibold">{t('nodeEdit.properties')}</h2>
-          </div>
-
-          {/* Sidebar Content */}
-          <div className="flex-1 overflow-y-auto">
-            {/* Node Metadata */}
-            <div className="border-b border-border/50 p-4">
-              <NodeMetadataForm
-                node={currentNode}
-                onSubmit={handleMetadataSubmit}
-                isPending={updateNodeMutation.isPending}
-              />
+      {sidebarOpen && (
+        <aside className="hidden md:flex w-80 flex-shrink-0 border-l border-border">
+          <div className="flex h-full flex-col">
+            {/* Sidebar Header */}
+            <div className="flex items-center justify-between border-b border-border/50 px-4 py-3">
+              <h2 className="text-sm font-semibold">{t('nodeEdit.properties')}</h2>
             </div>
 
-            {/* Connections */}
-            <div className="p-4">
-              <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                {t('nodeEdit.connections')}
-              </h3>
-              <NodeConnectionsPanel
-                node={currentNode}
-                edges={fullMap.edges}
-                allNodes={fullMap.nodes}
-              />
+            {/* Sidebar Content */}
+            <div className="flex-1 overflow-y-auto">
+              {/* Node Metadata */}
+              <div className="border-b border-border/50 p-4">
+                <NodeMetadataForm
+                  node={currentNode}
+                  onSubmit={handleMetadataSubmit}
+                  isPending={updateNodeMutation.isPending}
+                />
+              </div>
+
+              {/* Connections */}
+              <div className="p-4">
+                <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  {t('nodeEdit.connections')}
+                </h3>
+                <NodeConnectionsPanel
+                  node={currentNode}
+                  edges={fullMap.edges}
+                  allNodes={fullMap.nodes}
+                />
+              </div>
             </div>
           </div>
-        </div>
-      </aside>
+        </aside>
+      )}
     </div>
   )
 }

@@ -5,5 +5,7 @@ import type { SessionState } from './session.types'
 export const useSessionStore = create<SessionState>(set => ({
   user: null,
   isAuthenticated: false,
-  setUser: user => set({ user, isAuthenticated: !!user })
+  setUser: user => set({ user, isAuthenticated: !!user }),
+  login: (user, _token) => set({ user, isAuthenticated: true }),
+  logout: () => set({ user: null, isAuthenticated: false }),
 }))

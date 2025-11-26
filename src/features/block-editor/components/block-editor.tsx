@@ -1,7 +1,7 @@
 'use client'
 
 import { EditorContent, useEditor } from '@tiptap/react'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useTheme } from '@/app/theme'
@@ -9,10 +9,16 @@ import { cn } from '@/shared/lib/cn'
 
 import { createExtensions } from '../lib/extensions'
 import type { BlockEditorProps } from '../model/block-editor.types'
+
 import { EditorBubbleMenu } from './bubble-menu'
 import { EditorFloatingMenu } from './floating-menu'
 import { MathInputDialog } from './math-input-dialog'
 import { getSlashMenuItems, SlashMenu } from './slash-menu'
+
+// Slash menu dimensions for boundary checking
+const SLASH_MENU_HEIGHT = 400
+const SLASH_MENU_WIDTH = 320
+const VIEWPORT_PADDING = 8
 
 export function BlockEditor({
   initialContent,
@@ -82,10 +88,38 @@ export function BlockEditor({
         const editorRect = editorRef.current?.getBoundingClientRect()
 
         if (editorRect) {
-          setSlashMenuPosition({
-            top: coords.bottom - editorRect.top + 8,
-            left: coords.left - editorRect.left
-          })
+          let top = coords.bottom - editorRect.top + 8
+          let left = coords.left - editorRect.left
+
+          // Viewport boundary checking
+          const viewportHeight = window.innerHeight
+          const viewportWidth = window.innerWidth
+
+          // Check if menu would go below viewport
+          const menuBottom = editorRect.top + top + SLASH_MENU_HEIGHT
+          if (menuBottom > viewportHeight - VIEWPORT_PADDING) {
+            // Position above cursor instead
+            top = coords.top - editorRect.top - SLASH_MENU_HEIGHT - 8
+
+            // Ensure menu doesn't go above editor or viewport
+            const menuTop = editorRect.top + top
+            if (menuTop < VIEWPORT_PADDING) {
+              top = VIEWPORT_PADDING - editorRect.top
+            }
+          }
+
+          // Check if menu would go off the right edge
+          const menuRight = editorRect.left + left + SLASH_MENU_WIDTH
+          if (menuRight > viewportWidth - VIEWPORT_PADDING) {
+            left = viewportWidth - editorRect.left - SLASH_MENU_WIDTH - VIEWPORT_PADDING
+          }
+
+          // Ensure menu doesn't go off the left edge
+          if (left < VIEWPORT_PADDING) {
+            left = VIEWPORT_PADDING
+          }
+
+          setSlashMenuPosition({ top, left })
         }
 
         setShowSlashMenu(true)
@@ -125,9 +159,22 @@ export function BlockEditor({
     return () => document.removeEventListener('edit-math', handleEditMath as EventListener)
   }, [openMathDialog])
 
-  // Get filtered slash menu items
-  const slashItems = getSlashMenuItems(editor, t, openMathDialog).filter((item) =>
-    item.title.toLowerCase().includes(slashMenuQuery.toLowerCase())
+  // Memoize full slash menu items (avoids recreation on every render)
+  const allSlashItems = useMemo(
+    () => getSlashMenuItems(editor, t, openMathDialog),
+    [editor, t, openMathDialog]
+  )
+
+  // Memoize filtered items (only recompute when query or items change)
+  const slashItems = useMemo(
+    () => {
+      if (!slashMenuQuery) return allSlashItems
+      const query = slashMenuQuery.toLowerCase()
+      return allSlashItems.filter((item) =>
+        item.title.toLowerCase().includes(query)
+      )
+    },
+    [allSlashItems, slashMenuQuery]
   )
 
   // Handle slash menu command

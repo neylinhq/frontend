@@ -48,12 +48,15 @@ export const Columns = Node.create<ColumnsOptions>({
     ]
   },
 
-  renderHTML({ HTMLAttributes }) {
+  renderHTML({ HTMLAttributes, node }) {
+    // Use node.attrs.columns for reliable value, fallback to 2
+    const columnCount = node.attrs.columns || 2
     return [
       'div',
       mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
         'data-type': 'columns',
-        class: `editor-columns editor-columns-${HTMLAttributes['data-columns'] || 2}`
+        'data-columns': columnCount,
+        class: `editor-columns editor-columns-${columnCount}`
       }),
       0
     ]

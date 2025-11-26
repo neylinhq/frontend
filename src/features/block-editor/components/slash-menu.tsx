@@ -24,18 +24,12 @@ import {
   Type,
   Youtube
 } from 'lucide-react'
-import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import type { useTranslation } from 'react-i18next'
 
 import { cn } from '@/shared/lib/cn'
 
-interface SlashMenuItem {
-  title: string
-  description: string
-  icon: React.ReactNode
-  command: () => void
-  category: string
-}
+import type { SlashMenuItem } from '../model/block-editor.types'
 
 interface SlashMenuProps {
   items: SlashMenuItem[]
@@ -51,27 +45,44 @@ const CATEGORY_ORDER = ['basic', 'lists', 'media', 'advanced']
 
 export const SlashMenu = forwardRef<SlashMenuRef, SlashMenuProps>(({ items, command }, ref) => {
   const [selectedIndex, setSelectedIndex] = useState(0)
+  const prevItemsLengthRef = useRef(items.length)
 
-  const selectItem = (index: number) => {
+  const selectItem = useCallback((index: number) => {
+    // Guard against invalid index
+    if (index < 0 || index >= items.length) return
     const item = items[index]
     if (item) {
       command(item)
     }
-  }
+  }, [items, command])
 
-  const upHandler = () => {
-    setSelectedIndex((selectedIndex + items.length - 1) % items.length)
-  }
+  const upHandler = useCallback(() => {
+    // Use callback form to avoid stale closure
+    setSelectedIndex((prev) => {
+      if (items.length === 0) return 0
+      return (prev + items.length - 1) % items.length
+    })
+  }, [items.length])
 
-  const downHandler = () => {
-    setSelectedIndex((selectedIndex + 1) % items.length)
-  }
+  const downHandler = useCallback(() => {
+    // Use callback form to avoid stale closure
+    setSelectedIndex((prev) => {
+      if (items.length === 0) return 0
+      return (prev + 1) % items.length
+    })
+  }, [items.length])
 
-  const enterHandler = () => {
+  const enterHandler = useCallback(() => {
     selectItem(selectedIndex)
-  }
+  }, [selectItem, selectedIndex])
 
-  useEffect(() => setSelectedIndex(0), [items])
+  // Reset selection when items list changes
+  useEffect(() => {
+    if (prevItemsLengthRef.current !== items.length) {
+      setSelectedIndex(0)
+      prevItemsLengthRef.current = items.length
+    }
+  }, [items.length])
 
   useImperativeHandle(ref, () => ({
     onKeyDown: (event: KeyboardEvent) => {
@@ -89,7 +100,7 @@ export const SlashMenu = forwardRef<SlashMenuRef, SlashMenuProps>(({ items, comm
       }
       return false
     }
-  }))
+  }), [upHandler, downHandler, enterHandler])
 
   if (items.length === 0) {
     return null
@@ -135,7 +146,7 @@ export const SlashMenu = forwardRef<SlashMenuRef, SlashMenuProps>(({ items, comm
                 <button
                   type="button"
                   key={`${category}-${item.title}`}
-                  onClick={() => selectItem(items.indexOf(item))}
+                  onClick={() => selectItem(currentIndex)}
                   className={cn(
                     'flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left text-sm transition-colors',
                     currentIndex === selectedIndex

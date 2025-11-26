@@ -1,4 +1,4 @@
-import type { Editor, JSONContent, Range } from '@tiptap/react'
+import type { JSONContent } from '@tiptap/react'
 
 export interface BlockEditorProps {
   initialContent?: JSONContent
@@ -12,5 +12,6 @@ export interface SlashMenuItem {
   title: string
   description: string
   icon: React.ReactNode
-  command: (props: { editor: Editor; range: Range }) => void
+  command: () => void
+  category: string
 }

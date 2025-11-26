@@ -1,52 +1,54 @@
 import type { Editor } from '@tiptap/react'
 import { GripVertical, Plus } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { cn } from '@/shared/lib/cn'
+
+// Constants
+const GUTTER_WIDTH = 60
+const BLOCK_HOVER_THRESHOLD = 5
+const MENU_HIDE_DELAY = 100
+const THROTTLE_DELAY = 16 // ~60fps
 
 interface FloatingMenuProps {
   editor: Editor
   onAddClick: () => void
 }
 
-// Global drop indicator element
-let globalDropIndicator: HTMLElement | null = null
+// Throttle helper with cleanup support
+function createThrottle<T extends (...args: Parameters<T>) => void>(
+  fn: T,
+  delay: number
+): { throttled: T; cleanup: () => void } {
+  let lastCall = 0
+  let timeoutId: ReturnType<typeof setTimeout> | null = null
 
-const createDropIndicator = () => {
-  const indicator = document.createElement('div')
-  indicator.className = 'editor-drop-indicator'
-  indicator.style.cssText = `
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: hsl(var(--primary));
-    border-radius: 2px;
-    pointer-events: none;
-    z-index: 100;
-    opacity: 0;
-    transition: opacity 0.15s ease;
-  `
-  return indicator
-}
+  const throttled = ((...args: Parameters<T>) => {
+    const now = Date.now()
+    const timeSinceLastCall = now - lastCall
 
-const showDropIndicator = (container: HTMLElement, y: number) => {
-  if (!globalDropIndicator) {
-    globalDropIndicator = createDropIndicator()
-    container.appendChild(globalDropIndicator)
+    if (timeSinceLastCall >= delay) {
+      lastCall = now
+      fn(...args)
+    } else if (!timeoutId) {
+      timeoutId = setTimeout(() => {
+        lastCall = Date.now()
+        timeoutId = null
+        fn(...args)
+      }, delay - timeSinceLastCall)
+    }
+  }) as T
+
+  const cleanup = () => {
+    if (timeoutId) {
+      clearTimeout(timeoutId)
+      timeoutId = null
+    }
   }
-  globalDropIndicator.style.top = `${y}px`
-  globalDropIndicator.style.opacity = '1'
-}
 
-const removeDropIndicator = () => {
-  if (globalDropIndicator?.parentNode) {
-    globalDropIndicator.parentNode.removeChild(globalDropIndicator)
-    globalDropIndicator = null
-  }
+  return { throttled, cleanup }
 }
-
 
 export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
   const { t } = useTranslation()
@@ -57,17 +59,49 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
   const menuRef = useRef<HTMLDivElement>(null)
   const isDraggingRef = useRef(false)
   const isHoveringMenuRef = useRef(false)
+  const dropIndicatorRef = useRef<HTMLElement | null>(null)
 
-  // Store ProseMirror position instead of DOM ref (Gemini's recommendation)
+  // Store ProseMirror position instead of DOM ref
   const dragStartPosRef = useRef<number | null>(null)
-  const dragBlockRef = useRef<HTMLElement | null>(null) // Keep for visual feedback only
+  const dragBlockRef = useRef<HTMLElement | null>(null)
 
-  // Handle mouse move to show menu on block hover
+  // Drop indicator helpers (use ref instead of global singleton)
+  const showDropIndicator = useCallback((container: HTMLElement, y: number, left: number, width: number) => {
+    if (!dropIndicatorRef.current) {
+      const indicator = document.createElement('div')
+      indicator.className = 'editor-drop-indicator'
+      indicator.style.cssText = `
+        position: absolute;
+        height: 2px;
+        background: hsl(var(--primary) / 0.5);
+        border-radius: 1px;
+        pointer-events: none;
+        z-index: 100;
+        opacity: 0;
+        transition: opacity 0.15s ease;
+      `
+      dropIndicatorRef.current = indicator
+      container.appendChild(indicator)
+    }
+    dropIndicatorRef.current.style.top = `${y}px`
+    dropIndicatorRef.current.style.left = `${left}px`
+    dropIndicatorRef.current.style.width = `${width}px`
+    dropIndicatorRef.current.style.opacity = '1'
+  }, [])
+
+  const removeDropIndicator = useCallback(() => {
+    if (dropIndicatorRef.current?.parentNode) {
+      dropIndicatorRef.current.parentNode.removeChild(dropIndicatorRef.current)
+      dropIndicatorRef.current = null
+    }
+  }, [])
+
+  // Handle mouse move to show menu on block hover (throttled for performance)
   useEffect(() => {
     const editorElement = editor.view.dom.closest('.tiptap-editor') as HTMLElement
     if (!editorElement) return
 
-    const handleMouseMove = (e: MouseEvent) => {
+    const processMouseMove = (e: MouseEvent) => {
       if (isDragging || isHoveringMenuRef.current) return
 
       const proseMirror = editorElement.querySelector('.ProseMirror')
@@ -93,7 +127,7 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
       }
 
       // If not directly over a block, check if we're in the left gutter area
-      if (!block && mouseX < 60) {
+      if (!block && mouseX < GUTTER_WIDTH) {
         const blocks = Array.from(proseMirror.children).filter(
           (el): el is HTMLElement => el instanceof HTMLElement
         )
@@ -101,7 +135,7 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
           const blockRect = b.getBoundingClientRect()
           const blockTop = blockRect.top - editorRect.top
           const blockBottom = blockRect.bottom - editorRect.top
-          if (mouseY >= blockTop - 5 && mouseY <= blockBottom + 5) {
+          if (mouseY >= blockTop - BLOCK_HOVER_THRESHOLD && mouseY <= blockBottom + BLOCK_HOVER_THRESHOLD) {
             block = b
             break
           }
@@ -138,6 +172,12 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
       }
     }
 
+    // Throttle mouse move for better performance
+    const { throttled: handleMouseMove, cleanup: cleanupThrottle } = createThrottle(
+      processMouseMove,
+      THROTTLE_DELAY
+    )
+
     const handleMouseLeave = (e: MouseEvent) => {
       if (isDragging) return
 
@@ -158,6 +198,7 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
     editorElement.addEventListener('mouseleave', handleMouseLeave)
 
     return () => {
+      cleanupThrottle()
       editorElement.removeEventListener('mousemove', handleMouseMove)
       editorElement.removeEventListener('mouseleave', handleMouseLeave)
     }
@@ -178,30 +219,28 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
       const editorElement = view.dom.closest('.tiptap-editor') as HTMLElement
       if (!editorElement) return
 
-      // Use ProseMirror to find position under cursor
       const coords = { left: e.clientX, top: e.clientY }
       const posResult = view.posAtCoords(coords)
-
       if (!posResult) return
 
       const editorRect = editorElement.getBoundingClientRect()
       const $pos = view.state.doc.resolve(posResult.pos)
 
-      // Find the top-level block (depth 1)
       if ($pos.depth >= 1) {
         const targetPos = $pos.before(1)
-
-        // Get DOM element for this node to show indicator
         const targetDom = view.nodeDOM(targetPos) as HTMLElement
         if (targetDom) {
           const targetRect = targetDom.getBoundingClientRect()
           const insertAfter = e.clientY > targetRect.top + targetRect.height / 2
 
           const indicatorY = insertAfter
-            ? targetRect.bottom - editorRect.top + 2
-            : targetRect.top - editorRect.top - 2
+            ? targetRect.bottom - editorRect.top
+            : targetRect.top - editorRect.top
 
-          showDropIndicator(editorElement, indicatorY)
+          const indicatorLeft = targetRect.left - editorRect.left
+          const indicatorWidth = targetRect.width
+
+          showDropIndicator(editorElement, indicatorY, indicatorLeft, indicatorWidth)
         }
       }
     }
@@ -303,6 +342,11 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
         tr.insert(mappedInsertPos, sourceNode)
 
         view.dispatch(tr)
+
+        // Hide caret after drop
+        const editorEl = view.dom.closest('.tiptap-editor')
+        editorEl?.classList.add('just-dropped')
+        setTimeout(() => editorEl?.classList.remove('just-dropped'), 500)
       } catch (err) {
         console.error('[Drop] Transaction error:', err)
       }
@@ -313,6 +357,7 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
     const cleanupDrag = () => {
       removeDropIndicator()
       dragBlockRef.current?.classList.remove('is-dragging')
+      view.dom.closest('.tiptap-editor')?.classList.remove('dragging')
       dragBlockRef.current = null
       dragStartPosRef.current = null
       isDraggingRef.current = false
@@ -328,22 +373,21 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
     const editorElement = view.dom.closest('.tiptap-editor') as HTMLElement
 
     document.addEventListener('dragover', handleDragOver)
-    document.addEventListener('drop', handleDrop)
     document.addEventListener('dragend', handleDragEnd)
 
+    // Only register drop handler on editorElement to avoid double execution
     if (editorElement) {
       editorElement.addEventListener('drop', handleDrop, true)
     }
 
     return () => {
       document.removeEventListener('dragover', handleDragOver)
-      document.removeEventListener('drop', handleDrop)
       document.removeEventListener('dragend', handleDragEnd)
       if (editorElement) {
         editorElement.removeEventListener('drop', handleDrop, true)
       }
     }
-  }, [editor])
+  }, [editor, showDropIndicator, removeDropIndicator])
 
   const handleAddClick = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -385,8 +429,10 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
     isDraggingRef.current = true
     setIsDragging(true)
 
-    // Add visual feedback (may be removed by ProseMirror, but that's ok)
+    // Add visual feedback
     block.classList.add('is-dragging')
+    const editorElement = editor.view.dom.closest('.tiptap-editor')
+    editorElement?.classList.add('dragging')
 
     e.dataTransfer.setData('application/x-editor-block', 'true')
     e.dataTransfer.effectAllowed = 'move'
@@ -404,7 +450,7 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
       border-radius: 8px;
       padding: 8px;
       max-width: 300px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 12px hsl(var(--foreground) / 0.15);
     `
     document.body.appendChild(ghost)
     e.dataTransfer.setDragImage(ghost, 0, 0)
@@ -419,6 +465,7 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
   const handleDragEnd = () => {
     removeDropIndicator()
     dragBlockRef.current?.classList.remove('is-dragging')
+    editor.view.dom.closest('.tiptap-editor')?.classList.remove('dragging')
     dragBlockRef.current = null
     dragStartPosRef.current = null
     isDraggingRef.current = false
@@ -437,7 +484,7 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
           setHoveredBlock(null)
           setShouldShow(false)
         }
-      }, 100)
+      }, MENU_HIDE_DELAY)
     }
   }
 

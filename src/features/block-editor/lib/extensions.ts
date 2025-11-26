@@ -44,7 +44,8 @@ export const createExtensions = (placeholder?: string) => [
       keepMarks: true,
       keepAttributes: false
     },
-    codeBlock: false // Disable default codeBlock, use CodeBlockLowlight instead
+    codeBlock: false, // Disable default codeBlock, use CodeBlockLowlight instead
+    dropcursor: false // Disable default dropCursor, use custom indicator
   }),
   Placeholder.configure({
     placeholder: ({ node }) => {

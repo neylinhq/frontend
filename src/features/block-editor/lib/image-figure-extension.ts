@@ -1,5 +1,27 @@
 import { mergeAttributes, Node } from '@tiptap/core'
 
+// Sanitize URL to prevent javascript: and data: XSS attacks
+function sanitizeUrl(url: string | null | undefined): string {
+  if (!url) return ''
+  const trimmed = url.trim().toLowerCase()
+  // Block dangerous protocols
+  if (trimmed.startsWith('javascript:') || trimmed.startsWith('data:text/html')) {
+    return ''
+  }
+  return url
+}
+
+// Sanitize text attributes to prevent HTML injection
+function sanitizeText(text: string | null | undefined): string {
+  if (!text) return ''
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+}
+
 export type ImageAlignment = 'left' | 'center' | 'right' | 'full'
 export type ImageSize = 'small' | 'medium' | 'large' | 'full'
 
@@ -80,7 +102,7 @@ export const ImageFigure = Node.create<ImageFigureOptions>({
     ]
   },
 
-  renderHTML({ HTMLAttributes, node }) {
+  renderHTML({ HTMLAttributes }) {
     const { src, alt, title, alignment, size } = HTMLAttributes
 
     return [
@@ -94,9 +116,9 @@ export const ImageFigure = Node.create<ImageFigureOptions>({
       [
         'img',
         {
-          src,
-          alt: alt || '',
-          title: title || ''
+          src: sanitizeUrl(src),
+          alt: sanitizeText(alt),
+          title: sanitizeText(title)
         }
       ],
       ['figcaption', { class: 'editor-image-caption' }, 0]
@@ -108,10 +130,14 @@ export const ImageFigure = Node.create<ImageFigureOptions>({
       setImageFigure:
         (options) =>
         ({ commands }) => {
+          const sanitizedSrc = sanitizeUrl(options.src)
+          // Don't insert if URL is blocked
+          if (!sanitizedSrc) return false
+
           return commands.insertContent({
             type: this.name,
             attrs: {
-              src: options.src,
+              src: sanitizedSrc,
               alt: options.alt || '',
               title: options.title || '',
               alignment: options.alignment || 'center',

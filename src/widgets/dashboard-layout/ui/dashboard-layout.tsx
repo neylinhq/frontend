@@ -6,37 +6,31 @@ import { Sidebar } from './sidebar'
 export function DashboardLayout() {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false)
 
-  const handleSidebarMouseEnter = () => {
-    setIsSidebarExpanded(true)
-  }
-
-  const handleSidebarMouseLeave = () => {
-    setIsSidebarExpanded(false)
-  }
-
   return (
     <div className="min-h-screen">
       {/* Header */}
       <DashboardHeader />
 
       <div className="flex">
-        {/* Desktop Sidebar - Collapsed in flow, expanded overlay */}
+        {/* Desktop Sidebar */}
         <aside
-          className="hidden md:block sticky top-14 h-[calc(100vh-3.5rem)] bg-card flex-shrink-0 w-16 z-50"
-          onMouseEnter={handleSidebarMouseEnter}
-          onMouseLeave={handleSidebarMouseLeave}
+          className="hidden md:block sticky top-14 h-[calc(100vh-3.5rem)] bg-card border-r flex-shrink-0 w-16 z-40"
+          onMouseEnter={() => setIsSidebarExpanded(true)}
+          onMouseLeave={() => setIsSidebarExpanded(false)}
         >
-          <div className="relative w-full h-full">
-            {/* Expanded overlay */}
-            {isSidebarExpanded && (
-              <div className="absolute left-0 top-0 h-full w-60 bg-card border-r z-[100] shadow-lg">
-                <Sidebar isExpanded={true} />
-              </div>
-            )}
-            {/* Collapsed sidebar */}
-            {!isSidebarExpanded && <Sidebar isExpanded={false} />}
-          </div>
+          <Sidebar isExpanded={false} />
         </aside>
+
+        {/* Expanded Sidebar Overlay - fixed position, doesn't affect layout */}
+        {isSidebarExpanded && (
+          <nav
+            className="hidden md:block fixed left-0 top-14 h-[calc(100vh-3.5rem)] w-64 bg-card border-r z-50 shadow-lg"
+            onMouseEnter={() => setIsSidebarExpanded(true)}
+            onMouseLeave={() => setIsSidebarExpanded(false)}
+          >
+            <Sidebar isExpanded={true} />
+          </nav>
+        )}
 
         {/* Main Content */}
         <main className="flex-1 min-w-0">

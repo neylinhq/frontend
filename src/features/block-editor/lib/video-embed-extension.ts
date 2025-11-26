@@ -38,7 +38,31 @@ function parseVideoUrl(url: string): { platform: string; videoId: string } | nul
   return null
 }
 
+// Validate videoId format to prevent injection
+function isValidVideoId(platform: string, videoId: string): boolean {
+  if (!videoId || typeof videoId !== 'string') return false
+
+  switch (platform) {
+    case 'youtube':
+      // YouTube video IDs are exactly 11 characters: alphanumeric, dash, underscore
+      return /^[a-zA-Z0-9_-]{11}$/.test(videoId)
+    case 'vimeo':
+      // Vimeo video IDs are numeric
+      return /^\d+$/.test(videoId)
+    case 'loom':
+      // Loom video IDs are alphanumeric
+      return /^[a-zA-Z0-9]+$/.test(videoId)
+    default:
+      return false
+  }
+}
+
 function getEmbedUrl(platform: string, videoId: string): string {
+  // Validate videoId before creating URL
+  if (!isValidVideoId(platform, videoId)) {
+    return ''
+  }
+
   switch (platform) {
     case 'youtube':
       return `https://www.youtube.com/embed/${videoId}`

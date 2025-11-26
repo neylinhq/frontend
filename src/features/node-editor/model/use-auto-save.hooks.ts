@@ -4,7 +4,7 @@ export function useAutoSave(
   callback: (content: string) => void,
   delay = 2000
 ) {
-  const timeoutRef = useRef<NodeJS.Timeout>()
+  const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
   const callbackRef = useRef(callback)
 
   // Update callback ref when it changes

@@ -1,27 +1,32 @@
 // Store
-export {
-  useGraphViewStore,
-  useViewMode,
-  useFocusMode,
-  useFilters,
-  useGraphUI,
-  useNodeSpacing,
-  layoutEvent,
-  triggerLayout,
-  ALL_NODE_TYPES,
-  ALL_EDGE_TYPES,
-  type ViewMode,
-  type GraphViewState,
-} from './model/graph-view.store'
 
-// Layout algorithms
+// Layout algorithms - Original O(n²) implementation
 export {
   applyLayout,
-  getNodesWithinDepth,
+  getNodesWithinDepth
 } from './lib/layout-algorithms'
-
+// Layout algorithms - D3-Force O(n log n) implementation (Barnes-Hut)
+export {
+  applyLayout as applyLayoutD3,
+  getNodesWithinDepth as getNodesWithinDepthD3
+} from './lib/layout-algorithms-d3'
 // Hooks
 export { useGraphKeyboard } from './lib/use-graph-keyboard'
-
+// Constants
+export { USE_D3_LAYOUT } from './model/graph-view.constants'
+export {
+  ALL_EDGE_TYPES,
+  ALL_NODE_TYPES,
+  type GraphViewState,
+  layoutEvent,
+  triggerLayout,
+  useFilters,
+  useFocusMode,
+  useGraphUI,
+  useGraphViewStore,
+  useNodeSpacing,
+  useViewMode,
+  type ViewMode
+} from './model/graph-view.store'
 // UI Components
 export { NodeContextMenu } from './ui/node-context-menu'

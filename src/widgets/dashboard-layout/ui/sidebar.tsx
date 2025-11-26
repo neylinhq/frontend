@@ -13,9 +13,9 @@ export function Sidebar({ className, isExpanded }: SidebarProps) {
   const { t } = useTranslation()
 
   return (
-    <div className={cn('flex h-full flex-col bg-card border-r', className)}>
+    <div className={cn('flex h-full flex-col bg-card', className)}>
       {/* Navigation */}
-      <div className="flex-1 py-4 space-y-1 overflow-y-auto" style={{ paddingLeft: isExpanded ? '8px' : '8px', paddingRight: isExpanded ? '8px' : '8px' }}>
+      <div className="flex-1 py-4 px-2 space-y-1 overflow-y-auto">
         {DASHBOARD_SIDEBAR_ITEMS.map(item => (
           <NavItem key={item.href} to={item.href} icon={item.icon} isExpanded={isExpanded}>
             {t(item.title)}

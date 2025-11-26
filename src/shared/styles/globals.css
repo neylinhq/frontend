@@ -948,17 +948,41 @@
   border-radius: 0.5rem;
 }
 
+/* Hide ProseMirror's built-in cursors during drag */
+.tiptap-editor .ProseMirror-dropcursor,
+.ProseMirror-dropcursor,
+.tiptap-editor .ProseMirror-gapcursor,
+.ProseMirror-gapcursor {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Hide browser's native drag insertion caret */
+.tiptap-editor [contenteditable]::selection,
+.tiptap-editor .ProseMirror *::selection {
+  background: hsl(var(--primary) / 0.2);
+}
+
+.tiptap-editor.dragging .ProseMirror,
+.tiptap-editor.just-dropped .ProseMirror {
+  caret-color: transparent !important;
+}
+
+.tiptap-editor.just-dropped .ProseMirror * {
+  caret-color: transparent !important;
+}
+
 /* Drop Indicator */
 .editor-drop-indicator {
   position: absolute;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: hsl(var(--primary));
-  border-radius: 2px;
+  height: 2px;
+  background: rgba(139, 92, 246, 0.5);
+  border-radius: 1px;
   pointer-events: none;
   z-index: 100;
-  box-shadow: 0 0 8px hsl(var(--primary) / 0.5);
 }
 
 /* ========================================

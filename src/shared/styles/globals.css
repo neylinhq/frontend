@@ -34,6 +34,10 @@
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
 
+  --color-brand: hsl(var(--brand));
+  --color-brand-foreground: hsl(var(--brand-foreground));
+  --color-brand-muted: hsl(var(--brand-muted));
+
   /* Radii */
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
@@ -99,6 +103,19 @@
     --input: 240 5.9% 90%;
     --ring: 240 5.9% 10%;
     --radius: 0.5rem;
+
+    /* Brand accent colors */
+    --brand: 250 100% 65%;
+    --brand-foreground: 0 0% 100%;
+    --brand-muted: 250 100% 95%;
+
+    /* Graph node colors */
+    --graph-violet: 250 100% 65%;
+    --graph-blue: 210 100% 60%;
+    --graph-cyan: 185 100% 50%;
+    --graph-emerald: 160 85% 45%;
+    --graph-amber: 40 95% 55%;
+    --graph-rose: 350 90% 60%;
   }
 
   .dark {
@@ -121,6 +138,19 @@
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 240 4.9% 83.9%;
+
+    /* Brand accent colors (dark) - spring green */
+    --brand: 150 100% 50%;
+    --brand-foreground: 0 0% 0%;
+    --brand-muted: 150 50% 15%;
+
+    /* Graph node colors (dark - more vibrant) */
+    --graph-violet: 270 100% 75%;
+    --graph-blue: 210 100% 70%;
+    --graph-cyan: 175 100% 50%;
+    --graph-emerald: 150 100% 50%;
+    --graph-amber: 45 100% 60%;
+    --graph-rose: 340 90% 65%;
   }
 
   * {

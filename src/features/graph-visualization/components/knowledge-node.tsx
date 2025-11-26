@@ -45,13 +45,13 @@ export const KnowledgeNode = memo(({ data, id }: KnowledgeNodeProps) => {
         'hover:shadow-md hover:scale-[1.01]',
         // Dimmed state - reduced opacity and grayscale
         isDimmed && 'opacity-40 grayscale hover:opacity-60 hover:grayscale-0',
-        // Focused state - highlighted with glow effect
+        // Focused state - elegant glow with breathing animation
         isFocused && [
-          'ring-2 ring-primary/70 shadow-lg shadow-primary/20 scale-[1.03]',
+          'ring-2 ring-primary/60',
           'animate-pulse-subtle'
         ],
         // Selected state
-        isSelected && [
+        isSelected && !isFocused && [
           'ring-2 ring-primary shadow-lg scale-[1.02]',
           'dark:ring-offset-background ring-offset-1'
         ]

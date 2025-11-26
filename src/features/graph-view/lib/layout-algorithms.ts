@@ -86,9 +86,9 @@ function forceDirectedLayout(
   options: InternalLayoutOptions
 ): LayoutResult {
   const { nodeSpacing } = options
-  const iterations = 100
+  const iterations = 150
   const idealDistance = nodeSpacing * 1.5
-  const coolingFactor = 0.95
+  const coolingFactor = 0.97
 
   // Initialize positions
   const positions = nodes.map((n, i) => ({
@@ -150,7 +150,7 @@ function forceDirectedLayout(
       // Direction force: source should be ABOVE target (source.y < target.y)
       // This creates hierarchical layout where edges flow top-to-bottom
       if (options.directionStrength > 0) {
-        const verticalForce = idealDistance * 0.3 * options.directionStrength * weight
+        const verticalForce = idealDistance * 2.5 * options.directionStrength * weight
         source.vy -= verticalForce  // push source UP (decrease y)
         target.vy += verticalForce  // push target DOWN (increase y)
       }

@@ -33,7 +33,8 @@ export const NodeSchema = z.object({
   id: z.string(),
   mapId: z.string(),
   label: z.string(),
-  description: z.string().optional(),
+  description: z.string().optional(), // Plain text summary (150-200 chars) for graph/search
+  content: z.string().optional(), // HTML from rich text editor
   type: NodeTypeEnum,
   position: z.object({
     x: z.number(),
@@ -45,3 +46,7 @@ export const NodeSchema = z.object({
 })
 
 export type Node = z.infer<typeof NodeSchema>
+
+// Lightweight variant for graph views (excludes content field)
+export const LightweightNodeSchema = NodeSchema.omit({ content: true })
+export type LightweightNode = z.infer<typeof LightweightNodeSchema>

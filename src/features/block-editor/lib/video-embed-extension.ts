@@ -15,8 +15,13 @@ declare module '@tiptap/core' {
 
 // Extract video ID and platform from URL
 function parseVideoUrl(url: string): { platform: string; videoId: string } | null {
+  // FIX: Validate input - handle null, undefined, empty strings
+  if (!url || typeof url !== 'string') return null
+  const trimmed = url.trim()
+  if (!trimmed) return null
+
   // YouTube
-  const youtubeMatch = url.match(
+  const youtubeMatch = trimmed.match(
     /(?:youtube\.com\/(?:watch\?v=|embed\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
   )
   if (youtubeMatch) {
@@ -24,13 +29,13 @@ function parseVideoUrl(url: string): { platform: string; videoId: string } | nul
   }
 
   // Vimeo
-  const vimeoMatch = url.match(/(?:vimeo\.com\/)(\d+)/)
+  const vimeoMatch = trimmed.match(/(?:vimeo\.com\/)(\d+)/)
   if (vimeoMatch) {
     return { platform: 'vimeo', videoId: vimeoMatch[1] }
   }
 
   // Loom
-  const loomMatch = url.match(/(?:loom\.com\/share\/)([a-zA-Z0-9]+)/)
+  const loomMatch = trimmed.match(/(?:loom\.com\/share\/)([a-zA-Z0-9]+)/)
   if (loomMatch) {
     return { platform: 'loom', videoId: loomMatch[1] }
   }

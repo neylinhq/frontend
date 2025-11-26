@@ -50,6 +50,10 @@ const META_TRANSLATIONS = {
     notFound: {
       title: 'Страница не найдена',
       description: 'К сожалению, запрашиваемая страница не существует или была перемещена'
+    },
+    pricing: {
+      title: 'Тарифы',
+      description: 'Выберите подходящий тариф для управления вашими знаниями'
     }
   },
   en: {
@@ -100,6 +104,10 @@ const META_TRANSLATIONS = {
     notFound: {
       title: 'Page Not Found',
       description: 'Sorry, the page you\'re looking for doesn\'t exist or has been moved'
+    },
+    pricing: {
+      title: 'Pricing',
+      description: 'Choose the right plan for your knowledge management needs'
     }
   },
   de: {
@@ -150,6 +158,10 @@ const META_TRANSLATIONS = {
     notFound: {
       title: 'Seite nicht gefunden',
       description: 'Leider existiert die gesuchte Seite nicht oder wurde verschoben'
+    },
+    pricing: {
+      title: 'Preise',
+      description: 'Wählen Sie den richtigen Tarif für Ihre Wissensmanagement-Bedürfnisse'
     }
   }
 } as const

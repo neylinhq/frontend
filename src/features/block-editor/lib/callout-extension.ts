@@ -2,6 +2,8 @@ import { mergeAttributes, Node } from '@tiptap/core'
 
 export type CalloutType = 'info' | 'warning' | 'success' | 'error' | 'tip'
 
+const VALID_CALLOUT_TYPES: readonly CalloutType[] = ['info', 'warning', 'success', 'error', 'tip']
+
 export interface CalloutOptions {
   HTMLAttributes: Record<string, unknown>
 }
@@ -52,11 +54,15 @@ export const Callout = Node.create<CalloutOptions>({
   },
 
   renderHTML({ HTMLAttributes }) {
+    // FIX: Validate callout type to prevent class injection
+    const rawType = HTMLAttributes['data-callout-type'] as string
+    const calloutType = VALID_CALLOUT_TYPES.includes(rawType as CalloutType) ? rawType : 'info'
+
     return [
       'div',
       mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
         'data-callout': '',
-        class: `callout callout-${HTMLAttributes['data-callout-type'] || 'info'}`
+        class: `callout callout-${calloutType}`
       }),
       0
     ]

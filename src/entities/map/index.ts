@@ -10,10 +10,12 @@ export {
   useDeleteNode,
   useFullMap,
   useGraphAnalysis,
+  useLightweightMap,
   useMap,
   useMapEdges,
   useMapNodes,
   useMaps,
+  useNodeWithContent,
   useUpdateEdge,
   useUpdateNode
 } from './map.queries'

@@ -32,7 +32,18 @@ export const Columns = Node.create<ColumnsOptions>({
     return {
       columns: {
         default: 2,
-        parseHTML: (element) => parseInt(element.getAttribute('data-columns') || '2', 10),
+        parseHTML: (element) => {
+          const raw = element.getAttribute('data-columns') || '2'
+          const parsed = parseInt(raw, 10)
+
+          // FIX: Validate parsed value is a valid number in expected range (2-4)
+          if (Number.isNaN(parsed) || parsed < 2 || parsed > 4) {
+            console.warn(`[Columns] Invalid columns value: ${raw}, defaulting to 2`)
+            return 2
+          }
+
+          return parsed
+        },
         renderHTML: (attributes) => ({
           'data-columns': attributes.columns
         })
@@ -67,7 +78,10 @@ export const Columns = Node.create<ColumnsOptions>({
       setColumns:
         (columns = 2) =>
         ({ commands }) => {
-          const columnContent = Array(columns)
+          // FIX: Validate columns count to prevent performance issues and UI breaking
+          const validColumns = Math.max(2, Math.min(columns || 2, 4))
+
+          const columnContent = Array(validColumns)
             .fill(null)
             .map(() => ({
               type: 'column',
@@ -76,7 +90,7 @@ export const Columns = Node.create<ColumnsOptions>({
 
           return commands.insertContent({
             type: this.name,
-            attrs: { columns },
+            attrs: { columns: validColumns },
             content: columnContent
           })
         },

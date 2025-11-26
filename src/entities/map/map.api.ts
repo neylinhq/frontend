@@ -1,5 +1,6 @@
 import { GRAPH_PRESETS, generateMockGraph } from './lib/generate-mock-graph'
 import type { Edge, FullMap, MapEntity, Node } from './map.schema'
+import type { LightweightNode } from '../node'
 
 // Generated test graph
 const GENERATED_GRAPH = generateMockGraph({ ...GRAPH_PRESETS.mixed, mapId: '4', nodeCount: 300 })
@@ -1894,6 +1895,52 @@ MOCK_EDGES.push(...GRAPH_THEORY_EDGES)
 MOCK_NODES.push(...GENERATED_GRAPH.nodes)
 MOCK_EDGES.push(...GENERATED_GRAPH.edges)
 
+// Rich content mock for editor testing
+const MOCK_NODE_WITH_CONTENT: Node = {
+  id: 'mock-editor',
+  mapId: '1',
+  label: 'Пример узла с контентом',
+  description: 'Демонстрация всех возможностей редактора: форматирование, списки, таблицы, формулы, callouts',
+  content: `<h1>Пример контента</h1>
+<p>Это <strong>демонстрационный узел</strong> с богатым контентом для тестирования всех возможностей редактора.</p>
+<h2>Форматирование текста</h2>
+<p>Поддерживаются различные стили: <strong>жирный</strong>, <em>курсив</em>, <u>подчеркнутый</u>, <s>зачеркнутый</s>, <code>код</code>.</p>
+<h2>Списки</h2>
+<ul>
+  <li>Маркированный список</li>
+  <li>Элемент 2</li>
+  <li>Элемент 3</li>
+</ul>
+<ol>
+  <li>Нумерованный список</li>
+  <li>Пункт второй</li>
+  <li>Пункт третий</li>
+</ol>
+<h2>Информационные блоки</h2>
+<div data-type="callout" data-variant="info">
+  <p>💡 Это информационный блок (callout) для важных заметок.</p>
+</div>
+<div data-type="callout" data-variant="warning">
+  <p>⚠️ Это предупреждение - используйте для важных замечаний.</p>
+</div>
+<h2>Математические формулы</h2>
+<p>Inline формула: <span data-type="mathInline" data-latex="E=mc^2">E=mc²</span></p>
+<div data-type="mathBlock" data-latex="\\sum_{i=1}^{n} x_i = x_1 + x_2 + \\cdots + x_n">∑ᵢ₌₁ⁿ xᵢ = x₁ + x₂ + ⋯ + xₙ</div>
+<h2>Цитаты</h2>
+<blockquote><p>Это цитата. Используется для выделения важных мыслей или ссылок на источники.</p></blockquote>
+<p>Редактор поддерживает все эти элементы и сохраняет их в HTML формате.</p>`,
+  type: 'concept',
+  position: { x: 0, y: 0 },
+  metadata: {
+    confidence: 0.95,
+    complexity: 'intermediate',
+    tags: ['demo', 'example', 'редактор'],
+    reviewCount: 0
+  },
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString()
+}
+
 export const mapApi = {
   // ====== Работа с картами ======
   getMaps: async (): Promise<MapEntity[]> => {
@@ -1941,9 +1988,22 @@ export const mapApi = {
   },
 
   // ====== Работа с узлами ======
-  getNodes: async (mapId: string): Promise<Node[]> => {
+  getNodes: async (mapId: string): Promise<LightweightNode[]> => {
     await new Promise(resolve => setTimeout(resolve, 300))
-    return MOCK_NODES.filter(node => node.mapId === mapId)
+    return MOCK_NODES
+      .filter(node => node.mapId === mapId)
+      .map(({ content, ...rest }) => rest) // Strip content for performance
+  },
+
+  getNodeWithContent: async (nodeId: string): Promise<Node> => {
+    await new Promise(resolve => setTimeout(resolve, 200))
+
+    // Return mock with content for ANY id (for development/testing)
+    const baseNode = MOCK_NODES.find(n => n.id === nodeId) || MOCK_NODES[0]
+    return {
+      ...baseNode,
+      content: MOCK_NODE_WITH_CONTENT.content
+    }
   },
 
   createNode: async (data: Omit<Node, 'id' | 'createdAt' | 'updatedAt'>): Promise<Node> => {
@@ -2044,13 +2104,19 @@ export const mapApi = {
   },
 
   // ====== Полная карта с графом ======
-  getFullMap: async (mapId: string): Promise<FullMap | null> => {
+  getFullMap: async (mapId: string, includeContent = false): Promise<FullMap | null> => {
     await new Promise(resolve => setTimeout(resolve, 400))
 
     const map = MOCK_MAPS.find(m => m.id === mapId)
     if (!map) return null
 
-    const nodes = MOCK_NODES.filter(node => node.mapId === mapId)
+    let nodes = MOCK_NODES.filter(node => node.mapId === mapId)
+
+    // Strip content for graph views (default) - saves 75% bandwidth
+    if (!includeContent) {
+      nodes = nodes.map(({ content, ...rest }) => rest)
+    }
+
     const edges = MOCK_EDGES.filter(edge => edge.mapId === mapId)
 
     return {

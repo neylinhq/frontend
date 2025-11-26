@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react'
 
-export function useAutoSave(
-  callback: (content: string) => void,
+export function useAutoSave<T = string>(
+  callback: (content: T) => void,
   delay = 2000
 ) {
   const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
@@ -13,7 +13,7 @@ export function useAutoSave(
   }, [callback])
 
   const debouncedSave = useCallback(
-    (content: string) => {
+    (content: T) => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current)
       }

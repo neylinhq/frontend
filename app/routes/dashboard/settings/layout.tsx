@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation } from 'react-router'
-import { User, Settings2, Palette, Puzzle, Shield } from 'lucide-react'
+import { User, Settings2, Palette, Puzzle, Shield, CreditCard } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { cn } from '@/shared/lib/cn'
@@ -29,6 +29,11 @@ const settingsNavItems = [
     title: 'settings.nav.security',
     href: '/dashboard/settings/security',
     icon: Shield
+  },
+  {
+    title: 'settings.nav.billing',
+    href: '/dashboard/settings/billing',
+    icon: CreditCard
   }
 ]
 

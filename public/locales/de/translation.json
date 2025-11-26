@@ -637,7 +637,8 @@
       "preferences": "Präferenzen",
       "theme": "Design",
       "integrations": "Integrationen",
-      "security": "Sicherheit"
+      "security": "Sicherheit",
+      "billing": "Abrechnung"
     },
     "profile": {
       "title": "Profil",
@@ -765,12 +766,93 @@
         "deleteAccount": "Konto löschen"
       }
     },
-    "nodeDrawer": {
+    "billing": {
+      "title": "Abrechnung & Abonnement",
+      "description": "Verwalten Sie Ihr Abonnement und Zahlungsdetails",
       "tabs": {
         "overview": "Übersicht",
-        "connections": "Verbindungen",
-        "view": "Ansicht"
+        "plans": "Tarife",
+        "paymentMethods": "Zahlungsmethoden",
+        "history": "Verlauf"
+      },
+      "currentPlan": {
+        "title": "Aktueller Tarif",
+        "description": "Ihr aktives Abonnement"
+      },
+      "managePlan": "Tarif verwalten",
+      "cancelSubscription": "Abonnement kündigen",
+      "cancelScheduled": "Ihr Abonnement wird am {{date}} gekündigt",
+      "paymentMethods": {
+        "title": "Zahlungsmethoden",
+        "description": "Verwalten Sie Ihre Zahlungsmethoden",
+        "add": "Zahlungsmethode hinzufügen",
+        "empty": "Noch keine Zahlungsmethoden hinzugefügt"
       }
+    }
+  },
+  "billing": {
+    "currentPlan": "Aktueller Tarif",
+    "currentPlanButton": "Aktueller Tarif",
+    "selectPlan": "Tarif wählen",
+    "managePlan": "Tarif verwalten",
+    "cancelSubscription": "Abonnement kündigen",
+    "unlimited": "Unbegrenzt",
+    "defaultPaymentMethod": "Standard",
+    "expires": "Läuft ab",
+    "setAsDefault": "Als Standard festlegen",
+    "interval": {
+      "month": "Monat",
+      "year": "Jahr"
+    },
+    "usage": {
+      "title": "Aktuelle Nutzung",
+      "description": "Ihre Nutzung für den aktuellen Abrechnungszeitraum",
+      "maps": "Wissenskarten",
+      "nodes": "Gesamtzahl der Knoten",
+      "aiRequests": "KI-Anfragen diesen Monat",
+      "storage": "Genutzter Speicher"
+    },
+    "paymentHistory": {
+      "title": "Zahlungsverlauf",
+      "description": "Sehen Sie Ihre vergangenen Zahlungen und Rechnungen ein",
+      "empty": "Noch keine Zahlungen vorhanden",
+      "date": "Datum",
+      "desc": "Beschreibung",
+      "amount": "Betrag",
+      "status": "Status",
+      "invoice": "Rechnung",
+      "download": "Herunterladen"
+    },
+    "paymentStatus": {
+      "succeeded": "Bezahlt",
+      "pending": "Ausstehend",
+      "failed": "Fehlgeschlagen",
+      "refunded": "Erstattet"
+    },
+    "addPaymentMethod": {
+      "title": "Zahlungsmethode hinzufügen",
+      "description": "Fügen Sie Ihrem Konto eine neue Zahlungsmethode hinzu",
+      "cardholderName": "Name des Karteninhabers",
+      "cardNumber": "Kartennummer",
+      "expiryMonth": "Monat",
+      "expiryYear": "Jahr",
+      "cvc": "CVC",
+      "submit": "Karte hinzufügen"
+    }
+  },
+  "pricing": {
+    "title": "Wählen Sie Ihren Tarif",
+    "subtitle": "Starten Sie kostenlos und erweitern Sie nach Bedarf",
+    "popular": "Am beliebtesten",
+    "getStarted": "Loslegen",
+    "questions": "Haben Sie Fragen?",
+    "contactUs": "Kontaktieren Sie uns"
+  },
+  "nodeDrawer": {
+    "tabs": {
+      "overview": "Übersicht",
+      "connections": "Verbindungen",
+      "view": "Ansicht"
     }
   }
 }

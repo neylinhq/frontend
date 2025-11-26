@@ -3,6 +3,7 @@ import { index, layout, type RouteConfig, route } from '@react-router/dev/routes
 export default [
   index('routes/home.tsx'),
   route('ui', 'routes/ui.tsx'),
+  route('pricing', 'routes/pricing.tsx'),
 
   // Auth Routes
   route('auth/sign-in', 'routes/auth/sign-in.tsx'),
@@ -22,7 +23,8 @@ export default [
       route('dashboard/settings/preferences', 'routes/dashboard/settings/preferences.tsx'),
       route('dashboard/settings/theme', 'routes/dashboard/settings/theme.tsx'),
       route('dashboard/settings/integrations', 'routes/dashboard/settings/integrations.tsx'),
-      route('dashboard/settings/security', 'routes/dashboard/settings/security.tsx')
+      route('dashboard/settings/security', 'routes/dashboard/settings/security.tsx'),
+      route('dashboard/settings/billing', 'routes/dashboard/settings/billing.tsx')
     ])
   ]),
 

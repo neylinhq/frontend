@@ -11,10 +11,12 @@ export const mapKeys = {
   nodes: () => [...mapKeys.all, 'nodes'] as const,
   node: (mapId: string, nodeId: string) => [...mapKeys.nodes(), mapId, nodeId] as const,
   mapNodes: (mapId: string) => [...mapKeys.nodes(), mapId] as const,
+  nodeWithContent: (nodeId: string) => [...mapKeys.nodes(), nodeId, 'content'] as const,
   edges: () => [...mapKeys.all, 'edges'] as const,
   edge: (mapId: string, edgeId: string) => [...mapKeys.edges(), mapId, edgeId] as const,
   mapEdges: (mapId: string) => [...mapKeys.edges(), mapId] as const,
   fullMap: (mapId: string) => [...mapKeys.detail(mapId), 'full'] as const,
+  lightweightMap: (mapId: string) => [...mapKeys.detail(mapId), 'lightweight'] as const,
   analysis: (mapId: string) => [...mapKeys.detail(mapId), 'analysis'] as const
 }
 
@@ -83,9 +85,11 @@ export const useUpdateNode = (mapId: string) => {
 
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: Partial<Node> }) => mapApi.updateNode(id, data),
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: mapKeys.mapNodes(mapId) })
       queryClient.invalidateQueries({ queryKey: mapKeys.fullMap(mapId) })
+      queryClient.invalidateQueries({ queryKey: mapKeys.lightweightMap(mapId) })
+      queryClient.invalidateQueries({ queryKey: mapKeys.nodeWithContent(variables.id) })
     }
   })
 }
@@ -155,6 +159,26 @@ export const useFullMap = (mapId: string) => {
     queryKey: mapKeys.fullMap(mapId),
     queryFn: () => mapApi.getFullMap(mapId),
     enabled: !!mapId
+  })
+}
+
+// Lightweight map for graph visualization (NO content field)
+export const useLightweightMap = (mapId: string) => {
+  return useQuery({
+    queryKey: mapKeys.lightweightMap(mapId),
+    queryFn: () => mapApi.getFullMap(mapId, false), // includeContent=false
+    enabled: !!mapId,
+    staleTime: 5 * 60 * 1000 // 5 min - aggressive caching for graph views
+  })
+}
+
+// Single node with full content (for editor)
+export const useNodeWithContent = (nodeId: string) => {
+  return useQuery({
+    queryKey: mapKeys.nodeWithContent(nodeId),
+    queryFn: () => mapApi.getNodeWithContent(nodeId),
+    enabled: !!nodeId,
+    staleTime: 2 * 60 * 1000 // 2 min cache
   })
 }
 

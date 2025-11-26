@@ -13,6 +13,7 @@ import type { BlockEditorProps } from '../model/block-editor.types'
 import { EditorBubbleMenu } from './bubble-menu'
 import { EditorFloatingMenu } from './floating-menu'
 import { MathInputDialog } from './math-input-dialog'
+import { MediaInsertDialog, type MediaType } from './media-insert-dialog'
 import { getSlashMenuItems, SlashMenu } from './slash-menu'
 
 // Slash menu dimensions for boundary checking
@@ -23,6 +24,7 @@ const VIEWPORT_PADDING = 8
 export function BlockEditor({
   initialContent,
   onChange,
+  onEditorUpdate,
   editable = true,
   className,
   placeholder
@@ -36,8 +38,14 @@ export function BlockEditor({
   const [mathDialogMode, setMathDialogMode] = useState<'block' | 'inline'>('block')
   const [mathDialogInitialValue, setMathDialogInitialValue] = useState('')
   const [mathEditPosition, setMathEditPosition] = useState<number | null>(null)
+  // UX-1: Media insert dialog state (replaces window.prompt)
+  const [mediaDialogOpen, setMediaDialogOpen] = useState(false)
+  const [mediaDialogType, setMediaDialogType] = useState<MediaType>('image')
   const slashMenuRef = useRef<{ onKeyDown: (event: KeyboardEvent) => boolean }>(null)
   const editorRef = useRef<HTMLDivElement>(null)
+
+  // FIX: Use ref to avoid re-registering click-outside listener on every showSlashMenu change
+  const showSlashMenuRef = useRef(showSlashMenu)
 
   const editor = useEditor({
     extensions: createExtensions(placeholder),
@@ -69,6 +77,11 @@ export function BlockEditor({
     onUpdate: ({ editor }) => {
       if (onChange) {
         onChange(editor.getJSON())
+      }
+
+      // Call onEditorUpdate if provided (for advanced use cases like HTML serialization)
+      if (onEditorUpdate) {
+        onEditorUpdate(editor)
       }
 
       // Check for slash command trigger
@@ -129,23 +142,46 @@ export function BlockEditor({
     }
   })
 
+  // FIX: Explicit editor cleanup for defense-in-depth
+  // TipTap's useEditor handles this internally, but we add explicit cleanup as safety net
+  useEffect(() => {
+    return () => {
+      if (editor) {
+        editor.destroy()
+      }
+    }
+  }, [editor])
+
+  // Keep ref in sync with state
+  useEffect(() => {
+    showSlashMenuRef.current = showSlashMenu
+  }, [showSlashMenu])
+
   // Close slash menu when clicking outside
+  // FIX: Use ref to check showSlashMenu instead of capturing it in closure
+  // This prevents re-registering the listener on every showSlashMenu change
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (showSlashMenu && editorRef.current && !editorRef.current.contains(event.target as Node)) {
+      if (showSlashMenuRef.current && editorRef.current && !editorRef.current.contains(event.target as Node)) {
         setShowSlashMenu(false)
       }
     }
 
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [showSlashMenu])
+  }, []) // Empty deps - runs once!
 
   const openMathDialog = useCallback((mode: 'block' | 'inline', initialValue = '', editPos: number | null = null) => {
     setMathDialogMode(mode)
     setMathDialogInitialValue(initialValue)
     setMathEditPosition(editPos)
     setMathDialogOpen(true)
+  }, [])
+
+  // UX-1: Open media insert dialog (replaces window.prompt)
+  const openMediaDialog = useCallback((type: MediaType) => {
+    setMediaDialogType(type)
+    setMediaDialogOpen(true)
   }, [])
 
   // Listen for edit-math events from the math extension
@@ -161,8 +197,8 @@ export function BlockEditor({
 
   // Memoize full slash menu items (avoids recreation on every render)
   const allSlashItems = useMemo(
-    () => getSlashMenuItems(editor, t, openMathDialog),
-    [editor, t, openMathDialog]
+    () => getSlashMenuItems(editor, t, openMathDialog, openMediaDialog),
+    [editor, t, openMathDialog, openMediaDialog]
   )
 
   // Memoize filtered items (only recompute when query or items change)
@@ -228,8 +264,38 @@ export function BlockEditor({
     [editor, mathDialogMode, mathEditPosition]
   )
 
+  // UX-1: Handle media submit from dialog
+  const handleMediaSubmit = useCallback(
+    (url: string) => {
+      if (!editor) return
+
+      switch (mediaDialogType) {
+        case 'image':
+          editor.chain().focus().setImage({ src: url }).run()
+          break
+        case 'imageFigure':
+          editor.chain().focus().setImageFigure({ src: url }).run()
+          break
+        case 'video':
+          editor.chain().focus().setVideoEmbed({ src: url }).run()
+          break
+      }
+    },
+    [editor, mediaDialogType]
+  )
+
+  // Loading state while editor initializes
   if (!editor) {
-    return null
+    return (
+      <div className={cn('tiptap-editor pl-12', className)}>
+        <div className="animate-pulse space-y-4">
+          <div className="h-6 bg-muted rounded w-3/4" />
+          <div className="h-4 bg-muted rounded w-full" />
+          <div className="h-4 bg-muted rounded w-5/6" />
+          <div className="h-4 bg-muted rounded w-4/5" />
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -250,6 +316,14 @@ export function BlockEditor({
         onSubmit={handleMathSubmit}
         initialValue={mathDialogInitialValue}
         mode={mathDialogMode}
+      />
+
+      {/* UX-1: Media insert dialog (replaces window.prompt) */}
+      <MediaInsertDialog
+        isOpen={mediaDialogOpen}
+        onClose={() => setMediaDialogOpen(false)}
+        onSubmit={handleMediaSubmit}
+        type={mediaDialogType}
       />
 
       <EditorContent editor={editor} />

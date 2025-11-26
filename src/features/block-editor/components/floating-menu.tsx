@@ -60,10 +60,20 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
   const isDraggingRef = useRef(false)
   const isHoveringMenuRef = useRef(false)
   const dropIndicatorRef = useRef<HTMLElement | null>(null)
+  const ghostCleanupTimeoutRef = useRef<number | null>(null)
+  const menuHideTimeoutRef = useRef<number | null>(null)
 
   // Store ProseMirror position instead of DOM ref
   const dragStartPosRef = useRef<number | null>(null)
   const dragBlockRef = useRef<HTMLElement | null>(null)
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (ghostCleanupTimeoutRef.current) clearTimeout(ghostCleanupTimeoutRef.current)
+      if (menuHideTimeoutRef.current) clearTimeout(menuHideTimeoutRef.current)
+    }
+  }, [])
 
   // Drop indicator helpers (use ref instead of global singleton)
   const showDropIndicator = useCallback((container: HTMLElement, y: number, left: number, width: number) => {
@@ -452,14 +462,20 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
       max-width: 300px;
       box-shadow: 0 4px 12px hsl(var(--foreground) / 0.15);
     `
-    document.body.appendChild(ghost)
-    e.dataTransfer.setDragImage(ghost, 0, 0)
 
-    setTimeout(() => {
-      if (ghost.parentNode) {
-        document.body.removeChild(ghost)
-      }
-    }, 0)
+    // FIX: Use try-finally to guarantee ghost cleanup even if setDragImage throws
+    try {
+      document.body.appendChild(ghost)
+      e.dataTransfer.setDragImage(ghost, 0, 0)
+    } finally {
+      // Schedule cleanup - runs after drag image is captured (tracked for unmount cleanup)
+      if (ghostCleanupTimeoutRef.current) clearTimeout(ghostCleanupTimeoutRef.current)
+      ghostCleanupTimeoutRef.current = window.setTimeout(() => {
+        if (ghost.parentNode) {
+          document.body.removeChild(ghost)
+        }
+      }, 0)
+    }
   }
 
   const handleDragEnd = () => {
@@ -479,7 +495,9 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
   const handleMenuMouseLeave = () => {
     isHoveringMenuRef.current = false
     if (!isDragging) {
-      setTimeout(() => {
+      // Tracked timeout for cleanup on unmount
+      if (menuHideTimeoutRef.current) clearTimeout(menuHideTimeoutRef.current)
+      menuHideTimeoutRef.current = window.setTimeout(() => {
         if (!isHoveringMenuRef.current && !isDraggingRef.current) {
           setHoveredBlock(null)
           setShouldShow(false)

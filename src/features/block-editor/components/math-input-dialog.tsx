@@ -2,6 +2,15 @@ import katex from 'katex'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+// Helper to escape HTML entities for safe rendering
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+}
+
 import { cn } from '@/shared/lib/cn'
 import { Button } from '@/shared/ui/button'
 import {
@@ -197,6 +206,16 @@ export function MathInputDialog({
   const [error, setError] = useState<string | null>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const previewRef = useRef<HTMLDivElement>(null)
+  const focusTimeoutRef = useRef<number | null>(null)
+  const insertTimeoutRef = useRef<number | null>(null)
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (focusTimeoutRef.current) clearTimeout(focusTimeoutRef.current)
+      if (insertTimeoutRef.current) clearTimeout(insertTimeoutRef.current)
+    }
+  }, [])
 
   // Reset state when dialog opens
   useEffect(() => {
@@ -204,18 +223,21 @@ export function MathInputDialog({
       setLatex(initialValue)
       setError(null)
       // Focus input after a small delay to ensure dialog is rendered
-      setTimeout(() => inputRef.current?.focus(), 100)
+      if (focusTimeoutRef.current) clearTimeout(focusTimeoutRef.current)
+      focusTimeoutRef.current = window.setTimeout(() => inputRef.current?.focus(), 100)
     }
   }, [isOpen, initialValue])
 
-  // Render preview
+  // Render preview with race condition protection
   useEffect(() => {
+    let isMounted = true
+
     if (!previewRef.current || !latex.trim()) {
-      if (previewRef.current) {
+      if (previewRef.current && isMounted) {
         previewRef.current.innerHTML = `<span class="text-muted-foreground text-sm">${t('editor.math.previewPlaceholder')}</span>`
       }
-      setError(null)
-      return
+      if (isMounted) setError(null)
+      return () => { isMounted = false }
     }
 
     try {
@@ -224,13 +246,18 @@ export function MathInputDialog({
         throwOnError: true,
         errorColor: '#ef4444'
       })
-      setError(null)
+      if (isMounted) setError(null)
     } catch (err) {
-      if (err instanceof Error) {
+      if (isMounted && err instanceof Error) {
         setError(err.message)
-        previewRef.current.innerHTML = `<span class="text-destructive text-sm">${err.message}</span>`
+        // FIX: Escape error message to prevent XSS
+        if (previewRef.current) {
+          previewRef.current.innerHTML = `<span class="text-destructive text-sm">${escapeHtml(err.message)}</span>`
+        }
       }
     }
+
+    return () => { isMounted = false }
   }, [latex, mode, t])
 
   const handleSubmit = useCallback(() => {
@@ -259,10 +286,13 @@ export function MathInputDialog({
       const end = textarea.selectionEnd
       const newValue = prev.substring(0, start) + value + prev.substring(end)
 
-      // Set cursor position after inserted text
-      setTimeout(() => {
-        textarea.selectionStart = textarea.selectionEnd = start + value.length
-        textarea.focus()
+      // Set cursor position after inserted text (tracked for cleanup)
+      if (insertTimeoutRef.current) clearTimeout(insertTimeoutRef.current)
+      insertTimeoutRef.current = window.setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.selectionStart = inputRef.current.selectionEnd = start + value.length
+          inputRef.current.focus()
+        }
       }, 0)
 
       return newValue

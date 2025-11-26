@@ -1,0 +1,116 @@
+import { useTranslation } from 'react-i18next'
+import { Download } from 'lucide-react'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/shared/ui/table'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
+import { Badge } from '@/shared/ui/badge'
+import { Button } from '@/shared/ui/button'
+import type { PaymentHistory } from '@/entities/subscription'
+
+interface PaymentHistoryTableProps {
+  payments: PaymentHistory[]
+}
+
+export function PaymentHistoryTable({ payments }: PaymentHistoryTableProps) {
+  const { t } = useTranslation()
+
+  const formatAmount = (cents: number, currency: string) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: currency.toUpperCase()
+    }).format(cents / 100)
+  }
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    })
+  }
+
+  const getStatusBadgeVariant = (
+    status: string
+  ): 'default' | 'secondary' | 'destructive' | 'outline' => {
+    switch (status) {
+      case 'succeeded':
+        return 'default'
+      case 'pending':
+        return 'secondary'
+      case 'failed':
+        return 'destructive'
+      case 'refunded':
+        return 'outline'
+      default:
+        return 'secondary'
+    }
+  }
+
+  if (payments.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>{t('billing.paymentHistory.title')}</CardTitle>
+          <CardDescription>{t('billing.paymentHistory.description')}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground text-center py-8">
+            {t('billing.paymentHistory.empty')}
+          </p>
+        </CardContent>
+      </Card>
+    )
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>{t('billing.paymentHistory.title')}</CardTitle>
+        <CardDescription>{t('billing.paymentHistory.description')}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>{t('billing.paymentHistory.date')}</TableHead>
+              <TableHead>{t('billing.paymentHistory.desc')}</TableHead>
+              <TableHead>{t('billing.paymentHistory.amount')}</TableHead>
+              <TableHead>{t('billing.paymentHistory.status')}</TableHead>
+              <TableHead className="text-right">{t('billing.paymentHistory.invoice')}</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {payments.map(payment => (
+              <TableRow key={payment.id}>
+                <TableCell className="font-medium">{formatDate(payment.createdAt)}</TableCell>
+                <TableCell>{payment.description}</TableCell>
+                <TableCell>{formatAmount(payment.amount, payment.currency)}</TableCell>
+                <TableCell>
+                  <Badge variant={getStatusBadgeVariant(payment.status)}>
+                    {t(`billing.paymentStatus.${payment.status}`)}
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-right">
+                  {payment.invoiceUrl && (
+                    <Button variant="ghost" size="sm" asChild>
+                      <a href={payment.invoiceUrl} target="_blank" rel="noopener noreferrer">
+                        <Download className="h-4 w-4 mr-2" />
+                        {t('billing.paymentHistory.download')}
+                      </a>
+                    </Button>
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
+  )
+}

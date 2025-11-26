@@ -1,2 +1,2 @@
-export type { Node, NodeMetadata, NodeType } from './node.schema'
-export { NodeSchema, NodeMetadataSchema, NodeTypeEnum } from './node.schema'
+export type { Node, NodeMetadata, NodeType, LightweightNode } from './node.schema'
+export { NodeSchema, NodeMetadataSchema, NodeTypeEnum, LightweightNodeSchema } from './node.schema'

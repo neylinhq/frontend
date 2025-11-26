@@ -1,8 +1,9 @@
-import type { JSONContent } from '@tiptap/react'
+import type { Editor, JSONContent } from '@tiptap/react'
 
 export interface BlockEditorProps {
   initialContent?: JSONContent
   onChange?: (content: JSONContent) => void
+  onEditorUpdate?: (editor: Editor) => void // Receives editor instance for advanced use cases
   editable?: boolean
   className?: string
   placeholder?: string

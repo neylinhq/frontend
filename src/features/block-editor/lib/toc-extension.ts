@@ -22,12 +22,19 @@ declare module '@tiptap/core' {
 
 // Generate a slug from text
 function slugify(text: string): string {
-  return text
+  const slug = text
     .toLowerCase()
     .replace(/[^\w\s-]/g, '')
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '') // FIX: Remove leading/trailing dashes
     .trim()
+  return slug || 'heading'
+}
+
+// FIX: Generate unique heading ID using position to prevent collisions
+function generateHeadingId(text: string, pos: number): string {
+  return `${slugify(text)}-${pos}`
 }
 
 export const TableOfContents = Node.create<TableOfContentsOptions>({
@@ -101,7 +108,7 @@ export const TableOfContents = Node.create<TableOfContentsOptions>({
             doc.descendants((node, pos) => {
               if (node.type.name === 'heading') {
                 const text = node.textContent
-                const id = slugify(text) || `heading-${pos}`
+                const id = generateHeadingId(text, pos)
                 if (id === headingId) {
                   targetPos = pos
                   return false // Stop iteration
@@ -135,7 +142,7 @@ export const TableOfContents = Node.create<TableOfContentsOptions>({
                 }
                 if (node.type.name === 'heading') {
                   const text = node.textContent
-                  const id = slugify(text) || `heading-${pos}`
+                  const id = generateHeadingId(text, pos)
                   headings.push({
                     level: node.attrs.level,
                     text,

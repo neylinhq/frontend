@@ -1,7 +1,7 @@
 import { AlertTriangle, ArrowLeft, Loader2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams } from 'react-router'
-import { useFullMap } from '@/entities/map'
+import { useLightweightMap } from '@/entities/map'
 import { GraphVisualization } from '@/features/graph-visualization'
 import { Button } from '@/shared/ui/button'
 import { Card } from '@/shared/ui/card'
@@ -9,7 +9,7 @@ import { Card } from '@/shared/ui/card'
 export function MapViewPage() {
   const { t } = useTranslation()
   const { mapId } = useParams<{ mapId: string }>()
-  const { data: fullMap, isLoading, isError } = useFullMap(mapId || '')
+  const { data: fullMap, isLoading, isError } = useLightweightMap(mapId || '')
 
   if (!mapId) {
     return (

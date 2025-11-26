@@ -1,13 +1,14 @@
-import type { JSONContent } from '@tiptap/react'
+import type { Editor } from '@tiptap/react'
 import { AlertTriangle, ArrowLeft, Loader2, PanelRightClose, PanelRightOpen } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
-import { useFullMap, useUpdateNode } from '@/entities/map'
+import { useLightweightMap, useNodeWithContent, useUpdateNode } from '@/entities/map'
 import type { NodeType } from '@/entities/node'
 import { BlockEditor } from '@/features/block-editor'
+import { editorToHTML, htmlToEditor, htmlToPlainText } from '@/features/block-editor/lib/html-serializer'
 import { NodeConnectionsPanel } from '@/features/node-connections-panel'
 import { useAutoSave } from '@/features/node-editor/model/use-auto-save.hooks'
 import { NodeMetadataForm, type NodeMetadataFormValues } from '@/features/node-metadata-form'
@@ -30,14 +31,12 @@ const NODE_TYPE_CONFIG: Record<NodeType, { color: string; label: string }> = {
 export function NodeEditPage() {
   const { t } = useTranslation()
   const { mapId, nodeId } = useParams<{ mapId: string; nodeId: string }>()
-  const { data: fullMap, isLoading, isError } = useFullMap(mapId || '')
+  const { data: currentNode, isLoading, isError } = useNodeWithContent(nodeId || '')
+  const { data: lightweightMap } = useLightweightMap(mapId || '')
   const updateNodeMutation = useUpdateNode(mapId || '')
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [title, setTitle] = useState('')
   const titleInputRef = useRef<HTMLTextAreaElement>(null)
-
-  // Find the current node
-  const currentNode = fullMap?.nodes.find((n) => n.id === nodeId)
 
   // Auto-resize title textarea
   const resizeTitleTextarea = useCallback(() => {
@@ -67,10 +66,14 @@ export function NodeEditPage() {
   }, 1000)
 
   // Auto-save for editor content
-  const debouncedContentSave = useAutoSave((content: string) => {
+  const debouncedContentSave = useAutoSave((editor: Editor) => {
     if (!nodeId) return
+
+    const html = editorToHTML(editor)
+    const description = htmlToPlainText(html, 200)
+
     updateNodeMutation.mutate(
-      { id: nodeId, data: { description: content } },
+      { id: nodeId, data: { content: html, description } },
       { onError: () => toast.error(t('errors.failedSave')) }
     )
   }, 2000)
@@ -93,6 +96,14 @@ export function NodeEditPage() {
       titleInputRef.current?.blur()
     }
   }, [])
+
+  // Handler for editor content change
+  const handleEditorChange = useCallback(
+    (editor: Editor) => {
+      debouncedContentSave(editor)
+    },
+    [debouncedContentSave]
+  )
 
   // Validation
   if (!mapId || !nodeId) {
@@ -121,7 +132,7 @@ export function NodeEditPage() {
     )
   }
 
-  if (isError || !fullMap || !currentNode) {
+  if (isError || !currentNode) {
     return (
       <div className="flex h-[600px] items-center justify-center">
         <Card className="max-w-md p-8 text-center">
@@ -139,11 +150,6 @@ export function NodeEditPage() {
         </Card>
       </div>
     )
-  }
-
-  // Handler for editor content change
-  const handleEditorChange = (content: JSONContent) => {
-    debouncedContentSave(JSON.stringify(content))
   }
 
   // Handler for metadata form submit
@@ -225,8 +231,8 @@ export function NodeEditPage() {
 
           {/* Editor */}
           <BlockEditor
-            initialContent={currentNode.description ? JSON.parse(currentNode.description) : undefined}
-            onChange={handleEditorChange}
+            initialContent={currentNode.content ? htmlToEditor(currentNode.content) : undefined}
+            onEditorUpdate={handleEditorChange}
             placeholder={t('nodeEdit.editorPlaceholder')}
             className="min-h-[500px]"
           />
@@ -258,11 +264,13 @@ export function NodeEditPage() {
                 <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   {t('nodeEdit.connections')}
                 </h3>
-                <NodeConnectionsPanel
-                  node={currentNode}
-                  edges={fullMap.edges}
-                  allNodes={fullMap.nodes}
-                />
+                {lightweightMap && (
+                  <NodeConnectionsPanel
+                    node={currentNode}
+                    edges={lightweightMap.edges}
+                    allNodes={lightweightMap.nodes}
+                  />
+                )}
               </div>
             </div>
           </div>

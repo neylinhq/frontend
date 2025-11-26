@@ -723,7 +723,8 @@
       "preferences": "Предпочтения",
       "theme": "Тема",
       "integrations": "Интеграции",
-      "security": "Безопасность"
+      "security": "Безопасность",
+      "billing": "Биллинг"
     },
     "profile": {
       "title": "Профиль",
@@ -850,6 +851,87 @@
         "description": "Необратимые и разрушительные действия",
         "deleteAccount": "Удалить аккаунт"
       }
+    },
+    "billing": {
+      "title": "Биллинг и подписка",
+      "description": "Управление подпиской и платежными данными",
+      "tabs": {
+        "overview": "Обзор",
+        "plans": "Тарифы",
+        "paymentMethods": "Способы оплаты",
+        "history": "История"
+      },
+      "currentPlan": {
+        "title": "Текущий тариф",
+        "description": "Ваша активная подписка"
+      },
+      "managePlan": "Управление тарифом",
+      "cancelSubscription": "Отменить подписку",
+      "cancelScheduled": "Ваша подписка будет отменена {{date}}",
+      "paymentMethods": {
+        "title": "Способы оплаты",
+        "description": "Управление способами оплаты",
+        "add": "Добавить способ оплаты",
+        "empty": "Способы оплаты не добавлены"
+      }
     }
+  },
+  "billing": {
+    "currentPlan": "Текущий тариф",
+    "currentPlanButton": "Текущий тариф",
+    "selectPlan": "Выбрать тариф",
+    "managePlan": "Управление тарифом",
+    "cancelSubscription": "Отменить подписку",
+    "unlimited": "Неограниченно",
+    "defaultPaymentMethod": "По умолчанию",
+    "expires": "Истекает",
+    "setAsDefault": "Сделать основным",
+    "interval": {
+      "month": "месяц",
+      "year": "год"
+    },
+    "usage": {
+      "title": "Текущее использование",
+      "description": "Ваше использование за текущий расчетный период",
+      "maps": "Карты знаний",
+      "nodes": "Всего узлов",
+      "aiRequests": "AI запросов в этом месяце",
+      "storage": "Использовано хранилища"
+    },
+    "paymentHistory": {
+      "title": "История платежей",
+      "description": "Просмотр прошлых платежей и счетов",
+      "empty": "История платежей пуста",
+      "date": "Дата",
+      "desc": "Описание",
+      "amount": "Сумма",
+      "status": "Статус",
+      "invoice": "Счет",
+      "download": "Скачать"
+    },
+    "paymentStatus": {
+      "succeeded": "Оплачено",
+      "pending": "В обработке",
+      "failed": "Неудача",
+      "refunded": "Возврат"
+    },
+    "addPaymentMethod": {
+      "title": "Добавить способ оплаты",
+      "description": "Добавьте новый способ оплаты к вашей учетной записи",
+      "cardholderName": "Имя владельца карты",
+      "cardNumber": "Номер карты",
+      "expiryMonth": "Месяц",
+      "expiryYear": "Год",
+      "cvc": "CVC",
+      "submit": "Добавить карту"
+    }
+  },
+  "pricing": {
+    "title": "Выберите тариф",
+    "subtitle": "Начните бесплатно и обновляйтесь по мере роста",
+    "popular": "Самый популярный",
+    "getStarted": "Начать",
+    "questions": "Есть вопросы?",
+    "contactUs": "Свяжитесь с нами"
   }
 }

@@ -175,11 +175,15 @@ export const SlashMenu = forwardRef<SlashMenuRef, SlashMenuProps>(({ items, comm
 
 SlashMenu.displayName = 'SlashMenu'
 
+// Media type for dialog
+type MediaType = 'image' | 'imageFigure' | 'video'
+
 // Slash menu items configuration with categories
 export const getSlashMenuItems = (
   editor: ReturnType<typeof import('@tiptap/react').useEditor>,
   t: ReturnType<typeof useTranslation>['t'],
-  openMathDialog?: (mode: 'block' | 'inline') => void
+  openMathDialog?: (mode: 'block' | 'inline') => void,
+  openMediaDialog?: (type: MediaType) => void
 ): SlashMenuItem[] => {
   if (!editor) return []
 
@@ -263,36 +267,24 @@ export const getSlashMenuItems = (
       title: t('editor.slash.image.title'),
       description: t('editor.slash.image.description'),
       icon: <Image className="h-5 w-5" />,
-      command: () => {
-        const url = window.prompt(t('editor.slash.imagePrompt'))
-        if (url) {
-          editor.chain().focus().setImage({ src: url }).run()
-        }
-      },
+      // UX-1: Use dialog instead of window.prompt
+      command: () => openMediaDialog?.('image'),
       category: t('editor.slash.categories.media')
     },
     {
       title: t('editor.slash.imageFigure.title'),
       description: t('editor.slash.imageFigure.description'),
       icon: <FileImage className="h-5 w-5" />,
-      command: () => {
-        const url = window.prompt(t('editor.slash.imagePrompt'))
-        if (url) {
-          editor.chain().focus().setImageFigure({ src: url }).run()
-        }
-      },
+      // UX-1: Use dialog instead of window.prompt
+      command: () => openMediaDialog?.('imageFigure'),
       category: t('editor.slash.categories.media')
     },
     {
       title: t('editor.slash.video.title'),
       description: t('editor.slash.video.description'),
       icon: <Youtube className="h-5 w-5 text-red-500" />,
-      command: () => {
-        const url = window.prompt(t('editor.slash.videoPrompt'))
-        if (url) {
-          editor.chain().focus().setVideoEmbed({ src: url }).run()
-        }
-      },
+      // UX-1: Use dialog instead of window.prompt
+      command: () => openMediaDialog?.('video'),
       category: t('editor.slash.categories.media')
     },
     {

@@ -24,7 +24,7 @@ import {
   Type,
   Underline
 } from 'lucide-react'
-import { useCallback, useEffect, useReducer, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { cn } from '@/shared/lib/cn'
@@ -135,57 +135,59 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
     }
   }, [isLinkInputOpen])
 
-  useEffect(() => {
-    const updateMenu = () => {
-      const { selection } = editor.state
-      const { empty, from, to } = selection
+  // FIX: Wrap updateMenu in useCallback to prevent memory leak from event listener accumulation
+  // Previously, updateMenu was created inside useEffect, causing cleanup to use stale references
+  const updateMenu = useCallback(() => {
+    const { selection } = editor.state
+    const { empty, from, to } = selection
 
-      // Hide menu if selection is empty or is a node selection
-      if (empty || from === to) {
-        setIsVisible(false)
-        dispatch({ type: 'CLOSE_ALL' })
-        return
-      }
-
-      // Get the selection coordinates
-      const { view } = editor
-      const start = view.coordsAtPos(from)
-      const end = view.coordsAtPos(to)
-
-      // Calculate initial position (center above selection)
-      let left = (start.left + end.left) / 2
-      let top = start.top - 10
-
-      // Viewport boundary checking
-      const viewportWidth = window.innerWidth
-      const viewportHeight = window.innerHeight
-      const halfMenuWidth = MENU_MIN_WIDTH / 2
-
-      // Check if menu would go off the left edge
-      if (left - halfMenuWidth < VIEWPORT_PADDING) {
-        left = halfMenuWidth + VIEWPORT_PADDING
-      }
-      // Check if menu would go off the right edge
-      else if (left + halfMenuWidth > viewportWidth - VIEWPORT_PADDING) {
-        left = viewportWidth - halfMenuWidth - VIEWPORT_PADDING
-      }
-
-      // Check if menu would go above viewport - if so, position below selection
-      if (top - MENU_HEIGHT < VIEWPORT_PADDING) {
-        const bottomPosition = end.bottom + 10
-        // Check if positioning below would also go off-screen
-        if (bottomPosition + MENU_HEIGHT > viewportHeight - VIEWPORT_PADDING) {
-          // Both positions are off-screen, choose the one with more visible area
-          top = Math.max(VIEWPORT_PADDING + MENU_HEIGHT, start.top - 10)
-        } else {
-          top = bottomPosition
-        }
-      }
-
-      setPosition({ top, left })
-      setIsVisible(true)
+    // Hide menu if selection is empty or is a node selection
+    if (empty || from === to) {
+      setIsVisible(false)
+      dispatch({ type: 'CLOSE_ALL' })
+      return
     }
 
+    // Get the selection coordinates
+    const { view } = editor
+    const start = view.coordsAtPos(from)
+    const end = view.coordsAtPos(to)
+
+    // Calculate initial position (center above selection)
+    let left = (start.left + end.left) / 2
+    let top = start.top - 10
+
+    // Viewport boundary checking
+    const viewportWidth = window.innerWidth
+    const viewportHeight = window.innerHeight
+    const halfMenuWidth = MENU_MIN_WIDTH / 2
+
+    // Check if menu would go off the left edge
+    if (left - halfMenuWidth < VIEWPORT_PADDING) {
+      left = halfMenuWidth + VIEWPORT_PADDING
+    }
+    // Check if menu would go off the right edge
+    else if (left + halfMenuWidth > viewportWidth - VIEWPORT_PADDING) {
+      left = viewportWidth - halfMenuWidth - VIEWPORT_PADDING
+    }
+
+    // Check if menu would go above viewport - if so, position below selection
+    if (top - MENU_HEIGHT < VIEWPORT_PADDING) {
+      const bottomPosition = end.bottom + 10
+      // Check if positioning below would also go off-screen
+      if (bottomPosition + MENU_HEIGHT > viewportHeight - VIEWPORT_PADDING) {
+        // Both positions are off-screen, choose the one with more visible area
+        top = Math.max(VIEWPORT_PADDING + MENU_HEIGHT, start.top - 10)
+      } else {
+        top = bottomPosition
+      }
+    }
+
+    setPosition({ top, left })
+    setIsVisible(true)
+  }, [editor])
+
+  useEffect(() => {
     editor.on('selectionUpdate', updateMenu)
     editor.on('transaction', updateMenu)
 
@@ -193,7 +195,7 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
       editor.off('selectionUpdate', updateMenu)
       editor.off('transaction', updateMenu)
     }
-  }, [editor])
+  }, [editor, updateMenu])
 
   const setLink = useCallback(() => {
     if (menuState.linkUrl === '') {
@@ -216,19 +218,18 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
     }
   }
 
-  // Get current block type for Turn Into label
-  const getCurrentBlockType = () => {
-    if (editor.isActive('heading', { level: 1 })) return BLOCK_TYPES.find(b => b.name === 'heading1')
-    if (editor.isActive('heading', { level: 2 })) return BLOCK_TYPES.find(b => b.name === 'heading2')
-    if (editor.isActive('heading', { level: 3 })) return BLOCK_TYPES.find(b => b.name === 'heading3')
-    if (editor.isActive('bulletList')) return BLOCK_TYPES.find(b => b.name === 'bulletList')
-    if (editor.isActive('orderedList')) return BLOCK_TYPES.find(b => b.name === 'numberedList')
-    if (editor.isActive('taskList')) return BLOCK_TYPES.find(b => b.name === 'todoList')
-    if (editor.isActive('blockquote')) return BLOCK_TYPES.find(b => b.name === 'quote')
-    return BLOCK_TYPES.find(b => b.name === 'text')
-  }
-
-  const currentBlockType = getCurrentBlockType()
+  // OPT-2: Memoize current block type to avoid redundant isActive() checks on every render
+  // Note: editor dependency causes recalc when editor state changes, which is needed for isActive()
+  const currentBlockType = useMemo(() => {
+    if (editor.isActive('heading', { level: 1 })) return BLOCK_TYPES[1] // heading1
+    if (editor.isActive('heading', { level: 2 })) return BLOCK_TYPES[2] // heading2
+    if (editor.isActive('heading', { level: 3 })) return BLOCK_TYPES[3] // heading3
+    if (editor.isActive('bulletList')) return BLOCK_TYPES[4] // bulletList
+    if (editor.isActive('orderedList')) return BLOCK_TYPES[5] // numberedList
+    if (editor.isActive('taskList')) return BLOCK_TYPES[6] // todoList
+    if (editor.isActive('blockquote')) return BLOCK_TYPES[7] // quote
+    return BLOCK_TYPES[0] // text
+  }, [editor])
   const CurrentBlockIcon = currentBlockType?.icon || Type
 
   if (!isVisible) {
@@ -489,10 +490,30 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
           <div className="absolute right-0 top-full mt-1 z-50 min-w-[160px] rounded-lg border border-border bg-popover p-1 shadow-lg">
             <button
               type="button"
-              onClick={() => {
+              onClick={async () => {
                 const { from, to } = editor.state.selection
                 const text = editor.state.doc.textBetween(from, to, ' ')
-                navigator.clipboard.writeText(text)
+
+                try {
+                  await navigator.clipboard.writeText(text)
+                } catch (err) {
+                  // Fallback for browsers without clipboard API or when permission denied
+                  console.error('Failed to copy to clipboard:', err)
+                  try {
+                    const textarea = document.createElement('textarea')
+                    textarea.value = text
+                    textarea.style.position = 'fixed'
+                    textarea.style.opacity = '0'
+                    textarea.style.pointerEvents = 'none'
+                    document.body.appendChild(textarea)
+                    textarea.select()
+                    document.execCommand('copy')
+                    document.body.removeChild(textarea)
+                  } catch (fallbackErr) {
+                    console.error('Fallback copy also failed:', fallbackErr)
+                  }
+                }
+
                 dispatch({ type: 'CLOSE_ALL' })
               }}
               className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-foreground hover:bg-accent/50 transition-colors"

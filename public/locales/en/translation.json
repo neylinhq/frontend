@@ -697,7 +697,8 @@
       "preferences": "Preferences",
       "theme": "Theme",
       "integrations": "Integrations",
-      "security": "Security"
+      "security": "Security",
+      "billing": "Billing"
     },
     "profile": {
       "title": "Profile",
@@ -824,6 +825,87 @@
         "description": "Irreversible and destructive actions",
         "deleteAccount": "Delete account"
       }
+    },
+    "billing": {
+      "title": "Billing & Subscription",
+      "description": "Manage your subscription and billing details",
+      "tabs": {
+        "overview": "Overview",
+        "plans": "Plans",
+        "paymentMethods": "Payment Methods",
+        "history": "History"
+      },
+      "currentPlan": {
+        "title": "Current Plan",
+        "description": "Your active subscription"
+      },
+      "managePlan": "Manage Plan",
+      "cancelSubscription": "Cancel Subscription",
+      "cancelScheduled": "Your subscription will be cancelled on {{date}}",
+      "paymentMethods": {
+        "title": "Payment Methods",
+        "description": "Manage your payment methods",
+        "add": "Add Payment Method",
+        "empty": "No payment methods added yet"
+      }
     }
+  },
+  "billing": {
+    "currentPlan": "Current Plan",
+    "currentPlanButton": "Current Plan",
+    "selectPlan": "Select Plan",
+    "managePlan": "Manage Plan",
+    "cancelSubscription": "Cancel Subscription",
+    "unlimited": "Unlimited",
+    "defaultPaymentMethod": "Default",
+    "expires": "Expires",
+    "setAsDefault": "Set as Default",
+    "interval": {
+      "month": "month",
+      "year": "year"
+    },
+    "usage": {
+      "title": "Current Usage",
+      "description": "Your usage for the current billing period",
+      "maps": "Knowledge Maps",
+      "nodes": "Total Nodes",
+      "aiRequests": "AI Requests This Month",
+      "storage": "Storage Used"
+    },
+    "paymentHistory": {
+      "title": "Payment History",
+      "description": "View your past payments and invoices",
+      "empty": "No payment history yet",
+      "date": "Date",
+      "desc": "Description",
+      "amount": "Amount",
+      "status": "Status",
+      "invoice": "Invoice",
+      "download": "Download"
+    },
+    "paymentStatus": {
+      "succeeded": "Paid",
+      "pending": "Pending",
+      "failed": "Failed",
+      "refunded": "Refunded"
+    },
+    "addPaymentMethod": {
+      "title": "Add Payment Method",
+      "description": "Add a new payment method to your account",
+      "cardholderName": "Cardholder Name",
+      "cardNumber": "Card Number",
+      "expiryMonth": "Month",
+      "expiryYear": "Year",
+      "cvc": "CVC",
+      "submit": "Add Card"
+    }
+  },
+  "pricing": {
+    "title": "Choose Your Plan",
+    "subtitle": "Start free and upgrade as you grow",
+    "popular": "Most Popular",
+    "getStarted": "Get Started",
+    "questions": "Have questions?",
+    "contactUs": "Contact us"
   }
 }

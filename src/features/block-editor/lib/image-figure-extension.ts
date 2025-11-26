@@ -4,10 +4,30 @@ import { mergeAttributes, Node } from '@tiptap/core'
 function sanitizeUrl(url: string | null | undefined): string {
   if (!url) return ''
   const trimmed = url.trim().toLowerCase()
-  // Block dangerous protocols
-  if (trimmed.startsWith('javascript:') || trimmed.startsWith('data:text/html')) {
+
+  // Block javascript: protocol
+  if (trimmed.startsWith('javascript:')) {
     return ''
   }
+
+  // For data: URIs, only allow safe image formats
+  // Block SVG (can contain scripts), HTML, and other potentially dangerous formats
+  if (trimmed.startsWith('data:')) {
+    const allowedDataFormats = [
+      'data:image/png',
+      'data:image/jpeg',
+      'data:image/jpg',
+      'data:image/gif',
+      'data:image/webp',
+      'data:image/avif'
+    ]
+
+    if (!allowedDataFormats.some(format => trimmed.startsWith(format))) {
+      console.warn('[ImageFigure] Blocked potentially unsafe data URI')
+      return ''
+    }
+  }
+
   return url
 }
 
@@ -150,9 +170,15 @@ export const ImageFigure = Node.create<ImageFigureOptions>({
         (options) =>
         ({ commands, state }) => {
           const { selection } = state
+
+          // FIX: Guard against invalid positions
+          if (selection.from < 0 || selection.from > state.doc.content.size) {
+            return false
+          }
+
           const node = state.doc.nodeAt(selection.from)
 
-          if (node?.type.name !== this.name) {
+          if (!node || node.type.name !== this.name) {
             return false
           }
 

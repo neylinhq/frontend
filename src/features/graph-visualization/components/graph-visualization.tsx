@@ -9,6 +9,7 @@ import {
   useEdgesState,
   useNodesState,
   useReactFlow,
+  useViewport,
 } from '@xyflow/react'
 import { Loader2 } from 'lucide-react'
 import { memo, useCallback, useEffect, useMemo, useRef } from 'react'
@@ -21,6 +22,7 @@ import { useGraphControls } from '../model/graph-controls.hooks'
 import { useNodeSelection } from '../model/node-selection.hooks'
 import { NodeDrawer } from '@/features/node-drawer'
 import { GraphToolbar } from './graph-toolbar'
+import { ViewControlsPanel } from './view-controls-panel'
 import { KnowledgeEdge } from './knowledge-edge'
 import { KnowledgeNode } from './knowledge-node'
 import {
@@ -32,6 +34,7 @@ import {
   useFocusMode,
   useFilters,
   useGraphUI,
+  useNodeSpacing,
 } from '@/features/graph-view'
 
 const nodeTypes = {
@@ -57,16 +60,50 @@ function GraphVisualizationContent({
   const { data: fullMap, isLoading, isError } = useFullMap(mapId)
   const { selectedElements, handleSelectionChange, clearSelection, selectedNodeId, selectNode } =
     useNodeSelection()
-  const { controls, setZoom, toggleFullscreen } = useGraphControls()
+  const { controls, toggleFullscreen } = useGraphControls()
   const layoutAppliedRef = useRef(false)
 
-  const { zoomIn, zoomOut, fitView } = useReactFlow()
+  const { zoomIn, zoomOut, fitView, setCenter, getNode, screenToFlowPosition } = useReactFlow()
+  const { zoom: viewportZoom } = useViewport()
+
+  // Pan to a specific node
+  const handlePanToNode = useCallback((nodeId: string) => {
+    const node = getNode(nodeId)
+    if (node) {
+      const x = node.position.x + (node.measured?.width ?? 200) / 2
+      const y = node.position.y + (node.measured?.height ?? 100) / 2
+      setCenter(x, y, { zoom: viewportZoom, duration: 300 })
+    }
+  }, [getNode, setCenter, viewportZoom])
 
   // Store hooks for view settings
   const { viewMode } = useViewMode()
   const { focusedNodeId, focusDepth, focusNode } = useFocusMode()
   const { visibleNodeTypes, visibleEdgeTypes } = useFilters()
   const { showMinimap } = useGraphUI()
+  const { nodeSpacing, directionStrength } = useNodeSpacing()
+
+  // Use refs for layout params to avoid stale closures when triggerLayout fires
+  const layoutParamsRef = useRef({ nodeSpacing, viewMode, focusedNodeId, directionStrength })
+  layoutParamsRef.current = { nodeSpacing, viewMode, focusedNodeId, directionStrength }
+
+  // Calculate counts by type for filters
+  const { nodeCountsByType, edgeCountsByType } = useMemo(() => {
+    if (!fullMap) return { nodeCountsByType: {}, edgeCountsByType: {} }
+
+    const nodeCounts: Record<string, number> = {}
+    const edgeCounts: Record<string, number> = {}
+
+    for (const node of fullMap.nodes) {
+      nodeCounts[node.type] = (nodeCounts[node.type] || 0) + 1
+    }
+
+    for (const edge of fullMap.edges) {
+      edgeCounts[edge.relationType] = (edgeCounts[edge.relationType] || 0) + 1
+    }
+
+    return { nodeCountsByType: nodeCounts, edgeCountsByType: edgeCounts }
+  }, [fullMap])
 
   // Filter nodes based on visibility settings and focus mode
   const filteredData = useMemo(() => {
@@ -131,19 +168,57 @@ function GraphVisualizationContent({
   const [reactFlowNodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [reactFlowEdges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
 
-  // Apply auto-layout function
-  const doApplyLayout = useCallback(() => {
+  // Find the node closest to the viewport center
+  const getClosestNodeToViewportCenter = useCallback(() => {
+    if (reactFlowNodes.length === 0) return null
+
+    // Get viewport center in screen coordinates and convert to flow coordinates
+    const centerScreenX = window.innerWidth / 2
+    const centerScreenY = window.innerHeight / 2
+    const centerInFlow = screenToFlowPosition({ x: centerScreenX, y: centerScreenY })
+
+    let closestNodeId: string | null = null
+    let minDist = Infinity
+
+    for (const node of reactFlowNodes) {
+      const nodeCenterX = node.position.x + (node.measured?.width ?? 200) / 2
+      const nodeCenterY = node.position.y + (node.measured?.height ?? 100) / 2
+      const dist = Math.hypot(centerInFlow.x - nodeCenterX, centerInFlow.y - nodeCenterY)
+      if (dist < minDist) {
+        minDist = dist
+        closestNodeId = node.id
+      }
+    }
+
+    return closestNodeId
+  }, [reactFlowNodes, screenToFlowPosition])
+
+  // Apply auto-layout function - uses ref to get latest params when triggered by store events
+  const doApplyLayout = useCallback((shouldFitView = true, anchorNodeId?: string | null) => {
     if (reactFlowNodes.length === 0) return
 
+    const params = layoutParamsRef.current
     const result = applyLayout(reactFlowNodes, reactFlowEdges, {
-      viewMode,
-      focusedNodeId,
+      viewMode: params.viewMode,
+      focusedNodeId: params.focusedNodeId,
+      spacingPercent: params.nodeSpacing,
+      directionStrength: params.directionStrength,
     })
 
     setNodes(result.nodes)
-    // Fit view after layout with a small delay for animations
-    setTimeout(() => fitView({ padding: 0.2, duration: 300 }), 50)
-  }, [reactFlowNodes, reactFlowEdges, viewMode, focusedNodeId, setNodes, fitView])
+
+    // If anchor node specified, center on it after layout
+    if (anchorNodeId) {
+      const anchorNode = result.nodes.find(n => n.id === anchorNodeId)
+      if (anchorNode) {
+        const x = anchorNode.position.x + (anchorNode.measured?.width ?? 200) / 2
+        const y = anchorNode.position.y + (anchorNode.measured?.height ?? 100) / 2
+        setTimeout(() => setCenter(x, y, { zoom: viewportZoom, duration: 200 }), 50)
+      }
+    } else if (shouldFitView) {
+      setTimeout(() => fitView({ padding: 0.2, duration: 300 }), 50)
+    }
+  }, [reactFlowNodes, reactFlowEdges, setNodes, fitView, setCenter, viewportZoom])
 
   // Apply initial auto-layout when nodes are first loaded
   useEffect(() => {
@@ -153,20 +228,27 @@ function GraphVisualizationContent({
       const result = applyLayout(initialNodes, initialEdges, {
         viewMode,
         focusedNodeId,
+        spacingPercent: nodeSpacing,
+        directionStrength,
       })
       setNodes(result.nodes)
     }
-  }, [initialNodes.length, fullMap, initialNodes, initialEdges, viewMode, focusedNodeId, setNodes])
+  }, [initialNodes.length, fullMap, initialNodes, initialEdges, viewMode, focusedNodeId, nodeSpacing, directionStrength, setNodes])
 
   // Listen for layout events from the store
   useEffect(() => {
-    const handleLayoutEvent = () => {
-      doApplyLayout()
+    const handleLayoutEvent = (e: Event) => {
+      const customEvent = e as CustomEvent<{ fitView?: boolean; anchorToCenter?: boolean }>
+      const shouldFitView = customEvent.detail?.fitView ?? true
+      const anchorToCenter = customEvent.detail?.anchorToCenter ?? false
+
+      const anchorNodeId = anchorToCenter ? getClosestNodeToViewportCenter() : null
+      doApplyLayout(shouldFitView, anchorNodeId)
     }
 
     layoutEvent.addEventListener('layout', handleLayoutEvent)
     return () => layoutEvent.removeEventListener('layout', handleLayoutEvent)
-  }, [doApplyLayout])
+  }, [doApplyLayout, getClosestNodeToViewportCenter])
 
   // Sync nodes when filtered data changes
   const prevNodeIdsRef = useRef<string>('')
@@ -178,13 +260,15 @@ function GraphVisualizationContent({
         const result = applyLayout(initialNodes, initialEdges, {
           viewMode,
           focusedNodeId,
+          spacingPercent: nodeSpacing,
+          directionStrength,
         })
         setNodes(result.nodes)
         setTimeout(() => fitView({ padding: 0.2, duration: 300 }), 50)
       }
       prevNodeIdsRef.current = nodeIds
     }
-  }, [initialNodes, initialEdges, viewMode, focusedNodeId, setNodes, fitView])
+  }, [initialNodes, initialEdges, viewMode, focusedNodeId, nodeSpacing, directionStrength, setNodes, fitView])
 
   // Sync edges when data changes
   const prevEdgeIdsRef = useRef<string>('')
@@ -232,16 +316,14 @@ function GraphVisualizationContent({
     [setEdges, interactive]
   )
 
-  // Zoom handlers
+  // Zoom handlers - use ReactFlow's built-in zoom
   const handleZoomIn = useCallback(() => {
     zoomIn()
-    setZoom(controls.zoom + 10)
-  }, [zoomIn, setZoom, controls.zoom])
+  }, [zoomIn])
 
   const handleZoomOut = useCallback(() => {
     zoomOut()
-    setZoom(Math.max(10, controls.zoom - 10))
-  }, [zoomOut, setZoom, controls.zoom])
+  }, [zoomOut])
 
   const handleCenter = useCallback(() => {
     fitView({ padding: 0.2, duration: 300 })
@@ -286,6 +368,7 @@ function GraphVisualizationContent({
         onEdgesChange={handleEdgesChange}
         onConnect={onConnect}
         onSelectionChange={handleSelectionChange}
+        onNodeClick={(_event, node) => handleNodeClick(node.id)}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         fitView
@@ -316,19 +399,28 @@ function GraphVisualizationContent({
               }
             }}
             maskColor="rgb(0, 0, 0, 0.1)"
+            pannable
+            zoomable
+            onClick={(_event, position) => setCenter(position.x, position.y, { zoom: viewportZoom, duration: 200 })}
           />
         )}
       </ReactFlow>
 
-      {/* Toolbar */}
-      <GraphToolbar
-        zoom={controls.zoom}
+      {/* View controls panel - top left */}
+      <ViewControlsPanel
+        zoom={Math.round(viewportZoom * 100)}
         isFullscreen={controls.isFullscreen}
-        mapId={mapId}
         onZoomIn={handleZoomIn}
         onZoomOut={handleZoomOut}
         onCenter={handleCenter}
         onToggleFullscreen={toggleFullscreen}
+      />
+
+      {/* Toolbar - view modes, focus controls, filters */}
+      <GraphToolbar
+        mapId={mapId}
+        nodeCountsByType={nodeCountsByType}
+        edgeCountsByType={edgeCountsByType}
       />
 
       {/* Node drawer */}
@@ -337,6 +429,8 @@ function GraphVisualizationContent({
         edges={fullMap.edges}
         nodes={fullMap.nodes}
         onClose={clearSelection}
+        onSelectNode={selectNode}
+        onPanToNode={handlePanToNode}
       />
     </div>
   )

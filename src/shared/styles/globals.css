@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "katex/dist/katex.min.css";
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
@@ -720,4 +721,306 @@
 
 .tiptap-editor .hljs-strong {
   font-weight: bold;
+}
+
+/* ========================================
+   Multi-Column Layout
+   ======================================== */
+.tiptap-editor .editor-columns {
+  display: grid;
+  gap: 1rem;
+  margin: 0.75rem 0;
+}
+
+.tiptap-editor .editor-columns-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.tiptap-editor .editor-columns-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.tiptap-editor .editor-column {
+  min-width: 0;
+  padding: 0.5rem;
+  border: 1px dashed hsl(var(--border));
+  border-radius: 0.375rem;
+  background-color: hsl(var(--muted) / 0.2);
+}
+
+.tiptap-editor .editor-column:focus-within {
+  border-color: hsl(var(--primary));
+  border-style: solid;
+}
+
+.tiptap-editor .editor-column > *:first-child {
+  margin-top: 0;
+}
+
+.tiptap-editor .editor-column > *:last-child {
+  margin-bottom: 0;
+}
+
+/* Responsive columns */
+@media (max-width: 768px) {
+  .tiptap-editor .editor-columns-2,
+  .tiptap-editor .editor-columns-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========================================
+   Video Embed (YouTube, Vimeo, Loom)
+   ======================================== */
+.tiptap-editor .editor-video-embed {
+  margin: 0.75rem 0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background-color: hsl(var(--muted));
+}
+
+.tiptap-editor .editor-video-embed-wrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+}
+
+.tiptap-editor .editor-video-embed-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.tiptap-editor .editor-video-embed.ProseMirror-selectednode {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+/* ========================================
+   Table of Contents
+   ======================================== */
+.tiptap-editor .editor-toc {
+  margin: 1rem 0;
+  padding: 1rem;
+  background-color: hsl(var(--muted) / 0.5);
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.5rem;
+}
+
+.tiptap-editor .editor-toc-title {
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: hsl(var(--muted-foreground));
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.tiptap-editor .editor-toc-nav {
+  font-size: 0.875rem;
+}
+
+.tiptap-editor .editor-toc-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tiptap-editor .editor-toc-item {
+  margin: 0.25rem 0;
+}
+
+.tiptap-editor .editor-toc-item a {
+  color: hsl(var(--foreground));
+  text-decoration: none;
+  display: block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.15s ease;
+}
+
+.tiptap-editor .editor-toc-item a:hover {
+  background-color: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+}
+
+.tiptap-editor .editor-toc-item-1 {
+  font-weight: 600;
+}
+
+.tiptap-editor .editor-toc-item-2 {
+  padding-left: 1rem;
+}
+
+.tiptap-editor .editor-toc-item-3 {
+  padding-left: 2rem;
+  font-size: 0.8125rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.tiptap-editor .editor-toc.ProseMirror-selectednode {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+/* ========================================
+   Image Figure with Caption
+   ======================================== */
+.tiptap-editor .editor-image-figure {
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.tiptap-editor .editor-image-figure img {
+  border-radius: 0.5rem;
+  max-width: 100%;
+  height: auto;
+}
+
+.tiptap-editor .editor-image-figure-left {
+  align-items: flex-start;
+}
+
+.tiptap-editor .editor-image-figure-center {
+  align-items: center;
+}
+
+.tiptap-editor .editor-image-figure-right {
+  align-items: flex-end;
+}
+
+.tiptap-editor .editor-image-figure-full img {
+  width: 100%;
+}
+
+/* Image sizes */
+.tiptap-editor .editor-image-figure-small img {
+  max-width: 300px;
+}
+
+.tiptap-editor .editor-image-figure-medium img {
+  max-width: 500px;
+}
+
+.tiptap-editor .editor-image-figure-large img {
+  max-width: 700px;
+}
+
+.tiptap-editor .editor-image-caption {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: hsl(var(--muted-foreground));
+  text-align: center;
+  font-style: italic;
+  min-height: 1.5em;
+}
+
+.tiptap-editor .editor-image-caption:empty::before {
+  content: attr(data-placeholder);
+  color: hsl(var(--muted-foreground) / 0.5);
+}
+
+.tiptap-editor .editor-image-figure.ProseMirror-selectednode {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 4px;
+  border-radius: 0.5rem;
+}
+
+/* Dragging State */
+.tiptap-editor .ProseMirror > * {
+  position: relative;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.tiptap-editor .ProseMirror > *.is-dragging {
+  opacity: 0.4;
+  background: hsl(var(--muted) / 0.5);
+  border-radius: 0.5rem;
+}
+
+/* Drop Indicator */
+.editor-drop-indicator {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: hsl(var(--primary));
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 100;
+  box-shadow: 0 0 8px hsl(var(--primary) / 0.5);
+}
+
+/* ========================================
+   Math/KaTeX Styling
+   ======================================== */
+.editor-math-block {
+  margin: 1.5rem 0;
+  padding: 1.5rem;
+  background: hsl(var(--muted) / 0.3);
+  border-radius: 0.75rem;
+  border: 1px solid hsl(var(--border) / 0.5);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.editor-math-block:hover {
+  background: hsl(var(--muted) / 0.5);
+  border-color: hsl(var(--border));
+}
+
+.editor-math-block .katex-display {
+  margin: 0;
+}
+
+.editor-math-block .katex {
+  font-size: 1.3em;
+}
+
+.editor-math-inline {
+  display: inline-block;
+  padding: 0.125rem 0.25rem;
+  margin: 0 0.125rem;
+  background: hsl(var(--muted) / 0.4);
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.editor-math-inline:hover {
+  background: hsl(var(--muted) / 0.7);
+}
+
+.editor-math-inline .katex {
+  font-size: 1em;
+}
+
+/* Math Error Styling */
+.math-error {
+  color: hsl(var(--destructive));
+  font-family: monospace;
+  font-size: 0.875em;
+  padding: 0.25rem 0.5rem;
+  background: hsl(var(--destructive) / 0.1);
+  border-radius: 0.25rem;
+}
+
+/* Dark mode adjustments for math */
+.dark .editor-math-block {
+  background: hsl(var(--muted) / 0.2);
+}
+
+.dark .editor-math-inline {
+  background: hsl(var(--muted) / 0.3);
+}
+
+.dark .editor-math-inline:hover {
+  background: hsl(var(--muted) / 0.5);
 }

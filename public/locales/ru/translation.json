@@ -142,7 +142,11 @@
       "filters": "Фильтры",
       "depth": "Глубина",
       "clearFocus": "Сбросить",
-      "focusHint": "Нажмите на узел для фокусировки"
+      "focusHint": "Нажмите на узел для фокусировки",
+      "spacing": "Отступы",
+      "layoutSettings": "Настройки макета",
+      "direction": "Направление",
+      "directionHint": "0 = меньше пересечений, 200 = естественный поток"
     },
     "filters": {
       "nodeTypes": "Типы узлов",
@@ -590,14 +594,81 @@
         "title": "Совет",
         "description": "Поделиться полезными советами"
       },
-      "imagePrompt": "Введите URL изображения"
+      "imagePrompt": "Введите URL изображения",
+      "columns2": {
+        "title": "2 колонки",
+        "description": "Создать макет с двумя колонками"
+      },
+      "columns3": {
+        "title": "3 колонки",
+        "description": "Создать макет с тремя колонками"
+      },
+      "toc": {
+        "title": "Оглавление",
+        "description": "Автоматическая навигация по заголовкам"
+      },
+      "video": {
+        "title": "Видео",
+        "description": "Вставить видео с YouTube, Vimeo или Loom"
+      },
+      "imageFigure": {
+        "title": "Изображение с подписью",
+        "description": "Изображение с подписью и выравниванием"
+      },
+      "videoPrompt": "Введите URL видео (YouTube, Vimeo, Loom)",
+      "mathBlock": {
+        "title": "Формула",
+        "description": "Отобразить формулу LaTeX как блок"
+      },
+      "mathInline": {
+        "title": "Формула в тексте",
+        "description": "Вставить формулу LaTeX в текст"
+      },
+      "mathPrompt": "Введите формулу LaTeX"
     },
     "bubble": {
       "urlPlaceholder": "Введите URL...",
       "save": "Сохранить",
       "cancel": "Отмена",
       "textColor": "Цвет текста",
-      "highlight": "Выделение"
+      "highlight": "Выделение",
+      "blockTypes": {
+        "text": "Текст",
+        "heading1": "Заголовок 1",
+        "heading2": "Заголовок 2",
+        "heading3": "Заголовок 3",
+        "bulletList": "Маркированный список",
+        "numberedList": "Нумерованный список",
+        "todoList": "Список задач",
+        "quote": "Цитата"
+      },
+      "more": {
+        "copy": "Копировать",
+        "delete": "Удалить"
+      }
+    },
+    "math": {
+      "blockTitle": "Блок формулы",
+      "inlineTitle": "Формула в тексте",
+      "inputLabel": "Формула LaTeX",
+      "inputPlaceholder": "Введите формулу LaTeX...",
+      "hint": "Нажмите Ctrl+Enter для вставки",
+      "preview": "Предпросмотр",
+      "previewPlaceholder": "Здесь появится предпросмотр формулы",
+      "symbols": "Символы",
+      "insert": "Вставить",
+      "categories": {
+        "basic": "Основные",
+        "fractions": "Дроби и степени",
+        "greek": "Греческие буквы",
+        "calculus": "Исчисление",
+        "sets": "Множества",
+        "logic": "Логика",
+        "brackets": "Скобки",
+        "functions": "Функции",
+        "matrices": "Матрицы",
+        "misc": "Прочее"
+      }
     }
   },
   "form": {

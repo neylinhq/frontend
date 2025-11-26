@@ -12,9 +12,18 @@ interface DrawerConnectionsTabProps {
   edges: Edge[]
   allNodes: Node[]
   className?: string
+  onOpenNode?: (nodeId: string) => void
+  onPanToNode?: (nodeId: string) => void
 }
 
-export const DrawerConnectionsTab = memo(({ node, edges, allNodes, className }: DrawerConnectionsTabProps) => {
+export const DrawerConnectionsTab = memo(({
+  node,
+  edges,
+  allNodes,
+  className,
+  onOpenNode,
+  onPanToNode,
+}: DrawerConnectionsTabProps) => {
   const { t } = useTranslation()
   const { filter, changeFilter, filteredEdges, incomingCount, outgoingCount, totalCount } = useConnectionFilter(
     node.id,
@@ -67,6 +76,8 @@ export const DrawerConnectionsTab = memo(({ node, edges, allNodes, className }: 
               edge={edge}
               node={connectedNode}
               direction={isIncoming ? 'incoming' : 'outgoing'}
+              onOpenNode={onOpenNode}
+              onPanToNode={onPanToNode}
             />
           )
         })}

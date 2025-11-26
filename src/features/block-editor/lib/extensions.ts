@@ -21,7 +21,12 @@ import { StarterKit } from '@tiptap/starter-kit'
 import { common, createLowlight } from 'lowlight'
 
 import { Callout } from './callout-extension'
+import { Column, Columns } from './columns-extension'
 import { Details, DetailsContent, DetailsSummary } from './details-extension'
+import { ImageFigure } from './image-figure-extension'
+import { MathBlock, MathInline } from './math-extension'
+import { TableOfContents } from './toc-extension'
+import { VideoEmbed } from './video-embed-extension'
 
 // Create lowlight instance with common languages
 const lowlight = createLowlight(common)
@@ -110,6 +115,18 @@ export const createExtensions = (placeholder?: string) => [
   Details,
   DetailsSummary,
   DetailsContent,
+  // Multi-column layout
+  Columns,
+  Column,
+  // Video embeds (YouTube, Vimeo, Loom)
+  VideoEmbed,
+  // Table of Contents
+  TableOfContents,
+  // Enhanced images with captions
+  ImageFigure,
+  // Math/LaTeX formulas
+  MathBlock,
+  MathInline,
   // Custom extension for keyboard shortcuts
   Extension.create({
     name: 'customKeymap',

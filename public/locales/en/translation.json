@@ -142,7 +142,11 @@
       "filters": "Filters",
       "depth": "Depth",
       "clearFocus": "Clear",
-      "focusHint": "Click a node to focus"
+      "focusHint": "Click a node to focus",
+      "spacing": "Spacing",
+      "layoutSettings": "Layout settings",
+      "direction": "Direction",
+      "directionHint": "0 = less crossings, 200 = natural flow"
     },
     "filters": {
       "nodeTypes": "Node types",
@@ -564,14 +568,81 @@
         "title": "Tip",
         "description": "Share helpful tips and tricks"
       },
-      "imagePrompt": "Enter image URL"
+      "columns2": {
+        "title": "2 Columns",
+        "description": "Create a two-column layout"
+      },
+      "columns3": {
+        "title": "3 Columns",
+        "description": "Create a three-column layout"
+      },
+      "toc": {
+        "title": "Table of Contents",
+        "description": "Auto-generated navigation from headings"
+      },
+      "video": {
+        "title": "Video",
+        "description": "Embed YouTube, Vimeo, or Loom video"
+      },
+      "imageFigure": {
+        "title": "Image with Caption",
+        "description": "Image with caption and alignment"
+      },
+      "imagePrompt": "Enter image URL",
+      "videoPrompt": "Enter video URL (YouTube, Vimeo, Loom)",
+      "mathBlock": {
+        "title": "Math Block",
+        "description": "Display a LaTeX formula as a block"
+      },
+      "mathInline": {
+        "title": "Inline Math",
+        "description": "Insert a LaTeX formula inline"
+      },
+      "mathPrompt": "Enter LaTeX formula"
     },
     "bubble": {
       "urlPlaceholder": "Enter URL...",
       "save": "Save",
       "cancel": "Cancel",
       "textColor": "Text Color",
-      "highlight": "Highlight"
+      "highlight": "Highlight",
+      "blockTypes": {
+        "text": "Text",
+        "heading1": "Heading 1",
+        "heading2": "Heading 2",
+        "heading3": "Heading 3",
+        "bulletList": "Bullet List",
+        "numberedList": "Numbered List",
+        "todoList": "To-do List",
+        "quote": "Quote"
+      },
+      "more": {
+        "copy": "Copy",
+        "delete": "Delete"
+      }
+    },
+    "math": {
+      "blockTitle": "Math Block",
+      "inlineTitle": "Inline Math",
+      "inputLabel": "LaTeX Formula",
+      "inputPlaceholder": "Enter your LaTeX formula...",
+      "hint": "Press Ctrl+Enter to insert",
+      "preview": "Preview",
+      "previewPlaceholder": "Formula preview will appear here",
+      "symbols": "Symbols",
+      "insert": "Insert",
+      "categories": {
+        "basic": "Basic",
+        "fractions": "Fractions & Powers",
+        "greek": "Greek Letters",
+        "calculus": "Calculus",
+        "sets": "Sets",
+        "logic": "Logic",
+        "brackets": "Brackets",
+        "functions": "Functions",
+        "matrices": "Matrices",
+        "misc": "Other"
+      }
     }
   },
   "form": {

@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next'
 import type { Edge } from '@/entities/map'
 import { cn } from '@/shared/lib/cn'
 import { Badge } from '@/shared/ui/badge'
-import { getEdgeDashArray, getEdgeStroke, getEdgeWidth } from '../lib/get-edge-style'
+import { getEdgeDashArray, getEdgeStrokeByType, getEdgeWidth } from '../lib/get-edge-style'
 
 const relationTypeIcons = {
   'is-a': Info,
@@ -101,7 +101,7 @@ export const KnowledgeEdge = memo(
           style={{
             ...style,
             strokeWidth: getEdgeWidth(data.strength),
-            stroke: getEdgeStroke(data.metadata.confidence),
+            stroke: getEdgeStrokeByType(data.relationType),
             strokeDasharray: getEdgeDashArray(data.metadata.confidence),
             opacity: isSelected ? 1 : 0.7
           }}

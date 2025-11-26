@@ -5,6 +5,7 @@ export {
   useFocusMode,
   useFilters,
   useGraphUI,
+  useNodeSpacing,
   layoutEvent,
   triggerLayout,
   ALL_NODE_TYPES,

@@ -1,12 +1,12 @@
-import type { Node, Edge } from '@xyflow/react'
+import type { Edge, Node } from '@xyflow/react'
 import type { ViewMode } from '../model/graph-view.store'
 import type { RelationType } from '@/entities/edge'
 
 interface LayoutOptions {
   viewMode: ViewMode
   focusedNodeId?: string | null
-  nodeSpacing?: number
-  levelSpacing?: number
+  spacingPercent?: number // 50-200%, default 100
+  directionStrength?: number // 0-200, default 100 - сила направленности (source выше target)
 }
 
 interface LayoutResult {
@@ -14,8 +14,8 @@ interface LayoutResult {
   edges: Edge[]
 }
 
-const DEFAULT_NODE_SPACING = 100
-const DEFAULT_LEVEL_SPACING = 150
+const DEFAULT_NODE_SPACING = 200
+const DEFAULT_LEVEL_SPACING = 300
 
 // Edge weights for clustering - prerequisite is strongest
 const EDGE_WEIGHTS: Record<RelationType, number> = {
@@ -39,24 +39,41 @@ export function applyLayout(
   edges: Edge[],
   options: LayoutOptions
 ): LayoutResult {
-  const { viewMode, focusedNodeId } = options
+  const { viewMode, spacingPercent = 100, directionStrength = 100 } = options
 
   if (nodes.length === 0) return { nodes, edges }
 
+  // Calculate actual spacing based on percentage
+  const spacingFactor = spacingPercent / 100
+  const nodeSpacing = DEFAULT_NODE_SPACING * spacingFactor
+  const levelSpacing = DEFAULT_LEVEL_SPACING * spacingFactor
+  // Normalize directionStrength from 0-200 to 0-2
+  const normalizedDirection = directionStrength / 100
+
+  const internalOptions: InternalLayoutOptions = {
+    nodeSpacing,
+    levelSpacing,
+    directionStrength: normalizedDirection,
+  }
+
   switch (viewMode) {
     case 'focus':
-      if (focusedNodeId) {
-        return focusedLayout(nodes, edges, focusedNodeId, options)
-      }
-      return forceDirectedLayout(nodes, edges, options)
+      // Focus mode uses the same force-directed layout as overview
+      // Focus only FILTERS nodes by depth, layout algorithm is the same
+      return forceDirectedLayout(nodes, edges, internalOptions)
 
     case 'path':
-      return pathLayout(nodes, edges, options)
+      return pathLayout(nodes, edges, internalOptions)
 
-    case 'overview':
     default:
-      return forceDirectedLayout(nodes, edges, options)
+      return forceDirectedLayout(nodes, edges, internalOptions)
   }
+}
+
+interface InternalLayoutOptions {
+  nodeSpacing: number
+  levelSpacing: number
+  directionStrength: number // 0-2 (normalized from 0-200)
 }
 
 /**
@@ -66,9 +83,9 @@ export function applyLayout(
 function forceDirectedLayout(
   nodes: Node[],
   edges: Edge[],
-  options: LayoutOptions
+  options: InternalLayoutOptions
 ): LayoutResult {
-  const nodeSpacing = options.nodeSpacing || DEFAULT_NODE_SPACING
+  const { nodeSpacing } = options
   const iterations = 100
   const idealDistance = nodeSpacing * 1.5
   const coolingFactor = 0.95
@@ -129,6 +146,14 @@ function forceDirectedLayout(
       source.vy += fy
       target.vx -= fx
       target.vy -= fy
+
+      // Direction force: source should be ABOVE target (source.y < target.y)
+      // This creates hierarchical layout where edges flow top-to-bottom
+      if (options.directionStrength > 0) {
+        const verticalForce = idealDistance * 0.3 * options.directionStrength * weight
+        source.vy -= verticalForce  // push source UP (decrease y)
+        target.vy += verticalForce  // push target DOWN (increase y)
+      }
     })
 
     // Center gravity to prevent drift
@@ -156,92 +181,10 @@ function forceDirectedLayout(
   }
 
   const positionedNodes = nodes.map(node => {
-    const pos = posMap.get(node.id)!
+    const pos = posMap.get(node.id)
     return {
       ...node,
-      position: { x: pos.x, y: pos.y },
-    }
-  })
-
-  return { nodes: positionedNodes, edges }
-}
-
-/**
- * Radial layout centered on focused node
- * Used in Focus mode
- */
-function focusedLayout(
-  nodes: Node[],
-  edges: Edge[],
-  focusedNodeId: string,
-  options: LayoutOptions
-): LayoutResult {
-  const levelSpacing = options.levelSpacing || DEFAULT_LEVEL_SPACING
-
-  // Build adjacency
-  const adjacency = new Map<string, Set<string>>()
-  nodes.forEach(n => adjacency.set(n.id, new Set()))
-
-  edges.forEach(e => {
-    adjacency.get(e.source)?.add(e.target)
-    adjacency.get(e.target)?.add(e.source)
-  })
-
-  // BFS to assign levels from focused node
-  const levels = new Map<string, number>()
-  const queue = [focusedNodeId]
-  levels.set(focusedNodeId, 0)
-
-  while (queue.length > 0) {
-    const nodeId = queue.shift()!
-    const currentLevel = levels.get(nodeId)!
-
-    adjacency.get(nodeId)?.forEach(neighborId => {
-      if (!levels.has(neighborId)) {
-        levels.set(neighborId, currentLevel + 1)
-        queue.push(neighborId)
-      }
-    })
-  }
-
-  // Handle disconnected nodes - put them far away
-  let maxLevel = 0
-  levels.forEach(l => { if (l > maxLevel) maxLevel = l })
-  nodes.forEach(n => {
-    if (!levels.has(n.id)) {
-      levels.set(n.id, maxLevel + 2)
-    }
-  })
-
-  // Group by level
-  const levelGroups = new Map<number, string[]>()
-  levels.forEach((level, nodeId) => {
-    if (!levelGroups.has(level)) levelGroups.set(level, [])
-    levelGroups.get(level)!.push(nodeId)
-  })
-
-  // Position in concentric circles
-  const positionedNodes = nodes.map(node => {
-    const level = levels.get(node.id) || 0
-    const levelNodes = levelGroups.get(level) || []
-    const index = levelNodes.indexOf(node.id)
-
-    // Center node
-    if (level === 0) {
-      return { ...node, position: { x: 0, y: 0 } }
-    }
-
-    const radius = level * levelSpacing
-    const angleStep = (2 * Math.PI) / levelNodes.length
-    // Start from top, distribute evenly
-    const angle = index * angleStep - Math.PI / 2
-
-    return {
-      ...node,
-      position: {
-        x: Math.cos(angle) * radius,
-        y: Math.sin(angle) * radius,
-      },
+      position: { x: pos?.x ?? 0, y: pos?.y ?? 0 },
     }
   })
 
@@ -255,10 +198,9 @@ function focusedLayout(
 function pathLayout(
   nodes: Node[],
   edges: Edge[],
-  options: LayoutOptions
+  options: InternalLayoutOptions
 ): LayoutResult {
-  const nodeSpacing = options.nodeSpacing || DEFAULT_NODE_SPACING
-  const levelSpacing = options.levelSpacing || DEFAULT_LEVEL_SPACING
+  const { nodeSpacing, levelSpacing } = options
 
   // Filter to only prerequisite edges
   const prereqEdges = edges.filter(e =>
@@ -282,28 +224,30 @@ function pathLayout(
   // Find root nodes (no prerequisites)
   const roots = nodes.filter(n => (incoming.get(n.id)?.length || 0) === 0)
 
-  // If no roots, use all nodes
+  // If no roots, use force-directed as fallback
   if (roots.length === 0) {
     return forceDirectedLayout(nodes, edges, options)
   }
 
   // BFS to assign levels
   const levels = new Map<string, number>()
+  const visited = new Set<string>()
   const queue = [...roots.map(r => r.id)]
-  roots.forEach(r => levels.set(r.id, 0))
+  roots.forEach(r => {
+    levels.set(r.id, 0)
+    visited.add(r.id)
+  })
 
   while (queue.length > 0) {
-    const nodeId = queue.shift()!
-    const currentLevel = levels.get(nodeId)!
+    const nodeId = queue.shift()
+    if (!nodeId) continue
+    const currentLevel = levels.get(nodeId) ?? 0
 
     outgoing.get(nodeId)?.forEach(targetId => {
-      const existingLevel = levels.get(targetId)
-      // Take maximum level (in case of multiple prerequisites)
-      if (existingLevel === undefined || currentLevel + 1 > existingLevel) {
+      if (!visited.has(targetId)) {
+        visited.add(targetId)
         levels.set(targetId, currentLevel + 1)
-        if (!queue.includes(targetId)) {
-          queue.push(targetId)
-        }
+        queue.push(targetId)
       }
     })
   }
@@ -321,7 +265,7 @@ function pathLayout(
   const levelGroups = new Map<number, string[]>()
   levels.forEach((level, nodeId) => {
     if (!levelGroups.has(level)) levelGroups.set(level, [])
-    levelGroups.get(level)!.push(nodeId)
+    levelGroups.get(level)?.push(nodeId)
   })
 
   // Position nodes left-to-right
@@ -359,8 +303,8 @@ export function getNodesWithinDepth(
   edges.forEach(e => {
     if (!adjacency.has(e.source)) adjacency.set(e.source, new Set())
     if (!adjacency.has(e.target)) adjacency.set(e.target, new Set())
-    adjacency.get(e.source)!.add(e.target)
-    adjacency.get(e.target)!.add(e.source)
+    adjacency.get(e.source)?.add(e.target)
+    adjacency.get(e.target)?.add(e.source)
   })
 
   let frontier = new Set([startNodeId])

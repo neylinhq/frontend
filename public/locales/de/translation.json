@@ -448,14 +448,81 @@
         "title": "Tipp",
         "description": "Hilfreiche Tipps und Tricks teilen"
       },
-      "imagePrompt": "Bild-URL eingeben"
+      "imagePrompt": "Bild-URL eingeben",
+      "columns2": {
+        "title": "2 Spalten",
+        "description": "Zwei-Spalten-Layout erstellen"
+      },
+      "columns3": {
+        "title": "3 Spalten",
+        "description": "Drei-Spalten-Layout erstellen"
+      },
+      "toc": {
+        "title": "Inhaltsverzeichnis",
+        "description": "Automatische Navigation aus Überschriften"
+      },
+      "video": {
+        "title": "Video",
+        "description": "YouTube-, Vimeo- oder Loom-Video einbetten"
+      },
+      "imageFigure": {
+        "title": "Bild mit Beschriftung",
+        "description": "Bild mit Beschriftung und Ausrichtung"
+      },
+      "videoPrompt": "Video-URL eingeben (YouTube, Vimeo, Loom)",
+      "mathBlock": {
+        "title": "Formelblock",
+        "description": "LaTeX-Formel als Block anzeigen"
+      },
+      "mathInline": {
+        "title": "Inline-Formel",
+        "description": "LaTeX-Formel inline einfügen"
+      },
+      "mathPrompt": "LaTeX-Formel eingeben"
     },
     "bubble": {
       "urlPlaceholder": "URL eingeben...",
       "save": "Speichern",
       "cancel": "Abbrechen",
       "textColor": "Textfarbe",
-      "highlight": "Hervorhebung"
+      "highlight": "Hervorhebung",
+      "blockTypes": {
+        "text": "Text",
+        "heading1": "Überschrift 1",
+        "heading2": "Überschrift 2",
+        "heading3": "Überschrift 3",
+        "bulletList": "Aufzählung",
+        "numberedList": "Nummerierte Liste",
+        "todoList": "Aufgabenliste",
+        "quote": "Zitat"
+      },
+      "more": {
+        "copy": "Kopieren",
+        "delete": "Löschen"
+      }
+    },
+    "math": {
+      "blockTitle": "Formelblock",
+      "inlineTitle": "Inline-Formel",
+      "inputLabel": "LaTeX-Formel",
+      "inputPlaceholder": "LaTeX-Formel eingeben...",
+      "hint": "Drücken Sie Strg+Enter zum Einfügen",
+      "preview": "Vorschau",
+      "previewPlaceholder": "Formelvorschau erscheint hier",
+      "symbols": "Symbole",
+      "insert": "Einfügen",
+      "categories": {
+        "basic": "Grundlagen",
+        "fractions": "Brüche & Potenzen",
+        "greek": "Griechische Buchstaben",
+        "calculus": "Analysis",
+        "sets": "Mengen",
+        "logic": "Logik",
+        "brackets": "Klammern",
+        "functions": "Funktionen",
+        "matrices": "Matrizen",
+        "misc": "Sonstige"
+      }
     }
   },
   "form": {
@@ -518,7 +585,15 @@
       "exitFullscreen": "Vollbild beenden",
       "focusMode": "Fokus",
       "selectLayout": "Layout wählen",
-      "clearFilters": "Alle löschen"
+      "clearFilters": "Alle löschen",
+      "filters": "Filter",
+      "depth": "Tiefe",
+      "clearFocus": "Zurücksetzen",
+      "focusHint": "Klicken Sie auf einen Knoten zum Fokussieren",
+      "spacing": "Abstand",
+      "layoutSettings": "Layout-Einstellungen",
+      "direction": "Richtung",
+      "directionHint": "0 = weniger Kreuzungen, 200 = natürlicher Fluss"
     },
     "nodeControls": {
       "title": "Ansichtssteuerung",

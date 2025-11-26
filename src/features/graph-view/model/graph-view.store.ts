@@ -25,6 +25,10 @@ export interface GraphViewState {
 
   // UI
   showMinimap: boolean
+
+  // Layout
+  nodeSpacing: number // 50-200%, default 100
+  directionStrength: number // 0-200, default 100
 }
 
 interface GraphViewActions {
@@ -46,6 +50,10 @@ interface GraphViewActions {
   // UI
   toggleMinimap: () => void
 
+  // Layout
+  setNodeSpacing: (spacing: number) => void
+  setDirectionStrength: (strength: number) => void
+
   // Helpers
   getActiveFiltersCount: () => number
   isNodeTypeVisible: (type: NodeType) => boolean
@@ -59,6 +67,8 @@ const initialState: GraphViewState = {
   visibleNodeTypes: new Set(ALL_NODE_TYPES),
   visibleEdgeTypes: new Set(ALL_EDGE_TYPES),
   showMinimap: true,
+  nodeSpacing: 100,
+  directionStrength: 100,
 }
 
 // Custom serializer for Sets
@@ -75,12 +85,22 @@ const setSerializer = {
     visibleNodeTypes: new Set((stored.visibleNodeTypes as NodeType[]) || ALL_NODE_TYPES),
     visibleEdgeTypes: new Set((stored.visibleEdgeTypes as RelationType[]) || ALL_EDGE_TYPES),
     showMinimap: stored.showMinimap !== false,
+    nodeSpacing: (stored.nodeSpacing as number) || 100,
+    directionStrength: (stored.directionStrength as number) ?? 100,
   }),
 }
 
 // Event for triggering layout recalculation
 export const layoutEvent = new EventTarget()
-export const triggerLayout = () => layoutEvent.dispatchEvent(new Event('layout'))
+export const triggerLayout = (options?: { fitView?: boolean; anchorToCenter?: boolean }) => {
+  const event = new CustomEvent('layout', {
+    detail: {
+      fitView: options?.fitView ?? true,
+      anchorToCenter: options?.anchorToCenter ?? false,
+    }
+  })
+  layoutEvent.dispatchEvent(event)
+}
 
 export const useGraphViewStore = create<GraphViewState & GraphViewActions>()(
   persist(
@@ -89,12 +109,18 @@ export const useGraphViewStore = create<GraphViewState & GraphViewActions>()(
 
       // View mode
       setViewMode: (mode) => {
+        const currentFocusedNodeId = get().focusedNodeId
         set({ viewMode: mode })
         // Clear focus when switching away from focus mode
         if (mode !== 'focus') {
           set({ focusedNodeId: null })
+          triggerLayout()
+        } else if (currentFocusedNodeId) {
+          // Only trigger layout if we have a focused node when switching to focus mode
+          triggerLayout()
         }
-        triggerLayout()
+        // When switching to focus mode without a focused node, don't trigger layout
+        // User will click a node to focus on it
       },
 
       // Focus actions
@@ -159,6 +185,18 @@ export const useGraphViewStore = create<GraphViewState & GraphViewActions>()(
 
       // UI
       toggleMinimap: () => set((s) => ({ showMinimap: !s.showMinimap })),
+
+      // Layout - defer triggerLayout to next tick so React can update refs first
+      // anchorToCenter: true to keep focus on the node closest to viewport center
+      setNodeSpacing: (spacing) => {
+        set({ nodeSpacing: Math.max(50, Math.min(200, spacing)) })
+        setTimeout(() => triggerLayout({ fitView: false, anchorToCenter: true }), 0)
+      },
+
+      setDirectionStrength: (strength) => {
+        set({ directionStrength: Math.max(0, Math.min(200, strength)) })
+        setTimeout(() => triggerLayout({ fitView: false, anchorToCenter: true }), 0)
+      },
 
       // Helpers
       getActiveFiltersCount: () => {
@@ -239,5 +277,14 @@ export const useGraphUI = () => useGraphViewStore(
   useShallow((s) => ({
     showMinimap: s.showMinimap,
     toggleMinimap: s.toggleMinimap,
+  }))
+)
+
+export const useNodeSpacing = () => useGraphViewStore(
+  useShallow((s) => ({
+    nodeSpacing: s.nodeSpacing,
+    setNodeSpacing: s.setNodeSpacing,
+    directionStrength: s.directionStrength,
+    setDirectionStrength: s.setDirectionStrength,
   }))
 )

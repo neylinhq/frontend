@@ -22,11 +22,11 @@ const MOCK_MAPS: MapEntity[] = [
   },
   {
     id: '3',
-    title: 'Мой стартап',
-    description: '',
+    title: 'Теория графов',
+    description: 'Тестовая карта для проверки layout алгоритмов',
     createdAt: '2024-03-21T08:00:00Z',
     updatedAt: '2024-03-21T08:05:00Z',
-    nodesCount: 3,
+    nodesCount: 15,
     previewUrl: undefined
   }
 ]
@@ -197,6 +197,38 @@ const PHILOSOPHY_NODES: Node[] = [
 // Добавляем философские узлы к общему массиву
 MOCK_NODES.push(...PHILOSOPHY_NODES)
 
+// Mock узлы для карты "Теория графов" (mapId: '3') - тестовые паттерны
+const GRAPH_THEORY_NODES: Node[] = [
+  // Корневой узел + цепочка
+  { id: 'gt-1', mapId: '3', label: 'Граф', description: 'Математическая структура из вершин и рёбер', type: 'concept', position: { x: 0, y: 0 }, metadata: { confidence: 0.95, complexity: 'basic', tags: ['основы'] }, createdAt: '2024-03-21T08:00:00Z', updatedAt: '2024-03-21T08:00:00Z' },
+  { id: 'gt-2', mapId: '3', label: 'Вершина', description: 'Узел графа', type: 'concept', position: { x: 0, y: 100 }, metadata: { confidence: 0.9, complexity: 'basic', tags: ['основы'] }, createdAt: '2024-03-21T08:01:00Z', updatedAt: '2024-03-21T08:01:00Z' },
+  { id: 'gt-3', mapId: '3', label: 'Ребро', description: 'Связь между вершинами', type: 'concept', position: { x: 0, y: 200 }, metadata: { confidence: 0.9, complexity: 'basic', tags: ['основы'] }, createdAt: '2024-03-21T08:02:00Z', updatedAt: '2024-03-21T08:02:00Z' },
+
+  // Веер вниз от корня
+  { id: 'gt-4', mapId: '3', label: 'Направленный граф', description: 'Граф с направленными рёбрами', type: 'theory', position: { x: 150, y: 100 }, metadata: { confidence: 0.85, complexity: 'intermediate', tags: ['типы'] }, createdAt: '2024-03-21T08:03:00Z', updatedAt: '2024-03-21T08:03:00Z' },
+  { id: 'gt-5', mapId: '3', label: 'Ненаправленный граф', description: 'Граф без направления рёбер', type: 'theory', position: { x: 300, y: 100 }, metadata: { confidence: 0.85, complexity: 'intermediate', tags: ['типы'] }, createdAt: '2024-03-21T08:04:00Z', updatedAt: '2024-03-21T08:04:00Z' },
+  { id: 'gt-6', mapId: '3', label: 'Дерево', description: 'Связный граф без циклов', type: 'theory', position: { x: 450, y: 100 }, metadata: { confidence: 0.9, complexity: 'intermediate', tags: ['типы'] }, createdAt: '2024-03-21T08:05:00Z', updatedAt: '2024-03-21T08:05:00Z' },
+
+  // Цикл (3 узла)
+  { id: 'gt-7', mapId: '3', label: 'Цикл', description: 'Замкнутый путь в графе', type: 'concept', position: { x: -200, y: 150 }, metadata: { confidence: 0.85, complexity: 'intermediate', tags: ['структуры'] }, createdAt: '2024-03-21T08:06:00Z', updatedAt: '2024-03-21T08:06:00Z' },
+  { id: 'gt-8', mapId: '3', label: 'Путь', description: 'Последовательность вершин и рёбер', type: 'concept', position: { x: -200, y: 250 }, metadata: { confidence: 0.85, complexity: 'basic', tags: ['структуры'] }, createdAt: '2024-03-21T08:07:00Z', updatedAt: '2024-03-21T08:07:00Z' },
+  { id: 'gt-9', mapId: '3', label: 'Маршрут', description: 'Путь с возможными повторами', type: 'concept', position: { x: -300, y: 200 }, metadata: { confidence: 0.8, complexity: 'intermediate', tags: ['структуры'] }, createdAt: '2024-03-21T08:08:00Z', updatedAt: '2024-03-21T08:08:00Z' },
+
+  // Ромб
+  { id: 'gt-10', mapId: '3', label: 'Обход графа', description: 'Посещение всех вершин', type: 'concept', position: { x: 200, y: 250 }, metadata: { confidence: 0.9, complexity: 'intermediate', tags: ['алгоритмы'] }, createdAt: '2024-03-21T08:09:00Z', updatedAt: '2024-03-21T08:09:00Z' },
+  { id: 'gt-11', mapId: '3', label: 'BFS', description: 'Поиск в ширину', type: 'example', position: { x: 150, y: 350 }, metadata: { confidence: 0.9, complexity: 'intermediate', tags: ['алгоритмы'] }, createdAt: '2024-03-21T08:10:00Z', updatedAt: '2024-03-21T08:10:00Z' },
+  { id: 'gt-12', mapId: '3', label: 'DFS', description: 'Поиск в глубину', type: 'example', position: { x: 250, y: 350 }, metadata: { confidence: 0.9, complexity: 'intermediate', tags: ['алгоритмы'] }, createdAt: '2024-03-21T08:11:00Z', updatedAt: '2024-03-21T08:11:00Z' },
+
+  // Взаимные связи
+  { id: 'gt-13', mapId: '3', label: 'Матрица смежности', description: 'Представление графа матрицей', type: 'fact', position: { x: 400, y: 300 }, metadata: { confidence: 0.85, complexity: 'intermediate', tags: ['представление'] }, createdAt: '2024-03-21T08:12:00Z', updatedAt: '2024-03-21T08:12:00Z' },
+  { id: 'gt-14', mapId: '3', label: 'Список смежности', description: 'Представление графа списками', type: 'fact', position: { x: 400, y: 400 }, metadata: { confidence: 0.85, complexity: 'intermediate', tags: ['представление'] }, createdAt: '2024-03-21T08:13:00Z', updatedAt: '2024-03-21T08:13:00Z' },
+
+  // Изолированный узел
+  { id: 'gt-15', mapId: '3', label: 'Гиперграф', description: 'Обобщение графа с гиперрёбрами', type: 'hypothesis', position: { x: -100, y: 400 }, metadata: { confidence: 0.6, complexity: 'advanced', tags: ['расширения'] }, createdAt: '2024-03-21T08:14:00Z', updatedAt: '2024-03-21T08:14:00Z' },
+]
+
+MOCK_NODES.push(...GRAPH_THEORY_NODES)
+
 // Mock связи для философии (mapId: '2')
 const PHILOSOPHY_EDGES: Edge[] = [
   // Античная философия
@@ -346,6 +378,40 @@ const MOCK_EDGES: Edge[] = [
 
 // Добавляем философские связи
 MOCK_EDGES.push(...PHILOSOPHY_EDGES)
+
+// Mock связи для "Теория графов" (mapId: '3')
+const GRAPH_THEORY_EDGES: Edge[] = [
+  // Цепочка: Граф → Вершина → Ребро
+  { id: 'gt-edge-1', mapId: '3', sourceNodeId: 'gt-1', targetNodeId: 'gt-2', relationType: 'has-a', label: 'состоит из', strength: 0.95, bidirectional: false, metadata: { confidence: 0.95, createdBy: 'user' }, createdAt: '2024-03-21T09:00:00Z', updatedAt: '2024-03-21T09:00:00Z' },
+  { id: 'gt-edge-2', mapId: '3', sourceNodeId: 'gt-1', targetNodeId: 'gt-3', relationType: 'has-a', label: 'состоит из', strength: 0.95, bidirectional: false, metadata: { confidence: 0.95, createdBy: 'user' }, createdAt: '2024-03-21T09:01:00Z', updatedAt: '2024-03-21T09:01:00Z' },
+
+  // Веер вниз: Граф → типы графов
+  { id: 'gt-edge-3', mapId: '3', sourceNodeId: 'gt-1', targetNodeId: 'gt-4', relationType: 'is-a', label: 'вид', strength: 0.9, bidirectional: false, metadata: { confidence: 0.9, createdBy: 'user' }, createdAt: '2024-03-21T09:02:00Z', updatedAt: '2024-03-21T09:02:00Z' },
+  { id: 'gt-edge-4', mapId: '3', sourceNodeId: 'gt-1', targetNodeId: 'gt-5', relationType: 'is-a', label: 'вид', strength: 0.9, bidirectional: false, metadata: { confidence: 0.9, createdBy: 'user' }, createdAt: '2024-03-21T09:03:00Z', updatedAt: '2024-03-21T09:03:00Z' },
+  { id: 'gt-edge-5', mapId: '3', sourceNodeId: 'gt-1', targetNodeId: 'gt-6', relationType: 'is-a', label: 'вид', strength: 0.9, bidirectional: false, metadata: { confidence: 0.9, createdBy: 'user' }, createdAt: '2024-03-21T09:04:00Z', updatedAt: '2024-03-21T09:04:00Z' },
+
+  // Цикл: Цикл → Путь → Маршрут → Цикл
+  { id: 'gt-edge-6', mapId: '3', sourceNodeId: 'gt-7', targetNodeId: 'gt-8', relationType: 'related-to', label: 'частный случай', strength: 0.8, bidirectional: false, metadata: { confidence: 0.85, createdBy: 'user' }, createdAt: '2024-03-21T09:05:00Z', updatedAt: '2024-03-21T09:05:00Z' },
+  { id: 'gt-edge-7', mapId: '3', sourceNodeId: 'gt-8', targetNodeId: 'gt-9', relationType: 'related-to', label: 'обобщение', strength: 0.8, bidirectional: false, metadata: { confidence: 0.85, createdBy: 'user' }, createdAt: '2024-03-21T09:06:00Z', updatedAt: '2024-03-21T09:06:00Z' },
+  { id: 'gt-edge-8', mapId: '3', sourceNodeId: 'gt-9', targetNodeId: 'gt-7', relationType: 'related-to', label: 'может образовать', strength: 0.7, bidirectional: false, metadata: { confidence: 0.8, createdBy: 'user' }, createdAt: '2024-03-21T09:07:00Z', updatedAt: '2024-03-21T09:07:00Z' },
+
+  // Ромб: Обход графа → BFS/DFS → Дерево
+  { id: 'gt-edge-9', mapId: '3', sourceNodeId: 'gt-10', targetNodeId: 'gt-11', relationType: 'has-a', label: 'метод', strength: 0.9, bidirectional: false, metadata: { confidence: 0.95, createdBy: 'user' }, createdAt: '2024-03-21T09:08:00Z', updatedAt: '2024-03-21T09:08:00Z' },
+  { id: 'gt-edge-10', mapId: '3', sourceNodeId: 'gt-10', targetNodeId: 'gt-12', relationType: 'has-a', label: 'метод', strength: 0.9, bidirectional: false, metadata: { confidence: 0.95, createdBy: 'user' }, createdAt: '2024-03-21T09:09:00Z', updatedAt: '2024-03-21T09:09:00Z' },
+  { id: 'gt-edge-11', mapId: '3', sourceNodeId: 'gt-11', targetNodeId: 'gt-6', relationType: 'causes', label: 'строит', strength: 0.85, bidirectional: false, metadata: { confidence: 0.9, createdBy: 'user' }, createdAt: '2024-03-21T09:10:00Z', updatedAt: '2024-03-21T09:10:00Z' },
+  { id: 'gt-edge-12', mapId: '3', sourceNodeId: 'gt-12', targetNodeId: 'gt-6', relationType: 'causes', label: 'строит', strength: 0.85, bidirectional: false, metadata: { confidence: 0.9, createdBy: 'user' }, createdAt: '2024-03-21T09:11:00Z', updatedAt: '2024-03-21T09:11:00Z' },
+
+  // Взаимные связи: Матрица ⇄ Список
+  { id: 'gt-edge-13', mapId: '3', sourceNodeId: 'gt-13', targetNodeId: 'gt-14', relationType: 'similar-to', label: 'альтернатива', strength: 0.9, bidirectional: true, metadata: { confidence: 0.95, createdBy: 'user' }, createdAt: '2024-03-21T09:12:00Z', updatedAt: '2024-03-21T09:12:00Z' },
+
+  // Связь представлений с графом
+  { id: 'gt-edge-14', mapId: '3', sourceNodeId: 'gt-1', targetNodeId: 'gt-13', relationType: 'explains', label: 'представляется', strength: 0.85, bidirectional: false, metadata: { confidence: 0.9, createdBy: 'user' }, createdAt: '2024-03-21T09:13:00Z', updatedAt: '2024-03-21T09:13:00Z' },
+  { id: 'gt-edge-15', mapId: '3', sourceNodeId: 'gt-1', targetNodeId: 'gt-14', relationType: 'explains', label: 'представляется', strength: 0.85, bidirectional: false, metadata: { confidence: 0.9, createdBy: 'user' }, createdAt: '2024-03-21T09:14:00Z', updatedAt: '2024-03-21T09:14:00Z' },
+
+  // gt-15 (Гиперграф) остаётся изолированным - без связей
+]
+
+MOCK_EDGES.push(...GRAPH_THEORY_EDGES)
 
 export const mapApi = {
   // ====== Работа с картами ======

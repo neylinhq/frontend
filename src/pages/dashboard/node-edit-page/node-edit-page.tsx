@@ -16,13 +16,13 @@ import { Badge } from '@/shared/ui/badge'
 import { Button } from '@/shared/ui/button'
 import { Card } from '@/shared/ui/card'
 
-const NODE_TYPE_COLORS: Record<NodeType, string> = {
-  concept: 'bg-blue-500/10 text-blue-600 dark:text-blue-400',
-  fact: 'bg-green-500/10 text-green-600 dark:text-green-400',
-  theory: 'bg-purple-500/10 text-purple-600 dark:text-purple-400',
-  example: 'bg-orange-500/10 text-orange-600 dark:text-orange-400',
-  question: 'bg-yellow-500/10 text-yellow-600 dark:text-yellow-400',
-  hypothesis: 'bg-pink-500/10 text-pink-600 dark:text-pink-400'
+const NODE_TYPE_CONFIG: Record<NodeType, { color: string; label: string }> = {
+  concept: { color: 'bg-blue-500/10 text-blue-600 dark:text-blue-400', label: 'Concept' },
+  fact: { color: 'bg-green-500/10 text-green-600 dark:text-green-400', label: 'Fact' },
+  theory: { color: 'bg-purple-500/10 text-purple-600 dark:text-purple-400', label: 'Theory' },
+  example: { color: 'bg-orange-500/10 text-orange-600 dark:text-orange-400', label: 'Example' },
+  question: { color: 'bg-yellow-500/10 text-yellow-600 dark:text-yellow-400', label: 'Question' },
+  hypothesis: { color: 'bg-pink-500/10 text-pink-600 dark:text-pink-400', label: 'Hypothesis' }
 }
 
 export function NodeEditPage() {
@@ -185,7 +185,7 @@ export function NodeEditPage() {
                 variant="secondary"
                 className={cn('text-xs font-medium', NODE_TYPE_CONFIG[currentNode.type]?.color)}
               >
-                {NODE_TYPE_CONFIG[currentNode.type]?.label || currentNode.type}
+                {t(`nodeTypes.${currentNode.type}`, NODE_TYPE_CONFIG[currentNode.type]?.label || currentNode.type)}
               </Badge>
               {updateNodeMutation.isPending && (
                 <span className="flex items-center gap-1.5 text-xs text-muted-foreground">

@@ -5,6 +5,8 @@ import {
   CheckSquare,
   ChevronRight,
   Code,
+  Columns,
+  FileImage,
   Heading1,
   Heading2,
   Heading3,
@@ -13,10 +15,14 @@ import {
   Lightbulb,
   List,
   ListOrdered,
+  ListTree,
   Minus,
   Quote,
+  Sigma,
+  SquareSigma,
   Table,
-  Type
+  Type,
+  Youtube
 } from 'lucide-react'
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import type { useTranslation } from 'react-i18next'
@@ -161,7 +167,8 @@ SlashMenu.displayName = 'SlashMenu'
 // Slash menu items configuration with categories
 export const getSlashMenuItems = (
   editor: ReturnType<typeof import('@tiptap/react').useEditor>,
-  t: ReturnType<typeof useTranslation>['t']
+  t: ReturnType<typeof useTranslation>['t'],
+  openMathDialog?: (mode: 'block' | 'inline') => void
 ): SlashMenuItem[] => {
   if (!editor) return []
 
@@ -254,6 +261,30 @@ export const getSlashMenuItems = (
       category: t('editor.slash.categories.media')
     },
     {
+      title: t('editor.slash.imageFigure.title'),
+      description: t('editor.slash.imageFigure.description'),
+      icon: <FileImage className="h-5 w-5" />,
+      command: () => {
+        const url = window.prompt(t('editor.slash.imagePrompt'))
+        if (url) {
+          editor.chain().focus().setImageFigure({ src: url }).run()
+        }
+      },
+      category: t('editor.slash.categories.media')
+    },
+    {
+      title: t('editor.slash.video.title'),
+      description: t('editor.slash.video.description'),
+      icon: <Youtube className="h-5 w-5 text-red-500" />,
+      command: () => {
+        const url = window.prompt(t('editor.slash.videoPrompt'))
+        if (url) {
+          editor.chain().focus().setVideoEmbed({ src: url }).run()
+        }
+      },
+      category: t('editor.slash.categories.media')
+    },
+    {
       title: t('editor.slash.code.title'),
       description: t('editor.slash.code.description'),
       icon: <Code className="h-5 w-5" />,
@@ -266,6 +297,20 @@ export const getSlashMenuItems = (
       icon: <Table className="h-5 w-5" />,
       command: () =>
         editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(),
+      category: t('editor.slash.categories.media')
+    },
+    {
+      title: t('editor.slash.mathBlock.title'),
+      description: t('editor.slash.mathBlock.description'),
+      icon: <SquareSigma className="h-5 w-5 text-indigo-500" />,
+      command: () => openMathDialog?.('block'),
+      category: t('editor.slash.categories.media')
+    },
+    {
+      title: t('editor.slash.mathInline.title'),
+      description: t('editor.slash.mathInline.description'),
+      icon: <Sigma className="h-5 w-5 text-indigo-500" />,
+      command: () => openMathDialog?.('inline'),
       category: t('editor.slash.categories.media')
     },
 
@@ -303,6 +348,27 @@ export const getSlashMenuItems = (
       description: t('editor.slash.calloutTip.description'),
       icon: <Lightbulb className="h-5 w-5 text-purple-500" />,
       command: () => editor.chain().focus().setCallout({ type: 'tip' }).run(),
+      category: t('editor.slash.categories.advanced')
+    },
+    {
+      title: t('editor.slash.columns2.title'),
+      description: t('editor.slash.columns2.description'),
+      icon: <Columns className="h-5 w-5" />,
+      command: () => editor.chain().focus().setColumns(2).run(),
+      category: t('editor.slash.categories.advanced')
+    },
+    {
+      title: t('editor.slash.columns3.title'),
+      description: t('editor.slash.columns3.description'),
+      icon: <Columns className="h-5 w-5" />,
+      command: () => editor.chain().focus().setColumns(3).run(),
+      category: t('editor.slash.categories.advanced')
+    },
+    {
+      title: t('editor.slash.toc.title'),
+      description: t('editor.slash.toc.description'),
+      icon: <ListTree className="h-5 w-5" />,
+      command: () => editor.chain().focus().insertTableOfContents().run(),
       category: t('editor.slash.categories.advanced')
     }
   ]

@@ -1,10 +1,5 @@
 import {
-  Maximize2,
-  Minimize2,
-  ZoomIn,
-  ZoomOut,
   Focus,
-  MapIcon,
   Sparkles,
   Network,
   Route,
@@ -31,7 +26,6 @@ import {
   useViewMode,
   useFocusMode,
   useFilters,
-  useGraphUI,
   ALL_NODE_TYPES,
   ALL_EDGE_TYPES,
   type ViewMode,
@@ -40,13 +34,9 @@ import type { NodeType } from '@/entities/node'
 import type { RelationType } from '@/entities/edge'
 
 interface GraphToolbarProps {
-  zoom: number
-  isFullscreen: boolean
   mapId: string
-  onZoomIn: () => void
-  onZoomOut: () => void
-  onCenter: () => void
-  onToggleFullscreen: () => void
+  nodeCountsByType?: Record<NodeType, number>
+  edgeCountsByType?: Record<RelationType, number>
   className?: string
 }
 
@@ -69,29 +59,25 @@ const NODE_TYPE_LABELS: Record<NodeType, string> = {
   school: 'graph.nodeTypes.school',
 }
 
-// Edge type display names
+// Edge type display names - use same keys as knowledge-edge.tsx
 const EDGE_TYPE_LABELS: Record<RelationType, string> = {
-  'is-a': 'graph.edgeTypes.isA',
-  'has-a': 'graph.edgeTypes.hasA',
+  'is-a': 'graph.edgeTypes.is-a',
+  'has-a': 'graph.edgeTypes.has-a',
   'causes': 'graph.edgeTypes.causes',
   'explains': 'graph.edgeTypes.explains',
-  'related-to': 'graph.edgeTypes.relatedTo',
+  'related-to': 'graph.edgeTypes.related-to',
   'influences': 'graph.edgeTypes.influences',
-  'part-of': 'graph.edgeTypes.partOf',
+  'part-of': 'graph.edgeTypes.part-of',
   'prerequisite': 'graph.edgeTypes.prerequisite',
   'contradicts': 'graph.edgeTypes.contradicts',
-  'similar-to': 'graph.edgeTypes.similarTo',
+  'similar-to': 'graph.edgeTypes.similar-to',
 }
 
 export const GraphToolbar = memo(
   ({
-    zoom,
-    isFullscreen,
     mapId,
-    onZoomIn,
-    onZoomOut,
-    onCenter,
-    onToggleFullscreen,
+    nodeCountsByType,
+    edgeCountsByType,
     className,
   }: GraphToolbarProps) => {
     const { t } = useTranslation()
@@ -104,7 +90,6 @@ export const GraphToolbar = memo(
       toggleEdgeType,
       getActiveFiltersCount,
     } = useFilters()
-    const { showMinimap, toggleMinimap } = useGraphUI()
 
     const activeFiltersCount = getActiveFiltersCount()
 
@@ -228,94 +213,50 @@ export const GraphToolbar = memo(
             </DropdownMenuTrigger>
             <DropdownMenuContent align="center" className="w-56">
               <DropdownMenuLabel>{t('graph.filters.nodeTypes')}</DropdownMenuLabel>
-              {ALL_NODE_TYPES.map((type) => (
-                <DropdownMenuCheckboxItem
-                  key={type}
-                  checked={visibleNodeTypes.has(type)}
-                  onCheckedChange={() => toggleNodeType(type)}
-                >
-                  {t(NODE_TYPE_LABELS[type])}
-                </DropdownMenuCheckboxItem>
-              ))}
+              {ALL_NODE_TYPES.map((type) => {
+                const count = nodeCountsByType?.[type] ?? 0
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={type}
+                    checked={visibleNodeTypes.has(type)}
+                    onCheckedChange={() => toggleNodeType(type)}
+                    onSelect={(e) => e.preventDefault()}
+                    disabled={count === 0}
+                  >
+                    <span className="flex-1">{t(NODE_TYPE_LABELS[type])}</span>
+                    {count > 0 && (
+                      <Badge variant="secondary" className="ml-2 h-5 px-1.5 text-[10px]">
+                        {count}
+                      </Badge>
+                    )}
+                  </DropdownMenuCheckboxItem>
+                )
+              })}
 
               <DropdownMenuSeparator />
 
               <DropdownMenuLabel>{t('graph.filters.edgeTypes')}</DropdownMenuLabel>
-              {ALL_EDGE_TYPES.map((type) => (
-                <DropdownMenuCheckboxItem
-                  key={type}
-                  checked={visibleEdgeTypes.has(type)}
-                  onCheckedChange={() => toggleEdgeType(type)}
-                >
-                  {t(EDGE_TYPE_LABELS[type])}
-                </DropdownMenuCheckboxItem>
-              ))}
+              {ALL_EDGE_TYPES.map((type) => {
+                const count = edgeCountsByType?.[type] ?? 0
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={type}
+                    checked={visibleEdgeTypes.has(type)}
+                    onCheckedChange={() => toggleEdgeType(type)}
+                    onSelect={(e) => e.preventDefault()}
+                    disabled={count === 0}
+                  >
+                    <span className="flex-1">{t(EDGE_TYPE_LABELS[type])}</span>
+                    {count > 0 && (
+                      <Badge variant="secondary" className="ml-2 h-5 px-1.5 text-[10px]">
+                        {count}
+                      </Badge>
+                    )}
+                  </DropdownMenuCheckboxItem>
+                )
+              })}
             </DropdownMenuContent>
           </DropdownMenu>
-
-          <div className="h-4 w-px bg-border" />
-
-          {/* Zoom controls */}
-          <div className="flex items-center gap-1">
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={onZoomOut}
-              className="h-8 w-8 p-0"
-              title={t('graph.toolbar.zoomOut')}
-            >
-              <ZoomOut className="w-4 h-4" />
-            </Button>
-
-            <span className="text-xs font-medium text-muted-foreground min-w-[3rem] text-center">
-              {Math.round(zoom)}%
-            </span>
-
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={onZoomIn}
-              className="h-8 w-8 p-0"
-              title={t('graph.toolbar.zoomIn')}
-            >
-              <ZoomIn className="w-4 h-4" />
-            </Button>
-          </div>
-
-          <div className="h-4 w-px bg-border" />
-
-          {/* Center */}
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={onCenter}
-            className="h-8 w-8 p-0"
-            title={t('graph.toolbar.centerTooltip')}
-          >
-            <Focus className="w-4 h-4" />
-          </Button>
-
-          {/* Minimap toggle */}
-          <Button
-            size="sm"
-            variant={showMinimap ? 'secondary' : 'ghost'}
-            onClick={toggleMinimap}
-            className="h-8 w-8 p-0 hidden md:flex"
-            title={showMinimap ? t('graph.toolbar.hideMinimap') : t('graph.toolbar.showMinimap')}
-          >
-            <MapIcon className="w-4 h-4" />
-          </Button>
-
-          {/* Fullscreen toggle */}
-          <Button
-            size="sm"
-            variant={isFullscreen ? 'secondary' : 'ghost'}
-            onClick={onToggleFullscreen}
-            className="h-8 w-8 p-0"
-            title={isFullscreen ? t('graph.toolbar.exitFullscreen') : t('graph.toolbar.fullscreen')}
-          >
-            {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
-          </Button>
         </Card>
       </div>
     )

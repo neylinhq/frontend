@@ -11,6 +11,7 @@ import { createExtensions } from '../lib/extensions'
 import type { BlockEditorProps } from '../model/block-editor.types'
 import { EditorBubbleMenu } from './bubble-menu'
 import { EditorFloatingMenu } from './floating-menu'
+import { MathInputDialog } from './math-input-dialog'
 import { getSlashMenuItems, SlashMenu } from './slash-menu'
 
 export function BlockEditor({
@@ -25,6 +26,10 @@ export function BlockEditor({
   const [showSlashMenu, setShowSlashMenu] = useState(false)
   const [slashMenuPosition, setSlashMenuPosition] = useState({ top: 0, left: 0 })
   const [slashMenuQuery, setSlashMenuQuery] = useState('')
+  const [mathDialogOpen, setMathDialogOpen] = useState(false)
+  const [mathDialogMode, setMathDialogMode] = useState<'block' | 'inline'>('block')
+  const [mathDialogInitialValue, setMathDialogInitialValue] = useState('')
+  const [mathEditPosition, setMathEditPosition] = useState<number | null>(null)
   const slashMenuRef = useRef<{ onKeyDown: (event: KeyboardEvent) => boolean }>(null)
   const editorRef = useRef<HTMLDivElement>(null)
 
@@ -102,8 +107,26 @@ export function BlockEditor({
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [showSlashMenu])
 
+  const openMathDialog = useCallback((mode: 'block' | 'inline', initialValue = '', editPos: number | null = null) => {
+    setMathDialogMode(mode)
+    setMathDialogInitialValue(initialValue)
+    setMathEditPosition(editPos)
+    setMathDialogOpen(true)
+  }, [])
+
+  // Listen for edit-math events from the math extension
+  useEffect(() => {
+    const handleEditMath = (event: CustomEvent<{ latex: string; pos: number | null; mode: 'block' | 'inline' }>) => {
+      const { latex, pos, mode } = event.detail
+      openMathDialog(mode, latex, pos)
+    }
+
+    document.addEventListener('edit-math', handleEditMath as EventListener)
+    return () => document.removeEventListener('edit-math', handleEditMath as EventListener)
+  }, [openMathDialog])
+
   // Get filtered slash menu items
-  const slashItems = getSlashMenuItems(editor, t).filter((item) =>
+  const slashItems = getSlashMenuItems(editor, t, openMathDialog).filter((item) =>
     item.title.toLowerCase().includes(slashMenuQuery.toLowerCase())
   )
 
@@ -136,6 +159,28 @@ export function BlockEditor({
     editor.chain().focus().insertContent('/').run()
   }, [editor])
 
+  const handleMathSubmit = useCallback(
+    (latex: string) => {
+      if (!editor) return
+
+      // If we're editing an existing math node
+      if (mathEditPosition !== null) {
+        editor.chain().focus().command(({ tr }) => {
+          tr.setNodeMarkup(mathEditPosition, undefined, { latex })
+          return true
+        }).run()
+      } else {
+        // Creating a new math node
+        if (mathDialogMode === 'block') {
+          editor.chain().focus().setMathBlock({ latex }).run()
+        } else {
+          editor.chain().focus().setMathInline({ latex }).run()
+        }
+      }
+    },
+    [editor, mathDialogMode, mathEditPosition]
+  )
+
   if (!editor) {
     return null
   }
@@ -149,8 +194,16 @@ export function BlockEditor({
         className
       )}
     >
-      <EditorBubbleMenu editor={editor} />
+      <EditorBubbleMenu editor={editor} onOpenMathDialog={openMathDialog} />
       <EditorFloatingMenu editor={editor} onAddClick={handleAddBlock} />
+
+      <MathInputDialog
+        isOpen={mathDialogOpen}
+        onClose={() => setMathDialogOpen(false)}
+        onSubmit={handleMathSubmit}
+        initialValue={mathDialogInitialValue}
+        mode={mathDialogMode}
+      />
 
       <EditorContent editor={editor} />
 

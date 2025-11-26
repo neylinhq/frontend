@@ -18,10 +18,20 @@ interface NodeDrawerProps {
   edges: Edge[]
   nodes: Node[]
   onClose: () => void
+  onSelectNode?: (nodeId: string) => void
+  onPanToNode?: (nodeId: string) => void
   className?: string
 }
 
-export const NodeDrawer = memo(({ node, edges, nodes, onClose, className }: NodeDrawerProps) => {
+export const NodeDrawer = memo(({
+  node,
+  edges,
+  nodes,
+  onClose,
+  onSelectNode,
+  onPanToNode,
+  className,
+}: NodeDrawerProps) => {
   const { t } = useTranslation()
   const [isMobile, setIsMobile] = useState(false)
   const { activeTab, switchTab } = useDrawerTabs()
@@ -66,10 +76,14 @@ export const NodeDrawer = memo(({ node, edges, nodes, onClose, className }: Node
               >
                 <Focus className="h-4 w-4" />
               </Button>
-              <Button variant="outline" size="sm" asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                asChild
+                title={t('nodeDrawer.edit')}
+              >
                 <Link to={`/dashboard/maps/${node.mapId}/node/${node.id}`}>
-                  <Pencil className="mr-2 h-4 w-4" />
-                  {t('nodeDrawer.edit')}
+                  <Pencil className="h-4 w-4" />
                 </Link>
               </Button>
             </div>
@@ -91,7 +105,13 @@ export const NodeDrawer = memo(({ node, edges, nodes, onClose, className }: Node
           </TabsContent>
 
           <TabsContent value="connections" className="mt-4">
-            <DrawerConnectionsTab node={node} edges={edges} allNodes={nodes} />
+            <DrawerConnectionsTab
+              node={node}
+              edges={edges}
+              allNodes={nodes}
+              onOpenNode={onSelectNode}
+              onPanToNode={onPanToNode}
+            />
           </TabsContent>
         </Tabs>
       </DrawerContent>

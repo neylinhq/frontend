@@ -1,12 +1,12 @@
 import type { Edge, Node } from '@xyflow/react'
-import type { ViewMode } from '../model/graph-view.store'
+import type { GraphViewMode } from '../model/graph-view.store'
 import type { RelationType } from '@/entities/edge'
 
 interface LayoutOptions {
-  viewMode: ViewMode
+  viewMode: GraphViewMode
   focusedNodeId?: string | null
   spacingPercent?: number // 50-200%, default 100
-  directionStrength?: number // 0-200, default 100 - сила направленности (source выше target)
+  directionStrength?: number // 0-200, default 100 - direction strength (source above target)
 }
 
 interface LayoutResult {

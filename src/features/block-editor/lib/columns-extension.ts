@@ -32,7 +32,7 @@ export const Columns = Node.create<ColumnsOptions>({
     return {
       columns: {
         default: 2,
-        parseHTML: (element) => {
+        parseHTML: element => {
           const raw = element.getAttribute('data-columns') || '2'
           const parsed = parseInt(raw, 10)
 
@@ -44,7 +44,7 @@ export const Columns = Node.create<ColumnsOptions>({
 
           return parsed
         },
-        renderHTML: (attributes) => ({
+        renderHTML: attributes => ({
           'data-columns': attributes.columns
         })
       }

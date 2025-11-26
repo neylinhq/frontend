@@ -162,7 +162,11 @@ export function BlockEditor({
   // This prevents re-registering the listener on every showSlashMenu change
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (showSlashMenuRef.current && editorRef.current && !editorRef.current.contains(event.target as Node)) {
+      if (
+        showSlashMenuRef.current &&
+        editorRef.current &&
+        !editorRef.current.contains(event.target as Node)
+      ) {
         setShowSlashMenu(false)
       }
     }
@@ -171,12 +175,15 @@ export function BlockEditor({
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, []) // Empty deps - runs once!
 
-  const openMathDialog = useCallback((mode: 'block' | 'inline', initialValue = '', editPos: number | null = null) => {
-    setMathDialogMode(mode)
-    setMathDialogInitialValue(initialValue)
-    setMathEditPosition(editPos)
-    setMathDialogOpen(true)
-  }, [])
+  const openMathDialog = useCallback(
+    (mode: 'block' | 'inline', initialValue = '', editPos: number | null = null) => {
+      setMathDialogMode(mode)
+      setMathDialogInitialValue(initialValue)
+      setMathEditPosition(editPos)
+      setMathDialogOpen(true)
+    },
+    []
+  )
 
   // UX-1: Open media insert dialog (replaces window.prompt)
   const openMediaDialog = useCallback((type: MediaType) => {
@@ -186,7 +193,9 @@ export function BlockEditor({
 
   // Listen for edit-math events from the math extension
   useEffect(() => {
-    const handleEditMath = (event: CustomEvent<{ latex: string; pos: number | null; mode: 'block' | 'inline' }>) => {
+    const handleEditMath = (
+      event: CustomEvent<{ latex: string; pos: number | null; mode: 'block' | 'inline' }>
+    ) => {
       const { latex, pos, mode } = event.detail
       openMathDialog(mode, latex, pos)
     }
@@ -202,16 +211,11 @@ export function BlockEditor({
   )
 
   // Memoize filtered items (only recompute when query or items change)
-  const slashItems = useMemo(
-    () => {
-      if (!slashMenuQuery) return allSlashItems
-      const query = slashMenuQuery.toLowerCase()
-      return allSlashItems.filter((item) =>
-        item.title.toLowerCase().includes(query)
-      )
-    },
-    [allSlashItems, slashMenuQuery]
-  )
+  const slashItems = useMemo(() => {
+    if (!slashMenuQuery) return allSlashItems
+    const query = slashMenuQuery.toLowerCase()
+    return allSlashItems.filter(item => item.title.toLowerCase().includes(query))
+  }, [allSlashItems, slashMenuQuery])
 
   // Handle slash menu command
   const handleSlashCommand = useCallback(
@@ -248,10 +252,14 @@ export function BlockEditor({
 
       // If we're editing an existing math node
       if (mathEditPosition !== null) {
-        editor.chain().focus().command(({ tr }) => {
-          tr.setNodeMarkup(mathEditPosition, undefined, { latex })
-          return true
-        }).run()
+        editor
+          .chain()
+          .focus()
+          .command(({ tr }) => {
+            tr.setNodeMarkup(mathEditPosition, undefined, { latex })
+            return true
+          })
+          .run()
       } else {
         // Creating a new math node
         if (mathDialogMode === 'block') {
@@ -337,11 +345,7 @@ export function BlockEditor({
             left: slashMenuPosition.left
           }}
         >
-          <SlashMenu
-            ref={slashMenuRef}
-            items={slashItems}
-            command={handleSlashCommand}
-          />
+          <SlashMenu ref={slashMenuRef} items={slashItems} command={handleSlashCommand} />
         </div>
       )}
     </div>

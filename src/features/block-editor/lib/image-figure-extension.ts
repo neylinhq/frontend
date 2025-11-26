@@ -99,15 +99,15 @@ export const ImageFigure = Node.create<ImageFigureOptions>({
       },
       alignment: {
         default: 'center',
-        parseHTML: (element) => element.getAttribute('data-alignment') || 'center',
-        renderHTML: (attributes) => ({
+        parseHTML: element => element.getAttribute('data-alignment') || 'center',
+        renderHTML: attributes => ({
           'data-alignment': attributes.alignment
         })
       },
       size: {
         default: 'large',
-        parseHTML: (element) => element.getAttribute('data-size') || 'large',
-        renderHTML: (attributes) => ({
+        parseHTML: element => element.getAttribute('data-size') || 'large',
+        renderHTML: attributes => ({
           'data-size': attributes.size
         })
       }
@@ -148,7 +148,7 @@ export const ImageFigure = Node.create<ImageFigureOptions>({
   addCommands() {
     return {
       setImageFigure:
-        (options) =>
+        options =>
         ({ commands }) => {
           const sanitizedSrc = sanitizeUrl(options.src)
           // Don't insert if URL is blocked
@@ -167,7 +167,7 @@ export const ImageFigure = Node.create<ImageFigureOptions>({
           })
         },
       updateImageFigure:
-        (options) =>
+        options =>
         ({ commands, state }) => {
           const { selection } = state
 

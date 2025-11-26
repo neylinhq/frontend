@@ -28,7 +28,7 @@ import {
   useFilters,
   ALL_NODE_TYPES,
   ALL_EDGE_TYPES,
-  type ViewMode,
+  type GraphViewMode,
 } from '@/features/graph-view'
 import type { NodeType } from '@/entities/node'
 import type { RelationType } from '@/entities/edge'
@@ -41,7 +41,7 @@ interface GraphToolbarProps {
 }
 
 // View mode icons and labels
-const VIEW_MODE_CONFIG: Record<ViewMode, { icon: typeof Network; labelKey: string }> = {
+const VIEW_MODE_CONFIG: Record<GraphViewMode, { icon: typeof Network; labelKey: string }> = {
   overview: { icon: Network, labelKey: 'graph.viewModes.overview' },
   focus: { icon: Focus, labelKey: 'graph.viewModes.focus' },
   path: { icon: Route, labelKey: 'graph.viewModes.path' },
@@ -120,7 +120,7 @@ export const GraphToolbar = memo(
 
           {/* View Mode Selector */}
           <div className="flex items-center gap-0.5 bg-muted rounded-md p-0.5">
-            {(Object.keys(VIEW_MODE_CONFIG) as ViewMode[]).map((mode) => {
+            {(Object.keys(VIEW_MODE_CONFIG) as GraphViewMode[]).map((mode) => {
               const config = VIEW_MODE_CONFIG[mode]
               const Icon = config.icon
               const isActive = viewMode === mode

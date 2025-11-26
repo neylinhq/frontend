@@ -12,7 +12,7 @@ import {
 } from '@/shared/ui/dialog'
 import { Button } from '@/shared/ui/button'
 import { Input } from '@/shared/ui/input'
-import { Label } from '@/shared/ui/label'
+import { Field } from '@/shared/ui/field'
 
 interface AddPaymentMethodDialogProps {
   onAdd: (data: {
@@ -70,69 +70,59 @@ export function AddPaymentMethodDialog({ onAdd, loading, trigger }: AddPaymentMe
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">{t('billing.addPaymentMethod.cardholderName')}</Label>
+            <Field label={t('billing.addPaymentMethod.cardholderName')} required>
               <Input
-                id="name"
                 placeholder="John Doe"
                 value={name}
                 onChange={e => setName(e.target.value)}
                 required
               />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="cardNumber">{t('billing.addPaymentMethod.cardNumber')}</Label>
+            </Field>
+            <Field label={t('billing.addPaymentMethod.cardNumber')} required>
               <Input
-                id="cardNumber"
                 placeholder="1234 5678 9012 3456"
                 value={cardNumber}
                 onChange={e => setCardNumber(e.target.value)}
                 maxLength={19}
                 required
               />
-            </div>
+            </Field>
             <div className="grid grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="expiryMonth">{t('billing.addPaymentMethod.expiryMonth')}</Label>
+              <Field label={t('billing.addPaymentMethod.expiryMonth')} required>
                 <Input
-                  id="expiryMonth"
                   placeholder="MM"
                   value={expiryMonth}
                   onChange={e => setExpiryMonth(e.target.value)}
                   maxLength={2}
                   required
                 />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="expiryYear">{t('billing.addPaymentMethod.expiryYear')}</Label>
+              </Field>
+              <Field label={t('billing.addPaymentMethod.expiryYear')} required>
                 <Input
-                  id="expiryYear"
                   placeholder="YYYY"
                   value={expiryYear}
                   onChange={e => setExpiryYear(e.target.value)}
                   maxLength={4}
                   required
                 />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="cvc">{t('billing.addPaymentMethod.cvc')}</Label>
+              </Field>
+              <Field label={t('billing.addPaymentMethod.cvc')} required>
                 <Input
-                  id="cvc"
                   placeholder="123"
                   value={cvc}
                   onChange={e => setCvc(e.target.value)}
                   maxLength={4}
                   required
                 />
-              </div>
+              </Field>
             </div>
           </div>
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-              {t('common.cancel')}
-            </Button>
-            <Button type="submit" disabled={loading}>
+          <DialogFooter className="grid grid-cols-2 gap-2">
+            <Button type="submit" disabled={loading} className="w-full">
               {loading ? t('common.loading') : t('billing.addPaymentMethod.submit')}
+            </Button>
+            <Button type="button" variant="outline" onClick={() => setOpen(false)} className="w-full">
+              {t('common.cancel')}
             </Button>
           </DialogFooter>
         </form>

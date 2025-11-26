@@ -61,8 +61,8 @@ export const MathBlock = Node.create<MathBlockOptions>({
     return {
       latex: {
         default: '',
-        parseHTML: (element) => element.getAttribute('data-latex') || '',
-        renderHTML: (attributes) => ({
+        parseHTML: element => element.getAttribute('data-latex') || '',
+        renderHTML: attributes => ({
           'data-latex': attributes.latex
         })
       }
@@ -95,7 +95,7 @@ export const MathBlock = Node.create<MathBlockOptions>({
   addCommands() {
     return {
       setMathBlock:
-        (options) =>
+        options =>
         ({ commands }) => {
           return commands.insertContent({
             type: this.name,
@@ -131,9 +131,11 @@ export const MathBlock = Node.create<MathBlockOptions>({
         const latex = node.attrs.latex || ''
         const pos = typeof getPos === 'function' ? getPos() : null
         if (pos !== null) {
-          document.dispatchEvent(new CustomEvent('edit-math', {
-            detail: { latex, pos, mode: 'block' as const }
-          }))
+          document.dispatchEvent(
+            new CustomEvent('edit-math', {
+              detail: { latex, pos, mode: 'block' as const }
+            })
+          )
         }
       }
 
@@ -141,7 +143,7 @@ export const MathBlock = Node.create<MathBlockOptions>({
 
       return {
         dom,
-        update: (updatedNode) => {
+        update: updatedNode => {
           if (updatedNode.type.name !== this.name) return false
           node = updatedNode
           updateContent()
@@ -169,8 +171,8 @@ export const MathInline = Node.create({
     return {
       latex: {
         default: '',
-        parseHTML: (element) => element.getAttribute('data-latex') || '',
-        renderHTML: (attributes) => ({
+        parseHTML: element => element.getAttribute('data-latex') || '',
+        renderHTML: attributes => ({
           'data-latex': attributes.latex
         })
       }
@@ -203,7 +205,7 @@ export const MathInline = Node.create({
   addCommands() {
     return {
       setMathInline:
-        (options) =>
+        options =>
         ({ commands }) => {
           return commands.insertContent({
             type: this.name,
@@ -237,9 +239,11 @@ export const MathInline = Node.create({
         const latex = node.attrs.latex || ''
         const pos = typeof getPos === 'function' ? getPos() : null
         if (pos !== null) {
-          document.dispatchEvent(new CustomEvent('edit-math', {
-            detail: { latex, pos, mode: 'inline' as const }
-          }))
+          document.dispatchEvent(
+            new CustomEvent('edit-math', {
+              detail: { latex, pos, mode: 'inline' as const }
+            })
+          )
         }
       }
 
@@ -247,7 +251,7 @@ export const MathInline = Node.create({
 
       return {
         dom,
-        update: (updatedNode) => {
+        update: updatedNode => {
           if (updatedNode.type.name !== this.name) return false
           node = updatedNode
           updateContent()

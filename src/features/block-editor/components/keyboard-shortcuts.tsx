@@ -3,28 +3,37 @@ import { Keyboard } from 'lucide-react'
 import { cn } from '@/shared/lib/cn'
 
 const SHORTCUTS = [
-  { category: 'Text Formatting', shortcuts: [
-    { keys: ['Ctrl', 'B'], description: 'Bold' },
-    { keys: ['Ctrl', 'I'], description: 'Italic' },
-    { keys: ['Ctrl', 'U'], description: 'Underline' },
-    { keys: ['Ctrl', 'Shift', 'S'], description: 'Strikethrough' },
-    { keys: ['Ctrl', 'E'], description: 'Inline code' },
-    { keys: ['Ctrl', 'Shift', 'H'], description: 'Highlight' },
-  ]},
-  { category: 'Paragraphs', shortcuts: [
-    { keys: ['Ctrl', 'Alt', '1'], description: 'Heading 1' },
-    { keys: ['Ctrl', 'Alt', '2'], description: 'Heading 2' },
-    { keys: ['Ctrl', 'Alt', '3'], description: 'Heading 3' },
-    { keys: ['Ctrl', 'Shift', '7'], description: 'Ordered list' },
-    { keys: ['Ctrl', 'Shift', '8'], description: 'Bullet list' },
-    { keys: ['Ctrl', 'Shift', '9'], description: 'Task list' },
-  ]},
-  { category: 'General', shortcuts: [
-    { keys: ['/'], description: 'Open block menu' },
-    { keys: ['Ctrl', 'Z'], description: 'Undo' },
-    { keys: ['Ctrl', 'Y'], description: 'Redo' },
-    { keys: ['Ctrl', 'A'], description: 'Select all' },
-  ]},
+  {
+    category: 'Text Formatting',
+    shortcuts: [
+      { keys: ['Ctrl', 'B'], description: 'Bold' },
+      { keys: ['Ctrl', 'I'], description: 'Italic' },
+      { keys: ['Ctrl', 'U'], description: 'Underline' },
+      { keys: ['Ctrl', 'Shift', 'S'], description: 'Strikethrough' },
+      { keys: ['Ctrl', 'E'], description: 'Inline code' },
+      { keys: ['Ctrl', 'Shift', 'H'], description: 'Highlight' }
+    ]
+  },
+  {
+    category: 'Paragraphs',
+    shortcuts: [
+      { keys: ['Ctrl', 'Alt', '1'], description: 'Heading 1' },
+      { keys: ['Ctrl', 'Alt', '2'], description: 'Heading 2' },
+      { keys: ['Ctrl', 'Alt', '3'], description: 'Heading 3' },
+      { keys: ['Ctrl', 'Shift', '7'], description: 'Ordered list' },
+      { keys: ['Ctrl', 'Shift', '8'], description: 'Bullet list' },
+      { keys: ['Ctrl', 'Shift', '9'], description: 'Task list' }
+    ]
+  },
+  {
+    category: 'General',
+    shortcuts: [
+      { keys: ['/'], description: 'Open block menu' },
+      { keys: ['Ctrl', 'Z'], description: 'Undo' },
+      { keys: ['Ctrl', 'Y'], description: 'Redo' },
+      { keys: ['Ctrl', 'A'], description: 'Select all' }
+    ]
+  }
 ]
 
 interface KeyboardShortcutsProps {
@@ -39,20 +48,15 @@ export function KeyboardShortcuts({ className }: KeyboardShortcutsProps) {
         <span>Keyboard Shortcuts</span>
       </div>
 
-      {SHORTCUTS.map((section) => (
+      {SHORTCUTS.map(section => (
         <div key={section.category}>
           <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
             {section.category}
           </h4>
           <div className="space-y-1">
-            {section.shortcuts.map((shortcut) => (
-              <div
-                key={shortcut.description}
-                className="flex items-center justify-between py-1"
-              >
-                <span className="text-sm text-muted-foreground">
-                  {shortcut.description}
-                </span>
+            {section.shortcuts.map(shortcut => (
+              <div key={shortcut.description} className="flex items-center justify-between py-1">
+                <span className="text-sm text-muted-foreground">{shortcut.description}</span>
                 <div className="flex items-center gap-1">
                   {shortcut.keys.map((key, index) => (
                     <span key={index}>
@@ -80,12 +84,12 @@ export function KeyboardShortcutsCompact() {
     { keys: ['Ctrl', 'B'], description: 'Bold' },
     { keys: ['Ctrl', 'I'], description: 'Italic' },
     { keys: ['Ctrl', 'U'], description: 'Underline' },
-    { keys: ['/'], description: 'Commands' },
+    { keys: ['/'], description: 'Commands' }
   ]
 
   return (
     <div className="text-xs space-y-1">
-      {essentialShortcuts.map((shortcut) => (
+      {essentialShortcuts.map(shortcut => (
         <div key={shortcut.description} className="flex items-center justify-between gap-4">
           <span className="text-muted-foreground">{shortcut.description}</span>
           <div className="flex items-center gap-0.5">

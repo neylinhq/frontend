@@ -33,8 +33,8 @@ export const Details = Node.create<DetailsOptions>({
     return {
       open: {
         default: true,
-        parseHTML: (element) => element.hasAttribute('open'),
-        renderHTML: (attributes) => {
+        parseHTML: element => element.hasAttribute('open'),
+        renderHTML: attributes => {
           if (!attributes.open) {
             return {}
           }

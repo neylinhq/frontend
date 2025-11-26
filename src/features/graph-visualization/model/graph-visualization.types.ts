@@ -1,4 +1,4 @@
-export type ViewMode = 'visualization' | 'list'
+export type DisplayMode = 'visualization' | 'list'
 
 export interface SelectedElements {
   nodes: string[]
@@ -6,9 +6,7 @@ export interface SelectedElements {
 }
 
 export interface GraphControls {
-  zoom: number
   isFullscreen: boolean
-  showMinimap: boolean
 }
 
 export interface ToolbarState {

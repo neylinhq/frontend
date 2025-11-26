@@ -136,7 +136,8 @@ export const VideoEmbed = Node.create<VideoEmbedOptions>({
           {
             src: embedUrl,
             frameborder: '0',
-            allow: 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture',
+            allow:
+              'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture',
             allowfullscreen: this.options.allowFullscreen ? 'true' : undefined
           }
         ]
@@ -147,7 +148,7 @@ export const VideoEmbed = Node.create<VideoEmbedOptions>({
   addCommands() {
     return {
       setVideoEmbed:
-        (options) =>
+        options =>
         ({ commands }) => {
           const parsed = parseVideoUrl(options.src)
           if (!parsed) {

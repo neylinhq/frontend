@@ -76,11 +76,12 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
   }, [])
 
   // Drop indicator helpers (use ref instead of global singleton)
-  const showDropIndicator = useCallback((container: HTMLElement, y: number, left: number, width: number) => {
-    if (!dropIndicatorRef.current) {
-      const indicator = document.createElement('div')
-      indicator.className = 'editor-drop-indicator'
-      indicator.style.cssText = `
+  const showDropIndicator = useCallback(
+    (container: HTMLElement, y: number, left: number, width: number) => {
+      if (!dropIndicatorRef.current) {
+        const indicator = document.createElement('div')
+        indicator.className = 'editor-drop-indicator'
+        indicator.style.cssText = `
         position: absolute;
         height: 2px;
         background: hsl(var(--primary) / 0.5);
@@ -90,14 +91,16 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
         opacity: 0;
         transition: opacity 0.15s ease;
       `
-      dropIndicatorRef.current = indicator
-      container.appendChild(indicator)
-    }
-    dropIndicatorRef.current.style.top = `${y}px`
-    dropIndicatorRef.current.style.left = `${left}px`
-    dropIndicatorRef.current.style.width = `${width}px`
-    dropIndicatorRef.current.style.opacity = '1'
-  }, [])
+        dropIndicatorRef.current = indicator
+        container.appendChild(indicator)
+      }
+      dropIndicatorRef.current.style.top = `${y}px`
+      dropIndicatorRef.current.style.left = `${left}px`
+      dropIndicatorRef.current.style.width = `${width}px`
+      dropIndicatorRef.current.style.opacity = '1'
+    },
+    []
+  )
 
   const removeDropIndicator = useCallback(() => {
     if (dropIndicatorRef.current?.parentNode) {
@@ -108,6 +111,9 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
 
   // Handle mouse move to show menu on block hover (throttled for performance)
   useEffect(() => {
+    // Guard: editor view must be mounted before accessing DOM
+    if (!editor.view?.dom) return
+
     const editorElement = editor.view.dom.closest('.tiptap-editor') as HTMLElement
     if (!editorElement) return
 
@@ -145,7 +151,10 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
           const blockRect = b.getBoundingClientRect()
           const blockTop = blockRect.top - editorRect.top
           const blockBottom = blockRect.bottom - editorRect.top
-          if (mouseY >= blockTop - BLOCK_HOVER_THRESHOLD && mouseY <= blockBottom + BLOCK_HOVER_THRESHOLD) {
+          if (
+            mouseY >= blockTop - BLOCK_HOVER_THRESHOLD &&
+            mouseY <= blockBottom + BLOCK_HOVER_THRESHOLD
+          ) {
             block = b
             break
           }
@@ -216,6 +225,9 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
 
   // Handle drag events using ProseMirror API
   useEffect(() => {
+    // Guard: editor view must be mounted before accessing DOM
+    if (!editor.view?.dom) return
+
     const view = editor.view
 
     const handleDragOver = (e: DragEvent) => {

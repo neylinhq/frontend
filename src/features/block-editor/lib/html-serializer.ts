@@ -1,5 +1,5 @@
 import type { Editor } from '@tiptap/react'
-import { generateHTML, generateJSON } from '@tiptap/react'
+import { generateJSON } from '@tiptap/react'
 import { createExtensions } from './extensions'
 
 /**
@@ -31,11 +31,11 @@ export function htmlToPlainText(html: string, maxLength = 200): string {
   // Remove HTML tags and normalize whitespace
   const text = html
     .replace(/<[^>]+>/g, ' ') // Remove all HTML tags
-    .replace(/&nbsp;/g, ' ')  // Replace &nbsp; with space
-    .replace(/&lt;/g, '<')    // Decode HTML entities
+    .replace(/&nbsp;/g, ' ') // Replace &nbsp; with space
+    .replace(/&lt;/g, '<') // Decode HTML entities
     .replace(/&gt;/g, '>')
     .replace(/&amp;/g, '&')
-    .replace(/\s+/g, ' ')     // Collapse multiple spaces
+    .replace(/\s+/g, ' ') // Collapse multiple spaces
     .trim()
 
   if (text.length <= maxLength) return text
@@ -46,8 +46,8 @@ export function htmlToPlainText(html: string, maxLength = 200): string {
 
   // Only use word boundary if it's not too early (>70% of maxLength)
   if (lastSpace > maxLength * 0.7) {
-    return truncated.slice(0, lastSpace) + '...'
+    return `${truncated.slice(0, lastSpace)}...`
   }
 
-  return truncated + '...'
+  return `${truncated}...`
 }

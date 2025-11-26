@@ -85,12 +85,10 @@ export const TableOfContents = Node.create<TableOfContentsOptions>({
   },
 
   addProseMirrorPlugins() {
-    const extensionThis = this
-
     return [
       new Plugin({
         key: new PluginKey('tableOfContentsUpdate'),
-        view: (view) => {
+        view: view => {
           // Use event delegation to avoid memory leaks
           const handleTocClick = (e: Event) => {
             const target = e.target as HTMLElement
@@ -137,7 +135,7 @@ export const TableOfContents = Node.create<TableOfContentsOptions>({
 
               // Find all TOC nodes and headings
               doc.descendants((node, pos) => {
-                if (node.type.name === extensionThis.name) {
+                if (node.type.name === this.name) {
                   tocNodes.push({ pos })
                 }
                 if (node.type.name === 'heading') {
@@ -155,12 +153,12 @@ export const TableOfContents = Node.create<TableOfContentsOptions>({
               // Update TOC content in the DOM
               if (tocNodes.length > 0 && headings.length > 0) {
                 const tocElements = view.dom.querySelectorAll('.editor-toc-list')
-                tocElements.forEach((tocList) => {
+                tocElements.forEach(tocList => {
                   // Clear existing content
                   tocList.innerHTML = ''
 
                   // Add heading links (no individual listeners - using delegation)
-                  headings.forEach((heading) => {
+                  headings.forEach(heading => {
                     const li = document.createElement('li')
                     li.className = `editor-toc-item editor-toc-item-${heading.level}`
 

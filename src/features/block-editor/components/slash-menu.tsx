@@ -47,18 +47,21 @@ export const SlashMenu = forwardRef<SlashMenuRef, SlashMenuProps>(({ items, comm
   const [selectedIndex, setSelectedIndex] = useState(0)
   const prevItemsLengthRef = useRef(items.length)
 
-  const selectItem = useCallback((index: number) => {
-    // Guard against invalid index
-    if (index < 0 || index >= items.length) return
-    const item = items[index]
-    if (item) {
-      command(item)
-    }
-  }, [items, command])
+  const selectItem = useCallback(
+    (index: number) => {
+      // Guard against invalid index
+      if (index < 0 || index >= items.length) return
+      const item = items[index]
+      if (item) {
+        command(item)
+      }
+    },
+    [items, command]
+  )
 
   const upHandler = useCallback(() => {
     // Use callback form to avoid stale closure
-    setSelectedIndex((prev) => {
+    setSelectedIndex(prev => {
       if (items.length === 0) return 0
       return (prev + items.length - 1) % items.length
     })
@@ -66,7 +69,7 @@ export const SlashMenu = forwardRef<SlashMenuRef, SlashMenuProps>(({ items, comm
 
   const downHandler = useCallback(() => {
     // Use callback form to avoid stale closure
-    setSelectedIndex((prev) => {
+    setSelectedIndex(prev => {
       if (items.length === 0) return 0
       return (prev + 1) % items.length
     })
@@ -84,23 +87,27 @@ export const SlashMenu = forwardRef<SlashMenuRef, SlashMenuProps>(({ items, comm
     }
   }, [items.length])
 
-  useImperativeHandle(ref, () => ({
-    onKeyDown: (event: KeyboardEvent) => {
-      if (event.key === 'ArrowUp') {
-        upHandler()
-        return true
+  useImperativeHandle(
+    ref,
+    () => ({
+      onKeyDown: (event: KeyboardEvent) => {
+        if (event.key === 'ArrowUp') {
+          upHandler()
+          return true
+        }
+        if (event.key === 'ArrowDown') {
+          downHandler()
+          return true
+        }
+        if (event.key === 'Enter') {
+          enterHandler()
+          return true
+        }
+        return false
       }
-      if (event.key === 'ArrowDown') {
-        downHandler()
-        return true
-      }
-      if (event.key === 'Enter') {
-        enterHandler()
-        return true
-      }
-      return false
-    }
-  }), [upHandler, downHandler, enterHandler])
+    }),
+    [upHandler, downHandler, enterHandler]
+  )
 
   if (items.length === 0) {
     return null
@@ -140,7 +147,7 @@ export const SlashMenu = forwardRef<SlashMenuRef, SlashMenuProps>(({ items, comm
             <div className="mb-1 px-2 py-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               {category}
             </div>
-            {categoryItems.map((item) => {
+            {categoryItems.map(item => {
               const currentIndex = globalIndex++
               return (
                 <button

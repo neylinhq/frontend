@@ -74,14 +74,54 @@ const initialMenuState: MenuState = {
 
 // Block types for Turn Into dropdown
 const BLOCK_TYPES = [
-  { name: 'text', label: 'Text', icon: Type, command: (editor: Editor) => editor.chain().focus().setParagraph().run() },
-  { name: 'heading1', label: 'Heading 1', icon: Heading1, command: (editor: Editor) => editor.chain().focus().toggleHeading({ level: 1 }).run() },
-  { name: 'heading2', label: 'Heading 2', icon: Heading2, command: (editor: Editor) => editor.chain().focus().toggleHeading({ level: 2 }).run() },
-  { name: 'heading3', label: 'Heading 3', icon: Heading3, command: (editor: Editor) => editor.chain().focus().toggleHeading({ level: 3 }).run() },
-  { name: 'bulletList', label: 'Bullet List', icon: List, command: (editor: Editor) => editor.chain().focus().toggleBulletList().run() },
-  { name: 'numberedList', label: 'Numbered List', icon: ListOrdered, command: (editor: Editor) => editor.chain().focus().toggleOrderedList().run() },
-  { name: 'todoList', label: 'To-do List', icon: CheckSquare, command: (editor: Editor) => editor.chain().focus().toggleTaskList().run() },
-  { name: 'quote', label: 'Quote', icon: Quote, command: (editor: Editor) => editor.chain().focus().toggleBlockquote().run() }
+  {
+    name: 'text',
+    label: 'Text',
+    icon: Type,
+    command: (editor: Editor) => editor.chain().focus().setParagraph().run()
+  },
+  {
+    name: 'heading1',
+    label: 'Heading 1',
+    icon: Heading1,
+    command: (editor: Editor) => editor.chain().focus().toggleHeading({ level: 1 }).run()
+  },
+  {
+    name: 'heading2',
+    label: 'Heading 2',
+    icon: Heading2,
+    command: (editor: Editor) => editor.chain().focus().toggleHeading({ level: 2 }).run()
+  },
+  {
+    name: 'heading3',
+    label: 'Heading 3',
+    icon: Heading3,
+    command: (editor: Editor) => editor.chain().focus().toggleHeading({ level: 3 }).run()
+  },
+  {
+    name: 'bulletList',
+    label: 'Bullet List',
+    icon: List,
+    command: (editor: Editor) => editor.chain().focus().toggleBulletList().run()
+  },
+  {
+    name: 'numberedList',
+    label: 'Numbered List',
+    icon: ListOrdered,
+    command: (editor: Editor) => editor.chain().focus().toggleOrderedList().run()
+  },
+  {
+    name: 'todoList',
+    label: 'To-do List',
+    icon: CheckSquare,
+    command: (editor: Editor) => editor.chain().focus().toggleTaskList().run()
+  },
+  {
+    name: 'quote',
+    label: 'Quote',
+    icon: Quote,
+    command: (editor: Editor) => editor.chain().focus().toggleBlockquote().run()
+  }
 ]
 
 const TEXT_COLORS = [
@@ -203,7 +243,9 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
       return
     }
 
-    const url = menuState.linkUrl.startsWith('http') ? menuState.linkUrl : `https://${menuState.linkUrl}`
+    const url = menuState.linkUrl.startsWith('http')
+      ? menuState.linkUrl
+      : `https://${menuState.linkUrl}`
     editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run()
     dispatch({ type: 'CLOSE_ALL' })
   }, [editor, menuState.linkUrl])
@@ -251,7 +293,7 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
           ref={inputRef}
           type="text"
           value={menuState.linkUrl}
-          onChange={(e) => dispatch({ type: 'SET_LINK_URL', url: e.target.value })}
+          onChange={e => dispatch({ type: 'SET_LINK_URL', url: e.target.value })}
           onKeyDown={handleLinkKeyDown}
           placeholder={t('editor.bubble.urlPlaceholder')}
           className="h-8 w-48 rounded-md border-none bg-transparent px-2 text-sm outline-none placeholder:text-muted-foreground"
@@ -294,13 +336,15 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
           )}
         >
           <CurrentBlockIcon className="h-4 w-4" />
-          <span className="text-xs">{t(`editor.bubble.blockTypes.${currentBlockType?.name || 'text'}`)}</span>
+          <span className="text-xs">
+            {t(`editor.bubble.blockTypes.${currentBlockType?.name || 'text'}`)}
+          </span>
           <ChevronDown className="h-3 w-3" />
         </button>
 
         {isTurnIntoOpen && (
           <div className="absolute left-0 top-full mt-1 z-50 min-w-[160px] rounded-lg border border-border bg-popover p-1 shadow-lg">
-            {BLOCK_TYPES.map((blockType) => {
+            {BLOCK_TYPES.map(blockType => {
               const Icon = blockType.icon
               const isActive = currentBlockType?.name === blockType.name
               return (
@@ -402,9 +446,11 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
         {isColorPickerOpen && (
           <div className="absolute left-0 top-full mt-1 z-50 min-w-[200px] rounded-lg border border-border bg-popover p-2 shadow-lg">
             <div className="mb-2">
-              <p className="text-xs font-medium text-muted-foreground mb-1">{t('editor.bubble.textColor')}</p>
+              <p className="text-xs font-medium text-muted-foreground mb-1">
+                {t('editor.bubble.textColor')}
+              </p>
               <div className="flex flex-wrap gap-1">
-                {TEXT_COLORS.map((item) => (
+                {TEXT_COLORS.map(item => (
                   <button
                     key={item.name}
                     type="button"
@@ -427,9 +473,11 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
               </div>
             </div>
             <div>
-              <p className="text-xs font-medium text-muted-foreground mb-1">{t('editor.bubble.highlight')}</p>
+              <p className="text-xs font-medium text-muted-foreground mb-1">
+                {t('editor.bubble.highlight')}
+              </p>
               <div className="flex flex-wrap gap-1">
-                {HIGHLIGHT_COLORS.map((item) => (
+                {HIGHLIGHT_COLORS.map(item => (
                   <button
                     key={item.name}
                     type="button"

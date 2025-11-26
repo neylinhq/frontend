@@ -13,9 +13,9 @@ export { useGraphControls } from './model/graph-controls.hooks'
 export { useNodeSelection } from './model/node-selection.hooks'
 
 export type {
+  DisplayMode,
   GraphControls,
   NodeDetailsDrawerProps,
   SelectedElements,
-  ToolbarState,
-  ViewMode
+  ToolbarState
 } from './model/graph-visualization.types'

@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Label } from '@/shared/ui/label'
+import { Field } from '@/shared/ui/field'
 import { Switch } from '@/shared/ui/switch'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
 import {
@@ -68,10 +69,9 @@ export default function PreferencesPage() {
           <CardDescription>{t('settings.preferences.interface.description')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="density">{t('settings.preferences.interface.density')}</Label>
+          <Field label={t('settings.preferences.interface.density')}>
             <Select defaultValue="comfortable">
-              <SelectTrigger id="density">
+              <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -86,7 +86,7 @@ export default function PreferencesPage() {
                 </SelectItem>
               </SelectContent>
             </Select>
-          </div>
+          </Field>
 
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">

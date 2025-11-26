@@ -3,27 +3,15 @@ import type { GraphControls } from './graph-visualization.types'
 
 export function useGraphControls() {
   const [controls, setControls] = useState<GraphControls>({
-    zoom: 100,
-    isFullscreen: false,
-    showMinimap: true
+    isFullscreen: false
   })
 
-  const setZoom = useCallback((zoom: number) => {
-    setControls(prev => ({ ...prev, zoom }))
-  }, [])
-
   const toggleFullscreen = useCallback(() => {
-    setControls(prev => ({ ...prev, isFullscreen: !prev.isFullscreen }))
-  }, [])
-
-  const toggleMinimap = useCallback(() => {
-    setControls(prev => ({ ...prev, showMinimap: !prev.showMinimap }))
+    setControls(prev => ({ isFullscreen: !prev.isFullscreen }))
   }, [])
 
   return {
     controls,
-    setZoom,
-    toggleFullscreen,
-    toggleMinimap
+    toggleFullscreen
   }
 }

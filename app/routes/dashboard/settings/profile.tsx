@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/shared/ui/button'
 import { Input } from '@/shared/ui/input'
-import { Label } from '@/shared/ui/label'
+import { Field } from '@/shared/ui/field'
 import { Textarea } from '@/shared/ui/textarea'
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
@@ -45,31 +45,26 @@ export default function ProfilePage() {
           <CardDescription>{t('settings.profile.personal.description')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="displayName">{t('settings.profile.personal.displayName')}</Label>
-            <Input id="displayName" placeholder="John Doe" />
-            <p className="text-xs text-muted-foreground">
-              {t('settings.profile.personal.displayNameHint')}
-            </p>
-          </div>
+          <Field
+            label={t('settings.profile.personal.displayName')}
+            description={t('settings.profile.personal.displayNameHint')}
+          >
+            <Input placeholder="John Doe" />
+          </Field>
 
-          <div className="space-y-2">
-            <Label htmlFor="username">{t('settings.profile.personal.username')}</Label>
-            <Input id="username" placeholder="johndoe" />
-            <p className="text-xs text-muted-foreground">
-              {t('settings.profile.personal.usernameHint')}
-            </p>
-          </div>
+          <Field
+            label={t('settings.profile.personal.username')}
+            description={t('settings.profile.personal.usernameHint')}
+          >
+            <Input placeholder="johndoe" />
+          </Field>
 
-          <div className="space-y-2">
-            <Label htmlFor="bio">{t('settings.profile.personal.bio')}</Label>
-            <Textarea
-              id="bio"
-              placeholder={t('settings.profile.personal.bioPlaceholder')}
-              rows={4}
-            />
-            <p className="text-xs text-muted-foreground">{t('settings.profile.personal.bioHint')}</p>
-          </div>
+          <Field
+            label={t('settings.profile.personal.bio')}
+            description={t('settings.profile.personal.bioHint')}
+          >
+            <Textarea placeholder={t('settings.profile.personal.bioPlaceholder')} rows={4} />
+          </Field>
 
           <div className="flex justify-end gap-2 pt-4">
             <Button variant="outline">{t('common.cancel')}</Button>

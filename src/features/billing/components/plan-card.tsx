@@ -24,28 +24,36 @@ export function PlanCard({ plan, isCurrentPlan, onSelect, loading, highlighted }
   return (
     <Card
       className={cn(
-        'relative flex flex-col h-full',
+        'relative flex flex-col h-full overflow-hidden transition-all duration-300',
         isCurrentPlan && 'border-primary border-2',
-        highlighted && 'border-primary border-2 shadow-xl scale-[1.02]',
-        'transition-all duration-300 hover:shadow-lg'
+        highlighted && 'border-primary border-2 shadow-2xl scale-105',
+        !highlighted && !isCurrentPlan && 'hover:shadow-lg hover:scale-[1.01]'
       )}
     >
       {isCurrentPlan && (
-        <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 shadow-md">
+        <Badge className="absolute top-4 left-1/2 -translate-x-1/2 shadow-md">
           {t('billing.currentPlan')}
         </Badge>
       )}
       {highlighted && !isCurrentPlan && (
-        <div className="bg-primary text-primary-foreground text-center py-2.5 text-sm font-semibold rounded-t-lg">
-          {t('pricing.popular')}
+        <div className="absolute top-4 left-1/2 -translate-x-1/2">
+          <Badge className="bg-primary text-primary-foreground shadow-md px-4 py-1 text-xs font-semibold">
+            {t('pricing.popular')}
+          </Badge>
         </div>
       )}
-      <CardHeader className="pb-8">
-        <CardTitle className="text-3xl font-bold">{plan.name}</CardTitle>
-        <CardDescription className="text-base mt-2">{plan.description}</CardDescription>
+      <CardHeader className={cn('pb-8', highlighted && 'pt-8')}>
+        <CardTitle className="text-3xl font-bold">
+          {plan.name}
+        </CardTitle>
+        <CardDescription className="text-base mt-2">
+          {plan.description}
+        </CardDescription>
         <div className="pt-6 border-t mt-6">
           <div className="flex items-baseline gap-1">
-            <span className="text-5xl font-bold tracking-tight">${formatPrice(plan.price)}</span>
+            <span className="text-5xl font-bold tracking-tight">
+              ${formatPrice(plan.price)}
+            </span>
             <span className="text-muted-foreground text-lg">
               /{t(`billing.interval.${plan.interval}`)}
             </span>
@@ -54,10 +62,12 @@ export function PlanCard({ plan, isCurrentPlan, onSelect, loading, highlighted }
       </CardHeader>
       <CardContent className="flex flex-col flex-1 pt-0">
         <ul className="space-y-3 flex-1 mb-6">
-          {plan.features.map((feature, index) => (
-            <li key={index} className="flex gap-3 items-start">
+          {plan.features.map(feature => (
+            <li key={feature} className="flex gap-3 items-start">
               <Check className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-              <span className="text-sm leading-relaxed">{feature}</span>
+              <span className="text-sm leading-relaxed">
+                {feature}
+              </span>
             </li>
           ))}
         </ul>

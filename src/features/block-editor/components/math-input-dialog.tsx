@@ -2,15 +2,6 @@ import katex from 'katex'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-// Helper to escape HTML entities for safe rendering
-function escapeHtml(text: string): string {
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-}
-
 import { cn } from '@/shared/lib/cn'
 import { Button } from '@/shared/ui/button'
 import {
@@ -21,6 +12,15 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/shared/ui/dialog'
+
+// Helper to escape HTML entities for safe rendering
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+}
 
 interface MathInputDialogProps {
   isOpen: boolean
@@ -153,10 +153,26 @@ const MATH_SYMBOLS = {
     { label: 'eˣ', value: 'e^{x}', title: 'E to the x' }
   ],
   matrices: [
-    { label: '2×2', value: '\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}', title: '2x2 matrix' },
-    { label: '3×3', value: '\\begin{pmatrix} a & b & c \\\\ d & e & f \\\\ g & h & i \\end{pmatrix}', title: '3x3 matrix' },
-    { label: '[2×2]', value: '\\begin{bmatrix} a & b \\\\ c & d \\end{bmatrix}', title: '2x2 bracket matrix' },
-    { label: 'det', value: '\\begin{vmatrix} a & b \\\\ c & d \\end{vmatrix}', title: 'Determinant' },
+    {
+      label: '2×2',
+      value: '\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}',
+      title: '2x2 matrix'
+    },
+    {
+      label: '3×3',
+      value: '\\begin{pmatrix} a & b & c \\\\ d & e & f \\\\ g & h & i \\end{pmatrix}',
+      title: '3x3 matrix'
+    },
+    {
+      label: '[2×2]',
+      value: '\\begin{bmatrix} a & b \\\\ c & d \\end{bmatrix}',
+      title: '2x2 bracket matrix'
+    },
+    {
+      label: 'det',
+      value: '\\begin{vmatrix} a & b \\\\ c & d \\end{vmatrix}',
+      title: 'Determinant'
+    },
     { label: '...', value: '\\cdots', title: 'Horizontal dots' },
     { label: '⋮', value: '\\vdots', title: 'Vertical dots' },
     { label: '⋱', value: '\\ddots', title: 'Diagonal dots' }
@@ -237,7 +253,9 @@ export function MathInputDialog({
         previewRef.current.innerHTML = `<span class="text-muted-foreground text-sm">${t('editor.math.previewPlaceholder')}</span>`
       }
       if (isMounted) setError(null)
-      return () => { isMounted = false }
+      return () => {
+        isMounted = false
+      }
     }
 
     try {
@@ -257,7 +275,9 @@ export function MathInputDialog({
       }
     }
 
-    return () => { isMounted = false }
+    return () => {
+      isMounted = false
+    }
   }, [latex, mode, t])
 
   const handleSubmit = useCallback(() => {
@@ -278,7 +298,7 @@ export function MathInputDialog({
   )
 
   const insertSymbol = useCallback((value: string) => {
-    setLatex((prev) => {
+    setLatex(prev => {
       const textarea = inputRef.current
       if (!textarea) return prev + value
 
@@ -300,28 +320,29 @@ export function MathInputDialog({
   }, [])
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <Dialog open={isOpen} onOpenChange={open => !open && onClose()}>
       <DialogContent className="max-w-lg max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>
             {mode === 'block' ? t('editor.math.blockTitle') : t('editor.math.inlineTitle')}
           </DialogTitle>
-          <DialogDescription>
-            {t('editor.math.hint')}
-          </DialogDescription>
+          <DialogDescription>{t('editor.math.hint')}</DialogDescription>
         </DialogHeader>
 
         <div className="flex-1 overflow-hidden flex flex-col gap-4">
           {/* Input */}
           <div>
-            <label htmlFor="math-latex-input" className="mb-1.5 block text-sm font-medium text-foreground">
+            <label
+              htmlFor="math-latex-input"
+              className="mb-1.5 block text-sm font-medium text-foreground"
+            >
               {t('editor.math.inputLabel')}
             </label>
             <textarea
               id="math-latex-input"
               ref={inputRef}
               value={latex}
-              onChange={(e) => setLatex(e.target.value)}
+              onChange={e => setLatex(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder={t('editor.math.inputPlaceholder')}
               className={cn(
@@ -362,7 +383,7 @@ export function MathInputDialog({
                       {t(CATEGORY_LABELS[category])}
                     </div>
                     <div className="flex flex-wrap gap-1">
-                      {symbols.map((symbol) => (
+                      {symbols.map(symbol => (
                         <button
                           key={symbol.value}
                           type="button"

@@ -1,1 +1,1 @@
-export const APP_NAME = 'ely.si'
+export const APP_NAME = 'arbor'

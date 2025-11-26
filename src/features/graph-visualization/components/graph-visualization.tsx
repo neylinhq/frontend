@@ -3,7 +3,9 @@ import {
   addEdge,
   Background,
   type Connection,
+  type EdgeChange,
   MiniMap,
+  type NodeChange,
   ReactFlow,
   ReactFlowProvider,
   useEdgesState,
@@ -305,7 +307,7 @@ function GraphVisualizationContent({
 
   // Handle node changes
   const handleNodesChange = useCallback(
-    (changes: any) => {
+    (changes: NodeChange[]) => {
       if (!interactive) return
       onNodesChange(changes)
     },
@@ -314,7 +316,7 @@ function GraphVisualizationContent({
 
   // Handle edge changes
   const handleEdgesChange = useCallback(
-    (changes: any) => {
+    (changes: EdgeChange[]) => {
       if (!interactive) return
       onEdgesChange(changes)
     },

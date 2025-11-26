@@ -37,8 +37,8 @@ export const Callout = Node.create<CalloutOptions>({
     return {
       type: {
         default: 'info',
-        parseHTML: (element) => element.getAttribute('data-callout-type') || 'info',
-        renderHTML: (attributes) => ({
+        parseHTML: element => element.getAttribute('data-callout-type') || 'info',
+        renderHTML: attributes => ({
           'data-callout-type': attributes.type
         })
       }
@@ -71,12 +71,12 @@ export const Callout = Node.create<CalloutOptions>({
   addCommands() {
     return {
       setCallout:
-        (attributes) =>
+        attributes =>
         ({ commands }) => {
           return commands.wrapIn(this.name, attributes)
         },
       toggleCallout:
-        (attributes) =>
+        attributes =>
         ({ commands }) => {
           return commands.toggleWrap(this.name, attributes)
         },

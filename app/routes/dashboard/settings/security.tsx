@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/shared/ui/button'
 import { Input } from '@/shared/ui/input'
-import { Label } from '@/shared/ui/label'
+import { Field } from '@/shared/ui/field'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
 import { AlertCircle, Laptop, Smartphone } from 'lucide-react'
 
@@ -40,14 +40,12 @@ export default function SecurityPage() {
           <CardDescription>{t('settings.security.email.description')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="current-email">{t('settings.security.email.current')}</Label>
-            <Input id="current-email" type="email" value="user@example.com" disabled />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="new-email">{t('settings.security.email.new')}</Label>
-            <Input id="new-email" type="email" placeholder="newemail@example.com" />
-          </div>
+          <Field label={t('settings.security.email.current')}>
+            <Input type="email" value="user@example.com" disabled />
+          </Field>
+          <Field label={t('settings.security.email.new')}>
+            <Input type="email" placeholder="newemail@example.com" />
+          </Field>
           <div className="flex justify-end gap-2 pt-2">
             <Button variant="outline">{t('common.cancel')}</Button>
             <Button>{t('settings.security.email.update')}</Button>
@@ -61,18 +59,15 @@ export default function SecurityPage() {
           <CardDescription>{t('settings.security.password.description')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="current-password">{t('settings.security.password.current')}</Label>
-            <Input id="current-password" type="password" />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="new-password">{t('settings.security.password.new')}</Label>
-            <Input id="new-password" type="password" />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="confirm-password">{t('settings.security.password.confirm')}</Label>
-            <Input id="confirm-password" type="password" />
-          </div>
+          <Field label={t('settings.security.password.current')}>
+            <Input type="password" />
+          </Field>
+          <Field label={t('settings.security.password.new')}>
+            <Input type="password" />
+          </Field>
+          <Field label={t('settings.security.password.confirm')}>
+            <Input type="password" />
+          </Field>
           <div className="flex justify-end gap-2 pt-2">
             <Button variant="outline">{t('common.cancel')}</Button>
             <Button>{t('settings.security.password.update')}</Button>

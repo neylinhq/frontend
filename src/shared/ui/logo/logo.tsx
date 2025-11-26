@@ -38,17 +38,11 @@ interface LogoProps extends VariantProps<typeof logoVariants> {
 export function Logo({ size, className, showAlpha = false, href = '/' }: LogoProps) {
   const content = (
     <>
-      <span
-        className="logo-name font-bold tracking-tight"
-        style={{ fontFamily: '"Nunito Sans Variable", sans-serif', fontWeight: 800 }}
-      >
+      <span className="logo-name font-semibold tracking-tight">
         {APP_NAME}
       </span>
       {showAlpha && (
-        <span
-          className="logo-alpha text-muted-foreground/60 font-light tracking-wider"
-          style={{ fontFamily: '"Nunito Sans Variable", sans-serif', fontWeight: 300 }}
-        >
+        <span className="logo-alpha text-muted-foreground/60 font-light tracking-wider">
           alpha
         </span>
       )}

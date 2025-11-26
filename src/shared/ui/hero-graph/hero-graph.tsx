@@ -135,13 +135,13 @@ export function HeroGraph({
       node.x = Math.max(10, Math.min(w - 10, node.x))
       node.y = Math.max(10, Math.min(h - 10, node.y))
 
-      // Subtle mouse attraction
+      // Mouse REPULSION (magnetic field effect)
       if (mouseRef.current.active) {
-        const dx = mouseRef.current.x - node.x
-        const dy = mouseRef.current.y - node.y
+        const dx = node.x - mouseRef.current.x
+        const dy = node.y - mouseRef.current.y
         const dist = Math.sqrt(dx * dx + dy * dy)
-        if (dist < 200 && dist > 0) {
-          const force = 0.0003 * (200 - dist)
+        if (dist < 180 && dist > 0) {
+          const force = 0.15 * (1 - dist / 180)
           node.vx += (dx / dist) * force
           node.vy += (dy / dist) * force
         }

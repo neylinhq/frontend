@@ -2,8 +2,10 @@
 @import "katex/dist/katex.min.css";
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+  /* Main font: IBM Plex Sans - technical, geometric, serious */
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
     "Segoe UI Symbol", "Noto Color Emoji";
+  /* Alternatives: "Geist Sans", "Inter", "Nunito Sans" */
 
   /* Colors Mapping */
   --color-background: hsl(var(--background));
@@ -104,10 +106,10 @@
     --ring: 240 5.9% 10%;
     --radius: 0.5rem;
 
-    /* Brand accent colors */
-    --brand: 250 100% 65%;
+    /* Brand accent: Electric Indigo - consistent across themes */
+    --brand: 239 84% 67%;               /* #6366F1 - Indigo-500 */
     --brand-foreground: 0 0% 100%;
-    --brand-muted: 250 100% 95%;
+    --brand-muted: 239 84% 95%;
 
     /* Graph node colors */
     --graph-violet: 250 100% 65%;
@@ -119,30 +121,32 @@
   }
 
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
+    /* Uniform dark background - #101010 */
+    --background: 0 0% 6.3%;            /* #101010 */
+    --foreground: 0 0% 93%;             /* #EDEDED - soft white */
+    --card: 0 0% 6.3%;                  /* #101010 - same as background */
+    --card-foreground: 0 0% 93%;
+    --popover: 0 0% 9%;                 /* #171717 - slightly lighter for popover */
     --popover-foreground: 0 0% 98%;
     --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 3.7% 15.9%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 12%;              /* #1F1F1F */
     --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
+    --muted: 0 0% 12%;                  /* #1F1F1F */
+    --muted-foreground: 0 0% 55%;       /* Dimmed text */
+    --accent: 0 0% 14%;                 /* #242424 */
+    --accent-foreground: 0 0% 93%;
     --destructive: 0 72% 50%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
+    --border: 0 0% 18%;                 /* #2E2E2E - subtle border */
+    --input: 0 0% 18%;
+    --ring: 239 84% 67%;                /* Indigo for focus rings */
 
-    /* Brand accent colors (dark) - spring green */
-    --brand: 150 100% 50%;
-    --brand-foreground: 0 0% 0%;
-    --brand-muted: 150 50% 15%;
+    /* Brand accent: Electric Indigo - "The Signal" */
+    /* Cognitive, neural, "Second Brain" vibe */
+    --brand: 239 84% 67%;               /* #6366F1 - Indigo-500 */
+    --brand-foreground: 0 0% 100%;
+    --brand-muted: 239 84% 15%;
 
     /* Graph node colors (dark - more vibrant) */
     --graph-violet: 270 100% 75%;
@@ -156,9 +160,28 @@
   * {
     @apply border-border;
   }
+  html {
+    overflow-y: scroll;
+  }
   body {
     @apply bg-background text-foreground antialiased;
     min-width: 390px;
+  }
+
+  /* Selection color - accent instead of default blue */
+  ::selection {
+    background-color: hsl(var(--brand) / 0.3);
+    color: hsl(var(--foreground));
+  }
+
+  /* Fix Chrome autocomplete blue highlight */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px hsl(var(--background)) inset !important;
+    -webkit-text-fill-color: hsl(var(--foreground)) !important;
+    caret-color: hsl(var(--foreground)) !important;
   }
 
   /* Custom Scrollbar */

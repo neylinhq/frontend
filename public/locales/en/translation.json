@@ -75,26 +75,112 @@
     "disable": "Disable"
   },
   "home": {
-    "tagline": "Visualize and structure your knowledge with interactive cognitive maps",
-    "features": {
-      "visual": {
-        "title": "Visual Thinking",
-        "description": "Transform complex concepts into intuitive knowledge graphs"
-      },
-      "connected": {
-        "title": "Connected Ideas",
-        "description": "Discover hidden relationships between concepts and strengthen understanding"
-      },
-      "ai": {
-        "title": "AI Assistant",
-        "description": "Smart companion for analyzing and expanding your knowledge maps"
-      }
+    "tagline": "Visualize and structure your knowledge with interactive cognitive maps. Create, connect, and explore your ideas in an intuitive graph-based workspace.",
+    "headline": "Think in graphs,",
+    "headlinePart2": "not lists",
+    "headlineSub": "Build connections.",
+    "alphaNotice": "Currently in alpha testing",
+    "badge": "Open Alpha",
+    "subheadline": "A visual workspace for organizing knowledge and discovering connections.",
+    "productDemo": "Product Demo",
+    "nav": {
+      "features": "Features",
+      "howItWorks": "How it works",
+      "pricing": "Pricing",
+      "home": "Home"
     },
     "cta": {
       "getStarted": "Get Started",
-      "signIn": "Sign In"
+      "signIn": "Sign in",
+      "startFree": "Start for free",
+      "seeHow": "See how it works",
+      "getStartedFree": "Get Started Free",
+      "ready": "Ready to start?",
+      "freeInfo": "Free tier available. No credit card required.",
+      "createAccount": "Create Free Account"
     },
-    "alphaNotice": "🚀 Currently in alpha testing. Some features may be unstable."
+    "stats": {
+      "users": "Users",
+      "notes": "Notes",
+      "uptime": "Uptime"
+    },
+    "scroll": "Scroll",
+    "features": {
+      "label": "Features",
+      "title": "Built for deep work",
+      "titleFull": "Everything you need to organize knowledge",
+      "subtitle": "Powerful yet intuitive tools designed for the way you think.",
+      "visual": {
+        "title": "Visual Thinking",
+        "description": "Transform abstract concepts into clear visual structures that mirror your thought process."
+      },
+      "connections": {
+        "title": "Instant Connections",
+        "description": "Link ideas together with a click and watch your knowledge graph grow organically."
+      },
+      "ai": {
+        "title": "AI-Powered",
+        "description": "Let AI suggest connections and help you discover patterns in your knowledge."
+      },
+      "security": {
+        "title": "Private & Secure",
+        "description": "End-to-end encryption ensures your thoughts remain yours alone."
+      },
+      "collaborate": {
+        "title": "Collaborate",
+        "description": "Share specific graphs or entire workspaces with your team."
+      },
+      "analytics": {
+        "title": "Analytics",
+        "description": "Track your knowledge growth with detailed insights and patterns."
+      }
+    },
+    "howItWorks": {
+      "label": "How it works",
+      "title": "Three steps to clarity",
+      "steps": {
+        "create": {
+          "title": "Create",
+          "description": "Add your ideas, notes, and concepts as visual nodes in your workspace."
+        },
+        "connect": {
+          "title": "Connect",
+          "description": "Draw connections between related concepts. Watch patterns emerge."
+        },
+        "discover": {
+          "title": "Discover",
+          "description": "Navigate your graph to find insights you never knew existed."
+        }
+      }
+    },
+    "testimonials": {
+      "label": "Testimonials",
+      "title": "Trusted by thinkers",
+      "items": [
+        {
+          "quote": "Finally, a tool that matches how my brain actually works. The visual connections make everything click.",
+          "author": "Sarah K.",
+          "role": "Researcher"
+        },
+        {
+          "quote": "I've tried every note-taking app. This is the first one that helps me think, not just store information.",
+          "author": "Michael R.",
+          "role": "Product Manager"
+        },
+        {
+          "quote": "The graph view changed how I approach complex projects. Big picture and details, all at once.",
+          "author": "Elena V.",
+          "role": "Writer"
+        }
+      ]
+    },
+    "ctaSection": {
+      "title": "Ready to think differently?",
+      "subtitle": "Join thousands who organize knowledge visually. Free to start, no credit card required."
+    },
+    "footer": {
+      "rights": "All rights reserved."
+    }
   },
   "dashboard": {
     "overview": {

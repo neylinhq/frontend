@@ -67,7 +67,7 @@ export function PlanCard({ plan, isCurrentPlan, onSelect, loading, highlighted }
       </div>
 
       {/* Features */}
-      <ul className="space-y-3 mb-8">
+      <ul className="space-y-3 flex-1">
         {plan.features.map((feature) => (
           <li key={feature} className="flex gap-3 items-start text-sm">
             <Check className="h-4 w-4 text-muted-foreground flex-shrink-0 mt-0.5" />
@@ -80,7 +80,7 @@ export function PlanCard({ plan, isCurrentPlan, onSelect, loading, highlighted }
       <Button
         onClick={onSelect}
         disabled={isCurrentPlan || loading}
-        className="w-full"
+        className="w-full mt-6"
         variant={highlighted && !isCurrentPlan ? 'default' : 'outline'}
         size="sm"
       >

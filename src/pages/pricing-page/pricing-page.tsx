@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 
 import type { PlanDetails } from '@/entities/subscription/subscription.schema'
 import { PlanCard } from '@/features/billing'
+import { Typography } from '@/shared/ui/typography'
 
 interface PricingPageProps {
   plans: PlanDetails[]
@@ -15,9 +16,9 @@ export function PricingPage({ plans }: PricingPageProps) {
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16">
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3">
+          <Typography variant="h1" className="mb-3">
             {t('pricing.title', 'Simple pricing')}
-          </h1>
+          </Typography>
           <p className="text-muted-foreground max-w-lg mx-auto">
             {t('pricing.subtitle', 'Choose the plan that works for you')}
           </p>

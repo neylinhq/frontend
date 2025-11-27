@@ -4,6 +4,7 @@ import { Link } from 'react-router'
 
 import { AUTH_ROUTES, ROUTES } from '@/shared/config'
 import { Button } from '@/shared/ui/button'
+import { Typography } from '@/shared/ui/typography'
 import { HOME_FEATURES } from './home-page.constants'
 
 export function HomePage() {
@@ -17,11 +18,11 @@ export function HomePage() {
           <div className="max-w-2xl">
             <p className="text-sm text-muted-foreground mb-3">{t('home.badge', 'Open Alpha')}</p>
 
-            <h1 className="text-4xl font-semibold tracking-tight leading-tight">
+            <Typography variant="h1" className="leading-tight">
               {t('home.headline', 'Think in graphs,')}
               <br />
               {t('home.headlinePart2', 'not lists')}
-            </h1>
+            </Typography>
 
             <p className="mt-4 text-lg text-muted-foreground leading-relaxed">
               {t(
@@ -59,7 +60,7 @@ export function HomePage() {
       {/* Features */}
       <section className="py-20 border-t">
         <div className="max-w-5xl mx-auto px-6">
-          <h2 className="text-xl font-semibold mb-8">{t('home.features.title', 'Built for deep work')}</h2>
+          <Typography variant="h2" className="mb-8">{t('home.features.title', 'Built for deep work')}</Typography>
 
           <div className="grid sm:grid-cols-2 gap-x-12 gap-y-8">
             {HOME_FEATURES.map((feature) => (
@@ -79,7 +80,7 @@ export function HomePage() {
         <div className="max-w-5xl mx-auto px-6">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-semibold">{t('home.cta.ready', 'Ready to start?')}</h2>
+              <Typography variant="h2">{t('home.cta.ready', 'Ready to start?')}</Typography>
               <p className="text-sm text-muted-foreground mt-1">
                 {t('home.cta.freeInfo', 'Free tier available. No credit card required.')}
               </p>

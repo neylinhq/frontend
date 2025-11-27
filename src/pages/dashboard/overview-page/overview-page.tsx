@@ -6,6 +6,7 @@ import { CreateMapCard } from '@/features/maps/create-map-button'
 import { MapCard } from '@/features/maps/map-card/map-card'
 import { MAPS_ROUTES } from '@/shared/config'
 import { Button } from '@/shared/ui/button'
+import { Typography } from '@/shared/ui/typography'
 
 interface OverviewPageProps {
   maps: MapEntity[]
@@ -18,7 +19,7 @@ export function OverviewPage({ maps }: OverviewPageProps) {
     <div className="container mx-auto py-8 px-4 md:px-8">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">{t('dashboard.overview.title')}</h1>
+          <Typography variant="h1">{t('dashboard.overview.title')}</Typography>
           <p className="text-muted-foreground mt-1">{t('dashboard.overview.description')}</p>
         </div>
         <Button asChild>

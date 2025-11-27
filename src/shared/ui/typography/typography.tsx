@@ -18,6 +18,7 @@ const typographyVariants = cva('', {
       large: 'text-lg font-semibold',
       small: 'text-sm font-medium leading-none',
       muted: 'text-sm text-muted-foreground',
+      xs: 'text-xs text-muted-foreground',
       code: 'relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold',
       blockquote: 'mt-6 border-l-2 pl-6 italic',
       list: 'my-6 ml-6 list-disc [&>li]:mt-2',
@@ -54,6 +55,7 @@ const Typography = React.forwardRef<HTMLElement, TypographyProps>(
         case 'large':
         case 'small':
         case 'muted':
+        case 'xs':
         case 'p':
           return 'p'
         case 'code':

@@ -1,7 +1,7 @@
-import * as React from 'react'
+import type * as React from 'react'
 import { cn } from '@/shared/lib/cn'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/tabs'
 import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/tabs'
 
 interface DocsComponentPreviewProps {
   children: React.ReactNode
@@ -16,7 +16,7 @@ export function DocsComponentPreview({
   code,
   language = 'tsx',
   className,
-  previewClassName,
+  previewClassName
 }: DocsComponentPreviewProps) {
   return (
     <div className={cn('rounded-lg border', className)}>
@@ -36,12 +36,10 @@ export function DocsComponentPreview({
           </TabsTrigger>
         </TabsList>
         <TabsContent value="preview" className="mt-0">
-          <div className={cn('docs-preview min-h-[100px]', previewClassName)}>
-            {children}
-          </div>
+          <div className={cn('p-10 min-h-[100px]', previewClassName)}>{children}</div>
         </TabsContent>
         <TabsContent value="code" className="mt-0">
-          <DocsCodeBlock code={code} language={language} className="border-0 rounded-none rounded-b-lg" />
+          <DocsCodeBlock code={code} language={language} className="embedded" />
         </TabsContent>
       </Tabs>
     </div>

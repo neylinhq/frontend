@@ -7,6 +7,7 @@ import { Input } from '@/shared/ui/input'
 import { Textarea } from '@/shared/ui/textarea'
 import { Button } from '@/shared/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
+import { Typography } from '@/shared/ui/typography'
 import { type User, useUpdateProfile, useUploadAvatar } from '@/entities/user'
 import { profileFormSchema, type ProfileFormValues } from '../lib/validation'
 import { AvatarUpload } from './avatar-upload'
@@ -54,7 +55,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-semibold tracking-tight">{t('settings.profile.title')}</h2>
+        <Typography variant="h2">{t('settings.profile.title')}</Typography>
         <p className="text-sm text-muted-foreground mt-1">{t('settings.profile.description')}</p>
       </div>
 

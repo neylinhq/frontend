@@ -5,6 +5,7 @@ import { Link } from 'react-router'
 import { DASHBOARD_ROUTES, ROUTES } from '@/shared/config'
 import { Button } from '@/shared/ui/button'
 import { PublicHeader } from '@/shared/ui/public-header'
+import { Typography } from '@/shared/ui/typography'
 
 export function NotFoundPage() {
   const { t } = useTranslation()
@@ -30,7 +31,7 @@ export function NotFoundPage() {
 
           {/* Text Content */}
           <div className="space-y-4">
-            <h1 className="text-4xl font-bold tracking-tight">{t('notFound.title')}</h1>
+            <Typography variant="h1">{t('notFound.title')}</Typography>
             <p className="text-lg text-muted-foreground max-w-md mx-auto text-balance">
               {t('notFound.description')}
             </p>

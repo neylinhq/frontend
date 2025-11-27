@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/shared/ui/select'
+import { Typography } from '@/shared/ui/typography'
 import { type User, type UserPreferences, defaultUserPreferences, useUpdatePreferences } from '@/entities/user'
 import { NOTIFICATION_SETTINGS, INTERFACE_SWITCH_SETTINGS, DENSITY_OPTIONS } from '../preferences-form.constants'
 
@@ -49,7 +50,7 @@ export function PreferencesForm({ user }: PreferencesFormProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-semibold tracking-tight">{t('settings.preferences.title')}</h2>
+        <Typography variant="h2">{t('settings.preferences.title')}</Typography>
         <p className="text-sm text-muted-foreground mt-1">
           {t('settings.preferences.description')}
         </p>

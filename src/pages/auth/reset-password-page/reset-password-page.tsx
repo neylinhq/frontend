@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { ResetPasswordForm } from '@/features/auth/reset-password-form'
 import { AUTH_ROUTES } from '@/shared/config'
+import { Typography } from '@/shared/ui/typography'
 
 export const ResetPasswordPage = () => {
   const { t } = useTranslation()
@@ -9,7 +10,7 @@ export const ResetPasswordPage = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-col space-y-2 text-center">
-        <h1 className="text-2xl font-semibold tracking-tight">{t('auth.resetPassword.title')}</h1>
+        <Typography variant="h1">{t('auth.resetPassword.title')}</Typography>
         <p className="text-sm text-muted-foreground text-balance">
           {t('auth.resetPassword.description')}
         </p>

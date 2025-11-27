@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { SignUpForm } from '@/features/auth/sign-up-form'
 import { AUTH_ROUTES } from '@/shared/config'
+import { Typography } from '@/shared/ui/typography'
 
 export const SignUpPage = () => {
   const { t } = useTranslation()
@@ -9,7 +10,7 @@ export const SignUpPage = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-col space-y-2 text-center text-balance">
-        <h1 className="text-2xl font-semibold tracking-tight">{t('auth.signUp.title')}</h1>
+        <Typography variant="h1">{t('auth.signUp.title')}</Typography>
         <p className="text-sm text-muted-foreground">{t('auth.signUp.description')}</p>
       </div>
 

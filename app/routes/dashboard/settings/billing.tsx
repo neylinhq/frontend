@@ -14,6 +14,7 @@ import {
   AddPaymentMethodDialog
 } from '@/features/billing'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
+import { Typography } from '@/shared/ui/typography'
 
 export async function loader() {
   const [paymentMethods, paymentHistory] = await Promise.all([
@@ -39,7 +40,7 @@ export default function BillingPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-semibold tracking-tight">{t('settings.billing.title')}</h2>
+        <Typography variant="h2">{t('settings.billing.title')}</Typography>
         <p className="text-sm text-muted-foreground mt-1">{t('settings.billing.description')}</p>
       </div>
 

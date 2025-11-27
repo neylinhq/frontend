@@ -26,7 +26,7 @@ interface DocsSidebarProps {
 
 export function DocsSidebar({ sections, className }: DocsSidebarProps) {
   return (
-    <nav className={cn('docs-sidebar space-y-4', className)}>
+    <nav className={cn('docs-sidebar space-y-2.5', className)}>
       {sections.map(section => (
         <DocsSidebarSectionComponent key={section.title} section={section} />
       ))}

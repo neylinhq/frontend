@@ -6,6 +6,7 @@ import {
   DeleteAccountSection,
   ActiveSessions,
 } from '@/features/settings'
+import { Typography } from '@/shared/ui/typography'
 import type { SettingsContext } from './layout'
 
 export default function SecurityPage() {
@@ -15,7 +16,7 @@ export default function SecurityPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-semibold tracking-tight">{t('settings.security.title')}</h2>
+        <Typography variant="h2">{t('settings.security.title')}</Typography>
         <p className="text-sm text-muted-foreground mt-1">{t('settings.security.description')}</p>
       </div>
 

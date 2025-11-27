@@ -1,8 +1,9 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
-import { ThemeToggle } from '@/app/theme/components/theme-toggle'
-import { LanguageSwitcher } from '@/features/language-switcher'
+import { ColorThemeSelect } from '@/app/theme/components/color-theme-select'
+import { ModeSelect } from '@/app/theme/components/mode-select'
+import { LanguageSelect } from '@/features/language-switcher'
 import { Button } from '@/shared/ui/button'
 import { Logo } from '@/shared/ui/logo'
 
@@ -18,15 +19,16 @@ export function PublicHeader({ hideAuthButtons }: PublicHeaderProps) {
       <div className="max-w-5xl mx-auto px-6 h-full flex items-center justify-between">
         <Logo size="lg" />
 
-        <nav className="flex items-center gap-3">
+        <nav className="flex items-center gap-2">
           <Link
             to="/pricing"
             className="text-sm text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5"
           >
             {t('home.nav.pricing', 'Pricing')}
           </Link>
-          <LanguageSwitcher />
-          <ThemeToggle />
+          <LanguageSelect compact />
+          <ModeSelect />
+          <ColorThemeSelect compact />
           {!hideAuthButtons && (
             <>
               <div className="h-4 w-px bg-border mx-1" />

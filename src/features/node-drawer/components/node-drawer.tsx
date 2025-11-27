@@ -8,6 +8,7 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/shared/ui/dr
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/tabs'
 import { Button } from '@/shared/ui/button'
 import { cn } from '@/shared/lib/cn'
+import { isMobileWidth } from '@/shared/config/breakpoints'
 import { useDrawerTabs } from '../model/drawer-tabs.hooks'
 import { DrawerConnectionsTab } from './drawer-connections-tab'
 import { DrawerOverviewTab } from './drawer-overview-tab'
@@ -40,7 +41,7 @@ export const NodeDrawer = memo(({
   // Check mobile via matchMedia
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768) // md breakpoint
+      setIsMobile(isMobileWidth(window.innerWidth))
     }
 
     checkMobile()

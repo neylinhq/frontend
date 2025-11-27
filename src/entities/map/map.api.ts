@@ -16,23 +16,22 @@ import {
   ALL_EDGES
 } from './__mocks__/edges'
 import { MOCK_NODE_WITH_CONTENT } from './__mocks__/node-content.mock'
-
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+import { delay, API_DELAYS } from '@/shared/config/api-delays'
 
 export const mapApi = {
   // ====== Работа с картами ======
   getMaps: async (): Promise<MapEntity[]> => {
-    await delay(500)
+    await delay(API_DELAYS.MAP_GET_MAPS)
     return MOCK_MAPS
   },
 
   getMapById: async (id: string): Promise<MapEntity | null> => {
-    await delay(300)
+    await delay(API_DELAYS.MAP_GET_BY_ID)
     return MOCK_MAPS.find((m) => m.id === id) || null
   },
 
   createMap: async (data: Omit<MapEntity, 'id' | 'createdAt' | 'updatedAt' | 'nodesCount'>): Promise<MapEntity> => {
-    await delay(600)
+    await delay(API_DELAYS.MAP_CREATE)
     const newMap: MapEntity = {
       ...data,
       id: `map-${Date.now()}`,
@@ -45,7 +44,7 @@ export const mapApi = {
   },
 
   deleteMap: async (id: string): Promise<void> => {
-    await delay(400)
+    await delay(API_DELAYS.MAP_DELETE)
     const index = MOCK_MAPS.findIndex((m) => m.id === id)
     if (index !== -1) {
       MOCK_MAPS.splice(index, 1)
@@ -68,7 +67,7 @@ export const mapApi = {
 
   // ====== Работа с узлами ======
   getNodes: async (mapId: string): Promise<LightweightNode[]> => {
-    await delay(400)
+    await delay(API_DELAYS.MAP_GET_NODES)
     // Use generated graph for map '4'
     if (mapId === '4') {
       return GENERATED_GRAPH.nodes.map(
@@ -110,7 +109,7 @@ export const mapApi = {
   },
 
   getNodeWithContent: async (nodeId: string): Promise<Node | null> => {
-    await delay(300)
+    await delay(API_DELAYS.MAP_GET_NODE_WITH_CONTENT)
     // For editor demo
     if (nodeId === 'mock-editor') {
       return MOCK_NODE_WITH_CONTENT
@@ -126,7 +125,7 @@ export const mapApi = {
   },
 
   createNode: async (data: Omit<Node, 'id' | 'createdAt' | 'updatedAt'>): Promise<Node> => {
-    await delay(500)
+    await delay(API_DELAYS.MAP_CREATE_NODE)
     const newNode: Node = {
       ...data,
       id: `node-${Date.now()}`,
@@ -145,7 +144,7 @@ export const mapApi = {
   },
 
   updateNode: async (id: string, data: Partial<Omit<Node, 'id' | 'createdAt' | 'updatedAt'>>): Promise<Node> => {
-    await delay(400)
+    await delay(API_DELAYS.MAP_UPDATE_NODE)
     const allMockNodes = [
       ...NEURAL_NETWORKS_NODES,
       ...PHILOSOPHY_NODES,
@@ -161,7 +160,7 @@ export const mapApi = {
   },
 
   deleteNode: async (id: string): Promise<void> => {
-    await delay(400)
+    await delay(API_DELAYS.MAP_DELETE_NODE)
     const allMockNodes = [
       ...NEURAL_NETWORKS_NODES,
       ...PHILOSOPHY_NODES,
@@ -190,7 +189,7 @@ export const mapApi = {
 
   // ====== Работа со связями ======
   getEdges: async (mapId: string): Promise<Edge[]> => {
-    await delay(400)
+    await delay(API_DELAYS.MAP_GET_EDGES)
     // Use generated graph for map '4'
     if (mapId === '4') {
       return GENERATED_GRAPH.edges
@@ -215,7 +214,7 @@ export const mapApi = {
   },
 
   createEdge: async (data: Omit<Edge, 'id' | 'createdAt' | 'updatedAt'>): Promise<Edge> => {
-    await delay(500)
+    await delay(API_DELAYS.MAP_CREATE_EDGE)
     const newEdge: Edge = {
       ...data,
       id: `edge-${Date.now()}`,
@@ -227,7 +226,7 @@ export const mapApi = {
   },
 
   updateEdge: async (id: string, data: Partial<Omit<Edge, 'id' | 'createdAt' | 'updatedAt'>>): Promise<Edge> => {
-    await delay(400)
+    await delay(API_DELAYS.MAP_UPDATE_EDGE)
     const allMockEdges = [
       ...NEURAL_NETWORKS_EDGES,
       ...PHILOSOPHY_EDGES,
@@ -243,7 +242,7 @@ export const mapApi = {
   },
 
   deleteEdge: async (id: string): Promise<void> => {
-    await delay(400)
+    await delay(API_DELAYS.MAP_DELETE_EDGE)
     const allMockEdges = [
       ...NEURAL_NETWORKS_EDGES,
       ...PHILOSOPHY_EDGES,
@@ -258,7 +257,7 @@ export const mapApi = {
 
   // ====== Полный граф (карта + узлы + связи) ======
   getFullMap: async (mapId: string, includeContent: boolean = false): Promise<FullMap | null> => {
-    await delay(800)
+    await delay(API_DELAYS.MAP_GET_FULL_MAP)
 
     const map = await mapApi.getMapById(mapId)
     if (!map) return null
@@ -287,7 +286,7 @@ export const mapApi = {
 
   // ====== Анализ графа через AI ======
   analyzeGraph: async (_mapId: string): Promise<FullMap['aiAnalysis']> => {
-    await delay(2000) // Имитация долгой обработки AI
+    await delay(API_DELAYS.MAP_ANALYZE_GRAPH) // Имитация долгой обработки AI
     return {
       lastAnalyzed: new Date().toISOString(),
       gaps: ['Отсутствует связь между GPT и практическими применениями'],

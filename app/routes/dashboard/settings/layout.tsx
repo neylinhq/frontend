@@ -23,7 +23,8 @@ export default function SettingsLayout() {
   const { user } = useLoaderData<typeof loader>()
 
   return (
-    <div className="container max-w-6xl mx-auto py-10 px-4 md:px-6 lg:px-8">
+    <div className="h-full overflow-y-auto">
+      <div className="container max-w-6xl mx-auto py-10 px-4 md:px-6 lg:px-8">
       <div className="mb-10">
         <h1 className="text-3xl font-bold tracking-tight">{t('settings.title')}</h1>
         <p className="text-muted-foreground mt-2">{t('settings.description')}</p>
@@ -60,6 +61,7 @@ export default function SettingsLayout() {
         <main className="flex-1 min-w-0 max-w-3xl">
           <Outlet context={{ user } satisfies SettingsContext} />
         </main>
+      </div>
       </div>
     </div>
   )

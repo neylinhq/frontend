@@ -10,7 +10,7 @@ export const THEMES: { name: string; value: Theme }[] = [
 ]
 
 export const COLOR_THEMES: { name: string; value: ColorTheme; color: string }[] = [
-  { name: 'Classic', value: 'classic', color: '#6366F1' },
-  { name: 'Vanilla', value: 'vanilla', color: '#E8A830' },
-  { name: 'Vivid', value: 'vivid', color: '#14B8A6' }
+  { name: 'Classic', value: 'classic', color: 'var(--color-preview-classic)' },
+  { name: 'Vanilla', value: 'vanilla', color: 'var(--color-preview-vanilla)' },
+  { name: 'Vivid', value: 'vivid', color: 'var(--color-preview-vivid)' }
 ]

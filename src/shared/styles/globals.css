@@ -40,6 +40,11 @@
   --color-brand-foreground: hsl(var(--brand-foreground));
   --color-brand-muted: hsl(var(--brand-muted));
 
+  /* Theme preview colors */
+  --color-preview-classic: hsl(var(--preview-classic));
+  --color-preview-vanilla: hsl(var(--preview-vanilla));
+  --color-preview-vivid: hsl(var(--preview-vivid));
+
   /* Radii */
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
@@ -83,34 +88,39 @@
 
 }
 
-/* Base Colors (Zinc) */
+/* Classic Theme (Default) - Pure neutral, no color tint */
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    /* Theme preview colors (don't change with theme) */
+    --preview-classic: 217 91% 60%;
+    --preview-vanilla: 24 80% 50%;
+    --preview-vivid: 160 84% 39%;
+
+    --background: 0 0% 100%;           /* #FFFFFF - pure white */
+    --foreground: 0 0% 9%;             /* #171717 - near black */
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card-foreground: 0 0% 9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
+    --popover-foreground: 0 0% 9%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 96%;             /* #F5F5F5 */
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;      /* #737373 */
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 5.9% 10%;
+    --border: 0 0% 90%;                /* #E5E5E5 */
+    --input: 0 0% 90%;
+    --ring: 217 91% 60%;
     --radius: 0.5rem;
 
-    /* Brand accent: Electric Indigo - consistent across themes */
-    --brand: 239 84% 67%;               /* #6366F1 - Indigo-500 */
+    /* Brand: Pure Blue */
+    --brand: 217 91% 60%;              /* #2563EB - Blue-600 */
     --brand-foreground: 0 0% 100%;
-    --brand-muted: 239 84% 95%;
+    --brand-muted: 217 91% 95%;
 
     /* Graph node colors */
     --graph-violet: 250 100% 65%;
@@ -122,32 +132,30 @@
   }
 
   .dark {
-    /* Uniform dark background - #101010 */
-    --background: 0 0% 6.3%;            /* #101010 */
-    --foreground: 0 0% 93%;             /* #EDEDED - soft white */
-    --card: 0 0% 6.3%;                  /* #101010 - same as background */
+    --background: 0 0% 7%;             /* #121212 - Material dark */
+    --foreground: 0 0% 93%;            /* #EDEDED */
+    --card: 0 0% 7%;
     --card-foreground: 0 0% 93%;
-    --popover: 0 0% 9%;                 /* #171717 - slightly lighter for popover */
+    --popover: 0 0% 10%;               /* #1A1A1A */
     --popover-foreground: 0 0% 98%;
     --primary: 0 0% 98%;
     --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 12%;              /* #1F1F1F */
+    --secondary: 0 0% 13%;             /* #212121 */
     --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 12%;                  /* #1F1F1F */
-    --muted-foreground: 0 0% 55%;       /* Dimmed text */
-    --accent: 0 0% 14%;                 /* #242424 */
+    --muted: 0 0% 13%;
+    --muted-foreground: 0 0% 55%;
+    --accent: 0 0% 15%;
     --accent-foreground: 0 0% 93%;
     --destructive: 0 72% 50%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 18%;                 /* #2E2E2E - subtle border */
-    --input: 0 0% 18%;
-    --ring: 239 84% 67%;                /* Indigo for focus rings */
+    --border: 0 0% 20%;                /* #333333 */
+    --input: 0 0% 20%;
+    --ring: 217 91% 60%;
 
-    /* Brand accent: Electric Indigo - "The Signal" */
-    /* Cognitive, neural, "Second Brain" vibe */
-    --brand: 239 84% 67%;               /* #6366F1 - Indigo-500 */
+    /* Brand: Pure Blue */
+    --brand: 217 91% 60%;              /* #2563EB - same blue */
     --brand-foreground: 0 0% 100%;
-    --brand-muted: 239 84% 15%;
+    --brand-muted: 217 50% 15%;
 
     /* Graph node colors (dark - more vibrant) */
     --graph-violet: 270 100% 75%;
@@ -162,30 +170,128 @@
      Color Themes
      ======================================== */
 
-  /* Vanilla Theme - warm, cozy, amber tones */
+  /* Vanilla Theme - warm, cozy, noticeable but not heavy */
   [data-theme="vanilla"] {
-    --brand: 35 90% 52%;
+    --background: 38 28% 98%;          /* Warm cream - balanced */
+    --foreground: 24 10% 12%;          /* Warm black */
+    --card: 38 25% 97%;
+    --card-foreground: 24 10% 12%;
+    --popover: 38 28% 99%;
+    --popover-foreground: 24 10% 12%;
+    --primary: 24 10% 12%;
+    --primary-foreground: 38 25% 97%;
+    --secondary: 36 18% 94%;           /* Warm gray */
+    --secondary-foreground: 24 10% 15%;
+    --muted: 36 14% 93%;
+    --muted-foreground: 24 6% 45%;
+    --accent: 36 20% 92%;
+    --accent-foreground: 24 10% 12%;
+    --border: 36 12% 89%;              /* Warm border */
+    --input: 36 12% 89%;
+    --ring: 24 80% 50%;
+    --brand: 24 80% 50%;               /* #E36B2B - Terracotta */
     --brand-foreground: 0 0% 100%;
-    --brand-muted: 35 90% 95%;
-    --ring: 35 90% 52%;
+    --brand-muted: 24 55% 94%;
+
+    /* Graph node colors - warm shifted */
+    --graph-violet: 280 85% 60%;       /* Warmer purple */
+    --graph-blue: 230 90% 58%;         /* Warmer blue */
+    --graph-cyan: 195 85% 48%;         /* Warmer cyan */
+    --graph-emerald: 155 75% 42%;      /* Warmer green */
+    --graph-amber: 32 95% 52%;         /* More orange */
+    --graph-rose: 12 90% 58%;          /* Coral/terracotta */
   }
   [data-theme="vanilla"].dark {
-    --brand: 35 90% 58%;
-    --brand-muted: 35 90% 15%;
-    --ring: 35 90% 58%;
+    --background: 24 10% 8%;           /* #161412 - warm dark */
+    --foreground: 36 15% 90%;          /* #E8E4DE */
+    --card: 24 10% 8%;
+    --card-foreground: 36 15% 90%;
+    --popover: 24 8% 11%;              /* #1D1A17 */
+    --popover-foreground: 36 15% 95%;
+    --primary: 36 15% 95%;
+    --primary-foreground: 24 10% 10%;
+    --secondary: 24 8% 13%;            /* #231F1B */
+    --secondary-foreground: 36 15% 92%;
+    --muted: 24 8% 13%;
+    --muted-foreground: 36 8% 50%;
+    --accent: 24 10% 15%;
+    --accent-foreground: 36 15% 90%;
+    --border: 24 8% 20%;               /* #352F29 */
+    --input: 24 8% 20%;
+    --ring: 24 75% 55%;
+    --brand: 24 75% 55%;               /* #D97941 - lighter terracotta */
+    --brand-foreground: 0 0% 100%;
+    --brand-muted: 24 40% 15%;
+
+    /* Graph node colors - warm shifted (dark) */
+    --graph-violet: 280 90% 72%;
+    --graph-blue: 230 95% 68%;
+    --graph-cyan: 195 90% 55%;
+    --graph-emerald: 155 85% 50%;
+    --graph-amber: 32 100% 58%;
+    --graph-rose: 12 95% 62%;
   }
 
-  /* Vivid Theme - electric, modern, cyan/teal */
+  /* Vivid Theme - cool, modern, energetic */
   [data-theme="vivid"] {
-    --brand: 175 85% 40%;
+    --background: 210 28% 98%;         /* Cool white - more noticeable */
+    --foreground: 210 18% 10%;         /* Cool black */
+    --card: 210 22% 97%;
+    --card-foreground: 210 18% 10%;
+    --popover: 210 28% 99%;
+    --popover-foreground: 210 18% 10%;
+    --primary: 210 18% 10%;
+    --primary-foreground: 210 22% 98%;
+    --secondary: 210 20% 94%;          /* Cool gray */
+    --secondary-foreground: 210 18% 12%;
+    --muted: 210 16% 93%;
+    --muted-foreground: 210 10% 45%;
+    --accent: 210 24% 92%;
+    --accent-foreground: 210 18% 10%;
+    --border: 210 15% 88%;             /* Cool border */
+    --input: 210 15% 88%;
+    --ring: 160 84% 39%;
+    --brand: 160 84% 39%;              /* #34D399 - Emerald-400 */
     --brand-foreground: 0 0% 100%;
-    --brand-muted: 175 85% 95%;
-    --ring: 175 85% 40%;
+    --brand-muted: 160 60% 94%;
+
+    /* Graph node colors - cool shifted, more vibrant */
+    --graph-violet: 260 100% 62%;      /* Electric violet */
+    --graph-blue: 200 100% 55%;        /* Cooler blue */
+    --graph-cyan: 175 100% 45%;        /* Teal */
+    --graph-emerald: 160 90% 42%;      /* Mint */
+    --graph-amber: 50 95% 50%;         /* Yellow-green tint */
+    --graph-rose: 330 95% 58%;         /* Magenta-pink */
   }
   [data-theme="vivid"].dark {
-    --brand: 175 85% 55%;
-    --brand-muted: 175 85% 15%;
-    --ring: 175 85% 55%;
+    --background: 215 20% 7%;          /* #0F1318 - cool dark blue */
+    --foreground: 210 15% 92%;         /* #E6E9EC */
+    --card: 215 20% 7%;
+    --card-foreground: 210 15% 92%;
+    --popover: 215 18% 10%;            /* #151A21 */
+    --popover-foreground: 210 15% 96%;
+    --primary: 210 15% 96%;
+    --primary-foreground: 215 20% 9%;
+    --secondary: 215 15% 13%;          /* #1C2128 */
+    --secondary-foreground: 210 15% 94%;
+    --muted: 215 15% 13%;
+    --muted-foreground: 210 10% 52%;
+    --accent: 215 18% 15%;
+    --accent-foreground: 210 15% 92%;
+    --border: 215 12% 20%;             /* #2D333B */
+    --input: 215 12% 20%;
+    --ring: 150 100% 50%;
+    --brand: 150 100% 50%;             /* #00FF7F - Spring Green */
+    --brand-foreground: 0 0% 0%;       /* Black text for neon */
+    --brand-muted: 150 50% 15%;
+
+    /* Graph node colors - cool shifted, neon (dark) */
+    --graph-violet: 260 100% 72%;      /* Neon violet */
+    --graph-blue: 200 100% 65%;        /* Bright cyan-blue */
+    --graph-cyan: 175 100% 55%;        /* Neon teal */
+    --graph-emerald: 160 100% 50%;     /* Neon mint */
+    --graph-amber: 50 100% 55%;        /* Neon yellow */
+    --graph-rose: 330 100% 65%;        /* Neon pink */
   }
 
   * {

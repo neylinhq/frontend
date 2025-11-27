@@ -1,4 +1,6 @@
 import type { User } from '@/entities/user'
+import { delay, API_DELAYS } from '@/shared/config/api-delays'
+import { API_ENDPOINTS } from '@/shared/config/api-endpoints'
 
 // Mocks
 const MOCK_USER: User = {
@@ -7,28 +9,28 @@ const MOCK_USER: User = {
   firstName: 'Max',
   lastName: 'Robinson',
   role: 'user',
-  avatarUrl: 'https://github.com/shadcn.png',
+  avatarUrl: API_ENDPOINTS.GITHUB_AVATAR,
   createdAt: new Date().toISOString()
 }
 
 export const sessionApi = {
   login: async (_data: unknown) => {
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await delay(API_DELAYS.SESSION_LOGIN)
     return { user: MOCK_USER, token: 'mock-jwt-token' }
   },
 
   register: async (_data: unknown) => {
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await delay(API_DELAYS.SESSION_REGISTER)
     return { user: MOCK_USER, token: 'mock-jwt-token' }
   },
 
   resetPassword: async (_email: string) => {
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await delay(API_DELAYS.SESSION_RESET_PASSWORD)
     return { success: true }
   },
 
   logout: async () => {
-    await new Promise(resolve => setTimeout(resolve, 500))
+    await delay(API_DELAYS.SESSION_LOGOUT)
     return { success: true }
   }
 }

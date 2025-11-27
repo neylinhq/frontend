@@ -1,10 +1,13 @@
 import type { User, UserPreferences, UpdateProfile, ChangeEmail, ChangePassword } from './user.schema'
 import { defaultUserPreferences } from './user.schema'
+import { delay, API_DELAYS } from '@/shared/config/api-delays'
+import { MOCK_CREDENTIALS } from '@/shared/config/mock'
+import { generateAvatarUrl } from '@/shared/config/api-endpoints'
 
 // Mock user for development
 const mockUser: User = {
   id: '550e8400-e29b-41d4-a716-446655440000',
-  email: 'user@example.com',
+  email: MOCK_CREDENTIALS.EMAIL,
   firstName: 'John',
   lastName: 'Doe',
   role: 'user',
@@ -16,56 +19,53 @@ const mockUser: User = {
   preferences: defaultUserPreferences,
 }
 
-// Simulated API delay
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
-
 export const userApi = {
   getCurrentUser: async (): Promise<User> => {
-    await delay(100)
+    await delay(API_DELAYS.USER_GET_CURRENT)
     return { ...mockUser }
   },
 
   updateProfile: async (data: UpdateProfile): Promise<User> => {
-    await delay(300)
+    await delay(API_DELAYS.USER_UPDATE_PROFILE)
     Object.assign(mockUser, data)
     return { ...mockUser }
   },
 
   updatePreferences: async (data: UserPreferences): Promise<UserPreferences> => {
-    await delay(200)
+    await delay(API_DELAYS.USER_UPDATE_PREFERENCES)
     mockUser.preferences = data
     return data
   },
 
   uploadAvatar: async (_file: File): Promise<{ avatarUrl: string }> => {
-    await delay(500)
+    await delay(API_DELAYS.USER_UPLOAD_AVATAR)
     // In real app, this would upload to S3/Cloudinary and return URL
-    const avatarUrl = 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + Date.now()
+    const avatarUrl = generateAvatarUrl(Date.now())
     mockUser.avatarUrl = avatarUrl
     return { avatarUrl }
   },
 
   changeEmail: async (data: ChangeEmail): Promise<void> => {
-    await delay(400)
+    await delay(API_DELAYS.USER_CHANGE_EMAIL)
     // In real app, this would send verification email
-    if (data.password !== 'password') {
+    if (data.password !== MOCK_CREDENTIALS.PASSWORD) {
       throw new Error('Invalid password')
     }
     mockUser.email = data.newEmail
   },
 
   changePassword: async (data: ChangePassword): Promise<void> => {
-    await delay(400)
+    await delay(API_DELAYS.USER_CHANGE_PASSWORD)
     // In real app, this would verify current password and update
-    if (data.currentPassword !== 'password') {
+    if (data.currentPassword !== MOCK_CREDENTIALS.PASSWORD) {
       throw new Error('Invalid current password')
     }
     // Password updated successfully (mock)
   },
 
   deleteAccount: async (password: string): Promise<void> => {
-    await delay(500)
-    if (password !== 'password') {
+    await delay(API_DELAYS.USER_DELETE_ACCOUNT)
+    if (password !== MOCK_CREDENTIALS.PASSWORD) {
       throw new Error('Invalid password')
     }
     // Account deleted (mock)

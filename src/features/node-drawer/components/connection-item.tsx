@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, Eye, ExternalLink } from 'lucide-react'
+import { ArrowDown, ArrowUp, Eye, ExternalLink } from 'lucide-react'
 import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Edge, Node } from '@/entities/map'
@@ -25,7 +25,7 @@ export const ConnectionItem = memo(({
 }: ConnectionItemProps) => {
   const { t } = useTranslation()
   const Icon = getNodeIcon(node.type)
-  const DirectionIcon = direction === 'incoming' ? ArrowLeft : ArrowRight
+  const DirectionIcon = direction === 'incoming' ? ArrowDown : ArrowUp
 
   const handleClick = () => {
     onOpenNode?.(node.id)
@@ -45,8 +45,8 @@ export const ConnectionItem = memo(({
       )}
       onClick={handleClick}
     >
-      <div className="flex items-start gap-2">
-        <DirectionIcon className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+      <div className="flex items-center gap-2">
+        <DirectionIcon className="w-4 h-4 text-muted-foreground flex-shrink-0" />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <Icon className="w-4 h-4 flex-shrink-0" />

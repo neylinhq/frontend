@@ -4,12 +4,11 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { cn } from '@/shared/lib/cn'
+import { UI_DELAYS } from '@/shared/config/api-delays'
 
 // Constants
 const GUTTER_WIDTH = 60
 const BLOCK_HOVER_THRESHOLD = 5
-const MENU_HIDE_DELAY = 100
-const THROTTLE_DELAY = 16 // ~60fps
 
 interface FloatingMenuProps {
   editor: Editor
@@ -19,7 +18,7 @@ interface FloatingMenuProps {
 // Throttle helper with cleanup support
 function createThrottle<T extends (...args: Parameters<T>) => void>(
   fn: T,
-  delay: number
+  delayMs: number
 ): { throttled: T; cleanup: () => void } {
   let lastCall = 0
   let timeoutId: ReturnType<typeof setTimeout> | null = null
@@ -28,7 +27,7 @@ function createThrottle<T extends (...args: Parameters<T>) => void>(
     const now = Date.now()
     const timeSinceLastCall = now - lastCall
 
-    if (timeSinceLastCall >= delay) {
+    if (timeSinceLastCall >= delayMs) {
       lastCall = now
       fn(...args)
     } else if (!timeoutId) {
@@ -36,7 +35,7 @@ function createThrottle<T extends (...args: Parameters<T>) => void>(
         lastCall = Date.now()
         timeoutId = null
         fn(...args)
-      }, delay - timeSinceLastCall)
+      }, delayMs - timeSinceLastCall)
     }
   }) as T
 
@@ -214,7 +213,7 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
     // Throttle mouse move for better performance
     const { throttled: handleMouseMove, cleanup: cleanupThrottle } = createThrottle(
       processMouseMove,
-      THROTTLE_DELAY
+      UI_DELAYS.EDITOR_THROTTLE
     )
 
     const handleMouseLeave = (e: MouseEvent) => {
@@ -605,7 +604,7 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
         if (ghost.parentNode) {
           document.body.removeChild(ghost)
         }
-      }, 0)
+      }, UI_DELAYS.EDITOR_GHOST_CLEANUP)
     }
   }
 
@@ -635,7 +634,7 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
           setHoveredBlock(null)
           setShouldShow(false)
         }
-      }, MENU_HIDE_DELAY)
+      }, UI_DELAYS.EDITOR_MENU_HIDE)
     }
   }
 

@@ -1,7 +1,13 @@
 #!/usr/bin/env npx tsx
 
-import * as fs from 'fs'
-import * as path from 'path'
+import * as fs from 'node:fs'
+import * as path from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+// Get project root (relative to this script location)
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const PROJECT_ROOT = path.resolve(__dirname, '../..')
 
 // Directories to ignore
 const IGNORE_DIRS = new Set([
@@ -13,7 +19,7 @@ const IGNORE_DIRS = new Set([
   '.turbo',
   'coverage',
   '.cache',
-  'public',
+  'public'
 ])
 
 // Files to ignore
@@ -24,7 +30,7 @@ const SYMBOLS = {
   branch: '|-- ',
   last: '`-- ',
   vertical: '|   ',
-  space: '    ',
+  space: '    '
 } as const
 
 interface DirEntry {
@@ -39,7 +45,7 @@ function getSortedEntries(dirPath: string): DirEntry[] {
   const entries = fs.readdirSync(dirPath, { withFileTypes: true })
 
   // Filter ignored files and folders
-  const filtered = entries.filter((entry) => {
+  const filtered = entries.filter(entry => {
     if (entry.isDirectory() && IGNORE_DIRS.has(entry.name)) return false
     if (entry.isFile() && IGNORE_FILES.has(entry.name)) return false
     return true
@@ -84,7 +90,7 @@ function countItems(dirPath: string): { files: number; dirs: number } {
   function walk(currentPath: string): void {
     const entries = getSortedEntries(currentPath)
 
-    entries.forEach((entry) => {
+    entries.forEach(entry => {
       if (entry.isDirectory()) {
         dirs++
         const fullPath = path.join(currentPath, entry.name)
@@ -101,7 +107,7 @@ function countItems(dirPath: string): { files: number; dirs: number } {
 
 // Main function
 function main(): void {
-  const startPath = process.argv[2] || process.cwd()
+  const startPath = process.argv[2] || PROJECT_ROOT
   const projectName = path.basename(startPath)
 
   console.log(`\n${projectName}/\n`)

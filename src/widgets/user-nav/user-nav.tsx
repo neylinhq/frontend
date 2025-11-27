@@ -1,11 +1,9 @@
-import { Globe, Palette } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link, useFetcher } from 'react-router'
-import { ThemeToggle } from '@/app/theme/components/theme-toggle'
-import { useTheme } from '@/app/theme/components/theme-provider'
-import { COLOR_THEMES } from '@/app/theme/theme.constants'
+import { ColorThemeSelect } from '@/app/theme/components/color-theme-select'
+import { ModeSelect } from '@/app/theme/components/mode-select'
 import { useSessionStore } from '@/entities/session'
-import { LANGUAGES } from '@/features/language-switcher/language-switcher.constants'
+import { LanguageSelect } from '@/features/language-switcher'
 import { getShortcut } from '@/shared/lib/platform'
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar'
 import { Button } from '@/shared/ui/button'
@@ -15,12 +13,8 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger
 } from '@/shared/ui/dropdown-menu'
 import { USER_NAV_LOGOUT_ITEM, USER_NAV_MAIN_SECTION } from './user-nav.constants'
@@ -28,17 +22,12 @@ import { USER_NAV_LOGOUT_ITEM, USER_NAV_MAIN_SECTION } from './user-nav.constant
 export function UserNav() {
   const { user } = useSessionStore()
   const fetcher = useFetcher()
-  const { t, i18n } = useTranslation()
-  const { colorTheme, setColorTheme } = useTheme()
+  const { t } = useTranslation()
 
   if (!user) return null
 
   const handleLogout = () => {
     fetcher.submit(null, { method: 'post', action: '/auth/logout' })
-  }
-
-  const changeLanguage = (lng: string) => {
-    i18n.changeLanguage(lng)
   }
 
   return (
@@ -89,63 +78,11 @@ export function UserNav() {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
 
-        <DropdownMenuGroup>
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger>
-              <Globe className="mr-2 h-4 w-4" />
-              <span>{t('nav.language')}</span>
-            </DropdownMenuSubTrigger>
-            <DropdownMenuPortal>
-              <DropdownMenuSubContent>
-                {LANGUAGES.map(lang => (
-                  <DropdownMenuItem
-                    key={lang.id}
-                    onSelect={e => {
-                      e.preventDefault()
-                      changeLanguage(lang.id)
-                    }}
-                  >
-                    <lang.Flag className="mr-2 h-5 w-5 rounded-full object-cover border border-black/30 dark:border-white/30" />
-                    {lang.label}
-                    {i18n.language === lang.id && <span className="ml-auto text-xs">✓</span>}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuSubContent>
-            </DropdownMenuPortal>
-          </DropdownMenuSub>
-
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger>
-              <Palette className="mr-2 h-4 w-4" />
-              <span>{t('nav.colorTheme')}</span>
-            </DropdownMenuSubTrigger>
-            <DropdownMenuPortal>
-              <DropdownMenuSubContent>
-                {COLOR_THEMES.map(theme => (
-                  <DropdownMenuItem
-                    key={theme.value}
-                    onSelect={e => {
-                      e.preventDefault()
-                      setColorTheme(theme.value)
-                    }}
-                  >
-                    <span
-                      className="mr-2 h-4 w-4 rounded-full border border-black/20 dark:border-white/20"
-                      style={{ backgroundColor: theme.color }}
-                    />
-                    {theme.name}
-                    {colorTheme === theme.value && <span className="ml-auto text-xs">✓</span>}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuSubContent>
-            </DropdownMenuPortal>
-          </DropdownMenuSub>
-
-          <div className="p-2 flex items-center justify-between">
-            <span className="text-xs text-muted-foreground px-2">{t('nav.theme')}</span>
-            <ThemeToggle />
-          </div>
-        </DropdownMenuGroup>
+        <div className="px-2 py-2 flex items-center justify-center gap-1">
+          <LanguageSelect compact />
+          <ModeSelect compact />
+          <ColorThemeSelect compact />
+        </div>
 
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout}>

@@ -35,6 +35,7 @@ import {
   parseExpiry,
   type CardBrand,
 } from '../lib/card-utils'
+import { CARD_VALIDATION, getCvcLength, getCvcPlaceholder } from '../lib/card-validation'
 import { cn } from '@/shared/lib/cn'
 
 interface AddPaymentMethodDialogProps {
@@ -161,10 +162,10 @@ export function AddPaymentMethodDialog({
                   <FormControl>
                     <div className="relative">
                       <Input
-                        placeholder="1234 5678 9012 3456"
+                        placeholder={CARD_VALIDATION.CARD_NUMBER_PLACEHOLDER}
                         autoComplete="cc-number"
                         inputMode="numeric"
-                        maxLength={23}
+                        maxLength={CARD_VALIDATION.CARD_NUMBER_MAX_LENGTH}
                         className="pr-14"
                         {...field}
                         onChange={e => handleCardNumberChange(e, field.onChange)}
@@ -189,10 +190,10 @@ export function AddPaymentMethodDialog({
                     <FormLabel>{t('billing.addPaymentMethod.expiry')}</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="MM/YY"
+                        placeholder={CARD_VALIDATION.EXPIRY_PLACEHOLDER}
                         autoComplete="cc-exp"
                         inputMode="numeric"
-                        maxLength={5}
+                        maxLength={CARD_VALIDATION.EXPIRY_MAX_LENGTH}
                         {...field}
                         onChange={e => handleExpiryChange(e, field.onChange)}
                       />
@@ -215,10 +216,10 @@ export function AddPaymentMethodDialog({
                       <div className="relative">
                         <Input
                           type={showCvc ? 'text' : 'password'}
-                          placeholder={cardBrand === 'amex' ? '1234' : '123'}
+                          placeholder={getCvcPlaceholder(cardBrand)}
                           autoComplete="cc-csc"
                           inputMode="numeric"
-                          maxLength={cardBrand === 'amex' ? 4 : 3}
+                          maxLength={getCvcLength(cardBrand)}
                           className="pr-10"
                           {...field}
                         />

@@ -27,7 +27,7 @@ export function LanguageSwitcher() {
       <DropdownMenuContent align="end">
         {LANGUAGES.map(lang => (
           <DropdownMenuItem key={lang.id} onClick={() => changeLanguage(lang.id)}>
-            <lang.Flag className="mr-2 h-5 w-5 rounded-full object-cover border border-black/30 dark:border-white/30" />
+            <lang.Flag className="mr-2 h-5 w-5 rounded-full object-cover border border-border" />
             {lang.label}
           </DropdownMenuItem>
         ))}

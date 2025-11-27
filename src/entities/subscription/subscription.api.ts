@@ -7,6 +7,8 @@ import type {
   PlanType
 } from './subscription.schema'
 import type { BillingPortalSession, CheckoutSession, AddPaymentMethodInput } from './subscription.types'
+import { delay, API_DELAYS } from '@/shared/config/api-delays'
+import { API_ENDPOINTS } from '@/shared/config/api-endpoints'
 
 // Mock Data
 const MOCK_PLANS: PlanDetails[] = [
@@ -123,7 +125,7 @@ const MOCK_PAYMENT_HISTORY: PaymentHistory[] = [
     currency: 'usd',
     status: 'succeeded',
     description: 'Pro Plan - Monthly',
-    invoiceUrl: 'https://example.com/invoices/inv-001',
+    invoiceUrl: `${API_ENDPOINTS.INVOICE_EXAMPLE}/inv-001`,
     createdAt: '2025-01-01T00:00:00Z'
   },
   {
@@ -132,7 +134,7 @@ const MOCK_PAYMENT_HISTORY: PaymentHistory[] = [
     currency: 'usd',
     status: 'succeeded',
     description: 'Pro Plan - Monthly',
-    invoiceUrl: 'https://example.com/invoices/inv-002',
+    invoiceUrl: `${API_ENDPOINTS.INVOICE_EXAMPLE}/inv-002`,
     createdAt: '2024-12-01T00:00:00Z'
   },
   {
@@ -141,7 +143,7 @@ const MOCK_PAYMENT_HISTORY: PaymentHistory[] = [
     currency: 'usd',
     status: 'succeeded',
     description: 'Pro Plan - Monthly',
-    invoiceUrl: 'https://example.com/invoices/inv-003',
+    invoiceUrl: `${API_ENDPOINTS.INVOICE_EXAMPLE}/inv-003`,
     createdAt: '2024-11-01T00:00:00Z'
   }
 ]
@@ -150,25 +152,25 @@ const MOCK_PAYMENT_HISTORY: PaymentHistory[] = [
 export const subscriptionApi = {
   // Get current subscription
   getCurrentSubscription: async (): Promise<Subscription> => {
-    await new Promise(resolve => setTimeout(resolve, 800))
+    await delay(API_DELAYS.SUBSCRIPTION_GET_CURRENT)
     return MOCK_SUBSCRIPTION
   },
 
   // Get usage statistics
   getUsageStats: async (): Promise<UsageStats> => {
-    await new Promise(resolve => setTimeout(resolve, 500))
+    await delay(API_DELAYS.SUBSCRIPTION_GET_USAGE)
     return MOCK_USAGE
   },
 
   // Get all available plans
   getPlans: async (): Promise<PlanDetails[]> => {
-    await new Promise(resolve => setTimeout(resolve, 600))
+    await delay(API_DELAYS.SUBSCRIPTION_GET_PLANS)
     return MOCK_PLANS
   },
 
   // Get specific plan details
   getPlanDetails: async (planType: PlanType): Promise<PlanDetails> => {
-    await new Promise(resolve => setTimeout(resolve, 400))
+    await delay(API_DELAYS.SUBSCRIPTION_GET_PLAN_DETAILS)
     const plan = MOCK_PLANS.find(p => p.type === planType)
     if (!plan) throw new Error(`Plan ${planType} not found`)
     return plan
@@ -176,16 +178,16 @@ export const subscriptionApi = {
 
   // Create checkout session for upgrade
   createCheckoutSession: async (planType: PlanType): Promise<CheckoutSession> => {
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await delay(API_DELAYS.SUBSCRIPTION_CREATE_CHECKOUT)
     return {
-      url: `https://checkout.stripe.com/session-${planType}`,
+      url: `${API_ENDPOINTS.STRIPE_CHECKOUT}/session-${planType}`,
       sessionId: `cs_test_${Math.random().toString(36).substring(7)}`
     }
   },
 
   // Cancel subscription
   cancelSubscription: async (): Promise<Subscription> => {
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await delay(API_DELAYS.SUBSCRIPTION_CANCEL)
     return {
       ...MOCK_SUBSCRIPTION,
       cancelAtPeriodEnd: true,
@@ -195,7 +197,7 @@ export const subscriptionApi = {
 
   // Resume cancelled subscription
   resumeSubscription: async (): Promise<Subscription> => {
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await delay(API_DELAYS.SUBSCRIPTION_RESUME)
     return {
       ...MOCK_SUBSCRIPTION,
       cancelAtPeriodEnd: false,
@@ -205,7 +207,7 @@ export const subscriptionApi = {
 
   // Update subscription plan
   updateSubscription: async (planType: PlanType): Promise<Subscription> => {
-    await new Promise(resolve => setTimeout(resolve, 1200))
+    await delay(API_DELAYS.SUBSCRIPTION_UPDATE)
     return {
       ...MOCK_SUBSCRIPTION,
       planType,
@@ -215,13 +217,13 @@ export const subscriptionApi = {
 
   // Get payment methods
   getPaymentMethods: async (): Promise<PaymentMethod[]> => {
-    await new Promise(resolve => setTimeout(resolve, 700))
+    await delay(API_DELAYS.SUBSCRIPTION_GET_PAYMENT_METHODS)
     return MOCK_PAYMENT_METHODS
   },
 
   // Add payment method
   addPaymentMethod: async (input: AddPaymentMethodInput): Promise<PaymentMethod> => {
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await delay(API_DELAYS.SUBSCRIPTION_ADD_PAYMENT_METHOD)
     return {
       id: `pm-${Date.now()}`,
       type: 'card',
@@ -235,28 +237,28 @@ export const subscriptionApi = {
   },
 
   // Remove payment method
-  removePaymentMethod: async (paymentMethodId: string): Promise<void> => {
-    await new Promise(resolve => setTimeout(resolve, 800))
+  removePaymentMethod: async (_paymentMethodId: string): Promise<void> => {
+    await delay(API_DELAYS.SUBSCRIPTION_REMOVE_PAYMENT_METHOD)
     // Mock implementation - no-op
   },
 
   // Set default payment method
-  setDefaultPaymentMethod: async (paymentMethodId: string): Promise<void> => {
-    await new Promise(resolve => setTimeout(resolve, 600))
+  setDefaultPaymentMethod: async (_paymentMethodId: string): Promise<void> => {
+    await delay(API_DELAYS.SUBSCRIPTION_SET_DEFAULT_PAYMENT)
     // Mock implementation - no-op
   },
 
   // Get payment history
   getPaymentHistory: async (): Promise<PaymentHistory[]> => {
-    await new Promise(resolve => setTimeout(resolve, 900))
+    await delay(API_DELAYS.SUBSCRIPTION_GET_PAYMENT_HISTORY)
     return MOCK_PAYMENT_HISTORY
   },
 
   // Create billing portal session
   createBillingPortalSession: async (): Promise<BillingPortalSession> => {
-    await new Promise(resolve => setTimeout(resolve, 800))
+    await delay(API_DELAYS.SUBSCRIPTION_CREATE_BILLING_PORTAL)
     return {
-      url: 'https://billing.stripe.com/portal-session',
+      url: API_ENDPOINTS.STRIPE_BILLING_PORTAL,
       expiresAt: new Date(Date.now() + 30 * 60 * 1000).toISOString() // 30 min
     }
   }

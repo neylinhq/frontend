@@ -14,7 +14,7 @@ export function PublicHeader({ hideAuthButtons }: PublicHeaderProps) {
   const { t } = useTranslation()
 
   return (
-    <header className="fixed top-0 w-full h-14 border-b bg-background z-50">
+    <header className="h-14 flex-shrink-0 border-b bg-background">
       <div className="max-w-5xl mx-auto px-6 h-full flex items-center justify-between">
         <Logo size="lg" />
 

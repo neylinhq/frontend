@@ -178,5 +178,3 @@ export const GRAPH_THEORY_NODES: Node[] = [
     updatedAt: '2024-03-21T08:14:00Z'
   }
 ]
-
-]

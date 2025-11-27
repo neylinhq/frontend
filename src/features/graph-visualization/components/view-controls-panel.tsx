@@ -42,17 +42,23 @@ export const ViewControlsPanel = memo(
   }: ViewControlsPanelProps) => {
     const { t } = useTranslation()
     const { showMinimap, toggleMinimap } = useGraphUI()
-    const { nodeSpacing, setNodeSpacing, directionStrength, setDirectionStrength } = useNodeSpacing()
+    const {
+      nodeSpacing, setNodeSpacing,
+      directionStrength, setDirectionStrength,
+      animationDuration, setAnimationDuration
+    } = useNodeSpacing()
 
     // Local state for smooth slider movement - only sync to store on commit
     const [localSpacing, setLocalSpacing] = useState(nodeSpacing)
     const [localDirection, setLocalDirection] = useState(directionStrength)
+    const [localAnimation, setLocalAnimation] = useState(animationDuration)
 
     // Sync local state when store values change externally
     useEffect(() => setLocalSpacing(nodeSpacing), [nodeSpacing])
     useEffect(() => setLocalDirection(directionStrength), [directionStrength])
+    useEffect(() => setLocalAnimation(animationDuration), [animationDuration])
 
-    const hasLayoutChanges = nodeSpacing !== 100 || directionStrength !== 100
+    const hasLayoutChanges = nodeSpacing !== 100 || directionStrength !== 100 || animationDuration !== 300
 
     return (
       <div
@@ -153,6 +159,25 @@ export const ViewControlsPanel = memo(
                   <p className="text-[10px] text-muted-foreground">
                     {t('graph.toolbar.directionHint')}
                   </p>
+                </div>
+
+                {/* Animation speed slider */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-muted-foreground">
+                      {t('graph.toolbar.animationSpeed')}
+                    </span>
+                    <span className="text-xs font-medium">{localAnimation}ms</span>
+                  </div>
+                  <Slider
+                    value={[localAnimation]}
+                    onValueChange={([value]) => setLocalAnimation(value)}
+                    onValueCommit={([value]) => setAnimationDuration(value)}
+                    min={0}
+                    max={750}
+                    step={50}
+                    className="w-full"
+                  />
                 </div>
               </div>
             </DropdownMenuContent>

@@ -253,7 +253,8 @@
       "spacing": "Spacing",
       "layoutSettings": "Settings",
       "direction": "Direction",
-      "directionHint": "0 = less crossings, 200 = natural flow"
+      "directionHint": "0 = less crossings, 200 = natural flow",
+      "animationSpeed": "Animation"
     },
     "filters": {
       "nodeTypes": "Node types",

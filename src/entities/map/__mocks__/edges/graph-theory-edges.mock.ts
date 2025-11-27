@@ -210,10 +210,3 @@ export const GRAPH_THEORY_EDGES: Edge[] = [
 
   // gt-15 (Гиперграф) остаётся изолированным - без связей
 ]
-
-MOCK_EDGES.push(...GRAPH_THEORY_EDGES)
-
-// Add generated test data
-MOCK_NODES.push(...GENERATED_GRAPH.nodes)
-MOCK_EDGES.push(...GENERATED_GRAPH.edges)
-]

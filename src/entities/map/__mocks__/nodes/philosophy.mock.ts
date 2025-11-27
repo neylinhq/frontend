@@ -636,8 +636,3 @@ export const PHILOSOPHY_NODES: Node[] = [
     updatedAt: '2024-02-15T09:52:00Z'
   }
 ]
-
-// Добавляем философские узлы к общему массиву
-MOCK_NODES.push(...PHILOSOPHY_NODES)
-
-]

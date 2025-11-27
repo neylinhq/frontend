@@ -12,13 +12,13 @@ import {
   useViewport,
 } from '@xyflow/react'
 import { Loader2 } from 'lucide-react'
-import { memo, useCallback, useEffect, useMemo, useRef } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useFullMap, type FullMap } from '@/entities/map'
 import { cn } from '@/shared/lib/cn'
 import { Card } from '@/shared/ui/card'
 import { transformEdgesToFlow, transformNodesToFlow } from '../lib/transform-data'
-import { useAnimatedLayout } from '../lib/use-animated-layout'
+import { useAnimatedLayout, easeOutCubic } from '../lib/use-animated-layout'
 import { useGraphControls } from '../model/graph-controls.hooks'
 import { useNodeSelection } from '../model/node-selection.hooks'
 import { NodeDrawer } from '@/features/node-drawer'
@@ -86,12 +86,25 @@ function GraphVisualizationContent({
   const { focusedNodeId, focusDepth, focusNode } = useFocusMode()
   const { visibleNodeTypes, visibleEdgeTypes } = useFilters()
   const { showMinimap } = useGraphUI()
-  const { nodeSpacing, directionStrength } = useNodeSpacing()
+  const { nodeSpacing, directionStrength, animationDuration } = useNodeSpacing()
   const { animateToPositions } = useAnimatedLayout()
 
+  // Track dark mode for theme-aware styling
+  const [isDark, setIsDark] = useState(() =>
+    typeof document !== 'undefined' && document.documentElement.classList.contains('dark')
+  )
+
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains('dark'))
+    })
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+    return () => observer.disconnect()
+  }, [])
+
   // Use refs for layout params to avoid stale closures when triggerLayout fires
-  const layoutParamsRef = useRef({ nodeSpacing, viewMode, focusedNodeId, directionStrength })
-  layoutParamsRef.current = { nodeSpacing, viewMode, focusedNodeId, directionStrength }
+  const layoutParamsRef = useRef({ nodeSpacing, viewMode, focusedNodeId, directionStrength, animationDuration })
+  layoutParamsRef.current = { nodeSpacing, viewMode, focusedNodeId, directionStrength, animationDuration }
 
   // Calculate counts by type for filters
   const { nodeCountsByType, edgeCountsByType } = useMemo(() => {
@@ -213,10 +226,11 @@ function GraphVisualizationContent({
 
     if (animated) {
       // Smooth animation with synchronized camera
-      animateToPositions(reactFlowNodes, result.nodes, anchorNodeId ?? null)
+      const duration = layoutParamsRef.current.animationDuration
+      animateToPositions(reactFlowNodes, result.nodes, anchorNodeId ?? null, { duration, easing: easeOutCubic })
       // If no anchor but need to fit view, do it after animation completes
       if (!anchorNodeId && shouldFitView) {
-        setTimeout(() => fitView({ padding: 0.2, duration: 300 }), 350)
+        setTimeout(() => fitView({ padding: 0.2, duration: 300 }), duration + 50)
       }
     } else {
       // Instant update
@@ -279,12 +293,12 @@ function GraphVisualizationContent({
           directionStrength,
         })
         // Animate to new positions
-        animateToPositions(reactFlowNodes, result.nodes, null)
-        setTimeout(() => fitView({ padding: 0.2, duration: 300 }), 350)
+        animateToPositions(reactFlowNodes, result.nodes, null, { duration: animationDuration, easing: easeOutCubic })
+        setTimeout(() => fitView({ padding: 0.2, duration: 300 }), animationDuration + 50)
       }
       prevNodeIdsRef.current = nodeIds
     }
-  }, [initialNodes, initialEdges, viewMode, focusedNodeId, nodeSpacing, directionStrength, reactFlowNodes, animateToPositions, fitView])
+  }, [initialNodes, initialEdges, viewMode, focusedNodeId, nodeSpacing, directionStrength, animationDuration, reactFlowNodes, animateToPositions, fitView])
 
   // Sync edges when data changes
   const prevEdgeIdsRef = useRef<string>('')
@@ -417,8 +431,8 @@ function GraphVisualizationContent({
   return (
     <div
       className={cn(
-        'relative bg-background rounded-lg border h-full w-full',
-        controls.isFullscreen && 'fixed inset-4 z-50',
+        'relative bg-background rounded-lg border',
+        controls.isFullscreen ? 'fixed inset-4 z-50' : 'h-full w-full',
         className
       )}
     >
@@ -442,8 +456,9 @@ function GraphVisualizationContent({
         zoomOnScroll={interactive}
         snapToGrid={interactive}
         snapGrid={[15, 15]}
+        proOptions={{ hideAttribution: true }}
       >
-        <Background color="#e2e8f0" size={1} />
+        <Background color={isDark ? '#2e2e2e' : '#e2e8f0'} size={1} />
 
         {showMinimap && (
           <MiniMap
@@ -459,7 +474,10 @@ function GraphVisualizationContent({
                   return '#64748b'
               }
             }}
-            maskColor="rgb(0, 0, 0, 0.1)"
+            style={{
+              backgroundColor: isDark ? '#171717' : '#f8fafc',
+            }}
+            maskColor={isDark ? 'rgba(0, 0, 0, 0.6)' : 'rgba(0, 0, 0, 0.1)'}
             pannable
             zoomable
             onClick={(_event, position) => setCenter(position.x, position.y, { zoom: viewportZoom, duration: 200 })}

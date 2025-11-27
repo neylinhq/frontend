@@ -5,12 +5,14 @@ import { PublicHeader } from '@/shared/ui/public-header'
 
 export default function PublicLayout() {
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground">
+    <div className="h-screen flex flex-col overflow-hidden bg-background text-foreground">
       <PublicHeader />
-      <main className="flex-1 pt-14">
-        <Outlet />
-      </main>
-      <PublicFooter />
+      <div className="flex-1 min-h-0 overflow-y-auto flex flex-col">
+        <main className="flex-1">
+          <Outlet />
+        </main>
+        <PublicFooter />
+      </div>
     </div>
   )
 }

@@ -1,6 +1,7 @@
 import type { Node } from '../map.schema'
 
 // Rich content mock for editor testing
+export const MOCK_NODE_WITH_CONTENT: Node = {
   id: 'mock-editor',
   mapId: '1',
   label: 'Пример узла с контентом',
@@ -45,5 +46,3 @@ import type { Node } from '../map.schema'
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString()
 }
-
-export { MOCK_NODE_WITH_CONTENT }

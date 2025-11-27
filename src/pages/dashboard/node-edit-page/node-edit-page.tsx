@@ -16,6 +16,7 @@ import { NodeMetadataForm, type NodeMetadataFormValues } from '@/features/node-m
 import { cn } from '@/shared/lib/cn'
 import { Badge } from '@/shared/ui/badge'
 import { Button } from '@/shared/ui/button'
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/shared/ui/sheet'
 
 const NODE_TYPE_CONFIG: Record<NodeType, { color: string; label: string }> = {
   concept: { color: 'bg-blue-500/10 text-blue-600 dark:text-blue-400', label: 'Concept' },
@@ -39,6 +40,7 @@ export function NodeEditPage({ node: currentNode, map: lightweightMap, mapId, no
   const { t } = useTranslation()
   const updateNodeMutation = useUpdateNode(mapId)
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [mobileSheetOpen, setMobileSheetOpen] = useState(false)
   const [title, setTitle] = useState('')
   const titleInputRef = useRef<HTMLTextAreaElement>(null)
 
@@ -159,17 +161,27 @@ export function NodeEditPage({ node: currentNode, map: lightweightMap, mapId, no
                 </span>
               )}
             </div>
+            {/* Desktop toggle */}
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="h-8 w-8 p-0"
+              className="hidden md:flex h-8 w-8 p-0"
             >
               {sidebarOpen ? (
                 <PanelRightClose className="h-4 w-4" />
               ) : (
                 <PanelRightOpen className="h-4 w-4" />
               )}
+            </Button>
+            {/* Mobile toggle */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setMobileSheetOpen(true)}
+              className="md:hidden h-8 w-8 p-0"
+            >
+              <PanelRightOpen className="h-4 w-4" />
             </Button>
           </div>
 
@@ -196,7 +208,7 @@ export function NodeEditPage({ node: currentNode, map: lightweightMap, mapId, no
         </div>
       </main>
 
-      {/* Right Sidebar */}
+      {/* Right Sidebar - Desktop */}
       {sidebarOpen && (
         <aside className="hidden md:flex w-80 flex-shrink-0 border-l border-border h-full">
           <div className="flex flex-1 flex-col min-h-0">
@@ -231,6 +243,38 @@ export function NodeEditPage({ node: currentNode, map: lightweightMap, mapId, no
           </div>
         </aside>
       )}
+
+      {/* Right Sidebar - Mobile Sheet */}
+      <Sheet open={mobileSheetOpen} onOpenChange={setMobileSheetOpen}>
+        <SheetContent side="right" className="w-80 p-0 flex flex-col">
+          <SheetHeader className="border-b border-border/50 px-4 py-3">
+            <SheetTitle className="text-sm font-semibold">{t('nodeEdit.properties')}</SheetTitle>
+          </SheetHeader>
+
+          <div className="flex-1 overflow-y-auto">
+            {/* Node Metadata */}
+            <div className="border-b border-border/50 p-4">
+              <NodeMetadataForm
+                node={currentNode}
+                onSubmit={handleMetadataSubmit}
+                isPending={updateNodeMutation.isPending}
+              />
+            </div>
+
+            {/* Connections */}
+            <div className="p-4">
+              <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                {t('nodeEdit.connections')}
+              </h3>
+              <NodeConnectionsPanel
+                node={currentNode}
+                edges={lightweightMap.edges}
+                allNodes={lightweightMap.nodes}
+              />
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   )
 }

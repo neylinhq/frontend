@@ -158,12 +158,47 @@
     --graph-rose: 340 90% 65%;
   }
 
+  /* ========================================
+     Color Themes
+     ======================================== */
+
+  /* Vanilla Theme - warm, cozy, amber tones */
+  [data-theme="vanilla"] {
+    --brand: 35 90% 52%;
+    --brand-foreground: 0 0% 100%;
+    --brand-muted: 35 90% 95%;
+    --ring: 35 90% 52%;
+  }
+  [data-theme="vanilla"].dark {
+    --brand: 35 90% 58%;
+    --brand-muted: 35 90% 15%;
+    --ring: 35 90% 58%;
+  }
+
+  /* Vivid Theme - electric, modern, cyan/teal */
+  [data-theme="vivid"] {
+    --brand: 175 85% 40%;
+    --brand-foreground: 0 0% 100%;
+    --brand-muted: 175 85% 95%;
+    --ring: 175 85% 40%;
+  }
+  [data-theme="vivid"].dark {
+    --brand: 175 85% 55%;
+    --brand-muted: 175 85% 15%;
+    --ring: 175 85% 55%;
+  }
+
   * {
     @apply border-border;
   }
-  html {
-    overflow-y: scroll;
+
+  /* Prevent body scroll - all scrolling happens within app containers */
+  html,
+  body {
+    overflow: hidden;
+    height: 100%;
   }
+
   body {
     @apply bg-background text-foreground antialiased;
     min-width: 390px;
@@ -185,23 +220,6 @@
     caret-color: hsl(var(--foreground)) !important;
   }
 
-  /* Prevent content shift when modals/popovers open */
-  html {
-    scrollbar-gutter: stable;
-  }
-
-  /* Prevent body scroll - all scrolling happens within app containers */
-  html,
-  body {
-    overflow: hidden;
-    height: 100%;
-  }
-
-  /* Override Radix scroll-lock margin compensation (we use scrollbar-gutter instead) */
-  body[data-scroll-locked] {
-    margin-right: 0 !important;
-  }
-
   /* Custom Scrollbar */
   ::-webkit-scrollbar {
     width: 10px;
@@ -212,13 +230,13 @@
     border-left: 1px solid hsl(var(--border));
   }
   ::-webkit-scrollbar-thumb {
-    background-color: hsl(var(--muted-foreground) / 0.5);
+    background-color: hsl(var(--muted-foreground) / 0.3);
     background-clip: content-box;
     border-radius: 9999px;
     border: 3px solid transparent;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background-color: hsl(var(--muted-foreground) / 0.7);
+    background-color: hsl(var(--muted-foreground) / 0.5);
   }
   ::-webkit-scrollbar-corner {
     background: transparent;

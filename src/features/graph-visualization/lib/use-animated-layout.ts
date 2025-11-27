@@ -8,7 +8,7 @@ interface AnimationConfig {
 }
 
 // Easing function: fast start, smooth deceleration
-function easeOutCubic(t: number): number {
+export function easeOutCubic(t: number): number {
   return 1 - Math.pow(1 - t, 3)
 }
 
@@ -37,6 +37,20 @@ export function useAnimatedLayout() {
       // If no nodes, nothing to animate
       if (currentNodes.length === 0 || targetNodes.length === 0) {
         setNodes(targetNodes)
+        return
+      }
+
+      // If duration is 0, skip animation entirely
+      if (config.duration <= 0) {
+        setNodes(targetNodes)
+        if (anchorNodeId) {
+          const targetNode = targetNodes.find((n) => n.id === anchorNodeId)
+          if (targetNode) {
+            const x = targetNode.position.x + (targetNode.measured?.width ?? 200) / 2
+            const y = targetNode.position.y + (targetNode.measured?.height ?? 100) / 2
+            setCenter(x, y, { zoom, duration: 0 })
+          }
+        }
         return
       }
 

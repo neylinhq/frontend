@@ -29,6 +29,7 @@ export interface GraphViewState {
   // Layout
   nodeSpacing: number // 50-200%, default 100
   directionStrength: number // 0-200, default 100
+  animationDuration: number // 0-750ms, default 300
 }
 
 interface GraphViewActions {
@@ -53,6 +54,7 @@ interface GraphViewActions {
   // Layout
   setNodeSpacing: (spacing: number) => void
   setDirectionStrength: (strength: number) => void
+  setAnimationDuration: (duration: number) => void
 
   // Helpers
   getActiveFiltersCount: () => number
@@ -69,6 +71,7 @@ const initialState: GraphViewState = {
   showMinimap: true,
   nodeSpacing: 100,
   directionStrength: 100,
+  animationDuration: 300,
 }
 
 // Custom serializer for Sets
@@ -87,6 +90,7 @@ const setSerializer = {
     showMinimap: stored.showMinimap !== false,
     nodeSpacing: (stored.nodeSpacing as number) || 100,
     directionStrength: (stored.directionStrength as number) ?? 100,
+    animationDuration: (stored.animationDuration as number) || 300,
   }),
 }
 
@@ -201,6 +205,10 @@ export const useGraphViewStore = create<GraphViewState & GraphViewActions>()(
         setTimeout(() => triggerLayout({ fitView: false, anchorToCenter: true, animated: true }), 0)
       },
 
+      setAnimationDuration: (duration) => {
+        set({ animationDuration: Math.max(0, Math.min(750, duration)) })
+      },
+
       // Helpers
       getActiveFiltersCount: () => {
         const state = get()
@@ -289,5 +297,7 @@ export const useNodeSpacing = () => useGraphViewStore(
     setNodeSpacing: s.setNodeSpacing,
     directionStrength: s.directionStrength,
     setDirectionStrength: s.setDirectionStrength,
+    animationDuration: s.animationDuration,
+    setAnimationDuration: s.setAnimationDuration,
   }))
 )

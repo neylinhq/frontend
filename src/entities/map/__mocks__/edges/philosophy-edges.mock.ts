@@ -653,4 +653,3 @@ export const PHILOSOPHY_EDGES: Edge[] = [
     updatedAt: '2024-02-15T10:47:00Z'
   }
 ]
-]

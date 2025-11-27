@@ -66,7 +66,3 @@ export const NEURAL_NETWORKS_EDGES: Edge[] = [
     updatedAt: '2024-03-16T10:00:00Z'
   }
 ]
-
-// Добавляем философские связи
-MOCK_EDGES.push(...PHILOSOPHY_EDGES)
-]

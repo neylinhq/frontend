@@ -253,7 +253,8 @@
       "spacing": "Отступы",
       "layoutSettings": "Настройки",
       "direction": "Направление",
-      "directionHint": "0 = меньше пересечений, 200 = естественный поток"
+      "directionHint": "0 = меньше пересечений, 200 = естественный поток",
+      "animationSpeed": "Анимация"
     },
     "filters": {
       "nodeTypes": "Типы узлов",

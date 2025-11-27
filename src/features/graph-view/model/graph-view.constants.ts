@@ -1,5 +1,5 @@
 // Use this flag to switch implementations globally
-export const USE_D3_LAYOUT = true
+export const USE_D3_LAYOUT = false
 
 // Enable experimental edge crossing minimization force
 // This adds O(m²) complexity but can reduce edge crossings at low direction values

@@ -185,6 +185,23 @@
     caret-color: hsl(var(--foreground)) !important;
   }
 
+  /* Prevent content shift when modals/popovers open */
+  html {
+    scrollbar-gutter: stable;
+  }
+
+  /* Prevent body scroll - all scrolling happens within app containers */
+  html,
+  body {
+    overflow: hidden;
+    height: 100%;
+  }
+
+  /* Override Radix scroll-lock margin compensation (we use scrollbar-gutter instead) */
+  body[data-scroll-locked] {
+    margin-right: 0 !important;
+  }
+
   /* Custom Scrollbar */
   ::-webkit-scrollbar {
     width: 10px;
@@ -192,12 +209,16 @@
   }
   ::-webkit-scrollbar-track {
     background: transparent;
+    border-left: 1px solid hsl(var(--border));
   }
   ::-webkit-scrollbar-thumb {
-    @apply bg-muted-foreground/50 rounded-full border-[2px] border-background bg-clip-content;
+    background-color: hsl(var(--muted-foreground) / 0.5);
+    background-clip: content-box;
+    border-radius: 9999px;
+    border: 3px solid transparent;
   }
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-muted-foreground/70;
+    background-color: hsl(var(--muted-foreground) / 0.7);
   }
   ::-webkit-scrollbar-corner {
     background: transparent;

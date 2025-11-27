@@ -82,6 +82,40 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
     }
   }, [])
 
+  // Hide menu on scroll (position becomes stale)
+  useEffect(() => {
+    if (!shouldShow) return
+
+    const handleScroll = () => {
+      if (!isDraggingRef.current) {
+        setHoveredBlock(null)
+        setShouldShow(false)
+      }
+    }
+
+    // Listen for scroll on window and any scrollable ancestor
+    window.addEventListener('scroll', handleScroll, true)
+    return () => window.removeEventListener('scroll', handleScroll, true)
+  }, [shouldShow])
+
+  // Hide menu on click outside
+  useEffect(() => {
+    if (!shouldShow) return
+
+    const handleClickOutside = (e: MouseEvent) => {
+      if (isDraggingRef.current) return
+
+      const target = e.target as HTMLElement
+      if (menuRef.current?.contains(target)) return
+
+      setHoveredBlock(null)
+      setShouldShow(false)
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [shouldShow])
+
   // Drop indicator helpers (use ref instead of global singleton)
   const showDropIndicator = useCallback(
     (

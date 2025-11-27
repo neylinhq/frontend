@@ -1,4 +1,4 @@
-import { Check, ChevronDown } from 'lucide-react'
+import { Check } from 'lucide-react'
 import { useState } from 'react'
 import { cn } from '@/shared/lib/cn'
 import { Button } from '@/shared/ui/button'
@@ -66,8 +66,7 @@ export function SelectPopover<T extends string = string>({
             variant="outline"
             size="sm"
             className={cn(
-              'gap-1.5',
-              compact ? 'px-2' : 'justify-between min-w-[100px]',
+              compact ? 'px-2' : 'min-w-[100px]',
               className
             )}
           >
@@ -81,7 +80,6 @@ export function SelectPopover<T extends string = string>({
                 <span className="text-muted-foreground">{placeholder}</span>
               )}
             </span>
-            {!compact && <ChevronDown className="h-3 w-3 opacity-50" />}
           </Button>
         )}
       </PopoverTrigger>

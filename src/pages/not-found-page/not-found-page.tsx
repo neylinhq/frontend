@@ -1,30 +1,16 @@
-import { Search } from 'lucide-react'
+import { Home, LayoutDashboard, Search } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
-import { ThemeToggle } from '@/app/theme/components/theme-toggle'
-import { LanguageSwitcher } from '@/features/language-switcher'
 import { Button } from '@/shared/ui/button'
-import { LegalLinks } from '@/shared/ui/legal-links'
-import { Logo } from '@/shared/ui/logo'
-import { ACTION_BUTTONS } from './not-found-page.constants'
+import { PublicHeader } from '@/shared/ui/public-header'
 
 export function NotFoundPage() {
   const { t } = useTranslation()
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      {/* Header */}
-      <header className="w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-        <div className="container max-w-7xl mx-auto flex h-16 items-center justify-between px-4 md:px-8">
-          <Logo size="xl" />
-
-          <div className="flex items-center gap-2">
-            <LanguageSwitcher />
-            <ThemeToggle />
-          </div>
-        </div>
-      </header>
+      <PublicHeader />
 
       {/* Main Content */}
       <main className="flex-1 flex items-center justify-center px-4 py-12">
@@ -51,28 +37,18 @@ export function NotFoundPage() {
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center pt-4">
-            {ACTION_BUTTONS.map((button) => {
-              const Icon = button.icon
-              return (
-                <Button
-                  key={button.href}
-                  asChild
-                  size="lg"
-                  variant={button.variant}
-                  className="w-full sm:w-auto"
-                >
-                  <Link to={button.href}>
-                    <Icon className="mr-2 h-4 w-4" />
-                    {t(button.labelKey)}
-                  </Link>
-                </Button>
-              )
-            })}
-          </div>
-
-          {/* Helpful Links */}
-          <div className="pt-8 border-t">
-            <LegalLinks variant="full" />
+            <Button asChild size="lg" className="w-full sm:w-auto">
+              <Link to="/">
+                <Home className="mr-2 h-4 w-4" />
+                {t('notFound.backToHome')}
+              </Link>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
+              <Link to="/dashboard/overview">
+                <LayoutDashboard className="mr-2 h-4 w-4" />
+                {t('notFound.goToDashboard')}
+              </Link>
+            </Button>
           </div>
         </div>
       </main>

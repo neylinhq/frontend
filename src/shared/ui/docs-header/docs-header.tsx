@@ -1,0 +1,70 @@
+import { Link } from 'react-router'
+import { Menu } from 'lucide-react'
+
+import { ColorThemeSelect } from '@/app/theme/components/color-theme-select'
+import { ModeSelect } from '@/app/theme/components/mode-select'
+import { LanguageSelect } from '@/features/language-switcher'
+import { Button } from '@/shared/ui/button'
+import { DocsSearchTrigger } from '@/shared/ui/docs-search'
+import { Logo } from '@/shared/ui/logo'
+import { Sheet, SheetContent, SheetTrigger } from '@/shared/ui/sheet'
+
+interface DocsHeaderProps {
+  mobileNav?: React.ReactNode
+}
+
+export function DocsHeader({ mobileNav }: DocsHeaderProps) {
+  return (
+    <header className="h-14 flex-shrink-0 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+      <div
+        className="mx-auto px-4 md:px-6 h-full flex items-center gap-4"
+        style={{ maxWidth: '1400px' }}
+      >
+        {/* Mobile menu */}
+        {mobileNav && (
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="lg:hidden">
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Toggle menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[300px] p-0">
+              <div className="py-4 px-6 border-b">
+                <Logo size="sm" />
+              </div>
+              <div className="overflow-y-auto h-[calc(100vh-4rem)] py-6 px-4">
+                {mobileNav}
+              </div>
+            </SheetContent>
+          </Sheet>
+        )}
+
+        {/* Logo + Docs badge */}
+        <Link to="/" className="flex items-center gap-2">
+          <Logo size="lg" />
+        </Link>
+        <span className="text-muted-foreground text-lg font-light">/</span>
+        <Link
+          to="/public/ui"
+          className="text-sm font-medium hover:text-foreground transition-colors"
+        >
+          Docs
+        </Link>
+
+        {/* Spacer */}
+        <div className="flex-1" />
+
+        {/* Search */}
+        <DocsSearchTrigger className="hidden md:inline-flex" />
+
+        {/* Theme controls */}
+        <nav className="flex items-center gap-1">
+          <ColorThemeSelect compact />
+          <ModeSelect compact />
+          <LanguageSelect compact />
+        </nav>
+      </div>
+    </header>
+  )
+}

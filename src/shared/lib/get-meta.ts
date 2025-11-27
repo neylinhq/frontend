@@ -54,6 +54,10 @@ const META_TRANSLATIONS = {
     pricing: {
       title: 'Тарифы',
       description: 'Выберите подходящий тариф для управления вашими знаниями'
+    },
+    uiShowcase: {
+      title: 'UI Компоненты',
+      description: 'Библиотека компонентов интерфейса с документацией и примерами'
     }
   },
   en: {
@@ -108,6 +112,10 @@ const META_TRANSLATIONS = {
     pricing: {
       title: 'Pricing',
       description: 'Choose the right plan for your knowledge management needs'
+    },
+    uiShowcase: {
+      title: 'UI Components',
+      description: 'Component library with documentation and examples'
     }
   },
   de: {
@@ -162,13 +170,18 @@ const META_TRANSLATIONS = {
     pricing: {
       title: 'Preise',
       description: 'Wählen Sie den richtigen Tarif für Ihre Wissensmanagement-Bedürfnisse'
+    },
+    uiShowcase: {
+      title: 'UI-Komponenten',
+      description: 'Komponentenbibliothek mit Dokumentation und Beispielen'
     }
   }
 } as const
 
 type MetaKey = keyof typeof META_TRANSLATIONS.ru
+type Language = 'ru' | 'en' | 'de'
 
-function getCurrentLanguage(): 'ru' | 'en' | 'de' {
+function getCurrentLanguage(): Language {
   // Проверяем localStorage (где i18next хранит язык)
   if (typeof window !== 'undefined') {
     const savedLang = localStorage.getItem('i18nextLng')
@@ -182,7 +195,8 @@ function getCurrentLanguage(): 'ru' | 'en' | 'de' {
 
 export function getMeta(key: MetaKey) {
   const lang = getCurrentLanguage()
-  const { title, description } = META_TRANSLATIONS[lang][key]
+  const translations = META_TRANSLATIONS[lang] as Record<MetaKey, { title: string; description: string }>
+  const { title, description } = translations[key]
 
   return [
     { title: `${APP_NAME} — ${title}` },

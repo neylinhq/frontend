@@ -101,7 +101,7 @@
 @layer base {
   :root {
     /* Theme preview colors (don't change with theme) */
-    --preview-classic: 217 91% 60%;
+    --preview-classic: 220 100% 50%;
     --preview-vanilla: 24 80% 50%;
     --preview-vivid: 160 84% 39%;
 
@@ -129,13 +129,13 @@
     --info-foreground: 0 0% 98%;
     --border: 0 0% 90%;                /* #E5E5E5 */
     --input: 0 0% 90%;
-    --ring: 217 91% 60%;
+    --ring: 220 100% 50%;
     --radius: 0.5rem;
 
     /* Brand: Pure Blue */
-    --brand: 217 91% 60%;              /* #2563EB - Blue-600 */
+    --brand: 220 100% 50%;             /* #0055FF */
     --brand-foreground: 0 0% 100%;
-    --brand-muted: 217 91% 95%;
+    --brand-muted: 220 100% 95%;
 
     /* Graph node colors */
     --graph-violet: 250 100% 65%;
@@ -173,8 +173,8 @@
     --input: 0 0% 20%;
     --ring: 217 91% 60%;
 
-    /* Brand: Pure Blue */
-    --brand: 217 91% 60%;              /* #2563EB - same blue */
+    /* Brand: Blue-600 for dark mode */
+    --brand: 217 91% 60%;              /* #2563EB - Blue-600 */
     --brand-foreground: 0 0% 100%;
     --brand-muted: 217 50% 15%;
 
@@ -261,7 +261,7 @@
     --border: 24 8% 20%;               /* #352F29 */
     --input: 24 8% 20%;
     --ring: 24 75% 55%;
-    --brand: 24 75% 55%;               /* #D97941 - lighter terracotta */
+    --brand: 24 75% 55%;               /* #D97941 - Terracotta */
     --brand-foreground: 0 0% 100%;
     --brand-muted: 24 40% 15%;
 
@@ -372,6 +372,41 @@
   ::selection {
     background-color: hsl(var(--brand) / 0.3);
     color: hsl(var(--foreground));
+  }
+
+  /* Inverted selection for buttons with dark backgrounds (light mode) */
+  button.bg-primary ::selection,
+  button.bg-primary::selection,
+  button.bg-brand ::selection,
+  button.bg-brand::selection,
+  button.bg-destructive ::selection,
+  button.bg-destructive::selection,
+  a.bg-primary ::selection,
+  a.bg-primary::selection,
+  a.bg-brand ::selection,
+  a.bg-brand::selection {
+    background-color: hsl(0 0% 100% / 0.7);
+    color: hsl(var(--primary));
+  }
+
+  /* In dark mode, primary buttons have light bg - use normal selection */
+  .dark button.bg-primary ::selection,
+  .dark button.bg-primary::selection,
+  .dark a.bg-primary ::selection,
+  .dark a.bg-primary::selection {
+    background-color: hsl(var(--brand) / 0.3);
+    color: hsl(var(--foreground));
+  }
+
+  /* Brand/destructive stay colored in dark mode - inverted selection */
+  .dark button.bg-brand ::selection,
+  .dark button.bg-brand::selection,
+  .dark button.bg-destructive ::selection,
+  .dark button.bg-destructive::selection,
+  .dark a.bg-brand ::selection,
+  .dark a.bg-brand::selection {
+    background-color: hsl(0 0% 0% / 0.5);
+    color: hsl(0 0% 100%);
   }
 
   /* Fix Chrome autocomplete blue highlight */
@@ -1374,4 +1409,244 @@
 
 .dark .animate-glow-pulse {
   animation: glow-pulse-dark 5s ease-in-out infinite;
+}
+
+/* ========================================
+   Documentation System Styles
+   ======================================== */
+
+/* Sidebar scrollbar */
+.docs-sidebar {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--muted-foreground) / 0.2) transparent;
+}
+
+.docs-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.docs-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.docs-sidebar::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--muted-foreground) / 0.2);
+  border-radius: 9999px;
+}
+
+.docs-sidebar::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(var(--muted-foreground) / 0.3);
+}
+
+/* Navigation section header */
+.docs-nav-section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: hsl(var(--muted-foreground));
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.docs-nav-section-header:hover {
+  background: hsl(var(--accent) / 0.3);
+}
+
+/* Navigation item */
+.docs-nav-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  color: hsl(var(--muted-foreground));
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.docs-nav-item:hover {
+  background: hsl(var(--accent) / 0.5);
+  color: hsl(var(--accent-foreground));
+}
+
+.docs-nav-item.active {
+  background: hsl(var(--accent));
+  color: hsl(var(--foreground));
+  font-weight: 500;
+}
+
+.docs-nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2px;
+  height: 1.25rem;
+  background: hsl(var(--brand));
+  border-radius: 9999px;
+}
+
+/* Code block */
+.docs-code-block {
+  border-radius: 0.5rem;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--muted) / 0.3);
+  overflow: hidden;
+}
+
+.docs-code-block-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid hsl(var(--border));
+  background: hsl(var(--muted) / 0.5);
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.docs-code-block-language {
+  margin-left: auto;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.375rem;
+  background: hsl(var(--muted));
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.docs-code-block-copy {
+  margin-left: 0.5rem;
+  padding: 0.375rem;
+  border-radius: 0.375rem;
+  color: hsl(var(--muted-foreground));
+  opacity: 0;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.docs-code-block:hover .docs-code-block-copy {
+  opacity: 1;
+}
+
+.docs-code-block-copy:hover {
+  background: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+}
+
+.docs-code-block-pre {
+  margin: 0;
+  padding: 1rem;
+  overflow-x: auto;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+
+/* Preview container */
+.docs-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  border: 1px dashed hsl(var(--border));
+  background: linear-gradient(
+    to bottom,
+    hsl(var(--muted) / 0.2),
+    hsl(var(--muted) / 0.05)
+  );
+  transition: all 0.2s ease;
+}
+
+.docs-preview:hover {
+  border-color: hsl(var(--border) / 0.8);
+  background: linear-gradient(
+    to bottom,
+    hsl(var(--muted) / 0.3),
+    hsl(var(--muted) / 0.1)
+  );
+}
+
+/* TOC item */
+.docs-toc-item {
+  display: block;
+  padding: 0.25rem 0;
+  font-size: 0.875rem;
+  color: hsl(var(--muted-foreground));
+  transition: color 0.15s ease;
+}
+
+.docs-toc-item:hover {
+  color: hsl(var(--foreground));
+}
+
+.docs-toc-item.active {
+  color: hsl(var(--foreground));
+  font-weight: 500;
+}
+
+/* Card hover effect */
+.docs-card-hover {
+  transition: all 0.2s ease;
+}
+
+.docs-card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  border-color: hsl(var(--brand) / 0.3);
+}
+
+/* Page fade-in animation */
+@keyframes docs-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.docs-page-enter {
+  animation: docs-fade-in 0.3s ease-out;
+}
+
+/* Search trigger */
+.docs-search-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--muted) / 0.3);
+  font-size: 0.875rem;
+  color: hsl(var(--muted-foreground));
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.docs-search-trigger:hover {
+  background: hsl(var(--muted) / 0.5);
+  border-color: hsl(var(--border) / 0.8);
+}
+
+.docs-search-trigger kbd {
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--background));
+  font-family: ui-monospace, monospace;
+  font-size: 0.625rem;
 }

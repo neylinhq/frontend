@@ -939,5 +939,139 @@
       "outgoing": "Ausgehend"
     },
     "edit": "Bearbeiten"
+  },
+  "uiShowcase": {
+    "nav": {
+      "gettingStarted": "Erste Schritte",
+      "components": "Komponenten"
+    },
+    "menu": "Menü",
+    "index": {
+      "title": "UI-Komponentenbibliothek",
+      "lead": "Sammlung wiederverwendbarer Komponenten, die auf Radix UI und Tailwind CSS basieren. Unterstützung für 3 Farbthemen, Dark Mode und vollständige TypeScript-Typisierung.",
+      "quickLinks": {
+        "colors": {
+          "title": "Farben",
+          "description": "Farbpalette und semantische Tokens für alle Themen"
+        },
+        "typography": {
+          "title": "Typografie",
+          "description": "Typografisches System und Textstile"
+        },
+        "components": {
+          "title": "Komponenten",
+          "description": "25+ fertige Komponenten mit Verwendungsbeispielen"
+        }
+      },
+      "features": {
+        "title": "Funktionen",
+        "theming": {
+          "title": "Themes",
+          "description": "3 Farbthemen (Classic, Vanilla, Vivid) + Dark Mode"
+        },
+        "accessibility": {
+          "title": "Barrierefreiheit",
+          "description": "Radix UI Primitives mit Tastatur- und ARIA-Unterstützung"
+        },
+        "typescript": {
+          "title": "TypeScript",
+          "description": "Vollständige Typisierung aller Komponenten und Props"
+        },
+        "responsive": {
+          "title": "Responsive",
+          "description": "Anpassungsfähiges Design für alle Bildschirmgrößen"
+        }
+      },
+      "gettingStarted": {
+        "title": "Erste Schritte",
+        "description": "Alle Komponenten befinden sich in src/shared/ui/. Verwenden Sie die Navigation links, um Dokumentation und Beispiele für jede Komponente anzuzeigen.",
+        "viewColors": "Farben ansehen",
+        "viewComponents": "Komponenten"
+      }
+    },
+    "colors": {
+      "title": "Farben",
+      "lead": "Farbpalette mit Unterstützung für 3 Themen und Dark Mode. Alle Farben passen sich dem ausgewählten Thema an.",
+      "semantic": {
+        "title": "Semantische Farben",
+        "description": "Semantische Farben für UI-Elemente. Verwenden Sie diese Variablen anstelle direkter Werte."
+      },
+      "brand": {
+        "title": "Markenfarben",
+        "description": "Markenfarben. Ändern sich je nach Thema (blau in Classic, Terrakotta in Vanilla, Smaragd in Vivid)."
+      },
+      "graph": {
+        "title": "Graph-Farben",
+        "description": "Farben für die Visualisierung von Graph-Knoten. Optimiert für Unterscheidung in jedem Thema."
+      },
+      "usage": {
+        "title": "Verwendung",
+        "tailwind": "Tailwind CSS:",
+        "inline": "Inline CSS:"
+      }
+    },
+    "typography": {
+      "title": "Typografie",
+      "lead": "Typografisches System mit vorgefertigten Stilen für Überschriften, Absätze und Hilfstext.",
+      "variants": {
+        "title": "Varianten",
+        "description": "Alle Typografie-Varianten mit Verwendungsbeispielen"
+      },
+      "font": {
+        "title": "Schriftart",
+        "subtitle": "IBM Plex Sans",
+        "description": "Technische, geometrische Schriftart für professionelles Aussehen"
+      },
+      "usage": {
+        "title": "Verwendung",
+        "basic": "Grundlegende Verwendung:",
+        "customTag": "Benutzerdefiniertes HTML-Tag:",
+        "withClasses": "Mit zusätzlichen Klassen:"
+      }
+    },
+    "button": {
+      "title": "Button",
+      "lead": "Universelle Button-Komponente mit verschiedenen Varianten und Zuständen.",
+      "variants": {
+        "title": "Varianten",
+        "description": "Verfügbare Button-Stile"
+      },
+      "sizes": {
+        "title": "Größen",
+        "description": "Verfügbare Button-Größen"
+      },
+      "withIcons": {
+        "title": "Mit Icons",
+        "description": "Buttons mit Lucide-Icons"
+      },
+      "states": {
+        "title": "Zustände",
+        "description": "Deaktivierte und Ladezustände",
+        "disabled": "Deaktiviert:",
+        "loading": "Laden:"
+      },
+      "usage": {
+        "title": "Verwendung",
+        "examples": "Verwendungsbeispiele",
+        "basic": "Grundlegende Verwendung:",
+        "withIcons": "Mit Icons:",
+        "asLink": "Als Link (mit react-router):",
+        "loading": "Ladezustand:"
+      },
+      "api": {
+        "title": "API-Referenz",
+        "props": "Props"
+      },
+      "loginWithEmail": "Mit E-Mail anmelden",
+      "sendEmail": "E-Mail senden",
+      "continue": "Weiter",
+      "default": "Standard",
+      "pleaseWait": "Bitte warten",
+      "loading": "Laden"
+    },
+    "card": {
+      "title": "Card",
+      "lead": "Universeller Container zum Gruppieren verwandter Inhalte."
+    }
   }
 }

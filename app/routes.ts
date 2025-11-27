@@ -8,11 +8,17 @@ export default [
     route('legal/terms', 'routes/legal/terms.tsx'),
     route('legal/privacy', 'routes/legal/privacy.tsx'),
     route('legal/cookies', 'routes/legal/cookies.tsx'),
-    route('legal/license', 'routes/legal/license.tsx')
-  ]),
+    route('legal/license', 'routes/legal/license.tsx'),
 
-  // UI Showcase (standalone)
-  route('ui', 'routes/ui.tsx'),
+    // UI Showcase (with sidebar navigation)
+    layout('routes/public/ui/layout.tsx', [
+      route('public/ui', 'routes/public/ui/index.tsx'),
+      route('public/ui/colors', 'routes/public/ui/colors.tsx'),
+      route('public/ui/typography', 'routes/public/ui/typography.tsx'),
+      route('public/ui/button', 'routes/public/ui/button.tsx'),
+      route('public/ui/card', 'routes/public/ui/card.tsx'),
+    ])
+  ]),
 
   // Auth Routes (with header, no footer, centered)
   layout('routes/auth/layout.tsx', [

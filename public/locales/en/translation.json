@@ -1054,5 +1054,139 @@
     "getStarted": "Start",
     "questions": "Questions?",
     "contactUs": "Contact"
+  },
+  "uiShowcase": {
+    "nav": {
+      "gettingStarted": "Getting Started",
+      "components": "Components"
+    },
+    "menu": "Menu",
+    "index": {
+      "title": "UI Component Library",
+      "lead": "Collection of reusable components built on Radix UI and Tailwind CSS. Support for 3 color themes, dark mode and full TypeScript typing.",
+      "quickLinks": {
+        "colors": {
+          "title": "Colors",
+          "description": "Color palette and semantic tokens for all themes"
+        },
+        "typography": {
+          "title": "Typography",
+          "description": "Typography system and text styles"
+        },
+        "components": {
+          "title": "Components",
+          "description": "25+ ready-made components with usage examples"
+        }
+      },
+      "features": {
+        "title": "Features",
+        "theming": {
+          "title": "Theming",
+          "description": "3 color themes (Classic, Vanilla, Vivid) + Dark mode"
+        },
+        "accessibility": {
+          "title": "Accessibility",
+          "description": "Radix UI primitives with keyboard and ARIA support"
+        },
+        "typescript": {
+          "title": "TypeScript",
+          "description": "Full typing of all components and props"
+        },
+        "responsive": {
+          "title": "Responsive",
+          "description": "Adaptive design for all screen sizes"
+        }
+      },
+      "gettingStarted": {
+        "title": "Getting Started",
+        "description": "All components are in src/shared/ui/. Use the navigation on the left to view documentation and examples for each component.",
+        "viewColors": "View Colors",
+        "viewComponents": "Components"
+      }
+    },
+    "colors": {
+      "title": "Colors",
+      "lead": "Color palette with support for 3 themes and dark mode. All colors adapt to the selected theme.",
+      "semantic": {
+        "title": "Semantic Colors",
+        "description": "Semantic colors for UI elements. Use these variables instead of direct values."
+      },
+      "brand": {
+        "title": "Brand Colors",
+        "description": "Brand colors. Change depending on theme (blue in Classic, terracotta in Vanilla, emerald in Vivid)."
+      },
+      "graph": {
+        "title": "Graph Colors",
+        "description": "Colors for graph node visualization. Optimized for distinction in each theme."
+      },
+      "usage": {
+        "title": "Usage",
+        "tailwind": "Tailwind CSS:",
+        "inline": "Inline CSS:"
+      }
+    },
+    "typography": {
+      "title": "Typography",
+      "lead": "Typography system with ready-made styles for headings, paragraphs and utility text.",
+      "variants": {
+        "title": "Variants",
+        "description": "All typography variants with usage examples"
+      },
+      "font": {
+        "title": "Font",
+        "subtitle": "IBM Plex Sans",
+        "description": "Technical, geometric font for professional look"
+      },
+      "usage": {
+        "title": "Usage",
+        "basic": "Basic usage:",
+        "customTag": "Custom HTML tag:",
+        "withClasses": "With additional classes:"
+      }
+    },
+    "button": {
+      "title": "Button",
+      "lead": "Universal button component with various variants and states.",
+      "variants": {
+        "title": "Variants",
+        "description": "Available button styles"
+      },
+      "sizes": {
+        "title": "Sizes",
+        "description": "Available button sizes"
+      },
+      "withIcons": {
+        "title": "With Icons",
+        "description": "Buttons with Lucide icons"
+      },
+      "states": {
+        "title": "States",
+        "description": "Disabled and loading states",
+        "disabled": "Disabled:",
+        "loading": "Loading:"
+      },
+      "usage": {
+        "title": "Usage",
+        "examples": "Usage Examples",
+        "basic": "Basic usage:",
+        "withIcons": "With icons:",
+        "asLink": "As link (with react-router):",
+        "loading": "Loading state:"
+      },
+      "api": {
+        "title": "API Reference",
+        "props": "Props"
+      },
+      "loginWithEmail": "Login with Email",
+      "sendEmail": "Send Email",
+      "continue": "Continue",
+      "default": "Default",
+      "pleaseWait": "Please wait",
+      "loading": "Loading"
+    },
+    "card": {
+      "title": "Card",
+      "lead": "Universal container for grouping related content."
+    }
   }
 }

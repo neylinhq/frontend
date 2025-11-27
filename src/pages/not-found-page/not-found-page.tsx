@@ -2,6 +2,7 @@ import { Home, LayoutDashboard, Search } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
+import { DASHBOARD_ROUTES, ROUTES } from '@/shared/config'
 import { Button } from '@/shared/ui/button'
 import { PublicHeader } from '@/shared/ui/public-header'
 
@@ -38,13 +39,13 @@ export function NotFoundPage() {
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center pt-4">
             <Button asChild size="lg" className="w-full sm:w-auto">
-              <Link to="/">
+              <Link to={ROUTES.home}>
                 <Home className="mr-2 h-4 w-4" />
                 {t('notFound.backToHome')}
               </Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
-              <Link to="/dashboard/overview">
+              <Link to={DASHBOARD_ROUTES.overview}>
                 <LayoutDashboard className="mr-2 h-4 w-4" />
                 {t('notFound.goToDashboard')}
               </Link>

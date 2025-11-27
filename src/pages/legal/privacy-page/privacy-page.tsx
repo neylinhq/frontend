@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { LegalLayout } from '@/shared/ui/legal-layout'
+import { LEGAL_ROUTES } from '@/shared/config'
 
 export function PrivacyPage() {
   const { t } = useTranslation()
@@ -62,7 +63,7 @@ export function PrivacyPage() {
       <h2>7. {t('legal.privacy.sections.cookies.title')}</h2>
       <p>
         {t('legal.privacy.sections.cookies.content').split('Cookie Policy')[0]}
-        <a href="/legal/cookies">{t('legal.cookies.title')}</a>
+        <a href={LEGAL_ROUTES.cookies}>{t('legal.cookies.title')}</a>
         {t('legal.privacy.sections.cookies.content').includes('for more information') ? ' for more information.' : '.'}
       </p>
 

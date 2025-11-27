@@ -2,6 +2,7 @@ import { Plus } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
+import { MAPS_ROUTES } from '@/shared/config'
 import { cn } from '@/shared/lib/cn'
 import { Button } from '@/shared/ui/button'
 
@@ -21,7 +22,7 @@ export function CreateMapCard({ className }: CreateMapCardProps) {
       )}
       asChild
     >
-      <Link to="/dashboard/maps/new">
+      <Link to={MAPS_ROUTES.new}>
         <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
           <Plus className="h-6 w-6 text-muted-foreground" />
         </div>

@@ -23,7 +23,7 @@ export default function SettingsLayout() {
   const { user } = useLoaderData<typeof loader>()
 
   return (
-    <div className="h-full overflow-y-auto">
+    <div className="h-full overflow-y-auto [scrollbar-gutter:stable]">
       <div className="container max-w-6xl mx-auto py-10 px-4 md:px-6 lg:px-8">
       <div className="mb-10">
         <h1 className="text-3xl font-bold tracking-tight">{t('settings.title')}</h1>

@@ -1,5 +1,6 @@
 import { Menu } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { DASHBOARD_ROUTES } from '@/shared/config'
 import { Button } from '@/shared/ui/button'
 import { Logo } from '@/shared/ui/logo'
 import { Sheet, SheetContent, SheetTrigger } from '@/shared/ui/sheet'
@@ -28,7 +29,7 @@ export function DashboardHeader() {
           </Sheet>
 
           {/* Logo */}
-          <Logo size="sm" href="/dashboard/overview" />
+          <Logo size="sm" href={DASHBOARD_ROUTES.overview} />
         </div>
 
         {/* Right: User Nav */}

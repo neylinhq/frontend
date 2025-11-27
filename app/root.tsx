@@ -1,12 +1,20 @@
-import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from 'react-router'
+import {
+  isRouteErrorResponse,
+  Links,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+  useLoaderData
+} from 'react-router'
+import { Toaster } from 'sonner'
 import { QueryProvider } from '@/app/providers/query-provider'
 import { ThemeProvider } from '@/app/theme'
-import { Toaster } from 'sonner'
 import '@/shared/styles/globals.css'
 import type React from 'react'
 import { useEffect, useRef } from 'react'
+import { type I18nInitData, initI18n } from '@/shared/config/i18n'
 import type { Route } from './+types/root'
-import { initI18n, type I18nInitData } from '@/shared/config/i18n'
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -18,10 +26,14 @@ export const links: Route.LinksFunction = () => [
 ]
 
 export async function loader({ request }: Route.LoaderArgs) {
-  // Dynamic import to avoid bundling Node.js fs module for client
+  // Dynamic imports to avoid bundling Node.js modules for client
   const { getI18nData } = await import('@/shared/config/i18n/i18n.server')
+  const { getThemeData } = await import('@/app/theme/theme.server')
+
   const i18nData = getI18nData(request)
-  return { i18n: i18nData }
+  const themeData = getThemeData(request)
+
+  return { i18n: i18nData, theme: themeData }
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -33,20 +45,26 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
-        {/* Theme Script: предотвращает мигание белого фона в темной теме */}
+        {/* Theme Script: предотвращает мигание при загрузке */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
                 try {
-                  var storageKey = 'vite-ui-theme';
-                  var theme = localStorage.getItem(storageKey);
-                  var systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-                  if (theme === 'dark' || (!theme && systemTheme)) {
+                  function getCookie(n) {
+                    var m = document.cookie.match('(^|;)\\\\s*' + n + '\\\\s*=\\\\s*([^;]+)');
+                    return m ? m.pop() : null;
+                  }
+                  // Dark/Light mode (localStorage > cookie > system)
+                  var theme = localStorage.getItem('vite-ui-theme') || getCookie('arbor-theme');
+                  var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  if (theme === 'dark' || (theme === 'system' && systemDark) || (!theme && systemDark)) {
                     document.documentElement.classList.add('dark');
-                  } else {
-                    document.documentElement.classList.remove('dark');
+                  }
+                  // Color theme (localStorage > cookie)
+                  var colorTheme = localStorage.getItem('arbor-color-theme') || getCookie('arbor-color-theme');
+                  if (colorTheme && colorTheme !== 'classic') {
+                    document.documentElement.dataset.theme = colorTheme;
                   }
                 } catch (e) {}
               })();
@@ -64,7 +82,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  const { i18n: i18nData } = useLoaderData<typeof loader>()
+  const { i18n: i18nData, theme: themeData } = useLoaderData<typeof loader>()
   const initializedRef = useRef(false)
 
   // Initialize i18n with SSR data on first render
@@ -80,7 +98,7 @@ export default function App() {
 
   return (
     <QueryProvider>
-      <ThemeProvider>
+      <ThemeProvider defaultTheme={themeData.theme} defaultColorTheme={themeData.colorTheme}>
         <Outlet />
         <Toaster richColors position="top-right" />
       </ThemeProvider>

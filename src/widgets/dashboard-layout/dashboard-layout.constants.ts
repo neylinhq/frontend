@@ -1,4 +1,5 @@
 import { Beaker, BookOpen, LayoutDashboard, type LucideIcon, Network } from 'lucide-react'
+import { DASHBOARD_ROUTES, KNOWLEDGE_BASE_ROUTES, MAPS_ROUTES } from '@/shared/config'
 
 export interface SidebarItem {
   title: string
@@ -9,22 +10,22 @@ export interface SidebarItem {
 export const DASHBOARD_SIDEBAR_ITEMS: SidebarItem[] = [
   {
     title: 'nav.overview',
-    href: '/dashboard/overview',
+    href: DASHBOARD_ROUTES.overview,
     icon: LayoutDashboard
   },
   {
     title: 'nav.myMaps',
-    href: '/dashboard/maps/new',
+    href: MAPS_ROUTES.new,
     icon: Network
   },
   {
     title: 'nav.aiLab',
-    href: '/dashboard/ai-lab',
+    href: DASHBOARD_ROUTES.aiLab,
     icon: Beaker
   },
   {
     title: 'nav.knowledgeBase',
-    href: '/dashboard/knowledge-base/concepts',
+    href: KNOWLEDGE_BASE_ROUTES.concepts,
     icon: BookOpen
   }
 ]

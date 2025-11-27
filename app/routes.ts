@@ -10,13 +10,13 @@ export default [
     route('legal/cookies', 'routes/legal/cookies.tsx'),
     route('legal/license', 'routes/legal/license.tsx'),
 
-    // UI Showcase (with sidebar navigation)
-    layout('routes/public/ui/layout.tsx', [
-      route('public/ui', 'routes/public/ui/index.tsx'),
-      route('public/ui/colors', 'routes/public/ui/colors.tsx'),
-      route('public/ui/typography', 'routes/public/ui/typography.tsx'),
-      route('public/ui/button', 'routes/public/ui/button.tsx'),
-      route('public/ui/card', 'routes/public/ui/card.tsx'),
+    // Docs UI (with sidebar navigation)
+    layout('routes/docs/layout.tsx', [
+      route('docs/ui', 'routes/docs/index.tsx'),
+      route('docs/ui/colors', 'routes/docs/colors.tsx'),
+      route('docs/ui/typography', 'routes/docs/typography.tsx'),
+      route('docs/ui/button', 'routes/docs/button.tsx'),
+      route('docs/ui/card', 'routes/docs/card.tsx'),
     ])
   ]),
 

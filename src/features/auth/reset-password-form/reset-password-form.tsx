@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useActionData, useNavigation, useSubmit } from 'react-router'
 import { z } from 'zod'
+import { AUTH_ROUTES } from '@/shared/config'
 import { Button } from '@/shared/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form'
 import { Input } from '@/shared/ui/input'
@@ -37,7 +38,7 @@ export function ResetPasswordForm() {
         </div>
         <h3 className="text-xl font-semibold">{t('auth.resetPassword.checkEmailTitle')}</h3>
         <Button variant="outline" className="w-full" asChild>
-          <a href="/auth/sign-in">{t('auth.resetPassword.backToSignIn')}</a>
+          <a href={AUTH_ROUTES.signIn}>{t('auth.resetPassword.backToSignIn')}</a>
         </Button>
       </div>
     )

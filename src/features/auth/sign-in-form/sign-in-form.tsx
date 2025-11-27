@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Link as RouterLink, useActionData, useNavigation, useSubmit } from 'react-router'
 import { z } from 'zod'
+import { AUTH_ROUTES } from '@/shared/config'
 import { Button } from '@/shared/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form'
 import { FormDivider } from '@/shared/ui/form-divider'
@@ -69,7 +70,7 @@ export function SignInForm() {
                 <div className="flex items-center">
                   <FormLabel>{t('auth.signIn.passwordLabel')}</FormLabel>
                   <RouterLink
-                    to="/auth/reset-password"
+                    to={AUTH_ROUTES.resetPassword}
                     className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                     prefetch="intent"
                   >

@@ -1,6 +1,17 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-import { COLOR_THEME_STORAGE_KEY, THEME_STORAGE_KEY } from '../theme.constants'
+import {
+  COLOR_THEME_COOKIE_KEY,
+  COLOR_THEME_STORAGE_KEY,
+  THEME_COOKIE_KEY,
+  THEME_STORAGE_KEY
+} from '../theme.constants'
 import type { ColorTheme, Theme, ThemeProviderState } from '../theme.types'
+
+// Helper to set cookie (1 year expiry)
+function setCookie(name: string, value: string) {
+  const maxAge = 60 * 60 * 24 * 365 // 1 year
+  document.cookie = `${name}=${value}; path=/; max-age=${maxAge}; SameSite=Lax`
+}
 
 const initialState: ThemeProviderState = {
   theme: 'system',
@@ -68,14 +79,16 @@ export const ThemeProvider = ({
 
   const value: ThemeProviderState = {
     theme,
-    setTheme: (theme: Theme) => {
-      localStorage.setItem(storageKey, theme)
-      setTheme(theme)
+    setTheme: (newTheme: Theme) => {
+      localStorage.setItem(storageKey, newTheme)
+      setCookie(THEME_COOKIE_KEY, newTheme)
+      setTheme(newTheme)
     },
     colorTheme,
-    setColorTheme: (colorTheme: ColorTheme) => {
-      localStorage.setItem(COLOR_THEME_STORAGE_KEY, colorTheme)
-      setColorThemeState(colorTheme)
+    setColorTheme: (newColorTheme: ColorTheme) => {
+      localStorage.setItem(COLOR_THEME_STORAGE_KEY, newColorTheme)
+      setCookie(COLOR_THEME_COOKIE_KEY, newColorTheme)
+      setColorThemeState(newColorTheme)
     }
   }
 

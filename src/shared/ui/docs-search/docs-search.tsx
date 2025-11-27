@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 
 import { cn } from '@/shared/lib/cn'
+import { isMac } from '@/shared/lib/platform'
 import {
   Dialog,
   DialogContent,
@@ -37,7 +38,7 @@ const SEARCH_INDEX: SearchItem[] = [
     id: 'introduction',
     title: 'Introduction',
     description: 'Getting started with the design system',
-    href: '/public/ui',
+    href: '/docs/ui',
     section: 'Getting Started',
     icon: BookOpen,
     keywords: ['start', 'begin', 'overview', 'introduction'],
@@ -46,7 +47,7 @@ const SEARCH_INDEX: SearchItem[] = [
     id: 'installation',
     title: 'Installation',
     description: 'How to install and set up',
-    href: '/public/ui/installation',
+    href: '/docs/ui/installation',
     section: 'Getting Started',
     icon: FileText,
     keywords: ['install', 'setup', 'npm', 'yarn'],
@@ -56,7 +57,7 @@ const SEARCH_INDEX: SearchItem[] = [
     id: 'colors',
     title: 'Colors',
     description: 'Color palette and theming',
-    href: '/public/ui/colors',
+    href: '/docs/ui/colors',
     section: 'Foundations',
     icon: Palette,
     keywords: ['color', 'palette', 'theme', 'brand', 'primary', 'secondary'],
@@ -65,7 +66,7 @@ const SEARCH_INDEX: SearchItem[] = [
     id: 'typography',
     title: 'Typography',
     description: 'Font styles and text formatting',
-    href: '/public/ui/typography',
+    href: '/docs/ui/typography',
     section: 'Foundations',
     icon: Type,
     keywords: ['font', 'text', 'heading', 'paragraph', 'size'],
@@ -75,7 +76,7 @@ const SEARCH_INDEX: SearchItem[] = [
     id: 'button',
     title: 'Button',
     description: 'Interactive button component',
-    href: '/public/ui/button',
+    href: '/docs/ui/button',
     section: 'Components',
     icon: Package,
     keywords: ['button', 'click', 'action', 'submit', 'cta'],
@@ -84,7 +85,7 @@ const SEARCH_INDEX: SearchItem[] = [
     id: 'input',
     title: 'Input',
     description: 'Text input field component',
-    href: '/public/ui/input',
+    href: '/docs/ui/input',
     section: 'Components',
     icon: Package,
     keywords: ['input', 'text', 'field', 'form'],
@@ -93,7 +94,7 @@ const SEARCH_INDEX: SearchItem[] = [
     id: 'card',
     title: 'Card',
     description: 'Container for content',
-    href: '/public/ui/card',
+    href: '/docs/ui/card',
     section: 'Components',
     icon: Package,
     keywords: ['card', 'container', 'box', 'panel'],
@@ -102,7 +103,7 @@ const SEARCH_INDEX: SearchItem[] = [
     id: 'badge',
     title: 'Badge',
     description: 'Status and label indicators',
-    href: '/public/ui/badge',
+    href: '/docs/ui/badge',
     section: 'Components',
     icon: Package,
     keywords: ['badge', 'tag', 'label', 'status', 'indicator'],
@@ -111,7 +112,7 @@ const SEARCH_INDEX: SearchItem[] = [
     id: 'avatar',
     title: 'Avatar',
     description: 'User profile images',
-    href: '/public/ui/avatar',
+    href: '/docs/ui/avatar',
     section: 'Components',
     icon: Package,
     keywords: ['avatar', 'user', 'profile', 'image', 'photo'],
@@ -120,7 +121,7 @@ const SEARCH_INDEX: SearchItem[] = [
     id: 'dialog',
     title: 'Dialog',
     description: 'Modal dialog component',
-    href: '/public/ui/dialog',
+    href: '/docs/ui/dialog',
     section: 'Components',
     icon: Package,
     keywords: ['dialog', 'modal', 'popup', 'overlay'],
@@ -129,7 +130,7 @@ const SEARCH_INDEX: SearchItem[] = [
     id: 'tabs',
     title: 'Tabs',
     description: 'Tabbed navigation component',
-    href: '/public/ui/tabs',
+    href: '/docs/ui/tabs',
     section: 'Components',
     icon: Package,
     keywords: ['tabs', 'navigation', 'switch', 'panel'],
@@ -241,7 +242,7 @@ export function DocsSearch({ open, onOpenChange }: DocsSearchProps) {
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
-      <DialogContent className="max-w-2xl p-0 gap-0 overflow-hidden">
+      <DialogContent className="max-w-2xl p-0 gap-0 overflow-hidden [&>button]:hidden">
         <DialogTitle className="sr-only">Search documentation</DialogTitle>
 
         {/* Search Input */}
@@ -366,8 +367,8 @@ export function DocsSearchTrigger({ className }: DocsSearchTriggerProps) {
       >
         <Search className="h-4 w-4" />
         <span className="hidden sm:inline">Search docs...</span>
-        <kbd className="hidden md:inline-flex h-5 items-center gap-0.5 rounded border bg-background px-1.5 font-mono text-[10px] font-medium">
-          <span className="text-xs">⌘</span>K
+        <kbd className="hidden md:inline-flex h-5 items-center gap-1 rounded border bg-background px-1.5 font-mono text-[10px] font-medium">
+          {isMac ? '⌘' : 'Ctrl+'}K
         </kbd>
       </button>
       <DocsSearch open={open} onOpenChange={setOpen} />

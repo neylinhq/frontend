@@ -1,9 +1,9 @@
+import { ChevronRight, type LucideIcon } from 'lucide-react'
 import * as React from 'react'
 import { NavLink } from 'react-router'
-import { ChevronRight, type LucideIcon } from 'lucide-react'
 import { cn } from '@/shared/lib/cn'
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/shared/ui/collapsible'
 import { Badge } from '@/shared/ui/badge'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/shared/ui/collapsible'
 
 export interface DocsSidebarItem {
   title: string
@@ -26,8 +26,8 @@ interface DocsSidebarProps {
 
 export function DocsSidebar({ sections, className }: DocsSidebarProps) {
   return (
-    <nav className={cn('docs-sidebar space-y-6', className)}>
-      {sections.map((section) => (
+    <nav className={cn('docs-sidebar space-y-4', className)}>
+      {sections.map(section => (
         <DocsSidebarSectionComponent key={section.title} section={section} />
       ))}
     </nav>
@@ -54,14 +54,12 @@ function DocsSidebarSectionComponent({ section }: { section: DocsSidebarSection 
       </CollapsibleTrigger>
       <CollapsibleContent className="pt-1">
         <div className="space-y-0.5">
-          {section.items.map((item) => (
+          {section.items.map(item => (
             <NavLink
               key={item.href}
               to={item.href}
-              end={item.href === '/public/ui'}
-              className={({ isActive }) =>
-                cn('docs-nav-item', isActive && 'active')
-              }
+              end={item.href === '/docs/ui'}
+              className={({ isActive }) => cn('docs-nav-item', isActive && 'active')}
             >
               <span className="flex-1 truncate">{item.title}</span>
               {item.isNew && (
@@ -70,7 +68,10 @@ function DocsSidebarSectionComponent({ section }: { section: DocsSidebarSection 
                 </Badge>
               )}
               {item.isDeprecated && (
-                <Badge variant="outline" className="ml-auto text-[10px] h-5 px-1.5 text-muted-foreground">
+                <Badge
+                  variant="outline"
+                  className="ml-auto text-[10px] h-5 px-1.5 text-muted-foreground"
+                >
                   Deprecated
                 </Badge>
               )}

@@ -2,6 +2,7 @@ import { ArrowRight } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
+import { AUTH_ROUTES, ROUTES } from '@/shared/config'
 import { Button } from '@/shared/ui/button'
 import { HOME_FEATURES } from './home-page.constants'
 
@@ -31,13 +32,13 @@ export function HomePage() {
 
             <div className="mt-6 flex items-center gap-3">
               <Button asChild>
-                <Link to="/auth/sign-up">
+                <Link to={AUTH_ROUTES.signUp}>
                   {t('home.cta.getStartedFree', 'Get Started Free')}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
               <Button asChild variant="outline">
-                <Link to="/pricing">{t('home.nav.pricing', 'View Pricing')}</Link>
+                <Link to={ROUTES.pricing}>{t('home.nav.pricing', 'View Pricing')}</Link>
               </Button>
             </div>
           </div>
@@ -84,7 +85,7 @@ export function HomePage() {
               </p>
             </div>
             <Button asChild>
-              <Link to="/auth/sign-up">{t('home.cta.createAccount', 'Create Free Account')}</Link>
+              <Link to={AUTH_ROUTES.signUp}>{t('home.cta.createAccount', 'Create Free Account')}</Link>
             </Button>
           </div>
         </div>

@@ -4,6 +4,7 @@ import { Menu } from 'lucide-react'
 import { ColorThemeSelect } from '@/app/theme/components/color-theme-select'
 import { ModeSelect } from '@/app/theme/components/mode-select'
 import { LanguageSelect } from '@/features/language-switcher'
+import { DOCS_ROUTES, ROUTES } from '@/shared/config'
 import { Button } from '@/shared/ui/button'
 import { DocsSearchTrigger } from '@/shared/ui/docs-search'
 import { Logo } from '@/shared/ui/logo'
@@ -29,11 +30,11 @@ export function DocsHeader({ mobileNav }: DocsHeaderProps) {
                 <span className="sr-only">Toggle menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-[300px] p-0">
-              <div className="py-4 px-6 border-b">
+            <SheetContent side="left" className="w-[300px] p-0 flex flex-col h-full">
+              <div className="py-4 px-6 border-b flex-shrink-0">
                 <Logo size="sm" />
               </div>
-              <div className="overflow-y-auto h-[calc(100vh-4rem)] py-6 px-4">
+              <div className="overflow-y-auto flex-1 py-6 px-4">
                 {mobileNav}
               </div>
             </SheetContent>
@@ -41,12 +42,12 @@ export function DocsHeader({ mobileNav }: DocsHeaderProps) {
         )}
 
         {/* Logo + Docs badge */}
-        <Link to="/" className="flex items-center gap-2">
+        <Link to={ROUTES.home} className="flex items-center gap-2">
           <Logo size="lg" />
         </Link>
         <span className="text-muted-foreground text-lg font-light">/</span>
         <Link
-          to="/public/ui"
+          to={DOCS_ROUTES.ui}
           className="text-sm font-medium hover:text-foreground transition-colors"
         >
           Docs

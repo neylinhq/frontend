@@ -3,6 +3,7 @@
 import { ChevronRight, Home } from 'lucide-react'
 import { Link, useMatches } from 'react-router'
 
+import { DOCS_ROUTES } from '@/shared/config'
 import { cn } from '@/shared/lib/cn'
 
 interface BreadcrumbItem {
@@ -30,7 +31,7 @@ export function DocsBreadcrumbs({ items, className }: DocsBreadcrumbsProps) {
       <ol className="flex items-center gap-1.5">
         <li>
           <Link
-            to="/public/ui"
+            to={DOCS_ROUTES.ui}
             className="text-muted-foreground hover:text-foreground transition-colors"
           >
             <Home className="h-4 w-4" />

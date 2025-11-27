@@ -1,15 +1,19 @@
 import type { Editor } from '@tiptap/react'
 import { ArrowLeft, Loader2, PanelRightClose, PanelRightOpen } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router'
 import { toast } from 'sonner'
 
 import type { FullMap, Node } from '@/entities/map'
 import { useUpdateNode } from '@/entities/map'
 import type { NodeType } from '@/entities/node'
 import { BlockEditor } from '@/features/block-editor'
-import { editorToHTML, htmlToEditor, htmlToPlainText } from '@/features/block-editor/lib/html-serializer'
+import {
+  editorToHTML,
+  htmlToEditor,
+  htmlToPlainText
+} from '@/features/block-editor/lib/html-serializer'
 import { NodeConnectionsPanel } from '@/features/node-connections-panel'
 import { useAutoSave } from '@/features/node-editor/model/use-auto-save.hooks'
 import { NodeMetadataForm, type NodeMetadataFormValues } from '@/features/node-metadata-form'
@@ -26,7 +30,7 @@ const NODE_TYPE_CONFIG: Record<NodeType, { color: string; label: string }> = {
   question: { color: 'bg-yellow-500/10 text-yellow-600 dark:text-yellow-400', label: 'Question' },
   hypothesis: { color: 'bg-pink-500/10 text-pink-600 dark:text-pink-400', label: 'Hypothesis' },
   person: { color: 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400', label: 'Person' },
-  school: { color: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400', label: 'School' },
+  school: { color: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400', label: 'School' }
 }
 
 interface NodeEditPageProps {
@@ -36,7 +40,12 @@ interface NodeEditPageProps {
   nodeId: string
 }
 
-export function NodeEditPage({ node: currentNode, map: lightweightMap, mapId, nodeId }: NodeEditPageProps) {
+export function NodeEditPage({
+  node: currentNode,
+  map: lightweightMap,
+  mapId,
+  nodeId
+}: NodeEditPageProps) {
   const { t } = useTranslation()
   const updateNodeMutation = useUpdateNode(mapId)
   const [sidebarOpen, setSidebarOpen] = useState(true)
@@ -137,7 +146,7 @@ export function NodeEditPage({ node: currentNode, map: lightweightMap, mapId, no
   return (
     <div className="flex h-full">
       {/* Main Editor Area */}
-      <main className="flex-1 min-w-0 overflow-y-auto">
+      <main className="flex-1 min-w-0 overflow-y-auto [scrollbar-gutter:stable]">
         {/* Editor Content */}
         <div className="mx-auto max-w-3xl px-4 md:px-8 py-6 md:py-8">
           {/* Breadcrumb & Actions */}
@@ -152,7 +161,10 @@ export function NodeEditPage({ node: currentNode, map: lightweightMap, mapId, no
                 variant="secondary"
                 className={cn('text-xs font-medium', NODE_TYPE_CONFIG[currentNode.type]?.color)}
               >
-                {t(`nodeTypes.${currentNode.type}`, NODE_TYPE_CONFIG[currentNode.type]?.label || currentNode.type)}
+                {t(
+                  `nodeTypes.${currentNode.type}`,
+                  NODE_TYPE_CONFIG[currentNode.type]?.label || currentNode.type
+                )}
               </Badge>
               {updateNodeMutation.isPending && (
                 <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -213,12 +225,12 @@ export function NodeEditPage({ node: currentNode, map: lightweightMap, mapId, no
         <aside className="hidden md:flex w-80 flex-shrink-0 border-l border-border h-full">
           <div className="flex flex-1 flex-col min-h-0">
             {/* Sidebar Header */}
-            <div className="flex items-center justify-between border-b border-border/50 bg-primary/5 px-4 py-3">
+            <div className="flex items-center justify-between border-b border-border/50 px-4 py-3">
               <h2 className="text-sm font-semibold">{t('nodeEdit.properties')}</h2>
             </div>
 
             {/* Sidebar Content */}
-            <div className="flex-1 overflow-y-auto min-h-0">
+            <div className="flex-1 overflow-y-auto [scrollbar-gutter:stable] min-h-0">
               {/* Node Metadata */}
               <div className="border-b border-border/50 p-4">
                 <NodeMetadataForm
@@ -247,11 +259,11 @@ export function NodeEditPage({ node: currentNode, map: lightweightMap, mapId, no
       {/* Right Sidebar - Mobile Sheet */}
       <Sheet open={mobileSheetOpen} onOpenChange={setMobileSheetOpen}>
         <SheetContent side="right" className="w-80 p-0 flex flex-col">
-          <SheetHeader className="border-b border-border/50 bg-primary/5 px-4 py-3">
+          <SheetHeader className="border-b border-border/50 px-4 py-3">
             <SheetTitle className="text-sm font-semibold">{t('nodeEdit.properties')}</SheetTitle>
           </SheetHeader>
 
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto [scrollbar-gutter:stable]">
             {/* Node Metadata */}
             <div className="border-b border-border/50 p-4">
               <NodeMetadataForm

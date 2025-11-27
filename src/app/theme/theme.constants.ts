@@ -3,6 +3,10 @@ import type { ColorTheme, Theme } from './theme.types'
 export const THEME_STORAGE_KEY = 'vite-ui-theme'
 export const COLOR_THEME_STORAGE_KEY = 'arbor-color-theme'
 
+// Cookie keys (for SSR)
+export const THEME_COOKIE_KEY = 'arbor-theme'
+export const COLOR_THEME_COOKIE_KEY = 'arbor-color-theme'
+
 export const THEMES: { name: string; value: Theme }[] = [
   { name: 'Light', value: 'light' },
   { name: 'Dark', value: 'dark' },

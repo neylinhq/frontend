@@ -1,4 +1,5 @@
 import { User as UserIcon, Settings2, Palette, Shield, CreditCard, type LucideIcon } from 'lucide-react'
+import { SETTINGS_ROUTES } from '@/shared/config'
 
 export interface SettingsNavItem {
   title: string
@@ -9,27 +10,27 @@ export interface SettingsNavItem {
 export const SETTINGS_NAV_ITEMS: SettingsNavItem[] = [
   {
     title: 'settings.nav.profile',
-    href: '/dashboard/settings/profile',
+    href: SETTINGS_ROUTES.profile,
     icon: UserIcon
   },
   {
     title: 'settings.nav.preferences',
-    href: '/dashboard/settings/preferences',
+    href: SETTINGS_ROUTES.preferences,
     icon: Settings2
   },
   {
     title: 'settings.nav.theme',
-    href: '/dashboard/settings/theme',
+    href: SETTINGS_ROUTES.theme,
     icon: Palette
   },
   {
     title: 'settings.nav.security',
-    href: '/dashboard/settings/security',
+    href: SETTINGS_ROUTES.security,
     icon: Shield
   },
   {
     title: 'settings.nav.billing',
-    href: '/dashboard/settings/billing',
+    href: SETTINGS_ROUTES.billing,
     icon: CreditCard
   }
 ]

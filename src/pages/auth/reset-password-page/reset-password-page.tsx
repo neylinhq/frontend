@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { ResetPasswordForm } from '@/features/auth/reset-password-form'
+import { AUTH_ROUTES } from '@/shared/config'
 
 export const ResetPasswordPage = () => {
   const { t } = useTranslation()
@@ -18,7 +19,7 @@ export const ResetPasswordPage = () => {
 
       <div className="mt-4 text-center text-sm text-muted-foreground">
         {t('auth.resetPassword.rememberPassword')}{' '}
-        <Link to="/auth/sign-in" className="underline hover:text-primary" prefetch="intent">
+        <Link to={AUTH_ROUTES.signIn} className="underline hover:text-primary" prefetch="intent">
           {t('auth.resetPassword.signInLink')}
         </Link>
       </div>

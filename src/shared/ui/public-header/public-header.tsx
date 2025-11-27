@@ -1,8 +1,10 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
+import { ColorThemeSelect } from '@/app/theme/components/color-theme-select'
 import { ModeSelect } from '@/app/theme/components/mode-select'
 import { LanguageSelect } from '@/features/language-switcher'
+import { AUTH_ROUTES } from '@/shared/config'
 import { Button } from '@/shared/ui/button'
 import { Logo } from '@/shared/ui/logo'
 
@@ -20,15 +22,16 @@ export function PublicHeader({ hideAuthButtons }: PublicHeaderProps) {
 
         <nav className="flex items-center gap-2">
           <LanguageSelect compact />
+          <ColorThemeSelect compact />
           <ModeSelect compact />
           {!hideAuthButtons && (
             <>
               <div className="hidden md:block h-4 w-px bg-border mx-1" />
               <Button asChild variant="ghost" size="sm" className="hidden md:inline-flex">
-                <Link to="/auth/sign-in">{t('home.cta.signIn', 'Sign in')}</Link>
+                <Link to={AUTH_ROUTES.signIn}>{t('home.cta.signIn', 'Sign in')}</Link>
               </Button>
               <Button asChild size="sm" className="hidden md:inline-flex">
-                <Link to="/auth/sign-up">{t('home.cta.getStarted', 'Get Started')}</Link>
+                <Link to={AUTH_ROUTES.signUp}>{t('home.cta.getStarted', 'Get Started')}</Link>
               </Button>
             </>
           )}

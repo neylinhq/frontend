@@ -22,12 +22,13 @@ export const USER_NAV_ITEMS: UserNavItem[] = [
 
 // Для примера разделим как в макете
 import { CreditCard, LogOut, Settings, Sparkles } from 'lucide-react'
+import { SETTINGS_ROUTES } from '@/shared/config'
 
 export const USER_NAV_MAIN_SECTION: UserNavItem[] = [
   {
     title: 'nav.subscription',
+    href: SETTINGS_ROUTES.billing,
     icon: Sparkles,
-    action: 'subscription',
     shortcut: {
       mac: '⌘P',
       win: 'Ctrl+P'
@@ -35,7 +36,7 @@ export const USER_NAV_MAIN_SECTION: UserNavItem[] = [
   },
   {
     title: 'nav.settings',
-    href: '/dashboard/settings/profile',
+    href: SETTINGS_ROUTES.profile,
     icon: Settings,
     shortcut: {
       mac: '⌘S',
@@ -44,8 +45,8 @@ export const USER_NAV_MAIN_SECTION: UserNavItem[] = [
   },
   {
     title: 'nav.billing',
+    href: SETTINGS_ROUTES.billing,
     icon: CreditCard,
-    action: 'billing'
   }
 ]
 

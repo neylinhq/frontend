@@ -4,6 +4,7 @@ import { Link } from 'react-router'
 import type { MapEntity } from '@/entities/map'
 import { CreateMapCard } from '@/features/maps/create-map-button'
 import { MapCard } from '@/features/maps/map-card/map-card'
+import { MAPS_ROUTES } from '@/shared/config'
 import { Button } from '@/shared/ui/button'
 
 interface OverviewPageProps {
@@ -21,7 +22,7 @@ export function OverviewPage({ maps }: OverviewPageProps) {
           <p className="text-muted-foreground mt-1">{t('dashboard.overview.description')}</p>
         </div>
         <Button asChild>
-          <Link to="/dashboard/maps/new">
+          <Link to={MAPS_ROUTES.new}>
             <Plus className="mr-2 h-4 w-4" />
             {t('dashboard.overview.createMap')}
           </Link>

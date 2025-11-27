@@ -2,6 +2,7 @@ import { ArrowLeft } from 'lucide-react'
 import type * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
+import { ROUTES } from '@/shared/config'
 
 interface LegalLayoutProps {
   children: React.ReactNode
@@ -15,7 +16,7 @@ export const LegalLayout = ({ children }: LegalLayoutProps) => {
       <div className="max-w-4xl mx-auto px-6">
         {/* Back Button */}
         <Link
-          to="/"
+          to={ROUTES.home}
           className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
         >
           <ArrowLeft className="h-4 w-4" />

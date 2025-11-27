@@ -7,14 +7,14 @@ export function DashboardLayout() {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false)
 
   return (
-    <div className="min-h-screen">
+    <div className="h-screen flex flex-col overflow-hidden">
       {/* Header */}
       <DashboardHeader />
 
-      <div className="flex">
+      <div className="flex flex-1 min-h-0">
         {/* Desktop Sidebar */}
         <aside
-          className="hidden md:block sticky top-14 h-[calc(100vh-3.5rem)] bg-card border-r flex-shrink-0 w-16 z-40"
+          className="hidden md:flex flex-col bg-card border-r flex-shrink-0 w-16 z-40"
           onMouseEnter={() => setIsSidebarExpanded(true)}
           onMouseLeave={() => setIsSidebarExpanded(false)}
         >
@@ -24,7 +24,7 @@ export function DashboardLayout() {
         {/* Expanded Sidebar Overlay - fixed position, doesn't affect layout */}
         {isSidebarExpanded && (
           <nav
-            className="hidden md:block fixed left-0 top-14 h-[calc(100vh-3.5rem)] w-64 bg-card border-r z-50 shadow-lg"
+            className="hidden md:flex flex-col fixed left-0 top-14 h-[calc(100vh-3.5rem)] w-64 bg-card border-r z-50 shadow-lg"
             onMouseEnter={() => setIsSidebarExpanded(true)}
             onMouseLeave={() => setIsSidebarExpanded(false)}
           >
@@ -33,7 +33,7 @@ export function DashboardLayout() {
         )}
 
         {/* Main Content */}
-        <main className="flex-1 min-w-0">
+        <main className="flex-1 min-w-0 overflow-hidden">
           <Outlet />
         </main>
       </div>

@@ -390,22 +390,30 @@
   margin: 1.5rem 0;
 }
 
-/* Selection */
-.tiptap-editor ::selection {
-  background-color: hsl(var(--brand) / 0.2);
+/* Hide native selection completely - we use custom decorations */
+.tiptap-editor .ProseMirror::selection,
+.tiptap-editor .ProseMirror *::selection {
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
-/* Block selection (fully selected blocks get highlighted) */
+/* Selection styles - unified visual language */
+.tiptap-editor .ProseMirror .text-selected,
 .tiptap-editor .ProseMirror .block-selected {
-  background: hsl(var(--brand) / 0.08);
-  border-radius: 0.25rem;
-  transition: background 0.15s ease;
+  background: hsl(var(--brand) / 0.2);
+  border-radius: 2px;
 }
 
-/* Hide text selection highlight when block is selected */
-.tiptap-editor .ProseMirror .block-selected::selection,
-.tiptap-editor .ProseMirror .block-selected *::selection {
-  background: transparent;
+/* Inline text selection - multi-line support */
+.tiptap-editor .ProseMirror .text-selected {
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* Block selection - slightly larger radius */
+.tiptap-editor .ProseMirror .block-selected {
+  border-radius: 0.25rem; /* 4px */
+  transition: background 0.15s ease;
 }
 
 /* Floating menu - hide on touch devices */

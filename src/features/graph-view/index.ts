@@ -1,11 +1,17 @@
 // Store
 
 // Layout algorithms - Original O(n²) implementation
+// TEMPORARY: Using original to test if collapse is algorithm-specific
 export {
   applyLayout,
   getNodesWithinDepth
 } from './lib/layout-algorithms'
-// Layout algorithms - D3-Force O(n log n) implementation (Barnes-Hut)
+// Layout algorithms - Custom Barnes-Hut O(n log n) implementation
+export {
+  applyLayout as applyLayoutOptimized,
+  getNodesWithinDepth as getNodesWithinDepthOptimized
+} from './lib/layout-algorithms-optimized'
+// Layout algorithms - D3-Force O(n log n) implementation (deprecated)
 export {
   applyLayout as applyLayoutD3,
   getNodesWithinDepth as getNodesWithinDepthD3

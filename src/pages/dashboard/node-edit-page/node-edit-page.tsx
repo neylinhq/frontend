@@ -133,9 +133,9 @@ export function NodeEditPage({ node: currentNode, map: lightweightMap, mapId, no
   }
 
   return (
-    <div className="flex h-[calc(100vh-3.5rem)]">
+    <div className="flex h-full">
       {/* Main Editor Area */}
-      <main className="flex-1 min-w-0 overflow-y-auto overflow-x-hidden">
+      <main className="flex-1 min-w-0 overflow-y-auto">
         {/* Editor Content */}
         <div className="mx-auto max-w-3xl px-4 md:px-8 py-6 md:py-8">
           {/* Breadcrumb & Actions */}
@@ -198,15 +198,15 @@ export function NodeEditPage({ node: currentNode, map: lightweightMap, mapId, no
 
       {/* Right Sidebar */}
       {sidebarOpen && (
-        <aside className="hidden md:flex w-80 flex-shrink-0 border-l border-border">
-          <div className="flex h-full flex-col">
+        <aside className="hidden md:flex w-80 flex-shrink-0 border-l border-border h-full">
+          <div className="flex flex-1 flex-col min-h-0">
             {/* Sidebar Header */}
             <div className="flex items-center justify-between border-b border-border/50 px-4 py-3">
               <h2 className="text-sm font-semibold">{t('nodeEdit.properties')}</h2>
             </div>
 
             {/* Sidebar Content */}
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto min-h-0">
               {/* Node Metadata */}
               <div className="border-b border-border/50 p-4">
                 <NodeMetadataForm

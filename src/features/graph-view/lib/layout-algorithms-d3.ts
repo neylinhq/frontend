@@ -166,6 +166,10 @@ function hashToSide(str: string): number {
  * Custom D3 force: Edge-based vertical positioning
  * Source nodes are pushed UP, target nodes are pushed DOWN
  * This creates natural hierarchy based on edge directions
+ *
+ * Note: D3 accumulates velocities differently than original algorithm.
+ * Original resets velocities each iteration; D3 uses velocity decay (0.4 default).
+ * Multipliers are scaled down to compensate: ~0.15 instead of 1.2
  */
 function forceEdgeDirection(
   links: D3Link[],
@@ -184,18 +188,18 @@ function forceEdgeDirection(
       if (!source || !target || source.x === undefined || target.x === undefined) continue
 
       // Vertical force proportional to edge weight and direction strength
-      // Low multiplier to prevent excessive vertical expansion
-      const verticalForce = idealDistance * 0.25 * strength * link.weight * alpha
+      // Balanced for D3's velocity model: 0.4 (between 0.15 too weak and 1.2 too strong)
+      const verticalForce = idealDistance * 0.4 * strength * link.weight * alpha
 
       // Push source UP (decrease y), target DOWN (increase y)
       source.vy = (source.vy ?? 0) - verticalForce
       target.vy = (target.vy ?? 0) + verticalForce
 
       // Horizontal spread when nodes are too close vertically
-      // This prevents vertical collapse and reduces edge crossings
       const yDiff = Math.abs((target.y ?? 0) - (source.y ?? 0))
-      if (yDiff < idealDistance * 0.6) {
-        const spreadForce = idealDistance * 0.4 * strength * alpha
+      if (yDiff < idealDistance * 0.5) {
+        // Spread force to prevent horizontal collapse
+        const spreadForce = idealDistance * 0.15 * strength * alpha
         const sourceX = source.x ?? 0
         const targetX = target.x ?? 0
 
@@ -316,6 +320,12 @@ function forceEdgeCrossing(
  * Force-directed layout using d3-force with Barnes-Hut optimization
  * Complexity: O(n log n) instead of O(n²)
  *
+ * Parameters tuned to match original layout-algorithms.ts:
+ * - idealDistance = nodeSpacing * 1.5 = 200 * 1.5 * spacingFactor = 300 * spacingFactor
+ * - Repulsion force ~= idealDistance² / dist (approximated by D3 charge)
+ * - Attraction force = dist² / idealDistance * weight
+ * - Center gravity = 0.01
+ *
  * Adaptive behavior based on directionStrength:
  * - direction=0: maximize spread, minimize crossings, no hierarchy
  * - direction=200: maximize flow (source→target top-to-bottom)
@@ -327,19 +337,20 @@ function forceDirectedLayout(
 ): LayoutResult {
   const { spacingPercent, directionStrength } = options
 
-  // Base distances - increased by 20% for better default spacing
-  const baseDistance = 360 * (spacingPercent / 100)
+  // Match original algorithm: nodeSpacing = 200 * factor, idealDistance = nodeSpacing * 1.5 = 300 * factor
+  const nodeSpacing = 200 * (spacingPercent / 100)
+  const idealDistance = nodeSpacing * 1.5  // 300 at 100%
   // Normalized: 0-2 range (0=no hierarchy, 2=max hierarchy)
   const normalizedDirection = directionStrength / 100
 
   // Convert to D3 format
+  // Match original: initial radius ~200, random offset ~50
   const d3Nodes: D3Node[] = nodes.map((node, i) => {
     const hasValidPosition = node.position && (node.position.x !== 0 || node.position.y !== 0)
-    const initRadius = 360 * (spacingPercent / 100)
     return {
       id: node.id,
-      x: hasValidPosition ? node.position.x : Math.cos(i * 2.4) * initRadius + Math.random() * 100,
-      y: hasValidPosition ? node.position.y : Math.sin(i * 2.4) * initRadius + Math.random() * 100,
+      x: hasValidPosition ? node.position.x : Math.cos(i * 2.4) * 200 + Math.random() * 50,
+      y: hasValidPosition ? node.position.y : Math.sin(i * 2.4) * 200 + Math.random() * 50,
       originalNode: node,
     }
   })
@@ -358,33 +369,34 @@ function forceDirectedLayout(
       }
     })
 
-  // Compute node metrics (degree, leaf/hub status)
-  const nodeMetrics = computeNodeMetrics(d3Nodes, d3Links)
-
   // Charge strength for node repulsion
-  const chargeStrength = -800 * (spacingPercent / 100)
+  // Original uses force = idealDistance² / dist
+  // D3 forceManyBody uses force = strength / dist² by default
+  // To approximate: strength ≈ -idealDistance² gives similar magnitude
+  const chargeStrength = -(idealDistance * idealDistance) / 100  // Scaled down for D3's quadratic model
 
-  // Create simulation
+  // Create simulation with 150 iterations to match original
   const simulation: Simulation<D3Node, D3Link> = forceSimulation(d3Nodes)
-    // Repulsion between nodes - Barnes-Hut with theta=0.9
-    // Stronger at low direction (more spread)
+    // Repulsion between nodes - Barnes-Hut with theta=0.9 for O(n log n)
     .force('charge', forceManyBody<D3Node>()
       .strength(chargeStrength)
       .theta(0.9)
-      .distanceMax(baseDistance * 10)
+      .distanceMax(idealDistance * 8)
     )
     // Attraction along edges (weighted)
+    // Original: force = dist² / idealDistance * weight
+    // D3 forceLink has different model, tune strength to approximate
     .force('link', forceLink<D3Node, D3Link>(d3Links)
       .id(d => d.id)
-      .distance(baseDistance * 1.5)
-      .strength(d => d.weight * 0.25)
+      .distance(idealDistance)
+      .strength(d => d.weight * 0.3)
     )
-    // Weak center gravity
-    .force('center', forceCenter(0, 0).strength(0.015))
+    // Center gravity to prevent drift - match original 0.01
+    .force('center', forceCenter(0, 0).strength(0.01))
     // Collision detection to prevent overlap
     .force('collide', forceCollide<D3Node>()
-      .radius(180 * (spacingPercent / 100))
-      .strength(0.9)
+      .radius(nodeSpacing * 0.8)
+      .strength(0.8)
     )
 
   // Edge-based vertical forces (replaces depth-based forceY)
@@ -392,14 +404,27 @@ function forceDirectedLayout(
   if (normalizedDirection > 0) {
     simulation.force('edgeDirection', forceEdgeDirection(d3Links, {
       strength: normalizedDirection,
-      idealDistance: baseDistance,
+      idealDistance: idealDistance,
     }))
+
+    // Horizontal spread to prevent vertical collapse
+    // Uses deterministic hash-based left/right bias
+    // Strength increases with direction to maintain balance
+    const nodeMetrics = computeNodeMetrics(d3Nodes, d3Links)
+    simulation.force('horizontalSpread', forceX<D3Node>()
+      .x(node => {
+        const metrics = nodeMetrics.get(node.id)
+        // Push left (-1) or right (+1) based on node hash
+        return (metrics?.horizontalBias ?? 0) * idealDistance * normalizedDirection
+      })
+      .strength(0.05 * normalizedDirection)
+    )
   }
 
-  // NO global horizontal force - horizontal spread is handled by:
+  // Horizontal spread is handled by:
   // 1. charge repulsion between all nodes
   // 2. edge-based spread in forceEdgeDirection when nodes are close vertically
-  // This matches the original algorithm behavior
+  // 3. forceX with hash-based bias (when direction > 0) to prevent vertical collapse
 
   // Optional: Edge crossing minimization (O(m²) - can be slow for large graphs)
   // Stronger at low direction values where we prioritize avoiding crossings
@@ -415,8 +440,8 @@ function forceDirectedLayout(
   // Run simulation synchronously
   simulation.stop()
 
-  // Use adaptive iterations based on graph size
-  const iterations = Math.min(300, Math.max(100, 150 - Math.log10(nodes.length) * 30))
+  // Match original iteration count of 150
+  const iterations = 150
 
   for (let i = 0; i < iterations; i++) {
     simulation.tick()

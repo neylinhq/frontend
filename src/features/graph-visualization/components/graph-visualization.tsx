@@ -28,8 +28,7 @@ import { KnowledgeEdge } from './knowledge-edge'
 import { KnowledgeNode } from './knowledge-node'
 import {
   layoutEvent,
-  applyLayout as applyLayoutOriginal,
-  applyLayoutD3,
+  applyLayout,
   getNodesWithinDepth,
   useGraphKeyboard,
   useViewMode,
@@ -37,11 +36,7 @@ import {
   useFilters,
   useGraphUI,
   useNodeSpacing,
-  USE_D3_LAYOUT,
 } from '@/features/graph-view'
-
-// Switch between implementations via USE_D3_LAYOUT flag
-const applyLayout = USE_D3_LAYOUT ? applyLayoutD3 : applyLayoutOriginal
 
 const nodeTypes = {
   knowledgeNode: KnowledgeNode,

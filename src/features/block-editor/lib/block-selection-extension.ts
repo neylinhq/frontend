@@ -35,8 +35,9 @@ function findFullySelectedBlocks(
 
     // Handle list items separately (each item is a block)
     if (node.type.name === 'listItem' || node.type.name === 'taskItem') {
-      // Check if selection fully covers this list item's content
-      if (from <= contentStart && to >= contentEnd) {
+      const isFullySelected = from <= contentStart && to >= contentEnd
+      console.log(`[BlockSelection] listItem: content=${contentStart}-${contentEnd}, sel=${from}-${to}, full=${isFullySelected}`)
+      if (isFullySelected) {
         selectedBlocks.push({ from: nodeStart, to: nodeEnd })
       }
       return false // Don't descend
@@ -53,8 +54,9 @@ function findFullySelectedBlocks(
         return true // Descend to find list items
       }
 
-      // Check if selection fully covers this block's content
-      if (from <= contentStart && to >= contentEnd) {
+      const isFullySelected = from <= contentStart && to >= contentEnd
+      console.log(`[BlockSelection] ${node.type.name}: content=${contentStart}-${contentEnd}, sel=${from}-${to}, full=${isFullySelected}`)
+      if (isFullySelected) {
         selectedBlocks.push({ from: nodeStart, to: nodeEnd })
       }
       return false // Don't descend into block children
@@ -87,20 +89,38 @@ export const BlockSelection = Extension.create({
               return { decorations: DecorationSet.empty }
             }
 
-            // Check selection and create decorations for fully selected blocks
             const { from, to } = newEditorState.selection
-            const selectedBlocks = findFullySelectedBlocks(newEditorState.doc, from, to)
 
-            if (selectedBlocks.length === 0) {
+            // No selection = no decorations
+            if (from === to) {
               return { decorations: DecorationSet.empty }
             }
 
-            // Create decorations for all fully selected blocks
-            const decorations = selectedBlocks.map(({ from: blockFrom, to: blockTo }) =>
-              Decoration.node(blockFrom, blockTo, {
-                class: 'block-selected'
-              })
-            )
+            // Check for fully selected blocks
+            const selectedBlocks = findFullySelectedBlocks(newEditorState.doc, from, to)
+
+            // Debug
+            console.log('[BlockSelection] selection:', { from, to }, 'found blocks:', selectedBlocks.length)
+
+            const decorations: Decoration[] = []
+
+            if (selectedBlocks.length > 0) {
+              // Add block-level decorations for fully selected blocks
+              for (const { from: blockFrom, to: blockTo } of selectedBlocks) {
+                decorations.push(
+                  Decoration.node(blockFrom, blockTo, {
+                    class: 'block-selected'
+                  })
+                )
+              }
+            } else {
+              // Partial selection - add inline decoration
+              decorations.push(
+                Decoration.inline(from, to, {
+                  class: 'text-selected'
+                })
+              )
+            }
 
             return {
               decorations: DecorationSet.create(newEditorState.doc, decorations)

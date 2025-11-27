@@ -213,7 +213,7 @@ export function NodeEditPage({ node: currentNode, map: lightweightMap, mapId, no
         <aside className="hidden md:flex w-80 flex-shrink-0 border-l border-border h-full">
           <div className="flex flex-1 flex-col min-h-0">
             {/* Sidebar Header */}
-            <div className="flex items-center justify-between border-b border-border/50 px-4 py-3">
+            <div className="flex items-center justify-between border-b border-border/50 bg-primary/5 px-4 py-3">
               <h2 className="text-sm font-semibold">{t('nodeEdit.properties')}</h2>
             </div>
 
@@ -247,7 +247,7 @@ export function NodeEditPage({ node: currentNode, map: lightweightMap, mapId, no
       {/* Right Sidebar - Mobile Sheet */}
       <Sheet open={mobileSheetOpen} onOpenChange={setMobileSheetOpen}>
         <SheetContent side="right" className="w-80 p-0 flex flex-col">
-          <SheetHeader className="border-b border-border/50 px-4 py-3">
+          <SheetHeader className="border-b border-border/50 bg-primary/5 px-4 py-3">
             <SheetTitle className="text-sm font-semibold">{t('nodeEdit.properties')}</SheetTitle>
           </SheetHeader>
 

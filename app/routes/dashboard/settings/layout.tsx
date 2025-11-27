@@ -33,7 +33,7 @@ export default function SettingsLayout() {
       <div className="flex flex-col md:flex-row gap-6 lg:gap-10">
         {/* Sidebar Navigation */}
         <aside className="md:w-56 flex-shrink-0">
-          <nav className="space-y-1 sticky top-20">
+          <nav className="space-y-1 sticky top-6">
             {SETTINGS_NAV_ITEMS.map((item) => {
               const Icon = item.icon
               const isActive = location.pathname === item.href

@@ -62,7 +62,7 @@ export const NodeDrawer = memo(({
         showOverlay={isMobile}
         className={cn('p-6', className)}
       >
-        <DrawerHeader className="px-0 pt-0">
+        <DrawerHeader className="px-0 pt-0 bg-primary/5">
           <div className="flex items-center justify-between">
             <DrawerTitle className="flex items-center gap-2">
               <Icon className="w-5 h-5" />

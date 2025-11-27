@@ -1,7 +1,9 @@
-import { Globe } from 'lucide-react'
+import { Globe, Palette } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link, useFetcher } from 'react-router'
 import { ThemeToggle } from '@/app/theme/components/theme-toggle'
+import { useTheme } from '@/app/theme/components/theme-provider'
+import { COLOR_THEMES } from '@/app/theme/theme.constants'
 import { useSessionStore } from '@/entities/session'
 import { LANGUAGES } from '@/features/language-switcher/language-switcher.constants'
 import { getShortcut } from '@/shared/lib/platform'
@@ -27,6 +29,7 @@ export function UserNav() {
   const { user } = useSessionStore()
   const fetcher = useFetcher()
   const { t, i18n } = useTranslation()
+  const { colorTheme, setColorTheme } = useTheme()
 
   if (!user) return null
 
@@ -105,6 +108,33 @@ export function UserNav() {
                     <lang.Flag className="mr-2 h-5 w-5 rounded-full object-cover border border-black/30 dark:border-white/30" />
                     {lang.label}
                     {i18n.language === lang.id && <span className="ml-auto text-xs">✓</span>}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuSubContent>
+            </DropdownMenuPortal>
+          </DropdownMenuSub>
+
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>
+              <Palette className="mr-2 h-4 w-4" />
+              <span>{t('nav.colorTheme')}</span>
+            </DropdownMenuSubTrigger>
+            <DropdownMenuPortal>
+              <DropdownMenuSubContent>
+                {COLOR_THEMES.map(theme => (
+                  <DropdownMenuItem
+                    key={theme.value}
+                    onSelect={e => {
+                      e.preventDefault()
+                      setColorTheme(theme.value)
+                    }}
+                  >
+                    <span
+                      className="mr-2 h-4 w-4 rounded-full border border-black/20 dark:border-white/20"
+                      style={{ backgroundColor: theme.color }}
+                    />
+                    {theme.name}
+                    {colorTheme === theme.value && <span className="ml-auto text-xs">✓</span>}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuSubContent>

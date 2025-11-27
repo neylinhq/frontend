@@ -431,8 +431,10 @@ function GraphVisualizationContent({
   return (
     <div
       className={cn(
-        'relative bg-background rounded-lg border',
-        controls.isFullscreen ? 'fixed inset-4 z-50' : 'h-full w-full',
+        'relative bg-background',
+        controls.isFullscreen
+          ? 'fixed inset-0 z-50 !w-screen !h-screen rounded-none border-0'
+          : 'h-full w-full rounded-lg border',
         className
       )}
     >

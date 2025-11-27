@@ -1,15 +1,17 @@
-import { ArrowDown, ArrowUp, Eye, ExternalLink } from 'lucide-react'
+import { Eye, ExternalLink } from 'lucide-react'
 import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
+
 import type { Edge, Node } from '@/entities/map'
-import { cn } from '@/shared/lib/cn'
-import { Button } from '@/shared/ui/button'
 import { getNodeIcon } from '@/features/graph-visualization/lib/get-node-style'
+import { cn } from '@/shared/lib/cn'
 
 interface ConnectionItemProps {
   edge: Edge
   node: Node
   direction: 'incoming' | 'outgoing'
+  /** Hide direction indicator when grouped by direction */
+  showDirectionHint?: boolean
   className?: string
   onOpenNode?: (nodeId: string) => void
   onPanToNode?: (nodeId: string) => void
@@ -19,13 +21,13 @@ export const ConnectionItem = memo(({
   edge,
   node,
   direction,
+  showDirectionHint = true,
   className,
   onOpenNode,
   onPanToNode,
 }: ConnectionItemProps) => {
   const { t } = useTranslation()
   const Icon = getNodeIcon(node.type)
-  const DirectionIcon = direction === 'incoming' ? ArrowDown : ArrowUp
 
   const handleClick = () => {
     onOpenNode?.(node.id)
@@ -40,46 +42,67 @@ export const ConnectionItem = memo(({
     <button
       type="button"
       className={cn(
-        'w-full text-left p-3 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer group',
+        'group w-full text-left rounded-lg transition-all duration-150',
+        'hover:bg-muted/60',
         className
       )}
       onClick={handleClick}
     >
-      <div className="flex items-center gap-2">
-        <DirectionIcon className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+      <div className="flex items-center gap-3 px-3 py-2.5">
+        {/* Node icon in subtle container */}
+        <div className={cn(
+          'flex items-center justify-center w-8 h-8 rounded-md flex-shrink-0',
+          'bg-muted/60 group-hover:bg-muted transition-colors'
+        )}>
+          <Icon className="w-4 h-4 text-muted-foreground" />
+        </div>
+
+        {/* Content */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <Icon className="w-4 h-4 flex-shrink-0" />
-            <p className="font-medium text-sm truncate">{node.label}</p>
-          </div>
-          <p className="text-xs text-muted-foreground mt-1">
-            {t(`graph.edgeTypes.${edge.relationType}`)}
-            {edge.label && ` • ${edge.label}`}
+          <p className="font-medium text-sm truncate">
+            {node.label}
+          </p>
+          <p className="text-xs text-muted-foreground truncate mt-0.5 flex items-center gap-1">
+            {showDirectionHint && (
+              <span className={cn(
+                'inline-block w-4 text-center',
+                direction === 'incoming' ? 'text-blue-500' : 'text-emerald-500'
+              )}>
+                {direction === 'incoming' ? '←' : '→'}
+              </span>
+            )}
+            <span>{t(`graph.edgeTypes.${edge.relationType}`)}</span>
+            {edge.label && <span className="opacity-60">· {edge.label}</span>}
           </p>
         </div>
-        {/* Action buttons */}
-        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+
+        {/* Actions - appear on hover */}
+        <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
           {onPanToNode && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-7 w-7 p-0"
+            <button
+              type="button"
               onClick={handlePanClick}
-              title={t('nodeDrawer.connections.panToNode', 'Go to node')}
+              className={cn(
+                'p-1.5 rounded-md transition-colors',
+                'text-muted-foreground hover:text-foreground hover:bg-background'
+              )}
+              title={t('nodeDrawer.connections.panToNode')}
             >
               <Eye className="w-3.5 h-3.5" />
-            </Button>
+            </button>
           )}
           {onOpenNode && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-7 w-7 p-0"
+            <button
+              type="button"
               onClick={(e) => { e.stopPropagation(); handleClick() }}
-              title={t('nodeDrawer.connections.openNode', 'Open node')}
+              className={cn(
+                'p-1.5 rounded-md transition-colors',
+                'text-muted-foreground hover:text-foreground hover:bg-background'
+              )}
+              title={t('nodeDrawer.connections.openNode')}
             >
               <ExternalLink className="w-3.5 h-3.5" />
-            </Button>
+            </button>
           )}
         </div>
       </div>

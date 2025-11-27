@@ -1,6 +1,12 @@
 @import "tailwindcss";
 @import "katex/dist/katex.min.css";
 
+/* Disable transitions during theme changes */
+html.theme-transition-disabled,
+html.theme-transition-disabled * {
+  transition: none !important;
+}
+
 @theme {
   /* Main font: IBM Plex Sans - technical, geometric, serious */
   --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",

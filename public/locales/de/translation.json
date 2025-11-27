@@ -940,15 +940,57 @@
     },
     "edit": "Bearbeiten"
   },
-  "uiShowcase": {
-    "nav": {
-      "gettingStarted": "Erste Schritte",
+  "docs": {
+    "title": "Docs",
+    "toggleMenu": "Menü",
+    "onThisPage": "Auf dieser Seite",
+    "badges": {
+      "new": "Neu",
+      "deprecated": "Veraltet",
+      "foundation": "Grundlage",
       "components": "Komponenten"
     },
-    "menu": "Menü",
+    "nav": {
+      "gettingStarted": "Erste Schritte",
+      "components": "Komponenten",
+      "introduction": "Einführung",
+      "colors": "Farben",
+      "typography": "Typografie"
+    },
+    "componentNames": {
+      "alertDialog": "Alert Dialog",
+      "avatar": "Avatar",
+      "badge": "Badge",
+      "button": "Button",
+      "card": "Card",
+      "checkbox": "Checkbox",
+      "collapsible": "Collapsible",
+      "contextMenu": "Context Menu",
+      "dialog": "Dialog",
+      "drawer": "Drawer",
+      "dropdownMenu": "Dropdown Menu",
+      "form": "Formular",
+      "input": "Eingabefeld",
+      "label": "Label",
+      "popover": "Popover",
+      "progress": "Progress",
+      "radioGroup": "Radio Group",
+      "select": "Select",
+      "separator": "Separator",
+      "sheet": "Sheet",
+      "slider": "Slider",
+      "switch": "Switch",
+      "table": "Tabelle",
+      "tabs": "Tabs",
+      "textarea": "Textfeld"
+    },
     "index": {
-      "title": "UI-Komponentenbibliothek",
-      "lead": "Sammlung wiederverwendbarer Komponenten, die auf Radix UI und Tailwind CSS basieren. Unterstützung für 3 Farbthemen, Dark Mode und vollständige TypeScript-Typisierung.",
+      "title": "Design System",
+      "version": "v1.0",
+      "lead": "Sammlung wiederverwendbarer Komponenten mit Radix UI und Tailwind CSS. Mit 3 Farbthemen, Dark Mode und vollständiger TypeScript-Unterstützung.",
+      "getStarted": "Loslegen",
+      "viewColors": "Farben ansehen",
+      "explore": "Erkunden",
       "quickLinks": {
         "colors": {
           "title": "Farben",
@@ -956,37 +998,37 @@
         },
         "typography": {
           "title": "Typografie",
-          "description": "Typografisches System und Textstile"
+          "description": "Typografieskala und Textformatierungsstile"
         },
         "components": {
           "title": "Komponenten",
-          "description": "25+ fertige Komponenten mit Verwendungsbeispielen"
+          "description": "25+ produktionsreife UI-Komponenten"
         }
       },
       "features": {
         "title": "Funktionen",
-        "theming": {
-          "title": "Themes",
-          "description": "3 Farbthemen (Classic, Vanilla, Vivid) + Dark Mode"
+        "colorThemes": {
+          "title": "3 Farbthemen",
+          "description": "Classic-, Vanilla- und Vivid-Themen mit konsistenten semantischen Tokens in allen Komponenten."
+        },
+        "darkMode": {
+          "title": "Dark Mode",
+          "description": "Erstklassige Dark-Mode-Unterstützung mit sanften Übergängen und richtigen Kontrastverhältnissen."
         },
         "accessibility": {
           "title": "Barrierefreiheit",
-          "description": "Radix UI Primitives mit Tastatur- und ARIA-Unterstützung"
+          "description": "Basierend auf Radix UI-Primitiven mit vollständiger Tastaturnavigation und ARIA-Unterstützung."
         },
         "typescript": {
           "title": "TypeScript",
-          "description": "Vollständige Typisierung aller Komponenten und Props"
-        },
-        "responsive": {
-          "title": "Responsive",
-          "description": "Anpassungsfähiges Design für alle Bildschirmgrößen"
+          "description": "Vollständig typisierte Komponenten mit IntelliSense-Unterstützung und Compile-Zeit-Sicherheit."
         }
       },
-      "gettingStarted": {
-        "title": "Erste Schritte",
-        "description": "Alle Komponenten befinden sich in src/shared/ui/. Verwenden Sie die Navigation links, um Dokumentation und Beispiele für jede Komponente anzuzeigen.",
-        "viewColors": "Farben ansehen",
-        "viewComponents": "Komponenten"
+      "quickStart": {
+        "title": "Schnellstart",
+        "description": "Alle Komponenten befinden sich in",
+        "importText": ". Importieren und verwenden Sie sie direkt in Ihrer Anwendung.",
+        "exampleComment": "// Beispielverwendung"
       }
     },
     "colors": {

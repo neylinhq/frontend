@@ -1055,15 +1055,57 @@
     "questions": "Questions?",
     "contactUs": "Contact"
   },
-  "uiShowcase": {
-    "nav": {
-      "gettingStarted": "Getting Started",
+  "docs": {
+    "title": "Docs",
+    "toggleMenu": "Toggle menu",
+    "onThisPage": "On this page",
+    "badges": {
+      "new": "New",
+      "deprecated": "Deprecated",
+      "foundation": "Foundation",
       "components": "Components"
     },
-    "menu": "Menu",
+    "nav": {
+      "gettingStarted": "Getting Started",
+      "components": "Components",
+      "introduction": "Introduction",
+      "colors": "Colors",
+      "typography": "Typography"
+    },
+    "componentNames": {
+      "alertDialog": "Alert Dialog",
+      "avatar": "Avatar",
+      "badge": "Badge",
+      "button": "Button",
+      "card": "Card",
+      "checkbox": "Checkbox",
+      "collapsible": "Collapsible",
+      "contextMenu": "Context Menu",
+      "dialog": "Dialog",
+      "drawer": "Drawer",
+      "dropdownMenu": "Dropdown Menu",
+      "form": "Form",
+      "input": "Input",
+      "label": "Label",
+      "popover": "Popover",
+      "progress": "Progress",
+      "radioGroup": "Radio Group",
+      "select": "Select",
+      "separator": "Separator",
+      "sheet": "Sheet",
+      "slider": "Slider",
+      "switch": "Switch",
+      "table": "Table",
+      "tabs": "Tabs",
+      "textarea": "Textarea"
+    },
     "index": {
-      "title": "UI Component Library",
-      "lead": "Collection of reusable components built on Radix UI and Tailwind CSS. Support for 3 color themes, dark mode and full TypeScript typing.",
+      "title": "Design System",
+      "version": "v1.0",
+      "lead": "A collection of reusable components built with Radix UI and Tailwind CSS. Featuring 3 color themes, dark mode support, and full TypeScript coverage.",
+      "getStarted": "Get Started",
+      "viewColors": "View Colors",
+      "explore": "Explore",
       "quickLinks": {
         "colors": {
           "title": "Colors",
@@ -1071,37 +1113,37 @@
         },
         "typography": {
           "title": "Typography",
-          "description": "Typography system and text styles"
+          "description": "Type scale and text formatting styles"
         },
         "components": {
           "title": "Components",
-          "description": "25+ ready-made components with usage examples"
+          "description": "25+ production-ready UI components"
         }
       },
       "features": {
         "title": "Features",
-        "theming": {
-          "title": "Theming",
-          "description": "3 color themes (Classic, Vanilla, Vivid) + Dark mode"
+        "colorThemes": {
+          "title": "3 Color Themes",
+          "description": "Classic, Vanilla, and Vivid themes with consistent semantic tokens across all components."
+        },
+        "darkMode": {
+          "title": "Dark Mode",
+          "description": "First-class dark mode support with smooth transitions and proper contrast ratios."
         },
         "accessibility": {
           "title": "Accessibility",
-          "description": "Radix UI primitives with keyboard and ARIA support"
+          "description": "Built on Radix UI primitives with full keyboard navigation and ARIA support."
         },
         "typescript": {
           "title": "TypeScript",
-          "description": "Full typing of all components and props"
-        },
-        "responsive": {
-          "title": "Responsive",
-          "description": "Adaptive design for all screen sizes"
+          "description": "Fully typed components with IntelliSense support and compile-time safety."
         }
       },
-      "gettingStarted": {
-        "title": "Getting Started",
-        "description": "All components are in src/shared/ui/. Use the navigation on the left to view documentation and examples for each component.",
-        "viewColors": "View Colors",
-        "viewComponents": "Components"
+      "quickStart": {
+        "title": "Quick Start",
+        "description": "All components are located in",
+        "importText": ". Import and use them directly in your application.",
+        "exampleComment": "// Example usage"
       }
     },
     "colors": {

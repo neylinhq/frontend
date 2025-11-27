@@ -58,6 +58,10 @@ const META_TRANSLATIONS = {
     uiShowcase: {
       title: 'UI Компоненты',
       description: 'Библиотека компонентов интерфейса с документацией и примерами'
+    },
+    docs: {
+      title: 'Документация',
+      description: 'Дизайн-система и библиотека компонентов с примерами'
     }
   },
   en: {
@@ -116,6 +120,10 @@ const META_TRANSLATIONS = {
     uiShowcase: {
       title: 'UI Components',
       description: 'Component library with documentation and examples'
+    },
+    docs: {
+      title: 'Documentation',
+      description: 'Design system and component library with examples'
     }
   },
   de: {
@@ -174,6 +182,10 @@ const META_TRANSLATIONS = {
     uiShowcase: {
       title: 'UI-Komponenten',
       description: 'Komponentenbibliothek mit Dokumentation und Beispielen'
+    },
+    docs: {
+      title: 'Dokumentation',
+      description: 'Design-System und Komponentenbibliothek mit Beispielen'
     }
   }
 } as const

@@ -1,5 +1,6 @@
 import { Link } from 'react-router'
 import { Menu } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 import { ColorThemeSelect } from '@/app/theme/components/color-theme-select'
 import { ModeSelect } from '@/app/theme/components/mode-select'
@@ -15,6 +16,7 @@ interface DocsHeaderProps {
 }
 
 export function DocsHeader({ mobileNav }: DocsHeaderProps) {
+  const { t } = useTranslation()
   return (
     <header className="h-14 flex-shrink-0 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
       <div
@@ -27,7 +29,7 @@ export function DocsHeader({ mobileNav }: DocsHeaderProps) {
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="lg:hidden">
                 <Menu className="h-5 w-5" />
-                <span className="sr-only">Toggle menu</span>
+                <span className="sr-only">{t('docs.toggleMenu')}</span>
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-[300px] p-0 flex flex-col h-full">
@@ -50,7 +52,7 @@ export function DocsHeader({ mobileNav }: DocsHeaderProps) {
           to={DOCS_ROUTES.ui}
           className="text-sm font-medium hover:text-foreground transition-colors"
         >
-          Docs
+          {t('docs.title')}
         </Link>
 
         {/* Spacer */}

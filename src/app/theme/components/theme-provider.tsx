@@ -13,6 +13,19 @@ function setCookie(name: string, value: string) {
   document.cookie = `${name}=${value}; path=/; max-age=${maxAge}; SameSite=Lax`
 }
 
+// Disable transitions during theme change to prevent flickering
+function withoutTransitions(callback: () => void) {
+  const root = document.documentElement
+  root.classList.add('theme-transition-disabled')
+  callback()
+  // Re-enable after paint
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      root.classList.remove('theme-transition-disabled')
+    })
+  })
+}
+
 const initialState: ThemeProviderState = {
   theme: 'system',
   setTheme: () => null,
@@ -80,15 +93,19 @@ export const ThemeProvider = ({
   const value: ThemeProviderState = {
     theme,
     setTheme: (newTheme: Theme) => {
-      localStorage.setItem(storageKey, newTheme)
-      setCookie(THEME_COOKIE_KEY, newTheme)
-      setTheme(newTheme)
+      withoutTransitions(() => {
+        localStorage.setItem(storageKey, newTheme)
+        setCookie(THEME_COOKIE_KEY, newTheme)
+        setTheme(newTheme)
+      })
     },
     colorTheme,
     setColorTheme: (newColorTheme: ColorTheme) => {
-      localStorage.setItem(COLOR_THEME_STORAGE_KEY, newColorTheme)
-      setCookie(COLOR_THEME_COOKIE_KEY, newColorTheme)
-      setColorThemeState(newColorTheme)
+      withoutTransitions(() => {
+        localStorage.setItem(COLOR_THEME_STORAGE_KEY, newColorTheme)
+        setCookie(COLOR_THEME_COOKIE_KEY, newColorTheme)
+        setColorThemeState(newColorTheme)
+      })
     }
   }
 

@@ -1081,53 +1081,95 @@
     "questions": "Вопросы?",
     "contactUs": "Написать"
   },
-  "uiShowcase": {
-    "nav": {
-      "gettingStarted": "Начало работы",
+  "docs": {
+    "title": "Доки",
+    "toggleMenu": "Меню",
+    "onThisPage": "На странице",
+    "badges": {
+      "new": "Новое",
+      "deprecated": "Устарело",
+      "foundation": "Основа",
       "components": "Компоненты"
     },
-    "menu": "Меню",
+    "nav": {
+      "gettingStarted": "Начало работы",
+      "components": "Компоненты",
+      "introduction": "Введение",
+      "colors": "Цвета",
+      "typography": "Типографика"
+    },
+    "componentNames": {
+      "alertDialog": "Alert Dialog",
+      "avatar": "Аватар",
+      "badge": "Бейдж",
+      "button": "Кнопка",
+      "card": "Карточка",
+      "checkbox": "Чекбокс",
+      "collapsible": "Сворачиваемый",
+      "contextMenu": "Context Menu",
+      "dialog": "Диалог",
+      "drawer": "Drawer",
+      "dropdownMenu": "Dropdown Menu",
+      "form": "Форма",
+      "input": "Поле ввода",
+      "label": "Лейбл",
+      "popover": "Popover",
+      "progress": "Прогресс",
+      "radioGroup": "Radio Group",
+      "select": "Select",
+      "separator": "Разделитель",
+      "sheet": "Sheet",
+      "slider": "Слайдер",
+      "switch": "Switch",
+      "table": "Таблица",
+      "tabs": "Табы",
+      "textarea": "Текстовое поле"
+    },
     "index": {
-      "title": "Библиотека UI компонентов",
-      "lead": "Коллекция переиспользуемых компонентов, построенных на Radix UI и Tailwind CSS. Поддержка 3 цветовых тем, dark mode и полная типизация TypeScript.",
+      "title": "Дизайн-система",
+      "version": "v1.0",
+      "lead": "Коллекция переиспользуемых компонентов на Radix UI и Tailwind CSS. С поддержкой 3 тем, темного режима и полной типизацией TypeScript.",
+      "getStarted": "Начать",
+      "viewColors": "Посмотреть цвета",
+      "explore": "Обзор",
       "quickLinks": {
         "colors": {
           "title": "Цвета",
-          "description": "Палитра цветов и семантические токены для всех тем"
+          "description": "Палитра и семантические токены для всех тем"
         },
         "typography": {
           "title": "Типографика",
-          "description": "Типографическая система и текстовые стили"
+          "description": "Шкала типографики и стили форматирования"
         },
         "components": {
           "title": "Компоненты",
-          "description": "25+ готовых компонентов с примерами использования"
+          "description": "25+ готовых компонентов для продакшена"
         }
       },
       "features": {
         "title": "Возможности",
-        "theming": {
-          "title": "Темизация",
-          "description": "3 цветовые темы (Classic, Vanilla, Vivid) + Dark mode"
+        "colorThemes": {
+          "title": "3 цветовые темы",
+          "description": "Темы Classic, Vanilla и Vivid с едиными семантическими токенами во всех компонентах."
+        },
+        "darkMode": {
+          "title": "Темный режим",
+          "description": "Нативная поддержка темного режима с плавными переходами и правильной контрастностью."
         },
         "accessibility": {
           "title": "Доступность",
-          "description": "Radix UI primitives с поддержкой клавиатуры и ARIA"
+          "description": "Построено на примитивах Radix UI с полной поддержкой клавиатуры и ARIA."
         },
         "typescript": {
           "title": "TypeScript",
-          "description": "Полная типизация всех компонентов и пропсов"
-        },
-        "responsive": {
-          "title": "Адаптивность",
-          "description": "Адаптивный дизайн для всех размеров экранов"
+          "description": "Полностью типизированные компоненты с IntelliSense и безопасностью на этапе компиляции."
         }
       },
-      "gettingStarted": {
-        "title": "Начало работы",
-        "description": "Все компоненты находятся в src/shared/ui/. Используйте навигацию слева для просмотра документации и примеров каждого компонента.",
-        "viewColors": "Посмотреть цвета",
-        "viewComponents": "Компоненты"
+      "quickStart": {
+        "title": "Быстрый старт",
+        "description": "Все компоненты находятся в",
+        "importText": ". Импортируйте и используйте их напрямую в приложении.",
+        "exampleComment": "// Пример использования"
       }
     },
     "colors": {

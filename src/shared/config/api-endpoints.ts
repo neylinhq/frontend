@@ -21,7 +21,7 @@ export const API_ENDPOINTS = {
   INVOICE_EXAMPLE: 'https://example.com/invoices',
 
   /** GitHub аватар для тестового пользователя */
-  GITHUB_AVATAR: 'https://github.com/shadcn.png',
+  GITHUB_AVATAR: 'https://github.com/shadcn.png'
 } as const
 
 /**

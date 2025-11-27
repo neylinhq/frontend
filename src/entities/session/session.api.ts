@@ -1,5 +1,5 @@
 import type { User } from '@/entities/user'
-import { delay, API_DELAYS } from '@/shared/config/api-delays'
+import { API_DELAYS, delay } from '@/shared/config/api-delays'
 import { API_ENDPOINTS } from '@/shared/config/api-endpoints'
 
 // Mocks

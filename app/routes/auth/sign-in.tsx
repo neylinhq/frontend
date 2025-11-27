@@ -1,35 +1,25 @@
 import { type ActionFunctionArgs, redirect } from 'react-router'
+import { sessionApi } from '@/entities/session/session.api'
 import { commitSession } from '@/entities/session/session.server'
-import type { User } from '@/entities/user'
-import { SignInPage } from '@/pages/auth/sign-in-page' // Используем Page, а не Form напрямую!
+import { SignInPage } from '@/pages/auth/sign-in-page'
 import { getMeta } from '@/shared/lib/get-meta'
 
 export function meta() {
   return getMeta('signIn')
 }
 
-// Mock User
-const MOCK_USER: User = {
-  id: '1',
-  email: 'm@example.com',
-  firstName: 'Max',
-  lastName: 'Robinson',
-  role: 'user',
-  createdAt: new Date().toISOString()
-}
-
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData()
-  const email = formData.get('email')
-  const password = formData.get('password')
+  const email = formData.get('email') as string
+  const password = formData.get('password') as string
 
-  if (email === 'm@example.com' && password === 'password') {
-    const sessionData = {
-      token: 'mock-jwt-token',
-      user: MOCK_USER
-    }
+  try {
+    // Use session API instead of hardcoded logic
+    const { user, token } = await sessionApi.login({ email, password })
 
+    const sessionData = { token, user }
     const cookie = await commitSession(sessionData)
+
     const url = new URL(request.url)
     const returnUrl = url.searchParams.get('from') || '/dashboard/overview'
 
@@ -38,9 +28,11 @@ export async function action({ request }: ActionFunctionArgs) {
         'Set-Cookie': cookie
       }
     })
+  } catch (error) {
+    return {
+      error: error instanceof Error ? error.message : 'Неверный email или пароль'
+    }
   }
-
-  return { error: 'Неверный email или пароль' }
 }
 
 export default function SignInRoute() {

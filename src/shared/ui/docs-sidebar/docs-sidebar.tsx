@@ -1,6 +1,7 @@
 import { ChevronRight, type LucideIcon } from 'lucide-react'
 import * as React from 'react'
 import { NavLink } from 'react-router'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/shared/lib/cn'
 import { Badge } from '@/shared/ui/badge'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/shared/ui/collapsible'
@@ -35,6 +36,7 @@ export function DocsSidebar({ sections, className }: DocsSidebarProps) {
 }
 
 function DocsSidebarSectionComponent({ section }: { section: DocsSidebarSection }) {
+  const { t } = useTranslation()
   const [isOpen, setIsOpen] = React.useState(section.defaultOpen ?? true)
   const Icon = section.icon
 
@@ -64,7 +66,7 @@ function DocsSidebarSectionComponent({ section }: { section: DocsSidebarSection 
               <span className="flex-1 truncate">{item.title}</span>
               {item.isNew && (
                 <Badge variant="secondary" className="ml-auto text-[10px] h-5 px-1.5">
-                  New
+                  {t('docs.badges.new')}
                 </Badge>
               )}
               {item.isDeprecated && (
@@ -72,7 +74,7 @@ function DocsSidebarSectionComponent({ section }: { section: DocsSidebarSection 
                   variant="outline"
                   className="ml-auto text-[10px] h-5 px-1.5 text-muted-foreground"
                 >
-                  Deprecated
+                  {t('docs.badges.deprecated')}
                 </Badge>
               )}
             </NavLink>

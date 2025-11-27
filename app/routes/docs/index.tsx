@@ -1,5 +1,6 @@
 import { Link } from 'react-router'
 import { ArrowRight, Palette, Type, Package, Sparkles, Keyboard, Moon, Zap } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/shared/ui/button'
 import { Badge } from '@/shared/ui/badge'
 import { Typography } from '@/shared/ui/typography'
@@ -12,102 +13,102 @@ export const handle = {
 }
 
 export function meta(_args: Route.MetaArgs) {
-  return getMeta('uiShowcase')
+  return getMeta('docs')
 }
 
 export default function UiIndexPage() {
+  const { t } = useTranslation()
   return (
     <div className="space-y-12">
       {/* Hero Section */}
       <header className="space-y-4">
         <div className="flex items-center gap-3">
-          <Typography variant="h1">Design System</Typography>
-          <Badge variant="success">v1.0</Badge>
+          <Typography variant="h1">{t('docs.index.title')}</Typography>
+          <Badge variant="success">{t('docs.index.version')}</Badge>
         </div>
         <Typography variant="lead" className="max-w-2xl">
-          A collection of reusable components built with Radix UI and Tailwind CSS.
-          Featuring 3 color themes, dark mode support, and full TypeScript coverage.
+          {t('docs.index.lead')}
         </Typography>
         <div className="flex items-center gap-3 pt-2">
           <Button asChild>
             <Link to={DOCS_ROUTES.button}>
-              Get Started
+              {t('docs.index.getStarted')}
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
           <Button variant="outline" asChild>
-            <Link to={DOCS_ROUTES.colors}>View Colors</Link>
+            <Link to={DOCS_ROUTES.colors}>{t('docs.index.viewColors')}</Link>
           </Button>
         </div>
       </header>
 
       {/* Quick Links */}
       <section className="space-y-4">
-        <Typography variant="h2">Explore</Typography>
+        <Typography variant="h2">{t('docs.index.explore')}</Typography>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <QuickLinkCard
             icon={<Palette className="h-5 w-5" />}
-            title="Colors"
-            description="Color palette and semantic tokens for all themes"
+            title={t('docs.index.quickLinks.colors.title')}
+            description={t('docs.index.quickLinks.colors.description')}
             href={DOCS_ROUTES.colors}
-            badge="Foundation"
+            badge={t('docs.badges.foundation')}
           />
           <QuickLinkCard
             icon={<Type className="h-5 w-5" />}
-            title="Typography"
-            description="Type scale and text formatting styles"
+            title={t('docs.index.quickLinks.typography.title')}
+            description={t('docs.index.quickLinks.typography.description')}
             href={DOCS_ROUTES.typography}
-            badge="Foundation"
+            badge={t('docs.badges.foundation')}
           />
           <QuickLinkCard
             icon={<Package className="h-5 w-5" />}
-            title="Components"
-            description="25+ production-ready UI components"
+            title={t('docs.index.quickLinks.components.title')}
+            description={t('docs.index.quickLinks.components.description')}
             href={DOCS_ROUTES.button}
-            badge="Components"
+            badge={t('docs.badges.components')}
           />
         </div>
       </section>
 
       {/* Features */}
       <section className="space-y-6">
-        <Typography variant="h2">Features</Typography>
+        <Typography variant="h2">{t('docs.index.features.title')}</Typography>
         <div className="grid gap-6 sm:grid-cols-2">
           <FeatureCard
             icon={<Sparkles className="h-5 w-5 text-brand" />}
-            title="3 Color Themes"
-            description="Classic, Vanilla, and Vivid themes with consistent semantic tokens across all components."
+            title={t('docs.index.features.colorThemes.title')}
+            description={t('docs.index.features.colorThemes.description')}
           />
           <FeatureCard
             icon={<Moon className="h-5 w-5 text-brand" />}
-            title="Dark Mode"
-            description="First-class dark mode support with smooth transitions and proper contrast ratios."
+            title={t('docs.index.features.darkMode.title')}
+            description={t('docs.index.features.darkMode.description')}
           />
           <FeatureCard
             icon={<Keyboard className="h-5 w-5 text-brand" />}
-            title="Accessibility"
-            description="Built on Radix UI primitives with full keyboard navigation and ARIA support."
+            title={t('docs.index.features.accessibility.title')}
+            description={t('docs.index.features.accessibility.description')}
           />
           <FeatureCard
             icon={<Zap className="h-5 w-5 text-brand" />}
-            title="TypeScript"
-            description="Fully typed components with IntelliSense support and compile-time safety."
+            title={t('docs.index.features.typescript.title')}
+            description={t('docs.index.features.typescript.description')}
           />
         </div>
       </section>
 
       {/* Installation */}
       <section className="space-y-4 pt-6 border-t">
-        <Typography variant="h2">Quick Start</Typography>
+        <Typography variant="h2">{t('docs.index.quickStart.title')}</Typography>
         <Typography variant="p">
-          All components are located in{' '}
+          {t('docs.index.quickStart.description')}{' '}
           <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm">
             src/shared/ui/
           </code>
-          . Import and use them directly in your application.
+          {t('docs.index.quickStart.importText')}
         </Typography>
         <div className="rounded-lg bg-muted/50 border p-4 font-mono text-sm">
-          <span className="text-muted-foreground">{'// Example usage'}</span>
+          <span className="text-muted-foreground">{t('docs.index.quickStart.exampleComment')}</span>
           <br />
           <span className="text-blue-500">import</span>
           {' { Button } '}

@@ -1,18 +1,14 @@
 import { useTranslation } from 'react-i18next'
 import { useLoaderData } from 'react-router'
 import {
-  subscriptionApi,
-  useRemovePaymentMethod,
-  useSetDefaultPaymentMethod,
-  useAddPaymentMethod,
+  type PaymentHistory,
   type PaymentMethod,
-  type PaymentHistory
+  subscriptionApi,
+  useAddPaymentMethod,
+  useRemovePaymentMethod,
+  useSetDefaultPaymentMethod
 } from '@/entities/subscription'
-import {
-  PaymentHistoryTable,
-  PaymentMethodCard,
-  AddPaymentMethodDialog
-} from '@/features/billing'
+import { AddPaymentMethodDialog, PaymentHistoryTable, PaymentMethodCard } from '@/features/billing'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
 import { Typography } from '@/shared/ui/typography'
 

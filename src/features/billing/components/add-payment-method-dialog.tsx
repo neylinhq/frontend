@@ -86,6 +86,9 @@ export function AddPaymentMethodDialog({
     const parsedExpiry = parseExpiry(values.expiry)
     if (!parsedExpiry) return
 
+    // Don't allow unknown brand cards
+    if (cardBrand === 'unknown') return
+
     const cardDigits = values.cardNumber.replace(/\D/g, '')
 
     const input: PaymentMethodInput = {

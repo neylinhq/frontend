@@ -54,17 +54,51 @@ export const UsageStatsSchema = z.object({
 
 export type UsageStats = z.infer<typeof UsageStatsSchema>
 
-// Payment method schema
-export const PaymentMethodSchema = z.object({
+// Card brands
+export const CardBrandEnum = z.enum(['visa', 'mastercard', 'amex', 'discover', 'diners', 'jcb', 'unionpay'])
+export type CardBrand = z.infer<typeof CardBrandEnum>
+
+// Crypto networks and currencies
+export const CryptoNetworkEnum = z.enum(['bitcoin', 'ethereum', 'solana', 'tron'])
+export type CryptoNetwork = z.infer<typeof CryptoNetworkEnum>
+
+export const CryptoCurrencyEnum = z.enum(['BTC', 'ETH', 'USDT', 'USDC', 'SOL'])
+export type CryptoCurrency = z.infer<typeof CryptoCurrencyEnum>
+
+// Base payment method fields
+const BasePaymentMethodSchema = z.object({
   id: z.string().uuid(),
-  type: z.enum(['card', 'paypal']),
-  last4: z.string().optional(),
-  brand: z.string().optional(), // 'visa', 'mastercard', etc.
-  expiryMonth: z.number().optional(),
-  expiryYear: z.number().optional(),
   isDefault: z.boolean(),
   createdAt: z.string().datetime()
 })
+
+// Card payment method
+export const CardPaymentMethodSchema = BasePaymentMethodSchema.extend({
+  type: z.literal('card'),
+  last4: z.string(),
+  brand: CardBrandEnum,
+  expiryMonth: z.number(),
+  expiryYear: z.number()
+})
+
+export type CardPaymentMethod = z.infer<typeof CardPaymentMethodSchema>
+
+// Crypto payment method
+export const CryptoPaymentMethodSchema = BasePaymentMethodSchema.extend({
+  type: z.literal('crypto'),
+  walletAddress: z.string(),
+  walletAddressShort: z.string(),
+  network: CryptoNetworkEnum,
+  currency: CryptoCurrencyEnum
+})
+
+export type CryptoPaymentMethod = z.infer<typeof CryptoPaymentMethodSchema>
+
+// Discriminated union
+export const PaymentMethodSchema = z.discriminatedUnion('type', [
+  CardPaymentMethodSchema,
+  CryptoPaymentMethodSchema
+])
 
 export type PaymentMethod = z.infer<typeof PaymentMethodSchema>
 

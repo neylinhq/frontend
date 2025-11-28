@@ -175,6 +175,36 @@ const MOCK_PAYMENT_METHODS: PaymentMethod[] = [
     expiryYear: 2027,
     isDefault: false,
     createdAt: '2024-09-05T08:30:00Z'
+  },
+  {
+    id: '660e8400-e29b-41d4-a716-446655440008',
+    type: 'crypto',
+    walletAddress: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
+    walletAddressShort: '0x742d...f44e',
+    network: 'ethereum',
+    currency: 'ETH',
+    isDefault: false,
+    createdAt: '2024-10-12T15:00:00Z'
+  },
+  {
+    id: '660e8400-e29b-41d4-a716-446655440009',
+    type: 'crypto',
+    walletAddress: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
+    walletAddressShort: 'bc1qxy...0wlh',
+    network: 'bitcoin',
+    currency: 'BTC',
+    isDefault: false,
+    createdAt: '2024-10-15T09:30:00Z'
+  },
+  {
+    id: '660e8400-e29b-41d4-a716-446655440010',
+    type: 'crypto',
+    walletAddress: '7EcDhSYGxXyscszYEp35KHN8sxMEJkJNVwRCKGNnXQY3',
+    walletAddressShort: '7EcDhS...XQY3',
+    network: 'solana',
+    currency: 'SOL',
+    isDefault: false,
+    createdAt: '2024-11-01T12:15:00Z'
   }
 ]
 

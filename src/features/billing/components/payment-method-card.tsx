@@ -1,14 +1,7 @@
 import { useState } from 'react'
-import { MoreVertical, Star, Trash2 } from 'lucide-react'
+import { MoreVertical, Pencil, Star, Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { Button } from '@/shared/ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/shared/ui/dropdown-menu'
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,15 +12,27 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/shared/ui/alert-dialog'
-import type { PaymentMethod } from '@/entities/subscription'
+import { Button } from '@/shared/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/shared/ui/dropdown-menu'
+import { Icon, cryptoIcons } from '@/shared/ui/icon'
 import { cn } from '@/shared/lib/cn'
+
 import { CardBrandIcon } from './card-brand-icon'
+
+import type { PaymentMethod } from '@/entities/subscription'
 import type { CardBrand } from '../lib/card-utils'
 
 interface PaymentMethodCardProps {
   method: PaymentMethod
   onRemove: (id: string) => void
   onSetDefault: (id: string) => void
+  onEdit?: (method: PaymentMethod) => void
   loading?: boolean
 }
 
@@ -35,66 +40,80 @@ export function PaymentMethodCard({
   method,
   onRemove,
   onSetDefault,
+  onEdit,
   loading,
 }: PaymentMethodCardProps) {
   const { t } = useTranslation()
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
-
-  const brand = (method.brand?.toLowerCase() || 'unknown') as CardBrand
 
   const handleDelete = () => {
     onRemove(method.id)
     setIsDeleteOpen(false)
   }
 
-  const formatExpiry = () => {
-    if (!method.expiryMonth || !method.expiryYear) return null
-    return `${method.expiryMonth.toString().padStart(2, '0')}/${method.expiryYear.toString().slice(-2)}`
+  const getDeleteDescription = () => {
+    if (method.type === 'crypto') {
+      return t('billing.removeCryptoWallet.description', {
+        currency: method.currency,
+        address: method.walletAddressShort,
+      })
+    }
+    return t('billing.removePaymentMethod.description', {
+      brand: method.brand || 'Card',
+      last4: method.last4,
+    })
+  }
+
+  const renderIcon = () => {
+    if (method.type === 'crypto') {
+      const iconData = cryptoIcons[method.currency.toLowerCase()]
+      if (iconData) {
+        return <Icon data={iconData} size={24} className="text-foreground" />
+      }
+      return null
+    }
+    const brand = (method.brand?.toLowerCase() || 'unknown') as CardBrand
+    return <CardBrandIcon brand={brand} size="sm" />
+  }
+
+  const renderIdentifier = () => {
+    if (method.type === 'crypto') {
+      return (
+        <span className="font-mono text-sm font-medium whitespace-nowrap">
+          {method.walletAddressShort}
+        </span>
+      )
+    }
+    return (
+      <span className="font-mono text-sm font-medium whitespace-nowrap">
+        •••• {method.last4}
+      </span>
+    )
   }
 
   return (
     <>
       <div
         className={cn(
-          'group relative flex items-start gap-3 px-4 py-3 rounded-lg border bg-card transition-all duration-200',
+          'group relative flex items-center gap-3 px-4 py-3 rounded-lg border bg-card transition-all duration-200',
           'hover:shadow-sm hover:border-border/80',
           method.isDefault && 'ring-1 ring-primary/20'
         )}
       >
-        {/* Brand Icon */}
-        <div className="flex-shrink-0 pt-0.5">
-          <CardBrandIcon brand={brand} size="sm" />
+        {/* Left Side: Payment Method Info */}
+        <div className="flex-1 flex flex-wrap items-center gap-3">
+          {renderIcon()}
+          {renderIdentifier()}
+
+          {method.isDefault && (
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-muted text-muted-foreground whitespace-nowrap">
+              <Star className="h-3 w-3 fill-current" />
+              {t('billing.defaultPaymentMethod')}
+            </span>
+          )}
         </div>
 
-        {/* Card Info - Responsive Layout */}
-        <div className="flex-1 min-w-0 flex flex-col gap-2">
-          {/* First Line: Card Number - Always in one line */}
-          <div className="flex items-center">
-            <span className="font-mono text-sm font-medium whitespace-nowrap">
-              •••• •••• •••• {method.last4}
-            </span>
-          </div>
-
-          {/* Second Line: Meta Info */}
-          <div className="flex items-center gap-3 flex-wrap text-sm text-muted-foreground">
-            {formatExpiry() && (
-              <span>
-                {t('billing.expires')} {formatExpiry()}
-              </span>
-            )}
-            <span className="capitalize">
-              {method.brand || 'Card'}
-            </span>
-            {method.isDefault && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-muted">
-                <Star className="h-3 w-3 fill-current" />
-                {t('billing.defaultPaymentMethod')}
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* Actions Menu */}
+        {/* Right Side: Actions Menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
@@ -108,17 +127,26 @@ export function PaymentMethodCard({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
-            {!method.isDefault && (
+            {onEdit && (
               <>
                 <DropdownMenuItem
-                  onClick={() => onSetDefault(method.id)}
+                  onClick={() => onEdit(method)}
                   disabled={loading}
                 >
-                  <Star className="h-4 w-4 mr-2" />
-                  {t('billing.setAsDefault')}
+                  <Pencil className="h-4 w-4 mr-2" />
+                  {t('common.edit')}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
               </>
+            )}
+            {!method.isDefault && (
+              <DropdownMenuItem
+                onClick={() => onSetDefault(method.id)}
+                disabled={loading}
+              >
+                <Star className="h-4 w-4 mr-2" />
+                {t('billing.setAsDefault')}
+              </DropdownMenuItem>
             )}
             <DropdownMenuItem
               onClick={() => setIsDeleteOpen(true)}
@@ -140,13 +168,12 @@ export function PaymentMethodCard({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              {t('billing.removePaymentMethod.title')}
+              {method.type === 'crypto'
+                ? t('billing.removeCryptoWallet.title')
+                : t('billing.removePaymentMethod.title')}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              {t('billing.removePaymentMethod.description', {
-                brand: method.brand || 'Card',
-                last4: method.last4,
-              })}
+              {getDeleteDescription()}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

@@ -1,8 +1,16 @@
-import { useEffect } from 'react'
-import { type LoaderFunctionArgs, redirect, useLoaderData } from 'react-router'
+import { useEffect, useState } from 'react'
+import { type LoaderFunctionArgs, Outlet, redirect, useLoaderData, useOutletContext } from 'react-router'
 import { useSessionStore } from '@/entities/session'
 import { getSession } from '@/entities/session/session.server'
 import { DashboardLayout } from '@/widgets/dashboard-layout/ui/dashboard-layout'
+
+type DashboardContext = {
+  setDisableScroll: (value: boolean) => void
+}
+
+export function useDashboardContext() {
+  return useOutletContext<DashboardContext>()
+}
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const session = await getSession(request)
@@ -21,6 +29,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 export default function DashboardRoute() {
   const { user } = useLoaderData<typeof loader>()
   const setUser = useSessionStore(state => state.setUser)
+  const [disableScroll, setDisableScroll] = useState(false)
 
   // Гидратация стора данными с сервера
   useEffect(() => {
@@ -29,5 +38,9 @@ export default function DashboardRoute() {
     }
   }, [user, setUser])
 
-  return <DashboardLayout />
+  return (
+    <DashboardLayout disableScroll={disableScroll}>
+      <Outlet context={{ setDisableScroll } satisfies DashboardContext} />
+    </DashboardLayout>
+  )
 }

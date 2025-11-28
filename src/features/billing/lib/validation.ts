@@ -1,4 +1,7 @@
 import { z } from 'zod'
+
+import { CardBrandEnum } from '@/entities/subscription'
+
 import { isValidLuhn, isValidExpiry, detectCardBrand, getCvcLength } from './card-utils'
 
 export const addPaymentMethodSchema = z
@@ -56,7 +59,7 @@ export type AddPaymentMethodValues = z.infer<typeof addPaymentMethodSchema>
 export const paymentMethodInputSchema = z.object({
   cardholderName: z.string(),
   cardNumber: z.string(), // Last 4 digits only for storage
-  brand: z.string(),
+  brand: CardBrandEnum,
   expiryMonth: z.number(),
   expiryYear: z.number(),
 })

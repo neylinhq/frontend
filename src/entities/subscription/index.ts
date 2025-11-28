@@ -24,6 +24,11 @@ export type {
   PlanLimits,
   UsageStats,
   PaymentMethod,
+  CardPaymentMethod,
+  CryptoPaymentMethod,
+  CardBrand,
+  CryptoNetwork,
+  CryptoCurrency,
   PaymentHistory
 } from './subscription.schema'
 export {
@@ -31,6 +36,11 @@ export {
   PlanDetailsSchema,
   UsageStatsSchema,
   PaymentMethodSchema,
+  CardPaymentMethodSchema,
+  CryptoPaymentMethodSchema,
+  CardBrandEnum,
+  CryptoNetworkEnum,
+  CryptoCurrencyEnum,
   PaymentHistorySchema,
   PlanTypeEnum
 } from './subscription.schema'

@@ -78,7 +78,8 @@
     "disable": "Off",
     "uploading": "Uploading...",
     "deleting": "Deleting...",
-    "comingSoon": "Coming Soon"
+    "comingSoon": "Coming Soon",
+    "remove": "Remove"
   },
   "home": {
     "tagline": "Visualize and structure your knowledge with interactive cognitive maps. Create, connect, and explore your ideas in an intuitive graph-based workspace.",
@@ -1000,6 +1001,9 @@
     "defaultPaymentMethod": "Default",
     "expires": "Expires",
     "setAsDefault": "Set as Default",
+    "paymentMethod": "Payment Method",
+    "type": "Type",
+    "added": "Added",
     "interval": {
       "month": "month",
       "year": "year"
@@ -1045,6 +1049,24 @@
       "title": "Remove Payment Method",
       "description": "Are you sure you want to remove {{brand}} ending in {{last4}}? This action cannot be undone.",
       "confirm": "Remove"
+    },
+    "removeCryptoWallet": {
+      "title": "Remove Crypto Wallet",
+      "description": "Are you sure you want to remove {{currency}} wallet {{address}}? This action cannot be undone."
+    },
+    "cryptoWallet": "Crypto Wallet",
+    "network": "Network",
+    "currency": "Currency",
+    "walletAddress": "Wallet Address",
+    "copyAddress": "Copy Address",
+    "addressCopied": "Address copied",
+    "addCryptoWallet": {
+      "title": "Add Crypto Wallet",
+      "description": "Add a cryptocurrency wallet to receive payments",
+      "selectCurrency": "Select cryptocurrency",
+      "addressPlaceholder": "Enter wallet address",
+      "invalidAddress": "Invalid wallet address for selected network",
+      "submit": "Add Wallet"
     }
   },
   "pricing": {

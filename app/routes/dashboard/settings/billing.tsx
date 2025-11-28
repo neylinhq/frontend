@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLoaderData } from 'react-router'
+
 import {
   type PaymentHistory,
   type PaymentMethod,
@@ -8,7 +10,13 @@ import {
   useRemovePaymentMethod,
   useSetDefaultPaymentMethod
 } from '@/entities/subscription'
-import { AddPaymentMethodDialog, PaymentHistoryTable, PaymentMethodCard } from '@/features/billing'
+import {
+  AddCryptoWalletDialog,
+  AddPaymentMethodDialog,
+  PaymentHistoryTable,
+  PaymentMethodCard,
+  PaymentMethodDetailsDialog
+} from '@/features/billing'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
 import { Typography } from '@/shared/ui/typography'
 
@@ -33,6 +41,15 @@ export default function BillingPage() {
   const removePaymentMethod = useRemovePaymentMethod()
   const setDefaultPaymentMethod = useSetDefaultPaymentMethod()
 
+  // State for details dialog
+  const [selectedMethod, setSelectedMethod] = useState<PaymentMethod | null>(null)
+  const [detailsOpen, setDetailsOpen] = useState(false)
+
+  const handleEdit = (method: PaymentMethod) => {
+    setSelectedMethod(method)
+    setDetailsOpen(true)
+  }
+
   return (
     <div className="space-y-6">
       <div>
@@ -48,10 +65,19 @@ export default function BillingPage() {
               <CardTitle>{t('settings.billing.paymentMethods.title')}</CardTitle>
               <CardDescription>{t('settings.billing.paymentMethods.description')}</CardDescription>
             </div>
-            <AddPaymentMethodDialog
-              onAdd={data => addPaymentMethod.mutate(data)}
-              loading={addPaymentMethod.isPending}
-            />
+            <div className="flex gap-2">
+              <AddCryptoWalletDialog
+                onAdd={data => {
+                  // TODO: implement addCryptoWallet mutation
+                  console.log('Add crypto wallet:', data)
+                }}
+                loading={false}
+              />
+              <AddPaymentMethodDialog
+                onAdd={data => addPaymentMethod.mutate(data)}
+                loading={addPaymentMethod.isPending}
+              />
+            </div>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -62,6 +88,7 @@ export default function BillingPage() {
                 method={method}
                 onRemove={id => removePaymentMethod.mutate(id)}
                 onSetDefault={id => setDefaultPaymentMethod.mutate(id)}
+                onEdit={handleEdit}
                 loading={
                   (removePaymentMethod.isPending && removePaymentMethod.variables === method.id) ||
                   (setDefaultPaymentMethod.isPending && setDefaultPaymentMethod.variables === method.id)
@@ -78,6 +105,21 @@ export default function BillingPage() {
 
       {/* Payment History */}
       <PaymentHistoryTable payments={paymentHistory} />
+
+      {/* Details Dialog */}
+      <PaymentMethodDetailsDialog
+        method={selectedMethod}
+        open={detailsOpen}
+        onOpenChange={setDetailsOpen}
+        onRemove={id => {
+          removePaymentMethod.mutate(id)
+          setDetailsOpen(false)
+        }}
+        onSetDefault={id => {
+          setDefaultPaymentMethod.mutate(id)
+        }}
+        loading={removePaymentMethod.isPending || setDefaultPaymentMethod.isPending}
+      />
     </div>
   )
 }

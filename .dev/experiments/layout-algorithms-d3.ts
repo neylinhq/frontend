@@ -20,8 +20,8 @@ import {
   type SimulationNodeDatum
 } from 'd3-force'
 import type { RelationType } from '@/entities/edge'
-import { ENABLE_EDGE_CROSSING_MINIMIZATION } from '../model/graph-view.constants'
-import type { ViewMode } from '../model/graph-view.store'
+import { ENABLE_EDGE_CROSSING_MINIMIZATION } from '../../src/features/graph-view/model/graph-view.constants'
+import type { ViewMode } from '../../src/features/graph-view/model/graph-view.store'
 
 interface LayoutOptions {
   viewMode: ViewMode

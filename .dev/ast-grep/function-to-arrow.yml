@@ -1,0 +1,31 @@
+id: function-to-arrow
+language: typescript
+rule:
+  kind: export_statement
+  has:
+    kind: function_declaration
+    not:
+      any:
+        - pattern: async function loader
+        - pattern: async function action
+        - pattern: function loader
+        - pattern: function action
+fix: |
+  export const $$$FUNC = $$$REST
+---
+id: function-expr-to-arrow
+language: typescript
+rule:
+  pattern: |
+    export function $NAME($$$PARAMS) {
+      $$$BODY
+    }
+  not:
+    any:
+      - has:
+          field: name
+          regex: "^(loader|action)$"
+fix: |
+  export const $NAME = ($$$PARAMS) => {
+    $$$BODY
+  }

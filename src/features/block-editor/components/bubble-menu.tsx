@@ -159,6 +159,7 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
   const { t } = useTranslation()
   const [isVisible, setIsVisible] = useState(false)
   const [position, setPosition] = useState({ top: 0, left: 0 })
+  const [menuDirection, setMenuDirection] = useState<'above' | 'below'>('above')
   const [menuState, dispatch] = useReducer(menuReducer, initialMenuState)
   const menuRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -188,39 +189,40 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
       return
     }
 
-    // Get the selection coordinates
+    // Get the selection coordinates (viewport-relative)
     const { view } = editor
     const start = view.coordsAtPos(from)
     const end = view.coordsAtPos(to)
 
-    // Calculate initial position (center above selection)
-    let left = (start.left + end.left) / 2
-    let top = start.top - 10
+    // Get editor container for relative positioning
+    const editorElement = view.dom.closest('.tiptap-editor') as HTMLElement
+    if (!editorElement) return
+    const editorRect = editorElement.getBoundingClientRect()
 
-    // Viewport boundary checking
-    const viewportWidth = window.innerWidth
-    const viewportHeight = window.innerHeight
+    // Calculate position relative to editor container (for absolute positioning)
+    let left = (start.left + end.left) / 2 - editorRect.left
+    let top = start.top - editorRect.top - 10
+
+    // Boundary checking relative to editor container
+    const editorWidth = editorRect.width
     const halfMenuWidth = MENU_MIN_WIDTH / 2
 
-    // Check if menu would go off the left edge
+    // Check if menu would go off the left edge of editor
     if (left - halfMenuWidth < VIEWPORT_PADDING) {
       left = halfMenuWidth + VIEWPORT_PADDING
     }
-    // Check if menu would go off the right edge
-    else if (left + halfMenuWidth > viewportWidth - VIEWPORT_PADDING) {
-      left = viewportWidth - halfMenuWidth - VIEWPORT_PADDING
+    // Check if menu would go off the right edge of editor
+    else if (left + halfMenuWidth > editorWidth - VIEWPORT_PADDING) {
+      left = editorWidth - halfMenuWidth - VIEWPORT_PADDING
     }
 
-    // Check if menu would go above viewport - if so, position below selection
+    // Check if menu would go above editor - if so, position below selection
     if (top - MENU_HEIGHT < VIEWPORT_PADDING) {
-      const bottomPosition = end.bottom + 10
-      // Check if positioning below would also go off-screen
-      if (bottomPosition + MENU_HEIGHT > viewportHeight - VIEWPORT_PADDING) {
-        // Both positions are off-screen, choose the one with more visible area
-        top = Math.max(VIEWPORT_PADDING + MENU_HEIGHT, start.top - 10)
-      } else {
-        top = bottomPosition
-      }
+      const bottomPosition = end.bottom - editorRect.top + 10
+      top = bottomPosition
+      setMenuDirection('below')
+    } else {
+      setMenuDirection('above')
     }
 
     setPosition({ top, left })
@@ -282,11 +284,11 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
     return (
       <div
         ref={menuRef}
-        className="fixed z-50 flex items-center gap-1 rounded-lg border border-border bg-popover p-1 shadow-lg"
+        className="absolute z-50 flex items-center gap-1 rounded-lg border border-border bg-popover p-1 shadow-lg"
         style={{
           top: position.top,
           left: position.left,
-          transform: 'translate(-50%, -100%)'
+          transform: menuDirection === 'above' ? 'translate(-50%, -100%)' : 'translate(-50%, 0%)'
         }}
       >
         <input
@@ -316,11 +318,11 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
   return (
     <div
       ref={menuRef}
-      className="fixed z-50 flex items-center gap-0.5 rounded-lg border border-border bg-popover p-1 shadow-lg"
+      className="absolute z-50 flex items-center gap-0.5 rounded-lg border border-border bg-popover p-1 shadow-lg"
       style={{
         top: position.top,
         left: position.left,
-        transform: 'translate(-50%, -100%)'
+        transform: menuDirection === 'above' ? 'translate(-50%, -100%)' : 'translate(-50%, 0%)'
       }}
     >
       {/* Turn Into Dropdown */}

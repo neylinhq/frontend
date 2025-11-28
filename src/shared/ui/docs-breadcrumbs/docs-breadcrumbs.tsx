@@ -79,7 +79,7 @@ function generateBreadcrumbs(matches: ReturnType<typeof useMatches>): Breadcrumb
     if (handle?.breadcrumb) {
       breadcrumbs.push({
         label: handle.breadcrumb,
-        href: match.pathname,
+        href: match.pathname
       })
     }
   }

@@ -1,18 +1,18 @@
+import { getMeta } from '@/shared/lib/get-meta'
+import { Badge } from '@/shared/ui/badge'
 import { Button } from '@/shared/ui/button'
+import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
+import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
+import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
+import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
 import { Input } from '@/shared/ui/input'
 import { Label } from '@/shared/ui/label'
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/popover'
 import { Typography } from '@/shared/ui/typography'
-import { Badge } from '@/shared/ui/badge'
-import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
-import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
-import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
-import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
-import { getMeta } from '@/shared/lib/get-meta'
 import type { Route } from './+types/popover'
 
 export const handle = {
-  breadcrumb: 'Popover',
+  breadcrumb: 'Popover'
 }
 
 export function meta(_args: Route.MetaArgs) {
@@ -22,7 +22,7 @@ export function meta(_args: Route.MetaArgs) {
 const TOC_ITEMS: TocItem[] = [
   { id: 'basic', title: 'Basic', level: 2 },
   { id: 'with-form', title: 'With Form', level: 2 },
-  { id: 'usage', title: 'Usage', level: 2 },
+  { id: 'usage', title: 'Usage', level: 2 }
 ]
 
 export default function PopoverPage() {
@@ -31,10 +31,7 @@ export default function PopoverPage() {
       <div className="flex-1 min-w-0 space-y-10">
         <header className="space-y-4">
           <DocsBreadcrumbs
-            items={[
-              { label: 'Components', href: '/docs/ui/button' },
-              { label: 'Popover' },
-            ]}
+            items={[{ label: 'Components', href: '/docs/ui/button' }, { label: 'Popover' }]}
           />
           <div className="flex items-center gap-3">
             <Typography variant="h1">Popover</Typography>

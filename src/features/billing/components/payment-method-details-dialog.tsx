@@ -1,8 +1,8 @@
-import { useState } from 'react'
-import { Copy, Star, Trash2 } from 'lucide-react'
+import { Copy, Pencil, Star, Trash2 } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
-
+import type { PaymentMethod, UpdatePaymentMethodInput } from '@/entities/subscription'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,22 +11,21 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
+  AlertDialogTitle
 } from '@/shared/ui/alert-dialog'
 import { Button } from '@/shared/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/shared/ui/dialog'
-import { Icon, cryptoIcons } from '@/shared/ui/icon'
-
-import { CardBrandIcon } from './card-brand-icon'
-import { copyToClipboard, getNetworkDisplayName, getCurrencyDisplayName } from '../lib/crypto-utils'
-
-import type { PaymentMethod } from '@/entities/subscription'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/ui/dialog'
+import { cryptoIcons, Icon } from '@/shared/ui/icon'
+import { Input } from '@/shared/ui/input'
+import { Label } from '@/shared/ui/label'
 import type { CardBrand } from '../lib/card-utils'
+import {
+  copyToClipboard,
+  getCurrencyDisplayName,
+  getNetworkDisplayName,
+  isValidWalletAddress
+} from '../lib/crypto-utils'
+import { CardBrandIcon } from './card-brand-icon'
 
 interface PaymentMethodDetailsDialogProps {
   method: PaymentMethod | null
@@ -34,7 +33,9 @@ interface PaymentMethodDetailsDialogProps {
   onOpenChange: (open: boolean) => void
   onRemove: (id: string) => void
   onSetDefault: (id: string) => void
+  onUpdate?: (input: UpdatePaymentMethodInput) => void
   loading?: boolean
+  updateLoading?: boolean
 }
 
 export function PaymentMethodDetailsDialog({
@@ -43,10 +44,28 @@ export function PaymentMethodDetailsDialog({
   onOpenChange,
   onRemove,
   onSetDefault,
+  onUpdate,
   loading,
+  updateLoading
 }: PaymentMethodDetailsDialogProps) {
   const { t } = useTranslation()
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
+
+  // Edit form state for crypto only (cards are view-only)
+  const [editWalletAddress, setEditWalletAddress] = useState('')
+  const [addressError, setAddressError] = useState<string | null>(null)
+
+  // Reset edit state when method changes or dialog opens
+  useEffect(() => {
+    if (method && open) {
+      if (method.type === 'crypto') {
+        setEditWalletAddress(method.walletAddress)
+        setAddressError(null)
+      }
+      setIsEditing(false)
+    }
+  }, [method, open])
 
   if (!method) return null
 
@@ -61,7 +80,7 @@ export function PaymentMethodDetailsDialog({
     return new Date(dateString).toLocaleDateString(undefined, {
       year: 'numeric',
       month: 'short',
-      day: 'numeric',
+      day: 'numeric'
     })
   }
 
@@ -83,16 +102,44 @@ export function PaymentMethodDetailsDialog({
     }
   }
 
+  const handleStartEdit = () => {
+    setIsEditing(true)
+  }
+
+  const handleCancelEdit = () => {
+    // Reset to original values (only crypto is editable)
+    if (method.type === 'crypto') {
+      setEditWalletAddress(method.walletAddress)
+      setAddressError(null)
+    }
+    setIsEditing(false)
+  }
+
+  const handleSaveEdit = () => {
+    if (!onUpdate || method.type !== 'crypto') return
+
+    // Validate wallet address
+    if (!isValidWalletAddress(editWalletAddress, method.network)) {
+      setAddressError(t('billing.addCryptoWallet.invalidAddress'))
+      return
+    }
+    onUpdate({
+      id: method.id,
+      walletAddress: editWalletAddress
+    })
+    setIsEditing(false)
+  }
+
   const getDeleteDescription = () => {
     if (method.type === 'crypto') {
       return t('billing.removeCryptoWallet.description', {
         currency: method.currency,
-        address: method.walletAddressShort,
+        address: method.walletAddressShort
       })
     }
     return t('billing.removePaymentMethod.description', {
       brand: method.brand || 'Card',
-      last4: method.last4,
+      last4: method.last4
     })
   }
 
@@ -110,13 +157,13 @@ export function PaymentMethodDetailsDialog({
 
   const renderCardDetails = () => {
     if (method.type !== 'card') return null
+
+    // Cards are view-only (no edit mode)
     return (
       <>
         <div className="flex flex-col items-center gap-4 py-4">
           {renderIcon()}
-          <span className="font-mono text-lg font-medium">
-            •••• •••• •••• {method.last4}
-          </span>
+          <span className="font-mono text-lg font-medium">•••• •••• •••• {method.last4}</span>
         </div>
 
         <div className="space-y-3 text-sm">
@@ -143,6 +190,41 @@ export function PaymentMethodDetailsDialog({
 
   const renderCryptoDetails = () => {
     if (method.type !== 'crypto') return null
+
+    if (isEditing) {
+      return (
+        <>
+          <div className="flex flex-col items-center gap-4 py-4">{renderIcon()}</div>
+
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>{t('billing.editPaymentMethod.walletAddress')}</Label>
+              <Input
+                value={editWalletAddress}
+                onChange={e => {
+                  setEditWalletAddress(e.target.value)
+                  setAddressError(null)
+                }}
+                placeholder={t('billing.addCryptoWallet.addressPlaceholder')}
+                className="font-mono text-sm"
+              />
+              {addressError && <p className="text-sm text-destructive">{addressError}</p>}
+            </div>
+
+            <div className="space-y-3 text-sm">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">{t('billing.network')}</span>
+                <span className="font-medium">{getNetworkDisplayName(method.network)}</span>
+              </div>
+              <span className="text-xs text-muted-foreground">
+                {t('billing.editPaymentMethod.networkNotEditable')}
+              </span>
+            </div>
+          </div>
+        </>
+      )
+    }
+
     return (
       <>
         <div className="flex flex-col items-center gap-4 py-4">
@@ -151,12 +233,7 @@ export function PaymentMethodDetailsDialog({
             <span className="font-mono text-sm text-muted-foreground break-all text-center px-4">
               {method.walletAddress}
             </span>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleCopyAddress}
-              className="h-8"
-            >
+            <Button variant="ghost" size="sm" onClick={handleCopyAddress} className="h-8">
               <Copy className="h-4 w-4 mr-2" />
               {t('billing.copyAddress')}
             </Button>
@@ -183,16 +260,22 @@ export function PaymentMethodDetailsDialog({
     )
   }
 
+  const getDialogTitle = () => {
+    if (isEditing && method.type === 'crypto') {
+      return t('billing.editPaymentMethod.titleCrypto')
+    }
+    return method.type === 'crypto' ? t('billing.cryptoWallet') : t('billing.paymentMethod')
+  }
+
+  // Only crypto wallets can be edited
+  const canEdit = method.type === 'crypto' && onUpdate
+
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>
-              {method.type === 'crypto'
-                ? t('billing.cryptoWallet')
-                : t('billing.paymentMethod')}
-            </DialogTitle>
+            <DialogTitle>{getDialogTitle()}</DialogTitle>
           </DialogHeader>
 
           <div className="space-y-6">
@@ -200,28 +283,55 @@ export function PaymentMethodDetailsDialog({
             {renderCryptoDetails()}
 
             {/* Actions */}
-            <div className="flex gap-3 pt-2">
-              {!method.isDefault && (
+            {isEditing && canEdit ? (
+              <div className="flex gap-3 pt-2">
                 <Button
                   variant="outline"
                   className="flex-1"
-                  onClick={handleSetDefault}
-                  disabled={loading}
+                  onClick={handleCancelEdit}
+                  disabled={updateLoading}
                 >
-                  <Star className="h-4 w-4 mr-2" />
-                  {t('billing.setAsDefault')}
+                  {t('common.cancel')}
                 </Button>
-              )}
-              <Button
-                variant="outline"
-                className="flex-1 text-destructive hover:text-destructive"
-                onClick={() => setIsDeleteOpen(true)}
-                disabled={loading || method.isDefault}
-              >
-                <Trash2 className="h-4 w-4 mr-2" />
-                {t('common.remove')}
-              </Button>
-            </div>
+                <Button className="flex-1" onClick={handleSaveEdit} disabled={updateLoading}>
+                  {t('billing.editPaymentMethod.save')}
+                </Button>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-2 pt-2">
+                {canEdit && (
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={handleStartEdit}
+                    disabled={loading}
+                  >
+                    <Pencil className="h-4 w-4 mr-2" />
+                    {t('common.edit')}
+                  </Button>
+                )}
+                {!method.isDefault && (
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={handleSetDefault}
+                    disabled={loading}
+                  >
+                    <Star className="h-4 w-4 mr-2" />
+                    {t('billing.setAsDefault')}
+                  </Button>
+                )}
+                <Button
+                  variant="outline"
+                  className="w-full text-destructive hover:text-destructive"
+                  onClick={() => setIsDeleteOpen(true)}
+                  disabled={loading || method.isDefault}
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  {t('common.remove')}
+                </Button>
+              </div>
+            )}
           </div>
         </DialogContent>
       </Dialog>
@@ -235,9 +345,7 @@ export function PaymentMethodDetailsDialog({
                 ? t('billing.removeCryptoWallet.title')
                 : t('billing.removePaymentMethod.title')}
             </AlertDialogTitle>
-            <AlertDialogDescription>
-              {getDeleteDescription()}
-            </AlertDialogDescription>
+            <AlertDialogDescription>{getDeleteDescription()}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>

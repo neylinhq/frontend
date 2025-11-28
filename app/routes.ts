@@ -48,8 +48,8 @@ export default [
       route('docs/ui/switch', 'routes/docs/switch.tsx'),
       route('docs/ui/table', 'routes/docs/table.tsx'),
       route('docs/ui/tabs', 'routes/docs/tabs.tsx'),
-      route('docs/ui/textarea', 'routes/docs/textarea.tsx'),
-    ]),
+      route('docs/ui/textarea', 'routes/docs/textarea.tsx')
+    ])
   ]),
 
   route('auth/logout', 'routes/auth/logout.ts'),
@@ -67,7 +67,7 @@ export default [
       route('dashboard/settings/theme', 'routes/dashboard/settings/theme.tsx'),
       route('dashboard/settings/integrations', 'routes/dashboard/settings/integrations.tsx'),
       route('dashboard/settings/security', 'routes/dashboard/settings/security.tsx'),
-      route('dashboard/settings/billing', 'routes/dashboard/settings/billing.tsx'),
-    ]),
-  ]),
+      route('dashboard/settings/billing', 'routes/dashboard/settings/billing.tsx')
+    ])
+  ])
 ] satisfies RouteConfig

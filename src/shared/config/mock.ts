@@ -15,5 +15,5 @@ export const MOCK_CREDENTIALS = {
   /** Тестовый пароль для mock API */
   PASSWORD: 'password',
   /** Тестовый email для mock пользователя */
-  EMAIL: 'user@example.com',
+  EMAIL: 'user@example.com'
 } as const

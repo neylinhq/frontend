@@ -1,6 +1,6 @@
 import { z } from 'zod'
-import { NodeSchema, type Node } from '../node'
-import { EdgeSchema, type Edge, type RelationType, RelationTypeEnum } from '../edge'
+import { type Edge, EdgeSchema, type RelationType, RelationTypeEnum } from '../edge'
+import { type Node, NodeSchema } from '../node'
 
 export const MapEntitySchema = z.object({
   id: z.string(),

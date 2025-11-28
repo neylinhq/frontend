@@ -1,15 +1,15 @@
-import { Progress } from '@/shared/ui/progress'
-import { Typography } from '@/shared/ui/typography'
+import { getMeta } from '@/shared/lib/get-meta'
 import { Badge } from '@/shared/ui/badge'
+import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
 import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
 import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
 import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
-import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
-import { getMeta } from '@/shared/lib/get-meta'
+import { Progress } from '@/shared/ui/progress'
+import { Typography } from '@/shared/ui/typography'
 import type { Route } from './+types/progress'
 
 export const handle = {
-  breadcrumb: 'Progress',
+  breadcrumb: 'Progress'
 }
 
 export function meta(_args: Route.MetaArgs) {
@@ -19,7 +19,7 @@ export function meta(_args: Route.MetaArgs) {
 const TOC_ITEMS: TocItem[] = [
   { id: 'basic', title: 'Basic', level: 2 },
   { id: 'values', title: 'Values', level: 2 },
-  { id: 'usage', title: 'Usage', level: 2 },
+  { id: 'usage', title: 'Usage', level: 2 }
 ]
 
 export default function ProgressPage() {
@@ -28,10 +28,7 @@ export default function ProgressPage() {
       <div className="flex-1 min-w-0 space-y-10">
         <header className="space-y-4">
           <DocsBreadcrumbs
-            items={[
-              { label: 'Components', href: '/docs/ui/button' },
-              { label: 'Progress' },
-            ]}
+            items={[{ label: 'Components', href: '/docs/ui/button' }, { label: 'Progress' }]}
           />
           <div className="flex items-center gap-3">
             <Typography variant="h1">Progress</Typography>

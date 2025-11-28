@@ -74,6 +74,7 @@
     "saved": "Сохранено",
     "saving": "Сохранение...",
     "cancel": "Отмена",
+    "edit": "Изменить",
     "enable": "Вкл",
     "disable": "Откл",
     "uploading": "Загрузка...",
@@ -1062,6 +1063,19 @@
     "addPaymentMethod": {
       "title": "Добавить способ оплаты",
       "description": "Добавьте новый способ оплаты к вашей учетной записи",
+      "selectTitle": "Добавить способ оплаты",
+      "selectDescription": "Выберите способ оплаты",
+      "cardOption": {
+        "title": "Банковская карта",
+        "description": "Visa, Mastercard, Amex и другие"
+      },
+      "cryptoOption": {
+        "title": "Криптовалюта",
+        "description": "BTC, ETH, USDT, USDC, SOL"
+      },
+      "back": "Назад",
+      "cardTitle": "Банковская карта",
+      "cryptoTitle": "Криптовалюта",
       "cardholderName": "Имя владельца карты",
       "cardNumber": "Номер карты",
       "expiry": "Срок действия",
@@ -1093,6 +1107,17 @@
       "addressPlaceholder": "Введите адрес кошелька",
       "invalidAddress": "Неверный адрес кошелька для выбранной сети",
       "submit": "Добавить кошелёк"
+    },
+    "editPaymentMethod": {
+      "title": "Редактирование способа оплаты",
+      "titleCard": "Редактирование карты",
+      "titleCrypto": "Редактирование криптокошелька",
+      "expiryMonth": "Месяц истечения",
+      "expiryYear": "Год истечения",
+      "walletAddress": "Адрес кошелька",
+      "networkNotEditable": "Сеть нельзя изменить",
+      "save": "Сохранить изменения",
+      "cardNumberNotEditable": "Номер карты нельзя изменить"
     }
   },
   "pricing": {

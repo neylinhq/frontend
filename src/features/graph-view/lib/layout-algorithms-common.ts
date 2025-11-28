@@ -6,16 +6,16 @@ export const DEFAULT_LEVEL_SPACING = 300
 
 // Edge weights for clustering - prerequisite is strongest
 export const EDGE_WEIGHTS: Record<RelationType, number> = {
-  'prerequisite': 1.0,
+  prerequisite: 1.0,
   'is-a': 0.8,
   'part-of': 0.8,
-  'explains': 0.6,
-  'causes': 0.6,
-  'influences': 0.5,
+  explains: 0.6,
+  causes: 0.6,
+  influences: 0.5,
   'has-a': 0.5,
   'similar-to': 0.4,
   'related-to': 0.3,
-  'contradicts': 0.2,
+  contradicts: 0.2
 }
 
 export interface InternalLayoutOptions {
@@ -32,14 +32,16 @@ export function pathLayout(
   nodes: Node[],
   edges: Edge[],
   options: InternalLayoutOptions,
-  fallbackLayout: (nodes: Node[], edges: Edge[], options: InternalLayoutOptions) => { nodes: Node[], edges: Edge[] }
-): { nodes: Node[], edges: Edge[] } {
+  fallbackLayout: (
+    nodes: Node[],
+    edges: Edge[],
+    options: InternalLayoutOptions
+  ) => { nodes: Node[]; edges: Edge[] }
+): { nodes: Node[]; edges: Edge[] } {
   const { nodeSpacing, levelSpacing } = options
 
   // Filter to only prerequisite edges
-  const prereqEdges = edges.filter(e =>
-    (e.data?.relationType as RelationType) === 'prerequisite'
-  )
+  const prereqEdges = edges.filter(e => (e.data?.relationType as RelationType) === 'prerequisite')
 
   // Build directed graph (source is prerequisite of target)
   const outgoing = new Map<string, string[]>()
@@ -88,7 +90,9 @@ export function pathLayout(
 
   // Handle nodes not in prerequisite chain
   let maxLevel = 0
-  levels.forEach(l => { if (l > maxLevel) maxLevel = l })
+  levels.forEach(l => {
+    if (l > maxLevel) maxLevel = l
+  })
   nodes.forEach(n => {
     if (!levels.has(n.id)) {
       levels.set(n.id, maxLevel + 1)
@@ -113,8 +117,8 @@ export function pathLayout(
       ...node,
       position: {
         x: level * levelSpacing,
-        y: indexInLevel * nodeSpacing - levelHeight / 2 + nodeSpacing / 2,
-      },
+        y: indexInLevel * nodeSpacing - levelHeight / 2 + nodeSpacing / 2
+      }
     }
   })
 
@@ -164,11 +168,6 @@ export function getNodesWithinDepth(
 /**
  * Get edges between a set of nodes
  */
-export function getEdgesBetweenNodes(
-  edges: Edge[],
-  nodeIds: Set<string>
-): Edge[] {
-  return edges.filter(e =>
-    nodeIds.has(e.source) && nodeIds.has(e.target)
-  )
+export function getEdgesBetweenNodes(edges: Edge[], nodeIds: Set<string>): Edge[] {
+  return edges.filter(e => nodeIds.has(e.source) && nodeIds.has(e.target))
 }

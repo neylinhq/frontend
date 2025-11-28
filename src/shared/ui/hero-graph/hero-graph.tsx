@@ -7,18 +7,18 @@ const NODE_COLORS_LIGHT = [
   'hsl(250, 100%, 65%)', // violet
   'hsl(210, 100%, 60%)', // blue
   'hsl(185, 100%, 50%)', // cyan
-  'hsl(160, 85%, 45%)',  // emerald
-  'hsl(40, 95%, 55%)',   // amber
-  'hsl(350, 90%, 60%)',  // rose
+  'hsl(160, 85%, 45%)', // emerald
+  'hsl(40, 95%, 55%)', // amber
+  'hsl(350, 90%, 60%)' // rose
 ]
 
 const NODE_COLORS_DARK = [
   'hsl(250, 100%, 70%)', // violet
   'hsl(210, 100%, 65%)', // blue
   'hsl(185, 100%, 55%)', // cyan
-  'hsl(160, 85%, 50%)',  // emerald
-  'hsl(40, 95%, 60%)',   // amber
-  'hsl(350, 90%, 65%)',  // rose
+  'hsl(160, 85%, 50%)', // emerald
+  'hsl(40, 95%, 60%)', // amber
+  'hsl(350, 90%, 65%)' // rose
 ]
 
 interface Node {
@@ -57,149 +57,159 @@ export function HeroGraph({
   const isDarkRef = useRef(false)
 
   // Initialize nodes once
-  const initNodes = useCallback((width: number, height: number) => {
-    const nodes: Node[] = []
-    const padding = 50
+  const initNodes = useCallback(
+    (width: number, height: number) => {
+      const nodes: Node[] = []
+      const padding = 50
 
-    for (let i = 0; i < nodeCount; i++) {
-      nodes.push({
-        x: padding + Math.random() * (width - padding * 2),
-        y: padding + Math.random() * (height - padding * 2),
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.3,
-        radius: 2 + Math.random() * 2,
-        colorIndex: Math.floor(Math.random() * NODE_COLORS_LIGHT.length),
-        phase: Math.random() * Math.PI * 2,
-        pulseSpeed: 0.5 + Math.random() * 1,
-      })
-    }
+      for (let i = 0; i < nodeCount; i++) {
+        nodes.push({
+          x: padding + Math.random() * (width - padding * 2),
+          y: padding + Math.random() * (height - padding * 2),
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: (Math.random() - 0.5) * 0.3,
+          radius: 2 + Math.random() * 2,
+          colorIndex: Math.floor(Math.random() * NODE_COLORS_LIGHT.length),
+          phase: Math.random() * Math.PI * 2,
+          pulseSpeed: 0.5 + Math.random() * 1
+        })
+      }
 
-    // Pre-calculate edges
-    const edges: Edge[] = []
-    for (let i = 0; i < nodes.length; i++) {
-      for (let j = i + 1; j < nodes.length; j++) {
-        const dx = nodes[i].x - nodes[j].x
-        const dy = nodes[i].y - nodes[j].y
-        const dist = Math.sqrt(dx * dx + dy * dy)
-        if (dist < connectionDistance) {
-          edges.push({ from: i, to: j })
+      // Pre-calculate edges
+      const edges: Edge[] = []
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const dx = nodes[i].x - nodes[j].x
+          const dy = nodes[i].y - nodes[j].y
+          const dist = Math.sqrt(dx * dx + dy * dy)
+          if (dist < connectionDistance) {
+            edges.push({ from: i, to: j })
+          }
         }
       }
-    }
 
-    nodesRef.current = nodes
-    edgesRef.current = edges
-  }, [nodeCount, connectionDistance])
+      nodesRef.current = nodes
+      edgesRef.current = edges
+    },
+    [nodeCount, connectionDistance]
+  )
 
   // Main render loop - optimized
-  const render = useCallback((time: number) => {
-    const canvas = canvasRef.current
-    if (!canvas) return
+  const render = useCallback(
+    (time: number) => {
+      const canvas = canvasRef.current
+      if (!canvas) return
 
-    const ctx = canvas.getContext('2d', { alpha: true })
-    if (!ctx) return
+      const ctx = canvas.getContext('2d', { alpha: true })
+      if (!ctx) return
 
-    // Throttle to ~40fps for better performance
-    const delta = time - lastTimeRef.current
-    if (delta < 25) {
-      animationRef.current = requestAnimationFrame(render)
-      return
-    }
-    lastTimeRef.current = time
+      // Throttle to ~40fps for better performance
+      const delta = time - lastTimeRef.current
+      if (delta < 25) {
+        animationRef.current = requestAnimationFrame(render)
+        return
+      }
+      lastTimeRef.current = time
 
-    const { width, height } = canvas
-    const dpr = window.devicePixelRatio || 1
-    const w = width / dpr
-    const h = height / dpr
+      const { width, height } = canvas
+      const dpr = window.devicePixelRatio || 1
+      const w = width / dpr
+      const h = height / dpr
 
-    const nodes = nodesRef.current
-    const edges = edgesRef.current
-    const colors = isDarkRef.current ? NODE_COLORS_DARK : NODE_COLORS_LIGHT
-    const lineColor = isDarkRef.current ? 'rgba(255,255,255,' : 'rgba(0,0,0,'
+      const nodes = nodesRef.current
+      const edges = edgesRef.current
+      const colors = isDarkRef.current ? NODE_COLORS_DARK : NODE_COLORS_LIGHT
+      const lineColor = isDarkRef.current ? 'rgba(255,255,255,' : 'rgba(0,0,0,'
 
-    // Clear
-    ctx.clearRect(0, 0, width, height)
+      // Clear
+      ctx.clearRect(0, 0, width, height)
 
-    // Update positions
-    const timeSec = time * 0.001
-    for (const node of nodes) {
-      // Gentle drift
-      node.x += node.vx
-      node.y += node.vy
+      // Update positions
+      const timeSec = time * 0.001
+      for (const node of nodes) {
+        // Gentle drift
+        node.x += node.vx
+        node.y += node.vy
 
-      // Bounce off edges
-      if (node.x < 20 || node.x > w - 20) node.vx *= -1
-      if (node.y < 20 || node.y > h - 20) node.vy *= -1
+        // Bounce off edges
+        if (node.x < 20 || node.x > w - 20) node.vx *= -1
+        if (node.y < 20 || node.y > h - 20) node.vy *= -1
 
-      // Clamp
-      node.x = Math.max(10, Math.min(w - 10, node.x))
-      node.y = Math.max(10, Math.min(h - 10, node.y))
+        // Clamp
+        node.x = Math.max(10, Math.min(w - 10, node.x))
+        node.y = Math.max(10, Math.min(h - 10, node.y))
 
-      // Mouse REPULSION (magnetic field effect)
-      if (mouseRef.current.active) {
-        const dx = node.x - mouseRef.current.x
-        const dy = node.y - mouseRef.current.y
+        // Mouse REPULSION (magnetic field effect)
+        if (mouseRef.current.active) {
+          const dx = node.x - mouseRef.current.x
+          const dy = node.y - mouseRef.current.y
+          const dist = Math.sqrt(dx * dx + dy * dy)
+          if (dist < 180 && dist > 0) {
+            const force = 0.15 * (1 - dist / 180)
+            node.vx += (dx / dist) * force
+            node.vy += (dy / dist) * force
+          }
+        }
+
+        // Damping
+        node.vx *= 0.995
+        node.vy *= 0.995
+      }
+
+      // Draw edges
+      ctx.lineWidth = 1 * dpr
+      for (const edge of edges) {
+        const n1 = nodes[edge.from]
+        const n2 = nodes[edge.to]
+        const dx = n1.x - n2.x
+        const dy = n1.y - n2.y
         const dist = Math.sqrt(dx * dx + dy * dy)
-        if (dist < 180 && dist > 0) {
-          const force = 0.15 * (1 - dist / 180)
-          node.vx += (dx / dist) * force
-          node.vy += (dy / dist) * force
+
+        if (dist < connectionDistance * 1.2) {
+          const alpha = Math.max(0, 0.15 * (1 - dist / (connectionDistance * 1.2)))
+          ctx.strokeStyle = lineColor + alpha + ')'
+          ctx.beginPath()
+          ctx.moveTo(n1.x * dpr, n1.y * dpr)
+          ctx.lineTo(n2.x * dpr, n2.y * dpr)
+          ctx.stroke()
         }
       }
 
-      // Damping
-      node.vx *= 0.995
-      node.vy *= 0.995
-    }
+      // Draw nodes with glow
+      for (const node of nodes) {
+        const pulse = 1 + Math.sin(timeSec * node.pulseSpeed + node.phase) * 0.3
+        const r = node.radius * pulse * dpr
+        const color = colors[node.colorIndex]
 
-    // Draw edges
-    ctx.lineWidth = 1 * dpr
-    for (const edge of edges) {
-      const n1 = nodes[edge.from]
-      const n2 = nodes[edge.to]
-      const dx = n1.x - n2.x
-      const dy = n1.y - n2.y
-      const dist = Math.sqrt(dx * dx + dy * dy)
+        // Glow (simple radial gradient)
+        const gradient = ctx.createRadialGradient(
+          node.x * dpr,
+          node.y * dpr,
+          0,
+          node.x * dpr,
+          node.y * dpr,
+          r * 4
+        )
+        gradient.addColorStop(0, color.replace(')', ', 0.6)').replace('hsl', 'hsla'))
+        gradient.addColorStop(0.5, color.replace(')', ', 0.15)').replace('hsl', 'hsla'))
+        gradient.addColorStop(1, 'transparent')
 
-      if (dist < connectionDistance * 1.2) {
-        const alpha = Math.max(0, 0.15 * (1 - dist / (connectionDistance * 1.2)))
-        ctx.strokeStyle = lineColor + alpha + ')'
+        ctx.fillStyle = gradient
         ctx.beginPath()
-        ctx.moveTo(n1.x * dpr, n1.y * dpr)
-        ctx.lineTo(n2.x * dpr, n2.y * dpr)
-        ctx.stroke()
+        ctx.arc(node.x * dpr, node.y * dpr, r * 4, 0, Math.PI * 2)
+        ctx.fill()
+
+        // Core
+        ctx.fillStyle = color
+        ctx.beginPath()
+        ctx.arc(node.x * dpr, node.y * dpr, r, 0, Math.PI * 2)
+        ctx.fill()
       }
-    }
 
-    // Draw nodes with glow
-    for (const node of nodes) {
-      const pulse = 1 + Math.sin(timeSec * node.pulseSpeed + node.phase) * 0.3
-      const r = node.radius * pulse * dpr
-      const color = colors[node.colorIndex]
-
-      // Glow (simple radial gradient)
-      const gradient = ctx.createRadialGradient(
-        node.x * dpr, node.y * dpr, 0,
-        node.x * dpr, node.y * dpr, r * 4
-      )
-      gradient.addColorStop(0, color.replace(')', ', 0.6)').replace('hsl', 'hsla'))
-      gradient.addColorStop(0.5, color.replace(')', ', 0.15)').replace('hsl', 'hsla'))
-      gradient.addColorStop(1, 'transparent')
-
-      ctx.fillStyle = gradient
-      ctx.beginPath()
-      ctx.arc(node.x * dpr, node.y * dpr, r * 4, 0, Math.PI * 2)
-      ctx.fill()
-
-      // Core
-      ctx.fillStyle = color
-      ctx.beginPath()
-      ctx.arc(node.x * dpr, node.y * dpr, r, 0, Math.PI * 2)
-      ctx.fill()
-    }
-
-    animationRef.current = requestAnimationFrame(render)
-  }, [connectionDistance])
+      animationRef.current = requestAnimationFrame(render)
+    },
+    [connectionDistance]
+  )
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -258,10 +268,7 @@ export function HeroGraph({
 
   return (
     <div className={`absolute inset-0 overflow-hidden ${className}`}>
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 w-full h-full"
-      />
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
     </div>
   )
 }

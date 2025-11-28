@@ -6,7 +6,7 @@ import { getMeta } from '@/shared/lib/get-meta'
 export const handle = {
   hideAuthButtons: true,
   hideFooter: true,
-  centered: true,
+  centered: true
 }
 
 export function meta() {

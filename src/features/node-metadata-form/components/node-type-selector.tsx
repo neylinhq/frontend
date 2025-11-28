@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
+import type { NodeType } from '@/entities/node'
 import { Label } from '@/shared/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/shared/ui/radio-group'
-import type { NodeType } from '@/entities/node'
 import { NODE_TYPE_CONFIGS } from '../model/node-type-selector.constants'
 
 interface NodeTypeSelectorProps {
@@ -17,7 +17,7 @@ export function NodeTypeSelector({ value, onChange }: NodeTypeSelectorProps) {
       <Label>{t('form.nodeType.label')}</Label>
       <RadioGroup value={value} onValueChange={onChange}>
         <div className="grid grid-cols-2 gap-2">
-          {NODE_TYPE_CONFIGS.map((config) => {
+          {NODE_TYPE_CONFIGS.map(config => {
             const Icon = config.icon
             return (
               <div key={config.type} className="flex items-center space-x-2">

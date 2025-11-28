@@ -1,6 +1,6 @@
 import type { Edge, Node } from '@xyflow/react'
-import type { ViewMode } from '../model/graph-view.store'
 import type { RelationType } from '@/entities/edge'
+import type { ViewMode } from '../model/graph-view.store'
 
 interface LayoutOptions {
   viewMode: ViewMode
@@ -19,26 +19,22 @@ const DEFAULT_LEVEL_SPACING = 300
 
 // Edge weights for clustering - prerequisite is strongest
 const EDGE_WEIGHTS: Record<RelationType, number> = {
-  'prerequisite': 1.0,
+  prerequisite: 1.0,
   'is-a': 0.8,
   'part-of': 0.8,
-  'explains': 0.6,
-  'causes': 0.6,
-  'influences': 0.5,
+  explains: 0.6,
+  causes: 0.6,
+  influences: 0.5,
   'has-a': 0.5,
   'similar-to': 0.4,
   'related-to': 0.3,
-  'contradicts': 0.2,
+  contradicts: 0.2
 }
 
 /**
  * Apply layout based on view mode
  */
-export function applyLayout(
-  nodes: Node[],
-  edges: Edge[],
-  options: LayoutOptions
-): LayoutResult {
+export function applyLayout(nodes: Node[], edges: Edge[], options: LayoutOptions): LayoutResult {
   const { viewMode, spacingPercent = 100, directionStrength = 100 } = options
 
   if (nodes.length === 0) return { nodes, edges }
@@ -53,7 +49,7 @@ export function applyLayout(
   const internalOptions: InternalLayoutOptions = {
     nodeSpacing,
     levelSpacing,
-    directionStrength: normalizedDirection,
+    directionStrength: normalizedDirection
   }
 
   switch (viewMode) {
@@ -96,10 +92,10 @@ function forceDirectedLayout(
     const hasValidPosition = n.position && (n.position.x !== 0 || n.position.y !== 0)
     return {
       id: n.id,
-      x: hasValidPosition ? n.position.x : (Math.cos(i * 2.4) * 200 + Math.random() * 50),
-      y: hasValidPosition ? n.position.y : (Math.sin(i * 2.4) * 200 + Math.random() * 50),
+      x: hasValidPosition ? n.position.x : Math.cos(i * 2.4) * 200 + Math.random() * 50,
+      y: hasValidPosition ? n.position.y : Math.sin(i * 2.4) * 200 + Math.random() * 50,
       vx: 0,
-      vy: 0,
+      vy: 0
     }
   })
 
@@ -142,7 +138,7 @@ function forceDirectedLayout(
       const relationType = (e.data?.relationType as RelationType) || 'related-to'
       const weight = EDGE_WEIGHTS[relationType] || 0.3
 
-      const force = (dist * dist) / idealDistance * weight
+      const force = ((dist * dist) / idealDistance) * weight
       const fx = (dx / dist) * force
       const fy = (dy / dist) * force
 
@@ -155,8 +151,8 @@ function forceDirectedLayout(
       // This creates hierarchical layout where edges flow top-to-bottom
       if (options.directionStrength > 0) {
         const verticalForce = idealDistance * 1.2 * options.directionStrength * weight
-        source.vy -= verticalForce  // push source UP (decrease y)
-        target.vy += verticalForce  // push target DOWN (increase y)
+        source.vy -= verticalForce // push source UP (decrease y)
+        target.vy += verticalForce // push target DOWN (increase y)
 
         // Add horizontal spread to prevent vertical collapse
         // Nodes at similar Y should spread horizontally
@@ -202,7 +198,7 @@ function forceDirectedLayout(
     const pos = posMap.get(node.id)
     return {
       ...node,
-      position: { x: pos?.x ?? 0, y: pos?.y ?? 0 },
+      position: { x: pos?.x ?? 0, y: pos?.y ?? 0 }
     }
   })
 
@@ -213,17 +209,11 @@ function forceDirectedLayout(
  * Linear/tree layout based on prerequisite edges
  * Used in Path mode
  */
-function pathLayout(
-  nodes: Node[],
-  edges: Edge[],
-  options: InternalLayoutOptions
-): LayoutResult {
+function pathLayout(nodes: Node[], edges: Edge[], options: InternalLayoutOptions): LayoutResult {
   const { nodeSpacing, levelSpacing } = options
 
   // Filter to only prerequisite edges
-  const prereqEdges = edges.filter(e =>
-    (e.data?.relationType as RelationType) === 'prerequisite'
-  )
+  const prereqEdges = edges.filter(e => (e.data?.relationType as RelationType) === 'prerequisite')
 
   // Build directed graph (source is prerequisite of target)
   const outgoing = new Map<string, string[]>()
@@ -272,7 +262,9 @@ function pathLayout(
 
   // Handle nodes not in prerequisite chain
   let maxLevel = 0
-  levels.forEach(l => { if (l > maxLevel) maxLevel = l })
+  levels.forEach(l => {
+    if (l > maxLevel) maxLevel = l
+  })
   nodes.forEach(n => {
     if (!levels.has(n.id)) {
       levels.set(n.id, maxLevel + 1)
@@ -297,8 +289,8 @@ function pathLayout(
       ...node,
       position: {
         x: level * levelSpacing,
-        y: indexInLevel * nodeSpacing - levelHeight / 2 + nodeSpacing / 2,
-      },
+        y: indexInLevel * nodeSpacing - levelHeight / 2 + nodeSpacing / 2
+      }
     }
   })
 
@@ -348,11 +340,6 @@ export function getNodesWithinDepth(
 /**
  * Get edges between a set of nodes
  */
-export function getEdgesBetweenNodes(
-  edges: Edge[],
-  nodeIds: Set<string>
-): Edge[] {
-  return edges.filter(e =>
-    nodeIds.has(e.source) && nodeIds.has(e.target)
-  )
+export function getEdgesBetweenNodes(edges: Edge[], nodeIds: Set<string>): Edge[] {
+  return edges.filter(e => nodeIds.has(e.source) && nodeIds.has(e.target))
 }

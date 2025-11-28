@@ -1,17 +1,17 @@
 import { useTranslation } from 'react-i18next'
-import { Input } from '@/shared/ui/input'
-import { Label } from '@/shared/ui/label'
-import { Typography } from '@/shared/ui/typography'
+import { getMeta } from '@/shared/lib/get-meta'
 import { Badge } from '@/shared/ui/badge'
+import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
 import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
 import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
 import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
-import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
-import { getMeta } from '@/shared/lib/get-meta'
+import { Input } from '@/shared/ui/input'
+import { Label } from '@/shared/ui/label'
+import { Typography } from '@/shared/ui/typography'
 import type { Route } from './+types/input'
 
 export const handle = {
-  breadcrumb: 'Input',
+  breadcrumb: 'Input'
 }
 
 export function meta(_args: Route.MetaArgs) {
@@ -27,7 +27,7 @@ export default function InputPage() {
     { id: 'types', title: t('docs.common.types'), level: 2 },
     { id: 'states', title: t('docs.common.states'), level: 2 },
     { id: 'usage', title: t('docs.common.usage'), level: 2 },
-    { id: 'api-reference', title: t('docs.common.apiReference'), level: 2 },
+    { id: 'api-reference', title: t('docs.common.apiReference'), level: 2 }
   ]
   return (
     <div className="flex gap-10">
@@ -36,7 +36,7 @@ export default function InputPage() {
           <DocsBreadcrumbs
             items={[
               { label: t('docs.common.components'), href: '/docs/ui/button' },
-              { label: 'Input' },
+              { label: 'Input' }
             ]}
           />
           <div className="flex items-center gap-3">
@@ -50,11 +50,11 @@ export default function InputPage() {
 
         <section id="basic" className="scroll-mt-20 space-y-4">
           <Typography variant="h2">{t('docs.common.basic')}</Typography>
-          <Typography variant="muted">
-            {t('docs.input.basic.description')}
-          </Typography>
+          <Typography variant="muted">{t('docs.input.basic.description')}</Typography>
 
-          <DocsComponentPreview code={`<Input placeholder="${t('docs.input.basic.placeholder')}" />`}>
+          <DocsComponentPreview
+            code={`<Input placeholder="${t('docs.input.basic.placeholder')}" />`}
+          >
             <DocsPreview>
               <Input placeholder={t('docs.input.basic.placeholder')} className="max-w-sm" />
             </DocsPreview>
@@ -63,9 +63,7 @@ export default function InputPage() {
 
         <section id="with-label" className="scroll-mt-20 space-y-4">
           <Typography variant="h2">{t('docs.common.withLabel')}</Typography>
-          <Typography variant="muted">
-            {t('docs.input.withLabel.description')}
-          </Typography>
+          <Typography variant="muted">{t('docs.input.withLabel.description')}</Typography>
 
           <DocsComponentPreview
             code={`<div className="space-y-2">
@@ -76,7 +74,11 @@ export default function InputPage() {
             <DocsPreview>
               <div className="space-y-2 w-full max-w-sm">
                 <Label htmlFor="email">{t('docs.input.withLabel.emailLabel')}</Label>
-                <Input id="email" type="email" placeholder={t('docs.input.withLabel.emailPlaceholder')} />
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder={t('docs.input.withLabel.emailPlaceholder')}
+                />
               </div>
             </DocsPreview>
           </DocsComponentPreview>
@@ -84,9 +86,7 @@ export default function InputPage() {
 
         <section id="types" className="scroll-mt-20 space-y-4">
           <Typography variant="h2">{t('docs.common.types')}</Typography>
-          <Typography variant="muted">
-            {t('docs.input.types.description')}
-          </Typography>
+          <Typography variant="muted">{t('docs.input.types.description')}</Typography>
 
           <DocsComponentPreview
             code={`<Input type="text" placeholder="${t('docs.input.types.text')}" />
@@ -105,13 +105,17 @@ export default function InputPage() {
 
         <section id="states" className="scroll-mt-20 space-y-4">
           <Typography variant="h2">{t('docs.common.states')}</Typography>
-          <Typography variant="muted">
-            {t('docs.input.states.description')}
-          </Typography>
+          <Typography variant="muted">{t('docs.input.states.description')}</Typography>
 
-          <DocsComponentPreview code={`<Input disabled placeholder="${t('docs.input.states.disabledPlaceholder')}" />`}>
+          <DocsComponentPreview
+            code={`<Input disabled placeholder="${t('docs.input.states.disabledPlaceholder')}" />`}
+          >
             <DocsPreview>
-              <Input disabled placeholder={t('docs.input.states.disabledPlaceholder')} className="max-w-sm" />
+              <Input
+                disabled
+                placeholder={t('docs.input.states.disabledPlaceholder')}
+                className="max-w-sm"
+              />
             </DocsPreview>
           </DocsComponentPreview>
         </section>
@@ -153,19 +157,37 @@ export function MyForm() {
               </thead>
               <tbody className="divide-y">
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">type</code></td>
-                  <td className="px-4 py-3"><code className="text-xs text-muted-foreground">string</code></td>
-                  <td className="px-4 py-3"><code className="text-xs bg-muted px-1.5 py-0.5 rounded">'text'</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">type</code>
+                  </td>
+                  <td className="px-4 py-3">
+                    <code className="text-xs text-muted-foreground">string</code>
+                  </td>
+                  <td className="px-4 py-3">
+                    <code className="text-xs bg-muted px-1.5 py-0.5 rounded">'text'</code>
+                  </td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">placeholder</code></td>
-                  <td className="px-4 py-3"><code className="text-xs text-muted-foreground">string</code></td>
-                  <td className="px-4 py-3"><code className="text-xs bg-muted px-1.5 py-0.5 rounded">-</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">placeholder</code>
+                  </td>
+                  <td className="px-4 py-3">
+                    <code className="text-xs text-muted-foreground">string</code>
+                  </td>
+                  <td className="px-4 py-3">
+                    <code className="text-xs bg-muted px-1.5 py-0.5 rounded">-</code>
+                  </td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">disabled</code></td>
-                  <td className="px-4 py-3"><code className="text-xs text-muted-foreground">boolean</code></td>
-                  <td className="px-4 py-3"><code className="text-xs bg-muted px-1.5 py-0.5 rounded">false</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">disabled</code>
+                  </td>
+                  <td className="px-4 py-3">
+                    <code className="text-xs text-muted-foreground">boolean</code>
+                  </td>
+                  <td className="px-4 py-3">
+                    <code className="text-xs bg-muted px-1.5 py-0.5 rounded">false</code>
+                  </td>
                 </tr>
               </tbody>
             </table>

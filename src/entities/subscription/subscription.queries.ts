@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { subscriptionApi } from './subscription.api'
 import type { PaymentMethod, PlanType } from './subscription.schema'
-import type { AddPaymentMethodInput } from './subscription.types'
+import type { AddPaymentMethodInput, UpdatePaymentMethodInput } from './subscription.types'
 
 // Query key factory - Following mapKeys pattern exactly
 export const subscriptionKeys = {
@@ -141,6 +141,41 @@ export const useSetDefaultPaymentMethod = () => {
 
       queryClient.setQueryData<PaymentMethod[]>(subscriptionKeys.paymentMethods(), old =>
         old?.map(m => ({ ...m, isDefault: m.id === paymentMethodId }))
+      )
+      return { previous }
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(subscriptionKeys.paymentMethods(), context.previous)
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: subscriptionKeys.paymentMethods() })
+    }
+  })
+}
+
+export const useUpdatePaymentMethod = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (input: UpdatePaymentMethodInput) => subscriptionApi.updatePaymentMethod(input),
+    onMutate: async (input: UpdatePaymentMethodInput) => {
+      await queryClient.cancelQueries({ queryKey: subscriptionKeys.paymentMethods() })
+      const previous = queryClient.getQueryData<PaymentMethod[]>(subscriptionKeys.paymentMethods())
+
+      queryClient.setQueryData<PaymentMethod[]>(subscriptionKeys.paymentMethods(), old =>
+        old?.map(m => {
+          if (m.id !== input.id) return m
+          if ('expiryMonth' in input && m.type === 'card') {
+            return { ...m, expiryMonth: input.expiryMonth, expiryYear: input.expiryYear }
+          }
+          if ('walletAddress' in input && m.type === 'crypto') {
+            const short = `${input.walletAddress.slice(0, 6)}...${input.walletAddress.slice(-4)}`
+            return { ...m, walletAddress: input.walletAddress, walletAddressShort: short }
+          }
+          return m
+        })
       )
       return { previous }
     },

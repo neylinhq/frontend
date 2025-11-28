@@ -1,15 +1,15 @@
-import { Separator } from '@/shared/ui/separator'
-import { Typography } from '@/shared/ui/typography'
+import { getMeta } from '@/shared/lib/get-meta'
 import { Badge } from '@/shared/ui/badge'
+import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
 import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
 import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
 import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
-import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
-import { getMeta } from '@/shared/lib/get-meta'
+import { Separator } from '@/shared/ui/separator'
+import { Typography } from '@/shared/ui/typography'
 import type { Route } from './+types/separator'
 
 export const handle = {
-  breadcrumb: 'Separator',
+  breadcrumb: 'Separator'
 }
 
 export function meta(_args: Route.MetaArgs) {
@@ -19,7 +19,7 @@ export function meta(_args: Route.MetaArgs) {
 const TOC_ITEMS: TocItem[] = [
   { id: 'horizontal', title: 'Horizontal', level: 2 },
   { id: 'vertical', title: 'Vertical', level: 2 },
-  { id: 'usage', title: 'Usage', level: 2 },
+  { id: 'usage', title: 'Usage', level: 2 }
 ]
 
 export default function SeparatorPage() {
@@ -28,10 +28,7 @@ export default function SeparatorPage() {
       <div className="flex-1 min-w-0 space-y-10">
         <header className="space-y-4">
           <DocsBreadcrumbs
-            items={[
-              { label: 'Components', href: '/docs/ui/button' },
-              { label: 'Separator' },
-            ]}
+            items={[{ label: 'Components', href: '/docs/ui/button' }, { label: 'Separator' }]}
           />
           <div className="flex items-center gap-3">
             <Typography variant="h1">Separator</Typography>
@@ -58,7 +55,9 @@ export default function SeparatorPage() {
               <div className="w-full max-w-md">
                 <div className="space-y-1">
                   <h4 className="text-sm font-medium">Radix Primitives</h4>
-                  <p className="text-sm text-muted-foreground">An open-source UI component library.</p>
+                  <p className="text-sm text-muted-foreground">
+                    An open-source UI component library.
+                  </p>
                 </div>
                 <Separator className="my-4" />
                 <div className="flex h-5 items-center space-x-4 text-sm">

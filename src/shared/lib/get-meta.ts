@@ -33,7 +33,8 @@ const META_TRANSLATIONS = {
     },
     terms: {
       title: 'Условия использования',
-      description: 'Пожалуйста, внимательно прочитайте эти условия перед использованием нашего сервиса'
+      description:
+        'Пожалуйста, внимательно прочитайте эти условия перед использованием нашего сервиса'
     },
     privacy: {
       title: 'Политика конфиденциальности',
@@ -111,7 +112,7 @@ const META_TRANSLATIONS = {
     },
     notFound: {
       title: 'Page Not Found',
-      description: 'Sorry, the page you\'re looking for doesn\'t exist or has been moved'
+      description: "Sorry, the page you're looking for doesn't exist or has been moved"
     },
     pricing: {
       title: 'Pricing',
@@ -148,8 +149,5 @@ export function getMeta(key: MetaKey) {
   const translations = META_TRANSLATIONS[lang]
   const { title, description } = translations[key]
 
-  return [
-    { title: `${APP_NAME} — ${title}` },
-    { name: 'description', content: description }
-  ]
+  return [{ title: `${APP_NAME} — ${title}` }, { name: 'description', content: description }]
 }

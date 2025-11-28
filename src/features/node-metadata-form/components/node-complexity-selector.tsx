@@ -1,12 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Label } from '@/shared/ui/label'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/shared/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select'
 import { COMPLEXITY_OPTIONS } from './node-complexity-selector.constants'
 
 interface NodeComplexitySelectorProps {
@@ -25,7 +19,7 @@ export function NodeComplexitySelector({ value, onChange }: NodeComplexitySelect
           <SelectValue placeholder={t('form.complexity.placeholder')} />
         </SelectTrigger>
         <SelectContent>
-          {COMPLEXITY_OPTIONS.map((option) => (
+          {COMPLEXITY_OPTIONS.map(option => (
             <SelectItem key={option.value} value={option.value}>
               {t(option.labelKey)}
             </SelectItem>

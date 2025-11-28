@@ -16,17 +16,14 @@ export function transformNodesToFlow(
       ...node,
       selected: selectedNodeIds.includes(node.id),
       isFocused: focusedNodeId === node.id,
-      onSelect,
+      onSelect
     },
     // Smooth transition when layout changes
-    style: animated ? { transition: 'transform 0.3s ease-out' } : undefined,
+    style: animated ? { transition: 'transform 0.3s ease-out' } : undefined
   }))
 }
 
-export function transformEdgesToFlow(
-  edges: Edge[],
-  selectedEdgeIds: string[] = []
-): FlowEdge[] {
+export function transformEdgesToFlow(edges: Edge[], selectedEdgeIds: string[] = []): FlowEdge[] {
   return edges.map(edge => ({
     id: edge.id,
     type: 'knowledgeEdge',

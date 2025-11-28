@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next'
 import { useOutletContext } from 'react-router'
 import {
-  EmailChangeForm,
-  PasswordChangeForm,
-  DeleteAccountSection,
   ActiveSessions,
+  DeleteAccountSection,
+  EmailChangeForm,
+  PasswordChangeForm
 } from '@/features/settings'
 import { Typography } from '@/shared/ui/typography'
 import type { SettingsContext } from './layout'

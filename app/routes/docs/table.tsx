@@ -1,4 +1,10 @@
 import { useTranslation } from 'react-i18next'
+import { getMeta } from '@/shared/lib/get-meta'
+import { Badge } from '@/shared/ui/badge'
+import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
+import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
+import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
+import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
 import {
   Table,
   TableBody,
@@ -6,19 +12,13 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
+  TableRow
 } from '@/shared/ui/table'
 import { Typography } from '@/shared/ui/typography'
-import { Badge } from '@/shared/ui/badge'
-import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
-import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
-import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
-import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
-import { getMeta } from '@/shared/lib/get-meta'
 import type { Route } from './+types/table'
 
 export const handle = {
-  breadcrumb: 'Table',
+  breadcrumb: 'Table'
 }
 
 export function meta(_args: Route.MetaArgs) {
@@ -31,14 +31,34 @@ export default function TablePage() {
   const TOC_ITEMS: TocItem[] = [
     { id: 'basic', title: t('docs.common.basic'), level: 2 },
     { id: 'usage', title: t('docs.common.usage'), level: 2 },
-    { id: 'api-reference', title: t('docs.common.apiReference'), level: 2 },
+    { id: 'api-reference', title: t('docs.common.apiReference'), level: 2 }
   ]
 
   const invoices = [
-    { invoice: 'INV001', status: t('docs.table.basic.paid'), method: t('docs.table.basic.creditCard'), amount: '$250.00' },
-    { invoice: 'INV002', status: t('docs.table.basic.pending'), method: t('docs.table.basic.paypal'), amount: '$150.00' },
-    { invoice: 'INV003', status: t('docs.table.basic.unpaid'), method: t('docs.table.basic.bankTransfer'), amount: '$350.00' },
-    { invoice: 'INV004', status: t('docs.table.basic.paid'), method: t('docs.table.basic.creditCard'), amount: '$450.00' },
+    {
+      invoice: 'INV001',
+      status: t('docs.table.basic.paid'),
+      method: t('docs.table.basic.creditCard'),
+      amount: '$250.00'
+    },
+    {
+      invoice: 'INV002',
+      status: t('docs.table.basic.pending'),
+      method: t('docs.table.basic.paypal'),
+      amount: '$150.00'
+    },
+    {
+      invoice: 'INV003',
+      status: t('docs.table.basic.unpaid'),
+      method: t('docs.table.basic.bankTransfer'),
+      amount: '$350.00'
+    },
+    {
+      invoice: 'INV004',
+      status: t('docs.table.basic.paid'),
+      method: t('docs.table.basic.creditCard'),
+      amount: '$450.00'
+    }
   ]
 
   return (
@@ -48,7 +68,7 @@ export default function TablePage() {
           <DocsBreadcrumbs
             items={[
               { label: t('docs.common.components'), href: '/docs/ui/button' },
-              { label: 'Table' },
+              { label: 'Table' }
             ]}
           />
           <div className="flex items-center gap-3">
@@ -97,7 +117,7 @@ export default function TablePage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {invoices.map((invoice) => (
+                  {invoices.map(invoice => (
                     <TableRow key={invoice.invoice}>
                       <TableCell className="font-medium">{invoice.invoice}</TableCell>
                       <TableCell>{invoice.status}</TableCell>
@@ -157,32 +177,46 @@ export function UsersTable({ users }: { users: User[] }) {
               <thead className="bg-muted/50">
                 <tr>
                   <th className="text-left px-4 py-3 font-medium">{t('docs.common.component')}</th>
-                  <th className="text-left px-4 py-3 font-medium">{t('docs.common.description')}</th>
+                  <th className="text-left px-4 py-3 font-medium">
+                    {t('docs.common.description')}
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y">
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">Table</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">Table</code>
+                  </td>
                   <td className="px-4 py-3">{t('docs.table.api.tableDescription')}</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">TableHeader</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">TableHeader</code>
+                  </td>
                   <td className="px-4 py-3">{t('docs.table.api.headerDescription')}</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">TableBody</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">TableBody</code>
+                  </td>
                   <td className="px-4 py-3">{t('docs.table.api.bodyDescription')}</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">TableRow</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">TableRow</code>
+                  </td>
                   <td className="px-4 py-3">{t('docs.table.api.rowDescription')}</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">TableHead</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">TableHead</code>
+                  </td>
                   <td className="px-4 py-3">{t('docs.table.api.headDescription')}</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">TableCell</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">TableCell</code>
+                  </td>
                   <td className="px-4 py-3">{t('docs.table.api.cellDescription')}</td>
                 </tr>
               </tbody>

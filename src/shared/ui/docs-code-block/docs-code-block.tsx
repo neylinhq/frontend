@@ -1,7 +1,7 @@
 'use client'
 
+import { Check, ChevronDown, ChevronUp, Copy } from 'lucide-react'
 import * as React from 'react'
-import { Check, Copy, ChevronDown, ChevronUp } from 'lucide-react'
 import { cn } from '@/shared/lib/cn'
 import './docs-code-block.styles.css'
 import { Button } from '@/shared/ui/button'
@@ -24,7 +24,7 @@ export function DocsCodeBlock({
   showLineNumbers = false,
   collapsible = false,
   defaultCollapsed = false,
-  className,
+  className
 }: DocsCodeBlockProps) {
   const [copied, setCopied] = React.useState(false)
   const [isOpen, setIsOpen] = React.useState(!defaultCollapsed)
@@ -58,11 +58,7 @@ export function DocsCodeBlock({
           className="docs-code-block-copy"
           aria-label={copied ? 'Copied!' : 'Copy code'}
         >
-          {copied ? (
-            <Check className="h-4 w-4 text-success" />
-          ) : (
-            <Copy className="h-4 w-4" />
-          )}
+          {copied ? <Check className="h-4 w-4 text-success" /> : <Copy className="h-4 w-4" />}
         </button>
       </div>
       <pre className={cn('docs-code-block-pre', showLineNumbers && 'with-line-numbers')}>
@@ -84,11 +80,7 @@ export function DocsCodeBlock({
               <span className="text-xs text-muted-foreground">
                 {filename || `${language} code`}
               </span>
-              {isOpen ? (
-                <ChevronUp className="h-4 w-4" />
-              ) : (
-                <ChevronDown className="h-4 w-4" />
-              )}
+              {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
             </Button>
           </CollapsibleTrigger>
           <CollapsibleContent>

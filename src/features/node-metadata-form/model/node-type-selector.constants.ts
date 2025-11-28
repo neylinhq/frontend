@@ -1,13 +1,13 @@
 import {
+  BookOpen,
   Brain,
   FileText,
-  Lightbulb,
-  BookOpen,
-  HelpCircle,
   FlaskConical,
-  User,
   GraduationCap,
-  type LucideIcon
+  HelpCircle,
+  Lightbulb,
+  type LucideIcon,
+  User
 } from 'lucide-react'
 import type { NodeType } from '@/entities/node'
 

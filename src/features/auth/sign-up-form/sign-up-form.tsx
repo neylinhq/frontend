@@ -95,8 +95,7 @@ export function SignUpForm() {
           </Button>
 
           <p className="text-xs text-center text-muted-foreground text-balance">
-            {t('auth.signUp.consent')}{' '}
-            <LegalLinks variant="embedded" />
+            {t('auth.signUp.consent')} <LegalLinks variant="embedded" />
           </p>
 
           <FormDivider>{t('auth.signIn.orDivider')}</FormDivider>

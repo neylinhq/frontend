@@ -8,7 +8,9 @@ export function TermsPage() {
   return (
     <LegalLayout>
       <Typography variant="h1">{t('legal.terms.title')}</Typography>
-      <Typography variant="lead" className="mb-8">{t('legal.terms.description')}</Typography>
+      <Typography variant="lead" className="mb-8">
+        {t('legal.terms.description')}
+      </Typography>
 
       <Typography variant="muted" className="mb-8">
         {t('legal.lastUpdated')}: {new Date().toLocaleDateString()}
@@ -21,7 +23,7 @@ export function TermsPage() {
       <p>{t('legal.terms.sections.license.intro')}</p>
       <ul>
         {(t('legal.terms.sections.license.items', { returnObjects: true }) as string[]).map(
-          (item) => (
+          item => (
             <li key={item}>{item}</li>
           )
         )}

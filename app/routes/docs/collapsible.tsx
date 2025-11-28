@@ -1,20 +1,20 @@
 'use client'
 
-import { useState } from 'react'
 import { ChevronsUpDown } from 'lucide-react'
+import { useState } from 'react'
+import { getMeta } from '@/shared/lib/get-meta'
+import { Badge } from '@/shared/ui/badge'
 import { Button } from '@/shared/ui/button'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/shared/ui/collapsible'
-import { Typography } from '@/shared/ui/typography'
-import { Badge } from '@/shared/ui/badge'
+import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
 import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
 import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
 import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
-import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
-import { getMeta } from '@/shared/lib/get-meta'
+import { Typography } from '@/shared/ui/typography'
 import type { Route } from './+types/collapsible'
 
 export const handle = {
-  breadcrumb: 'Collapsible',
+  breadcrumb: 'Collapsible'
 }
 
 export function meta(_args: Route.MetaArgs) {
@@ -23,22 +23,16 @@ export function meta(_args: Route.MetaArgs) {
 
 const TOC_ITEMS: TocItem[] = [
   { id: 'basic', title: 'Basic', level: 2 },
-  { id: 'usage', title: 'Usage', level: 2 },
+  { id: 'usage', title: 'Usage', level: 2 }
 ]
 
 function CollapsibleDemo() {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <Collapsible
-      open={isOpen}
-      onOpenChange={setIsOpen}
-      className="w-[350px] space-y-2"
-    >
+    <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-[350px] space-y-2">
       <div className="flex items-center justify-between space-x-4 px-4">
-        <h4 className="text-sm font-semibold">
-          @radix-ui/primitives
-        </h4>
+        <h4 className="text-sm font-semibold">@radix-ui/primitives</h4>
         <CollapsibleTrigger asChild>
           <Button variant="ghost" size="sm" className="w-9 p-0">
             <ChevronsUpDown className="h-4 w-4" />
@@ -53,9 +47,7 @@ function CollapsibleDemo() {
         <div className="rounded-md border px-4 py-3 font-mono text-sm">
           @radix-ui/react-accordion
         </div>
-        <div className="rounded-md border px-4 py-3 font-mono text-sm">
-          @radix-ui/react-dialog
-        </div>
+        <div className="rounded-md border px-4 py-3 font-mono text-sm">@radix-ui/react-dialog</div>
       </CollapsibleContent>
     </Collapsible>
   )
@@ -67,10 +59,7 @@ export default function CollapsiblePage() {
       <div className="flex-1 min-w-0 space-y-10">
         <header className="space-y-4">
           <DocsBreadcrumbs
-            items={[
-              { label: 'Components', href: '/docs/ui/button' },
-              { label: 'Collapsible' },
-            ]}
+            items={[{ label: 'Components', href: '/docs/ui/button' }, { label: 'Collapsible' }]}
           />
           <div className="flex items-center gap-3">
             <Typography variant="h1">Collapsible</Typography>

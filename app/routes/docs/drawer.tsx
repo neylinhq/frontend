@@ -1,4 +1,10 @@
+import { getMeta } from '@/shared/lib/get-meta'
+import { Badge } from '@/shared/ui/badge'
 import { Button } from '@/shared/ui/button'
+import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
+import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
+import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
+import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
 import {
   Drawer,
   DrawerClose,
@@ -7,19 +13,13 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-  DrawerTrigger,
+  DrawerTrigger
 } from '@/shared/ui/drawer'
 import { Typography } from '@/shared/ui/typography'
-import { Badge } from '@/shared/ui/badge'
-import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
-import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
-import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
-import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
-import { getMeta } from '@/shared/lib/get-meta'
 import type { Route } from './+types/drawer'
 
 export const handle = {
-  breadcrumb: 'Drawer',
+  breadcrumb: 'Drawer'
 }
 
 export function meta(_args: Route.MetaArgs) {
@@ -29,7 +29,7 @@ export function meta(_args: Route.MetaArgs) {
 const TOC_ITEMS: TocItem[] = [
   { id: 'basic', title: 'Basic', level: 2 },
   { id: 'usage', title: 'Usage', level: 2 },
-  { id: 'api-reference', title: 'API Reference', level: 2 },
+  { id: 'api-reference', title: 'API Reference', level: 2 }
 ]
 
 export default function DrawerPage() {
@@ -38,10 +38,7 @@ export default function DrawerPage() {
       <div className="flex-1 min-w-0 space-y-10">
         <header className="space-y-4">
           <DocsBreadcrumbs
-            items={[
-              { label: 'Components', href: '/docs/ui/button' },
-              { label: 'Drawer' },
-            ]}
+            items={[{ label: 'Components', href: '/docs/ui/button' }, { label: 'Drawer' }]}
           />
           <div className="flex items-center gap-3">
             <Typography variant="h1">Drawer</Typography>
@@ -156,19 +153,27 @@ export function MobileMenu() {
               </thead>
               <tbody className="divide-y">
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">Drawer</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">Drawer</code>
+                  </td>
                   <td className="px-4 py-3">Root component</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">DrawerTrigger</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">DrawerTrigger</code>
+                  </td>
                   <td className="px-4 py-3">Button that opens drawer</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">DrawerContent</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">DrawerContent</code>
+                  </td>
                   <td className="px-4 py-3">Drawer panel</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">DrawerClose</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">DrawerClose</code>
+                  </td>
                   <td className="px-4 py-3">Closes the drawer</td>
                 </tr>
               </tbody>

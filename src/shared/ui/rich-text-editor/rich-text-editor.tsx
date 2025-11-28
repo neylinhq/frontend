@@ -52,12 +52,7 @@ export function RichTextEditor({
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <div
-        className={cn(
-          'relative rounded-md border border-input bg-background',
-          className
-        )}
-      >
+      <div className={cn('relative rounded-md border border-input bg-background', className)}>
         <RichTextPlugin
           contentEditable={
             <ContentEditable className="min-h-[200px] resize-none p-3 text-sm outline-none" />

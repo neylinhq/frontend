@@ -1,7 +1,8 @@
-import { useState } from 'react'
 import { MoreVertical, Pencil, Star, Trash2 } from 'lucide-react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-
+import type { PaymentMethod } from '@/entities/subscription'
+import { cn } from '@/shared/lib/cn'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,7 +11,7 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
+  AlertDialogTitle
 } from '@/shared/ui/alert-dialog'
 import { Button } from '@/shared/ui/button'
 import {
@@ -18,15 +19,11 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from '@/shared/ui/dropdown-menu'
-import { Icon, cryptoIcons } from '@/shared/ui/icon'
-import { cn } from '@/shared/lib/cn'
-
-import { CardBrandIcon } from './card-brand-icon'
-
-import type { PaymentMethod } from '@/entities/subscription'
+import { cryptoIcons, Icon } from '@/shared/ui/icon'
 import type { CardBrand } from '../lib/card-utils'
+import { CardBrandIcon } from './card-brand-icon'
 
 interface PaymentMethodCardProps {
   method: PaymentMethod
@@ -41,7 +38,7 @@ export function PaymentMethodCard({
   onRemove,
   onSetDefault,
   onEdit,
-  loading,
+  loading
 }: PaymentMethodCardProps) {
   const { t } = useTranslation()
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
@@ -55,12 +52,12 @@ export function PaymentMethodCard({
     if (method.type === 'crypto') {
       return t('billing.removeCryptoWallet.description', {
         currency: method.currency,
-        address: method.walletAddressShort,
+        address: method.walletAddressShort
       })
     }
     return t('billing.removePaymentMethod.description', {
       brand: method.brand || 'Card',
-      last4: method.last4,
+      last4: method.last4
     })
   }
 
@@ -85,9 +82,7 @@ export function PaymentMethodCard({
       )
     }
     return (
-      <span className="font-mono text-sm font-medium whitespace-nowrap">
-        •••• {method.last4}
-      </span>
+      <span className="font-mono text-sm font-medium whitespace-nowrap">•••• {method.last4}</span>
     )
   }
 
@@ -129,10 +124,7 @@ export function PaymentMethodCard({
           <DropdownMenuContent align="end" className="w-48">
             {onEdit && (
               <>
-                <DropdownMenuItem
-                  onClick={() => onEdit(method)}
-                  disabled={loading}
-                >
+                <DropdownMenuItem onClick={() => onEdit(method)} disabled={loading}>
                   <Pencil className="h-4 w-4 mr-2" />
                   {t('common.edit')}
                 </DropdownMenuItem>
@@ -140,10 +132,7 @@ export function PaymentMethodCard({
               </>
             )}
             {!method.isDefault && (
-              <DropdownMenuItem
-                onClick={() => onSetDefault(method.id)}
-                disabled={loading}
-              >
+              <DropdownMenuItem onClick={() => onSetDefault(method.id)} disabled={loading}>
                 <Star className="h-4 w-4 mr-2" />
                 {t('billing.setAsDefault')}
               </DropdownMenuItem>
@@ -172,9 +161,7 @@ export function PaymentMethodCard({
                 ? t('billing.removeCryptoWallet.title')
                 : t('billing.removePaymentMethod.title')}
             </AlertDialogTitle>
-            <AlertDialogDescription>
-              {getDeleteDescription()}
-            </AlertDialogDescription>
+            <AlertDialogDescription>{getDeleteDescription()}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>

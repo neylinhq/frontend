@@ -1,10 +1,10 @@
+import { X } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Label } from '@/shared/ui/label'
-import { Input } from '@/shared/ui/input'
 import { Badge } from '@/shared/ui/badge'
-import { X } from 'lucide-react'
 import { Button } from '@/shared/ui/button'
+import { Input } from '@/shared/ui/input'
+import { Label } from '@/shared/ui/label'
 
 interface NodeTagsInputProps {
   value: string[]
@@ -24,7 +24,7 @@ export function NodeTagsInput({ value, onChange }: NodeTagsInputProps) {
   }
 
   const handleRemoveTag = (tagToRemove: string) => {
-    onChange(value.filter((tag) => tag !== tagToRemove))
+    onChange(value.filter(tag => tag !== tagToRemove))
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -41,7 +41,7 @@ export function NodeTagsInput({ value, onChange }: NodeTagsInputProps) {
         <Input
           id="tags"
           value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
+          onChange={e => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={t('form.tags.placeholder')}
         />
@@ -51,7 +51,7 @@ export function NodeTagsInput({ value, onChange }: NodeTagsInputProps) {
       </div>
       {value.length > 0 && (
         <div className="flex flex-wrap gap-2">
-          {value.map((tag) => (
+          {value.map(tag => (
             <Badge key={tag} variant="secondary" className="gap-1">
               {tag}
               <button

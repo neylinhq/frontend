@@ -6,7 +6,7 @@
 // ==================== PUBLIC ROUTES ====================
 export const ROUTES = {
   home: '/',
-  pricing: '/pricing',
+  pricing: '/pricing'
 } as const
 
 // ==================== AUTH ROUTES ====================
@@ -14,25 +14,25 @@ export const AUTH_ROUTES = {
   signIn: '/auth/sign-in',
   signUp: '/auth/sign-up',
   resetPassword: '/auth/reset-password',
-  logout: '/auth/logout',
+  logout: '/auth/logout'
 } as const
 
 // ==================== DASHBOARD ROUTES ====================
 export const DASHBOARD_ROUTES = {
   overview: '/dashboard/overview',
-  aiLab: '/dashboard/ai-lab',
+  aiLab: '/dashboard/ai-lab'
 } as const
 
 // ==================== MAPS ROUTES ====================
 export const MAPS_ROUTES = {
   new: '/dashboard/maps/new',
   view: (mapId: string) => `/dashboard/maps/${mapId}/view`,
-  node: (mapId: string, nodeId: string) => `/dashboard/maps/${mapId}/node/${nodeId}`,
+  node: (mapId: string, nodeId: string) => `/dashboard/maps/${mapId}/node/${nodeId}`
 } as const
 
 // ==================== KNOWLEDGE BASE ROUTES ====================
 export const KNOWLEDGE_BASE_ROUTES = {
-  concepts: '/dashboard/knowledge-base/concepts',
+  concepts: '/dashboard/knowledge-base/concepts'
 } as const
 
 // ==================== SETTINGS ROUTES ====================
@@ -42,7 +42,7 @@ export const SETTINGS_ROUTES = {
   theme: '/dashboard/settings/theme',
   integrations: '/dashboard/settings/integrations',
   security: '/dashboard/settings/security',
-  billing: '/dashboard/settings/billing',
+  billing: '/dashboard/settings/billing'
 } as const
 
 // ==================== LEGAL ROUTES ====================
@@ -50,7 +50,7 @@ export const LEGAL_ROUTES = {
   terms: '/legal/terms',
   privacy: '/legal/privacy',
   cookies: '/legal/cookies',
-  license: '/legal/license',
+  license: '/legal/license'
 } as const
 
 // ==================== DOCS ROUTES ====================
@@ -59,5 +59,5 @@ export const DOCS_ROUTES = {
   colors: '/docs/ui/colors',
   typography: '/docs/ui/typography',
   button: '/docs/ui/button',
-  card: '/docs/ui/card',
+  card: '/docs/ui/card'
 } as const

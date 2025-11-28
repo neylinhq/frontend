@@ -1,24 +1,20 @@
 import {
+  Focus,
+  MapIcon,
   Maximize2,
   Minimize2,
-  ZoomIn,
-  ZoomOut,
-  MapIcon,
-  Focus,
   SlidersHorizontal,
+  ZoomIn,
+  ZoomOut
 } from 'lucide-react'
 import { memo, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useGraphUI, useNodeSpacing } from '@/features/graph-view'
+import { cn } from '@/shared/lib/cn'
 import { Button } from '@/shared/ui/button'
 import { Card } from '@/shared/ui/card'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/shared/ui/dropdown-menu'
 import { Slider } from '@/shared/ui/slider'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from '@/shared/ui/dropdown-menu'
-import { cn } from '@/shared/lib/cn'
-import { useGraphUI, useNodeSpacing } from '@/features/graph-view'
 
 interface ViewControlsPanelProps {
   zoom: number
@@ -38,14 +34,17 @@ export const ViewControlsPanel = memo(
     onZoomOut,
     onCenter,
     onToggleFullscreen,
-    className,
+    className
   }: ViewControlsPanelProps) => {
     const { t } = useTranslation()
     const { showMinimap, toggleMinimap } = useGraphUI()
     const {
-      nodeSpacing, setNodeSpacing,
-      directionStrength, setDirectionStrength,
-      animationDuration, setAnimationDuration
+      nodeSpacing,
+      setNodeSpacing,
+      directionStrength,
+      setDirectionStrength,
+      animationDuration,
+      setAnimationDuration
     } = useNodeSpacing()
 
     // Local state for smooth slider movement - only sync to store on commit
@@ -58,15 +57,11 @@ export const ViewControlsPanel = memo(
     useEffect(() => setLocalDirection(directionStrength), [directionStrength])
     useEffect(() => setLocalAnimation(animationDuration), [animationDuration])
 
-    const hasLayoutChanges = nodeSpacing !== 100 || directionStrength !== 100 || animationDuration !== 300
+    const hasLayoutChanges =
+      nodeSpacing !== 100 || directionStrength !== 100 || animationDuration !== 300
 
     return (
-      <div
-        className={cn(
-          'absolute top-4 left-4 z-10',
-          className
-        )}
-      >
+      <div className={cn('absolute top-4 left-4 z-10', className)}>
         <Card className="flex items-center gap-1 p-1.5 shadow-lg border">
           {/* Zoom controls */}
           <Button

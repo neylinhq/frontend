@@ -1,14 +1,19 @@
-import type {
-  Subscription,
-  PlanDetails,
-  UsageStats,
-  PaymentMethod,
-  PaymentHistory,
-  PlanType
-} from './subscription.schema'
-import type { BillingPortalSession, CheckoutSession, AddPaymentMethodInput } from './subscription.types'
-import { delay, API_DELAYS } from '@/shared/config/api-delays'
+import { API_DELAYS, delay } from '@/shared/config/api-delays'
 import { API_ENDPOINTS } from '@/shared/config/api-endpoints'
+import type {
+  PaymentHistory,
+  PaymentMethod,
+  PlanDetails,
+  PlanType,
+  Subscription,
+  UsageStats
+} from './subscription.schema'
+import type {
+  AddPaymentMethodInput,
+  BillingPortalSession,
+  CheckoutSession,
+  UpdatePaymentMethodInput
+} from './subscription.types'
 
 // Mock Data
 const MOCK_PLANS: PlanDetails[] = [
@@ -336,6 +341,22 @@ export const subscriptionApi = {
   setDefaultPaymentMethod: async (_paymentMethodId: string): Promise<void> => {
     await delay(API_DELAYS.SUBSCRIPTION_SET_DEFAULT_PAYMENT)
     // Mock implementation - no-op
+  },
+
+  // Update payment method (card expiry or crypto wallet address)
+  updatePaymentMethod: async (input: UpdatePaymentMethodInput): Promise<PaymentMethod> => {
+    await delay(API_DELAYS.SUBSCRIPTION_UPDATE_PAYMENT_METHOD)
+    const method = MOCK_PAYMENT_METHODS.find(m => m.id === input.id)
+    if (!method) throw new Error('Payment method not found')
+
+    if ('expiryMonth' in input && method.type === 'card') {
+      return { ...method, expiryMonth: input.expiryMonth, expiryYear: input.expiryYear }
+    }
+    if ('walletAddress' in input && method.type === 'crypto') {
+      const short = `${input.walletAddress.slice(0, 6)}...${input.walletAddress.slice(-4)}`
+      return { ...method, walletAddress: input.walletAddress, walletAddressShort: short }
+    }
+    return method
   },
 
   // Get payment history

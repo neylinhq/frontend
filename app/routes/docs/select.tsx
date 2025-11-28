@@ -1,22 +1,16 @@
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/shared/ui/select'
-import { Label } from '@/shared/ui/label'
-import { Typography } from '@/shared/ui/typography'
+import { getMeta } from '@/shared/lib/get-meta'
 import { Badge } from '@/shared/ui/badge'
+import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
 import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
 import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
 import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
-import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
-import { getMeta } from '@/shared/lib/get-meta'
+import { Label } from '@/shared/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select'
+import { Typography } from '@/shared/ui/typography'
 import type { Route } from './+types/select'
 
 export const handle = {
-  breadcrumb: 'Select',
+  breadcrumb: 'Select'
 }
 
 export function meta(_args: Route.MetaArgs) {
@@ -27,7 +21,7 @@ const TOC_ITEMS: TocItem[] = [
   { id: 'basic', title: 'Basic', level: 2 },
   { id: 'with-label', title: 'With Label', level: 2 },
   { id: 'usage', title: 'Usage', level: 2 },
-  { id: 'api-reference', title: 'API Reference', level: 2 },
+  { id: 'api-reference', title: 'API Reference', level: 2 }
 ]
 
 export default function SelectPage() {
@@ -36,10 +30,7 @@ export default function SelectPage() {
       <div className="flex-1 min-w-0 space-y-10">
         <header className="space-y-4">
           <DocsBreadcrumbs
-            items={[
-              { label: 'Components', href: '/docs/ui/button' },
-              { label: 'Select' },
-            ]}
+            items={[{ label: 'Components', href: '/docs/ui/button' }, { label: 'Select' }]}
           />
           <div className="flex items-center gap-3">
             <Typography variant="h1">Select</Typography>
@@ -52,9 +43,7 @@ export default function SelectPage() {
 
         <section id="basic" className="scroll-mt-20 space-y-4">
           <Typography variant="h2">Basic</Typography>
-          <Typography variant="muted">
-            Simple select dropdown.
-          </Typography>
+          <Typography variant="muted">Simple select dropdown.</Typography>
 
           <DocsComponentPreview
             code={`<Select>
@@ -85,9 +74,7 @@ export default function SelectPage() {
 
         <section id="with-label" className="scroll-mt-20 space-y-4">
           <Typography variant="h2">With Label</Typography>
-          <Typography variant="muted">
-            Select with associated label.
-          </Typography>
+          <Typography variant="muted">Select with associated label.</Typography>
 
           <DocsComponentPreview
             code={`<div className="space-y-2">
@@ -167,24 +154,48 @@ export function ThemeSelect() {
               </thead>
               <tbody className="divide-y">
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">Select</code></td>
-                  <td className="px-4 py-3"><code className="text-xs text-muted-foreground">Root with value/onValueChange</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">Select</code>
+                  </td>
+                  <td className="px-4 py-3">
+                    <code className="text-xs text-muted-foreground">
+                      Root with value/onValueChange
+                    </code>
+                  </td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">SelectTrigger</code></td>
-                  <td className="px-4 py-3"><code className="text-xs text-muted-foreground">Button that opens dropdown</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">SelectTrigger</code>
+                  </td>
+                  <td className="px-4 py-3">
+                    <code className="text-xs text-muted-foreground">
+                      Button that opens dropdown
+                    </code>
+                  </td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">SelectValue</code></td>
-                  <td className="px-4 py-3"><code className="text-xs text-muted-foreground">Displays selected value</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">SelectValue</code>
+                  </td>
+                  <td className="px-4 py-3">
+                    <code className="text-xs text-muted-foreground">Displays selected value</code>
+                  </td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">SelectContent</code></td>
-                  <td className="px-4 py-3"><code className="text-xs text-muted-foreground">Dropdown container</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">SelectContent</code>
+                  </td>
+                  <td className="px-4 py-3">
+                    <code className="text-xs text-muted-foreground">Dropdown container</code>
+                  </td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">SelectItem</code></td>
-                  <td className="px-4 py-3"><code className="text-xs text-muted-foreground">Option with value prop</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">SelectItem</code>
+                  </td>
+                  <td className="px-4 py-3">
+                    <code className="text-xs text-muted-foreground">Option with value prop</code>
+                  </td>
                 </tr>
               </tbody>
             </table>

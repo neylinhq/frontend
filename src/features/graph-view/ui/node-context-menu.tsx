@@ -9,7 +9,7 @@ import {
   ContextMenuSub,
   ContextMenuSubContent,
   ContextMenuSubTrigger,
-  ContextMenuTrigger,
+  ContextMenuTrigger
 } from '@/shared/ui/context-menu'
 import { useGraphViewStore } from '../model/graph-view.store'
 
@@ -28,15 +28,15 @@ export function NodeContextMenu({
   nodeLabel,
   onEdit,
   onDelete,
-  onZoomToNode,
+  onZoomToNode
 }: NodeContextMenuProps) {
   const { t } = useTranslation()
   const { focusNode, focusedNodeId, clearFocus, setFocusDepth } = useGraphViewStore(
-    useShallow((s) => ({
+    useShallow(s => ({
       focusNode: s.focusNode,
       focusedNodeId: s.focusedNodeId,
       clearFocus: s.clearFocus,
-      setFocusDepth: s.setFocusDepth,
+      setFocusDepth: s.setFocusDepth
     }))
   )
 
@@ -51,9 +51,7 @@ export function NodeContextMenu({
     <ContextMenu>
       <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
       <ContextMenuContent className="w-56">
-        <div className="px-2 py-1.5 text-sm font-medium truncate border-b mb-1">
-          {nodeLabel}
-        </div>
+        <div className="px-2 py-1.5 text-sm font-medium truncate border-b mb-1">{nodeLabel}</div>
 
         {/* Focus Actions */}
         <ContextMenuSub>

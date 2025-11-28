@@ -2,9 +2,8 @@ import type { LucideIcon } from 'lucide-react'
 import { Home, LogIn, Menu, Rocket, Wallet } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link, NavLink } from 'react-router'
-
-import { PaletteSelect } from '@/app/theme/components/palette-select'
 import { ModeSelect } from '@/app/theme/components/mode-select'
+import { PaletteSelect } from '@/app/theme/components/palette-select'
 import { LanguageSelect } from '@/features/language-switcher'
 import { AUTH_ROUTES, ROUTES } from '@/shared/config'
 import { cn } from '@/shared/lib/cn'
@@ -98,7 +97,7 @@ export function PublicHeader({ hideAuthButtons }: PublicHeaderProps) {
 function MobileNavItem({
   to,
   icon: Icon,
-  children,
+  children
 }: {
   to: string
   icon: LucideIcon

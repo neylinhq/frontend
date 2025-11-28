@@ -1,35 +1,34 @@
-import {
-  Sparkles,
-  Filter,
-  Minus,
-  Plus,
-} from 'lucide-react'
+import { Filter, Minus, Plus, Sparkles } from 'lucide-react'
 import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
+import type { RelationType } from '@/entities/edge'
+import type { NodeType } from '@/entities/node'
+import {
+  ALL_EDGE_TYPES,
+  ALL_NODE_TYPES,
+  useFilters,
+  useFocusMode,
+  useViewMode,
+  type ViewMode
+} from '@/features/graph-view'
+import { cn } from '@/shared/lib/cn'
+import { Badge } from '@/shared/ui/badge'
 import { Button } from '@/shared/ui/button'
 import { Card } from '@/shared/ui/card'
-import { Badge } from '@/shared/ui/badge'
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from '@/shared/ui/dropdown-menu'
-import { cn } from '@/shared/lib/cn'
 import {
-  useViewMode,
-  useFocusMode,
-  useFilters,
-  ALL_NODE_TYPES,
-  ALL_EDGE_TYPES,
-  type ViewMode,
-} from '@/features/graph-view'
-import type { NodeType } from '@/entities/node'
-import type { RelationType } from '@/entities/edge'
-import { VIEW_MODE_CONFIG, NODE_TYPE_LABELS, EDGE_TYPE_LABELS } from '../model/graph-toolbar.constants'
+  EDGE_TYPE_LABELS,
+  NODE_TYPE_LABELS,
+  VIEW_MODE_CONFIG
+} from '../model/graph-toolbar.constants'
 
 interface GraphToolbarProps {
   mapId: string
@@ -39,12 +38,7 @@ interface GraphToolbarProps {
 }
 
 export const GraphToolbar = memo(
-  ({
-    mapId,
-    nodeCountsByType,
-    edgeCountsByType,
-    className,
-  }: GraphToolbarProps) => {
+  ({ mapId, nodeCountsByType, edgeCountsByType, className }: GraphToolbarProps) => {
     const { t } = useTranslation()
     const { viewMode, setViewMode } = useViewMode()
     const { focusedNodeId, focusDepth, setFocusDepth, clearFocus } = useFocusMode()
@@ -53,7 +47,7 @@ export const GraphToolbar = memo(
       visibleEdgeTypes,
       toggleNodeType,
       toggleEdgeType,
-      getActiveFiltersCount,
+      getActiveFiltersCount
     } = useFilters()
 
     const activeFiltersCount = getActiveFiltersCount()
@@ -85,7 +79,7 @@ export const GraphToolbar = memo(
 
           {/* View Mode Selector */}
           <div className="flex items-center gap-0.5 bg-muted rounded-md p-0.5">
-            {(Object.keys(VIEW_MODE_CONFIG) as ViewMode[]).map((mode) => {
+            {(Object.keys(VIEW_MODE_CONFIG) as ViewMode[]).map(mode => {
               const config = VIEW_MODE_CONFIG[mode]
               const Icon = config.icon
               const isActive = viewMode === mode
@@ -96,10 +90,7 @@ export const GraphToolbar = memo(
                   size="sm"
                   variant={isActive ? 'secondary' : 'ghost'}
                   onClick={() => setViewMode(mode)}
-                  className={cn(
-                    'h-7 px-2.5 gap-1.5',
-                    isActive && 'shadow-sm'
-                  )}
+                  className={cn('h-7 px-2.5 gap-1.5', isActive && 'shadow-sm')}
                   title={t(config.labelKey)}
                 >
                   <Icon className="w-3.5 h-3.5" />
@@ -135,12 +126,7 @@ export const GraphToolbar = memo(
                 >
                   <Plus className="w-3 h-3" />
                 </Button>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={clearFocus}
-                  className="h-6 px-2 text-xs"
-                >
+                <Button size="sm" variant="ghost" onClick={clearFocus} className="h-6 px-2 text-xs">
                   {t('graph.toolbar.clearFocus')}
                 </Button>
               </div>
@@ -178,14 +164,14 @@ export const GraphToolbar = memo(
             </DropdownMenuTrigger>
             <DropdownMenuContent align="center" className="w-56">
               <DropdownMenuLabel>{t('graph.filters.nodeTypes')}</DropdownMenuLabel>
-              {ALL_NODE_TYPES.map((type) => {
+              {ALL_NODE_TYPES.map(type => {
                 const count = nodeCountsByType?.[type] ?? 0
                 return (
                   <DropdownMenuCheckboxItem
                     key={type}
                     checked={visibleNodeTypes.has(type)}
                     onCheckedChange={() => toggleNodeType(type)}
-                    onSelect={(e) => e.preventDefault()}
+                    onSelect={e => e.preventDefault()}
                     disabled={count === 0}
                   >
                     <span className="flex-1">{t(NODE_TYPE_LABELS[type])}</span>
@@ -201,14 +187,14 @@ export const GraphToolbar = memo(
               <DropdownMenuSeparator />
 
               <DropdownMenuLabel>{t('graph.filters.edgeTypes')}</DropdownMenuLabel>
-              {ALL_EDGE_TYPES.map((type) => {
+              {ALL_EDGE_TYPES.map(type => {
                 const count = edgeCountsByType?.[type] ?? 0
                 return (
                   <DropdownMenuCheckboxItem
                     key={type}
                     checked={visibleEdgeTypes.has(type)}
                     onCheckedChange={() => toggleEdgeType(type)}
-                    onSelect={(e) => e.preventDefault()}
+                    onSelect={e => e.preventDefault()}
                     disabled={count === 0}
                   >
                     <span className="flex-1">{t(EDGE_TYPE_LABELS[type])}</span>

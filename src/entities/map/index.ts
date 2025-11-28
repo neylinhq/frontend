@@ -1,5 +1,5 @@
+export { GRAPH_PRESETS, generateMockGraph } from './lib/generate-mock-graph'
 export { mapApi } from './map.api'
-export { generateMockGraph, GRAPH_PRESETS } from './lib/generate-mock-graph'
 export {
   useAnalyzeGraph,
   useCreateEdge,

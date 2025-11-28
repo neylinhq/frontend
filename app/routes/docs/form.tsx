@@ -1,19 +1,19 @@
 import { useTranslation } from 'react-i18next'
-import { Button } from '@/shared/ui/button'
-import { Input } from '@/shared/ui/input'
-import { Label } from '@/shared/ui/label'
-import { Checkbox } from '@/shared/ui/checkbox'
-import { Typography } from '@/shared/ui/typography'
+import { getMeta } from '@/shared/lib/get-meta'
 import { Badge } from '@/shared/ui/badge'
+import { Button } from '@/shared/ui/button'
+import { Checkbox } from '@/shared/ui/checkbox'
+import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
 import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
 import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
 import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
-import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
-import { getMeta } from '@/shared/lib/get-meta'
+import { Input } from '@/shared/ui/input'
+import { Label } from '@/shared/ui/label'
+import { Typography } from '@/shared/ui/typography'
 import type { Route } from './+types/form'
 
 export const handle = {
-  breadcrumb: 'Form',
+  breadcrumb: 'Form'
 }
 
 export function meta(_args: Route.MetaArgs) {
@@ -26,7 +26,7 @@ export default function FormPage() {
   const TOC_ITEMS: TocItem[] = [
     { id: 'basic', title: t('docs.common.basic'), level: 2 },
     { id: 'with-validation', title: t('docs.form.withValidation.title'), level: 2 },
-    { id: 'usage', title: t('docs.common.usage'), level: 2 },
+    { id: 'usage', title: t('docs.common.usage'), level: 2 }
   ]
 
   return (
@@ -36,7 +36,7 @@ export default function FormPage() {
           <DocsBreadcrumbs
             items={[
               { label: t('docs.common.components'), href: '/docs/ui/button' },
-              { label: 'Form' },
+              { label: 'Form' }
             ]}
           />
           <div className="flex items-center gap-3">
@@ -50,9 +50,7 @@ export default function FormPage() {
 
         <section id="basic" className="scroll-mt-20 space-y-4">
           <Typography variant="h2">{t('docs.common.basic')}</Typography>
-          <Typography variant="muted">
-            {t('docs.form.basic.description')}
-          </Typography>
+          <Typography variant="muted">{t('docs.form.basic.description')}</Typography>
           <DocsComponentPreview
             code={`<form className="space-y-4">
   <div className="space-y-2">
@@ -74,7 +72,11 @@ export default function FormPage() {
               <form className="space-y-4 w-full max-w-sm">
                 <div className="space-y-2">
                   <Label htmlFor="email">{t('docs.form.basic.emailLabel')}</Label>
-                  <Input id="email" type="email" placeholder={t('docs.form.basic.emailPlaceholder')} />
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder={t('docs.form.basic.emailPlaceholder')}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="password">{t('docs.form.basic.passwordLabel')}</Label>
@@ -84,7 +86,9 @@ export default function FormPage() {
                   <Checkbox id="remember" />
                   <Label htmlFor="remember">{t('docs.form.basic.rememberMe')}</Label>
                 </div>
-                <Button type="submit" className="w-full">{t('docs.form.basic.signIn')}</Button>
+                <Button type="submit" className="w-full">
+                  {t('docs.form.basic.signIn')}
+                </Button>
               </form>
             </DocsPreview>
           </DocsComponentPreview>
@@ -92,9 +96,7 @@ export default function FormPage() {
 
         <section id="with-validation" className="scroll-mt-20 space-y-4">
           <Typography variant="h2">{t('docs.form.withValidation.title')}</Typography>
-          <Typography variant="muted">
-            {t('docs.form.withValidation.description')}
-          </Typography>
+          <Typography variant="muted">{t('docs.form.withValidation.description')}</Typography>
           <DocsComponentPreview
             code={`<div className="space-y-2">
   <Label htmlFor="email">${t('docs.form.basic.emailLabel')}</Label>

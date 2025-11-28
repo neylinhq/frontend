@@ -50,11 +50,7 @@ function NavItem({
       <div className="w-10 flex items-center justify-center flex-shrink-0">
         <Icon className="h-5 w-5" />
       </div>
-      {isExpanded && (
-        <span className="whitespace-nowrap pr-3">
-          {children}
-        </span>
-      )}
+      {isExpanded && <span className="whitespace-nowrap pr-3">{children}</span>}
     </NavLink>
   )
 }

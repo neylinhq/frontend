@@ -1,17 +1,17 @@
 import { useTranslation } from 'react-i18next'
-import { Checkbox } from '@/shared/ui/checkbox'
-import { Label } from '@/shared/ui/label'
-import { Typography } from '@/shared/ui/typography'
+import { getMeta } from '@/shared/lib/get-meta'
 import { Badge } from '@/shared/ui/badge'
+import { Checkbox } from '@/shared/ui/checkbox'
+import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
 import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
 import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
 import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
-import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
-import { getMeta } from '@/shared/lib/get-meta'
+import { Label } from '@/shared/ui/label'
+import { Typography } from '@/shared/ui/typography'
 import type { Route } from './+types/checkbox'
 
 export const handle = {
-  breadcrumb: 'Checkbox',
+  breadcrumb: 'Checkbox'
 }
 
 export function meta(_args: Route.MetaArgs) {
@@ -26,7 +26,7 @@ export default function CheckboxPage() {
     { id: 'with-label', title: t('docs.common.withLabel'), level: 2 },
     { id: 'states', title: t('docs.common.states'), level: 2 },
     { id: 'usage', title: t('docs.common.usage'), level: 2 },
-    { id: 'api-reference', title: t('docs.common.apiReference'), level: 2 },
+    { id: 'api-reference', title: t('docs.common.apiReference'), level: 2 }
   ]
   return (
     <div className="flex gap-10">
@@ -35,7 +35,7 @@ export default function CheckboxPage() {
           <DocsBreadcrumbs
             items={[
               { label: t('docs.common.components'), href: '/docs/ui/button' },
-              { label: 'Checkbox' },
+              { label: 'Checkbox' }
             ]}
           />
           <div className="flex items-center gap-3">
@@ -49,9 +49,7 @@ export default function CheckboxPage() {
 
         <section id="basic" className="scroll-mt-20 space-y-4">
           <Typography variant="h2">{t('docs.common.basic')}</Typography>
-          <Typography variant="muted">
-            {t('docs.checkbox.basic.description')}
-          </Typography>
+          <Typography variant="muted">{t('docs.checkbox.basic.description')}</Typography>
 
           <DocsComponentPreview code={`<Checkbox />`}>
             <DocsPreview>
@@ -62,9 +60,7 @@ export default function CheckboxPage() {
 
         <section id="with-label" className="scroll-mt-20 space-y-4">
           <Typography variant="h2">{t('docs.common.withLabel')}</Typography>
-          <Typography variant="muted">
-            {t('docs.checkbox.withLabel.description')}
-          </Typography>
+          <Typography variant="muted">{t('docs.checkbox.withLabel.description')}</Typography>
 
           <DocsComponentPreview
             code={`<div className="flex items-center space-x-2">
@@ -83,9 +79,7 @@ export default function CheckboxPage() {
 
         <section id="states" className="scroll-mt-20 space-y-4">
           <Typography variant="h2">{t('docs.common.states')}</Typography>
-          <Typography variant="muted">
-            {t('docs.checkbox.states.description')}
-          </Typography>
+          <Typography variant="muted">{t('docs.checkbox.states.description')}</Typography>
 
           <DocsComponentPreview
             code={`<Checkbox defaultChecked />
@@ -99,11 +93,15 @@ export default function CheckboxPage() {
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox id="disabled" disabled />
-                <Label htmlFor="disabled" className="text-muted-foreground">{t('docs.checkbox.states.disabled')}</Label>
+                <Label htmlFor="disabled" className="text-muted-foreground">
+                  {t('docs.checkbox.states.disabled')}
+                </Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox id="disabled-checked" disabled defaultChecked />
-                <Label htmlFor="disabled-checked" className="text-muted-foreground">{t('docs.checkbox.states.disabledChecked')}</Label>
+                <Label htmlFor="disabled-checked" className="text-muted-foreground">
+                  {t('docs.checkbox.states.disabledChecked')}
+                </Label>
               </div>
             </DocsPreview>
           </DocsComponentPreview>
@@ -148,19 +146,39 @@ export function RememberMe() {
               </thead>
               <tbody className="divide-y">
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">checked</code></td>
-                  <td className="px-4 py-3"><code className="text-xs text-muted-foreground">boolean</code></td>
-                  <td className="px-4 py-3"><code className="text-xs bg-muted px-1.5 py-0.5 rounded">-</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">checked</code>
+                  </td>
+                  <td className="px-4 py-3">
+                    <code className="text-xs text-muted-foreground">boolean</code>
+                  </td>
+                  <td className="px-4 py-3">
+                    <code className="text-xs bg-muted px-1.5 py-0.5 rounded">-</code>
+                  </td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">onCheckedChange</code></td>
-                  <td className="px-4 py-3"><code className="text-xs text-muted-foreground">(checked: boolean) =&gt; void</code></td>
-                  <td className="px-4 py-3"><code className="text-xs bg-muted px-1.5 py-0.5 rounded">-</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">onCheckedChange</code>
+                  </td>
+                  <td className="px-4 py-3">
+                    <code className="text-xs text-muted-foreground">
+                      (checked: boolean) =&gt; void
+                    </code>
+                  </td>
+                  <td className="px-4 py-3">
+                    <code className="text-xs bg-muted px-1.5 py-0.5 rounded">-</code>
+                  </td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">disabled</code></td>
-                  <td className="px-4 py-3"><code className="text-xs text-muted-foreground">boolean</code></td>
-                  <td className="px-4 py-3"><code className="text-xs bg-muted px-1.5 py-0.5 rounded">false</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">disabled</code>
+                  </td>
+                  <td className="px-4 py-3">
+                    <code className="text-xs text-muted-foreground">boolean</code>
+                  </td>
+                  <td className="px-4 py-3">
+                    <code className="text-xs bg-muted px-1.5 py-0.5 rounded">false</code>
+                  </td>
                 </tr>
               </tbody>
             </table>

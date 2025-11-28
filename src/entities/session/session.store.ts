@@ -7,5 +7,5 @@ export const useSessionStore = create<SessionState>(set => ({
   isAuthenticated: false,
   setUser: user => set({ user, isAuthenticated: !!user }),
   login: (user, _token) => set({ user, isAuthenticated: true }),
-  logout: () => set({ user: null, isAuthenticated: false }),
+  logout: () => set({ user: null, isAuthenticated: false })
 }))

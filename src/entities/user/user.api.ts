@@ -1,8 +1,14 @@
-import type { User, UserPreferences, UpdateProfile, ChangeEmail, ChangePassword } from './user.schema'
-import { defaultUserPreferences } from './user.schema'
-import { delay, API_DELAYS } from '@/shared/config/api-delays'
-import { MOCK_CREDENTIALS } from '@/shared/config/mock'
+import { API_DELAYS, delay } from '@/shared/config/api-delays'
 import { generateAvatarUrl } from '@/shared/config/api-endpoints'
+import { MOCK_CREDENTIALS } from '@/shared/config/mock'
+import type {
+  ChangeEmail,
+  ChangePassword,
+  UpdateProfile,
+  User,
+  UserPreferences
+} from './user.schema'
+import { defaultUserPreferences } from './user.schema'
 
 // Mock user for development
 const mockUser: User = {
@@ -16,7 +22,7 @@ const mockUser: User = {
   displayName: 'John Doe',
   username: 'johndoe',
   bio: '',
-  preferences: defaultUserPreferences,
+  preferences: defaultUserPreferences
 }
 
 export const userApi = {
@@ -69,5 +75,5 @@ export const userApi = {
       throw new Error('Invalid password')
     }
     // Account deleted (mock)
-  },
+  }
 }

@@ -1,9 +1,8 @@
-import { Link } from 'react-router'
 import { Menu } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-
-import { PaletteSelect } from '@/app/theme/components/palette-select'
+import { Link } from 'react-router'
 import { ModeSelect } from '@/app/theme/components/mode-select'
+import { PaletteSelect } from '@/app/theme/components/palette-select'
 import { LanguageSelect } from '@/features/language-switcher'
 import { DOCS_ROUTES, ROUTES } from '@/shared/config'
 import { Button } from '@/shared/ui/button'
@@ -36,16 +35,14 @@ export function DocsHeader({ mobileNav }: DocsHeaderProps) {
               <div className="py-4 px-6 border-b flex-shrink-0">
                 <Logo size="sm" />
               </div>
-              <div className="overflow-y-auto flex-1 py-6 px-4">
-                {mobileNav}
-              </div>
+              <div className="overflow-y-auto flex-1 py-6 px-4">{mobileNav}</div>
             </SheetContent>
           </Sheet>
         )}
 
         {/* Logo + Docs badge */}
         <Link to={ROUTES.home} className="flex items-center gap-2">
-          <Logo size="lg" />
+          <Logo size="lg" href={false} />
         </Link>
         <span className="text-muted-foreground text-lg font-light">/</span>
         <Link

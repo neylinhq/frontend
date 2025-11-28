@@ -1,1 +1,1 @@
-export { DocsSidebar, type DocsSidebarSection, type DocsSidebarItem } from './docs-sidebar'
+export { DocsSidebar, type DocsSidebarItem, type DocsSidebarSection } from './docs-sidebar'

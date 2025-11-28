@@ -16,7 +16,7 @@ interface DocsTocProps {
 
 export function DocsToc({ items, className }: DocsTocProps) {
   const { t } = useTranslation()
-  const activeId = useActiveHeading(items.map((item) => item.id))
+  const activeId = useActiveHeading(items.map(item => item.id))
 
   if (items.length === 0) {
     return null
@@ -35,11 +35,11 @@ export function DocsToc({ items, className }: DocsTocProps) {
   return (
     <nav className={cn('space-y-1', className)}>
       <p className="text-sm font-medium mb-4 text-foreground">{t('docs.onThisPage')}</p>
-      {items.map((item) => (
+      {items.map(item => (
         <a
           key={item.id}
           href={`#${item.id}`}
-          onClick={(e) => handleClick(e, item.id)}
+          onClick={e => handleClick(e, item.id)}
           className={cn(
             'docs-toc-item',
             item.level === 3 && 'pl-4',

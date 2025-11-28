@@ -6,22 +6,22 @@
  * Same interface, different implementation
  */
 
+import type { Edge, Node } from '@xyflow/react'
 import {
-  forceSimulation,
+  type Force,
+  forceCenter,
+  forceCollide,
   forceLink,
   forceManyBody,
-  forceCenter,
+  forceSimulation,
   forceX,
-  forceCollide,
   type Simulation,
-  type SimulationNodeDatum,
   type SimulationLinkDatum,
-  type Force,
+  type SimulationNodeDatum
 } from 'd3-force'
-import type { Edge, Node } from '@xyflow/react'
-import type { ViewMode } from '../model/graph-view.store'
 import type { RelationType } from '@/entities/edge'
 import { ENABLE_EDGE_CROSSING_MINIMIZATION } from '../model/graph-view.constants'
+import type { ViewMode } from '../model/graph-view.store'
 
 interface LayoutOptions {
   viewMode: ViewMode
@@ -37,16 +37,16 @@ interface LayoutResult {
 
 // Edge weights for clustering - prerequisite is strongest
 const EDGE_WEIGHTS: Record<RelationType, number> = {
-  'prerequisite': 1.0,
+  prerequisite: 1.0,
   'is-a': 0.8,
   'part-of': 0.8,
-  'explains': 0.6,
-  'causes': 0.6,
-  'influences': 0.5,
+  explains: 0.6,
+  causes: 0.6,
+  influences: 0.5,
   'has-a': 0.5,
   'similar-to': 0.4,
   'related-to': 0.3,
-  'contradicts': 0.2,
+  contradicts: 0.2
 }
 
 // D3 simulation node type
@@ -62,22 +62,18 @@ interface D3Link extends SimulationLinkDatum<D3Node> {
 
 // Node metrics for layout optimization
 interface NodeMetrics {
-  degree: number        // Total connections
-  inDegree: number      // Incoming edges
-  outDegree: number     // Outgoing edges
-  isLeaf: boolean       // degree <= 2
-  isHub: boolean        // degree >= 4
+  degree: number // Total connections
+  inDegree: number // Incoming edges
+  outDegree: number // Outgoing edges
+  isLeaf: boolean // degree <= 2
+  isHub: boolean // degree >= 4
   horizontalBias: number // -1 to 1, determines left/right positioning
 }
 
 /**
  * Apply layout based on view mode (D3-Force implementation)
  */
-export function applyLayout(
-  nodes: Node[],
-  edges: Edge[],
-  options: LayoutOptions
-): LayoutResult {
+export function applyLayout(nodes: Node[], edges: Edge[], options: LayoutOptions): LayoutResult {
   const { viewMode, spacingPercent = 100, directionStrength = 100 } = options
 
   if (nodes.length === 0) return { nodes, edges }
@@ -103,10 +99,7 @@ interface InternalOptions {
 /**
  * Compute metrics for each node (degree, leaf/hub status, horizontal bias)
  */
-function computeNodeMetrics(
-  nodes: D3Node[],
-  links: D3Link[]
-): Map<string, NodeMetrics> {
+function computeNodeMetrics(nodes: D3Node[], links: D3Link[]): Map<string, NodeMetrics> {
   const metrics = new Map<string, NodeMetrics>()
 
   // Initialize all nodes
@@ -117,7 +110,7 @@ function computeNodeMetrics(
       outDegree: 0,
       isLeaf: true,
       isHub: false,
-      horizontalBias: 0,
+      horizontalBias: 0
     })
   }
 
@@ -156,7 +149,7 @@ function computeNodeMetrics(
 function hashToSide(str: string): number {
   let hash = 0
   for (let i = 0; i < str.length; i++) {
-    hash = ((hash << 5) - hash) + str.charCodeAt(i)
+    hash = (hash << 5) - hash + str.charCodeAt(i)
     hash = hash & hash
   }
   return hash % 2 === 0 ? -1 : 1
@@ -215,7 +208,7 @@ function forceEdgeDirection(
   }
 
   // D3 force interface - strength getter/setter
-  (force as any).strength = function(s?: number) {
+  ;(force as any).strength = (s?: number) => {
     if (s === undefined) return strength
     strength = s
     return force
@@ -228,8 +221,14 @@ function forceEdgeDirection(
  * Check if two line segments intersect
  */
 function segmentsIntersect(
-  x1: number, y1: number, x2: number, y2: number,
-  x3: number, y3: number, x4: number, y4: number
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  x3: number,
+  y3: number,
+  x4: number,
+  y4: number
 ): boolean {
   const denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
   if (Math.abs(denom) < 1e-10) return false
@@ -245,10 +244,7 @@ function segmentsIntersect(
  * Detects edge crossings and applies forces to uncross them
  * Complexity: O(m²) where m = number of edges
  */
-function forceEdgeCrossing(
-  links: D3Link[],
-  options: { strength: number }
-): Force<D3Node, D3Link> {
+function forceEdgeCrossing(links: D3Link[], options: { strength: number }): Force<D3Node, D3Link> {
   let strength = options.strength
 
   function force(alpha: number) {
@@ -270,10 +266,14 @@ function forceEdgeCrossing(
         // Skip if edges share a node
         if (s1.id === s2.id || s1.id === t2.id || t1.id === s2.id || t1.id === t2.id) continue
 
-        const x1 = s1.x ?? 0, y1 = s1.y ?? 0
-        const x2 = t1.x ?? 0, y2 = t1.y ?? 0
-        const x3 = s2.x ?? 0, y3 = s2.y ?? 0
-        const x4 = t2.x ?? 0, y4 = t2.y ?? 0
+        const x1 = s1.x ?? 0,
+          y1 = s1.y ?? 0
+        const x2 = t1.x ?? 0,
+          y2 = t1.y ?? 0
+        const x3 = s2.x ?? 0,
+          y3 = s2.y ?? 0
+        const x4 = t2.x ?? 0,
+          y4 = t2.y ?? 0
 
         if (segmentsIntersect(x1, y1, x2, y2, x3, y3, x4, y4)) {
           // Calculate perpendicular direction to edge 1
@@ -307,7 +307,7 @@ function forceEdgeCrossing(
     }
   }
 
-  (force as any).strength = (s?: number) => {
+  ;(force as any).strength = (s?: number) => {
     if (s === undefined) return strength
     strength = s
     return force
@@ -330,16 +330,12 @@ function forceEdgeCrossing(
  * - direction=0: maximize spread, minimize crossings, no hierarchy
  * - direction=200: maximize flow (source→target top-to-bottom)
  */
-function forceDirectedLayout(
-  nodes: Node[],
-  edges: Edge[],
-  options: InternalOptions
-): LayoutResult {
+function forceDirectedLayout(nodes: Node[], edges: Edge[], options: InternalOptions): LayoutResult {
   const { spacingPercent, directionStrength } = options
 
   // Match original algorithm: nodeSpacing = 200 * factor, idealDistance = nodeSpacing * 1.5 = 300 * factor
   const nodeSpacing = 200 * (spacingPercent / 100)
-  const idealDistance = nodeSpacing * 1.5  // 300 at 100%
+  const idealDistance = nodeSpacing * 1.5 // 300 at 100%
   // Normalized: 0-2 range (0=no hierarchy, 2=max hierarchy)
   const normalizedDirection = directionStrength / 100
 
@@ -351,7 +347,7 @@ function forceDirectedLayout(
       id: node.id,
       x: hasValidPosition ? node.position.x : Math.cos(i * 2.4) * 200 + Math.random() * 50,
       y: hasValidPosition ? node.position.y : Math.sin(i * 2.4) * 200 + Math.random() * 50,
-      originalNode: node,
+      originalNode: node
     }
   })
 
@@ -365,7 +361,7 @@ function forceDirectedLayout(
       return {
         source: edge.source,
         target: edge.target,
-        weight: EDGE_WEIGHTS[relationType] || 0.3,
+        weight: EDGE_WEIGHTS[relationType] || 0.3
       }
     })
 
@@ -373,51 +369,62 @@ function forceDirectedLayout(
   // Original uses force = idealDistance² / dist
   // D3 forceManyBody uses force = strength / dist² by default
   // To approximate: strength ≈ -idealDistance² gives similar magnitude
-  const chargeStrength = -(idealDistance * idealDistance) / 100  // Scaled down for D3's quadratic model
+  const chargeStrength = -(idealDistance * idealDistance) / 100 // Scaled down for D3's quadratic model
 
   // Create simulation with 150 iterations to match original
   const simulation: Simulation<D3Node, D3Link> = forceSimulation(d3Nodes)
     // Repulsion between nodes - Barnes-Hut with theta=0.9 for O(n log n)
-    .force('charge', forceManyBody<D3Node>()
-      .strength(chargeStrength)
-      .theta(0.9)
-      .distanceMax(idealDistance * 8)
+    .force(
+      'charge',
+      forceManyBody<D3Node>()
+        .strength(chargeStrength)
+        .theta(0.9)
+        .distanceMax(idealDistance * 8)
     )
     // Attraction along edges (weighted)
     // Original: force = dist² / idealDistance * weight
     // D3 forceLink has different model, tune strength to approximate
-    .force('link', forceLink<D3Node, D3Link>(d3Links)
-      .id(d => d.id)
-      .distance(idealDistance)
-      .strength(d => d.weight * 0.3)
+    .force(
+      'link',
+      forceLink<D3Node, D3Link>(d3Links)
+        .id(d => d.id)
+        .distance(idealDistance)
+        .strength(d => d.weight * 0.3)
     )
     // Center gravity to prevent drift - match original 0.01
     .force('center', forceCenter(0, 0).strength(0.01))
     // Collision detection to prevent overlap
-    .force('collide', forceCollide<D3Node>()
-      .radius(nodeSpacing * 0.8)
-      .strength(0.8)
+    .force(
+      'collide',
+      forceCollide<D3Node>()
+        .radius(nodeSpacing * 0.8)
+        .strength(0.8)
     )
 
   // Edge-based vertical forces (replaces depth-based forceY)
   // Source pushed UP, target pushed DOWN - creates natural hierarchy
   if (normalizedDirection > 0) {
-    simulation.force('edgeDirection', forceEdgeDirection(d3Links, {
-      strength: normalizedDirection,
-      idealDistance: idealDistance,
-    }))
+    simulation.force(
+      'edgeDirection',
+      forceEdgeDirection(d3Links, {
+        strength: normalizedDirection,
+        idealDistance: idealDistance
+      })
+    )
 
     // Horizontal spread to prevent vertical collapse
     // Uses deterministic hash-based left/right bias
     // Strength increases with direction to maintain balance
     const nodeMetrics = computeNodeMetrics(d3Nodes, d3Links)
-    simulation.force('horizontalSpread', forceX<D3Node>()
-      .x(node => {
-        const metrics = nodeMetrics.get(node.id)
-        // Push left (-1) or right (+1) based on node hash
-        return (metrics?.horizontalBias ?? 0) * idealDistance * normalizedDirection
-      })
-      .strength(0.05 * normalizedDirection)
+    simulation.force(
+      'horizontalSpread',
+      forceX<D3Node>()
+        .x(node => {
+          const metrics = nodeMetrics.get(node.id)
+          // Push left (-1) or right (+1) based on node hash
+          return (metrics?.horizontalBias ?? 0) * idealDistance * normalizedDirection
+        })
+        .strength(0.05 * normalizedDirection)
     )
   }
 
@@ -431,9 +438,12 @@ function forceDirectedLayout(
   if (ENABLE_EDGE_CROSSING_MINIMIZATION && d3Links.length >= 2) {
     const crossingStrength = Math.max(0, 1 - normalizedDirection / 2)
     if (crossingStrength > 0.1) {
-      simulation.force('edgeCrossing', forceEdgeCrossing(d3Links, {
-        strength: crossingStrength,
-      }))
+      simulation.force(
+        'edgeCrossing',
+        forceEdgeCrossing(d3Links, {
+          strength: crossingStrength
+        })
+      )
     }
   }
 
@@ -452,8 +462,8 @@ function forceDirectedLayout(
     ...d3Node.originalNode,
     position: {
       x: d3Node.x ?? 0,
-      y: d3Node.y ?? 0,
-    },
+      y: d3Node.y ?? 0
+    }
   }))
 
   return { nodes: positionedNodes, edges }
@@ -463,19 +473,13 @@ function forceDirectedLayout(
  * Linear/tree layout based on prerequisite edges
  * Used in Path mode (same as original implementation)
  */
-function pathLayout(
-  nodes: Node[],
-  edges: Edge[],
-  options: InternalOptions
-): LayoutResult {
+function pathLayout(nodes: Node[], edges: Edge[], options: InternalOptions): LayoutResult {
   const { spacingPercent } = options
   const nodeSpacing = 200 * (spacingPercent / 100)
   const levelSpacing = 300 * (spacingPercent / 100)
 
   // Filter to only prerequisite edges
-  const prereqEdges = edges.filter(e =>
-    (e.data?.relationType as RelationType) === 'prerequisite'
-  )
+  const prereqEdges = edges.filter(e => (e.data?.relationType as RelationType) === 'prerequisite')
 
   // Build directed graph
   const outgoing = new Map<string, string[]>()
@@ -525,7 +529,9 @@ function pathLayout(
 
   // Handle nodes not in prerequisite chain
   let maxLevel = 0
-  levels.forEach(l => { if (l > maxLevel) maxLevel = l })
+  levels.forEach(l => {
+    if (l > maxLevel) maxLevel = l
+  })
   nodes.forEach(n => {
     if (!levels.has(n.id)) {
       levels.set(n.id, maxLevel + 1)
@@ -550,8 +556,8 @@ function pathLayout(
       ...node,
       position: {
         x: level * levelSpacing,
-        y: indexInLevel * nodeSpacing - levelHeight / 2 + nodeSpacing / 2,
-      },
+        y: indexInLevel * nodeSpacing - levelHeight / 2 + nodeSpacing / 2
+      }
     }
   })
 
@@ -601,11 +607,6 @@ export function getNodesWithinDepth(
 /**
  * Get edges between a set of nodes
  */
-export function getEdgesBetweenNodes(
-  edges: Edge[],
-  nodeIds: Set<string>
-): Edge[] {
-  return edges.filter(e =>
-    nodeIds.has(e.source) && nodeIds.has(e.target)
-  )
+export function getEdgesBetweenNodes(edges: Edge[], nodeIds: Set<string>): Edge[] {
+  return edges.filter(e => nodeIds.has(e.source) && nodeIds.has(e.target))
 }

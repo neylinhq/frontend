@@ -1,13 +1,13 @@
-import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form'
-import { Input } from '@/shared/ui/input'
+import { useChangeEmail } from '@/entities/user'
 import { Button } from '@/shared/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
-import { useChangeEmail } from '@/entities/user'
-import { emailChangeSchema, type EmailChangeValues } from '../lib/validation'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form'
+import { Input } from '@/shared/ui/input'
+import { type EmailChangeValues, emailChangeSchema } from '../lib/validation'
 
 interface EmailChangeFormProps {
   currentEmail: string
@@ -21,8 +21,8 @@ export function EmailChangeForm({ currentEmail }: EmailChangeFormProps) {
     resolver: zodResolver(emailChangeSchema),
     defaultValues: {
       newEmail: '',
-      password: '',
-    },
+      password: ''
+    }
   })
 
   const onSubmit = (values: EmailChangeValues) => {
@@ -31,9 +31,9 @@ export function EmailChangeForm({ currentEmail }: EmailChangeFormProps) {
         toast.success(t('settings.security.email.success'))
         form.reset()
       },
-      onError: (error) => {
+      onError: error => {
         toast.error(error.message || t('errors.failedSave'))
-      },
+      }
     })
   }
 
@@ -72,7 +72,11 @@ export function EmailChangeForm({ currentEmail }: EmailChangeFormProps) {
                 <FormItem>
                   <FormLabel>{t('settings.security.email.confirmPassword')}</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder={t('form.placeholders.password')} {...field} />
+                    <Input
+                      type="password"
+                      placeholder={t('form.placeholders.password')}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

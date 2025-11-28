@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
-import { Progress } from '@/shared/ui/progress'
+import type { PlanLimits, UsageStats } from '@/entities/subscription'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
-import type { UsageStats, PlanLimits } from '@/entities/subscription'
+import { Progress } from '@/shared/ui/progress'
 
 interface UsageProgressProps {
   usage: UsageStats

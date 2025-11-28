@@ -14,7 +14,7 @@ interface CardBrandIconProps {
 const sizeMap = {
   sm: 24,
   md: 32,
-  lg: 40,
+  lg: 40
 }
 
 export function CardBrandIcon({ brand, className, size = 'md' }: CardBrandIconProps) {
@@ -23,11 +23,7 @@ export function CardBrandIcon({ brand, className, size = 'md' }: CardBrandIconPr
 
   if (iconData) {
     return (
-      <Icon
-        data={iconData}
-        size={sizeMap[size]}
-        className={cn('text-foreground', className)}
-      />
+      <Icon data={iconData} size={sizeMap[size]} className={cn('text-foreground', className)} />
     )
   }
 

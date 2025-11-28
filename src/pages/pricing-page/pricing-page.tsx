@@ -26,7 +26,7 @@ export function PricingPage({ plans }: PricingPageProps) {
 
         {/* Plans */}
         <div className="grid gap-6 md:grid-cols-3 max-w-5xl mx-auto items-stretch">
-          {plans.map((plan) => (
+          {plans.map(plan => (
             <div key={plan.type} className="h-full">
               <PlanCard
                 plan={plan}

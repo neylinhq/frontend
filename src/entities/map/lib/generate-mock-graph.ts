@@ -1,15 +1,29 @@
-import type { Node } from '@/entities/node'
 import type { Edge, RelationType } from '@/entities/edge'
+import type { Node } from '@/entities/node'
 
 // All available types
 const NODE_TYPES: Node['type'][] = [
-  'concept', 'fact', 'theory', 'example',
-  'question', 'hypothesis', 'person', 'school'
+  'concept',
+  'fact',
+  'theory',
+  'example',
+  'question',
+  'hypothesis',
+  'person',
+  'school'
 ]
 
 const EDGE_TYPES: RelationType[] = [
-  'is-a', 'has-a', 'causes', 'explains', 'related-to',
-  'influences', 'part-of', 'prerequisite', 'contradicts', 'similar-to'
+  'is-a',
+  'has-a',
+  'causes',
+  'explains',
+  'related-to',
+  'influences',
+  'part-of',
+  'prerequisite',
+  'contradicts',
+  'similar-to'
 ]
 
 const COMPLEXITIES: Node['metadata']['complexity'][] = ['basic', 'intermediate', 'advanced']
@@ -19,14 +33,14 @@ interface GeneratorOptions {
   mapId?: string
   seed?: number // For reproducible randomness
   patterns?: {
-    chains?: boolean      // Linear sequences
-    trees?: boolean       // Hierarchical structures
-    cycles?: boolean      // Circular dependencies
-    stars?: boolean       // Hub nodes with many connections
-    diamonds?: boolean    // Converging/diverging paths
-    isolated?: boolean    // Nodes without connections
+    chains?: boolean // Linear sequences
+    trees?: boolean // Hierarchical structures
+    cycles?: boolean // Circular dependencies
+    stars?: boolean // Hub nodes with many connections
+    diamonds?: boolean // Converging/diverging paths
+    isolated?: boolean // Nodes without connections
     bidirectional?: boolean // Two-way edges
-    dense?: boolean       // Highly connected clusters
+    dense?: boolean // Highly connected clusters
   }
 }
 
@@ -52,7 +66,10 @@ function shuffle<T>(arr: T[], random: () => number): T[] {
   return result
 }
 
-export function generateMockGraph(options: GeneratorOptions = {}): { nodes: Node[]; edges: Edge[] } {
+export function generateMockGraph(options: GeneratorOptions = {}): {
+  nodes: Node[]
+  edges: Edge[]
+} {
   const {
     nodeCount = 30,
     mapId = 'test',
@@ -65,7 +82,7 @@ export function generateMockGraph(options: GeneratorOptions = {}): { nodes: Node
       diamonds: true,
       isolated: true,
       bidirectional: true,
-      dense: true,
+      dense: true
     }
   } = options
 
@@ -95,10 +112,10 @@ export function generateMockGraph(options: GeneratorOptions = {}): { nodes: Node
         confidence: 0.5 + random() * 0.5,
         complexity,
         tags: [`tag-${Math.floor(random() * 5)}`],
-        reviewCount: Math.floor(random() * 10),
+        reviewCount: Math.floor(random() * 10)
       },
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     }
   }
 
@@ -122,10 +139,10 @@ export function generateMockGraph(options: GeneratorOptions = {}): { nodes: Node
       bidirectional,
       metadata: {
         confidence: 0.7 + random() * 0.3,
-        createdBy: 'ai',
+        createdBy: 'ai'
       },
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     }
   }
 
@@ -245,12 +262,9 @@ export function generateMockGraph(options: GeneratorOptions = {}): { nodes: Node
     // Connect each node to 2-3 others
     for (let i = 0; i < clusterNodes.length; i++) {
       for (let j = i + 1; j < clusterNodes.length; j++) {
-        if (random() > 0.3) { // 70% chance of edge
-          edges.push(createEdge(
-            clusterNodes[i].id,
-            clusterNodes[j].id,
-            pick(EDGE_TYPES, random)
-          ))
+        if (random() > 0.3) {
+          // 70% chance of edge
+          edges.push(createEdge(clusterNodes[i].id, clusterNodes[j].id, pick(EDGE_TYPES, random)))
         }
       }
     }
@@ -324,7 +338,7 @@ export const GRAPH_PRESETS = {
       diamonds: true,
       isolated: true,
       bidirectional: true,
-      dense: true,
+      dense: true
     }
   }
 } as const

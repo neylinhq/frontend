@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
-import { Typography } from '@/shared/ui/typography'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
 import { getMeta } from '@/shared/lib/get-meta'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
+import { Typography } from '@/shared/ui/typography'
 import type { Route } from './+types/colors'
 
 export function meta(_args: Route.MetaArgs) {
@@ -33,13 +33,13 @@ const SEMANTIC_COLORS = [
   { name: 'Info Foreground', var: '--info-foreground', desc: 'Текст на info' },
   { name: 'Border', var: '--border', desc: 'Цвет границ' },
   { name: 'Input', var: '--input', desc: 'Границы инпутов' },
-  { name: 'Ring', var: '--ring', desc: 'Focus ring' },
+  { name: 'Ring', var: '--ring', desc: 'Focus ring' }
 ]
 
 const BRAND_COLORS = [
   { name: 'Brand', var: '--brand', desc: 'Фирменный цвет' },
   { name: 'Brand Foreground', var: '--brand-foreground', desc: 'Текст на brand' },
-  { name: 'Brand Muted', var: '--brand-muted', desc: 'Приглушенный brand' },
+  { name: 'Brand Muted', var: '--brand-muted', desc: 'Приглушенный brand' }
 ]
 
 const GRAPH_COLORS = [
@@ -48,7 +48,7 @@ const GRAPH_COLORS = [
   { name: 'Cyan', var: '--graph-cyan', desc: 'Голубой для графа' },
   { name: 'Emerald', var: '--graph-emerald', desc: 'Изумрудный для графа' },
   { name: 'Amber', var: '--graph-amber', desc: 'Янтарный для графа' },
-  { name: 'Rose', var: '--graph-rose', desc: 'Розовый для графа' },
+  { name: 'Rose', var: '--graph-rose', desc: 'Розовый для графа' }
 ]
 
 export default function ColorsPage() {
@@ -58,21 +58,17 @@ export default function ColorsPage() {
     <div className="space-y-8">
       <div className="space-y-3">
         <Typography variant="h1">{t('docs.colors.title')}</Typography>
-        <Typography variant="lead">
-          {t('docs.colors.lead')}
-        </Typography>
+        <Typography variant="lead">{t('docs.colors.lead')}</Typography>
       </div>
 
       {/* Semantic Colors */}
       <section className="space-y-4">
         <div>
           <Typography variant="h2">{t('docs.colors.semantic.title')}</Typography>
-          <Typography variant="muted">
-            {t('docs.colors.semantic.description')}
-          </Typography>
+          <Typography variant="muted">{t('docs.colors.semantic.description')}</Typography>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {SEMANTIC_COLORS.map((color) => (
+          {SEMANTIC_COLORS.map(color => (
             <ColorCard key={color.var} {...color} />
           ))}
         </div>
@@ -82,12 +78,10 @@ export default function ColorsPage() {
       <section className="space-y-4 pt-4 border-t">
         <div>
           <Typography variant="h2">{t('docs.colors.brand.title')}</Typography>
-          <Typography variant="muted">
-            {t('docs.colors.brand.description')}
-          </Typography>
+          <Typography variant="muted">{t('docs.colors.brand.description')}</Typography>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {BRAND_COLORS.map((color) => (
+          {BRAND_COLORS.map(color => (
             <ColorCard key={color.var} {...color} />
           ))}
         </div>
@@ -97,12 +91,10 @@ export default function ColorsPage() {
       <section className="space-y-4 pt-4 border-t">
         <div>
           <Typography variant="h2">{t('docs.colors.graph.title')}</Typography>
-          <Typography variant="muted">
-            {t('docs.colors.graph.description')}
-          </Typography>
+          <Typography variant="muted">{t('docs.colors.graph.description')}</Typography>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {GRAPH_COLORS.map((color) => (
+          {GRAPH_COLORS.map(color => (
             <ColorCard key={color.var} {...color} />
           ))}
         </div>

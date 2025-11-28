@@ -1,15 +1,15 @@
 import { useTranslation } from 'react-i18next'
+import { getMeta } from '@/shared/lib/get-meta'
 import { Badge } from '@/shared/ui/badge'
-import { Typography } from '@/shared/ui/typography'
+import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
 import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
 import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
 import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
-import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
-import { getMeta } from '@/shared/lib/get-meta'
+import { Typography } from '@/shared/ui/typography'
 import type { Route } from './+types/badge'
 
 export const handle = {
-  breadcrumb: 'Badge',
+  breadcrumb: 'Badge'
 }
 
 export function meta(_args: Route.MetaArgs) {
@@ -22,7 +22,7 @@ export default function BadgePage() {
   const TOC_ITEMS: TocItem[] = [
     { id: 'variants', title: t('docs.common.variants'), level: 2 },
     { id: 'usage', title: t('docs.common.usage'), level: 2 },
-    { id: 'api-reference', title: t('docs.common.apiReference'), level: 2 },
+    { id: 'api-reference', title: t('docs.common.apiReference'), level: 2 }
   ]
 
   const BADGE_VARIANTS = [
@@ -33,7 +33,7 @@ export default function BadgePage() {
     { variant: 'brand' as const, label: t('docs.badge.examples.brand') },
     { variant: 'success' as const, label: t('docs.badge.examples.success') },
     { variant: 'warning' as const, label: t('docs.badge.examples.warning') },
-    { variant: 'info' as const, label: t('docs.badge.examples.info') },
+    { variant: 'info' as const, label: t('docs.badge.examples.info') }
   ]
   return (
     <div className="flex gap-10">
@@ -42,7 +42,7 @@ export default function BadgePage() {
           <DocsBreadcrumbs
             items={[
               { label: t('docs.common.components'), href: '/docs/ui/button' },
-              { label: 'Badge' },
+              { label: 'Badge' }
             ]}
           />
           <div className="flex items-center gap-3">
@@ -56,9 +56,7 @@ export default function BadgePage() {
 
         <section id="variants" className="scroll-mt-20 space-y-4">
           <Typography variant="h2">{t('docs.common.variants')}</Typography>
-          <Typography variant="muted">
-            {t('docs.badge.variants.description')}
-          </Typography>
+          <Typography variant="muted">{t('docs.badge.variants.description')}</Typography>
 
           <DocsComponentPreview
             code={`<Badge>${t('docs.badge.examples.default')}</Badge>
@@ -111,9 +109,18 @@ export function StatusBadge({ status }: { status: '${t('docs.badge.usage.active'
               </thead>
               <tbody className="divide-y">
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">variant</code></td>
-                  <td className="px-4 py-3"><code className="text-xs text-muted-foreground">'default' | 'secondary' | 'destructive' | 'outline' | 'brand' | 'success' | 'warning' | 'info'</code></td>
-                  <td className="px-4 py-3"><code className="text-xs bg-muted px-1.5 py-0.5 rounded">'default'</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">variant</code>
+                  </td>
+                  <td className="px-4 py-3">
+                    <code className="text-xs text-muted-foreground">
+                      'default' | 'secondary' | 'destructive' | 'outline' | 'brand' | 'success' |
+                      'warning' | 'info'
+                    </code>
+                  </td>
+                  <td className="px-4 py-3">
+                    <code className="text-xs bg-muted px-1.5 py-0.5 rounded">'default'</code>
+                  </td>
                 </tr>
               </tbody>
             </table>

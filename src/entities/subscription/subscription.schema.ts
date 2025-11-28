@@ -55,7 +55,15 @@ export const UsageStatsSchema = z.object({
 export type UsageStats = z.infer<typeof UsageStatsSchema>
 
 // Card brands
-export const CardBrandEnum = z.enum(['visa', 'mastercard', 'amex', 'discover', 'diners', 'jcb', 'unionpay'])
+export const CardBrandEnum = z.enum([
+  'visa',
+  'mastercard',
+  'amex',
+  'discover',
+  'diners',
+  'jcb',
+  'unionpay'
+])
 export type CardBrand = z.infer<typeof CardBrandEnum>
 
 // Crypto networks and currencies

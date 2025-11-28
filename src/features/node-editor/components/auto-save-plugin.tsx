@@ -1,7 +1,7 @@
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin'
 import type { EditorState } from 'lexical'
-import { useAutoSave } from '../model/use-auto-save.hooks'
 import type { AutoSavePluginProps } from '../model/editor.types'
+import { useAutoSave } from '../model/use-auto-save.hooks'
 
 export function AutoSavePlugin({ onSave, delay = 2000 }: AutoSavePluginProps) {
   const debouncedSave = useAutoSave(onSave, delay)

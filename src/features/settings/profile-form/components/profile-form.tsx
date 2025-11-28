@@ -1,15 +1,23 @@
-import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form'
-import { Input } from '@/shared/ui/input'
-import { Textarea } from '@/shared/ui/textarea'
+import { type User, useUpdateProfile, useUploadAvatar } from '@/entities/user'
 import { Button } from '@/shared/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/shared/ui/form'
+import { Input } from '@/shared/ui/input'
+import { Textarea } from '@/shared/ui/textarea'
 import { Typography } from '@/shared/ui/typography'
-import { type User, useUpdateProfile, useUploadAvatar } from '@/entities/user'
-import { profileFormSchema, type ProfileFormValues } from '../lib/validation'
+import { type ProfileFormValues, profileFormSchema } from '../lib/validation'
 import { AvatarUpload } from './avatar-upload'
 
 interface ProfileFormProps {
@@ -26,8 +34,8 @@ export function ProfileForm({ user }: ProfileFormProps) {
     defaultValues: {
       displayName: user.displayName || '',
       username: user.username || '',
-      bio: user.bio || '',
-    },
+      bio: user.bio || ''
+    }
   })
 
   const onSubmit = (values: ProfileFormValues) => {
@@ -37,7 +45,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
       },
       onError: () => {
         toast.error(t('errors.failedSave'))
-      },
+      }
     })
   }
 
@@ -48,7 +56,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
       },
       onError: () => {
         toast.error(t('errors.failedUpload'))
-      },
+      }
     })
   }
 
@@ -67,7 +75,9 @@ export function ProfileForm({ user }: ProfileFormProps) {
         <CardContent>
           <AvatarUpload
             currentUrl={user.avatarUrl}
-            fallback={user.displayName?.slice(0, 2).toUpperCase() || user.email.slice(0, 2).toUpperCase()}
+            fallback={
+              user.displayName?.slice(0, 2).toUpperCase() || user.email.slice(0, 2).toUpperCase()
+            }
             onUpload={handleAvatarUpload}
             isPending={uploadAvatar.isPending}
           />
@@ -91,7 +101,9 @@ export function ProfileForm({ user }: ProfileFormProps) {
                     <FormControl>
                       <Input placeholder={t('form.placeholders.name')} {...field} />
                     </FormControl>
-                    <FormDescription>{t('settings.profile.personal.displayNameHint')}</FormDescription>
+                    <FormDescription>
+                      {t('settings.profile.personal.displayNameHint')}
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

@@ -172,7 +172,10 @@ export function NodeEditPage({
   return (
     <div className="flex h-full">
       {/* Main Editor Area */}
-      <main ref={mainRef} className="flex-1 min-w-0 overflow-y-auto [scrollbar-gutter:stable] relative">
+      <main
+        ref={mainRef}
+        className="flex-1 min-w-0 overflow-y-auto [scrollbar-gutter:stable] relative"
+      >
         {/* FAB toggle - shown when content is scrollable */}
         {isScrollable && (
           <Button
@@ -192,80 +195,79 @@ export function NodeEditPage({
               sidebarOpen ? 'right-4 lg:right-[21rem]' : 'right-4'
             )}
           >
-            {sidebarOpen ? (
-              <PanelRightClose className="h-5 w-5 hidden lg:block" />
-            ) : null}
-            <PanelRightOpen className={cn('h-5 w-5', sidebarOpen && 'lg:hidden')} />
+            {sidebarOpen ? <PanelRightClose className="h-6 w-6 hidden lg:block" /> : null}
+            <PanelRightOpen className={cn('h-6 w-6', sidebarOpen && 'lg:hidden')} />
           </Button>
         )}
 
         {/* Editor Content */}
         <div ref={contentRef} className="mx-auto max-w-3xl px-4 md:px-8 py-6 md:py-8">
-          {/* Breadcrumb & Actions */}
-          <div className="mb-8 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Button variant="ghost" size="sm" asChild className="h-8 px-2">
-                <Link to={`/dashboard/maps/${mapId}/view`}>
-                  <ArrowLeft className="h-4 w-4" />
-                </Link>
-              </Button>
-              <Badge
-                variant="secondary"
-                className={cn('text-xs font-medium', NODE_TYPE_CONFIG[currentNode.type]?.color)}
-              >
-                {t(
-                  `nodeTypes.${currentNode.type}`,
-                  NODE_TYPE_CONFIG[currentNode.type]?.label || currentNode.type
+          {/* Gutter wrapper - provides space for floating menu buttons on desktop */}
+          <div className="md:pl-12">
+            {/* Breadcrumb & Actions */}
+            <div className="mb-8 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Button variant="ghost" size="sm" asChild className="h-8 px-2">
+                  <Link to={`/dashboard/maps/${mapId}/view`}>
+                    <ArrowLeft className="h-4 w-4" />
+                  </Link>
+                </Button>
+                <Badge
+                  variant="secondary"
+                  className={cn('text-xs font-medium', NODE_TYPE_CONFIG[currentNode.type]?.color)}
+                >
+                  {t(
+                    `nodeTypes.${currentNode.type}`,
+                    NODE_TYPE_CONFIG[currentNode.type]?.label || currentNode.type
+                  )}
+                </Badge>
+                {updateNodeMutation.isPending && (
+                  <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                    {t('errors.saving')}
+                  </span>
                 )}
-              </Badge>
-              {updateNodeMutation.isPending && (
-                <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <Loader2 className="h-3 w-3 animate-spin" />
-                  {t('errors.saving')}
-                </span>
+              </div>
+              {/* Header toggle - shown when content is NOT scrollable */}
+              {!isScrollable && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    if (window.innerWidth >= 1024) {
+                      setSidebarOpen(!sidebarOpen)
+                    } else {
+                      setMobileSheetOpen(true)
+                    }
+                  }}
+                  className="h-8 w-8 p-0"
+                >
+                  {sidebarOpen ? <PanelRightClose className="h-4 w-4 hidden lg:block" /> : null}
+                  <PanelRightOpen className={cn('h-4 w-4', sidebarOpen && 'lg:hidden')} />
+                </Button>
               )}
             </div>
-            {/* Header toggle - shown when content is NOT scrollable */}
-            {!isScrollable && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  if (window.innerWidth >= 1024) {
-                    setSidebarOpen(!sidebarOpen)
-                  } else {
-                    setMobileSheetOpen(true)
-                  }
-                }}
-                className="h-8 w-8 p-0"
-              >
-                {sidebarOpen ? (
-                  <PanelRightClose className="h-4 w-4 hidden lg:block" />
-                ) : null}
-                <PanelRightOpen className={cn('h-4 w-4', sidebarOpen && 'lg:hidden')} />
-              </Button>
-            )}
-          </div>
-          {/* Editable Title */}
-          <div className="mb-4 md:mb-6 md:pl-8">
-            <textarea
-              ref={titleInputRef}
-              value={title}
-              onChange={handleTitleChange}
-              onKeyDown={handleTitleKeyDown}
-              placeholder={t('nodeEdit.untitledPlaceholder')}
-              rows={1}
-              className="w-full resize-none overflow-hidden border-none bg-transparent text-4xl font-bold leading-tight tracking-tight text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-0"
+            {/* Editable Title */}
+            <div className="mb-4 md:mb-6">
+              <textarea
+                ref={titleInputRef}
+                value={title}
+                onChange={handleTitleChange}
+                onKeyDown={handleTitleKeyDown}
+                placeholder={t('nodeEdit.untitledPlaceholder')}
+                rows={1}
+                className="w-full resize-none overflow-hidden border-none bg-transparent text-4xl font-bold leading-tight tracking-tight text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-0"
+              />
+            </div>
+
+            {/* Editor */}
+            <BlockEditor
+              initialContent={currentNode.content ? htmlToEditor(currentNode.content) : undefined}
+              onEditorUpdate={handleEditorChange}
+              placeholder={t('nodeEdit.editorPlaceholder')}
+              className="min-h-[500px]"
             />
           </div>
-
-          {/* Editor */}
-          <BlockEditor
-            initialContent={currentNode.content ? htmlToEditor(currentNode.content) : undefined}
-            onEditorUpdate={handleEditorChange}
-            placeholder={t('nodeEdit.editorPlaceholder')}
-            className="min-h-[500px]"
-          />
         </div>
       </main>
 

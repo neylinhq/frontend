@@ -1,12 +1,12 @@
-import { Outlet } from 'react-router'
 import { BookOpen, Package } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { Outlet } from 'react-router'
 import { DocsLayout } from '@/shared/ui/docs-layout'
 import { DocsSidebar, type DocsSidebarSection } from '@/shared/ui/docs-sidebar'
 
 // Bypass PublicLayout - DocsLayout handles its own header
 export const handle = {
-  bypassPublicLayout: true,
+  bypassPublicLayout: true
 }
 
 export default function UiLayout() {
@@ -21,8 +21,8 @@ export default function UiLayout() {
       items: [
         { title: t('docs.nav.introduction'), href: '/docs/ui' },
         { title: t('docs.nav.colors'), href: '/docs/ui/colors' },
-        { title: t('docs.nav.typography'), href: '/docs/ui/typography' },
-      ],
+        { title: t('docs.nav.typography'), href: '/docs/ui/typography' }
+      ]
     },
     {
       title: t('docs.nav.components'),
@@ -53,9 +53,9 @@ export default function UiLayout() {
         { title: t('docs.componentNames.switch'), href: '/docs/ui/switch' },
         { title: t('docs.componentNames.table'), href: '/docs/ui/table' },
         { title: t('docs.componentNames.tabs'), href: '/docs/ui/tabs' },
-        { title: t('docs.componentNames.textarea'), href: '/docs/ui/textarea' },
-      ],
-    },
+        { title: t('docs.componentNames.textarea'), href: '/docs/ui/textarea' }
+      ]
+    }
   ]
 
   const sidebar = <DocsSidebar sections={NAV_SECTIONS} />

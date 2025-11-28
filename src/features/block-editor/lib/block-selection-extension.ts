@@ -36,7 +36,9 @@ function findFullySelectedBlocks(
     // Handle list items separately (each item is a block)
     if (node.type.name === 'listItem' || node.type.name === 'taskItem') {
       const isFullySelected = from <= contentStart && to >= contentEnd
-      console.log(`[BlockSelection] listItem: content=${contentStart}-${contentEnd}, sel=${from}-${to}, full=${isFullySelected}`)
+      console.log(
+        `[BlockSelection] listItem: content=${contentStart}-${contentEnd}, sel=${from}-${to}, full=${isFullySelected}`
+      )
       if (isFullySelected) {
         selectedBlocks.push({ from: nodeStart, to: nodeEnd })
       }
@@ -55,7 +57,9 @@ function findFullySelectedBlocks(
       }
 
       const isFullySelected = from <= contentStart && to >= contentEnd
-      console.log(`[BlockSelection] ${node.type.name}: content=${contentStart}-${contentEnd}, sel=${from}-${to}, full=${isFullySelected}`)
+      console.log(
+        `[BlockSelection] ${node.type.name}: content=${contentStart}-${contentEnd}, sel=${from}-${to}, full=${isFullySelected}`
+      )
       if (isFullySelected) {
         selectedBlocks.push({ from: nodeStart, to: nodeEnd })
       }
@@ -100,7 +104,12 @@ export const BlockSelection = Extension.create({
             const selectedBlocks = findFullySelectedBlocks(newEditorState.doc, from, to)
 
             // Debug
-            console.log('[BlockSelection] selection:', { from, to }, 'found blocks:', selectedBlocks.length)
+            console.log(
+              '[BlockSelection] selection:',
+              { from, to },
+              'found blocks:',
+              selectedBlocks.length
+            )
 
             const decorations: Decoration[] = []
 

@@ -8,10 +8,10 @@ import {
   subscriptionApi,
   useAddPaymentMethod,
   useRemovePaymentMethod,
-  useSetDefaultPaymentMethod
+  useSetDefaultPaymentMethod,
+  useUpdatePaymentMethod
 } from '@/entities/subscription'
 import {
-  AddCryptoWalletDialog,
   AddPaymentMethodDialog,
   PaymentHistoryTable,
   PaymentMethodCard,
@@ -40,6 +40,7 @@ export default function BillingPage() {
   const addPaymentMethod = useAddPaymentMethod()
   const removePaymentMethod = useRemovePaymentMethod()
   const setDefaultPaymentMethod = useSetDefaultPaymentMethod()
+  const updatePaymentMethod = useUpdatePaymentMethod()
 
   // State for details dialog
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod | null>(null)
@@ -65,19 +66,15 @@ export default function BillingPage() {
               <CardTitle>{t('settings.billing.paymentMethods.title')}</CardTitle>
               <CardDescription>{t('settings.billing.paymentMethods.description')}</CardDescription>
             </div>
-            <div className="flex gap-2">
-              <AddCryptoWalletDialog
-                onAdd={data => {
-                  // TODO: implement addCryptoWallet mutation
-                  console.log('Add crypto wallet:', data)
-                }}
-                loading={false}
-              />
-              <AddPaymentMethodDialog
-                onAdd={data => addPaymentMethod.mutate(data)}
-                loading={addPaymentMethod.isPending}
-              />
-            </div>
+            <AddPaymentMethodDialog
+              onAddCard={data => addPaymentMethod.mutate(data)}
+              onAddCrypto={data => {
+                // TODO: implement addCryptoWallet mutation
+                console.log('Add crypto wallet:', data)
+              }}
+              loadingCard={addPaymentMethod.isPending}
+              loadingCrypto={false}
+            />
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -91,7 +88,8 @@ export default function BillingPage() {
                 onEdit={handleEdit}
                 loading={
                   (removePaymentMethod.isPending && removePaymentMethod.variables === method.id) ||
-                  (setDefaultPaymentMethod.isPending && setDefaultPaymentMethod.variables === method.id)
+                  (setDefaultPaymentMethod.isPending &&
+                    setDefaultPaymentMethod.variables === method.id)
                 }
               />
             ))
@@ -118,7 +116,11 @@ export default function BillingPage() {
         onSetDefault={id => {
           setDefaultPaymentMethod.mutate(id)
         }}
+        onUpdate={data => {
+          updatePaymentMethod.mutate(data)
+        }}
         loading={removePaymentMethod.isPending || setDefaultPaymentMethod.isPending}
+        updateLoading={updatePaymentMethod.isPending}
       />
     </div>
   )

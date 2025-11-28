@@ -30,5 +30,5 @@ export const authApi = {
 
   logout: (): Promise<{ success: boolean }> => {
     return sessionApi.logout()
-  },
+  }
 }

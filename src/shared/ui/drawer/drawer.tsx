@@ -58,40 +58,45 @@ interface DrawerContentProps
 const DrawerContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   DrawerContentProps
->(({ side = 'right', className, children, showOverlay = true, size, showClose = true, ...props }, ref) => {
-  // Определяем стили размера в зависимости от стороны
-  const sizeStyles = React.useMemo(() => {
-    if (!size) return undefined
+>(
+  (
+    { side = 'right', className, children, showOverlay = true, size, showClose = true, ...props },
+    ref
+  ) => {
+    // Определяем стили размера в зависимости от стороны
+    const sizeStyles = React.useMemo(() => {
+      if (!size) return undefined
 
-    if (side === 'left' || side === 'right') {
-      return { width: size }
-    }
-    if (side === 'top' || side === 'bottom') {
-      return { height: size }
-    }
-    return undefined
-  }, [side, size])
+      if (side === 'left' || side === 'right') {
+        return { width: size }
+      }
+      if (side === 'top' || side === 'bottom') {
+        return { height: size }
+      }
+      return undefined
+    }, [side, size])
 
-  return (
-    <DrawerPortal>
-      {showOverlay && <DrawerOverlay />}
-      <DialogPrimitive.Content
-        ref={ref}
-        className={cn(drawerVariants({ side }), className)}
-        style={sizeStyles}
-        {...props}
-      >
-        {showClose && (
-          <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary z-10">
-            <X className="h-4 w-4" />
-            <span className="sr-only">Close</span>
-          </DialogPrimitive.Close>
-        )}
-        {children}
-      </DialogPrimitive.Content>
-    </DrawerPortal>
-  )
-})
+    return (
+      <DrawerPortal>
+        {showOverlay && <DrawerOverlay />}
+        <DialogPrimitive.Content
+          ref={ref}
+          className={cn(drawerVariants({ side }), className)}
+          style={sizeStyles}
+          {...props}
+        >
+          {showClose && (
+            <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary z-10">
+              <X className="h-4 w-4" />
+              <span className="sr-only">Close</span>
+            </DialogPrimitive.Close>
+          )}
+          {children}
+        </DialogPrimitive.Content>
+      </DrawerPortal>
+    )
+  }
+)
 DrawerContent.displayName = DialogPrimitive.Content.displayName
 
 const DrawerHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
@@ -100,7 +105,10 @@ const DrawerHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivEleme
 DrawerHeader.displayName = 'DrawerHeader'
 
 const DrawerFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2', className)} {...props} />
+  <div
+    className={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2', className)}
+    {...props}
+  />
 )
 DrawerFooter.displayName = 'DrawerFooter'
 
@@ -120,7 +128,11 @@ const DrawerDescription = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Description>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
 >(({ className, ...props }, ref) => (
-  <DialogPrimitive.Description ref={ref} className={cn('text-sm text-muted-foreground', className)} {...props} />
+  <DialogPrimitive.Description
+    ref={ref}
+    className={cn('text-sm text-muted-foreground', className)}
+    {...props}
+  />
 ))
 DrawerDescription.displayName = DialogPrimitive.Description.displayName
 

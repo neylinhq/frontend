@@ -12,12 +12,7 @@ export const sessionCookie = createCookie('arbor_session', {
 })
 
 function isValidSession(value: unknown): value is SessionData {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    'user' in value &&
-    'token' in value
-  )
+  return typeof value === 'object' && value !== null && 'user' in value && 'token' in value
 }
 
 export async function getSession(request: Request): Promise<SessionData | null> {

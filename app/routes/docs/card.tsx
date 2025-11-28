@@ -1,17 +1,17 @@
+import { BellRing, Check } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { Typography } from '@/shared/ui/typography'
+import { getMeta } from '@/shared/lib/get-meta'
+import { Badge } from '@/shared/ui/badge'
+import { Button } from '@/shared/ui/button'
 import {
   Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
+  CardTitle
 } from '@/shared/ui/card'
-import { Button } from '@/shared/ui/button'
-import { Badge } from '@/shared/ui/badge'
-import { BellRing, Check } from 'lucide-react'
-import { getMeta } from '@/shared/lib/get-meta'
+import { Typography } from '@/shared/ui/typography'
 import type { Route } from './+types/card'
 
 export function meta(_args: Route.MetaArgs) {
@@ -24,25 +24,23 @@ export default function CardPage() {
   const notifications = [
     {
       title: t('docs.card.notificationItems.newFeature'),
-      description: t('docs.card.notificationItems.hoursAgo'),
+      description: t('docs.card.notificationItems.hoursAgo')
     },
     {
       title: t('docs.card.notificationItems.systemUpdate'),
-      description: t('docs.card.notificationItems.dayAgo'),
+      description: t('docs.card.notificationItems.dayAgo')
     },
     {
       title: t('docs.card.notificationItems.newComment'),
-      description: t('docs.card.notificationItems.daysAgo'),
-    },
+      description: t('docs.card.notificationItems.daysAgo')
+    }
   ]
 
   return (
     <div className="space-y-8">
       <div className="space-y-3">
         <Typography variant="h1">Card</Typography>
-        <Typography variant="lead">
-          {t('docs.card.lead')}
-        </Typography>
+        <Typography variant="lead">{t('docs.card.lead')}</Typography>
       </div>
 
       {/* Basic Example */}
@@ -58,9 +56,7 @@ export default function CardPage() {
               <CardDescription>{t('docs.card.examples.description')}</CardDescription>
             </CardHeader>
             <CardContent>
-              <Typography variant="p">
-                {t('docs.card.examples.content')}
-              </Typography>
+              <Typography variant="p">{t('docs.card.examples.content')}</Typography>
             </CardContent>
           </Card>
 
@@ -96,7 +92,9 @@ export default function CardPage() {
               <BellRing />
               <div className="flex-1 space-y-1">
                 <Typography variant="small">{t('docs.card.notifications.pushTitle')}</Typography>
-                <Typography variant="muted">{t('docs.card.notifications.pushDescription')}</Typography>
+                <Typography variant="muted">
+                  {t('docs.card.notifications.pushDescription')}
+                </Typography>
               </div>
             </div>
             <div>
@@ -138,7 +136,9 @@ export default function CardPage() {
               <CardDescription>{t('docs.card.withStatus.activeDescription')}</CardDescription>
             </CardHeader>
             <CardContent>
-              <Typography variant="muted">{t('docs.card.withStatus.projectInDevelopment')}</Typography>
+              <Typography variant="muted">
+                {t('docs.card.withStatus.projectInDevelopment')}
+              </Typography>
             </CardContent>
           </Card>
 
@@ -222,9 +222,7 @@ export default function CardPage() {
               <Typography variant="large" className="mb-2">
                 Card
               </Typography>
-              <Typography variant="muted">
-                {t('docs.card.api.cardDescription')}
-              </Typography>
+              <Typography variant="muted">{t('docs.card.api.cardDescription')}</Typography>
             </div>
             <div>
               <Typography variant="large" className="mb-2">
@@ -242,7 +240,9 @@ export default function CardPage() {
               <Typography variant="large" className="mb-2">
                 CardDescription
               </Typography>
-              <Typography variant="muted">{t('docs.card.api.cardDescriptionDescription')}</Typography>
+              <Typography variant="muted">
+                {t('docs.card.api.cardDescriptionDescription')}
+              </Typography>
             </div>
             <div>
               <Typography variant="large" className="mb-2">

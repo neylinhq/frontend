@@ -1,15 +1,15 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/tabs'
-import { Typography } from '@/shared/ui/typography'
+import { getMeta } from '@/shared/lib/get-meta'
 import { Badge } from '@/shared/ui/badge'
+import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
 import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
 import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
 import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
-import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
-import { getMeta } from '@/shared/lib/get-meta'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/tabs'
+import { Typography } from '@/shared/ui/typography'
 import type { Route } from './+types/tabs'
 
 export const handle = {
-  breadcrumb: 'Tabs',
+  breadcrumb: 'Tabs'
 }
 
 export function meta(_args: Route.MetaArgs) {
@@ -19,7 +19,7 @@ export function meta(_args: Route.MetaArgs) {
 const TOC_ITEMS: TocItem[] = [
   { id: 'basic', title: 'Basic', level: 2 },
   { id: 'usage', title: 'Usage', level: 2 },
-  { id: 'api-reference', title: 'API Reference', level: 2 },
+  { id: 'api-reference', title: 'API Reference', level: 2 }
 ]
 
 export default function TabsPage() {
@@ -28,10 +28,7 @@ export default function TabsPage() {
       <div className="flex-1 min-w-0 space-y-10">
         <header className="space-y-4">
           <DocsBreadcrumbs
-            items={[
-              { label: 'Components', href: '/docs/ui/button' },
-              { label: 'Tabs' },
-            ]}
+            items={[{ label: 'Components', href: '/docs/ui/button' }, { label: 'Tabs' }]}
           />
           <div className="flex items-center gap-3">
             <Typography variant="h1">Tabs</Typography>
@@ -44,9 +41,7 @@ export default function TabsPage() {
 
         <section id="basic" className="scroll-mt-20 space-y-4">
           <Typography variant="h2">Basic</Typography>
-          <Typography variant="muted">
-            Simple tab navigation with content panels.
-          </Typography>
+          <Typography variant="muted">Simple tab navigation with content panels.</Typography>
 
           <DocsComponentPreview
             code={`<Tabs defaultValue="account" className="w-[400px]">
@@ -126,20 +121,42 @@ export function SettingsTabs() {
               </thead>
               <tbody className="divide-y">
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">Tabs</code></td>
-                  <td className="px-4 py-3"><code className="text-xs text-muted-foreground">Root with defaultValue prop</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">Tabs</code>
+                  </td>
+                  <td className="px-4 py-3">
+                    <code className="text-xs text-muted-foreground">
+                      Root with defaultValue prop
+                    </code>
+                  </td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">TabsList</code></td>
-                  <td className="px-4 py-3"><code className="text-xs text-muted-foreground">Container for tab triggers</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">TabsList</code>
+                  </td>
+                  <td className="px-4 py-3">
+                    <code className="text-xs text-muted-foreground">
+                      Container for tab triggers
+                    </code>
+                  </td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">TabsTrigger</code></td>
-                  <td className="px-4 py-3"><code className="text-xs text-muted-foreground">Button with value prop</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">TabsTrigger</code>
+                  </td>
+                  <td className="px-4 py-3">
+                    <code className="text-xs text-muted-foreground">Button with value prop</code>
+                  </td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">TabsContent</code></td>
-                  <td className="px-4 py-3"><code className="text-xs text-muted-foreground">Content panel with value prop</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">TabsContent</code>
+                  </td>
+                  <td className="px-4 py-3">
+                    <code className="text-xs text-muted-foreground">
+                      Content panel with value prop
+                    </code>
+                  </td>
                 </tr>
               </tbody>
             </table>

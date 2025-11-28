@@ -6,11 +6,7 @@ import type { CryptoCurrency, CryptoNetwork } from '@/entities/subscription'
  * @param startChars - Number of characters to show at start (default: 6)
  * @param endChars - Number of characters to show at end (default: 4)
  */
-export function shortenWalletAddress(
-  address: string,
-  startChars = 6,
-  endChars = 4
-): string {
+export function shortenWalletAddress(address: string, startChars = 6, endChars = 4): string {
   if (address.length <= startChars + endChars + 3) {
     return address
   }
@@ -25,7 +21,7 @@ export function getNetworkDisplayName(network: CryptoNetwork): string {
     bitcoin: 'Bitcoin',
     ethereum: 'Ethereum',
     solana: 'Solana',
-    tron: 'Tron',
+    tron: 'Tron'
   }
   return names[network]
 }
@@ -39,7 +35,7 @@ export function getCurrencyDisplayName(currency: CryptoCurrency): string {
     ETH: 'Ethereum',
     USDT: 'Tether',
     USDC: 'USD Coin',
-    SOL: 'Solana',
+    SOL: 'Solana'
   }
   return names[currency]
 }
@@ -47,10 +43,7 @@ export function getCurrencyDisplayName(currency: CryptoCurrency): string {
 /**
  * Validate wallet address format based on network
  */
-export function isValidWalletAddress(
-  address: string,
-  network: CryptoNetwork
-): boolean {
+export function isValidWalletAddress(address: string, network: CryptoNetwork): boolean {
   switch (network) {
     case 'ethereum':
     case 'tron':
@@ -62,8 +55,7 @@ export function isValidWalletAddress(
       return /^T[a-zA-Z0-9]{33}$/.test(address)
     case 'bitcoin':
       // Bitcoin: Legacy (1...), SegWit (3...), Native SegWit (bc1...)
-      return /^(1|3)[a-zA-Z0-9]{25,34}$/.test(address) ||
-        /^bc1[a-zA-Z0-9]{39,59}$/.test(address)
+      return /^(1|3)[a-zA-Z0-9]{25,34}$/.test(address) || /^bc1[a-zA-Z0-9]{39,59}$/.test(address)
     case 'solana':
       // Solana: Base58, 32-44 characters
       return /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(address)

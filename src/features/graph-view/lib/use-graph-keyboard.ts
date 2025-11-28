@@ -1,6 +1,6 @@
-import { useEffect, useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useShallow } from 'zustand/react/shallow'
-import { useGraphViewStore, triggerLayout } from '../model/graph-view.store'
+import { triggerLayout, useGraphViewStore } from '../model/graph-view.store'
 
 interface UseGraphKeyboardOptions {
   selectedNodeId: string | null
@@ -15,7 +15,7 @@ export function useGraphKeyboard({
   onFitView,
   onZoomIn,
   onZoomOut,
-  enabled = true,
+  enabled = true
 }: UseGraphKeyboardOptions) {
   const {
     viewMode,
@@ -25,9 +25,9 @@ export function useGraphKeyboard({
     focusedNodeId,
     focusDepth,
     setFocusDepth,
-    resetFilters,
+    resetFilters
   } = useGraphViewStore(
-    useShallow((s) => ({
+    useShallow(s => ({
       viewMode: s.viewMode,
       setViewMode: s.setViewMode,
       focusNode: s.focusNode,
@@ -35,7 +35,7 @@ export function useGraphKeyboard({
       focusedNodeId: s.focusedNodeId,
       focusDepth: s.focusDepth,
       setFocusDepth: s.setFocusDepth,
-      resetFilters: s.resetFilters,
+      resetFilters: s.resetFilters
     }))
   )
 
@@ -43,11 +43,7 @@ export function useGraphKeyboard({
     (e: KeyboardEvent) => {
       // Don't handle if typing in input
       const target = e.target as HTMLElement
-      if (
-        target.tagName === 'INPUT' ||
-        target.tagName === 'TEXTAREA' ||
-        target.isContentEditable
-      ) {
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
         return
       }
 
@@ -144,7 +140,7 @@ export function useGraphKeyboard({
       resetFilters,
       onFitView,
       onZoomIn,
-      onZoomOut,
+      onZoomOut
     ]
   )
 
@@ -165,7 +161,7 @@ export function useGraphKeyboard({
       { key: '+/-', description: 'Adjust focus depth' },
       { key: 'R', description: 'Reset filters' },
       { key: 'L', description: 'Apply layout' },
-      { key: 'Ctrl+0', description: 'Fit view' },
-    ],
+      { key: 'Ctrl+0', description: 'Fit view' }
+    ]
   }
 }

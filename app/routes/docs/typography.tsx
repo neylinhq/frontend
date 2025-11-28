@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
-import { Typography } from '@/shared/ui/typography'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
 import { getMeta } from '@/shared/lib/get-meta'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
+import { Typography } from '@/shared/ui/typography'
 import type { Route } from './+types/typography'
 
 export function meta(_args: Route.MetaArgs) {
@@ -13,69 +13,69 @@ const TYPOGRAPHY_EXAMPLES = [
     variant: 'h1' as const,
     label: 'Heading 1',
     example: 'The quick brown fox jumps over the lazy dog',
-    code: '<Typography variant="h1">Heading 1</Typography>',
+    code: '<Typography variant="h1">Heading 1</Typography>'
   },
   {
     variant: 'h2' as const,
     label: 'Heading 2',
     example: 'The quick brown fox jumps over the lazy dog',
-    code: '<Typography variant="h2">Heading 2</Typography>',
+    code: '<Typography variant="h2">Heading 2</Typography>'
   },
   {
     variant: 'h3' as const,
     label: 'Heading 3',
     example: 'The quick brown fox jumps over the lazy dog',
-    code: '<Typography variant="h3">Heading 3</Typography>',
+    code: '<Typography variant="h3">Heading 3</Typography>'
   },
   {
     variant: 'h4' as const,
     label: 'Heading 4',
     example: 'The quick brown fox jumps over the lazy dog',
-    code: '<Typography variant="h4">Heading 4</Typography>',
+    code: '<Typography variant="h4">Heading 4</Typography>'
   },
   {
     variant: 'p' as const,
     label: 'Paragraph',
     example:
       'The quick brown fox jumps over the lazy dog. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    code: '<Typography variant="p">Paragraph text</Typography>',
+    code: '<Typography variant="p">Paragraph text</Typography>'
   },
   {
     variant: 'lead' as const,
     label: 'Lead',
     example: 'A larger paragraph for introductions and important text.',
-    code: '<Typography variant="lead">Lead text</Typography>',
+    code: '<Typography variant="lead">Lead text</Typography>'
   },
   {
     variant: 'large' as const,
     label: 'Large',
     example: 'Large text for emphasis',
-    code: '<Typography variant="large">Large text</Typography>',
+    code: '<Typography variant="large">Large text</Typography>'
   },
   {
     variant: 'small' as const,
     label: 'Small',
     example: 'Small text for captions and labels',
-    code: '<Typography variant="small">Small text</Typography>',
+    code: '<Typography variant="small">Small text</Typography>'
   },
   {
     variant: 'muted' as const,
     label: 'Muted',
     example: 'Muted text for secondary information',
-    code: '<Typography variant="muted">Muted text</Typography>',
+    code: '<Typography variant="muted">Muted text</Typography>'
   },
   {
     variant: 'blockquote' as const,
     label: 'Blockquote',
     example: 'This is a blockquote. Use it for citations and important quotes.',
-    code: '<Typography variant="blockquote">Quote</Typography>',
+    code: '<Typography variant="blockquote">Quote</Typography>'
   },
   {
     variant: 'inline-code' as const,
     label: 'Inline Code',
     example: 'const example = true',
-    code: '<Typography variant="inline-code">code</Typography>',
-  },
+    code: '<Typography variant="inline-code">code</Typography>'
+  }
 ]
 
 export default function TypographyPage() {
@@ -85,22 +85,18 @@ export default function TypographyPage() {
     <div className="space-y-8">
       <div className="space-y-3">
         <Typography variant="h1">{t('docs.typography.title')}</Typography>
-        <Typography variant="lead">
-          {t('docs.typography.lead')}
-        </Typography>
+        <Typography variant="lead">{t('docs.typography.lead')}</Typography>
       </div>
 
       {/* Examples */}
       <section className="space-y-6">
         <div>
           <Typography variant="h2">{t('docs.typography.variants.title')}</Typography>
-          <Typography variant="muted">
-            {t('docs.typography.variants.description')}
-          </Typography>
+          <Typography variant="muted">{t('docs.typography.variants.description')}</Typography>
         </div>
 
         <div className="space-y-8">
-          {TYPOGRAPHY_EXAMPLES.map((item) => (
+          {TYPOGRAPHY_EXAMPLES.map(item => (
             <Card key={item.variant}>
               <CardHeader>
                 <CardTitle className="text-base">{item.label}</CardTitle>

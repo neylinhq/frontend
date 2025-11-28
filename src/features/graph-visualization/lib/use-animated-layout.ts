@@ -1,6 +1,6 @@
 import type { Node } from '@xyflow/react'
-import { useCallback, useEffect, useRef } from 'react'
 import { useReactFlow, useViewport } from '@xyflow/react'
+import { useCallback, useEffect, useRef } from 'react'
 
 interface AnimationConfig {
   duration: number
@@ -9,12 +9,12 @@ interface AnimationConfig {
 
 // Easing function: fast start, smooth deceleration
 export function easeOutCubic(t: number): number {
-  return 1 - Math.pow(1 - t, 3)
+  return 1 - (1 - t) ** 3
 }
 
 const DEFAULT_CONFIG: AnimationConfig = {
   duration: 300,
-  easing: easeOutCubic,
+  easing: easeOutCubic
 }
 
 export function useAnimatedLayout() {
@@ -44,7 +44,7 @@ export function useAnimatedLayout() {
       if (config.duration <= 0) {
         setNodes(targetNodes)
         if (anchorNodeId) {
-          const targetNode = targetNodes.find((n) => n.id === anchorNodeId)
+          const targetNode = targetNodes.find(n => n.id === anchorNodeId)
           if (targetNode) {
             const x = targetNode.position.x + (targetNode.measured?.width ?? 200) / 2
             const y = targetNode.position.y + (targetNode.measured?.height ?? 100) / 2
@@ -58,10 +58,10 @@ export function useAnimatedLayout() {
 
       // Build maps for O(1) position lookup
       const startPositions = new Map(
-        currentNodes.map((n) => [n.id, { x: n.position.x, y: n.position.y }])
+        currentNodes.map(n => [n.id, { x: n.position.x, y: n.position.y }])
       )
       const targetPositions = new Map(
-        targetNodes.map((n) => [n.id, { x: n.position.x, y: n.position.y }])
+        targetNodes.map(n => [n.id, { x: n.position.x, y: n.position.y }])
       )
 
       // Calculate anchor node centers for camera sync
@@ -69,17 +69,17 @@ export function useAnimatedLayout() {
       let anchorTarget: { x: number; y: number } | null = null
 
       if (anchorNodeId) {
-        const startNode = currentNodes.find((n) => n.id === anchorNodeId)
-        const targetNode = targetNodes.find((n) => n.id === anchorNodeId)
+        const startNode = currentNodes.find(n => n.id === anchorNodeId)
+        const targetNode = targetNodes.find(n => n.id === anchorNodeId)
 
         if (startNode && targetNode) {
           anchorStart = {
             x: startNode.position.x + (startNode.measured?.width ?? 200) / 2,
-            y: startNode.position.y + (startNode.measured?.height ?? 100) / 2,
+            y: startNode.position.y + (startNode.measured?.height ?? 100) / 2
           }
           anchorTarget = {
             x: targetNode.position.x + (targetNode.measured?.width ?? 200) / 2,
-            y: targetNode.position.y + (targetNode.measured?.height ?? 100) / 2,
+            y: targetNode.position.y + (targetNode.measured?.height ?? 100) / 2
           }
         }
       }
@@ -90,7 +90,7 @@ export function useAnimatedLayout() {
         const easedProgress = config.easing(progress)
 
         // Interpolate all node positions
-        const interpolatedNodes = targetNodes.map((node) => {
+        const interpolatedNodes = targetNodes.map(node => {
           const start = startPositions.get(node.id)
           const target = targetPositions.get(node.id)
 
@@ -103,8 +103,8 @@ export function useAnimatedLayout() {
             ...node,
             position: {
               x: start.x + (target.x - start.x) * easedProgress,
-              y: start.y + (target.y - start.y) * easedProgress,
-            },
+              y: start.y + (target.y - start.y) * easedProgress
+            }
           }
         })
 
@@ -153,6 +153,6 @@ export function useAnimatedLayout() {
   return {
     animateToPositions,
     isAnimating,
-    cancelAnimation,
+    cancelAnimation
   }
 }

@@ -65,10 +65,7 @@ export function SelectPopover<T extends string = string>({
           <Button
             variant="outline"
             size="sm"
-            className={cn(
-              compact ? 'px-2' : 'min-w-[100px]',
-              className
-            )}
+            className={cn(compact ? 'px-2' : 'min-w-[100px]', className)}
           >
             <span className="flex items-center gap-1.5">
               {selectedItem ? (

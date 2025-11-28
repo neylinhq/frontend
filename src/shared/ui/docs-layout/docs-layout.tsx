@@ -1,4 +1,4 @@
-import * as React from 'react'
+import type * as React from 'react'
 import { cn } from '@/shared/lib/cn'
 import { DocsHeader } from '@/shared/ui/docs-header'
 
@@ -31,9 +31,7 @@ export function DocsLayout({ children, sidebar, toc, className }: DocsLayoutProp
 
           {/* Main Content - scrollable */}
           <main className="flex-1 min-w-0 overflow-y-auto scroll-smooth border-r">
-            <div className={cn('max-w-3xl mx-auto px-6 py-8 lg:px-8', className)}>
-              {children}
-            </div>
+            <div className={cn('max-w-3xl mx-auto px-6 py-8 lg:px-8', className)}>{children}</div>
           </main>
 
           {/* Right Sidebar - TOC */}

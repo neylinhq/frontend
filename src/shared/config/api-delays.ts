@@ -22,6 +22,7 @@ export const API_DELAYS = {
   SUBSCRIPTION_ADD_PAYMENT_METHOD: 400,
   SUBSCRIPTION_REMOVE_PAYMENT_METHOD: 300,
   SUBSCRIPTION_SET_DEFAULT_PAYMENT: 200,
+  SUBSCRIPTION_UPDATE_PAYMENT_METHOD: 400,
   SUBSCRIPTION_GET_PAYMENT_HISTORY: 200,
   SUBSCRIPTION_CREATE_BILLING_PORTAL: 800,
 
@@ -55,7 +56,7 @@ export const API_DELAYS = {
   MAP_UPDATE_EDGE: 400,
   MAP_DELETE_EDGE: 400,
   MAP_GET_FULL_MAP: 800,
-  MAP_ANALYZE_GRAPH: 2000,
+  MAP_ANALYZE_GRAPH: 2000
 } as const
 
 /**
@@ -65,12 +66,11 @@ export const UI_DELAYS = {
   // Block Editor
   EDITOR_MENU_HIDE: 100,
   EDITOR_THROTTLE: 16, // ~60fps
-  EDITOR_GHOST_CLEANUP: 500,
+  EDITOR_GHOST_CLEANUP: 500
 } as const
 
 /**
  * Вспомогательная функция для создания promise задержки
  * @param ms - задержка в миллисекундах
  */
-export const delay = (ms: number): Promise<void> =>
-  new Promise((resolve) => setTimeout(resolve, ms))
+export const delay = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms))

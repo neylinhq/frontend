@@ -25,7 +25,9 @@ export function LanguageSelect({ compact }: LanguageSelectProps) {
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className={compact ? 'px-2' : undefined}>
           <Globe className="h-4 w-4" />
-          {!compact && <span className="ml-1.5">{LANGUAGES.find(l => l.id === i18n.language)?.label}</span>}
+          {!compact && (
+            <span className="ml-1.5">{LANGUAGES.find(l => l.id === i18n.language)?.label}</span>
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-auto min-w-[140px] p-1">

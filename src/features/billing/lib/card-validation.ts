@@ -27,7 +27,7 @@ export const CARD_VALIDATION = {
   EXPIRY_PLACEHOLDER: 'MM/YY',
 
   /** Placeholder для поля CVV */
-  CVC_PLACEHOLDER: 'CVV',
+  CVC_PLACEHOLDER: 'CVV'
 } as const
 
 /**

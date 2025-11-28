@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 import { CardBrandEnum } from '@/entities/subscription'
 
-import { isValidLuhn, isValidExpiry, detectCardBrand, getCvcLength } from './card-utils'
+import { detectCardBrand, getCvcLength, isValidExpiry, isValidLuhn } from './card-utils'
 
 export const addPaymentMethodSchema = z
   .object({
@@ -37,7 +37,7 @@ export const addPaymentMethodSchema = z
       .string()
       .min(3, 'CVC is too short')
       .max(4, 'CVC is too long')
-      .regex(/^\d+$/, 'CVC must contain only digits'),
+      .regex(/^\d+$/, 'CVC must contain only digits')
   })
   .refine(
     data => {
@@ -49,7 +49,7 @@ export const addPaymentMethodSchema = z
     },
     {
       message: 'CVC length does not match card type',
-      path: ['cvc'],
+      path: ['cvc']
     }
   )
 
@@ -61,7 +61,7 @@ export const paymentMethodInputSchema = z.object({
   cardNumber: z.string(), // Last 4 digits only for storage
   brand: CardBrandEnum,
   expiryMonth: z.number(),
-  expiryYear: z.number(),
+  expiryYear: z.number()
 })
 
 export type PaymentMethodInput = z.infer<typeof paymentMethodInputSchema>

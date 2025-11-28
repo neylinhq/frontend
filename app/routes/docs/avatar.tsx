@@ -1,15 +1,15 @@
+import { getMeta } from '@/shared/lib/get-meta'
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar'
-import { Typography } from '@/shared/ui/typography'
 import { Badge } from '@/shared/ui/badge'
+import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
 import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
 import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
 import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
-import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
-import { getMeta } from '@/shared/lib/get-meta'
+import { Typography } from '@/shared/ui/typography'
 import type { Route } from './+types/avatar'
 
 export const handle = {
-  breadcrumb: 'Avatar',
+  breadcrumb: 'Avatar'
 }
 
 export function meta(_args: Route.MetaArgs) {
@@ -21,7 +21,7 @@ const TOC_ITEMS: TocItem[] = [
   { id: 'fallback', title: 'Fallback', level: 2 },
   { id: 'sizes', title: 'Sizes', level: 2 },
   { id: 'usage', title: 'Usage', level: 2 },
-  { id: 'api-reference', title: 'API Reference', level: 2 },
+  { id: 'api-reference', title: 'API Reference', level: 2 }
 ]
 
 export default function AvatarPage() {
@@ -30,10 +30,7 @@ export default function AvatarPage() {
       <div className="flex-1 min-w-0 space-y-10">
         <header className="space-y-4">
           <DocsBreadcrumbs
-            items={[
-              { label: 'Components', href: '/docs/ui/button' },
-              { label: 'Avatar' },
-            ]}
+            items={[{ label: 'Components', href: '/docs/ui/button' }, { label: 'Avatar' }]}
           />
           <div className="flex items-center gap-3">
             <Typography variant="h1">Avatar</Typography>
@@ -46,9 +43,7 @@ export default function AvatarPage() {
 
         <section id="basic" className="scroll-mt-20 space-y-4">
           <Typography variant="h2">Basic</Typography>
-          <Typography variant="muted">
-            Avatar with image source.
-          </Typography>
+          <Typography variant="muted">Avatar with image source.</Typography>
 
           <DocsComponentPreview
             code={`<Avatar>
@@ -96,9 +91,7 @@ export default function AvatarPage() {
 
         <section id="sizes" className="scroll-mt-20 space-y-4">
           <Typography variant="h2">Sizes</Typography>
-          <Typography variant="muted">
-            Different sizes using className.
-          </Typography>
+          <Typography variant="muted">Different sizes using className.</Typography>
 
           <DocsComponentPreview
             code={`<Avatar className="h-8 w-8">
@@ -162,16 +155,32 @@ export function UserAvatar({ user }: { user: { name: string; avatar?: string } }
               </thead>
               <tbody className="divide-y">
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">Avatar</code></td>
-                  <td className="px-4 py-3"><code className="text-xs text-muted-foreground">Container component</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">Avatar</code>
+                  </td>
+                  <td className="px-4 py-3">
+                    <code className="text-xs text-muted-foreground">Container component</code>
+                  </td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">AvatarImage</code></td>
-                  <td className="px-4 py-3"><code className="text-xs text-muted-foreground">Image element with src and alt props</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">AvatarImage</code>
+                  </td>
+                  <td className="px-4 py-3">
+                    <code className="text-xs text-muted-foreground">
+                      Image element with src and alt props
+                    </code>
+                  </td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">AvatarFallback</code></td>
-                  <td className="px-4 py-3"><code className="text-xs text-muted-foreground">Fallback content when image fails</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">AvatarFallback</code>
+                  </td>
+                  <td className="px-4 py-3">
+                    <code className="text-xs text-muted-foreground">
+                      Fallback content when image fails
+                    </code>
+                  </td>
                 </tr>
               </tbody>
             </table>

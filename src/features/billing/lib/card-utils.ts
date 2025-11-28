@@ -1,49 +1,60 @@
 // Card brand detection and utilities
 
-export type CardBrand = 'visa' | 'mastercard' | 'amex' | 'discover' | 'diners' | 'jcb' | 'unionpay' | 'unknown'
+export type CardBrand =
+  | 'visa'
+  | 'mastercard'
+  | 'amex'
+  | 'discover'
+  | 'diners'
+  | 'jcb'
+  | 'unionpay'
+  | 'unknown'
 
 // Brand colors for visual accents
-export const CARD_BRAND_COLORS: Record<CardBrand, { primary: string; secondary: string; gradient: string }> = {
+export const CARD_BRAND_COLORS: Record<
+  CardBrand,
+  { primary: string; secondary: string; gradient: string }
+> = {
   visa: {
     primary: '#1A1F71',
     secondary: '#2E77BC',
-    gradient: 'linear-gradient(135deg, #1A1F71 0%, #2E77BC 100%)',
+    gradient: 'linear-gradient(135deg, #1A1F71 0%, #2E77BC 100%)'
   },
   mastercard: {
     primary: '#EB001B',
     secondary: '#F79E1B',
-    gradient: 'linear-gradient(135deg, #EB001B 0%, #F79E1B 100%)',
+    gradient: 'linear-gradient(135deg, #EB001B 0%, #F79E1B 100%)'
   },
   amex: {
     primary: '#006FCF',
     secondary: '#00A4E4',
-    gradient: 'linear-gradient(135deg, #006FCF 0%, #00A4E4 100%)',
+    gradient: 'linear-gradient(135deg, #006FCF 0%, #00A4E4 100%)'
   },
   discover: {
     primary: '#FF6000',
     secondary: '#FFBC3F',
-    gradient: 'linear-gradient(135deg, #FF6000 0%, #FFBC3F 100%)',
+    gradient: 'linear-gradient(135deg, #FF6000 0%, #FFBC3F 100%)'
   },
   diners: {
     primary: '#0079BE',
     secondary: '#00A4E4',
-    gradient: 'linear-gradient(135deg, #0079BE 0%, #00A4E4 100%)',
+    gradient: 'linear-gradient(135deg, #0079BE 0%, #00A4E4 100%)'
   },
   jcb: {
     primary: '#0E4C96',
     secondary: '#007940',
-    gradient: 'linear-gradient(135deg, #0E4C96 0%, #E71E27 50%, #007940 100%)',
+    gradient: 'linear-gradient(135deg, #0E4C96 0%, #E71E27 50%, #007940 100%)'
   },
   unionpay: {
     primary: '#E21836',
     secondary: '#00447C',
-    gradient: 'linear-gradient(135deg, #E21836 0%, #00447C 100%)',
+    gradient: 'linear-gradient(135deg, #E21836 0%, #00447C 100%)'
   },
   unknown: {
     primary: '#6B7280',
     secondary: '#9CA3AF',
-    gradient: 'linear-gradient(135deg, #6B7280 0%, #9CA3AF 100%)',
-  },
+    gradient: 'linear-gradient(135deg, #6B7280 0%, #9CA3AF 100%)'
+  }
 }
 
 interface CardBrandConfig {
@@ -60,50 +71,50 @@ const CARD_BRANDS: CardBrandConfig[] = [
     pattern: /^4/,
     lengths: [16, 18, 19],
     cvcLength: 3,
-    gaps: [4, 8, 12],
+    gaps: [4, 8, 12]
   },
   {
     brand: 'mastercard',
     pattern: /^(5[1-5]|2[2-7])/,
     lengths: [16],
     cvcLength: 3,
-    gaps: [4, 8, 12],
+    gaps: [4, 8, 12]
   },
   {
     brand: 'amex',
     pattern: /^3[47]/,
     lengths: [15],
     cvcLength: 4,
-    gaps: [4, 10],
+    gaps: [4, 10]
   },
   {
     brand: 'discover',
     pattern: /^(6011|65|64[4-9])/,
     lengths: [16, 19],
     cvcLength: 3,
-    gaps: [4, 8, 12],
+    gaps: [4, 8, 12]
   },
   {
     brand: 'diners',
     pattern: /^(36|38|30[0-5])/,
     lengths: [14, 16, 19],
     cvcLength: 3,
-    gaps: [4, 10],
+    gaps: [4, 10]
   },
   {
     brand: 'jcb',
     pattern: /^35/,
     lengths: [16, 17, 18, 19],
     cvcLength: 3,
-    gaps: [4, 8, 12],
+    gaps: [4, 8, 12]
   },
   {
     brand: 'unionpay',
     pattern: /^62/,
     lengths: [16, 17, 18, 19],
     cvcLength: 3,
-    gaps: [4, 8, 12],
-  },
+    gaps: [4, 8, 12]
+  }
 ]
 
 /**

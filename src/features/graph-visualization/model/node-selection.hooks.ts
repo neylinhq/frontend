@@ -1,5 +1,5 @@
+import type { Edge as FlowEdge, Node as FlowNode } from '@xyflow/react'
 import { useCallback, useState } from 'react'
-import type { Node as FlowNode, Edge as FlowEdge } from '@xyflow/react'
 import type { SelectedElements } from './graph-visualization.types'
 
 export function useNodeSelection() {

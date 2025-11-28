@@ -59,16 +59,17 @@ export const KnowledgeNode = memo(({ data }: KnowledgeNodeProps) => {
 
         {/* Description */}
         {data.description && (
-          <p className="text-sm text-muted-foreground line-clamp-2 mt-2">
-            {data.description}
-          </p>
+          <p className="text-sm text-muted-foreground line-clamp-2 mt-2">{data.description}</p>
         )}
 
         {/* Complexity badge (optional) */}
         {data.metadata.complexity && (
           <Badge
             variant="secondary"
-            className={cn('text-xs mt-3 pointer-events-none', getComplexityColor(data.metadata.complexity))}
+            className={cn(
+              'text-xs mt-3 pointer-events-none',
+              getComplexityColor(data.metadata.complexity)
+            )}
           >
             {data.metadata.complexity}
           </Badge>

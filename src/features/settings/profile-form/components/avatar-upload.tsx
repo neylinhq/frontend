@@ -1,6 +1,6 @@
+import { Loader2 } from 'lucide-react'
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Loader2 } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar'
 import { Button } from '@/shared/ui/button'
 
@@ -50,9 +50,7 @@ export function AvatarUpload({ currentUrl, fallback, onUpload, isPending }: Avat
             t('settings.profile.avatar.upload')
           )}
         </Button>
-        <p className="text-xs text-muted-foreground">
-          {t('settings.profile.avatar.requirements')}
-        </p>
+        <p className="text-xs text-muted-foreground">{t('settings.profile.avatar.requirements')}</p>
       </div>
     </div>
   )

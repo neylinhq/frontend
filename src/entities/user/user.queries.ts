@@ -1,16 +1,22 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { userApi } from './user.api'
-import type { UpdateProfile, UserPreferences, ChangeEmail, ChangePassword, User } from './user.schema'
+import type {
+  ChangeEmail,
+  ChangePassword,
+  UpdateProfile,
+  User,
+  UserPreferences
+} from './user.schema'
 
 export const userKeys = {
   all: ['user'] as const,
-  current: () => [...userKeys.all, 'current'] as const,
+  current: () => [...userKeys.all, 'current'] as const
 }
 
 export const useCurrentUser = () => {
   return useQuery({
     queryKey: userKeys.current(),
-    queryFn: userApi.getCurrentUser,
+    queryFn: userApi.getCurrentUser
   })
 }
 
@@ -19,9 +25,9 @@ export const useUpdateProfile = () => {
 
   return useMutation({
     mutationFn: (data: UpdateProfile) => userApi.updateProfile(data),
-    onSuccess: (updatedUser) => {
+    onSuccess: updatedUser => {
       queryClient.setQueryData(userKeys.current(), updatedUser)
-    },
+    }
   })
 }
 
@@ -30,15 +36,15 @@ export const useUpdatePreferences = () => {
 
   return useMutation({
     mutationFn: (data: UserPreferences) => userApi.updatePreferences(data),
-    onSuccess: (preferences) => {
-      queryClient.setQueryData<User>(userKeys.current(), (old) => {
+    onSuccess: preferences => {
+      queryClient.setQueryData<User>(userKeys.current(), old => {
         if (!old) return old
         return {
           ...old,
-          preferences,
+          preferences
         }
       })
-    },
+    }
   })
 }
 
@@ -48,14 +54,14 @@ export const useUploadAvatar = () => {
   return useMutation({
     mutationFn: (file: File) => userApi.uploadAvatar(file),
     onSuccess: ({ avatarUrl }) => {
-      queryClient.setQueryData<User>(userKeys.current(), (old) => {
+      queryClient.setQueryData<User>(userKeys.current(), old => {
         if (!old) return old
         return {
           ...old,
-          avatarUrl,
+          avatarUrl
         }
       })
-    },
+    }
   })
 }
 
@@ -66,18 +72,18 @@ export const useChangeEmail = () => {
     mutationFn: (data: ChangeEmail) => userApi.changeEmail(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: userKeys.current() })
-    },
+    }
   })
 }
 
 export const useChangePassword = () => {
   return useMutation({
-    mutationFn: (data: ChangePassword) => userApi.changePassword(data),
+    mutationFn: (data: ChangePassword) => userApi.changePassword(data)
   })
 }
 
 export const useDeleteAccount = () => {
   return useMutation({
-    mutationFn: (password: string) => userApi.deleteAccount(password),
+    mutationFn: (password: string) => userApi.deleteAccount(password)
   })
 }

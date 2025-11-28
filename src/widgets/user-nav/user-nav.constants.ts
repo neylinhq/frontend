@@ -46,7 +46,7 @@ export const USER_NAV_MAIN_SECTION: UserNavItem[] = [
   {
     title: 'nav.billing',
     href: SETTINGS_ROUTES.billing,
-    icon: CreditCard,
+    icon: CreditCard
   }
 ]
 

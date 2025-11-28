@@ -11,8 +11,8 @@ export function useActiveHeading(headingIds: string[]) {
     if (headingIds.length === 0) return
 
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
+      entries => {
+        entries.forEach(entry => {
           if (entry.isIntersecting) {
             setActiveId(entry.target.id)
           }
@@ -22,11 +22,11 @@ export function useActiveHeading(headingIds: string[]) {
         // Start detecting when heading is 80px from top
         // Stop detecting when heading is 80% down the viewport
         rootMargin: '-80px 0px -80% 0px',
-        threshold: 0,
+        threshold: 0
       }
     )
 
-    headingIds.forEach((id) => {
+    headingIds.forEach(id => {
       const element = document.getElementById(id)
       if (element) {
         observer.observe(element)

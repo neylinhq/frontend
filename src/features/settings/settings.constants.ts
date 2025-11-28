@@ -1,4 +1,11 @@
-import { User as UserIcon, Settings2, Palette, Shield, CreditCard, type LucideIcon } from 'lucide-react'
+import {
+  CreditCard,
+  type LucideIcon,
+  Palette,
+  Settings2,
+  Shield,
+  User as UserIcon
+} from 'lucide-react'
 import { SETTINGS_ROUTES } from '@/shared/config'
 
 export interface SettingsNavItem {

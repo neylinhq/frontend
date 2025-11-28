@@ -20,7 +20,7 @@ const IGNORE_DIRS = new Set([
   'coverage',
   '.cache',
   'public',
-  '.dev',
+  '.dev'
 ])
 
 const IGNORE_FILES = new Set(['.DS_Store', 'package-lock.json', 'yarn.lock', 'pnpm-lock.yaml'])
@@ -35,7 +35,7 @@ const FILE_CATEGORIES: Record<FileCategory, string[]> = {
   json: ['.json'],
   html: ['.html', '.htm'],
   markdown: ['.md', '.mdx'],
-  other: [],
+  other: []
 }
 
 // Statistics
@@ -52,7 +52,7 @@ const stats: Record<FileCategory, CategoryStats> = {
   json: { total: 0, nonEmpty: 0, files: 0 },
   html: { total: 0, nonEmpty: 0, files: 0 },
   markdown: { total: 0, nonEmpty: 0, files: 0 },
-  other: { total: 0, nonEmpty: 0, files: 0 },
+  other: { total: 0, nonEmpty: 0, files: 0 }
 }
 
 /**
@@ -87,11 +87,11 @@ function removeComments(content: string, category: FileCategory): string {
   }
 
   // For JS/TS remove multi-line and single-line comments
-  let result = content.replace(/\/\*[\s\S]*?\*\//g, '')
+  const result = content.replace(/\/\*[\s\S]*?\*\//g, '')
 
   const lines = result.split('\n')
   return lines
-    .map((line) => {
+    .map(line => {
       const inString = /(['"`]).*?\1/.exec(line)
       if (inString) {
         const beforeString = line.substring(0, inString.index)
@@ -120,7 +120,7 @@ function analyzeFile(filePath: string): void {
 
     const withoutComments = removeComments(content, category)
     const lines = withoutComments.split('\n')
-    const nonEmptyLines = lines.filter((line) => line.trim().length > 0).length
+    const nonEmptyLines = lines.filter(line => line.trim().length > 0).length
 
     stats[category].total += lines.length
     stats[category].nonEmpty += nonEmptyLines
@@ -168,7 +168,7 @@ function printStats(): void {
   console.log('\nLines of Code Statistics\n')
   console.log('='.repeat(80))
 
-  const categories = (Object.keys(stats) as FileCategory[]).filter((cat) => stats[cat].files > 0)
+  const categories = (Object.keys(stats) as FileCategory[]).filter(cat => stats[cat].files > 0)
   let totalFiles = 0
   let totalLines = 0
   let totalNonEmpty = 0

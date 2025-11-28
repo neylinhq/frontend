@@ -43,6 +43,7 @@ export function BlockEditor({
   const [mediaDialogType, setMediaDialogType] = useState<MediaType>('image')
   const slashMenuRef = useRef<{ onKeyDown: (event: KeyboardEvent) => boolean }>(null)
   const editorRef = useRef<HTMLDivElement>(null)
+  const editorWrapperRef = useRef<HTMLDivElement>(null)
 
   // FIX: Use ref to avoid re-registering click-outside listener on every showSlashMenu change
   const showSlashMenuRef = useRef(showSlashMenu)
@@ -296,7 +297,7 @@ export function BlockEditor({
   // Loading state while editor initializes
   if (!editor) {
     return (
-      <div className={cn('tiptap-editor md:pl-8', className)}>
+      <div className={cn('tiptap-editor', className)}>
         <div className="animate-pulse space-y-4">
           <div className="h-6 bg-muted rounded w-3/4" />
           <div className="h-4 bg-muted rounded w-full" />
@@ -309,46 +310,57 @@ export function BlockEditor({
 
   return (
     <div
-      ref={editorRef}
+      ref={editorWrapperRef}
       className={cn(
-        'tiptap-editor group/editor relative md:pl-8',
-        resolvedMode === 'dark' && 'dark',
+        'tiptap-editor-wrapper relative',
+        'md:-ml-12 md:pl-12', // Extend left into gutter for hover detection
         className
       )}
     >
-      <EditorBubbleMenu editor={editor} onOpenMathDialog={openMathDialog} />
-      <EditorFloatingMenu editor={editor} onAddClick={handleAddBlock} />
+      <div
+        ref={editorRef}
+        className={cn('tiptap-editor group/editor relative', resolvedMode === 'dark' && 'dark')}
+      >
+        <EditorBubbleMenu editor={editor} onOpenMathDialog={openMathDialog} />
 
-      <MathInputDialog
-        isOpen={mathDialogOpen}
-        onClose={() => setMathDialogOpen(false)}
-        onSubmit={handleMathSubmit}
-        initialValue={mathDialogInitialValue}
-        mode={mathDialogMode}
+        <MathInputDialog
+          isOpen={mathDialogOpen}
+          onClose={() => setMathDialogOpen(false)}
+          onSubmit={handleMathSubmit}
+          initialValue={mathDialogInitialValue}
+          mode={mathDialogMode}
+        />
+
+        {/* UX-1: Media insert dialog (replaces window.prompt) */}
+        <MediaInsertDialog
+          isOpen={mediaDialogOpen}
+          onClose={() => setMediaDialogOpen(false)}
+          onSubmit={handleMediaSubmit}
+          type={mediaDialogType}
+        />
+
+        <EditorContent editor={editor} />
+
+        {/* Slash Menu */}
+        {showSlashMenu && slashItems.length > 0 && (
+          <div
+            className="absolute z-50"
+            style={{
+              top: slashMenuPosition.top,
+              left: slashMenuPosition.left
+            }}
+          >
+            <SlashMenu ref={slashMenuRef} items={slashItems} command={handleSlashCommand} />
+          </div>
+        )}
+      </div>
+
+      {/* FloatingMenu positioned from wrapper (left:0 = gutter zone) */}
+      <EditorFloatingMenu
+        editor={editor}
+        onAddClick={handleAddBlock}
+        containerRef={editorWrapperRef}
       />
-
-      {/* UX-1: Media insert dialog (replaces window.prompt) */}
-      <MediaInsertDialog
-        isOpen={mediaDialogOpen}
-        onClose={() => setMediaDialogOpen(false)}
-        onSubmit={handleMediaSubmit}
-        type={mediaDialogType}
-      />
-
-      <EditorContent editor={editor} />
-
-      {/* Slash Menu */}
-      {showSlashMenu && slashItems.length > 0 && (
-        <div
-          className="absolute z-50"
-          style={{
-            top: slashMenuPosition.top,
-            left: slashMenuPosition.left
-          }}
-        >
-          <SlashMenu ref={slashMenuRef} items={slashItems} command={handleSlashCommand} />
-        </div>
-      )}
     </div>
   )
 }

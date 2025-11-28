@@ -1,13 +1,13 @@
-import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form'
-import { Input } from '@/shared/ui/input'
+import { useChangePassword } from '@/entities/user'
 import { Button } from '@/shared/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
-import { useChangePassword } from '@/entities/user'
-import { passwordChangeSchema, type PasswordChangeValues } from '../lib/validation'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form'
+import { Input } from '@/shared/ui/input'
+import { type PasswordChangeValues, passwordChangeSchema } from '../lib/validation'
 
 export function PasswordChangeForm() {
   const { t } = useTranslation()
@@ -18,8 +18,8 @@ export function PasswordChangeForm() {
     defaultValues: {
       currentPassword: '',
       newPassword: '',
-      confirmPassword: '',
-    },
+      confirmPassword: ''
+    }
   })
 
   const onSubmit = (values: PasswordChangeValues) => {
@@ -28,9 +28,9 @@ export function PasswordChangeForm() {
         toast.success(t('settings.security.password.success'))
         form.reset()
       },
-      onError: (error) => {
+      onError: error => {
         toast.error(error.message || t('errors.failedSave'))
-      },
+      }
     })
   }
 
@@ -95,7 +95,9 @@ export function PasswordChangeForm() {
                 {t('common.cancel')}
               </Button>
               <Button type="submit" disabled={changePassword.isPending || !form.formState.isDirty}>
-                {changePassword.isPending ? t('common.saving') : t('settings.security.password.update')}
+                {changePassword.isPending
+                  ? t('common.saving')
+                  : t('settings.security.password.update')}
               </Button>
             </div>
           </form>

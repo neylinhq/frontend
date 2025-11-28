@@ -1,5 +1,5 @@
-import { useTranslation } from 'react-i18next'
 import { Laptop, Smartphone } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/shared/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
 
@@ -33,7 +33,7 @@ export function ActiveSessions() {
         <CardDescription>{t('settings.security.sessions.description')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {activeSessions.map((session) => {
+        {activeSessions.map(session => {
           const Icon = session.icon
 
           return (

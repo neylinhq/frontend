@@ -3,7 +3,7 @@ import { getMeta } from '@/shared/lib/get-meta'
 
 export const handle = {
   hideFooter: true,
-  centered: true,
+  centered: true
 }
 
 export function meta() {

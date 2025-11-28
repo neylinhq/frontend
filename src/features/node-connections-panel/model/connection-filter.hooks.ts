@@ -7,11 +7,11 @@ export function useConnectionFilter(nodeId: string, edges: Edge[]) {
   const [filter, setFilter] = useState<ConnectionFilterType>('all')
 
   const incomingEdges = useMemo(() => {
-    return edges.filter((e) => e.targetNodeId === nodeId)
+    return edges.filter(e => e.targetNodeId === nodeId)
   }, [edges, nodeId])
 
   const outgoingEdges = useMemo(() => {
-    return edges.filter((e) => e.sourceNodeId === nodeId)
+    return edges.filter(e => e.sourceNodeId === nodeId)
   }, [edges, nodeId])
 
   const filteredEdges = useMemo(() => {

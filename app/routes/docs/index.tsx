@@ -1,15 +1,15 @@
-import { Link } from 'react-router'
-import { ArrowRight, Palette, Type, Package, Sparkles, Keyboard, Moon, Zap } from 'lucide-react'
+import { ArrowRight, Keyboard, Moon, Package, Palette, Sparkles, Type, Zap } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { Button } from '@/shared/ui/button'
-import { Badge } from '@/shared/ui/badge'
-import { Typography } from '@/shared/ui/typography'
-import { getMeta } from '@/shared/lib/get-meta'
+import { Link } from 'react-router'
 import { DOCS_ROUTES } from '@/shared/config'
+import { getMeta } from '@/shared/lib/get-meta'
+import { Badge } from '@/shared/ui/badge'
+import { Button } from '@/shared/ui/button'
+import { Typography } from '@/shared/ui/typography'
 import type { Route } from './+types/index'
 
 export const handle = {
-  breadcrumb: 'Introduction',
+  breadcrumb: 'Introduction'
 }
 
 export function meta(_args: Route.MetaArgs) {
@@ -132,7 +132,7 @@ function QuickLinkCard({
   title,
   description,
   href,
-  badge,
+  badge
 }: {
   icon: React.ReactNode
   title: string
@@ -153,9 +153,7 @@ function QuickLinkCard({
             </Badge>
           )}
         </div>
-        <h3 className="font-semibold mb-1 group-hover:text-brand transition-colors">
-          {title}
-        </h3>
+        <h3 className="font-semibold mb-1 group-hover:text-brand transition-colors">{title}</h3>
         <p className="text-sm text-muted-foreground">{description}</p>
       </div>
     </Link>
@@ -165,7 +163,7 @@ function QuickLinkCard({
 function FeatureCard({
   icon,
   title,
-  description,
+  description
 }: {
   icon: React.ReactNode
   title: string

@@ -6,7 +6,7 @@ export const LAYOUT = {
   // Header height - consistent across all layouts
   header: {
     height: 56,
-    class: 'h-14',
+    class: 'h-14'
   },
 
   // Documentation layout
@@ -14,28 +14,28 @@ export const LAYOUT = {
     container: 'max-w-[1400px]',
     sidebar: {
       width: 260,
-      class: 'w-[260px]',
+      class: 'w-[260px]'
     },
     toc: {
       width: 220,
-      class: 'w-[220px]',
+      class: 'w-[220px]'
     },
-    content: 'max-w-3xl',
+    content: 'max-w-3xl'
   },
 
   // Public pages (marketing)
   public: {
-    container: 'max-w-5xl',
+    container: 'max-w-5xl'
   },
 
   // Dashboard/Settings
   dashboard: {
-    container: 'max-w-6xl',
-  },
+    container: 'max-w-6xl'
+  }
 } as const
 
 // Computed CSS values for sticky positioning
 export const DOCS_STICKY = {
   top: '3.5rem', // 56px = h-14
-  height: 'calc(100vh - 3.5rem)',
+  height: 'calc(100vh - 3.5rem)'
 } as const

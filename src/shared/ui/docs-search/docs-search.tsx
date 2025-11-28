@@ -1,26 +1,13 @@
 'use client'
 
+import { ArrowRight, BookOpen, FileText, Hash, Package, Palette, Search, Type } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
-import {
-  ArrowRight,
-  BookOpen,
-  FileText,
-  Hash,
-  Package,
-  Palette,
-  Search,
-  Type,
-} from 'lucide-react'
 
 import { cn } from '@/shared/lib/cn'
 import './docs-search.styles.css'
 import { isMac } from '@/shared/lib/platform'
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-} from '@/shared/ui/dialog'
+import { Dialog, DialogContent, DialogTitle } from '@/shared/ui/dialog'
 
 interface SearchItem {
   id: string
@@ -42,7 +29,7 @@ const SEARCH_INDEX: SearchItem[] = [
     href: '/docs/ui',
     section: 'Getting Started',
     icon: BookOpen,
-    keywords: ['start', 'begin', 'overview', 'introduction'],
+    keywords: ['start', 'begin', 'overview', 'introduction']
   },
   {
     id: 'installation',
@@ -51,7 +38,7 @@ const SEARCH_INDEX: SearchItem[] = [
     href: '/docs/ui/installation',
     section: 'Getting Started',
     icon: FileText,
-    keywords: ['install', 'setup', 'npm', 'yarn'],
+    keywords: ['install', 'setup', 'npm', 'yarn']
   },
   // Foundations
   {
@@ -61,7 +48,7 @@ const SEARCH_INDEX: SearchItem[] = [
     href: '/docs/ui/colors',
     section: 'Foundations',
     icon: Palette,
-    keywords: ['color', 'palette', 'theme', 'brand', 'primary', 'secondary'],
+    keywords: ['color', 'palette', 'theme', 'brand', 'primary', 'secondary']
   },
   {
     id: 'typography',
@@ -70,7 +57,7 @@ const SEARCH_INDEX: SearchItem[] = [
     href: '/docs/ui/typography',
     section: 'Foundations',
     icon: Type,
-    keywords: ['font', 'text', 'heading', 'paragraph', 'size'],
+    keywords: ['font', 'text', 'heading', 'paragraph', 'size']
   },
   // Components
   {
@@ -80,7 +67,7 @@ const SEARCH_INDEX: SearchItem[] = [
     href: '/docs/ui/button',
     section: 'Components',
     icon: Package,
-    keywords: ['button', 'click', 'action', 'submit', 'cta'],
+    keywords: ['button', 'click', 'action', 'submit', 'cta']
   },
   {
     id: 'input',
@@ -89,7 +76,7 @@ const SEARCH_INDEX: SearchItem[] = [
     href: '/docs/ui/input',
     section: 'Components',
     icon: Package,
-    keywords: ['input', 'text', 'field', 'form'],
+    keywords: ['input', 'text', 'field', 'form']
   },
   {
     id: 'card',
@@ -98,7 +85,7 @@ const SEARCH_INDEX: SearchItem[] = [
     href: '/docs/ui/card',
     section: 'Components',
     icon: Package,
-    keywords: ['card', 'container', 'box', 'panel'],
+    keywords: ['card', 'container', 'box', 'panel']
   },
   {
     id: 'badge',
@@ -107,7 +94,7 @@ const SEARCH_INDEX: SearchItem[] = [
     href: '/docs/ui/badge',
     section: 'Components',
     icon: Package,
-    keywords: ['badge', 'tag', 'label', 'status', 'indicator'],
+    keywords: ['badge', 'tag', 'label', 'status', 'indicator']
   },
   {
     id: 'avatar',
@@ -116,7 +103,7 @@ const SEARCH_INDEX: SearchItem[] = [
     href: '/docs/ui/avatar',
     section: 'Components',
     icon: Package,
-    keywords: ['avatar', 'user', 'profile', 'image', 'photo'],
+    keywords: ['avatar', 'user', 'profile', 'image', 'photo']
   },
   {
     id: 'dialog',
@@ -125,7 +112,7 @@ const SEARCH_INDEX: SearchItem[] = [
     href: '/docs/ui/dialog',
     section: 'Components',
     icon: Package,
-    keywords: ['dialog', 'modal', 'popup', 'overlay'],
+    keywords: ['dialog', 'modal', 'popup', 'overlay']
   },
   {
     id: 'tabs',
@@ -134,8 +121,8 @@ const SEARCH_INDEX: SearchItem[] = [
     href: '/docs/ui/tabs',
     section: 'Components',
     icon: Package,
-    keywords: ['tabs', 'navigation', 'switch', 'panel'],
-  },
+    keywords: ['tabs', 'navigation', 'switch', 'panel']
+  }
 ]
 
 interface DocsSearchProps {
@@ -160,18 +147,13 @@ export function DocsSearch({ open, onOpenChange }: DocsSearchProps) {
     const normalizedQuery = query.toLowerCase().trim()
     const terms = normalizedQuery.split(/\s+/)
 
-    return SEARCH_INDEX.filter((item) => {
-      const searchableText = [
-        item.title,
-        item.description,
-        item.section,
-        ...(item.keywords || []),
-      ]
+    return SEARCH_INDEX.filter(item => {
+      const searchableText = [item.title, item.description, item.section, ...(item.keywords || [])]
         .filter(Boolean)
         .join(' ')
         .toLowerCase()
 
-      return terms.every((term) => searchableText.includes(term))
+      return terms.every(term => searchableText.includes(term))
     })
   }, [query])
 
@@ -206,11 +188,11 @@ export function DocsSearch({ open, onOpenChange }: DocsSearchProps) {
       switch (e.key) {
         case 'ArrowDown':
           e.preventDefault()
-          setSelectedIndex((i) => (i + 1) % flatResults.length)
+          setSelectedIndex(i => (i + 1) % flatResults.length)
           break
         case 'ArrowUp':
           e.preventDefault()
-          setSelectedIndex((i) => (i - 1 + flatResults.length) % flatResults.length)
+          setSelectedIndex(i => (i - 1 + flatResults.length) % flatResults.length)
           break
         case 'Enter':
           e.preventDefault()
@@ -253,7 +235,7 @@ export function DocsSearch({ open, onOpenChange }: DocsSearchProps) {
             type="text"
             placeholder="Search documentation..."
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={e => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             className="flex-1 h-14 px-3 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
             autoFocus
@@ -275,7 +257,7 @@ export function DocsSearch({ open, onOpenChange }: DocsSearchProps) {
                 <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
                   {section}
                 </div>
-                {items.map((item) => {
+                {items.map(item => {
                   const globalIndex = flatResults.indexOf(item)
                   const Icon = item.icon
 

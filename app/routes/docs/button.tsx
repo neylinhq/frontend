@@ -1,17 +1,17 @@
-import { Mail, Loader2, ChevronRight } from 'lucide-react'
+import { ChevronRight, Loader2, Mail } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { Button } from '@/shared/ui/button'
-import { Typography } from '@/shared/ui/typography'
+import { getMeta } from '@/shared/lib/get-meta'
 import { Badge } from '@/shared/ui/badge'
+import { Button } from '@/shared/ui/button'
+import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
 import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
 import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
 import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
-import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
-import { getMeta } from '@/shared/lib/get-meta'
+import { Typography } from '@/shared/ui/typography'
 import type { Route } from './+types/button'
 
 export const handle = {
-  breadcrumb: 'Button',
+  breadcrumb: 'Button'
 }
 
 export function meta(_args: Route.MetaArgs) {
@@ -27,7 +27,7 @@ export default function ButtonPage() {
     { id: 'with-icons', title: t('docs.button.withIcons.title'), level: 2 },
     { id: 'states', title: t('docs.common.states'), level: 2 },
     { id: 'usage', title: t('docs.common.usage'), level: 2 },
-    { id: 'api-reference', title: t('docs.common.apiReference'), level: 2 },
+    { id: 'api-reference', title: t('docs.common.apiReference'), level: 2 }
   ]
 
   const BUTTON_VARIANTS = [
@@ -37,14 +37,14 @@ export default function ButtonPage() {
     { variant: 'destructive' as const, label: t('docs.button.examples.destructive') },
     { variant: 'outline' as const, label: t('docs.button.examples.outline') },
     { variant: 'ghost' as const, label: t('docs.button.examples.ghost') },
-    { variant: 'link' as const, label: t('docs.button.examples.link') },
+    { variant: 'link' as const, label: t('docs.button.examples.link') }
   ]
 
   const BUTTON_SIZES = [
     { size: 'sm' as const, label: t('docs.button.examples.small') },
     { size: 'default' as const, label: t('docs.button.examples.default') },
     { size: 'lg' as const, label: t('docs.button.examples.large') },
-    { size: 'icon' as const, label: t('docs.button.examples.icon'), isIcon: true },
+    { size: 'icon' as const, label: t('docs.button.examples.icon'), isIcon: true }
   ]
 
   return (
@@ -56,7 +56,7 @@ export default function ButtonPage() {
           <DocsBreadcrumbs
             items={[
               { label: t('docs.common.components'), href: '/docs/ui/button' },
-              { label: 'Button' },
+              { label: 'Button' }
             ]}
           />
           <div className="flex items-center gap-3">
@@ -71,9 +71,7 @@ export default function ButtonPage() {
         {/* Variants */}
         <section id="variants" className="scroll-mt-20 space-y-4">
           <Typography variant="h2">{t('docs.common.variants')}</Typography>
-          <Typography variant="muted">
-            {t('docs.button.variants.description')}
-          </Typography>
+          <Typography variant="muted">{t('docs.button.variants.description')}</Typography>
 
           <DocsComponentPreview
             code={`<Button>${t('docs.button.examples.default')}</Button>
@@ -97,9 +95,7 @@ export default function ButtonPage() {
         {/* Sizes */}
         <section id="sizes" className="scroll-mt-20 space-y-4">
           <Typography variant="h2">{t('docs.common.sizes')}</Typography>
-          <Typography variant="muted">
-            {t('docs.button.sizes.description')}
-          </Typography>
+          <Typography variant="muted">{t('docs.button.sizes.description')}</Typography>
 
           <DocsComponentPreview
             code={`<Button size="sm">${t('docs.button.examples.small')}</Button>
@@ -120,9 +116,7 @@ export default function ButtonPage() {
         {/* With Icons */}
         <section id="with-icons" className="scroll-mt-20 space-y-4">
           <Typography variant="h2">{t('docs.button.withIcons.title')}</Typography>
-          <Typography variant="muted">
-            {t('docs.button.withIcons.description')}
-          </Typography>
+          <Typography variant="muted">{t('docs.button.withIcons.description')}</Typography>
 
           <DocsComponentPreview
             code={`<Button>
@@ -160,9 +154,7 @@ export default function ButtonPage() {
         {/* States */}
         <section id="states" className="scroll-mt-20 space-y-4">
           <Typography variant="h2">{t('docs.common.states')}</Typography>
-          <Typography variant="muted">
-            {t('docs.button.states.description')}
-          </Typography>
+          <Typography variant="muted">{t('docs.button.states.description')}</Typography>
 
           <div className="space-y-6">
             <div>
@@ -276,16 +268,8 @@ import { DASHBOARD_ROUTES } from '@/shared/config'
                   type="'default' | 'sm' | 'lg' | 'icon'"
                   defaultValue="'default'"
                 />
-                <PropRow
-                  name="asChild"
-                  type="boolean"
-                  defaultValue="false"
-                />
-                <PropRow
-                  name="disabled"
-                  type="boolean"
-                  defaultValue="false"
-                />
+                <PropRow name="asChild" type="boolean" defaultValue="false" />
+                <PropRow name="disabled" type="boolean" defaultValue="false" />
               </tbody>
             </table>
           </div>
@@ -301,7 +285,7 @@ import { DASHBOARD_ROUTES } from '@/shared/config'
 function PropRow({
   name,
   type,
-  defaultValue,
+  defaultValue
 }: {
   name: string
   type: string

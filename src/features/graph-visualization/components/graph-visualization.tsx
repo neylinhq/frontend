@@ -9,41 +9,41 @@ import {
   useEdgesState,
   useNodesState,
   useReactFlow,
-  useViewport,
+  useViewport
 } from '@xyflow/react'
 import { Loader2 } from 'lucide-react'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useFullMap, type FullMap } from '@/entities/map'
+import { type FullMap, useFullMap } from '@/entities/map'
+import {
+  applyLayout,
+  getNodesWithinDepth,
+  layoutEvent,
+  useFilters,
+  useFocusMode,
+  useGraphKeyboard,
+  useGraphUI,
+  useNodeSpacing,
+  useViewMode
+} from '@/features/graph-view'
+import { NodeDrawer } from '@/features/node-drawer'
 import { cn } from '@/shared/lib/cn'
 import { Card } from '@/shared/ui/card'
 import { transformEdgesToFlow, transformNodesToFlow } from '../lib/transform-data'
-import { useAnimatedLayout, easeOutCubic } from '../lib/use-animated-layout'
+import { easeOutCubic, useAnimatedLayout } from '../lib/use-animated-layout'
 import { useGraphControls } from '../model/graph-controls.hooks'
 import { useNodeSelection } from '../model/node-selection.hooks'
-import { NodeDrawer } from '@/features/node-drawer'
 import { GraphToolbar } from './graph-toolbar'
-import { ViewControlsPanel } from './view-controls-panel'
 import { KnowledgeEdge } from './knowledge-edge'
 import { KnowledgeNode } from './knowledge-node'
-import {
-  layoutEvent,
-  applyLayout,
-  getNodesWithinDepth,
-  useGraphKeyboard,
-  useViewMode,
-  useFocusMode,
-  useFilters,
-  useGraphUI,
-  useNodeSpacing,
-} from '@/features/graph-view'
+import { ViewControlsPanel } from './view-controls-panel'
 
 const nodeTypes = {
-  knowledgeNode: KnowledgeNode,
+  knowledgeNode: KnowledgeNode
 }
 
 const edgeTypes = {
-  knowledgeEdge: KnowledgeEdge,
+  knowledgeEdge: KnowledgeEdge
 }
 
 interface GraphVisualizationProps {
@@ -57,7 +57,7 @@ function GraphVisualizationContent({
   mapId,
   className,
   interactive = true,
-  initialData,
+  initialData
 }: GraphVisualizationProps) {
   const { t } = useTranslation()
   // Use initialData if provided (SSR), otherwise fetch client-side
@@ -72,14 +72,17 @@ function GraphVisualizationContent({
   const { zoom: viewportZoom } = useViewport()
 
   // Pan to a specific node
-  const handlePanToNode = useCallback((nodeId: string) => {
-    const node = getNode(nodeId)
-    if (node) {
-      const x = node.position.x + (node.measured?.width ?? 200) / 2
-      const y = node.position.y + (node.measured?.height ?? 100) / 2
-      setCenter(x, y, { zoom: viewportZoom, duration: 300 })
-    }
-  }, [getNode, setCenter, viewportZoom])
+  const handlePanToNode = useCallback(
+    (nodeId: string) => {
+      const node = getNode(nodeId)
+      if (node) {
+        const x = node.position.x + (node.measured?.width ?? 200) / 2
+        const y = node.position.y + (node.measured?.height ?? 100) / 2
+        setCenter(x, y, { zoom: viewportZoom, duration: 300 })
+      }
+    },
+    [getNode, setCenter, viewportZoom]
+  )
 
   // Store hooks for view settings
   const { viewMode } = useViewMode()
@@ -90,8 +93,8 @@ function GraphVisualizationContent({
   const { animateToPositions } = useAnimatedLayout()
 
   // Track dark mode for theme-aware styling
-  const [isDark, setIsDark] = useState(() =>
-    typeof document !== 'undefined' && document.documentElement.classList.contains('dark')
+  const [isDark, setIsDark] = useState(
+    () => typeof document !== 'undefined' && document.documentElement.classList.contains('dark')
   )
 
   useEffect(() => {
@@ -103,8 +106,20 @@ function GraphVisualizationContent({
   }, [])
 
   // Use refs for layout params to avoid stale closures when triggerLayout fires
-  const layoutParamsRef = useRef({ nodeSpacing, viewMode, focusedNodeId, directionStrength, animationDuration })
-  layoutParamsRef.current = { nodeSpacing, viewMode, focusedNodeId, directionStrength, animationDuration }
+  const layoutParamsRef = useRef({
+    nodeSpacing,
+    viewMode,
+    focusedNodeId,
+    directionStrength,
+    animationDuration
+  })
+  layoutParamsRef.current = {
+    nodeSpacing,
+    viewMode,
+    focusedNodeId,
+    directionStrength,
+    animationDuration
+  }
 
   // Calculate counts by type for filters
   const { nodeCountsByType, edgeCountsByType } = useMemo(() => {
@@ -129,29 +144,25 @@ function GraphVisualizationContent({
     if (!fullMap) return { nodes: [], edges: [] }
 
     // Start with type-filtered nodes
-    let visibleNodes = fullMap.nodes.filter((node) =>
-      visibleNodeTypes.has(node.type)
-    )
+    let visibleNodes = fullMap.nodes.filter(node => visibleNodeTypes.has(node.type))
 
     // Filter edges by type
-    let visibleEdges = fullMap.edges.filter((edge) =>
-      visibleEdgeTypes.has(edge.relationType)
-    )
+    let visibleEdges = fullMap.edges.filter(edge => visibleEdgeTypes.has(edge.relationType))
 
     // In focus mode, further filter to nodes within depth
     if (viewMode === 'focus' && focusedNodeId) {
       // Get flow edges for depth calculation
-      const flowEdges = visibleEdges.map((e) => ({
+      const flowEdges = visibleEdges.map(e => ({
         id: e.id,
         source: e.sourceNodeId,
-        target: e.targetNodeId,
+        target: e.targetNodeId
       }))
 
       const nodesInRange = getNodesWithinDepth(focusedNodeId, flowEdges, focusDepth)
 
-      visibleNodes = visibleNodes.filter((n) => nodesInRange.has(n.id))
+      visibleNodes = visibleNodes.filter(n => nodesInRange.has(n.id))
       visibleEdges = visibleEdges.filter(
-        (e) => nodesInRange.has(e.sourceNodeId) && nodesInRange.has(e.targetNodeId)
+        e => nodesInRange.has(e.sourceNodeId) && nodesInRange.has(e.targetNodeId)
       )
     }
 
@@ -213,40 +224,46 @@ function GraphVisualizationContent({
   }, [reactFlowNodes, screenToFlowPosition])
 
   // Apply auto-layout function - uses ref to get latest params when triggered by store events
-  const doApplyLayout = useCallback((shouldFitView = true, anchorNodeId?: string | null, animated = false) => {
-    if (reactFlowNodes.length === 0) return
+  const doApplyLayout = useCallback(
+    (shouldFitView = true, anchorNodeId?: string | null, animated = false) => {
+      if (reactFlowNodes.length === 0) return
 
-    const params = layoutParamsRef.current
-    const result = applyLayout(reactFlowNodes, reactFlowEdges, {
-      viewMode: params.viewMode,
-      focusedNodeId: params.focusedNodeId,
-      spacingPercent: params.nodeSpacing,
-      directionStrength: params.directionStrength,
-    })
+      const params = layoutParamsRef.current
+      const result = applyLayout(reactFlowNodes, reactFlowEdges, {
+        viewMode: params.viewMode,
+        focusedNodeId: params.focusedNodeId,
+        spacingPercent: params.nodeSpacing,
+        directionStrength: params.directionStrength
+      })
 
-    if (animated) {
-      // Smooth animation with synchronized camera
-      const duration = layoutParamsRef.current.animationDuration
-      animateToPositions(reactFlowNodes, result.nodes, anchorNodeId ?? null, { duration, easing: easeOutCubic })
-      // If no anchor but need to fit view, do it after animation completes
-      if (!anchorNodeId && shouldFitView) {
-        setTimeout(() => fitView({ padding: 0.2, duration: 300 }), duration + 50)
-      }
-    } else {
-      // Instant update
-      setNodes(result.nodes)
-      if (anchorNodeId) {
-        const anchorNode = result.nodes.find(n => n.id === anchorNodeId)
-        if (anchorNode) {
-          const x = anchorNode.position.x + (anchorNode.measured?.width ?? 200) / 2
-          const y = anchorNode.position.y + (anchorNode.measured?.height ?? 100) / 2
-          setCenter(x, y, { zoom: viewportZoom, duration: 300 })
+      if (animated) {
+        // Smooth animation with synchronized camera
+        const duration = layoutParamsRef.current.animationDuration
+        animateToPositions(reactFlowNodes, result.nodes, anchorNodeId ?? null, {
+          duration,
+          easing: easeOutCubic
+        })
+        // If no anchor but need to fit view, do it after animation completes
+        if (!anchorNodeId && shouldFitView) {
+          setTimeout(() => fitView({ padding: 0.2, duration: 300 }), duration + 50)
         }
-      } else if (shouldFitView) {
-        fitView({ padding: 0.2, duration: 300 })
+      } else {
+        // Instant update
+        setNodes(result.nodes)
+        if (anchorNodeId) {
+          const anchorNode = result.nodes.find(n => n.id === anchorNodeId)
+          if (anchorNode) {
+            const x = anchorNode.position.x + (anchorNode.measured?.width ?? 200) / 2
+            const y = anchorNode.position.y + (anchorNode.measured?.height ?? 100) / 2
+            setCenter(x, y, { zoom: viewportZoom, duration: 300 })
+          }
+        } else if (shouldFitView) {
+          fitView({ padding: 0.2, duration: 300 })
+        }
       }
-    }
-  }, [reactFlowNodes, reactFlowEdges, setNodes, fitView, setCenter, viewportZoom, animateToPositions])
+    },
+    [reactFlowNodes, reactFlowEdges, setNodes, fitView, setCenter, viewportZoom, animateToPositions]
+  )
 
   // Apply initial auto-layout when nodes are first loaded
   useEffect(() => {
@@ -257,16 +274,30 @@ function GraphVisualizationContent({
         viewMode,
         focusedNodeId,
         spacingPercent: nodeSpacing,
-        directionStrength,
+        directionStrength
       })
       setNodes(result.nodes)
     }
-  }, [initialNodes.length, fullMap, initialNodes, initialEdges, viewMode, focusedNodeId, nodeSpacing, directionStrength, setNodes])
+  }, [
+    initialNodes.length,
+    fullMap,
+    initialNodes,
+    initialEdges,
+    viewMode,
+    focusedNodeId,
+    nodeSpacing,
+    directionStrength,
+    setNodes
+  ])
 
   // Listen for layout events from the store
   useEffect(() => {
     const handleLayoutEvent = (e: Event) => {
-      const customEvent = e as CustomEvent<{ fitView?: boolean; anchorToCenter?: boolean; animated?: boolean }>
+      const customEvent = e as CustomEvent<{
+        fitView?: boolean
+        anchorToCenter?: boolean
+        animated?: boolean
+      }>
       const shouldFitView = customEvent.detail?.fitView ?? true
       const anchorToCenter = customEvent.detail?.anchorToCenter ?? false
       const animated = customEvent.detail?.animated ?? false
@@ -282,7 +313,10 @@ function GraphVisualizationContent({
   // Sync nodes when filtered data changes
   const prevNodeIdsRef = useRef<string>('')
   useEffect(() => {
-    const nodeIds = initialNodes.map((n) => n.id).sort().join(',')
+    const nodeIds = initialNodes
+      .map(n => n.id)
+      .sort()
+      .join(',')
     if (prevNodeIdsRef.current !== nodeIds) {
       if (prevNodeIdsRef.current !== '') {
         // Nodes changed - apply layout for new set with animation
@@ -290,20 +324,37 @@ function GraphVisualizationContent({
           viewMode,
           focusedNodeId,
           spacingPercent: nodeSpacing,
-          directionStrength,
+          directionStrength
         })
         // Animate to new positions
-        animateToPositions(reactFlowNodes, result.nodes, null, { duration: animationDuration, easing: easeOutCubic })
+        animateToPositions(reactFlowNodes, result.nodes, null, {
+          duration: animationDuration,
+          easing: easeOutCubic
+        })
         setTimeout(() => fitView({ padding: 0.2, duration: 300 }), animationDuration + 50)
       }
       prevNodeIdsRef.current = nodeIds
     }
-  }, [initialNodes, initialEdges, viewMode, focusedNodeId, nodeSpacing, directionStrength, animationDuration, reactFlowNodes, animateToPositions, fitView])
+  }, [
+    initialNodes,
+    initialEdges,
+    viewMode,
+    focusedNodeId,
+    nodeSpacing,
+    directionStrength,
+    animationDuration,
+    reactFlowNodes,
+    animateToPositions,
+    fitView
+  ])
 
   // Sync edges when data changes
   const prevEdgeIdsRef = useRef<string>('')
   useEffect(() => {
-    const edgeIds = initialEdges.map((e) => e.id).sort().join(',')
+    const edgeIds = initialEdges
+      .map(e => e.id)
+      .sort()
+      .join(',')
     if (prevEdgeIdsRef.current !== edgeIds) {
       setEdges(initialEdges)
     }
@@ -316,7 +367,7 @@ function GraphVisualizationContent({
     onFitView: () => fitView({ padding: 0.2, duration: 300 }),
     onZoomIn: zoomIn,
     onZoomOut: zoomOut,
-    enabled: interactive,
+    enabled: interactive
   })
 
   // Handle node changes
@@ -341,7 +392,7 @@ function GraphVisualizationContent({
   const onConnect = useCallback(
     (params: Connection) => {
       if (!interactive) return
-      setEdges((eds) => addEdge({ ...params, type: 'knowledgeEdge' }, eds))
+      setEdges(eds => addEdge({ ...params, type: 'knowledgeEdge' }, eds))
     },
     [setEdges, interactive]
   )
@@ -362,7 +413,10 @@ function GraphVisualizationContent({
     }
 
     // Calculate geometric center of all nodes (canvas center)
-    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity
+    let minX = Infinity,
+      maxX = -Infinity,
+      minY = Infinity,
+      maxY = -Infinity
     for (const node of reactFlowNodes) {
       const w = node.measured?.width ?? 200
       const h = node.measured?.height ?? 100
@@ -426,7 +480,7 @@ function GraphVisualizationContent({
   // At this point fullMap is guaranteed to be defined (either from initialData or fetchedMap)
   if (!fullMap) return null
 
-  const selectedNode = fullMap.nodes.find((n) => n.id === selectedNodeId) || null
+  const selectedNode = fullMap.nodes.find(n => n.id === selectedNodeId) || null
 
   return (
     <div
@@ -464,7 +518,7 @@ function GraphVisualizationContent({
 
         {showMinimap && (
           <MiniMap
-            nodeColor={(node) => {
+            nodeColor={node => {
               switch (node.data?.type) {
                 case 'concept':
                   return '#3b82f6'
@@ -477,12 +531,14 @@ function GraphVisualizationContent({
               }
             }}
             style={{
-              backgroundColor: isDark ? '#171717' : '#f8fafc',
+              backgroundColor: isDark ? '#171717' : '#f8fafc'
             }}
             maskColor={isDark ? 'rgba(0, 0, 0, 0.6)' : 'rgba(0, 0, 0, 0.1)'}
             pannable
             zoomable
-            onClick={(_event, position) => setCenter(position.x, position.y, { zoom: viewportZoom, duration: 200 })}
+            onClick={(_event, position) =>
+              setCenter(position.x, position.y, { zoom: viewportZoom, duration: 200 })
+            }
           />
         )}
       </ReactFlow>

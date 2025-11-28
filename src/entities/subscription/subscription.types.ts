@@ -20,3 +20,19 @@ export interface AddPaymentMethodInput {
   expiryMonth: number
   expiryYear: number
 }
+
+// Input for updating card expiry
+export interface UpdateCardInput {
+  id: string
+  expiryMonth: number
+  expiryYear: number
+}
+
+// Input for updating crypto wallet address
+export interface UpdateCryptoWalletInput {
+  id: string
+  walletAddress: string
+}
+
+// Union type for updating any payment method
+export type UpdatePaymentMethodInput = UpdateCardInput | UpdateCryptoWalletInput

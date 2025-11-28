@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Link, useFetcher } from 'react-router'
-import { PaletteSelect } from '@/app/theme/components/palette-select'
 import { ModeSelect } from '@/app/theme/components/mode-select'
+import { PaletteSelect } from '@/app/theme/components/palette-select'
 import { useSessionStore } from '@/entities/session'
 import { LanguageSelect } from '@/features/language-switcher'
 import { getShortcut } from '@/shared/lib/platform'

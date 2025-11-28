@@ -2,17 +2,16 @@ import type { Editor } from '@tiptap/react'
 import { GripVertical, Plus } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-
-import { cn } from '@/shared/lib/cn'
 import { UI_DELAYS } from '@/shared/config/api-delays'
+import { cn } from '@/shared/lib/cn'
 
 // Constants
-const GUTTER_WIDTH = 60
 const BLOCK_HOVER_THRESHOLD = 5
 
 interface FloatingMenuProps {
   editor: Editor
   onAddClick: () => void
+  containerRef: React.RefObject<HTMLDivElement | null>
 }
 
 // Throttle helper with cleanup support
@@ -49,7 +48,7 @@ function createThrottle<T extends (...args: Parameters<T>) => void>(
   return { throttled, cleanup }
 }
 
-export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
+export function EditorFloatingMenu({ editor, onAddClick, containerRef }: FloatingMenuProps) {
   const { t } = useTranslation()
   const [position, setPosition] = useState({ top: 0, height: 0 })
   const [shouldShow, setShouldShow] = useState(false)
@@ -167,7 +166,12 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
     // Guard: editor view must be mounted before accessing DOM
     if (!editor.view?.dom || editor.isDestroyed) return
 
-    const editorElement = editor.view.dom.closest('.tiptap-editor') as HTMLElement
+    // Use container for hover detection (includes gutter zone)
+    const container = containerRef.current
+    if (!container) return
+
+    // Find .tiptap-editor inside container for ProseMirror access
+    const editorElement = container.querySelector('.tiptap-editor') as HTMLElement
     if (!editorElement) return
 
     const processMouseMove = (e: MouseEvent) => {
@@ -176,9 +180,9 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
       const proseMirror = editorElement.querySelector('.ProseMirror')
       if (!proseMirror) return
 
-      const editorRect = editorElement.getBoundingClientRect()
-      const mouseX = e.clientX - editorRect.left
-      const mouseY = e.clientY - editorRect.top
+      // Use container rect for coordinates (includes gutter)
+      const containerRect = container.getBoundingClientRect()
+      const mouseY = e.clientY - containerRect.top
 
       const target = e.target as HTMLElement
       let block: HTMLElement | null = null
@@ -195,15 +199,16 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
         }
       }
 
-      // If not directly over a block, check if we're in the left gutter area
-      if (!block && mouseX < GUTTER_WIDTH) {
+      // If not directly over a block, find block by Y coordinate
+      // This enables hover from gutter or any area left of content
+      if (!block) {
         const blocks = Array.from(proseMirror.children).filter(
           (el): el is HTMLElement => el instanceof HTMLElement
         )
         for (const b of blocks) {
           const blockRect = b.getBoundingClientRect()
-          const blockTop = blockRect.top - editorRect.top
-          const blockBottom = blockRect.bottom - editorRect.top
+          const blockTop = blockRect.top - containerRect.top
+          const blockBottom = blockRect.bottom - containerRect.top
           if (
             mouseY >= blockTop - BLOCK_HOVER_THRESHOLD &&
             mouseY <= blockBottom + BLOCK_HOVER_THRESHOLD
@@ -217,7 +222,7 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
       if (block && block !== hoveredBlock) {
         const blockRect = block.getBoundingClientRect()
         setPosition({
-          top: blockRect.top - editorRect.top,
+          top: blockRect.top - containerRect.top,
           height: blockRect.height
         })
         setHoveredBlock(block)
@@ -231,8 +236,8 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
 
         if (hoveredBlock) {
           const blockRect = hoveredBlock.getBoundingClientRect()
-          const blockTop = blockRect.top - editorRect.top
-          const blockBottom = blockRect.bottom - editorRect.top
+          const blockTop = blockRect.top - containerRect.top
+          const blockBottom = blockRect.bottom - containerRect.top
 
           if (mouseY >= blockTop - 10 && mouseY <= blockBottom + 10) {
             return
@@ -266,15 +271,15 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
       setShouldShow(false)
     }
 
-    editorElement.addEventListener('mousemove', handleMouseMove)
-    editorElement.addEventListener('mouseleave', handleMouseLeave)
+    container.addEventListener('mousemove', handleMouseMove)
+    container.addEventListener('mouseleave', handleMouseLeave)
 
     return () => {
       cleanupThrottle()
-      editorElement.removeEventListener('mousemove', handleMouseMove)
-      editorElement.removeEventListener('mouseleave', handleMouseLeave)
+      container.removeEventListener('mousemove', handleMouseMove)
+      container.removeEventListener('mouseleave', handleMouseLeave)
     }
-  }, [editor, isDragging, hoveredBlock])
+  }, [editor, isDragging, hoveredBlock, containerRef])
 
   // Handle drag events using ProseMirror API
   useEffect(() => {
@@ -296,9 +301,70 @@ export function EditorFloatingMenu({ editor, onAddClick }: FloatingMenuProps) {
 
       const coords = { left: e.clientX, top: e.clientY }
       const posResult = view.posAtCoords(coords)
-      if (!posResult) return
-
       const editorRect = editorElement.getBoundingClientRect()
+
+      // Y-based fallback when cursor is in gutter (posAtCoords returns null)
+      if (!posResult) {
+        const proseMirror = view.dom
+        const blocks = Array.from(proseMirror.children).filter(
+          (el): el is HTMLElement => el instanceof HTMLElement
+        )
+
+        if (blocks.length === 0) return
+
+        let targetBlock: HTMLElement | null = null
+        let insertAfter = false
+
+        const mouseY = e.clientY
+
+        // Find target block by Y coordinate
+        for (let i = 0; i < blocks.length; i++) {
+          const block = blocks[i]
+          const rect = block.getBoundingClientRect()
+          const blockCenter = (rect.top + rect.bottom) / 2
+
+          if (mouseY < blockCenter) {
+            targetBlock = block
+            insertAfter = false
+            break
+          } else if (i === blocks.length - 1) {
+            // Cursor below last block - insert after it
+            targetBlock = block
+            insertAfter = true
+          }
+        }
+
+        if (targetBlock) {
+          const targetRect = targetBlock.getBoundingClientRect()
+          const indicatorY = insertAfter
+            ? targetRect.bottom - editorRect.top
+            : targetRect.top - editorRect.top
+
+          showDropIndicator(
+            editorElement,
+            indicatorY,
+            targetRect.left - editorRect.left,
+            targetRect.width
+          )
+
+          // Get ProseMirror position for the block
+          const pos = view.posAtDOM(targetBlock, 0)
+          if (pos !== undefined && pos !== null) {
+            // Resolve to get block position (before the block node)
+            const $pos = view.state.doc.resolve(pos)
+            const blockPos = $pos.depth >= 1 ? $pos.before(1) : pos
+
+            dropTargetRef.current = {
+              pos: blockPos,
+              insertAfter,
+              isNested: false,
+              listItemDepth: -1
+            }
+          }
+        }
+        return
+      }
+
       const $pos = view.state.doc.resolve(posResult.pos)
 
       // Find nearest list item in ancestry

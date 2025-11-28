@@ -1,4 +1,4 @@
-import { Button } from '@/shared/ui/button'
+import { getMeta } from '@/shared/lib/get-meta'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -8,19 +8,19 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
+  AlertDialogTrigger
 } from '@/shared/ui/alert-dialog'
-import { Typography } from '@/shared/ui/typography'
 import { Badge } from '@/shared/ui/badge'
+import { Button } from '@/shared/ui/button'
+import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
 import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
 import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
 import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
-import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
-import { getMeta } from '@/shared/lib/get-meta'
+import { Typography } from '@/shared/ui/typography'
 import type { Route } from './+types/alert-dialog'
 
 export const handle = {
-  breadcrumb: 'Alert Dialog',
+  breadcrumb: 'Alert Dialog'
 }
 
 export function meta(_args: Route.MetaArgs) {
@@ -30,7 +30,7 @@ export function meta(_args: Route.MetaArgs) {
 const TOC_ITEMS: TocItem[] = [
   { id: 'basic', title: 'Basic', level: 2 },
   { id: 'usage', title: 'Usage', level: 2 },
-  { id: 'api-reference', title: 'API Reference', level: 2 },
+  { id: 'api-reference', title: 'API Reference', level: 2 }
 ]
 
 export default function AlertDialogPage() {
@@ -39,10 +39,7 @@ export default function AlertDialogPage() {
       <div className="flex-1 min-w-0 space-y-10">
         <header className="space-y-4">
           <DocsBreadcrumbs
-            items={[
-              { label: 'Components', href: '/docs/ui/button' },
-              { label: 'Alert Dialog' },
-            ]}
+            items={[{ label: 'Components', href: '/docs/ui/button' }, { label: 'Alert Dialog' }]}
           />
           <div className="flex items-center gap-3">
             <Typography variant="h1">Alert Dialog</Typography>
@@ -89,8 +86,8 @@ export default function AlertDialogPage() {
                   <AlertDialogHeader>
                     <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                     <AlertDialogDescription>
-                      This action cannot be undone. This will permanently delete your
-                      account and remove your data from our servers.
+                      This action cannot be undone. This will permanently delete your account and
+                      remove your data from our servers.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
@@ -157,23 +154,33 @@ export function DeleteConfirmation({ onDelete }: { onDelete: () => void }) {
               </thead>
               <tbody className="divide-y">
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">AlertDialog</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">AlertDialog</code>
+                  </td>
                   <td className="px-4 py-3">Root component</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">AlertDialogTrigger</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">AlertDialogTrigger</code>
+                  </td>
                   <td className="px-4 py-3">Opens the dialog</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">AlertDialogContent</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">AlertDialogContent</code>
+                  </td>
                   <td className="px-4 py-3">Modal content</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">AlertDialogAction</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">AlertDialogAction</code>
+                  </td>
                   <td className="px-4 py-3">Confirm action button</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">AlertDialogCancel</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">AlertDialogCancel</code>
+                  </td>
                   <td className="px-4 py-3">Cancel button</td>
                 </tr>
               </tbody>

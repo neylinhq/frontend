@@ -1,17 +1,17 @@
-import { Label } from '@/shared/ui/label'
-import { Input } from '@/shared/ui/input'
-import { Checkbox } from '@/shared/ui/checkbox'
-import { Typography } from '@/shared/ui/typography'
+import { getMeta } from '@/shared/lib/get-meta'
 import { Badge } from '@/shared/ui/badge'
+import { Checkbox } from '@/shared/ui/checkbox'
+import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
 import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
 import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
 import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
-import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
-import { getMeta } from '@/shared/lib/get-meta'
+import { Input } from '@/shared/ui/input'
+import { Label } from '@/shared/ui/label'
+import { Typography } from '@/shared/ui/typography'
 import type { Route } from './+types/label'
 
 export const handle = {
-  breadcrumb: 'Label',
+  breadcrumb: 'Label'
 }
 
 export function meta(_args: Route.MetaArgs) {
@@ -22,7 +22,7 @@ const TOC_ITEMS: TocItem[] = [
   { id: 'basic', title: 'Basic', level: 2 },
   { id: 'with-input', title: 'With Input', level: 2 },
   { id: 'with-checkbox', title: 'With Checkbox', level: 2 },
-  { id: 'usage', title: 'Usage', level: 2 },
+  { id: 'usage', title: 'Usage', level: 2 }
 ]
 
 export default function LabelPage() {
@@ -31,10 +31,7 @@ export default function LabelPage() {
       <div className="flex-1 min-w-0 space-y-10">
         <header className="space-y-4">
           <DocsBreadcrumbs
-            items={[
-              { label: 'Components', href: '/docs/ui/button' },
-              { label: 'Label' },
-            ]}
+            items={[{ label: 'Components', href: '/docs/ui/button' }, { label: 'Label' }]}
           />
           <div className="flex items-center gap-3">
             <Typography variant="h1">Label</Typography>

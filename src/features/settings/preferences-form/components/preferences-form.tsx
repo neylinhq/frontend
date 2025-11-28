@@ -1,18 +1,21 @@
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
-import { Label } from '@/shared/ui/label'
-import { Switch } from '@/shared/ui/switch'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/shared/ui/select'
+  defaultUserPreferences,
+  type User,
+  type UserPreferences,
+  useUpdatePreferences
+} from '@/entities/user'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
+import { Label } from '@/shared/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select'
+import { Switch } from '@/shared/ui/switch'
 import { Typography } from '@/shared/ui/typography'
-import { type User, type UserPreferences, defaultUserPreferences, useUpdatePreferences } from '@/entities/user'
-import { NOTIFICATION_SETTINGS, INTERFACE_SWITCH_SETTINGS, DENSITY_OPTIONS } from '../preferences-form.constants'
+import {
+  DENSITY_OPTIONS,
+  INTERFACE_SWITCH_SETTINGS,
+  NOTIFICATION_SETTINGS
+} from '../preferences-form.constants'
 
 interface PreferencesFormProps {
   user: User
@@ -33,8 +36,8 @@ export function PreferencesForm({ user }: PreferencesFormProps) {
       ...preferences,
       [section]: {
         ...preferences[section],
-        [field]: value,
-      },
+        [field]: value
+      }
     }
 
     updatePreferences.mutate(newPreferences, {
@@ -43,7 +46,7 @@ export function PreferencesForm({ user }: PreferencesFormProps) {
       },
       onError: () => {
         toast.error(t('errors.failedSave'))
-      },
+      }
     })
   }
 
@@ -62,18 +65,16 @@ export function PreferencesForm({ user }: PreferencesFormProps) {
           <CardDescription>{t('settings.preferences.notifications.description')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {NOTIFICATION_SETTINGS.map((setting) => (
+          {NOTIFICATION_SETTINGS.map(setting => (
             <div key={setting.id} className="flex items-center justify-between">
               <div className="space-y-0.5">
                 <Label htmlFor={setting.id}>{t(setting.labelKey)}</Label>
-                <p className="text-sm text-muted-foreground">
-                  {t(setting.descriptionKey)}
-                </p>
+                <p className="text-sm text-muted-foreground">{t(setting.descriptionKey)}</p>
               </div>
               <Switch
                 id={setting.id}
                 checked={preferences.notifications[setting.field]}
-                onCheckedChange={(checked) => handleChange('notifications', setting.field, checked)}
+                onCheckedChange={checked => handleChange('notifications', setting.field, checked)}
                 disabled={updatePreferences.isPending}
               />
             </div>
@@ -96,8 +97,12 @@ export function PreferencesForm({ user }: PreferencesFormProps) {
             </div>
             <Select
               value={preferences.interface.density}
-              onValueChange={(value) =>
-                handleChange('interface', 'density', value as 'compact' | 'comfortable' | 'spacious')
+              onValueChange={value =>
+                handleChange(
+                  'interface',
+                  'density',
+                  value as 'compact' | 'comfortable' | 'spacious'
+                )
               }
               disabled={updatePreferences.isPending}
             >
@@ -105,7 +110,7 @@ export function PreferencesForm({ user }: PreferencesFormProps) {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {DENSITY_OPTIONS.map((option) => (
+                {DENSITY_OPTIONS.map(option => (
                   <SelectItem key={option.value} value={option.value}>
                     {t(option.labelKey)}
                   </SelectItem>
@@ -114,18 +119,16 @@ export function PreferencesForm({ user }: PreferencesFormProps) {
             </Select>
           </div>
 
-          {INTERFACE_SWITCH_SETTINGS.map((setting) => (
+          {INTERFACE_SWITCH_SETTINGS.map(setting => (
             <div key={setting.id} className="flex items-center justify-between">
               <div className="space-y-0.5">
                 <Label htmlFor={setting.id}>{t(setting.labelKey)}</Label>
-                <p className="text-sm text-muted-foreground">
-                  {t(setting.descriptionKey)}
-                </p>
+                <p className="text-sm text-muted-foreground">{t(setting.descriptionKey)}</p>
               </div>
               <Switch
                 id={setting.id}
                 checked={preferences.interface[setting.field]}
-                onCheckedChange={(checked) => handleChange('interface', setting.field, checked)}
+                onCheckedChange={checked => handleChange('interface', setting.field, checked)}
                 disabled={updatePreferences.isPending}
               />
             </div>

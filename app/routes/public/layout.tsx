@@ -15,7 +15,7 @@ export default function PublicLayout() {
   const matches = useMatches()
 
   const getHandle = (key: keyof RouteHandle) =>
-    matches.some((match) => (match.handle as RouteHandle)?.[key] === true)
+    matches.some(match => (match.handle as RouteHandle)?.[key] === true)
 
   const hideFooter = getHandle('hideFooter')
   const hideAuthButtons = getHandle('hideAuthButtons')

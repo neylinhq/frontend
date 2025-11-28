@@ -1,7 +1,11 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { cn } from '@/shared/lib/cn'
-import { DEFAULT_LINKS_BY_VARIANT, LEGAL_LINKS, type LegalLinkVariant } from './legal-links.constants'
+import {
+  DEFAULT_LINKS_BY_VARIANT,
+  LEGAL_LINKS,
+  type LegalLinkVariant
+} from './legal-links.constants'
 
 interface LegalLinksProps {
   variant?: LegalLinkVariant
@@ -42,8 +46,8 @@ export function LegalLinks({
       <>
         <Link to={LEGAL_LINKS.terms.href} className={linkClass}>
           {t(LEGAL_LINKS.terms.titleKey)}
-        </Link>
-        {' '}{t('auth.signUp.and')}{' '}
+        </Link>{' '}
+        {t('auth.signUp.and')}{' '}
         <Link to={LEGAL_LINKS.privacy.href} className={linkClass}>
           {t(LEGAL_LINKS.privacy.titleKey)}
         </Link>

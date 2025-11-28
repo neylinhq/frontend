@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { LegalLayout } from '@/shared/ui/legal-layout'
 import { LEGAL_ROUTES } from '@/shared/config'
+import { LegalLayout } from '@/shared/ui/legal-layout'
 import { Typography } from '@/shared/ui/typography'
 
 export function PrivacyPage() {
@@ -9,7 +9,9 @@ export function PrivacyPage() {
   return (
     <LegalLayout>
       <Typography variant="h1">{t('legal.privacy.title')}</Typography>
-      <Typography variant="lead" className="mb-8">{t('legal.privacy.description')}</Typography>
+      <Typography variant="lead" className="mb-8">
+        {t('legal.privacy.description')}
+      </Typography>
 
       <Typography variant="muted" className="mb-8">
         {t('legal.lastUpdated')}: {new Date().toLocaleDateString()}
@@ -19,7 +21,7 @@ export function PrivacyPage() {
       <p>{t('legal.privacy.sections.collection.intro')}</p>
       <ul>
         {(t('legal.privacy.sections.collection.items', { returnObjects: true }) as string[]).map(
-          (item) => (
+          item => (
             <li key={item}>{item}</li>
           )
         )}
@@ -29,7 +31,7 @@ export function PrivacyPage() {
       <p>{t('legal.privacy.sections.usage.intro')}</p>
       <ul>
         {(t('legal.privacy.sections.usage.items', { returnObjects: true }) as string[]).map(
-          (item) => (
+          item => (
             <li key={item}>{item}</li>
           )
         )}
@@ -39,7 +41,7 @@ export function PrivacyPage() {
       <p>{t('legal.privacy.sections.sharing.intro')}</p>
       <ul>
         {(t('legal.privacy.sections.sharing.items', { returnObjects: true }) as string[]).map(
-          (item) => (
+          item => (
             <li key={item}>{item}</li>
           )
         )}
@@ -55,7 +57,7 @@ export function PrivacyPage() {
       <p>{t('legal.privacy.sections.rights.intro')}</p>
       <ul>
         {(t('legal.privacy.sections.rights.items', { returnObjects: true }) as string[]).map(
-          (item) => (
+          item => (
             <li key={item}>{item}</li>
           )
         )}
@@ -65,7 +67,9 @@ export function PrivacyPage() {
       <p>
         {t('legal.privacy.sections.cookies.content').split('Cookie Policy')[0]}
         <a href={LEGAL_ROUTES.cookies}>{t('legal.cookies.title')}</a>
-        {t('legal.privacy.sections.cookies.content').includes('for more information') ? ' for more information.' : '.'}
+        {t('legal.privacy.sections.cookies.content').includes('for more information')
+          ? ' for more information.'
+          : '.'}
       </p>
 
       <Typography variant="h2">8. {t('legal.privacy.sections.children.title')}</Typography>

@@ -1,26 +1,26 @@
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext'
-import { useCallback, useEffect, useState } from 'react'
+import { $createHeadingNode, $createQuoteNode } from '@lexical/rich-text'
+import { $setBlocksType } from '@lexical/selection'
 import {
   $getSelection,
   $isRangeSelection,
   FORMAT_TEXT_COMMAND,
-  UNDO_COMMAND,
-  REDO_COMMAND
+  REDO_COMMAND,
+  UNDO_COMMAND
 } from 'lexical'
-import { $setBlocksType } from '@lexical/selection'
-import { $createHeadingNode, $createQuoteNode } from '@lexical/rich-text'
-import { Button } from '@/shared/ui/button'
 import {
   Bold,
-  Italic,
-  Underline,
   Heading1,
   Heading2,
   Heading3,
+  Italic,
   Quote,
-  Undo,
-  Redo
+  Redo,
+  Underline,
+  Undo
 } from 'lucide-react'
+import { useCallback, useEffect, useState } from 'react'
+import { Button } from '@/shared/ui/button'
 
 export function EditorToolbar() {
   const [editor] = useLexicalComposerContext()
@@ -143,13 +143,7 @@ export function EditorToolbar() {
       >
         <Heading3 className="h-4 w-4" />
       </Button>
-      <Button
-        type="button"
-        variant="ghost"
-        size="sm"
-        onClick={formatQuote}
-        className="h-8 w-8 p-0"
-      >
+      <Button type="button" variant="ghost" size="sm" onClick={formatQuote} className="h-8 w-8 p-0">
         <Quote className="h-4 w-4" />
       </Button>
     </div>

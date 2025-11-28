@@ -2,16 +2,16 @@ import type { RelationType } from '@/entities/edge'
 
 // Colorful scheme using Tailwind colors (not custom)
 const EDGE_COLORS: Record<RelationType, string> = {
-  'prerequisite': '#f97316', // orange-500
-  'causes': '#ef4444',       // red-500
-  'explains': '#8b5cf6',     // violet-500
-  'is-a': '#6366f1',         // indigo-500
-  'has-a': '#10b981',        // emerald-500
-  'part-of': '#14b8a6',      // teal-500
-  'influences': '#f59e0b',   // amber-500
-  'related-to': '#64748b',   // slate-500
-  'contradicts': '#dc2626',  // red-600
-  'similar-to': '#84cc16',   // lime-500
+  prerequisite: '#f97316', // orange-500
+  causes: '#ef4444', // red-500
+  explains: '#8b5cf6', // violet-500
+  'is-a': '#6366f1', // indigo-500
+  'has-a': '#10b981', // emerald-500
+  'part-of': '#14b8a6', // teal-500
+  influences: '#f59e0b', // amber-500
+  'related-to': '#64748b', // slate-500
+  contradicts: '#dc2626', // red-600
+  'similar-to': '#84cc16' // lime-500
 }
 
 export function getEdgeStrokeByType(relationType: RelationType): string {

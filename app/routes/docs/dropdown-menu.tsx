@@ -1,23 +1,23 @@
+import { getMeta } from '@/shared/lib/get-meta'
+import { Badge } from '@/shared/ui/badge'
 import { Button } from '@/shared/ui/button'
+import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
+import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
+import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
+import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from '@/shared/ui/dropdown-menu'
 import { Typography } from '@/shared/ui/typography'
-import { Badge } from '@/shared/ui/badge'
-import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
-import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
-import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
-import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
-import { getMeta } from '@/shared/lib/get-meta'
 import type { Route } from './+types/dropdown-menu'
 
 export const handle = {
-  breadcrumb: 'Dropdown Menu',
+  breadcrumb: 'Dropdown Menu'
 }
 
 export function meta(_args: Route.MetaArgs) {
@@ -27,7 +27,7 @@ export function meta(_args: Route.MetaArgs) {
 const TOC_ITEMS: TocItem[] = [
   { id: 'basic', title: 'Basic', level: 2 },
   { id: 'usage', title: 'Usage', level: 2 },
-  { id: 'api-reference', title: 'API Reference', level: 2 },
+  { id: 'api-reference', title: 'API Reference', level: 2 }
 ]
 
 export default function DropdownMenuPage() {
@@ -36,10 +36,7 @@ export default function DropdownMenuPage() {
       <div className="flex-1 min-w-0 space-y-10">
         <header className="space-y-4">
           <DocsBreadcrumbs
-            items={[
-              { label: 'Components', href: '/docs/ui/button' },
-              { label: 'Dropdown Menu' },
-            ]}
+            items={[{ label: 'Components', href: '/docs/ui/button' }, { label: 'Dropdown Menu' }]}
           />
           <div className="flex items-center gap-3">
             <Typography variant="h1">Dropdown Menu</Typography>
@@ -137,23 +134,33 @@ export function UserMenu() {
               </thead>
               <tbody className="divide-y">
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">DropdownMenu</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">DropdownMenu</code>
+                  </td>
                   <td className="px-4 py-3">Root component</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">DropdownMenuTrigger</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">DropdownMenuTrigger</code>
+                  </td>
                   <td className="px-4 py-3">Button that toggles menu</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">DropdownMenuContent</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">DropdownMenuContent</code>
+                  </td>
                   <td className="px-4 py-3">Menu container with align prop</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">DropdownMenuItem</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">DropdownMenuItem</code>
+                  </td>
                   <td className="px-4 py-3">Clickable menu item</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">DropdownMenuSeparator</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">DropdownMenuSeparator</code>
+                  </td>
                   <td className="px-4 py-3">Visual separator</td>
                 </tr>
               </tbody>

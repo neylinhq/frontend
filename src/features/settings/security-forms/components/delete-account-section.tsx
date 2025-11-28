@@ -1,11 +1,10 @@
+import { zodResolver } from '@hookform/resolvers/zod'
+import { AlertCircle } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
-import { AlertCircle } from 'lucide-react'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form'
-import { Input } from '@/shared/ui/input'
+import { useDeleteAccount } from '@/entities/user'
 import { Button } from '@/shared/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
 import {
@@ -14,10 +13,11 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from '@/shared/ui/dialog'
-import { useDeleteAccount } from '@/entities/user'
-import { deleteAccountSchema, type DeleteAccountValues } from '../lib/validation'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form'
+import { Input } from '@/shared/ui/input'
+import { type DeleteAccountValues, deleteAccountSchema } from '../lib/validation'
 
 export function DeleteAccountSection() {
   const { t } = useTranslation()
@@ -28,8 +28,8 @@ export function DeleteAccountSection() {
     resolver: zodResolver(deleteAccountSchema),
     defaultValues: {
       password: '',
-      confirmation: '',
-    },
+      confirmation: ''
+    }
   })
 
   const onSubmit = (values: DeleteAccountValues) => {
@@ -39,9 +39,9 @@ export function DeleteAccountSection() {
         setIsDialogOpen(false)
         // In real app, redirect to home/logout
       },
-      onError: (error) => {
+      onError: error => {
         toast.error(error.message || t('errors.failedDelete'))
-      },
+      }
     })
   }
 
@@ -51,7 +51,9 @@ export function DeleteAccountSection() {
         <CardHeader>
           <div className="flex items-center gap-2">
             <AlertCircle className="h-5 w-5 text-destructive" />
-            <CardTitle className="text-destructive">{t('settings.security.danger.title')}</CardTitle>
+            <CardTitle className="text-destructive">
+              {t('settings.security.danger.title')}
+            </CardTitle>
           </div>
           <CardDescription>{t('settings.security.danger.description')}</CardDescription>
         </CardHeader>
@@ -102,18 +104,10 @@ export function DeleteAccountSection() {
               />
 
               <DialogFooter>
-                <Button
-                  variant="outline"
-                  type="button"
-                  onClick={() => setIsDialogOpen(false)}
-                >
+                <Button variant="outline" type="button" onClick={() => setIsDialogOpen(false)}>
                   {t('common.cancel')}
                 </Button>
-                <Button
-                  variant="destructive"
-                  type="submit"
-                  disabled={deleteAccount.isPending}
-                >
+                <Button variant="destructive" type="submit" disabled={deleteAccount.isPending}>
                   {deleteAccount.isPending
                     ? t('common.deleting')
                     : t('settings.security.danger.deleteAccount')}

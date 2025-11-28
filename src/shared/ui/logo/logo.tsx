@@ -38,13 +38,9 @@ interface LogoProps extends VariantProps<typeof logoVariants> {
 export function Logo({ size, className, showAlpha = false, href = '/' }: LogoProps) {
   const content = (
     <>
-      <span className="logo-name font-semibold tracking-tight">
-        {APP_NAME}
-      </span>
+      <span className="logo-name font-semibold tracking-tight">{APP_NAME}</span>
       {showAlpha && (
-        <span className="logo-alpha text-muted-foreground/60 font-light tracking-wider">
-          alpha
-        </span>
+        <span className="logo-alpha text-muted-foreground/60 font-light tracking-wider">alpha</span>
       )}
     </>
   )

@@ -25,12 +25,6 @@ export function ModeSelect({ compact }: ModeSelectProps) {
   ]
 
   return (
-    <SelectPopover
-      items={items}
-      value={mode}
-      onChange={setMode}
-      compact={compact}
-      align="end"
-    />
+    <SelectPopover items={items} value={mode} onChange={setMode} compact={compact} align="end" />
   )
 }

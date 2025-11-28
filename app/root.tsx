@@ -6,6 +6,7 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useNavigation,
   useRouteLoaderData
 } from 'react-router'
 import { Toaster } from 'sonner'
@@ -50,12 +51,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     // suppressHydrationWarning нужен для html, так как клиентский скрипт может изменить классы
-    <html
-      lang="en"
-      className={ssrDarkClass}
-      data-palette={ssrPalette}
-      suppressHydrationWarning
-    >
+    <html lang="en" className={ssrDarkClass} data-palette={ssrPalette} suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -93,23 +89,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
             __html: `
               (function() {
                 try {
-                  // Отключаем transitions до полной загрузки
+                  // Отключаем transitions - класс снимется в ThemeProvider после hydration
                   document.documentElement.classList.add('theme-transition-disabled');
-
-                  // Ждем загрузки основного шрифта (не всех шрифтов!) И DOM
-                  Promise.all([
-                    document.fonts ? document.fonts.load('400 16px "IBM Plex Sans"').catch(function(){}) : Promise.resolve(),
-                    new Promise(function(r) {
-                      if (document.readyState === 'complete') r();
-                      else window.addEventListener('load', r);
-                    })
-                  ]).then(function() {
-                    requestAnimationFrame(function() {
-                      requestAnimationFrame(function() {
-                        document.documentElement.classList.remove('theme-transition-disabled');
-                      });
-                    });
-                  });
 
                   function getCookie(n) {
                     var m = document.cookie.match('(^|;)\\\\s*' + n + '\\\\s*=\\\\s*([^;]+)');
@@ -154,8 +135,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   }
 
                   // Locale (localStorage > cookie)
-                  var locale = localStorage.getItem('i18nextLng') || getCookie('i18nextLng') || 'en';
+                  var localLocale = localStorage.getItem('i18nextLng');
+                  var cookieLocale = getCookie('i18nextLng');
+                  var locale = localLocale || cookieLocale || 'en';
                   document.documentElement.lang = locale;
+
+                  // Sync localStorage -> cookie для locale
+                  if (localLocale && localLocale !== cookieLocale) {
+                    document.cookie = 'i18nextLng=' + localLocale + '; path=/; max-age=31536000; SameSite=Lax';
+                  }
                 } catch (e) {}
               })();
             `
@@ -174,6 +162,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   const { i18n: i18nData, theme: themeData } = useLoaderData<typeof loader>()
   const initializedRef = useRef(false)
+  const navigation = useNavigation()
 
   // Initialize i18n with SSR data on first render
   if (!initializedRef.current) {
@@ -185,6 +174,19 @@ export default function App() {
   useEffect(() => {
     document.documentElement.lang = i18nData.locale
   }, [i18nData.locale])
+
+  // Disable transitions during navigation (prevents flash when lazy CSS loads)
+  useEffect(() => {
+    if (navigation.state === 'loading') {
+      document.documentElement.classList.add('theme-transition-disabled')
+    } else if (navigation.state === 'idle') {
+      // Small delay to ensure lazy CSS is applied
+      const timer = setTimeout(() => {
+        document.documentElement.classList.remove('theme-transition-disabled')
+      }, 50)
+      return () => clearTimeout(timer)
+    }
+  }, [navigation.state])
 
   return (
     <QueryProvider>

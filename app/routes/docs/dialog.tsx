@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { getMeta } from '@/shared/lib/get-meta'
+import { Badge } from '@/shared/ui/badge'
 import { Button } from '@/shared/ui/button'
 import {
   Dialog,
@@ -10,21 +12,19 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  DialogTrigger
 } from '@/shared/ui/dialog'
-import { Input } from '@/shared/ui/input'
-import { Label } from '@/shared/ui/label'
-import { Typography } from '@/shared/ui/typography'
-import { Badge } from '@/shared/ui/badge'
+import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
 import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
 import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
 import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
-import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
-import { getMeta } from '@/shared/lib/get-meta'
+import { Input } from '@/shared/ui/input'
+import { Label } from '@/shared/ui/label'
+import { Typography } from '@/shared/ui/typography'
 import type { Route } from './+types/dialog'
 
 export const handle = {
-  breadcrumb: 'Dialog',
+  breadcrumb: 'Dialog'
 }
 
 export function meta(_args: Route.MetaArgs) {
@@ -38,7 +38,7 @@ export default function DialogPage() {
     { id: 'basic', title: t('docs.common.basic'), level: 2 },
     { id: 'with-form', title: t('docs.dialog.withForm.title'), level: 2 },
     { id: 'usage', title: t('docs.common.usage'), level: 2 },
-    { id: 'api-reference', title: t('docs.common.apiReference'), level: 2 },
+    { id: 'api-reference', title: t('docs.common.apiReference'), level: 2 }
   ]
 
   return (
@@ -48,7 +48,7 @@ export default function DialogPage() {
           <DocsBreadcrumbs
             items={[
               { label: t('docs.common.components'), href: '/docs/ui/button' },
-              { label: 'Dialog' },
+              { label: 'Dialog' }
             ]}
           />
           <div className="flex items-center gap-3">
@@ -62,9 +62,7 @@ export default function DialogPage() {
 
         <section id="basic" className="scroll-mt-20 space-y-4">
           <Typography variant="h2">{t('docs.common.basic')}</Typography>
-          <Typography variant="muted">
-            {t('docs.dialog.basic.sectionDescription')}
-          </Typography>
+          <Typography variant="muted">{t('docs.dialog.basic.sectionDescription')}</Typography>
 
           <DocsComponentPreview
             code={`<Dialog>
@@ -89,9 +87,7 @@ export default function DialogPage() {
                 <DialogContent>
                   <DialogHeader>
                     <DialogTitle>{t('docs.dialog.basic.title')}</DialogTitle>
-                    <DialogDescription>
-                      {t('docs.dialog.basic.description')}
-                    </DialogDescription>
+                    <DialogDescription>{t('docs.dialog.basic.description')}</DialogDescription>
                   </DialogHeader>
                 </DialogContent>
               </Dialog>
@@ -101,9 +97,7 @@ export default function DialogPage() {
 
         <section id="with-form" className="scroll-mt-20 space-y-4">
           <Typography variant="h2">{t('docs.dialog.withForm.title')}</Typography>
-          <Typography variant="muted">
-            {t('docs.dialog.withForm.description')}
-          </Typography>
+          <Typography variant="muted">{t('docs.dialog.withForm.description')}</Typography>
 
           <DocsComponentPreview
             code={`<Dialog>
@@ -220,29 +214,61 @@ export function ConfirmDialog() {
               <thead className="bg-muted/50">
                 <tr>
                   <th className="text-left px-4 py-3 font-medium">{t('docs.common.component')}</th>
-                  <th className="text-left px-4 py-3 font-medium">{t('docs.common.description')}</th>
+                  <th className="text-left px-4 py-3 font-medium">
+                    {t('docs.common.description')}
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y">
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">Dialog</code></td>
-                  <td className="px-4 py-3"><code className="text-xs text-muted-foreground">{t('docs.dialog.api.dialogDescription')}</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">Dialog</code>
+                  </td>
+                  <td className="px-4 py-3">
+                    <code className="text-xs text-muted-foreground">
+                      {t('docs.dialog.api.dialogDescription')}
+                    </code>
+                  </td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">DialogTrigger</code></td>
-                  <td className="px-4 py-3"><code className="text-xs text-muted-foreground">{t('docs.dialog.api.triggerDescription')}</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">DialogTrigger</code>
+                  </td>
+                  <td className="px-4 py-3">
+                    <code className="text-xs text-muted-foreground">
+                      {t('docs.dialog.api.triggerDescription')}
+                    </code>
+                  </td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">DialogContent</code></td>
-                  <td className="px-4 py-3"><code className="text-xs text-muted-foreground">{t('docs.dialog.api.contentDescription')}</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">DialogContent</code>
+                  </td>
+                  <td className="px-4 py-3">
+                    <code className="text-xs text-muted-foreground">
+                      {t('docs.dialog.api.contentDescription')}
+                    </code>
+                  </td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">DialogHeader</code></td>
-                  <td className="px-4 py-3"><code className="text-xs text-muted-foreground">{t('docs.dialog.api.headerDescription')}</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">DialogHeader</code>
+                  </td>
+                  <td className="px-4 py-3">
+                    <code className="text-xs text-muted-foreground">
+                      {t('docs.dialog.api.headerDescription')}
+                    </code>
+                  </td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3"><code className="text-sm font-semibold text-brand">DialogFooter</code></td>
-                  <td className="px-4 py-3"><code className="text-xs text-muted-foreground">{t('docs.dialog.api.footerDescription')}</code></td>
+                  <td className="px-4 py-3">
+                    <code className="text-sm font-semibold text-brand">DialogFooter</code>
+                  </td>
+                  <td className="px-4 py-3">
+                    <code className="text-xs text-muted-foreground">
+                      {t('docs.dialog.api.footerDescription')}
+                    </code>
+                  </td>
                 </tr>
               </tbody>
             </table>

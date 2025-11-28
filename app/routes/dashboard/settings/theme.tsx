@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next'
-import { Label } from '@/shared/ui/label'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
 import { ThemeToggle } from '@/app/theme/components/theme-toggle'
 import { LanguageSwitcher } from '@/features/language-switcher'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
+import { Label } from '@/shared/ui/label'
 
 export default function ThemePage() {
   const { t } = useTranslation()

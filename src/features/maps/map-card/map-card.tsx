@@ -45,7 +45,9 @@ export function MapCard({ map }: MapCardProps) {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem>{t('dashboard.mapCard.edit')}</DropdownMenuItem>
-            <DropdownMenuItem className="text-destructive">{t('dashboard.mapCard.delete')}</DropdownMenuItem>
+            <DropdownMenuItem className="text-destructive">
+              {t('dashboard.mapCard.delete')}
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </CardHeader>

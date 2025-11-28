@@ -74,6 +74,7 @@
     "saved": "Saved",
     "saving": "Saving...",
     "cancel": "Cancel",
+    "edit": "Edit",
     "enable": "On",
     "disable": "Off",
     "uploading": "Uploading...",
@@ -1036,6 +1037,19 @@
     "addPaymentMethod": {
       "title": "Add Payment Method",
       "description": "Add a new payment method to your account",
+      "selectTitle": "Add Payment Method",
+      "selectDescription": "Choose how you want to pay",
+      "cardOption": {
+        "title": "Bank Card",
+        "description": "Visa, Mastercard, Amex and more"
+      },
+      "cryptoOption": {
+        "title": "Cryptocurrency",
+        "description": "BTC, ETH, USDT, USDC, SOL"
+      },
+      "back": "Back",
+      "cardTitle": "Bank Card",
+      "cryptoTitle": "Cryptocurrency",
       "cardholderName": "Cardholder Name",
       "cardNumber": "Card Number",
       "expiry": "Expiry Date",
@@ -1067,6 +1081,17 @@
       "addressPlaceholder": "Enter wallet address",
       "invalidAddress": "Invalid wallet address for selected network",
       "submit": "Add Wallet"
+    },
+    "editPaymentMethod": {
+      "title": "Edit Payment Method",
+      "titleCard": "Edit Card",
+      "titleCrypto": "Edit Crypto Wallet",
+      "expiryMonth": "Expiry Month",
+      "expiryYear": "Expiry Year",
+      "walletAddress": "Wallet Address",
+      "networkNotEditable": "Network cannot be changed",
+      "save": "Save Changes",
+      "cardNumberNotEditable": "Card number cannot be changed"
     }
   },
   "pricing": {

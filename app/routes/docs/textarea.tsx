@@ -1,16 +1,16 @@
-import { Textarea } from '@/shared/ui/textarea'
-import { Label } from '@/shared/ui/label'
-import { Typography } from '@/shared/ui/typography'
+import { getMeta } from '@/shared/lib/get-meta'
 import { Badge } from '@/shared/ui/badge'
+import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
 import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
 import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
 import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
-import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
-import { getMeta } from '@/shared/lib/get-meta'
+import { Label } from '@/shared/ui/label'
+import { Textarea } from '@/shared/ui/textarea'
+import { Typography } from '@/shared/ui/typography'
 import type { Route } from './+types/textarea'
 
 export const handle = {
-  breadcrumb: 'Textarea',
+  breadcrumb: 'Textarea'
 }
 
 export function meta(_args: Route.MetaArgs) {
@@ -21,7 +21,7 @@ const TOC_ITEMS: TocItem[] = [
   { id: 'basic', title: 'Basic', level: 2 },
   { id: 'with-label', title: 'With Label', level: 2 },
   { id: 'states', title: 'States', level: 2 },
-  { id: 'usage', title: 'Usage', level: 2 },
+  { id: 'usage', title: 'Usage', level: 2 }
 ]
 
 export default function TextareaPage() {
@@ -30,10 +30,7 @@ export default function TextareaPage() {
       <div className="flex-1 min-w-0 space-y-10">
         <header className="space-y-4">
           <DocsBreadcrumbs
-            items={[
-              { label: 'Components', href: '/docs/ui/button' },
-              { label: 'Textarea' },
-            ]}
+            items={[{ label: 'Components', href: '/docs/ui/button' }, { label: 'Textarea' }]}
           />
           <div className="flex items-center gap-3">
             <Typography variant="h1">Textarea</Typography>

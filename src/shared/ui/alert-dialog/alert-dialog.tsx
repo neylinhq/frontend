@@ -1,8 +1,7 @@
 import * as AlertDialogPrimitive from '@radix-ui/react-alert-dialog'
 import * as React from 'react'
-
-import { buttonVariants } from '@/shared/ui/button'
 import { cn } from '@/shared/lib/cn'
+import { buttonVariants } from '@/shared/ui/button'
 
 const AlertDialog = AlertDialogPrimitive.Root
 
@@ -111,5 +110,5 @@ export {
   AlertDialogTitle,
   AlertDialogDescription,
   AlertDialogAction,
-  AlertDialogCancel,
+  AlertDialogCancel
 }

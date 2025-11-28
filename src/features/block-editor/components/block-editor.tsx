@@ -29,7 +29,7 @@ export function BlockEditor({
   className,
   placeholder
 }: BlockEditorProps) {
-  const { theme } = useTheme()
+  const { resolvedMode } = useTheme()
   const { t } = useTranslation()
   const [showSlashMenu, setShowSlashMenu] = useState(false)
   const [slashMenuPosition, setSlashMenuPosition] = useState({ top: 0, left: 0 })
@@ -312,7 +312,7 @@ export function BlockEditor({
       ref={editorRef}
       className={cn(
         'tiptap-editor group/editor relative md:pl-8',
-        theme === 'dark' && 'dark',
+        resolvedMode === 'dark' && 'dark',
         className
       )}
     >

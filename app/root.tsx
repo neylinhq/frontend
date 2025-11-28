@@ -45,27 +45,40 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
-        {/* Theme Script: предотвращает мигание при загрузке */}
+        {/* Theme & Locale Script: предотвращает мигание при загрузке */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
                 try {
+                  // Disable transitions during hydration to prevent FOUC
+                  document.documentElement.classList.add('theme-transition-disabled');
+                  window.addEventListener('load', function() {
+                    requestAnimationFrame(function() {
+                      requestAnimationFrame(function() {
+                        document.documentElement.classList.remove('theme-transition-disabled');
+                      });
+                    });
+                  });
+
                   function getCookie(n) {
                     var m = document.cookie.match('(^|;)\\\\s*' + n + '\\\\s*=\\\\s*([^;]+)');
                     return m ? m.pop() : null;
                   }
                   // Dark/Light mode (localStorage > cookie > system)
-                  var theme = localStorage.getItem('vite-ui-theme') || getCookie('arbor-theme');
+                  var mode = localStorage.getItem('ely-si-mode') || getCookie('ely-si-mode');
                   var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                  if (theme === 'dark' || (theme === 'system' && systemDark) || (!theme && systemDark)) {
+                  if (mode === 'dark' || (mode === 'system' && systemDark) || (!mode && systemDark)) {
                     document.documentElement.classList.add('dark');
                   }
-                  // Color theme (localStorage > cookie)
-                  var colorTheme = localStorage.getItem('arbor-color-theme') || getCookie('arbor-color-theme');
-                  if (colorTheme && colorTheme !== 'classic') {
-                    document.documentElement.dataset.theme = colorTheme;
+                  // Palette (localStorage > cookie)
+                  var palette = localStorage.getItem('ely-si-palette') || getCookie('ely-si-palette');
+                  if (palette && palette !== 'classic') {
+                    document.documentElement.dataset.palette = palette;
                   }
+                  // Locale (localStorage > cookie)
+                  var locale = localStorage.getItem('i18nextLng') || getCookie('i18nextLng') || 'en';
+                  document.documentElement.lang = locale;
                 } catch (e) {}
               })();
             `
@@ -98,7 +111,7 @@ export default function App() {
 
   return (
     <QueryProvider>
-      <ThemeProvider defaultTheme={themeData.theme} defaultColorTheme={themeData.colorTheme}>
+      <ThemeProvider defaultMode={themeData.mode} defaultPalette={themeData.palette}>
         <Outlet />
         <Toaster richColors position="top-right" />
       </ThemeProvider>

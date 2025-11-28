@@ -1,10 +1,11 @@
+import { useTranslation } from 'react-i18next'
 import { Typography } from '@/shared/ui/typography'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
 import { getMeta } from '@/shared/lib/get-meta'
 import type { Route } from './+types/colors'
 
 export function meta(_args: Route.MetaArgs) {
-  return getMeta('uiShowcase')
+  return getMeta('docs')
 }
 
 const SEMANTIC_COLORS = [
@@ -51,21 +52,23 @@ const GRAPH_COLORS = [
 ]
 
 export default function ColorsPage() {
+  const { t } = useTranslation()
+
   return (
     <div className="space-y-8">
       <div className="space-y-3">
-        <Typography variant="h1">Colors</Typography>
+        <Typography variant="h1">{t('docs.colors.title')}</Typography>
         <Typography variant="lead">
-          Палитра цветов с поддержкой 3 тем и dark mode. Все цвета адаптируются под выбранную тему.
+          {t('docs.colors.lead')}
         </Typography>
       </div>
 
       {/* Semantic Colors */}
       <section className="space-y-4">
         <div>
-          <Typography variant="h2">Semantic Colors</Typography>
+          <Typography variant="h2">{t('docs.colors.semantic.title')}</Typography>
           <Typography variant="muted">
-            Семантические цвета для UI элементов. Используйте эти переменные вместо прямых значений.
+            {t('docs.colors.semantic.description')}
           </Typography>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -78,9 +81,9 @@ export default function ColorsPage() {
       {/* Brand Colors */}
       <section className="space-y-4 pt-4 border-t">
         <div>
-          <Typography variant="h2">Brand Colors</Typography>
+          <Typography variant="h2">{t('docs.colors.brand.title')}</Typography>
           <Typography variant="muted">
-            Фирменные цвета. Меняются в зависимости от темы (синий в Classic, терракота в Vanilla, изумруд в Vivid).
+            {t('docs.colors.brand.description')}
           </Typography>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -93,9 +96,9 @@ export default function ColorsPage() {
       {/* Graph Colors */}
       <section className="space-y-4 pt-4 border-t">
         <div>
-          <Typography variant="h2">Graph Colors</Typography>
+          <Typography variant="h2">{t('docs.colors.graph.title')}</Typography>
           <Typography variant="muted">
-            Цвета для визуализации узлов графа. Оптимизированы для различения в каждой теме.
+            {t('docs.colors.graph.description')}
           </Typography>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -142,7 +145,7 @@ function ColorCard({ name, var: cssVar, desc }: { name: string; var: string; des
     <Card>
       <CardHeader className="pb-3">
         <div
-          className="h-16 rounded-md border mb-3 -mx-6 -mt-6"
+          className="h-16 border-b mb-3 -mx-6 -mt-6 rounded-t-xl"
           style={{ backgroundColor: `hsl(var(${cssVar}))` }}
         />
         <CardTitle className="text-base">{name}</CardTitle>

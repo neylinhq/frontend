@@ -1,20 +1,26 @@
-import type { ColorTheme, Theme } from './theme.types'
+import { APP_NAME } from '@/shared/config'
+import type { Mode, Palette } from './theme.types'
 
-export const THEME_STORAGE_KEY = 'vite-ui-theme'
-export const COLOR_THEME_STORAGE_KEY = 'arbor-color-theme'
+const APP_PREFIX = APP_NAME.toLowerCase().replace(/\./g, '-')
 
-// Cookie keys (for SSR)
-export const THEME_COOKIE_KEY = 'arbor-theme'
-export const COLOR_THEME_COOKIE_KEY = 'arbor-color-theme'
+// Storage keys (localStorage + cookies use same keys)
+export const MODE_STORAGE_KEY = `${APP_PREFIX}-mode`
+export const PALETTE_STORAGE_KEY = `${APP_PREFIX}-palette`
 
-export const THEMES: { name: string; value: Theme }[] = [
+// Cookie keys (same as storage for consistency)
+export const MODE_COOKIE_KEY = MODE_STORAGE_KEY
+export const PALETTE_COOKIE_KEY = PALETTE_STORAGE_KEY
+
+export const MODES: { name: string; value: Mode }[] = [
   { name: 'Light', value: 'light' },
   { name: 'Dark', value: 'dark' },
   { name: 'System', value: 'system' }
 ]
 
-export const COLOR_THEMES: { name: string; value: ColorTheme; color: string }[] = [
-  { name: 'Classic', value: 'classic', color: 'var(--color-preview-classic)' },
-  { name: 'Vanilla', value: 'vanilla', color: 'var(--color-preview-vanilla)' },
-  { name: 'Vivid', value: 'vivid', color: 'var(--color-preview-vivid)' }
+// Preview colors use CSS variables that automatically switch for light/dark mode
+// See globals.css: --preview-classic, --preview-vanilla, --preview-vivid
+export const PALETTES: { name: string; value: Palette; previewColor: string }[] = [
+  { name: 'Classic', value: 'classic', previewColor: 'var(--color-preview-classic)' },
+  { name: 'Vanilla', value: 'vanilla', previewColor: 'var(--color-preview-vanilla)' },
+  { name: 'Vivid', value: 'vivid', previewColor: 'var(--color-preview-vivid)' }
 ]

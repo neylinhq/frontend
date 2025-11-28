@@ -1,6 +1,5 @@
-// Auth API - stub implementation
-// TODO: Replace with actual API calls
-
+// Auth API - delegates to session API
+import { sessionApi } from '@/entities/session/session.api'
 import type { User } from '@/entities/user'
 
 interface LoginCredentials {
@@ -19,18 +18,17 @@ interface AuthResponse {
   token: string
 }
 
+// Re-export session API methods with proper types
 export const authApi = {
-  login: async (_credentials: LoginCredentials): Promise<AuthResponse> => {
-    // Stub - replace with actual API call
-    throw new Error('Login not implemented')
+  login: (credentials: LoginCredentials): Promise<AuthResponse> => {
+    return sessionApi.login(credentials)
   },
 
-  register: async (_data: RegisterData): Promise<AuthResponse> => {
-    // Stub - replace with actual API call
-    throw new Error('Register not implemented')
+  register: (data: RegisterData): Promise<AuthResponse> => {
+    return sessionApi.register(data)
   },
 
-  logout: async (): Promise<void> => {
-    // Stub - replace with actual API call
+  logout: (): Promise<{ success: boolean }> => {
+    return sessionApi.logout()
   },
 }

@@ -7,11 +7,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/shared/ui/dropdown-menu'
-import { THEMES } from '../theme.constants'
+import { MODES } from '../theme.constants'
 import { useTheme } from './theme-provider'
 
 export const ThemeToggle = () => {
-  const { setTheme } = useTheme()
+  const { setMode } = useTheme()
   const { t } = useTranslation()
 
   return (
@@ -24,9 +24,9 @@ export const ThemeToggle = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {THEMES.map(theme => (
-          <DropdownMenuItem key={theme.value} onClick={() => setTheme(theme.value)}>
-            {t(`theme.${theme.value}`)}
+        {MODES.map(m => (
+          <DropdownMenuItem key={m.value} onClick={() => setMode(m.value)}>
+            {t(`theme.${m.value}`)}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

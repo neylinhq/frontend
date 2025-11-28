@@ -115,6 +115,66 @@ const MOCK_PAYMENT_METHODS: PaymentMethod[] = [
     expiryYear: 2025,
     isDefault: true,
     createdAt: '2024-01-15T10:00:00Z'
+  },
+  {
+    id: '660e8400-e29b-41d4-a716-446655440002',
+    type: 'card',
+    last4: '5555',
+    brand: 'mastercard',
+    expiryMonth: 8,
+    expiryYear: 2026,
+    isDefault: false,
+    createdAt: '2024-03-20T14:30:00Z'
+  },
+  {
+    id: '660e8400-e29b-41d4-a716-446655440003',
+    type: 'card',
+    last4: '0005',
+    brand: 'amex',
+    expiryMonth: 6,
+    expiryYear: 2027,
+    isDefault: false,
+    createdAt: '2024-05-10T09:15:00Z'
+  },
+  {
+    id: '660e8400-e29b-41d4-a716-446655440004',
+    type: 'card',
+    last4: '1117',
+    brand: 'discover',
+    expiryMonth: 3,
+    expiryYear: 2026,
+    isDefault: false,
+    createdAt: '2024-06-25T16:45:00Z'
+  },
+  {
+    id: '660e8400-e29b-41d4-a716-446655440005',
+    type: 'card',
+    last4: '0009',
+    brand: 'diners',
+    expiryMonth: 11,
+    expiryYear: 2025,
+    isDefault: false,
+    createdAt: '2024-07-12T11:20:00Z'
+  },
+  {
+    id: '660e8400-e29b-41d4-a716-446655440006',
+    type: 'card',
+    last4: '0002',
+    brand: 'jcb',
+    expiryMonth: 9,
+    expiryYear: 2026,
+    isDefault: false,
+    createdAt: '2024-08-18T13:50:00Z'
+  },
+  {
+    id: '660e8400-e29b-41d4-a716-446655440007',
+    type: 'card',
+    last4: '0008',
+    brand: 'unionpay',
+    expiryMonth: 4,
+    expiryYear: 2027,
+    isDefault: false,
+    createdAt: '2024-09-05T08:30:00Z'
   }
 ]
 

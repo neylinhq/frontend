@@ -62,7 +62,10 @@ export default function BillingPage() {
                 method={method}
                 onRemove={id => removePaymentMethod.mutate(id)}
                 onSetDefault={id => setDefaultPaymentMethod.mutate(id)}
-                loading={removePaymentMethod.isPending || setDefaultPaymentMethod.isPending}
+                loading={
+                  (removePaymentMethod.isPending && removePaymentMethod.variables === method.id) ||
+                  (setDefaultPaymentMethod.isPending && setDefaultPaymentMethod.variables === method.id)
+                }
               />
             ))
           ) : (

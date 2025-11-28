@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
 
-export const supportedLanguages = ['en', 'ru', 'de'] as const
+export const supportedLanguages = ['en', 'ru'] as const
 export type SupportedLanguage = (typeof supportedLanguages)[number]
 export const defaultLanguage: SupportedLanguage = 'en'
 

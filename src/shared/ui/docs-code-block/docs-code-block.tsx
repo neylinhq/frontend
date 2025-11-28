@@ -3,6 +3,7 @@
 import * as React from 'react'
 import { Check, Copy, ChevronDown, ChevronUp } from 'lucide-react'
 import { cn } from '@/shared/lib/cn'
+import './docs-code-block.styles.css'
 import { Button } from '@/shared/ui/button'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/shared/ui/collapsible'
 

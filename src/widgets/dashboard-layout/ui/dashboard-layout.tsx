@@ -33,9 +33,11 @@ export function DashboardLayout() {
         )}
 
         {/* Main Content */}
-        <main className="flex-1 min-w-0 overflow-hidden">
-          <Outlet />
-        </main>
+        <div className="flex-1 min-w-0 overflow-y-auto [scrollbar-gutter:stable]">
+          <div className="min-h-full border-r">
+            <Outlet />
+          </div>
+        </div>
       </div>
     </div>
   )

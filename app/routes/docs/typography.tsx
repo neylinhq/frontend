@@ -1,10 +1,11 @@
+import { useTranslation } from 'react-i18next'
 import { Typography } from '@/shared/ui/typography'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
 import { getMeta } from '@/shared/lib/get-meta'
 import type { Route } from './+types/typography'
 
 export function meta(_args: Route.MetaArgs) {
-  return getMeta('uiShowcase')
+  return getMeta('docs')
 }
 
 const TYPOGRAPHY_EXAMPLES = [
@@ -78,21 +79,23 @@ const TYPOGRAPHY_EXAMPLES = [
 ]
 
 export default function TypographyPage() {
+  const { t } = useTranslation()
+
   return (
     <div className="space-y-8">
       <div className="space-y-3">
-        <Typography variant="h1">Typography</Typography>
+        <Typography variant="h1">{t('docs.typography.title')}</Typography>
         <Typography variant="lead">
-          Типографическая система с готовыми стилями для заголовков, параграфов и служебного текста.
+          {t('docs.typography.lead')}
         </Typography>
       </div>
 
       {/* Examples */}
       <section className="space-y-6">
         <div>
-          <Typography variant="h2">Варианты</Typography>
+          <Typography variant="h2">{t('docs.typography.variants.title')}</Typography>
           <Typography variant="muted">
-            Все варианты типографики с примерами использования
+            {t('docs.typography.variants.description')}
           </Typography>
         </div>
 

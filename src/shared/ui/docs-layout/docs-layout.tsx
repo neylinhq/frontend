@@ -30,7 +30,7 @@ export function DocsLayout({ children, sidebar, toc, className }: DocsLayoutProp
           )}
 
           {/* Main Content - scrollable */}
-          <main className="flex-1 min-w-0 overflow-y-auto scroll-smooth scrollbar-border-right">
+          <main className="flex-1 min-w-0 overflow-y-auto scroll-smooth border-r">
             <div className={cn('max-w-3xl mx-auto px-6 py-8 lg:px-8', className)}>
               {children}
             </div>

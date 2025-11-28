@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Link, useFetcher } from 'react-router'
-import { ColorThemeSelect } from '@/app/theme/components/color-theme-select'
+import { PaletteSelect } from '@/app/theme/components/palette-select'
 import { ModeSelect } from '@/app/theme/components/mode-select'
 import { useSessionStore } from '@/entities/session'
 import { LanguageSelect } from '@/features/language-switcher'
@@ -81,7 +81,7 @@ export function UserNav() {
         <div className="px-2 py-2 flex items-center justify-center gap-1">
           <LanguageSelect compact />
           <ModeSelect compact />
-          <ColorThemeSelect compact />
+          <PaletteSelect compact />
         </div>
 
         <DropdownMenuSeparator />

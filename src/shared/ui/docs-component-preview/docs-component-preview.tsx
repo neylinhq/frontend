@@ -1,5 +1,6 @@
 import type * as React from 'react'
 import { cn } from '@/shared/lib/cn'
+import './docs-component-preview.styles.css'
 import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/tabs'
 

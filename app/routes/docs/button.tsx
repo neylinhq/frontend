@@ -1,4 +1,5 @@
 import { Mail, Loader2, ChevronRight } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/shared/ui/button'
 import { Typography } from '@/shared/ui/typography'
 import { Badge } from '@/shared/ui/badge'
@@ -17,33 +18,35 @@ export function meta(_args: Route.MetaArgs) {
   return getMeta('uiShowcase')
 }
 
-const TOC_ITEMS: TocItem[] = [
-  { id: 'variants', title: 'Variants', level: 2 },
-  { id: 'sizes', title: 'Sizes', level: 2 },
-  { id: 'with-icons', title: 'With Icons', level: 2 },
-  { id: 'states', title: 'States', level: 2 },
-  { id: 'usage', title: 'Usage', level: 2 },
-  { id: 'api-reference', title: 'API Reference', level: 2 },
-]
-
-const BUTTON_VARIANTS = [
-  { variant: 'default' as const, label: 'Default' },
-  { variant: 'brand' as const, label: 'Brand' },
-  { variant: 'secondary' as const, label: 'Secondary' },
-  { variant: 'destructive' as const, label: 'Destructive' },
-  { variant: 'outline' as const, label: 'Outline' },
-  { variant: 'ghost' as const, label: 'Ghost' },
-  { variant: 'link' as const, label: 'Link' },
-]
-
-const BUTTON_SIZES = [
-  { size: 'sm' as const, label: 'Small' },
-  { size: 'default' as const, label: 'Default' },
-  { size: 'lg' as const, label: 'Large' },
-  { size: 'icon' as const, label: 'Icon', isIcon: true },
-]
-
 export default function ButtonPage() {
+  const { t } = useTranslation()
+
+  const TOC_ITEMS: TocItem[] = [
+    { id: 'variants', title: t('docs.common.variants'), level: 2 },
+    { id: 'sizes', title: t('docs.common.sizes'), level: 2 },
+    { id: 'with-icons', title: t('docs.button.withIcons.title'), level: 2 },
+    { id: 'states', title: t('docs.common.states'), level: 2 },
+    { id: 'usage', title: t('docs.common.usage'), level: 2 },
+    { id: 'api-reference', title: t('docs.common.apiReference'), level: 2 },
+  ]
+
+  const BUTTON_VARIANTS = [
+    { variant: 'default' as const, label: t('docs.button.examples.default') },
+    { variant: 'brand' as const, label: t('docs.button.examples.brand') },
+    { variant: 'secondary' as const, label: t('docs.button.examples.secondary') },
+    { variant: 'destructive' as const, label: t('docs.button.examples.destructive') },
+    { variant: 'outline' as const, label: t('docs.button.examples.outline') },
+    { variant: 'ghost' as const, label: t('docs.button.examples.ghost') },
+    { variant: 'link' as const, label: t('docs.button.examples.link') },
+  ]
+
+  const BUTTON_SIZES = [
+    { size: 'sm' as const, label: t('docs.button.examples.small') },
+    { size: 'default' as const, label: t('docs.button.examples.default') },
+    { size: 'lg' as const, label: t('docs.button.examples.large') },
+    { size: 'icon' as const, label: t('docs.button.examples.icon'), isIcon: true },
+  ]
+
   return (
     <div className="flex gap-10">
       {/* Main Content */}
@@ -52,35 +55,34 @@ export default function ButtonPage() {
         <header className="space-y-4">
           <DocsBreadcrumbs
             items={[
-              { label: 'Components', href: '/docs/ui/button' },
+              { label: t('docs.common.components'), href: '/docs/ui/button' },
               { label: 'Button' },
             ]}
           />
           <div className="flex items-center gap-3">
             <Typography variant="h1">Button</Typography>
-            <Badge variant="brand">Component</Badge>
+            <Badge variant="brand">{t('docs.common.component')}</Badge>
           </div>
           <Typography variant="lead" className="max-w-2xl">
-            A versatile button component with multiple variants, sizes, and states.
-            Built with Radix UI Slot for polymorphic composition.
+            {t('docs.button.lead')}
           </Typography>
         </header>
 
         {/* Variants */}
         <section id="variants" className="scroll-mt-20 space-y-4">
-          <Typography variant="h2">Variants</Typography>
+          <Typography variant="h2">{t('docs.common.variants')}</Typography>
           <Typography variant="muted">
-            Available button style variants for different use cases.
+            {t('docs.button.variants.description')}
           </Typography>
 
           <DocsComponentPreview
-            code={`<Button>Default</Button>
-<Button variant="brand">Brand</Button>
-<Button variant="secondary">Secondary</Button>
-<Button variant="destructive">Destructive</Button>
-<Button variant="outline">Outline</Button>
-<Button variant="ghost">Ghost</Button>
-<Button variant="link">Link</Button>`}
+            code={`<Button>${t('docs.button.examples.default')}</Button>
+<Button variant="brand">${t('docs.button.examples.brand')}</Button>
+<Button variant="secondary">${t('docs.button.examples.secondary')}</Button>
+<Button variant="destructive">${t('docs.button.examples.destructive')}</Button>
+<Button variant="outline">${t('docs.button.examples.outline')}</Button>
+<Button variant="ghost">${t('docs.button.examples.ghost')}</Button>
+<Button variant="link">${t('docs.button.examples.link')}</Button>`}
           >
             <DocsPreview className="flex flex-wrap gap-4">
               {BUTTON_VARIANTS.map(({ variant, label }) => (
@@ -94,15 +96,15 @@ export default function ButtonPage() {
 
         {/* Sizes */}
         <section id="sizes" className="scroll-mt-20 space-y-4">
-          <Typography variant="h2">Sizes</Typography>
+          <Typography variant="h2">{t('docs.common.sizes')}</Typography>
           <Typography variant="muted">
-            Button sizes for different contexts.
+            {t('docs.button.sizes.description')}
           </Typography>
 
           <DocsComponentPreview
-            code={`<Button size="sm">Small</Button>
-<Button size="default">Default</Button>
-<Button size="lg">Large</Button>
+            code={`<Button size="sm">${t('docs.button.examples.small')}</Button>
+<Button size="default">${t('docs.button.examples.default')}</Button>
+<Button size="lg">${t('docs.button.examples.large')}</Button>
 <Button size="icon"><ChevronRight /></Button>`}
           >
             <DocsPreview className="flex items-center flex-wrap gap-4">
@@ -117,38 +119,38 @@ export default function ButtonPage() {
 
         {/* With Icons */}
         <section id="with-icons" className="scroll-mt-20 space-y-4">
-          <Typography variant="h2">With Icons</Typography>
+          <Typography variant="h2">{t('docs.button.withIcons.title')}</Typography>
           <Typography variant="muted">
-            Buttons with Lucide icons for enhanced visual communication.
+            {t('docs.button.withIcons.description')}
           </Typography>
 
           <DocsComponentPreview
             code={`<Button>
   <Mail className="mr-2 h-4 w-4" />
-  Login with Email
+  ${t('docs.button.examples.loginWithEmail')}
 </Button>
 
 <Button variant="secondary">
   <Mail className="mr-2 h-4 w-4" />
-  Send Email
+  ${t('docs.button.examples.sendEmail')}
 </Button>
 
 <Button variant="outline">
-  Continue
+  ${t('docs.button.examples.continue')}
   <ChevronRight className="ml-2 h-4 w-4" />
 </Button>`}
           >
             <DocsPreview className="flex flex-wrap gap-4">
               <Button>
                 <Mail className="mr-2 h-4 w-4" />
-                Login with Email
+                {t('docs.button.examples.loginWithEmail')}
               </Button>
               <Button variant="secondary">
                 <Mail className="mr-2 h-4 w-4" />
-                Send Email
+                {t('docs.button.examples.sendEmail')}
               </Button>
               <Button variant="outline">
-                Continue
+                {t('docs.button.examples.continue')}
                 <ChevronRight className="ml-2 h-4 w-4" />
               </Button>
             </DocsPreview>
@@ -157,28 +159,28 @@ export default function ButtonPage() {
 
         {/* States */}
         <section id="states" className="scroll-mt-20 space-y-4">
-          <Typography variant="h2">States</Typography>
+          <Typography variant="h2">{t('docs.common.states')}</Typography>
           <Typography variant="muted">
-            Disabled and loading states for buttons.
+            {t('docs.button.states.description')}
           </Typography>
 
           <div className="space-y-6">
             <div>
               <Typography variant="small" className="mb-3 font-medium">
-                Disabled
+                {t('docs.common.disabled')}
               </Typography>
               <DocsComponentPreview
-                code={`<Button disabled>Default</Button>
-<Button variant="secondary" disabled>Secondary</Button>
-<Button variant="outline" disabled>Outline</Button>`}
+                code={`<Button disabled>${t('docs.button.examples.default')}</Button>
+<Button variant="secondary" disabled>${t('docs.button.examples.secondary')}</Button>
+<Button variant="outline" disabled>${t('docs.button.examples.outline')}</Button>`}
               >
                 <DocsPreview className="flex flex-wrap gap-4">
-                  <Button disabled>Default</Button>
+                  <Button disabled>{t('docs.button.examples.default')}</Button>
                   <Button variant="secondary" disabled>
-                    Secondary
+                    {t('docs.button.examples.secondary')}
                   </Button>
                   <Button variant="outline" disabled>
-                    Outline
+                    {t('docs.button.examples.outline')}
                   </Button>
                 </DocsPreview>
               </DocsComponentPreview>
@@ -186,22 +188,22 @@ export default function ButtonPage() {
 
             <div>
               <Typography variant="small" className="mb-3 font-medium">
-                Loading
+                {t('docs.common.loading')}
               </Typography>
               <DocsComponentPreview
                 code={`<Button disabled>
   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-  Please wait
+  ${t('docs.button.examples.pleaseWait')}
 </Button>`}
               >
                 <DocsPreview className="flex flex-wrap gap-4">
                   <Button disabled>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Please wait
+                    {t('docs.button.examples.pleaseWait')}
                   </Button>
                   <Button variant="secondary" disabled>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Loading
+                    {t('docs.common.loading')}
                   </Button>
                 </DocsPreview>
               </DocsComponentPreview>
@@ -211,12 +213,12 @@ export default function ButtonPage() {
 
         {/* Usage */}
         <section id="usage" className="scroll-mt-20 space-y-4 pt-6 border-t">
-          <Typography variant="h2">Usage</Typography>
+          <Typography variant="h2">{t('docs.common.usage')}</Typography>
 
           <div className="space-y-6">
             <div>
               <Typography variant="small" className="mb-3 font-medium">
-                Basic import
+                {t('docs.common.basicImport')}
               </Typography>
               <DocsCodeBlock
                 language="tsx"
@@ -234,7 +236,7 @@ export function MyComponent() {
 
             <div>
               <Typography variant="small" className="mb-3 font-medium">
-                As a link with React Router
+                {t('docs.button.usage.asLinkTitle')}
               </Typography>
               <DocsCodeBlock
                 language="tsx"
@@ -252,15 +254,15 @@ import { DASHBOARD_ROUTES } from '@/shared/config'
 
         {/* API Reference */}
         <section id="api-reference" className="scroll-mt-20 space-y-4 pt-6 border-t">
-          <Typography variant="h2">API Reference</Typography>
+          <Typography variant="h2">{t('docs.common.apiReference')}</Typography>
 
           <div className="rounded-lg border overflow-hidden">
             <table className="w-full text-sm">
               <thead className="bg-muted/50">
                 <tr>
-                  <th className="text-left px-4 py-3 font-medium">Prop</th>
-                  <th className="text-left px-4 py-3 font-medium">Type</th>
-                  <th className="text-left px-4 py-3 font-medium">Default</th>
+                  <th className="text-left px-4 py-3 font-medium">{t('docs.common.prop')}</th>
+                  <th className="text-left px-4 py-3 font-medium">{t('docs.common.type')}</th>
+                  <th className="text-left px-4 py-3 font-medium">{t('docs.common.default')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y">

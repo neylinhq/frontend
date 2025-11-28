@@ -1100,30 +1100,30 @@
     },
     "componentNames": {
       "alertDialog": "Alert Dialog",
-      "avatar": "Аватар",
-      "badge": "Бейдж",
-      "button": "Кнопка",
-      "card": "Карточка",
-      "checkbox": "Чекбокс",
-      "collapsible": "Сворачиваемый",
+      "avatar": "Avatar",
+      "badge": "Badge",
+      "button": "Button",
+      "card": "Card",
+      "checkbox": "Checkbox",
+      "collapsible": "Collapsible",
       "contextMenu": "Context Menu",
-      "dialog": "Диалог",
+      "dialog": "Dialog",
       "drawer": "Drawer",
       "dropdownMenu": "Dropdown Menu",
-      "form": "Форма",
-      "input": "Поле ввода",
-      "label": "Лейбл",
+      "form": "Form",
+      "input": "Input",
+      "label": "Label",
       "popover": "Popover",
-      "progress": "Прогресс",
+      "progress": "Progress",
       "radioGroup": "Radio Group",
       "select": "Select",
-      "separator": "Разделитель",
+      "separator": "Separator",
       "sheet": "Sheet",
-      "slider": "Слайдер",
+      "slider": "Slider",
       "switch": "Switch",
-      "table": "Таблица",
-      "tabs": "Табы",
-      "textarea": "Текстовое поле"
+      "table": "Table",
+      "tabs": "Tabs",
+      "textarea": "Textarea"
     },
     "index": {
       "title": "Дизайн-система",
@@ -1212,49 +1212,274 @@
         "withClasses": "С дополнительными классами:"
       }
     },
+    "common": {
+      "component": "Компонент",
+      "components": "Компоненты",
+      "variants": "Варианты",
+      "sizes": "Размеры",
+      "states": "Состояния",
+      "usage": "Использование",
+      "apiReference": "API Reference",
+      "basic": "Базовый",
+      "withLabel": "С Label",
+      "types": "Типы",
+      "disabled": "Отключен",
+      "loading": "Загрузка",
+      "checked": "Отмечен",
+      "prop": "Проп",
+      "type": "Тип",
+      "default": "По умолчанию",
+      "description": "Описание",
+      "basicImport": "Базовый импорт",
+      "basicUsage": "Базовое использование:"
+    },
     "button": {
-      "title": "Кнопка",
-      "lead": "Универсальный компонент кнопки с различными вариантами и состояниями.",
+      "lead": "Универсальный компонент кнопки с вариантами, размерами и состояниями. Построен на Radix UI Slot.",
       "variants": {
-        "title": "Варианты",
-        "description": "Доступные варианты оформления кнопок"
+        "description": "Доступные варианты стилей кнопок для разных сценариев."
       },
       "sizes": {
-        "title": "Размеры",
-        "description": "Доступные размеры кнопок"
+        "description": "Размеры кнопок для различных контекстов."
       },
       "withIcons": {
         "title": "С иконками",
-        "description": "Кнопки с иконками из Lucide"
+        "description": "Кнопки с иконками из Lucide для улучшения коммуникации."
       },
       "states": {
-        "title": "Состояния",
-        "description": "Disabled и loading состояния",
-        "disabled": "Отключенные:",
-        "loading": "Загрузка:"
+        "description": "Отключенное и загружаемое состояния кнопок."
+      },
+      "examples": {
+        "loginWithEmail": "Войти через Email",
+        "sendEmail": "Отправить Email",
+        "continue": "Продолжить",
+        "pleaseWait": "Подождите",
+        "default": "По умолчанию",
+        "brand": "Бренд",
+        "secondary": "Вторичная",
+        "destructive": "Деструктивная",
+        "outline": "Обводка",
+        "ghost": "Призрачная",
+        "link": "Ссылка",
+        "small": "Маленькая",
+        "large": "Большая",
+        "icon": "Иконка",
+        "disabledLabel": "Отключен отмечен"
       },
       "usage": {
-        "title": "Использование",
-        "examples": "Примеры использования",
-        "basic": "Базовое использование:",
-        "withIcons": "С иконками:",
-        "asLink": "Как ссылка (с react-router):",
-        "loading": "Loading состояние:"
-      },
-      "api": {
-        "title": "API Reference",
-        "props": "Пропсы"
-      },
-      "loginWithEmail": "Войти с Email",
-      "sendEmail": "Отправить Email",
-      "continue": "Продолжить",
-      "default": "По умолчанию",
-      "pleaseWait": "Подождите",
-      "loading": "Загрузка"
+        "asLinkTitle": "Как ссылка с React Router"
+      }
     },
     "card": {
-      "title": "Карточка",
-      "lead": "Универсальный контейнер для группировки связанного контента."
+      "lead": "Универсальный контейнер для группировки связанного контента.",
+      "basicExample": {
+        "title": "Базовый пример",
+        "description": "Простая карточка с заголовком и контентом"
+      },
+      "notifications": {
+        "title": "Уведомления",
+        "description": "Карточка со списком уведомлений",
+        "cardTitle": "Уведомления",
+        "cardDescription": "У вас 3 непрочитанных сообщения.",
+        "pushTitle": "Push Уведомления",
+        "pushDescription": "Отправлять уведомления на устройство.",
+        "markAllAsRead": "Отметить все прочитанными"
+      },
+      "notificationItems": {
+        "newFeature": "Новая функция доступна",
+        "systemUpdate": "Обновление системы",
+        "newComment": "Новый комментарий",
+        "hoursAgo": "2 часа назад",
+        "dayAgo": "1 день назад",
+        "daysAgo": "3 дня назад"
+      },
+      "withStatus": {
+        "title": "Со статусом",
+        "description": "Карточки с различными статусами",
+        "active": "Активный",
+        "paused": "На паузе",
+        "completed": "Завершен",
+        "activeDescription": "Активный проект",
+        "pausedDescription": "Приостановленный проект",
+        "completedDescription": "Завершенный проект",
+        "projectInDevelopment": "Проект в разработке",
+        "workSuspended": "Работа приостановлена",
+        "projectCompleted": "Проект завершен"
+      },
+      "examples": {
+        "title": "Название карточки",
+        "description": "Описание карточки",
+        "content": "Контент карточки. Здесь может быть информация, формы, списки и другие элементы.",
+        "withFooter": "С футером",
+        "withFooterDescription": "Карточка с действиями в футере",
+        "mainContent": "Основной контент карточки",
+        "cancel": "Отмена",
+        "save": "Сохранить"
+      },
+      "usageExamples": {
+        "title": "Примеры использования",
+        "basicStructure": "Базовая структура:",
+        "codeTitle": "Заголовок",
+        "codeDescription": "Описание",
+        "codeContent": "Контент карточки",
+        "codeAction": "Действие"
+      },
+      "api": {
+        "title": "Компоненты",
+        "cardDescription": "Корневой компонент карточки. Принимает стандартные HTML атрибуты div.",
+        "cardHeaderDescription": "Шапка карточки с заголовком и описанием.",
+        "cardTitleDescription": "Заголовок карточки (h3 по умолчанию).",
+        "cardDescriptionDescription": "Описание карточки с приглушенным цветом.",
+        "cardContentDescription": "Основной контент карточки.",
+        "cardFooterDescription": "Футер карточки для действий и кнопок."
+      }
+    },
+    "input": {
+      "lead": "Компонент текстового поля для форм. Поддерживает разные типы и состояния.",
+      "basic": {
+        "description": "Простое текстовое поле ввода.",
+        "placeholder": "Введите текст..."
+      },
+      "withLabel": {
+        "description": "Поле ввода с ассоциированным label для лучшей доступности.",
+        "emailLabel": "Email",
+        "emailPlaceholder": "email@example.com"
+      },
+      "types": {
+        "description": "Различные типы полей для разных видов данных.",
+        "text": "Текст",
+        "email": "Email",
+        "password": "Пароль",
+        "number": "Число"
+      },
+      "states": {
+        "description": "Отключенное состояние полей ввода.",
+        "disabledPlaceholder": "Отключенное поле"
+      },
+      "usage": {
+        "nameLabel": "Имя",
+        "namePlaceholder": "Введите ваше имя"
+      }
+    },
+    "badge": {
+      "lead": "Маленькие статусные индикаторы для UI. Используйте для выделения важной информации.",
+      "variants": {
+        "description": "Доступные варианты стилей badge для разных контекстов."
+      },
+      "examples": {
+        "default": "По умолчанию",
+        "secondary": "Вторичный",
+        "destructive": "Деструктивный",
+        "outline": "Обводка",
+        "brand": "Бренд",
+        "success": "Успех",
+        "warning": "Внимание",
+        "info": "Инфо"
+      },
+      "usage": {
+        "active": "активный",
+        "inactive": "неактивный"
+      }
+    },
+    "checkbox": {
+      "lead": "Элемент управления для булевых выборов. Построен на Radix UI для доступности.",
+      "basic": {
+        "description": "Простой checkbox без label."
+      },
+      "withLabel": {
+        "description": "Checkbox с ассоциированным label для лучшей доступности.",
+        "acceptTerms": "Принимаю условия использования"
+      },
+      "states": {
+        "description": "Отмеченное и отключенное состояния.",
+        "checked": "Отмечен",
+        "disabled": "Отключен",
+        "disabledChecked": "Отключен отмечен"
+      },
+      "usage": {
+        "rememberMe": "Запомнить меня"
+      }
+    },
+    "dialog": {
+      "lead": "Модальное диалоговое окно для важных взаимодействий. Построен на Radix UI.",
+      "basic": {
+        "sectionDescription": "Простой диалог с заголовком и описанием.",
+        "openDialog": "Открыть диалог",
+        "title": "Заголовок диалога",
+        "description": "Это описание того, что делает этот диалог."
+      },
+      "withForm": {
+        "title": "С формой",
+        "description": "Диалог с полями формы и действиями в футере.",
+        "editProfile": "Редактировать профиль",
+        "editProfileTitle": "Редактирование профиля",
+        "editProfileDescription": "Внесите изменения в ваш профиль здесь.",
+        "nameLabel": "Имя",
+        "nameValue": "John Doe",
+        "emailLabel": "Email",
+        "emailValue": "john@example.com",
+        "saveChanges": "Сохранить изменения"
+      },
+      "usage": {
+        "areYouSure": "Вы уверены?",
+        "cannotBeUndone": "Это действие нельзя отменить.",
+        "cancel": "Отмена",
+        "delete": "Удалить"
+      },
+      "api": {
+        "dialogDescription": "Корневой компонент с пропами open/onOpenChange",
+        "triggerDescription": "Кнопка, которая открывает диалог",
+        "contentDescription": "Контейнер модального содержимого",
+        "headerDescription": "Секция заголовка",
+        "footerDescription": "Секция футера для действий"
+      }
+    },
+    "form": {
+      "lead": "Построение форм с React Hook Form и Zod валидацией. Использует доступные компоненты форм.",
+      "basic": {
+        "description": "Простая раскладка формы используя Label, Input и Button компоненты.",
+        "emailLabel": "Email",
+        "emailPlaceholder": "email@example.com",
+        "passwordLabel": "Пароль",
+        "rememberMe": "Запомнить меня",
+        "signIn": "Войти"
+      },
+      "withValidation": {
+        "title": "С валидацией",
+        "description": "Форма с состояниями ошибок и сообщениями валидации.",
+        "errorMessage": "Пожалуйста, введите корректный email адрес"
+      },
+      "usage": {
+        "description": "Мы рекомендуем использовать React Hook Form с Zod для валидации форм."
+      }
+    },
+    "table": {
+      "lead": "Адаптивный компонент таблицы для отображения данных в строках и столбцах.",
+      "basic": {
+        "caption": "Список ваших недавних счетов.",
+        "invoice": "Счет",
+        "status": "Статус",
+        "method": "Метод",
+        "amount": "Сумма",
+        "paid": "Оплачен",
+        "pending": "Ожидает",
+        "unpaid": "Не оплачен",
+        "creditCard": "Кредитная карта",
+        "paypal": "PayPal",
+        "bankTransfer": "Банковский перевод"
+      },
+      "usage": {
+        "nameColumn": "Имя",
+        "emailColumn": "Email",
+        "roleColumn": "Роль"
+      },
+      "api": {
+        "tableDescription": "Корневой элемент таблицы",
+        "headerDescription": "Секция заголовка таблицы (thead)",
+        "bodyDescription": "Секция тела таблицы (tbody)",
+        "rowDescription": "Строка таблицы (tr)",
+        "headDescription": "Ячейка заголовка таблицы (th)",
+        "cellDescription": "Ячейка данных таблицы (td)"
+      }
     }
   }
 }

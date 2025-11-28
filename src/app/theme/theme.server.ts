@@ -1,9 +1,9 @@
-import { COLOR_THEME_COOKIE_KEY, THEME_COOKIE_KEY } from './theme.constants'
-import type { ColorTheme, Theme } from './theme.types'
+import { MODE_COOKIE_KEY, PALETTE_COOKIE_KEY } from './theme.constants'
+import type { Mode, Palette } from './theme.types'
 
 export type ThemeData = {
-  theme: Theme
-  colorTheme: ColorTheme
+  mode: Mode
+  palette: Palette
 }
 
 /**
@@ -19,8 +19,8 @@ export function getThemeData(request: Request): ThemeData {
       ?.split('=')[1]
       ?.trim()
 
-  const theme = (getCookie(THEME_COOKIE_KEY) as Theme) || 'system'
-  const colorTheme = (getCookie(COLOR_THEME_COOKIE_KEY) as ColorTheme) || 'classic'
+  const mode = (getCookie(MODE_COOKIE_KEY) as Mode) || 'system'
+  const palette = (getCookie(PALETTE_COOKIE_KEY) as Palette) || 'classic'
 
-  return { theme, colorTheme }
+  return { mode, palette }
 }

@@ -1,7 +1,13 @@
 #!/usr/bin/env npx tsx
 
-import * as fs from 'fs'
-import * as path from 'path'
+import * as fs from 'node:fs'
+import * as path from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+// Get project root (relative to this script location)
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const PROJECT_ROOT = path.resolve(__dirname, '../..')
 
 // Directories and files to ignore
 const IGNORE_DIRS = new Set([
@@ -204,7 +210,7 @@ function printStats(): void {
 
 // Main function
 function main(): void {
-  const startPath = process.argv[2] || process.cwd()
+  const startPath = process.argv[2] || PROJECT_ROOT
 
   console.log(`\nAnalyzing directory: ${startPath}`)
   console.log(`Counting lines of code...`)

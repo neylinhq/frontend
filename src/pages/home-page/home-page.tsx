@@ -2,7 +2,7 @@ import { ArrowRight } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
-import { AUTH_ROUTES, ROUTES } from '@/shared/config'
+import { AUTH_ROUTES } from '@/shared/config'
 import { Button } from '@/shared/ui/button'
 import { Typography } from '@/shared/ui/typography'
 import { HOME_FEATURES } from './home-page.constants'
@@ -38,9 +38,6 @@ export function HomePage() {
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button asChild variant="outline">
-                <Link to={ROUTES.pricing}>{t('home.nav.pricing', 'View Pricing')}</Link>
-              </Button>
             </div>
           </div>
         </div>
@@ -60,10 +57,12 @@ export function HomePage() {
       {/* Features */}
       <section className="py-20 border-t">
         <div className="max-w-5xl mx-auto px-6">
-          <Typography variant="h2" className="mb-8">{t('home.features.title', 'Built for deep work')}</Typography>
+          <Typography variant="h2" className="mb-8">
+            {t('home.features.title', 'Built for deep work')}
+          </Typography>
 
           <div className="grid sm:grid-cols-2 gap-x-12 gap-y-8">
-            {HOME_FEATURES.map((feature) => (
+            {HOME_FEATURES.map(feature => (
               <div key={feature.titleKey}>
                 <h3 className="font-medium mb-1">{t(feature.titleKey)}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
@@ -86,7 +85,9 @@ export function HomePage() {
               </p>
             </div>
             <Button asChild>
-              <Link to={AUTH_ROUTES.signUp}>{t('home.cta.createAccount', 'Create Free Account')}</Link>
+              <Link to={AUTH_ROUTES.signUp}>
+                {t('home.cta.createAccount', 'Create Free Account')}
+              </Link>
             </Button>
           </div>
         </div>

@@ -1,0 +1,29 @@
+/* Docs Search Styles */
+
+.docs-search-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--muted) / 0.3);
+  font-size: 0.875rem;
+  color: hsl(var(--muted-foreground));
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.docs-search-trigger:hover {
+  background: hsl(var(--muted) / 0.5);
+  border-color: hsl(var(--border) / 0.8);
+}
+
+.docs-search-trigger kbd {
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--background));
+  font-family: ui-monospace, monospace;
+  font-size: 0.625rem;
+}

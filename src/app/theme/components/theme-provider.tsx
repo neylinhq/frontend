@@ -1,11 +1,11 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useLayoutEffect, useState } from 'react'
 import {
-  COLOR_THEME_COOKIE_KEY,
-  COLOR_THEME_STORAGE_KEY,
-  THEME_COOKIE_KEY,
-  THEME_STORAGE_KEY
+  MODE_COOKIE_KEY,
+  MODE_STORAGE_KEY,
+  PALETTE_COOKIE_KEY,
+  PALETTE_STORAGE_KEY
 } from '../theme.constants'
-import type { ColorTheme, Theme, ThemeProviderState } from '../theme.types'
+import type { Mode, Palette, ThemeProviderState } from '../theme.types'
 
 // Helper to set cookie (1 year expiry)
 function setCookie(name: string, value: string) {
@@ -26,85 +26,109 @@ function withoutTransitions(callback: () => void) {
   })
 }
 
+// Resolve system preference to actual mode
+function resolveMode(mode: Mode): 'dark' | 'light' {
+  if (mode === 'system') {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  }
+  return mode
+}
+
 const initialState: ThemeProviderState = {
-  theme: 'system',
-  setTheme: () => null,
-  colorTheme: 'classic',
-  setColorTheme: () => null
+  mode: 'system',
+  setMode: () => null,
+  resolvedMode: 'light',
+  palette: 'classic',
+  setPalette: () => null
 }
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
 
 type ThemeProviderProps = {
   children: React.ReactNode
-  defaultTheme?: Theme
-  defaultColorTheme?: ColorTheme
-  storageKey?: string
+  defaultMode?: Mode
+  defaultPalette?: Palette
 }
 
 export const ThemeProvider = ({
   children,
-  defaultTheme = 'system',
-  defaultColorTheme = 'classic',
-  storageKey = THEME_STORAGE_KEY,
+  defaultMode = 'system',
+  defaultPalette = 'classic',
   ...props
 }: ThemeProviderProps) => {
-  const [theme, setTheme] = useState<Theme>(() =>
+  const [mode, setModeState] = useState<Mode>(() =>
     typeof window !== 'undefined'
-      ? (localStorage.getItem(storageKey) as Theme) || defaultTheme
-      : defaultTheme
+      ? (localStorage.getItem(MODE_STORAGE_KEY) as Mode) || defaultMode
+      : defaultMode
   )
 
-  const [colorTheme, setColorThemeState] = useState<ColorTheme>(() =>
+  const [palette, setPaletteState] = useState<Palette>(() =>
     typeof window !== 'undefined'
-      ? (localStorage.getItem(COLOR_THEME_STORAGE_KEY) as ColorTheme) || defaultColorTheme
-      : defaultColorTheme
+      ? (localStorage.getItem(PALETTE_STORAGE_KEY) as Palette) || defaultPalette
+      : defaultPalette
   )
 
-  // Apply dark/light mode class
-  useEffect(() => {
+  const [resolvedMode, setResolvedMode] = useState<'dark' | 'light'>(() =>
+    typeof window !== 'undefined' ? resolveMode(mode) : 'light'
+  )
+
+  // Apply dark/light mode class (useLayoutEffect for earlier execution)
+  useLayoutEffect(() => {
     const root = window.document.documentElement
+    const resolved = resolveMode(mode)
+    setResolvedMode(resolved)
 
-    root.classList.remove('light', 'dark')
-
-    if (theme === 'system') {
-      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? 'dark'
-        : 'light'
-
-      root.classList.add(systemTheme)
-      return
+    // Only update if the class is different (prevents FOUC on hydration)
+    if (!root.classList.contains(resolved)) {
+      root.classList.remove('light', 'dark')
+      root.classList.add(resolved)
     }
+  }, [mode])
 
-    root.classList.add(theme)
-  }, [theme])
-
-  // Apply color theme data attribute
-  useEffect(() => {
+  // Apply palette data attribute
+  useLayoutEffect(() => {
     const root = window.document.documentElement
 
-    if (colorTheme === 'classic') {
-      delete root.dataset.theme
+    if (palette === 'classic') {
+      delete root.dataset.palette
     } else {
-      root.dataset.theme = colorTheme
+      root.dataset.palette = palette
     }
-  }, [colorTheme])
+  }, [palette])
+
+  // Listen to system preference changes
+  useLayoutEffect(() => {
+    if (mode !== 'system') return
+
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    const handleChange = () => {
+      const resolved = resolveMode('system')
+      setResolvedMode(resolved)
+      const root = window.document.documentElement
+      root.classList.remove('light', 'dark')
+      root.classList.add(resolved)
+    }
+
+    mediaQuery.addEventListener('change', handleChange)
+    return () => mediaQuery.removeEventListener('change', handleChange)
+  }, [mode])
 
   const value: ThemeProviderState = {
-    theme,
-    setTheme: (newTheme: Theme) => {
+    mode,
+    setMode: (newMode: Mode) => {
       withoutTransitions(() => {
-        localStorage.setItem(storageKey, newTheme)
-        setCookie(THEME_COOKIE_KEY, newTheme)
-        setTheme(newTheme)
+        localStorage.setItem(MODE_STORAGE_KEY, newMode)
+        setCookie(MODE_COOKIE_KEY, newMode)
+        setModeState(newMode)
       })
     },
-    colorTheme,
-    setColorTheme: (newColorTheme: ColorTheme) => {
+    resolvedMode,
+    palette,
+    setPalette: (newPalette: Palette) => {
       withoutTransitions(() => {
-        localStorage.setItem(COLOR_THEME_STORAGE_KEY, newColorTheme)
-        setCookie(COLOR_THEME_COOKIE_KEY, newColorTheme)
-        setColorThemeState(newColorTheme)
+        localStorage.setItem(PALETTE_STORAGE_KEY, newPalette)
+        setCookie(PALETTE_COOKIE_KEY, newPalette)
+        setPaletteState(newPalette)
       })
     }
   }

@@ -24,35 +24,35 @@ export function initI18n(data?: I18nInitData) {
   if (initialized) return i18n
 
   if (data?.translations) {
-    // SSR mode: use pre-loaded translations
+    // SSR mode: синхронная инициализация с готовыми переводами
+    // Backend включен для загрузки других языков при переключении
     i18n
-      .use(Backend) // For loading other languages on demand
-      .use(LanguageDetector)
+      .use(Backend)
       .use(initReactI18next)
       .init({
         lng: data.locale,
         fallbackLng: 'en',
-        debug: import.meta.env.DEV,
-        detection: detectionOptions,
+        debug: false,
+        initImmediate: true,
 
+        // Текущий язык уже загружен, остальные загрузим через Backend
         resources: {
           [data.locale]: {
             translation: data.translations
           }
         },
+        partialBundledLanguages: true,
+
+        backend: {
+          loadPath: '/locales/{{lng}}/{{ns}}.json'
+        },
 
         react: {
-          useSuspense: false // Уже есть данные, Suspense не нужен
+          useSuspense: false
         },
 
         interpolation: {
           escapeValue: false
-        },
-
-        // Загружаем остальные языки по требованию при смене языка
-        partialBundledLanguages: true,
-        backend: {
-          loadPath: '/locales/{{lng}}/{{ns}}.json'
         }
       })
   } else {

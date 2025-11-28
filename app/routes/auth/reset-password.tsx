@@ -1,24 +1,31 @@
 import type { ActionFunctionArgs } from 'react-router'
+import { sessionApi } from '@/entities/session/session.api'
 import { ResetPasswordPage } from '@/pages/auth/reset-password-page'
 import { getMeta } from '@/shared/lib/get-meta'
+
+export const handle = {
+  hideAuthButtons: true,
+  hideFooter: true,
+  centered: true,
+}
 
 export function meta() {
   return getMeta('resetPassword')
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-  // Mock reset password logic
   const formData = await request.formData()
-  const email = formData.get('email')
+  const email = formData.get('email') as string
 
-  if (email) {
-    // В реальности тут был бы вызов API
-    // Возвращаем успех, чтобы UI мог показать сообщение "Письмо отправлено"
-    // Для простоты пока редиректим на подтверждение или просто возвращаем статус
-    return { success: true }
+  try {
+    // Use session API for password reset
+    const result = await sessionApi.resetPassword(email)
+    return result
+  } catch (error) {
+    return {
+      error: error instanceof Error ? error.message : 'Ошибка сброса пароля'
+    }
   }
-
-  return null
 }
 
 export default function ResetPasswordRoute() {

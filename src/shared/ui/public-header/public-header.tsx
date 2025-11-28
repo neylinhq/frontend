@@ -1,12 +1,17 @@
+import type { LucideIcon } from 'lucide-react'
+import { Home, LogIn, Menu, Rocket, Wallet } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router'
+import { Link, NavLink } from 'react-router'
 
-import { ColorThemeSelect } from '@/app/theme/components/color-theme-select'
+import { PaletteSelect } from '@/app/theme/components/palette-select'
 import { ModeSelect } from '@/app/theme/components/mode-select'
 import { LanguageSelect } from '@/features/language-switcher'
-import { AUTH_ROUTES } from '@/shared/config'
+import { AUTH_ROUTES, ROUTES } from '@/shared/config'
+import { cn } from '@/shared/lib/cn'
 import { Button } from '@/shared/ui/button'
 import { Logo } from '@/shared/ui/logo'
+import { Separator } from '@/shared/ui/separator'
+import { Sheet, SheetContent, SheetTrigger } from '@/shared/ui/sheet'
 
 interface PublicHeaderProps {
   hideAuthButtons?: boolean
@@ -21,9 +26,14 @@ export function PublicHeader({ hideAuthButtons }: PublicHeaderProps) {
         <Logo size="lg" />
 
         <nav className="flex items-center gap-2">
-          <LanguageSelect compact />
-          <ColorThemeSelect compact />
-          <ModeSelect compact />
+          {/* Desktop theme controls */}
+          <div className="hidden md:flex items-center gap-2">
+            <LanguageSelect compact />
+            <PaletteSelect compact />
+            <ModeSelect compact />
+          </div>
+
+          {/* Desktop auth buttons */}
           {!hideAuthButtons && (
             <>
               <div className="hidden md:block h-4 w-px bg-border mx-1" />
@@ -35,8 +45,78 @@ export function PublicHeader({ hideAuthButtons }: PublicHeaderProps) {
               </Button>
             </>
           )}
+
+          {/* Mobile menu - always visible */}
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="md:hidden">
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">{t('common.menu', 'Menu')}</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[280px] p-0 flex flex-col">
+              <div className="py-4 px-6 border-b">
+                <Logo size="sm" />
+              </div>
+
+              {/* Navigation */}
+              <div className="flex-1 py-4 px-3 space-y-1">
+                <MobileNavItem to={ROUTES.home} icon={Home}>
+                  {t('nav.home', 'Home')}
+                </MobileNavItem>
+                <MobileNavItem to={ROUTES.pricing} icon={Wallet}>
+                  {t('nav.pricing', 'Pricing')}
+                </MobileNavItem>
+
+                {!hideAuthButtons && (
+                  <>
+                    <Separator className="my-3" />
+                    <MobileNavItem to={AUTH_ROUTES.signIn} icon={LogIn}>
+                      {t('home.cta.signIn', 'Sign in')}
+                    </MobileNavItem>
+                    <MobileNavItem to={AUTH_ROUTES.signUp} icon={Rocket}>
+                      {t('home.cta.getStarted', 'Get Started')}
+                    </MobileNavItem>
+                  </>
+                )}
+              </div>
+
+              {/* Theme controls */}
+              <div className="border-t py-4 px-4 flex items-center justify-center gap-2">
+                <LanguageSelect compact />
+                <PaletteSelect compact />
+                <ModeSelect compact />
+              </div>
+            </SheetContent>
+          </Sheet>
         </nav>
       </div>
     </header>
+  )
+}
+
+function MobileNavItem({
+  to,
+  icon: Icon,
+  children,
+}: {
+  to: string
+  icon: LucideIcon
+  children: React.ReactNode
+}) {
+  return (
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        cn(
+          'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
+          'hover:bg-accent hover:text-accent-foreground',
+          isActive ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'
+        )
+      }
+    >
+      <Icon className="h-5 w-5" />
+      <span>{children}</span>
+    </NavLink>
   )
 }

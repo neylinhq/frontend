@@ -3,6 +3,7 @@ import * as React from 'react'
 import { NavLink } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/shared/lib/cn'
+import './docs-sidebar.styles.css'
 import { Badge } from '@/shared/ui/badge'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/shared/ui/collapsible'
 

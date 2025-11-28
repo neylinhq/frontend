@@ -125,80 +125,18 @@ const META_TRANSLATIONS = {
       title: 'Documentation',
       description: 'Design system and component library with examples'
     }
-  },
-  de: {
-    home: {
-      title: 'Startseite',
-      description: 'Plattform für Wissensmanagement'
-    },
-    overview: {
-      title: 'Übersicht',
-      description: 'Ihre Wissenskarten'
-    },
-    mapView: {
-      title: 'Wissenskarte',
-      description: 'Visualisierung des Wissensgraphen'
-    },
-    nodeEdit: {
-      title: 'Knoten bearbeiten',
-      description: 'Wissenskarte Knoten bearbeiten'
-    },
-    signIn: {
-      title: 'Anmelden',
-      description: 'Melden Sie sich bei Ihrem Konto an'
-    },
-    signUp: {
-      title: 'Registrieren',
-      description: 'Erstellen Sie ein neues Konto'
-    },
-    resetPassword: {
-      title: 'Passwort zurücksetzen',
-      description: 'Stellen Sie den Zugriff auf Ihr Konto wieder her'
-    },
-    terms: {
-      title: 'Nutzungsbedingungen',
-      description: 'Bitte lesen Sie diese Bedingungen sorgfältig durch, bevor Sie unseren Service nutzen'
-    },
-    privacy: {
-      title: 'Datenschutzerklärung',
-      description: 'Erfahren Sie, wie wir Ihre personenbezogenen Daten erheben, verwenden und schützen'
-    },
-    cookies: {
-      title: 'Cookie-Richtlinie',
-      description: 'Informationen darüber, wie wir Cookies verwenden, um Ihr Erlebnis zu verbessern'
-    },
-    license: {
-      title: 'Lizenzvereinbarung',
-      description: 'Lizenzbedingungen für die Arbor-Software'
-    },
-    notFound: {
-      title: 'Seite nicht gefunden',
-      description: 'Leider existiert die gesuchte Seite nicht oder wurde verschoben'
-    },
-    pricing: {
-      title: 'Preise',
-      description: 'Wählen Sie den richtigen Tarif für Ihre Wissensmanagement-Bedürfnisse'
-    },
-    uiShowcase: {
-      title: 'UI-Komponenten',
-      description: 'Komponentenbibliothek mit Dokumentation und Beispielen'
-    },
-    docs: {
-      title: 'Dokumentation',
-      description: 'Design-System und Komponentenbibliothek mit Beispielen'
-    }
   }
 } as const
 
 type MetaKey = keyof typeof META_TRANSLATIONS.ru
-type Language = 'ru' | 'en' | 'de'
+type Language = keyof typeof META_TRANSLATIONS
 
 function getCurrentLanguage(): Language {
   // Проверяем localStorage (где i18next хранит язык)
   if (typeof window !== 'undefined') {
     const savedLang = localStorage.getItem('i18nextLng')
-    if (savedLang === 'ru' || savedLang === 'en' || savedLang === 'de') {
-      return savedLang
+    if (savedLang === 'ru' || savedLang === 'en') {
+      return savedLang as Language
     }
   }
   // Дефолт - русский
@@ -207,7 +145,7 @@ function getCurrentLanguage(): Language {
 
 export function getMeta(key: MetaKey) {
   const lang = getCurrentLanguage()
-  const translations = META_TRANSLATIONS[lang] as Record<MetaKey, { title: string; description: string }>
+  const translations = META_TRANSLATIONS[lang]
   const { title, description } = translations[key]
 
   return [

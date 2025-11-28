@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { subscriptionApi } from './subscription.api'
-import type { PlanType } from './subscription.schema'
+import type { PaymentMethod, PlanType } from './subscription.schema'
 import type { AddPaymentMethodInput } from './subscription.types'
 
 // Query key factory - Following mapKeys pattern exactly
@@ -109,7 +109,21 @@ export const useRemovePaymentMethod = () => {
 
   return useMutation({
     mutationFn: (paymentMethodId: string) => subscriptionApi.removePaymentMethod(paymentMethodId),
-    onSuccess: () => {
+    onMutate: async (paymentMethodId: string) => {
+      await queryClient.cancelQueries({ queryKey: subscriptionKeys.paymentMethods() })
+      const previous = queryClient.getQueryData<PaymentMethod[]>(subscriptionKeys.paymentMethods())
+
+      queryClient.setQueryData<PaymentMethod[]>(subscriptionKeys.paymentMethods(), old =>
+        old?.filter(m => m.id !== paymentMethodId)
+      )
+      return { previous }
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(subscriptionKeys.paymentMethods(), context.previous)
+      }
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: subscriptionKeys.paymentMethods() })
     }
   })
@@ -121,7 +135,21 @@ export const useSetDefaultPaymentMethod = () => {
   return useMutation({
     mutationFn: (paymentMethodId: string) =>
       subscriptionApi.setDefaultPaymentMethod(paymentMethodId),
-    onSuccess: () => {
+    onMutate: async (paymentMethodId: string) => {
+      await queryClient.cancelQueries({ queryKey: subscriptionKeys.paymentMethods() })
+      const previous = queryClient.getQueryData<PaymentMethod[]>(subscriptionKeys.paymentMethods())
+
+      queryClient.setQueryData<PaymentMethod[]>(subscriptionKeys.paymentMethods(), old =>
+        old?.map(m => ({ ...m, isDefault: m.id === paymentMethodId }))
+      )
+      return { previous }
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(subscriptionKeys.paymentMethods(), context.previous)
+      }
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: subscriptionKeys.paymentMethods() })
     }
   })

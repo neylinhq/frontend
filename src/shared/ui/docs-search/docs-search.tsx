@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 
 import { cn } from '@/shared/lib/cn'
+import './docs-search.styles.css'
 import { isMac } from '@/shared/lib/platform'
 import {
   Dialog,

@@ -56,42 +56,42 @@ export function PaymentMethodCard({
     <>
       <div
         className={cn(
-          'group relative flex items-center gap-4 px-4 py-3 rounded-lg border bg-card transition-all duration-200',
+          'group relative flex items-start gap-3 px-4 py-3 rounded-lg border bg-card transition-all duration-200',
           'hover:shadow-sm hover:border-border/80',
           method.isDefault && 'ring-1 ring-primary/20'
         )}
       >
         {/* Brand Icon */}
-        <div className="flex-shrink-0">
+        <div className="flex-shrink-0 pt-0.5">
           <CardBrandIcon brand={brand} size="sm" />
         </div>
 
-        {/* Card Info - Inline */}
-        <div className="flex-1 min-w-0 flex items-center gap-6">
-          {/* Card Number */}
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-sm font-medium">
+        {/* Card Info - Responsive Layout */}
+        <div className="flex-1 min-w-0 flex flex-col gap-2">
+          {/* First Line: Card Number - Always in one line */}
+          <div className="flex items-center">
+            <span className="font-mono text-sm font-medium whitespace-nowrap">
               •••• •••• •••• {method.last4}
             </span>
+          </div>
+
+          {/* Second Line: Meta Info */}
+          <div className="flex items-center gap-3 flex-wrap text-sm text-muted-foreground">
+            {formatExpiry() && (
+              <span>
+                {t('billing.expires')} {formatExpiry()}
+              </span>
+            )}
+            <span className="capitalize">
+              {method.brand || 'Card'}
+            </span>
             {method.isDefault && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-muted text-muted-foreground">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-muted">
                 <Star className="h-3 w-3 fill-current" />
                 {t('billing.defaultPaymentMethod')}
               </span>
             )}
           </div>
-
-          {/* Expiry */}
-          {formatExpiry() && (
-            <span className="hidden sm:block text-sm text-muted-foreground">
-              {t('billing.expires')} {formatExpiry()}
-            </span>
-          )}
-
-          {/* Brand Name - Hidden on small screens */}
-          <span className="hidden md:block text-sm text-muted-foreground capitalize">
-            {method.brand || 'Card'}
-          </span>
         </div>
 
         {/* Actions Menu */}
@@ -100,7 +100,7 @@ export function PaymentMethodCard({
             <Button
               variant="ghost"
               size="sm"
-              className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+              className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
               disabled={loading}
             >
               <MoreVertical className="h-4 w-4" />

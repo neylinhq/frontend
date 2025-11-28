@@ -2,7 +2,7 @@ import { Link } from 'react-router'
 import { Menu } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-import { ColorThemeSelect } from '@/app/theme/components/color-theme-select'
+import { PaletteSelect } from '@/app/theme/components/palette-select'
 import { ModeSelect } from '@/app/theme/components/mode-select'
 import { LanguageSelect } from '@/features/language-switcher'
 import { DOCS_ROUTES, ROUTES } from '@/shared/config'
@@ -63,7 +63,7 @@ export function DocsHeader({ mobileNav }: DocsHeaderProps) {
 
         {/* Theme controls */}
         <nav className="flex items-center gap-1">
-          <ColorThemeSelect compact />
+          <PaletteSelect compact />
           <ModeSelect compact />
           <LanguageSelect compact />
         </nav>

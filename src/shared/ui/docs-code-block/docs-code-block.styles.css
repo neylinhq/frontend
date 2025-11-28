@@ -1,0 +1,64 @@
+/* Docs Code Block Styles */
+
+.docs-code-block {
+  border-radius: 0.5rem;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--muted) / 0.3);
+  overflow: hidden;
+}
+
+.docs-code-block.embedded {
+  border: none;
+  border-radius: 0;
+}
+
+.docs-code-block-header {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid hsl(var(--border));
+  background: hsl(var(--muted) / 0.5);
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.docs-code-block-language {
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.375rem;
+  background: hsl(var(--muted));
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.docs-code-block-copy {
+  margin-left: 0.5rem;
+  padding: 0.375rem;
+  border-radius: 0.375rem;
+  color: hsl(var(--muted-foreground));
+  opacity: 0;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.docs-code-block:hover .docs-code-block-copy {
+  opacity: 1;
+}
+
+.docs-code-block-copy:hover {
+  background: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+}
+
+.docs-code-block-pre {
+  margin: 0;
+  padding: 1rem;
+  overflow-x: auto;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.875rem;
+  line-height: 1.7;
+}

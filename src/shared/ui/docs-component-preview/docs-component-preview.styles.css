@@ -1,0 +1,36 @@
+/* Docs Component Preview Styles */
+
+.docs-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  border: 1px dashed hsl(var(--border));
+  background: linear-gradient(
+    to bottom,
+    hsl(var(--muted) / 0.2),
+    hsl(var(--muted) / 0.05)
+  );
+  transition: all 0.2s ease;
+}
+
+.docs-preview:hover {
+  border-color: hsl(var(--border) / 0.8);
+  background: linear-gradient(
+    to bottom,
+    hsl(var(--muted) / 0.3),
+    hsl(var(--muted) / 0.1)
+  );
+}
+
+/* Card hover effect for docs */
+.docs-card-hover {
+  transition: all 0.2s ease;
+}
+
+.docs-card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  border-color: hsl(var(--brand) / 0.3);
+}

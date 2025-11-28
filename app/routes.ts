@@ -10,22 +10,48 @@ export default [
     route('legal/cookies', 'routes/legal/cookies.tsx'),
     route('legal/license', 'routes/legal/license.tsx'),
 
+    // Auth Routes (centered, no footer, no auth buttons)
+    route('auth/sign-in', 'routes/auth/sign-in.tsx'),
+    route('auth/sign-up', 'routes/auth/sign-up.tsx'),
+    route('auth/reset-password', 'routes/auth/reset-password.tsx'),
+
+    // 404 Route (centered, no footer)
+    route('*', 'routes/404.tsx'),
+
     // Docs UI (with sidebar navigation)
     layout('routes/docs/layout.tsx', [
       route('docs/ui', 'routes/docs/index.tsx'),
       route('docs/ui/colors', 'routes/docs/colors.tsx'),
       route('docs/ui/typography', 'routes/docs/typography.tsx'),
+      // Components
+      route('docs/ui/alert-dialog', 'routes/docs/alert-dialog.tsx'),
+      route('docs/ui/avatar', 'routes/docs/avatar.tsx'),
+      route('docs/ui/badge', 'routes/docs/badge.tsx'),
       route('docs/ui/button', 'routes/docs/button.tsx'),
       route('docs/ui/card', 'routes/docs/card.tsx'),
-    ])
+      route('docs/ui/checkbox', 'routes/docs/checkbox.tsx'),
+      route('docs/ui/collapsible', 'routes/docs/collapsible.tsx'),
+      route('docs/ui/context-menu', 'routes/docs/context-menu.tsx'),
+      route('docs/ui/dialog', 'routes/docs/dialog.tsx'),
+      route('docs/ui/drawer', 'routes/docs/drawer.tsx'),
+      route('docs/ui/dropdown-menu', 'routes/docs/dropdown-menu.tsx'),
+      route('docs/ui/form', 'routes/docs/form.tsx'),
+      route('docs/ui/input', 'routes/docs/input.tsx'),
+      route('docs/ui/label', 'routes/docs/label.tsx'),
+      route('docs/ui/popover', 'routes/docs/popover.tsx'),
+      route('docs/ui/progress', 'routes/docs/progress.tsx'),
+      route('docs/ui/radio-group', 'routes/docs/radio-group.tsx'),
+      route('docs/ui/select', 'routes/docs/select.tsx'),
+      route('docs/ui/separator', 'routes/docs/separator.tsx'),
+      route('docs/ui/sheet', 'routes/docs/sheet.tsx'),
+      route('docs/ui/slider', 'routes/docs/slider.tsx'),
+      route('docs/ui/switch', 'routes/docs/switch.tsx'),
+      route('docs/ui/table', 'routes/docs/table.tsx'),
+      route('docs/ui/tabs', 'routes/docs/tabs.tsx'),
+      route('docs/ui/textarea', 'routes/docs/textarea.tsx'),
+    ]),
   ]),
 
-  // Auth Routes (with header, no footer, centered)
-  layout('routes/auth/layout.tsx', [
-    route('auth/sign-in', 'routes/auth/sign-in.tsx'),
-    route('auth/sign-up', 'routes/auth/sign-up.tsx'),
-    route('auth/reset-password', 'routes/auth/reset-password.tsx')
-  ]),
   route('auth/logout', 'routes/auth/logout.ts'),
 
   // Dashboard Routes
@@ -41,10 +67,7 @@ export default [
       route('dashboard/settings/theme', 'routes/dashboard/settings/theme.tsx'),
       route('dashboard/settings/integrations', 'routes/dashboard/settings/integrations.tsx'),
       route('dashboard/settings/security', 'routes/dashboard/settings/security.tsx'),
-      route('dashboard/settings/billing', 'routes/dashboard/settings/billing.tsx')
-    ])
+      route('dashboard/settings/billing', 'routes/dashboard/settings/billing.tsx'),
+    ]),
   ]),
-
-  // 404 Route
-  route('*', 'routes/404.tsx')
 ] satisfies RouteConfig

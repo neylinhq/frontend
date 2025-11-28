@@ -1186,49 +1186,274 @@
         "withClasses": "With additional classes:"
       }
     },
+    "common": {
+      "component": "Component",
+      "components": "Components",
+      "variants": "Variants",
+      "sizes": "Sizes",
+      "states": "States",
+      "usage": "Usage",
+      "apiReference": "API Reference",
+      "basic": "Basic",
+      "withLabel": "With Label",
+      "types": "Types",
+      "disabled": "Disabled",
+      "loading": "Loading",
+      "checked": "Checked",
+      "prop": "Prop",
+      "type": "Type",
+      "default": "Default",
+      "description": "Description",
+      "basicImport": "Basic import",
+      "basicUsage": "Basic usage:"
+    },
     "button": {
-      "title": "Button",
-      "lead": "Universal button component with various variants and states.",
+      "lead": "A versatile button component with multiple variants, sizes, and states. Built with Radix UI Slot for polymorphic composition.",
       "variants": {
-        "title": "Variants",
-        "description": "Available button styles"
+        "description": "Available button style variants for different use cases."
       },
       "sizes": {
-        "title": "Sizes",
-        "description": "Available button sizes"
+        "description": "Button sizes for different contexts."
       },
       "withIcons": {
         "title": "With Icons",
-        "description": "Buttons with Lucide icons"
+        "description": "Buttons with Lucide icons for enhanced visual communication."
       },
       "states": {
-        "title": "States",
-        "description": "Disabled and loading states",
-        "disabled": "Disabled:",
-        "loading": "Loading:"
+        "description": "Disabled and loading states for buttons."
+      },
+      "examples": {
+        "loginWithEmail": "Login with Email",
+        "sendEmail": "Send Email",
+        "continue": "Continue",
+        "pleaseWait": "Please wait",
+        "default": "Default",
+        "brand": "Brand",
+        "secondary": "Secondary",
+        "destructive": "Destructive",
+        "outline": "Outline",
+        "ghost": "Ghost",
+        "link": "Link",
+        "small": "Small",
+        "large": "Large",
+        "icon": "Icon",
+        "disabledLabel": "Disabled checked"
       },
       "usage": {
-        "title": "Usage",
-        "examples": "Usage Examples",
-        "basic": "Basic usage:",
-        "withIcons": "With icons:",
-        "asLink": "As link (with react-router):",
-        "loading": "Loading state:"
-      },
-      "api": {
-        "title": "API Reference",
-        "props": "Props"
-      },
-      "loginWithEmail": "Login with Email",
-      "sendEmail": "Send Email",
-      "continue": "Continue",
-      "default": "Default",
-      "pleaseWait": "Please wait",
-      "loading": "Loading"
+        "asLinkTitle": "As a link with React Router"
+      }
     },
     "card": {
-      "title": "Card",
-      "lead": "Universal container for grouping related content."
+      "lead": "A versatile container for grouping related content.",
+      "basicExample": {
+        "title": "Basic Example",
+        "description": "Simple card with header and content"
+      },
+      "notifications": {
+        "title": "Notifications",
+        "description": "Card with list of notifications",
+        "cardTitle": "Notifications",
+        "cardDescription": "You have 3 unread messages.",
+        "pushTitle": "Push Notifications",
+        "pushDescription": "Send notifications to your device.",
+        "markAllAsRead": "Mark all as read"
+      },
+      "notificationItems": {
+        "newFeature": "New feature available",
+        "systemUpdate": "System update",
+        "newComment": "New comment",
+        "hoursAgo": "2 hours ago",
+        "dayAgo": "1 day ago",
+        "daysAgo": "3 days ago"
+      },
+      "withStatus": {
+        "title": "With Status",
+        "description": "Cards with different statuses",
+        "active": "Active",
+        "paused": "Paused",
+        "completed": "Completed",
+        "activeDescription": "Active project",
+        "pausedDescription": "Paused project",
+        "completedDescription": "Completed project",
+        "projectInDevelopment": "Project in development",
+        "workSuspended": "Work suspended",
+        "projectCompleted": "Project completed"
+      },
+      "examples": {
+        "title": "Card Title",
+        "description": "Card Description",
+        "content": "Card content. Here can be any information, forms, lists and other elements.",
+        "withFooter": "With Footer",
+        "withFooterDescription": "Card with actions in footer",
+        "mainContent": "Main card content",
+        "cancel": "Cancel",
+        "save": "Save"
+      },
+      "usageExamples": {
+        "title": "Usage Examples",
+        "basicStructure": "Basic structure:",
+        "codeTitle": "Title",
+        "codeDescription": "Description",
+        "codeContent": "Card content",
+        "codeAction": "Action"
+      },
+      "api": {
+        "title": "Components",
+        "cardDescription": "Root card component. Accepts standard HTML div attributes.",
+        "cardHeaderDescription": "Card header with title and description.",
+        "cardTitleDescription": "Card title (h3 by default).",
+        "cardDescriptionDescription": "Card description with muted color.",
+        "cardContentDescription": "Main card content.",
+        "cardFooterDescription": "Card footer for actions and buttons."
+      }
+    },
+    "input": {
+      "lead": "A text input field component for forms. Supports various types and states.",
+      "basic": {
+        "description": "Simple text input field.",
+        "placeholder": "Enter text..."
+      },
+      "withLabel": {
+        "description": "Input with associated label for better accessibility.",
+        "emailLabel": "Email",
+        "emailPlaceholder": "email@example.com"
+      },
+      "types": {
+        "description": "Different input types for various data entry needs.",
+        "text": "Text",
+        "email": "Email",
+        "password": "Password",
+        "number": "Number"
+      },
+      "states": {
+        "description": "Disabled state for inputs.",
+        "disabledPlaceholder": "Disabled input"
+      },
+      "usage": {
+        "nameLabel": "Name",
+        "namePlaceholder": "Enter your name"
+      }
+    },
+    "badge": {
+      "lead": "Small status descriptors for UI elements. Use badges to highlight important information.",
+      "variants": {
+        "description": "Available badge style variants for different contexts."
+      },
+      "examples": {
+        "default": "Default",
+        "secondary": "Secondary",
+        "destructive": "Destructive",
+        "outline": "Outline",
+        "brand": "Brand",
+        "success": "Success",
+        "warning": "Warning",
+        "info": "Info"
+      },
+      "usage": {
+        "active": "active",
+        "inactive": "inactive"
+      }
+    },
+    "checkbox": {
+      "lead": "A control for boolean selections. Built with Radix UI for accessibility.",
+      "basic": {
+        "description": "Simple checkbox without label."
+      },
+      "withLabel": {
+        "description": "Checkbox with associated label for better accessibility.",
+        "acceptTerms": "Accept terms and conditions"
+      },
+      "states": {
+        "description": "Checked and disabled states.",
+        "checked": "Checked",
+        "disabled": "Disabled",
+        "disabledChecked": "Disabled checked"
+      },
+      "usage": {
+        "rememberMe": "Remember me"
+      }
+    },
+    "dialog": {
+      "lead": "A modal dialog for important interactions. Built with Radix UI for accessibility.",
+      "basic": {
+        "sectionDescription": "Simple dialog with title and description.",
+        "openDialog": "Open Dialog",
+        "title": "Dialog Title",
+        "description": "This is a description of what this dialog does."
+      },
+      "withForm": {
+        "title": "With Form",
+        "description": "Dialog with form inputs and footer actions.",
+        "editProfile": "Edit Profile",
+        "editProfileTitle": "Edit profile",
+        "editProfileDescription": "Make changes to your profile here.",
+        "nameLabel": "Name",
+        "nameValue": "John Doe",
+        "emailLabel": "Email",
+        "emailValue": "john@example.com",
+        "saveChanges": "Save changes"
+      },
+      "usage": {
+        "areYouSure": "Are you sure?",
+        "cannotBeUndone": "This action cannot be undone.",
+        "cancel": "Cancel",
+        "delete": "Delete"
+      },
+      "api": {
+        "dialogDescription": "Root component with open/onOpenChange props",
+        "triggerDescription": "Button that opens the dialog",
+        "contentDescription": "Modal content container",
+        "headerDescription": "Header section",
+        "footerDescription": "Footer section for actions"
+      }
+    },
+    "form": {
+      "lead": "Building forms with React Hook Form and Zod validation. Uses accessible form components with proper labeling and error states.",
+      "basic": {
+        "description": "Simple form layout using Label, Input, and Button components.",
+        "emailLabel": "Email",
+        "emailPlaceholder": "email@example.com",
+        "passwordLabel": "Password",
+        "rememberMe": "Remember me",
+        "signIn": "Sign In"
+      },
+      "withValidation": {
+        "title": "With Validation",
+        "description": "Form with error states and validation messages.",
+        "errorMessage": "Please enter a valid email address"
+      },
+      "usage": {
+        "description": "We recommend using React Hook Form with Zod for form validation."
+      }
+    },
+    "table": {
+      "lead": "A responsive table component for displaying data in rows and columns.",
+      "basic": {
+        "caption": "A list of your recent invoices.",
+        "invoice": "Invoice",
+        "status": "Status",
+        "method": "Method",
+        "amount": "Amount",
+        "paid": "Paid",
+        "pending": "Pending",
+        "unpaid": "Unpaid",
+        "creditCard": "Credit Card",
+        "paypal": "PayPal",
+        "bankTransfer": "Bank Transfer"
+      },
+      "usage": {
+        "nameColumn": "Name",
+        "emailColumn": "Email",
+        "roleColumn": "Role"
+      },
+      "api": {
+        "tableDescription": "Root table element",
+        "headerDescription": "Table header section (thead)",
+        "bodyDescription": "Table body section (tbody)",
+        "rowDescription": "Table row (tr)",
+        "headDescription": "Table header cell (th)",
+        "cellDescription": "Table data cell (td)"
+      }
     }
   }
 }

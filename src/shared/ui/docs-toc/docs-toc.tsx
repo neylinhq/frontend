@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/shared/lib/cn'
+import './docs-toc.styles.css'
 import { useActiveHeading } from './use-active-heading'
 
 export interface TocItem {

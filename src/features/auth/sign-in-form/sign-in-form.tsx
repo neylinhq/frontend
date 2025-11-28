@@ -34,28 +34,28 @@ export function SignInForm() {
   })
 
   return (
-    <div className="grid gap-6">
+    <div className='grid gap-6'>
       <Form {...form}>
         <form
-          className="grid gap-4"
+          className='grid gap-4'
           onSubmit={form.handleSubmit(data => {
             submit(data, { method: 'post' })
           })}
         >
           {actionData?.error && (
-            <div className="text-sm font-medium text-destructive text-center">
+            <div className='text-sm font-medium text-destructive text-center'>
               {actionData.error}
             </div>
           )}
 
           <FormField
             control={form.control}
-            name="email"
+            name='email'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>{t('auth.signIn.emailLabel')}</FormLabel>
                 <FormControl>
-                  <Input placeholder={t('auth.signIn.emailPlaceholder')} type="email" {...field} />
+                  <Input placeholder={t('auth.signIn.emailPlaceholder')} type='email' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -64,41 +64,41 @@ export function SignInForm() {
 
           <FormField
             control={form.control}
-            name="password"
+            name='password'
             render={({ field }) => (
               <FormItem>
-                <div className="flex items-center">
+                <div className='flex items-center'>
                   <FormLabel>{t('auth.signIn.passwordLabel')}</FormLabel>
                   <RouterLink
                     to={AUTH_ROUTES.resetPassword}
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                    prefetch="intent"
+                    className='ml-auto inline-block text-sm underline-offset-4 hover:underline'
+                    prefetch='intent'
                   >
                     {t('auth.signIn.forgotPassword')}
                   </RouterLink>
                 </div>
                 <FormControl>
-                  <Input type="password" {...field} />
+                  <Input type='password' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          <Button type='submit' className='w-full' disabled={isLoading}>
+            {isLoading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
             {t('auth.signIn.submitButton')}
           </Button>
 
           <FormDivider>{t('auth.signIn.orDivider')}</FormDivider>
 
-          <Button variant="outline" className="w-full" type="button">
+          <Button variant='outline' className='w-full' type='button'>
             {t('auth.signIn.githubButton')}
           </Button>
         </form>
       </Form>
 
-      <LegalLinks variant="inline" separator />
+      <LegalLinks variant='inline' separator />
     </div>
   )
 }

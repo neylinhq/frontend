@@ -42,15 +42,15 @@ export function PasswordChangeForm() {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
             <FormField
               control={form.control}
-              name="currentPassword"
+              name='currentPassword'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t('settings.security.password.current')}</FormLabel>
                   <FormControl>
-                    <Input type="password" {...field} />
+                    <Input type='password' {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -59,12 +59,12 @@ export function PasswordChangeForm() {
 
             <FormField
               control={form.control}
-              name="newPassword"
+              name='newPassword'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t('settings.security.password.new')}</FormLabel>
                   <FormControl>
-                    <Input type="password" {...field} />
+                    <Input type='password' {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -73,28 +73,28 @@ export function PasswordChangeForm() {
 
             <FormField
               control={form.control}
-              name="confirmPassword"
+              name='confirmPassword'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t('settings.security.password.confirm')}</FormLabel>
                   <FormControl>
-                    <Input type="password" {...field} />
+                    <Input type='password' {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <div className="flex justify-end gap-2 pt-2">
+            <div className='flex justify-end gap-2 pt-2'>
               <Button
-                variant="outline"
-                type="button"
+                variant='outline'
+                type='button'
                 onClick={() => form.reset()}
                 disabled={!form.formState.isDirty}
               >
                 {t('common.cancel')}
               </Button>
-              <Button type="submit" disabled={changePassword.isPending || !form.formState.isDirty}>
+              <Button type='submit' disabled={changePassword.isPending || !form.formState.isDirty}>
                 {changePassword.isPending
                   ? t('common.saving')
                   : t('settings.security.password.update')}

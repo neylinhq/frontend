@@ -43,9 +43,9 @@ function DocsSidebarSectionComponent({ section }: { section: DocsSidebarSection 
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <CollapsibleTrigger className="docs-nav-section-header w-full">
-        <div className="flex items-center gap-2 flex-1">
-          {Icon && <Icon className="h-4 w-4 opacity-70" />}
+      <CollapsibleTrigger className='docs-nav-section-header w-full'>
+        <div className='flex items-center gap-2 flex-1'>
+          {Icon && <Icon className='h-4 w-4 opacity-70' />}
           <span>{section.title}</span>
         </div>
         <ChevronRight
@@ -55,8 +55,8 @@ function DocsSidebarSectionComponent({ section }: { section: DocsSidebarSection 
           )}
         />
       </CollapsibleTrigger>
-      <CollapsibleContent className="pt-1">
-        <div className="space-y-0.5">
+      <CollapsibleContent className='pt-1'>
+        <div className='space-y-0.5'>
           {section.items.map(item => (
             <NavLink
               key={item.href}
@@ -64,16 +64,16 @@ function DocsSidebarSectionComponent({ section }: { section: DocsSidebarSection 
               end={item.href === '/docs/ui'}
               className={({ isActive }) => cn('docs-nav-item', isActive && 'active')}
             >
-              <span className="flex-1 truncate">{item.title}</span>
+              <span className='flex-1 truncate'>{item.title}</span>
               {item.isNew && (
-                <Badge variant="secondary" className="ml-auto text-[10px] h-5 px-1.5">
+                <Badge variant='secondary' className='ml-auto text-[10px] h-5 px-1.5'>
                   {t('docs.badges.new')}
                 </Badge>
               )}
               {item.isDeprecated && (
                 <Badge
-                  variant="outline"
-                  className="ml-auto text-[10px] h-5 px-1.5 text-muted-foreground"
+                  variant='outline'
+                  className='ml-auto text-[10px] h-5 px-1.5 text-muted-foreground'
                 >
                   {t('docs.badges.deprecated')}
                 </Badge>

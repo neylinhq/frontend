@@ -39,33 +39,33 @@ export const KnowledgeNode = memo(({ data }: KnowledgeNodeProps) => {
       )}
     >
       <Handle
-        type="target"
+        type='target'
         position={Position.Top}
-        className="w-3 h-3 bg-border border-2 border-background"
+        className='w-3 h-3 bg-border border-2 border-background'
       />
 
       <Handle
-        type="source"
+        type='source'
         position={Position.Bottom}
-        className="w-3 h-3 bg-border border-2 border-background"
+        className='w-3 h-3 bg-border border-2 border-background'
       />
 
-      <div className="p-6">
+      <div className='p-6'>
         {/* Icon + Title */}
-        <div className="flex items-start gap-3 mb-2">
-          <Icon className="w-5 h-5 flex-shrink-0 text-muted-foreground" />
-          <h3 className="text-lg font-semibold leading-tight break-words">{data.label}</h3>
+        <div className='flex items-start gap-3 mb-2'>
+          <Icon className='w-5 h-5 flex-shrink-0 text-muted-foreground' />
+          <h3 className='text-lg font-semibold leading-tight break-words'>{data.label}</h3>
         </div>
 
         {/* Description */}
         {data.description && (
-          <p className="text-sm text-muted-foreground line-clamp-2 mt-2">{data.description}</p>
+          <p className='text-sm text-muted-foreground line-clamp-2 mt-2'>{data.description}</p>
         )}
 
         {/* Complexity badge (optional) */}
         {data.metadata.complexity && (
           <Badge
-            variant="secondary"
+            variant='secondary'
             className={cn(
               'text-xs mt-3 pointer-events-none',
               getComplexityColor(data.metadata.complexity)

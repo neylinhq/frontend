@@ -35,31 +35,31 @@ export function NodeTagsInput({ value, onChange }: NodeTagsInputProps) {
   }
 
   return (
-    <div className="space-y-3">
-      <Label htmlFor="tags">{t('form.tags.label')}</Label>
-      <div className="flex gap-2">
+    <div className='space-y-3'>
+      <Label htmlFor='tags'>{t('form.tags.label')}</Label>
+      <div className='flex gap-2'>
         <Input
-          id="tags"
+          id='tags'
           value={inputValue}
           onChange={e => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={t('form.tags.placeholder')}
         />
-        <Button type="button" onClick={handleAddTag} variant="secondary" size="sm">
+        <Button type='button' onClick={handleAddTag} variant='secondary' size='sm'>
           {t('form.tags.add')}
         </Button>
       </div>
       {value.length > 0 && (
-        <div className="flex flex-wrap gap-2">
+        <div className='flex flex-wrap gap-2'>
           {value.map(tag => (
-            <Badge key={tag} variant="secondary" className="gap-1">
+            <Badge key={tag} variant='secondary' className='gap-1'>
               {tag}
               <button
-                type="button"
+                type='button'
                 onClick={() => handleRemoveTag(tag)}
-                className="ml-1 rounded-full hover:bg-muted"
+                className='ml-1 rounded-full hover:bg-muted'
               >
-                <X className="h-3 w-3" />
+                <X className='h-3 w-3' />
               </button>
             </Badge>
           ))}

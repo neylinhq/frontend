@@ -33,20 +33,20 @@ export function UserNav() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="rounded-full cursor-pointer">
-          <Avatar className="h-8 w-8">
+        <Button variant='ghost' size='icon' className='rounded-full cursor-pointer'>
+          <Avatar className='h-8 w-8'>
             <AvatarImage src={user.avatarUrl} alt={user.email} />
             <AvatarFallback>{user.firstName?.[0] || 'U'}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end" forceMount side="bottom" sideOffset={8}>
-        <DropdownMenuLabel className="font-normal">
-          <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">
+      <DropdownMenuContent className='w-56' align='end' forceMount side='bottom' sideOffset={8}>
+        <DropdownMenuLabel className='font-normal'>
+          <div className='flex flex-col space-y-1'>
+            <p className='text-sm font-medium leading-none'>
               {user.firstName} {user.lastName}
             </p>
-            <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
+            <p className='text-xs leading-none text-muted-foreground'>{user.email}</p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
@@ -59,7 +59,7 @@ export function UserNav() {
               return (
                 <DropdownMenuItem key={item.title} asChild>
                   <Link to={item.href}>
-                    <Icon className="mr-2 h-4 w-4" />
+                    <Icon className='mr-2 h-4 w-4' />
                     <span>{t(item.title)}</span>
                     {shortcut && <DropdownMenuShortcut>{shortcut}</DropdownMenuShortcut>}
                   </Link>
@@ -69,7 +69,7 @@ export function UserNav() {
 
             return (
               <DropdownMenuItem key={item.title}>
-                <Icon className="mr-2 h-4 w-4" />
+                <Icon className='mr-2 h-4 w-4' />
                 <span>{t(item.title)}</span>
                 {shortcut && <DropdownMenuShortcut>{shortcut}</DropdownMenuShortcut>}
               </DropdownMenuItem>
@@ -78,7 +78,7 @@ export function UserNav() {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
 
-        <div className="px-2 py-2 flex items-center justify-center gap-1">
+        <div className='px-2 py-2 flex items-center justify-center gap-1'>
           <LanguageSelect compact />
           <ModeSelect compact />
           <PaletteSelect compact />
@@ -86,7 +86,7 @@ export function UserNav() {
 
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout}>
-          <USER_NAV_LOGOUT_ITEM.icon className="mr-2 h-4 w-4" />
+          <USER_NAV_LOGOUT_ITEM.icon className='mr-2 h-4 w-4' />
           <span>{t(USER_NAV_LOGOUT_ITEM.title)}</span>
           <DropdownMenuShortcut>{getShortcut(USER_NAV_LOGOUT_ITEM.shortcut)}</DropdownMenuShortcut>
         </DropdownMenuItem>

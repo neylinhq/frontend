@@ -23,34 +23,34 @@ export const DrawerOverviewTab = memo(({ node, className }: DrawerOverviewTabPro
       {/* Описание */}
       {node.description && (
         <div>
-          <h4 className="text-sm font-medium mb-2">{t('nodeDrawer.overview.description')}</h4>
-          <p className="text-sm text-muted-foreground leading-relaxed">{node.description}</p>
+          <h4 className='text-sm font-medium mb-2'>{t('nodeDrawer.overview.description')}</h4>
+          <p className='text-sm text-muted-foreground leading-relaxed'>{node.description}</p>
         </div>
       )}
 
       {/* Метаданные */}
       <div>
-        <h4 className="text-sm font-medium mb-3">{t('nodeDrawer.overview.metadata')}</h4>
+        <h4 className='text-sm font-medium mb-3'>{t('nodeDrawer.overview.metadata')}</h4>
 
-        <div className="space-y-3">
+        <div className='space-y-3'>
           {/* Тип узла */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground w-20">
+          <div className='flex items-center gap-2'>
+            <span className='text-xs text-muted-foreground w-20'>
               {t('nodeDrawer.overview.type')}:
             </span>
-            <Badge variant="outline" className={cn('text-xs', getNodeBorderColor(node.type))}>
+            <Badge variant='outline' className={cn('text-xs', getNodeBorderColor(node.type))}>
               {node.type}
             </Badge>
           </div>
 
           {/* Сложность */}
           {node.metadata.complexity && (
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground w-20">
+            <div className='flex items-center gap-2'>
+              <span className='text-xs text-muted-foreground w-20'>
                 {t('nodeDrawer.overview.complexity')}:
               </span>
               <Badge
-                variant="secondary"
+                variant='secondary'
                 className={cn(
                   'text-xs pointer-events-none',
                   getComplexityColor(node.metadata.complexity)
@@ -63,19 +63,19 @@ export const DrawerOverviewTab = memo(({ node, className }: DrawerOverviewTabPro
 
           {/* Уверенность */}
           {node.metadata.confidence !== undefined && (
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground w-20">
+            <div className='flex items-center gap-2'>
+              <span className='text-xs text-muted-foreground w-20'>
                 {t('nodeDrawer.overview.confidence')}:
               </span>
-              <div className="flex-1">
-                <div className="flex items-center gap-2">
-                  <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+              <div className='flex-1'>
+                <div className='flex items-center gap-2'>
+                  <div className='flex-1 h-2 bg-muted rounded-full overflow-hidden'>
                     <div
-                      className="h-full bg-primary transition-all"
+                      className='h-full bg-primary transition-all'
                       style={{ width: `${node.metadata.confidence * 100}%` }}
                     />
                   </div>
-                  <span className="text-xs font-medium">
+                  <span className='text-xs font-medium'>
                     {Math.round(node.metadata.confidence * 100)}%
                   </span>
                 </div>
@@ -85,13 +85,13 @@ export const DrawerOverviewTab = memo(({ node, className }: DrawerOverviewTabPro
 
           {/* Теги */}
           {node.metadata.tags && node.metadata.tags.length > 0 && (
-            <div className="flex items-start gap-2">
-              <span className="text-xs text-muted-foreground w-20 pt-1">
+            <div className='flex items-start gap-2'>
+              <span className='text-xs text-muted-foreground w-20 pt-1'>
                 {t('nodeDrawer.overview.tags')}:
               </span>
-              <div className="flex-1 flex flex-wrap gap-1">
+              <div className='flex-1 flex flex-wrap gap-1'>
                 {node.metadata.tags.map(tag => (
-                  <Badge key={tag} variant="outline" className="text-xs">
+                  <Badge key={tag} variant='outline' className='text-xs'>
                     {tag}
                   </Badge>
                 ))}
@@ -100,27 +100,27 @@ export const DrawerOverviewTab = memo(({ node, className }: DrawerOverviewTabPro
           )}
 
           {/* Даты */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground w-20">{t('common.created')}:</span>
-            <span className="text-xs">
+          <div className='flex items-center gap-2'>
+            <span className='text-xs text-muted-foreground w-20'>{t('common.created')}:</span>
+            <span className='text-xs'>
               {new Date(node.createdAt).toLocaleDateString(i18n.language)}
             </span>
           </div>
 
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground w-20">{t('common.updated')}:</span>
-            <span className="text-xs">
+          <div className='flex items-center gap-2'>
+            <span className='text-xs text-muted-foreground w-20'>{t('common.updated')}:</span>
+            <span className='text-xs'>
               {new Date(node.updatedAt).toLocaleDateString(i18n.language)}
             </span>
           </div>
 
           {/* Повторения */}
           {(node.metadata.reviewCount ?? 0) > 0 && (
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground w-20">
+            <div className='flex items-center gap-2'>
+              <span className='text-xs text-muted-foreground w-20'>
                 {t('nodeDrawer.overview.reviews')}:
               </span>
-              <span className="text-xs font-medium">{node.metadata.reviewCount}</span>
+              <span className='text-xs font-medium'>{node.metadata.reviewCount}</span>
             </div>
           )}
         </div>

@@ -16,6 +16,7 @@ import '@/shared/styles/globals.css'
 import type React from 'react'
 import { useEffect, useRef } from 'react'
 import { type I18nInitData, initI18n } from '@/shared/config/i18n'
+import { MODE_COOKIE_KEY, PALETTE_COOKIE_KEY } from '@/app/theme/theme.constants'
 import type { Route } from './+types/root'
 
 export const links: Route.LinksFunction = () => [
@@ -51,10 +52,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     // suppressHydrationWarning нужен для html, так как клиентский скрипт может изменить классы
-    <html lang="en" className={ssrDarkClass} data-palette={ssrPalette} suppressHydrationWarning>
+    <html lang='en' className={ssrDarkClass} data-palette={ssrPalette} suppressHydrationWarning>
       <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta charSet='utf-8' />
+        <meta name='viewport' content='width=device-width, initial-scale=1' />
 
         {/* Critical CSS: ПЕРВЫМ в head для немедленного применения до загрузки внешних стилей */}
         <style
@@ -89,6 +90,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
             __html: `
               (function() {
                 try {
+                  var MODE_KEY = '${MODE_COOKIE_KEY}';
+                  var PALETTE_KEY = '${PALETTE_COOKIE_KEY}';
+
                   // Отключаем transitions - класс снимется в ThemeProvider после hydration
                   document.documentElement.classList.add('theme-transition-disabled');
 
@@ -98,8 +102,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   }
 
                   // Dark/Light mode (localStorage > cookie > system)
-                  var localMode = localStorage.getItem('ely-si-mode');
-                  var cookieMode = getCookie('ely-si-mode');
+                  var localMode = localStorage.getItem(MODE_KEY);
+                  var cookieMode = getCookie(MODE_KEY);
                   var mode = localMode || cookieMode;
                   var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
                   var shouldBeDark = mode === 'dark' || (mode === 'system' && systemDark) || (!mode && systemDark);
@@ -114,12 +118,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
                   // Sync localStorage -> cookie (для будущих SSR запросов)
                   if (localMode && localMode !== cookieMode) {
-                    document.cookie = 'ely-si-mode=' + localMode + '; path=/; max-age=31536000; SameSite=Lax';
+                    document.cookie = MODE_KEY + '=' + localMode + '; path=/; max-age=31536000; SameSite=Lax';
                   }
 
                   // Palette (localStorage > cookie)
-                  var localPalette = localStorage.getItem('ely-si-palette');
-                  var cookiePalette = getCookie('ely-si-palette');
+                  var localPalette = localStorage.getItem(PALETTE_KEY);
+                  var cookiePalette = getCookie(PALETTE_KEY);
                   var palette = localPalette || cookiePalette;
                   var currentPalette = document.documentElement.dataset.palette;
 
@@ -131,7 +135,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
                   // Sync localStorage -> cookie для palette
                   if (localPalette && localPalette !== cookiePalette) {
-                    document.cookie = 'ely-si-palette=' + localPalette + '; path=/; max-age=31536000; SameSite=Lax';
+                    document.cookie = PALETTE_KEY + '=' + localPalette + '; path=/; max-age=31536000; SameSite=Lax';
                   }
 
                   // Locale (localStorage > cookie)
@@ -150,7 +154,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           }}
         />
       </head>
-      <body className="bg-background text-foreground">
+      <body className='bg-background text-foreground'>
         {children}
         <ScrollRestoration />
         <Scripts />
@@ -192,7 +196,7 @@ export default function App() {
     <QueryProvider>
       <ThemeProvider defaultMode={themeData.mode} defaultPalette={themeData.palette}>
         <Outlet />
-        <Toaster richColors position="top-right" />
+        <Toaster richColors position='top-right' />
       </ThemeProvider>
     </QueryProvider>
   )
@@ -213,11 +217,11 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main className="pt-16 p-4 container mx-auto">
+    <main className='pt-16 p-4 container mx-auto'>
       <h1>{message}</h1>
       <p>{details}</p>
       {stack && (
-        <pre className="w-full p-4 overflow-x-auto">
+        <pre className='w-full p-4 overflow-x-auto'>
           <code>{stack}</code>
         </pre>
       )}

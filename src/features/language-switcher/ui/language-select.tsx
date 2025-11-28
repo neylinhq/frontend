@@ -23,18 +23,18 @@ export function LanguageSelect({ compact }: LanguageSelectProps) {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className={compact ? 'px-2' : undefined}>
-          <Globe className="h-4 w-4" />
+        <Button variant='outline' size='sm' className={compact ? 'px-2' : undefined}>
+          <Globe className='h-4 w-4' />
           {!compact && (
-            <span className="ml-1.5">{LANGUAGES.find(l => l.id === i18n.language)?.label}</span>
+            <span className='ml-1.5'>{LANGUAGES.find(l => l.id === i18n.language)?.label}</span>
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-auto min-w-[140px] p-1">
-        <div className="flex flex-col">
+      <PopoverContent align='end' className='w-auto min-w-[140px] p-1'>
+        <div className='flex flex-col'>
           {LANGUAGES.map(lang => (
             <button
-              type="button"
+              type='button'
               key={lang.id}
               onClick={() => handleSelect(lang.id)}
               className={cn(
@@ -44,8 +44,8 @@ export function LanguageSelect({ compact }: LanguageSelectProps) {
                 'cursor-pointer transition-colors'
               )}
             >
-              <span className="flex-1 text-left">{lang.label}</span>
-              {i18n.language === lang.id && <Check className="h-4 w-4 text-brand flex-shrink-0" />}
+              <span className='flex-1 text-left'>{lang.label}</span>
+              {i18n.language === lang.id && <Check className='h-4 w-4 text-brand flex-shrink-0' />}
             </button>
           ))}
         </div>

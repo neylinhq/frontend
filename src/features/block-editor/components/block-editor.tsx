@@ -298,11 +298,11 @@ export function BlockEditor({
   if (!editor) {
     return (
       <div className={cn('tiptap-editor', className)}>
-        <div className="animate-pulse space-y-4">
-          <div className="h-6 bg-muted rounded w-3/4" />
-          <div className="h-4 bg-muted rounded w-full" />
-          <div className="h-4 bg-muted rounded w-5/6" />
-          <div className="h-4 bg-muted rounded w-4/5" />
+        <div className='animate-pulse space-y-4'>
+          <div className='h-6 bg-muted rounded w-3/4' />
+          <div className='h-4 bg-muted rounded w-full' />
+          <div className='h-4 bg-muted rounded w-5/6' />
+          <div className='h-4 bg-muted rounded w-4/5' />
         </div>
       </div>
     )
@@ -344,7 +344,7 @@ export function BlockEditor({
         {/* Slash Menu */}
         {showSlashMenu && slashItems.length > 0 && (
           <div
-            className="absolute z-50"
+            className='absolute z-50'
             style={{
               top: slashMenuPosition.top,
               left: slashMenuPosition.left

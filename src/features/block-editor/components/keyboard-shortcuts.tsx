@@ -43,28 +43,28 @@ interface KeyboardShortcutsProps {
 export function KeyboardShortcuts({ className }: KeyboardShortcutsProps) {
   return (
     <div className={cn('space-y-4', className)}>
-      <div className="flex items-center gap-2 text-sm font-medium">
-        <Keyboard className="h-4 w-4" />
+      <div className='flex items-center gap-2 text-sm font-medium'>
+        <Keyboard className='h-4 w-4' />
         <span>Keyboard Shortcuts</span>
       </div>
 
       {SHORTCUTS.map(section => (
         <div key={section.category}>
-          <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+          <h4 className='text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2'>
             {section.category}
           </h4>
-          <div className="space-y-1">
+          <div className='space-y-1'>
             {section.shortcuts.map(shortcut => (
-              <div key={shortcut.description} className="flex items-center justify-between py-1">
-                <span className="text-sm text-muted-foreground">{shortcut.description}</span>
-                <div className="flex items-center gap-1">
+              <div key={shortcut.description} className='flex items-center justify-between py-1'>
+                <span className='text-sm text-muted-foreground'>{shortcut.description}</span>
+                <div className='flex items-center gap-1'>
                   {shortcut.keys.map((key, index) => (
                     <span key={index}>
-                      <kbd className="inline-flex h-5 min-w-[20px] items-center justify-center rounded border border-border bg-muted px-1.5 text-xs font-medium">
+                      <kbd className='inline-flex h-5 min-w-[20px] items-center justify-center rounded border border-border bg-muted px-1.5 text-xs font-medium'>
                         {key}
                       </kbd>
                       {index < shortcut.keys.length - 1 && (
-                        <span className="mx-0.5 text-muted-foreground">+</span>
+                        <span className='mx-0.5 text-muted-foreground'>+</span>
                       )}
                     </span>
                   ))}
@@ -88,18 +88,18 @@ export function KeyboardShortcutsCompact() {
   ]
 
   return (
-    <div className="text-xs space-y-1">
+    <div className='text-xs space-y-1'>
       {essentialShortcuts.map(shortcut => (
-        <div key={shortcut.description} className="flex items-center justify-between gap-4">
-          <span className="text-muted-foreground">{shortcut.description}</span>
-          <div className="flex items-center gap-0.5">
+        <div key={shortcut.description} className='flex items-center justify-between gap-4'>
+          <span className='text-muted-foreground'>{shortcut.description}</span>
+          <div className='flex items-center gap-0.5'>
             {shortcut.keys.map((key, index) => (
               <span key={index}>
-                <kbd className="inline-flex h-4 min-w-[16px] items-center justify-center rounded border border-border bg-muted px-1 text-[10px]">
+                <kbd className='inline-flex h-4 min-w-[16px] items-center justify-center rounded border border-border bg-muted px-1 text-[10px]'>
                   {key}
                 </kbd>
                 {index < shortcut.keys.length - 1 && (
-                  <span className="text-muted-foreground">+</span>
+                  <span className='text-muted-foreground'>+</span>
                 )}
               </span>
             ))}

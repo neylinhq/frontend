@@ -5,9 +5,9 @@ import type { Mode } from '../theme.types'
 import { useTheme } from './theme-provider'
 
 const MODE_ICONS: Record<Mode, React.ReactNode> = {
-  light: <Sun className="h-4 w-4" />,
-  dark: <Moon className="h-4 w-4" />,
-  system: <Monitor className="h-4 w-4" />
+  light: <Sun className='h-4 w-4' />,
+  dark: <Moon className='h-4 w-4' />,
+  system: <Monitor className='h-4 w-4' />
 }
 
 type ModeSelectProps = {
@@ -25,6 +25,6 @@ export function ModeSelect({ compact }: ModeSelectProps) {
   ]
 
   return (
-    <SelectPopover items={items} value={mode} onChange={setMode} compact={compact} align="end" />
+    <SelectPopover items={items} value={mode} onChange={setMode} compact={compact} align='end' />
   )
 }

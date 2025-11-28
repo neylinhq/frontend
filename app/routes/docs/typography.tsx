@@ -82,30 +82,30 @@ export default function TypographyPage() {
   const { t } = useTranslation()
 
   return (
-    <div className="space-y-8">
-      <div className="space-y-3">
-        <Typography variant="h1">{t('docs.typography.title')}</Typography>
-        <Typography variant="lead">{t('docs.typography.lead')}</Typography>
+    <div className='space-y-8'>
+      <div className='space-y-3'>
+        <Typography variant='h1'>{t('docs.typography.title')}</Typography>
+        <Typography variant='lead'>{t('docs.typography.lead')}</Typography>
       </div>
 
       {/* Examples */}
-      <section className="space-y-6">
+      <section className='space-y-6'>
         <div>
-          <Typography variant="h2">{t('docs.typography.variants.title')}</Typography>
-          <Typography variant="muted">{t('docs.typography.variants.description')}</Typography>
+          <Typography variant='h2'>{t('docs.typography.variants.title')}</Typography>
+          <Typography variant='muted'>{t('docs.typography.variants.description')}</Typography>
         </div>
 
-        <div className="space-y-8">
+        <div className='space-y-8'>
           {TYPOGRAPHY_EXAMPLES.map(item => (
             <Card key={item.variant}>
               <CardHeader>
-                <CardTitle className="text-base">{item.label}</CardTitle>
+                <CardTitle className='text-base'>{item.label}</CardTitle>
                 <CardDescription>
-                  <code className="text-xs bg-muted px-2 py-0.5 rounded">{item.code}</code>
+                  <code className='text-xs bg-muted px-2 py-0.5 rounded'>{item.code}</code>
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="rounded-lg border bg-muted/30 p-6">
+              <CardContent className='space-y-4'>
+                <div className='rounded-lg border bg-muted/30 p-6'>
                   <Typography variant={item.variant}>{item.example}</Typography>
                 </div>
               </CardContent>
@@ -115,8 +115,8 @@ export default function TypographyPage() {
       </section>
 
       {/* Font */}
-      <section className="space-y-4 pt-4 border-t">
-        <Typography variant="h2">Шрифт</Typography>
+      <section className='space-y-4 pt-4 border-t'>
+        <Typography variant='h2'>Шрифт</Typography>
         <Card>
           <CardHeader>
             <CardTitle>IBM Plex Sans</CardTitle>
@@ -124,21 +124,21 @@ export default function TypographyPage() {
               Технический, геометрический шрифт для профессионального вида
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Typography variant="small" className="font-light">
+          <CardContent className='space-y-4'>
+            <div className='space-y-2'>
+              <Typography variant='small' className='font-light'>
                 Light: The quick brown fox jumps over the lazy dog
               </Typography>
-              <Typography variant="small" className="font-normal">
+              <Typography variant='small' className='font-normal'>
                 Regular: The quick brown fox jumps over the lazy dog
               </Typography>
-              <Typography variant="small" className="font-medium">
+              <Typography variant='small' className='font-medium'>
                 Medium: The quick brown fox jumps over the lazy dog
               </Typography>
-              <Typography variant="small" className="font-semibold">
+              <Typography variant='small' className='font-semibold'>
                 Semibold: The quick brown fox jumps over the lazy dog
               </Typography>
-              <Typography variant="small" className="font-bold">
+              <Typography variant='small' className='font-bold'>
                 Bold: The quick brown fox jumps over the lazy dog
               </Typography>
             </div>
@@ -147,19 +147,19 @@ export default function TypographyPage() {
       </section>
 
       {/* Usage */}
-      <section className="space-y-4 pt-4 border-t">
-        <Typography variant="h2">Usage</Typography>
+      <section className='space-y-4 pt-4 border-t'>
+        <Typography variant='h2'>Usage</Typography>
         <Card>
           <CardHeader>
             <CardTitle>Использование компонента</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className='space-y-4'>
             <div>
-              <Typography variant="small" className="mb-2">
+              <Typography variant='small' className='mb-2'>
                 Базовое использование:
               </Typography>
-              <pre className="rounded-lg bg-muted p-4 overflow-x-auto">
-                <code className="text-sm">{`import { Typography } from '@/shared/ui/typography'
+              <pre className='rounded-lg bg-muted p-4 overflow-x-auto'>
+                <code className='text-sm'>{`import { Typography } from '@/shared/ui/typography'
 
 <Typography variant="h1">Заголовок</Typography>
 <Typography variant="p">Параграф текста</Typography>
@@ -167,21 +167,21 @@ export default function TypographyPage() {
               </pre>
             </div>
             <div>
-              <Typography variant="small" className="mb-2">
+              <Typography variant='small' className='mb-2'>
                 Кастомный HTML тег:
               </Typography>
-              <pre className="rounded-lg bg-muted p-4 overflow-x-auto">
-                <code className="text-sm">{`<Typography variant="large" as="span">
+              <pre className='rounded-lg bg-muted p-4 overflow-x-auto'>
+                <code className='text-sm'>{`<Typography variant="large" as="span">
   Span с large стилями
 </Typography>`}</code>
               </pre>
             </div>
             <div>
-              <Typography variant="small" className="mb-2">
+              <Typography variant='small' className='mb-2'>
                 С дополнительными классами:
               </Typography>
-              <pre className="rounded-lg bg-muted p-4 overflow-x-auto">
-                <code className="text-sm">{`<Typography variant="p" className="text-center max-w-lg">
+              <pre className='rounded-lg bg-muted p-4 overflow-x-auto'>
+                <code className='text-sm'>{`<Typography variant="p" className="text-center max-w-lg">
   Центрированный параграф с ограничением ширины
 </Typography>`}</code>
               </pre>

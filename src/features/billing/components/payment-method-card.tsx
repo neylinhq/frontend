@@ -65,24 +65,24 @@ export function PaymentMethodCard({
     if (method.type === 'crypto') {
       const iconData = cryptoIcons[method.currency.toLowerCase()]
       if (iconData) {
-        return <Icon data={iconData} size={24} className="text-foreground" />
+        return <Icon data={iconData} size={24} className='text-foreground' />
       }
       return null
     }
     const brand = (method.brand?.toLowerCase() || 'unknown') as CardBrand
-    return <CardBrandIcon brand={brand} size="sm" />
+    return <CardBrandIcon brand={brand} size='sm' />
   }
 
   const renderIdentifier = () => {
     if (method.type === 'crypto') {
       return (
-        <span className="font-mono text-sm font-medium whitespace-nowrap">
+        <span className='font-mono text-sm font-medium whitespace-nowrap'>
           {method.walletAddressShort}
         </span>
       )
     }
     return (
-      <span className="font-mono text-sm font-medium whitespace-nowrap">•••• {method.last4}</span>
+      <span className='font-mono text-sm font-medium whitespace-nowrap'>•••• {method.last4}</span>
     )
   }
 
@@ -96,13 +96,13 @@ export function PaymentMethodCard({
         )}
       >
         {/* Left Side: Payment Method Info */}
-        <div className="flex-1 flex flex-wrap items-center gap-3">
+        <div className='flex-1 flex flex-wrap items-center gap-3'>
           {renderIcon()}
           {renderIdentifier()}
 
           {method.isDefault && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-muted text-muted-foreground whitespace-nowrap">
-              <Star className="h-3 w-3 fill-current" />
+            <span className='inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-muted text-muted-foreground whitespace-nowrap'>
+              <Star className='h-3 w-3 fill-current' />
               {t('billing.defaultPaymentMethod')}
             </span>
           )}
@@ -112,20 +112,20 @@ export function PaymentMethodCard({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
+              variant='ghost'
+              size='sm'
+              className='h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0'
               disabled={loading}
             >
-              <MoreVertical className="h-4 w-4" />
-              <span className="sr-only">Actions</span>
+              <MoreVertical className='h-4 w-4' />
+              <span className='sr-only'>Actions</span>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
+          <DropdownMenuContent align='end' className='w-48'>
             {onEdit && (
               <>
                 <DropdownMenuItem onClick={() => onEdit(method)} disabled={loading}>
-                  <Pencil className="h-4 w-4 mr-2" />
+                  <Pencil className='h-4 w-4 mr-2' />
                   {t('common.edit')}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
@@ -133,7 +133,7 @@ export function PaymentMethodCard({
             )}
             {!method.isDefault && (
               <DropdownMenuItem onClick={() => onSetDefault(method.id)} disabled={loading}>
-                <Star className="h-4 w-4 mr-2" />
+                <Star className='h-4 w-4 mr-2' />
                 {t('billing.setAsDefault')}
               </DropdownMenuItem>
             )}
@@ -145,7 +145,7 @@ export function PaymentMethodCard({
                 method.isDefault && 'opacity-50'
               )}
             >
-              <Trash2 className="h-4 w-4 mr-2" />
+              <Trash2 className='h-4 w-4 mr-2' />
               {t('billing.removePaymentMethod.confirm')}
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -167,7 +167,7 @@ export function PaymentMethodCard({
             <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
             >
               {t('billing.removePaymentMethod.confirm')}
             </AlertDialogAction>

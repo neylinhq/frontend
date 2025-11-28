@@ -93,7 +93,7 @@ function SelectionCard({
 }) {
   return (
     <button
-      type="button"
+      type='button'
       onClick={onClick}
       className={cn(
         'flex flex-col items-center justify-center gap-3 p-6 rounded-lg border-2 border-border',
@@ -102,10 +102,10 @@ function SelectionCard({
         'cursor-pointer'
       )}
     >
-      <div className="text-muted-foreground">{icon}</div>
-      <div className="text-center">
-        <div className="font-medium text-foreground">{title}</div>
-        <div className="text-sm text-muted-foreground mt-1 text-balance">{description}</div>
+      <div className='text-muted-foreground'>{icon}</div>
+      <div className='text-center'>
+        <div className='font-medium text-foreground'>{title}</div>
+        <div className='text-sm text-muted-foreground mt-1 text-balance'>{description}</div>
       </div>
     </button>
   )
@@ -124,17 +124,17 @@ function DialogBreadcrumb({
   disabled?: boolean
 }) {
   return (
-    <div className="flex items-center gap-1.5 text-sm mb-4">
+    <div className='flex items-center gap-1.5 text-sm mb-4'>
       <button
-        type="button"
+        type='button'
         onClick={onBack}
         disabled={disabled}
-        className="text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
+        className='text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50'
       >
         {parentLabel}
       </button>
-      <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
-      <span className="text-foreground">{currentLabel}</span>
+      <ChevronRight className='h-3.5 w-3.5 text-muted-foreground' />
+      <span className='text-foreground'>{currentLabel}</span>
     </div>
   )
 }
@@ -142,8 +142,8 @@ function DialogBreadcrumb({
 /** Security notice with lock icon */
 function SecurityNotice({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 p-3 rounded-lg">
-      <Lock className="h-4 w-4 flex-shrink-0" />
+    <div className='flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 p-3 rounded-lg'>
+      <Lock className='h-4 w-4 flex-shrink-0' />
       <span>{children}</span>
     </div>
   )
@@ -282,14 +282,14 @@ export function AddPaymentMethodDialog({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         {trigger || (
-          <Button size="sm">
-            <Plus className="h-4 w-4 mr-2" />
+          <Button size='sm'>
+            <Plus className='h-4 w-4 mr-2' />
             {t('settings.billing.paymentMethods.add')}
           </Button>
         )}
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[480px]">
+      <DialogContent className='sm:max-w-[480px]'>
         {/* Selection Step */}
         {step === 'select' && (
           <>
@@ -300,15 +300,15 @@ export function AddPaymentMethodDialog({
               </DialogDescription>
             </DialogHeader>
 
-            <div className="grid grid-cols-2 gap-4 py-4">
+            <div className='grid grid-cols-2 gap-4 py-4'>
               <SelectionCard
-                icon={<CreditCard className="h-12 w-12" />}
+                icon={<CreditCard className='h-12 w-12' />}
                 title={t('billing.addPaymentMethod.cardOption.title')}
                 description={t('billing.addPaymentMethod.cardOption.description')}
                 onClick={() => setStep('card')}
               />
               <SelectionCard
-                icon={<Wallet className="h-12 w-12" />}
+                icon={<Wallet className='h-12 w-12' />}
                 title={t('billing.addPaymentMethod.cryptoOption.title')}
                 description={t('billing.addPaymentMethod.cryptoOption.description')}
                 onClick={() => setStep('crypto')}
@@ -331,18 +331,18 @@ export function AddPaymentMethodDialog({
             </DialogHeader>
 
             <Form {...cardForm}>
-              <form onSubmit={cardForm.handleSubmit(handleCardSubmit)} className="space-y-4">
+              <form onSubmit={cardForm.handleSubmit(handleCardSubmit)} className='space-y-4'>
                 {/* Cardholder Name */}
                 <FormField
                   control={cardForm.control}
-                  name="cardholderName"
+                  name='cardholderName'
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>{t('billing.addPaymentMethod.cardholderName')}</FormLabel>
                       <FormControl>
                         <Input
                           placeholder={t('form.placeholders.name')}
-                          autoComplete="cc-name"
+                          autoComplete='cc-name'
                           {...field}
                         />
                       </FormControl>
@@ -354,23 +354,23 @@ export function AddPaymentMethodDialog({
                 {/* Card Number */}
                 <FormField
                   control={cardForm.control}
-                  name="cardNumber"
+                  name='cardNumber'
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>{t('billing.addPaymentMethod.cardNumber')}</FormLabel>
                       <FormControl>
-                        <div className="relative">
+                        <div className='relative'>
                           <Input
                             placeholder={CARD_VALIDATION.CARD_NUMBER_PLACEHOLDER}
-                            autoComplete="cc-number"
-                            inputMode="numeric"
+                            autoComplete='cc-number'
+                            inputMode='numeric'
                             maxLength={CARD_VALIDATION.CARD_NUMBER_MAX_LENGTH}
-                            className="pr-14"
+                            className='pr-14'
                             {...field}
                             onChange={e => handleCardNumberChange(e, field.onChange)}
                           />
-                          <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                            <CardBrandIcon brand={cardBrand} size="sm" />
+                          <div className='absolute right-3 top-1/2 -translate-y-1/2'>
+                            <CardBrandIcon brand={cardBrand} size='sm' />
                           </div>
                         </div>
                       </FormControl>
@@ -380,18 +380,18 @@ export function AddPaymentMethodDialog({
                 />
 
                 {/* Expiry and CVC */}
-                <div className="grid grid-cols-2 gap-4">
+                <div className='grid grid-cols-2 gap-4'>
                   <FormField
                     control={cardForm.control}
-                    name="expiry"
+                    name='expiry'
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>{t('billing.addPaymentMethod.expiry')}</FormLabel>
                         <FormControl>
                           <Input
                             placeholder={CARD_VALIDATION.EXPIRY_PLACEHOLDER}
-                            autoComplete="cc-exp"
-                            inputMode="numeric"
+                            autoComplete='cc-exp'
+                            inputMode='numeric'
                             maxLength={CARD_VALIDATION.EXPIRY_MAX_LENGTH}
                             {...field}
                             onChange={e => handleExpiryChange(e, field.onChange)}
@@ -404,35 +404,35 @@ export function AddPaymentMethodDialog({
 
                   <FormField
                     control={cardForm.control}
-                    name="cvc"
+                    name='cvc'
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="flex items-center gap-1">
+                        <FormLabel className='flex items-center gap-1'>
                           {t('billing.addPaymentMethod.cvc')}
-                          <Lock className="h-3 w-3 text-muted-foreground" />
+                          <Lock className='h-3 w-3 text-muted-foreground' />
                         </FormLabel>
                         <FormControl>
-                          <div className="relative">
+                          <div className='relative'>
                             <Input
                               type={showCvc ? 'text' : 'password'}
                               placeholder={getCvcPlaceholder(cardBrand)}
-                              autoComplete="cc-csc"
-                              inputMode="numeric"
+                              autoComplete='cc-csc'
+                              inputMode='numeric'
                               maxLength={getCvcLength(cardBrand)}
-                              className="pr-10"
+                              className='pr-10'
                               {...field}
                             />
                             <Button
-                              type="button"
-                              variant="ghost"
-                              size="sm"
-                              className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                              type='button'
+                              variant='ghost'
+                              size='sm'
+                              className='absolute right-0 top-0 h-full px-3 hover:bg-transparent'
                               onClick={() => setShowCvc(!showCvc)}
                             >
                               {showCvc ? (
-                                <EyeOff className="h-4 w-4 text-muted-foreground" />
+                                <EyeOff className='h-4 w-4 text-muted-foreground' />
                               ) : (
-                                <Eye className="h-4 w-4 text-muted-foreground" />
+                                <Eye className='h-4 w-4 text-muted-foreground' />
                               )}
                             </Button>
                           </div>
@@ -445,28 +445,28 @@ export function AddPaymentMethodDialog({
 
                 <SecurityNotice>{t('billing.addPaymentMethod.securityNotice')}</SecurityNotice>
 
-                <DialogFooter className="gap-2 sm:gap-0">
+                <DialogFooter className='gap-2 sm:gap-0'>
                   <Button
-                    type="button"
-                    variant="outline"
+                    type='button'
+                    variant='outline'
                     onClick={resetAndClose}
                     disabled={loadingCard}
                   >
                     {t('common.cancel')}
                   </Button>
                   <Button
-                    type="submit"
+                    type='submit'
                     disabled={loadingCard || !cardForm.formState.isValid}
                     className={cn(loadingCard && 'opacity-70')}
                   >
                     {loadingCard ? (
                       <>
-                        <span className="animate-spin mr-2">⏳</span>
+                        <span className='animate-spin mr-2'>⏳</span>
                         {t('common.loading')}
                       </>
                     ) : (
                       <>
-                        <CreditCard className="h-4 w-4 mr-2" />
+                        <CreditCard className='h-4 w-4 mr-2' />
                         {t('billing.addPaymentMethod.submit')}
                       </>
                     )}
@@ -491,10 +491,10 @@ export function AddPaymentMethodDialog({
             </DialogHeader>
 
             <Form {...cryptoForm}>
-              <form onSubmit={cryptoForm.handleSubmit(handleCryptoSubmit)} className="space-y-4">
+              <form onSubmit={cryptoForm.handleSubmit(handleCryptoSubmit)} className='space-y-4'>
                 <FormField
                   control={cryptoForm.control}
-                  name="currency"
+                  name='currency'
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>{t('billing.currency')}</FormLabel>
@@ -511,12 +511,12 @@ export function AddPaymentMethodDialog({
                             const iconData = cryptoIcons[option.currency.toLowerCase()]
                             return (
                               <SelectItem key={option.currency} value={option.currency}>
-                                <div className="flex items-center gap-2">
+                                <div className='flex items-center gap-2'>
                                   {iconData && (
-                                    <Icon data={iconData} size={16} className="text-foreground" />
+                                    <Icon data={iconData} size={16} className='text-foreground' />
                                   )}
                                   <span>{getCurrencyDisplayName(option.currency)}</span>
-                                  <span className="text-muted-foreground">({option.currency})</span>
+                                  <span className='text-muted-foreground'>({option.currency})</span>
                                 </div>
                               </SelectItem>
                             )
@@ -528,13 +528,13 @@ export function AddPaymentMethodDialog({
                   )}
                 />
 
-                <div className="text-sm text-muted-foreground">
+                <div className='text-sm text-muted-foreground'>
                   {t('billing.network')}: {getNetworkDisplayName(selectedNetwork)}
                 </div>
 
                 <FormField
                   control={cryptoForm.control}
-                  name="walletAddress"
+                  name='walletAddress'
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>{t('billing.walletAddress')}</FormLabel>
@@ -549,24 +549,24 @@ export function AddPaymentMethodDialog({
                   )}
                 />
 
-                <DialogFooter className="gap-2 sm:gap-0">
+                <DialogFooter className='gap-2 sm:gap-0'>
                   <Button
-                    type="button"
-                    variant="outline"
+                    type='button'
+                    variant='outline'
                     onClick={resetAndClose}
                     disabled={loadingCrypto}
                   >
                     {t('common.cancel')}
                   </Button>
-                  <Button type="submit" disabled={loadingCrypto}>
+                  <Button type='submit' disabled={loadingCrypto}>
                     {loadingCrypto ? (
                       <>
-                        <span className="animate-spin mr-2">⏳</span>
+                        <span className='animate-spin mr-2'>⏳</span>
                         {t('common.loading')}
                       </>
                     ) : (
                       <>
-                        <Wallet className="h-4 w-4 mr-2" />
+                        <Wallet className='h-4 w-4 mr-2' />
                         {t('billing.addCryptoWallet.submit')}
                       </>
                     )}

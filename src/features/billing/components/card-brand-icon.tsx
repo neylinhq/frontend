@@ -30,7 +30,7 @@ export function CardBrandIcon({ brand, className, size = 'md' }: CardBrandIconPr
   // Fallback to generic card icon
   return (
     <div className={cn('flex items-center justify-center bg-muted rounded border', className)}>
-      <CreditCard className="h-4 w-4 text-muted-foreground" />
+      <CreditCard className='h-4 w-4 text-muted-foreground' />
     </div>
   )
 }

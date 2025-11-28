@@ -14,10 +14,10 @@ export default function SecurityPage() {
   const { user } = useOutletContext<SettingsContext>()
 
   return (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       <div>
-        <Typography variant="h2">{t('settings.security.title')}</Typography>
-        <p className="text-sm text-muted-foreground mt-1">{t('settings.security.description')}</p>
+        <Typography variant='h2'>{t('settings.security.title')}</Typography>
+        <p className='text-sm text-muted-foreground mt-1'>{t('settings.security.description')}</p>
       </div>
 
       <EmailChangeForm currentEmail={user.email} />

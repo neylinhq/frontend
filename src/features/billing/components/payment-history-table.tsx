@@ -53,7 +53,7 @@ export function PaymentHistoryTable({ payments }: PaymentHistoryTableProps) {
           <CardDescription>{t('billing.paymentHistory.description')}</CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground text-center py-8">
+          <p className='text-sm text-muted-foreground text-center py-8'>
             {t('billing.paymentHistory.empty')}
           </p>
         </CardContent>
@@ -75,13 +75,13 @@ export function PaymentHistoryTable({ payments }: PaymentHistoryTableProps) {
               <TableHead>{t('billing.paymentHistory.desc')}</TableHead>
               <TableHead>{t('billing.paymentHistory.amount')}</TableHead>
               <TableHead>{t('billing.paymentHistory.status')}</TableHead>
-              <TableHead className="text-right">{t('billing.paymentHistory.invoice')}</TableHead>
+              <TableHead className='text-right'>{t('billing.paymentHistory.invoice')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {payments.map(payment => (
               <TableRow key={payment.id}>
-                <TableCell className="font-medium">{formatDate(payment.createdAt)}</TableCell>
+                <TableCell className='font-medium'>{formatDate(payment.createdAt)}</TableCell>
                 <TableCell>{payment.description}</TableCell>
                 <TableCell>{formatAmount(payment.amount, payment.currency)}</TableCell>
                 <TableCell>
@@ -89,11 +89,11 @@ export function PaymentHistoryTable({ payments }: PaymentHistoryTableProps) {
                     {t(`billing.paymentStatus.${payment.status}`)}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-right">
+                <TableCell className='text-right'>
                   {payment.invoiceUrl && (
-                    <Button variant="ghost" size="sm" asChild>
-                      <a href={payment.invoiceUrl} target="_blank" rel="noopener noreferrer">
-                        <Download className="h-4 w-4 mr-2" />
+                    <Button variant='ghost' size='sm' asChild>
+                      <a href={payment.invoiceUrl} target='_blank' rel='noopener noreferrer'>
+                        <Download className='h-4 w-4 mr-2' />
                         {t('billing.paymentHistory.download')}
                       </a>
                     </Button>

@@ -51,10 +51,10 @@ export function PreferencesForm({ user }: PreferencesFormProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       <div>
-        <Typography variant="h2">{t('settings.preferences.title')}</Typography>
-        <p className="text-sm text-muted-foreground mt-1">
+        <Typography variant='h2'>{t('settings.preferences.title')}</Typography>
+        <p className='text-sm text-muted-foreground mt-1'>
           {t('settings.preferences.description')}
         </p>
       </div>
@@ -64,12 +64,12 @@ export function PreferencesForm({ user }: PreferencesFormProps) {
           <CardTitle>{t('settings.preferences.notifications.title')}</CardTitle>
           <CardDescription>{t('settings.preferences.notifications.description')}</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className='space-y-6'>
           {NOTIFICATION_SETTINGS.map(setting => (
-            <div key={setting.id} className="flex items-center justify-between">
-              <div className="space-y-0.5">
+            <div key={setting.id} className='flex items-center justify-between'>
+              <div className='space-y-0.5'>
                 <Label htmlFor={setting.id}>{t(setting.labelKey)}</Label>
-                <p className="text-sm text-muted-foreground">{t(setting.descriptionKey)}</p>
+                <p className='text-sm text-muted-foreground'>{t(setting.descriptionKey)}</p>
               </div>
               <Switch
                 id={setting.id}
@@ -87,11 +87,11 @@ export function PreferencesForm({ user }: PreferencesFormProps) {
           <CardTitle>{t('settings.preferences.interface.title')}</CardTitle>
           <CardDescription>{t('settings.preferences.interface.description')}</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
+        <CardContent className='space-y-6'>
+          <div className='flex items-center justify-between'>
+            <div className='space-y-0.5'>
               <Label>{t('settings.preferences.interface.density')}</Label>
-              <p className="text-sm text-muted-foreground">
+              <p className='text-sm text-muted-foreground'>
                 {t('settings.preferences.interface.densityDescription')}
               </p>
             </div>
@@ -106,7 +106,7 @@ export function PreferencesForm({ user }: PreferencesFormProps) {
               }
               disabled={updatePreferences.isPending}
             >
-              <SelectTrigger className="w-40">
+              <SelectTrigger className='w-40'>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -120,10 +120,10 @@ export function PreferencesForm({ user }: PreferencesFormProps) {
           </div>
 
           {INTERFACE_SWITCH_SETTINGS.map(setting => (
-            <div key={setting.id} className="flex items-center justify-between">
-              <div className="space-y-0.5">
+            <div key={setting.id} className='flex items-center justify-between'>
+              <div className='space-y-0.5'>
                 <Label htmlFor={setting.id}>{t(setting.labelKey)}</Label>
-                <p className="text-sm text-muted-foreground">{t(setting.descriptionKey)}</p>
+                <p className='text-sm text-muted-foreground'>{t(setting.descriptionKey)}</p>
               </div>
               <Switch
                 id={setting.id}

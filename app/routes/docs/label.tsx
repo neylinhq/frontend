@@ -27,23 +27,23 @@ const TOC_ITEMS: TocItem[] = [
 
 export default function LabelPage() {
   return (
-    <div className="flex gap-10">
-      <div className="flex-1 min-w-0 space-y-10">
-        <header className="space-y-4">
+    <div className='flex gap-10'>
+      <div className='flex-1 min-w-0 space-y-10'>
+        <header className='space-y-4'>
           <DocsBreadcrumbs
             items={[{ label: 'Components', href: '/docs/ui/button' }, { label: 'Label' }]}
           />
-          <div className="flex items-center gap-3">
-            <Typography variant="h1">Label</Typography>
-            <Badge variant="brand">Component</Badge>
+          <div className='flex items-center gap-3'>
+            <Typography variant='h1'>Label</Typography>
+            <Badge variant='brand'>Component</Badge>
           </div>
-          <Typography variant="lead" className="max-w-2xl">
+          <Typography variant='lead' className='max-w-2xl'>
             Renders an accessible label associated with controls. Built with Radix UI.
           </Typography>
         </header>
 
-        <section id="basic" className="scroll-mt-20 space-y-4">
-          <Typography variant="h2">Basic</Typography>
+        <section id='basic' className='scroll-mt-20 space-y-4'>
+          <Typography variant='h2'>Basic</Typography>
           <DocsComponentPreview code={`<Label>Email address</Label>`}>
             <DocsPreview>
               <Label>Email address</Label>
@@ -51,8 +51,8 @@ export default function LabelPage() {
           </DocsComponentPreview>
         </section>
 
-        <section id="with-input" className="scroll-mt-20 space-y-4">
-          <Typography variant="h2">With Input</Typography>
+        <section id='with-input' className='scroll-mt-20 space-y-4'>
+          <Typography variant='h2'>With Input</Typography>
           <DocsComponentPreview
             code={`<div className="space-y-2">
   <Label htmlFor="email">Email</Label>
@@ -60,16 +60,16 @@ export default function LabelPage() {
 </div>`}
           >
             <DocsPreview>
-              <div className="space-y-2 w-full max-w-sm">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" placeholder="email@example.com" />
+              <div className='space-y-2 w-full max-w-sm'>
+                <Label htmlFor='email'>Email</Label>
+                <Input id='email' type='email' placeholder='email@example.com' />
               </div>
             </DocsPreview>
           </DocsComponentPreview>
         </section>
 
-        <section id="with-checkbox" className="scroll-mt-20 space-y-4">
-          <Typography variant="h2">With Checkbox</Typography>
+        <section id='with-checkbox' className='scroll-mt-20 space-y-4'>
+          <Typography variant='h2'>With Checkbox</Typography>
           <DocsComponentPreview
             code={`<div className="flex items-center space-x-2">
   <Checkbox id="terms" />
@@ -77,18 +77,18 @@ export default function LabelPage() {
 </div>`}
           >
             <DocsPreview>
-              <div className="flex items-center space-x-2">
-                <Checkbox id="terms" />
-                <Label htmlFor="terms">Accept terms and conditions</Label>
+              <div className='flex items-center space-x-2'>
+                <Checkbox id='terms' />
+                <Label htmlFor='terms'>Accept terms and conditions</Label>
               </div>
             </DocsPreview>
           </DocsComponentPreview>
         </section>
 
-        <section id="usage" className="scroll-mt-20 space-y-4 pt-6 border-t">
-          <Typography variant="h2">Usage</Typography>
+        <section id='usage' className='scroll-mt-20 space-y-4 pt-6 border-t'>
+          <Typography variant='h2'>Usage</Typography>
           <DocsCodeBlock
-            language="tsx"
+            language='tsx'
             code={`import { Label } from '@/shared/ui/label'
 import { Input } from '@/shared/ui/input'
 
@@ -103,7 +103,7 @@ export function FormField() {
           />
         </section>
       </div>
-      <DocsToc items={TOC_ITEMS} className="hidden xl:block" />
+      <DocsToc items={TOC_ITEMS} className='hidden xl:block' />
     </div>
   )
 }

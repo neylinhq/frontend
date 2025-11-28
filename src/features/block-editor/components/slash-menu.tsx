@@ -139,19 +139,19 @@ export const SlashMenu = forwardRef<SlashMenuRef, SlashMenuProps>(({ items, comm
   let globalIndex = 0
 
   return (
-    <div className="z-50 max-h-[400px] min-w-[320px] overflow-y-auto rounded-xl border border-border bg-popover p-2 shadow-xl">
+    <div className='z-50 max-h-[400px] min-w-[320px] overflow-y-auto rounded-xl border border-border bg-popover p-2 shadow-xl'>
       {sortedCategories.map((category, categoryIndex) => {
         const categoryItems = groupedItems[category]
         return (
           <div key={category} className={cn(categoryIndex > 0 && 'mt-2')}>
-            <div className="mb-1 px-2 py-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <div className='mb-1 px-2 py-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground'>
               {category}
             </div>
             {categoryItems.map(item => {
               const currentIndex = globalIndex++
               return (
                 <button
-                  type="button"
+                  type='button'
                   key={`${category}-${item.title}`}
                   onClick={() => selectItem(currentIndex)}
                   className={cn(
@@ -161,12 +161,12 @@ export const SlashMenu = forwardRef<SlashMenuRef, SlashMenuProps>(({ items, comm
                       : 'hover:bg-accent/50'
                   )}
                 >
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-background shadow-sm">
+                  <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-background shadow-sm'>
                     {item.icon}
                   </div>
-                  <div className="flex min-w-0 flex-1 flex-col">
-                    <span className="truncate font-medium">{item.title}</span>
-                    <span className="truncate text-xs text-muted-foreground">
+                  <div className='flex min-w-0 flex-1 flex-col'>
+                    <span className='truncate font-medium'>{item.title}</span>
+                    <span className='truncate text-xs text-muted-foreground'>
                       {item.description}
                     </span>
                   </div>
@@ -199,42 +199,42 @@ export const getSlashMenuItems = (
     {
       title: t('editor.slash.text.title'),
       description: t('editor.slash.text.description'),
-      icon: <Type className="h-5 w-5" />,
+      icon: <Type className='h-5 w-5' />,
       command: () => editor.chain().focus().setParagraph().run(),
       category: t('editor.slash.categories.basic')
     },
     {
       title: t('editor.slash.heading1.title'),
       description: t('editor.slash.heading1.description'),
-      icon: <Heading1 className="h-5 w-5" />,
+      icon: <Heading1 className='h-5 w-5' />,
       command: () => editor.chain().focus().toggleHeading({ level: 1 }).run(),
       category: t('editor.slash.categories.basic')
     },
     {
       title: t('editor.slash.heading2.title'),
       description: t('editor.slash.heading2.description'),
-      icon: <Heading2 className="h-5 w-5" />,
+      icon: <Heading2 className='h-5 w-5' />,
       command: () => editor.chain().focus().toggleHeading({ level: 2 }).run(),
       category: t('editor.slash.categories.basic')
     },
     {
       title: t('editor.slash.heading3.title'),
       description: t('editor.slash.heading3.description'),
-      icon: <Heading3 className="h-5 w-5" />,
+      icon: <Heading3 className='h-5 w-5' />,
       command: () => editor.chain().focus().toggleHeading({ level: 3 }).run(),
       category: t('editor.slash.categories.basic')
     },
     {
       title: t('editor.slash.quote.title'),
       description: t('editor.slash.quote.description'),
-      icon: <Quote className="h-5 w-5" />,
+      icon: <Quote className='h-5 w-5' />,
       command: () => editor.chain().focus().toggleBlockquote().run(),
       category: t('editor.slash.categories.basic')
     },
     {
       title: t('editor.slash.divider.title'),
       description: t('editor.slash.divider.description'),
-      icon: <Minus className="h-5 w-5" />,
+      icon: <Minus className='h-5 w-5' />,
       command: () => editor.chain().focus().setHorizontalRule().run(),
       category: t('editor.slash.categories.basic')
     },
@@ -243,28 +243,28 @@ export const getSlashMenuItems = (
     {
       title: t('editor.slash.bulletList.title'),
       description: t('editor.slash.bulletList.description'),
-      icon: <List className="h-5 w-5" />,
+      icon: <List className='h-5 w-5' />,
       command: () => editor.chain().focus().toggleBulletList().run(),
       category: t('editor.slash.categories.lists')
     },
     {
       title: t('editor.slash.numberedList.title'),
       description: t('editor.slash.numberedList.description'),
-      icon: <ListOrdered className="h-5 w-5" />,
+      icon: <ListOrdered className='h-5 w-5' />,
       command: () => editor.chain().focus().toggleOrderedList().run(),
       category: t('editor.slash.categories.lists')
     },
     {
       title: t('editor.slash.todoList.title'),
       description: t('editor.slash.todoList.description'),
-      icon: <CheckSquare className="h-5 w-5" />,
+      icon: <CheckSquare className='h-5 w-5' />,
       command: () => editor.chain().focus().toggleTaskList().run(),
       category: t('editor.slash.categories.lists')
     },
     {
       title: t('editor.slash.toggle.title'),
       description: t('editor.slash.toggle.description'),
-      icon: <ChevronRight className="h-5 w-5" />,
+      icon: <ChevronRight className='h-5 w-5' />,
       command: () => editor.chain().focus().setDetails().run(),
       category: t('editor.slash.categories.lists')
     },
@@ -273,7 +273,7 @@ export const getSlashMenuItems = (
     {
       title: t('editor.slash.image.title'),
       description: t('editor.slash.image.description'),
-      icon: <Image className="h-5 w-5" />,
+      icon: <Image className='h-5 w-5' />,
       // UX-1: Use dialog instead of window.prompt
       command: () => openMediaDialog?.('image'),
       category: t('editor.slash.categories.media')
@@ -281,7 +281,7 @@ export const getSlashMenuItems = (
     {
       title: t('editor.slash.imageFigure.title'),
       description: t('editor.slash.imageFigure.description'),
-      icon: <FileImage className="h-5 w-5" />,
+      icon: <FileImage className='h-5 w-5' />,
       // UX-1: Use dialog instead of window.prompt
       command: () => openMediaDialog?.('imageFigure'),
       category: t('editor.slash.categories.media')
@@ -289,7 +289,7 @@ export const getSlashMenuItems = (
     {
       title: t('editor.slash.video.title'),
       description: t('editor.slash.video.description'),
-      icon: <Youtube className="h-5 w-5 text-red-500" />,
+      icon: <Youtube className='h-5 w-5 text-red-500' />,
       // UX-1: Use dialog instead of window.prompt
       command: () => openMediaDialog?.('video'),
       category: t('editor.slash.categories.media')
@@ -297,14 +297,14 @@ export const getSlashMenuItems = (
     {
       title: t('editor.slash.code.title'),
       description: t('editor.slash.code.description'),
-      icon: <Code className="h-5 w-5" />,
+      icon: <Code className='h-5 w-5' />,
       command: () => editor.chain().focus().toggleCodeBlock().run(),
       category: t('editor.slash.categories.media')
     },
     {
       title: t('editor.slash.table.title'),
       description: t('editor.slash.table.description'),
-      icon: <Table className="h-5 w-5" />,
+      icon: <Table className='h-5 w-5' />,
       command: () =>
         editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(),
       category: t('editor.slash.categories.media')
@@ -312,14 +312,14 @@ export const getSlashMenuItems = (
     {
       title: t('editor.slash.mathBlock.title'),
       description: t('editor.slash.mathBlock.description'),
-      icon: <SquareSigma className="h-5 w-5 text-indigo-500" />,
+      icon: <SquareSigma className='h-5 w-5 text-indigo-500' />,
       command: () => openMathDialog?.('block'),
       category: t('editor.slash.categories.media')
     },
     {
       title: t('editor.slash.mathInline.title'),
       description: t('editor.slash.mathInline.description'),
-      icon: <Sigma className="h-5 w-5 text-indigo-500" />,
+      icon: <Sigma className='h-5 w-5 text-indigo-500' />,
       command: () => openMathDialog?.('inline'),
       category: t('editor.slash.categories.media')
     },
@@ -328,56 +328,56 @@ export const getSlashMenuItems = (
     {
       title: t('editor.slash.calloutInfo.title'),
       description: t('editor.slash.calloutInfo.description'),
-      icon: <Info className="h-5 w-5 text-blue-500" />,
+      icon: <Info className='h-5 w-5 text-blue-500' />,
       command: () => editor.chain().focus().setCallout({ type: 'info' }).run(),
       category: t('editor.slash.categories.advanced')
     },
     {
       title: t('editor.slash.calloutWarning.title'),
       description: t('editor.slash.calloutWarning.description'),
-      icon: <AlertTriangle className="h-5 w-5 text-amber-500" />,
+      icon: <AlertTriangle className='h-5 w-5 text-amber-500' />,
       command: () => editor.chain().focus().setCallout({ type: 'warning' }).run(),
       category: t('editor.slash.categories.advanced')
     },
     {
       title: t('editor.slash.calloutSuccess.title'),
       description: t('editor.slash.calloutSuccess.description'),
-      icon: <CheckCircle className="h-5 w-5 text-emerald-500" />,
+      icon: <CheckCircle className='h-5 w-5 text-emerald-500' />,
       command: () => editor.chain().focus().setCallout({ type: 'success' }).run(),
       category: t('editor.slash.categories.advanced')
     },
     {
       title: t('editor.slash.calloutError.title'),
       description: t('editor.slash.calloutError.description'),
-      icon: <AlertCircle className="h-5 w-5 text-red-500" />,
+      icon: <AlertCircle className='h-5 w-5 text-red-500' />,
       command: () => editor.chain().focus().setCallout({ type: 'error' }).run(),
       category: t('editor.slash.categories.advanced')
     },
     {
       title: t('editor.slash.calloutTip.title'),
       description: t('editor.slash.calloutTip.description'),
-      icon: <Lightbulb className="h-5 w-5 text-purple-500" />,
+      icon: <Lightbulb className='h-5 w-5 text-purple-500' />,
       command: () => editor.chain().focus().setCallout({ type: 'tip' }).run(),
       category: t('editor.slash.categories.advanced')
     },
     {
       title: t('editor.slash.columns2.title'),
       description: t('editor.slash.columns2.description'),
-      icon: <Columns className="h-5 w-5" />,
+      icon: <Columns className='h-5 w-5' />,
       command: () => editor.chain().focus().setColumns(2).run(),
       category: t('editor.slash.categories.advanced')
     },
     {
       title: t('editor.slash.columns3.title'),
       description: t('editor.slash.columns3.description'),
-      icon: <Columns className="h-5 w-5" />,
+      icon: <Columns className='h-5 w-5' />,
       command: () => editor.chain().focus().setColumns(3).run(),
       category: t('editor.slash.categories.advanced')
     },
     {
       title: t('editor.slash.toc.title'),
       description: t('editor.slash.toc.description'),
-      icon: <ListTree className="h-5 w-5" />,
+      icon: <ListTree className='h-5 w-5' />,
       command: () => editor.chain().focus().insertTableOfContents().run(),
       category: t('editor.slash.categories.advanced')
     }

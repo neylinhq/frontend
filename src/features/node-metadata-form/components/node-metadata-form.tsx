@@ -27,10 +27,10 @@ export function NodeMetadataForm({ node, onSubmit, isPending }: NodeMetadataForm
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
         <FormField
           control={form.control}
-          name="label"
+          name='label'
           render={({ field }) => (
             <FormItem>
               <FormLabel>{t('form.metadata.label')}</FormLabel>
@@ -44,7 +44,7 @@ export function NodeMetadataForm({ node, onSubmit, isPending }: NodeMetadataForm
 
         <FormField
           control={form.control}
-          name="type"
+          name='type'
           render={({ field }) => (
             <FormItem>
               <FormControl>
@@ -57,7 +57,7 @@ export function NodeMetadataForm({ node, onSubmit, isPending }: NodeMetadataForm
 
         <FormField
           control={form.control}
-          name="tags"
+          name='tags'
           render={({ field }) => (
             <FormItem>
               <FormControl>
@@ -70,7 +70,7 @@ export function NodeMetadataForm({ node, onSubmit, isPending }: NodeMetadataForm
 
         <FormField
           control={form.control}
-          name="complexity"
+          name='complexity'
           render={({ field }) => (
             <FormItem>
               <FormControl>
@@ -83,13 +83,13 @@ export function NodeMetadataForm({ node, onSubmit, isPending }: NodeMetadataForm
 
         <FormField
           control={form.control}
-          name="confidence"
+          name='confidence'
           render={({ field }) => (
             <FormItem>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
+              <div className='space-y-3'>
+                <div className='flex items-center justify-between'>
                   <FormLabel>{t('form.confidence.label', 'Confidence')}</FormLabel>
-                  <span className="text-sm text-muted-foreground">
+                  <span className='text-sm text-muted-foreground'>
                     {field.value ? Math.round(field.value * 100) : 0}%
                   </span>
                 </div>
@@ -108,7 +108,7 @@ export function NodeMetadataForm({ node, onSubmit, isPending }: NodeMetadataForm
           )}
         />
 
-        <Button type="submit" disabled={isPending} className="w-full">
+        <Button type='submit' disabled={isPending} className='w-full'>
           {isPending ? t('form.metadata.saving') : t('form.metadata.save')}
         </Button>
       </form>

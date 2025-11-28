@@ -61,10 +61,10 @@ export function ProfileForm({ user }: ProfileFormProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       <div>
-        <Typography variant="h2">{t('settings.profile.title')}</Typography>
-        <p className="text-sm text-muted-foreground mt-1">{t('settings.profile.description')}</p>
+        <Typography variant='h2'>{t('settings.profile.title')}</Typography>
+        <p className='text-sm text-muted-foreground mt-1'>{t('settings.profile.description')}</p>
       </div>
 
       <Card>
@@ -91,10 +91,10 @@ export function ProfileForm({ user }: ProfileFormProps) {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
               <FormField
                 control={form.control}
-                name="displayName"
+                name='displayName'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{t('settings.profile.personal.displayName')}</FormLabel>
@@ -111,7 +111,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
 
               <FormField
                 control={form.control}
-                name="username"
+                name='username'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{t('settings.profile.personal.username')}</FormLabel>
@@ -126,7 +126,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
 
               <FormField
                 control={form.control}
-                name="bio"
+                name='bio'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{t('settings.profile.personal.bio')}</FormLabel>
@@ -143,16 +143,16 @@ export function ProfileForm({ user }: ProfileFormProps) {
                 )}
               />
 
-              <div className="flex justify-end gap-2 pt-4">
+              <div className='flex justify-end gap-2 pt-4'>
                 <Button
-                  variant="outline"
-                  type="button"
+                  variant='outline'
+                  type='button'
                   onClick={() => form.reset()}
                   disabled={!form.formState.isDirty}
                 >
                   {t('common.cancel')}
                 </Button>
-                <Button type="submit" disabled={updateProfile.isPending || !form.formState.isDirty}>
+                <Button type='submit' disabled={updateProfile.isPending || !form.formState.isDirty}>
                   {updateProfile.isPending ? t('common.saving') : t('common.save')}
                 </Button>
               </div>

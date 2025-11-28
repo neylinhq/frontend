@@ -27,24 +27,24 @@ const TOC_ITEMS: TocItem[] = [
 
 export default function SwitchPage() {
   return (
-    <div className="flex gap-10">
-      <div className="flex-1 min-w-0 space-y-10">
-        <header className="space-y-4">
+    <div className='flex gap-10'>
+      <div className='flex-1 min-w-0 space-y-10'>
+        <header className='space-y-4'>
           <DocsBreadcrumbs
             items={[{ label: 'Components', href: '/docs/ui/button' }, { label: 'Switch' }]}
           />
-          <div className="flex items-center gap-3">
-            <Typography variant="h1">Switch</Typography>
-            <Badge variant="brand">Component</Badge>
+          <div className='flex items-center gap-3'>
+            <Typography variant='h1'>Switch</Typography>
+            <Badge variant='brand'>Component</Badge>
           </div>
-          <Typography variant="lead" className="max-w-2xl">
+          <Typography variant='lead' className='max-w-2xl'>
             A toggle switch for boolean settings. Built with Radix UI for accessibility.
           </Typography>
         </header>
 
-        <section id="basic" className="scroll-mt-20 space-y-4">
-          <Typography variant="h2">Basic</Typography>
-          <Typography variant="muted">Simple toggle switch.</Typography>
+        <section id='basic' className='scroll-mt-20 space-y-4'>
+          <Typography variant='h2'>Basic</Typography>
+          <Typography variant='muted'>Simple toggle switch.</Typography>
 
           <DocsComponentPreview code={`<Switch />`}>
             <DocsPreview>
@@ -53,9 +53,9 @@ export default function SwitchPage() {
           </DocsComponentPreview>
         </section>
 
-        <section id="with-label" className="scroll-mt-20 space-y-4">
-          <Typography variant="h2">With Label</Typography>
-          <Typography variant="muted">Switch with associated label for better UX.</Typography>
+        <section id='with-label' className='scroll-mt-20 space-y-4'>
+          <Typography variant='h2'>With Label</Typography>
+          <Typography variant='muted'>Switch with associated label for better UX.</Typography>
 
           <DocsComponentPreview
             code={`<div className="flex items-center space-x-2">
@@ -64,37 +64,37 @@ export default function SwitchPage() {
 </div>`}
           >
             <DocsPreview>
-              <div className="flex items-center space-x-2">
-                <Switch id="airplane-mode" />
-                <Label htmlFor="airplane-mode">Airplane Mode</Label>
+              <div className='flex items-center space-x-2'>
+                <Switch id='airplane-mode' />
+                <Label htmlFor='airplane-mode'>Airplane Mode</Label>
               </div>
             </DocsPreview>
           </DocsComponentPreview>
         </section>
 
-        <section id="states" className="scroll-mt-20 space-y-4">
-          <Typography variant="h2">States</Typography>
-          <Typography variant="muted">Checked and disabled states.</Typography>
+        <section id='states' className='scroll-mt-20 space-y-4'>
+          <Typography variant='h2'>States</Typography>
+          <Typography variant='muted'>Checked and disabled states.</Typography>
 
           <DocsComponentPreview
             code={`<Switch defaultChecked />
 <Switch disabled />
 <Switch disabled defaultChecked />`}
           >
-            <DocsPreview className="flex gap-6">
-              <div className="flex items-center space-x-2">
-                <Switch id="checked" defaultChecked />
-                <Label htmlFor="checked">On</Label>
+            <DocsPreview className='flex gap-6'>
+              <div className='flex items-center space-x-2'>
+                <Switch id='checked' defaultChecked />
+                <Label htmlFor='checked'>On</Label>
               </div>
-              <div className="flex items-center space-x-2">
-                <Switch id="disabled" disabled />
-                <Label htmlFor="disabled" className="text-muted-foreground">
+              <div className='flex items-center space-x-2'>
+                <Switch id='disabled' disabled />
+                <Label htmlFor='disabled' className='text-muted-foreground'>
                   Disabled
                 </Label>
               </div>
-              <div className="flex items-center space-x-2">
-                <Switch id="disabled-checked" disabled defaultChecked />
-                <Label htmlFor="disabled-checked" className="text-muted-foreground">
+              <div className='flex items-center space-x-2'>
+                <Switch id='disabled-checked' disabled defaultChecked />
+                <Label htmlFor='disabled-checked' className='text-muted-foreground'>
                   Disabled on
                 </Label>
               </div>
@@ -102,11 +102,11 @@ export default function SwitchPage() {
           </DocsComponentPreview>
         </section>
 
-        <section id="usage" className="scroll-mt-20 space-y-4 pt-6 border-t">
-          <Typography variant="h2">Usage</Typography>
+        <section id='usage' className='scroll-mt-20 space-y-4 pt-6 border-t'>
+          <Typography variant='h2'>Usage</Typography>
 
           <DocsCodeBlock
-            language="tsx"
+            language='tsx'
             code={`import { Switch } from '@/shared/ui/switch'
 import { Label } from '@/shared/ui/label'
 
@@ -127,52 +127,52 @@ export function NotificationSettings() {
           />
         </section>
 
-        <section id="api-reference" className="scroll-mt-20 space-y-4 pt-6 border-t">
-          <Typography variant="h2">API Reference</Typography>
+        <section id='api-reference' className='scroll-mt-20 space-y-4 pt-6 border-t'>
+          <Typography variant='h2'>API Reference</Typography>
 
-          <div className="rounded-lg border overflow-hidden">
-            <table className="w-full text-sm">
-              <thead className="bg-muted/50">
+          <div className='rounded-lg border overflow-hidden'>
+            <table className='w-full text-sm'>
+              <thead className='bg-muted/50'>
                 <tr>
-                  <th className="text-left px-4 py-3 font-medium">Prop</th>
-                  <th className="text-left px-4 py-3 font-medium">Type</th>
-                  <th className="text-left px-4 py-3 font-medium">Default</th>
+                  <th className='text-left px-4 py-3 font-medium'>Prop</th>
+                  <th className='text-left px-4 py-3 font-medium'>Type</th>
+                  <th className='text-left px-4 py-3 font-medium'>Default</th>
                 </tr>
               </thead>
-              <tbody className="divide-y">
+              <tbody className='divide-y'>
                 <tr>
-                  <td className="px-4 py-3">
-                    <code className="text-sm font-semibold text-brand">checked</code>
+                  <td className='px-4 py-3'>
+                    <code className='text-sm font-semibold text-brand'>checked</code>
                   </td>
-                  <td className="px-4 py-3">
-                    <code className="text-xs text-muted-foreground">boolean</code>
+                  <td className='px-4 py-3'>
+                    <code className='text-xs text-muted-foreground'>boolean</code>
                   </td>
-                  <td className="px-4 py-3">
-                    <code className="text-xs bg-muted px-1.5 py-0.5 rounded">-</code>
+                  <td className='px-4 py-3'>
+                    <code className='text-xs bg-muted px-1.5 py-0.5 rounded'>-</code>
                   </td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3">
-                    <code className="text-sm font-semibold text-brand">onCheckedChange</code>
+                  <td className='px-4 py-3'>
+                    <code className='text-sm font-semibold text-brand'>onCheckedChange</code>
                   </td>
-                  <td className="px-4 py-3">
-                    <code className="text-xs text-muted-foreground">
+                  <td className='px-4 py-3'>
+                    <code className='text-xs text-muted-foreground'>
                       (checked: boolean) =&gt; void
                     </code>
                   </td>
-                  <td className="px-4 py-3">
-                    <code className="text-xs bg-muted px-1.5 py-0.5 rounded">-</code>
+                  <td className='px-4 py-3'>
+                    <code className='text-xs bg-muted px-1.5 py-0.5 rounded'>-</code>
                   </td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3">
-                    <code className="text-sm font-semibold text-brand">disabled</code>
+                  <td className='px-4 py-3'>
+                    <code className='text-sm font-semibold text-brand'>disabled</code>
                   </td>
-                  <td className="px-4 py-3">
-                    <code className="text-xs text-muted-foreground">boolean</code>
+                  <td className='px-4 py-3'>
+                    <code className='text-xs text-muted-foreground'>boolean</code>
                   </td>
-                  <td className="px-4 py-3">
-                    <code className="text-xs bg-muted px-1.5 py-0.5 rounded">false</code>
+                  <td className='px-4 py-3'>
+                    <code className='text-xs bg-muted px-1.5 py-0.5 rounded'>false</code>
                   </td>
                 </tr>
               </tbody>
@@ -181,7 +181,7 @@ export function NotificationSettings() {
         </section>
       </div>
 
-      <DocsToc items={TOC_ITEMS} className="hidden xl:block" />
+      <DocsToc items={TOC_ITEMS} className='hidden xl:block' />
     </div>
   )
 }

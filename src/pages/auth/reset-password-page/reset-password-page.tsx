@@ -8,19 +8,19 @@ export const ResetPasswordPage = () => {
   const { t } = useTranslation()
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col space-y-2 text-center">
-        <Typography variant="h1">{t('auth.resetPassword.title')}</Typography>
-        <p className="text-sm text-muted-foreground text-balance">
+    <div className='space-y-6'>
+      <div className='flex flex-col space-y-2 text-center'>
+        <Typography variant='h1'>{t('auth.resetPassword.title')}</Typography>
+        <p className='text-sm text-muted-foreground text-balance'>
           {t('auth.resetPassword.description')}
         </p>
       </div>
 
       <ResetPasswordForm />
 
-      <div className="mt-4 text-center text-sm text-muted-foreground">
+      <div className='mt-4 text-center text-sm text-muted-foreground'>
         {t('auth.resetPassword.rememberPassword')}{' '}
-        <Link to={AUTH_ROUTES.signIn} className="underline hover:text-primary" prefetch="intent">
+        <Link to={AUTH_ROUTES.signIn} className='underline hover:text-primary' prefetch='intent'>
           {t('auth.resetPassword.signInLink')}
         </Link>
       </div>

@@ -30,24 +30,24 @@ function CollapsibleDemo() {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-[350px] space-y-2">
-      <div className="flex items-center justify-between space-x-4 px-4">
-        <h4 className="text-sm font-semibold">@radix-ui/primitives</h4>
+    <Collapsible open={isOpen} onOpenChange={setIsOpen} className='w-[350px] space-y-2'>
+      <div className='flex items-center justify-between space-x-4 px-4'>
+        <h4 className='text-sm font-semibold'>@radix-ui/primitives</h4>
         <CollapsibleTrigger asChild>
-          <Button variant="ghost" size="sm" className="w-9 p-0">
-            <ChevronsUpDown className="h-4 w-4" />
-            <span className="sr-only">Toggle</span>
+          <Button variant='ghost' size='sm' className='w-9 p-0'>
+            <ChevronsUpDown className='h-4 w-4' />
+            <span className='sr-only'>Toggle</span>
           </Button>
         </CollapsibleTrigger>
       </div>
-      <div className="rounded-md border px-4 py-3 font-mono text-sm">
+      <div className='rounded-md border px-4 py-3 font-mono text-sm'>
         @radix-ui/react-collapsible
       </div>
-      <CollapsibleContent className="space-y-2">
-        <div className="rounded-md border px-4 py-3 font-mono text-sm">
+      <CollapsibleContent className='space-y-2'>
+        <div className='rounded-md border px-4 py-3 font-mono text-sm'>
           @radix-ui/react-accordion
         </div>
-        <div className="rounded-md border px-4 py-3 font-mono text-sm">@radix-ui/react-dialog</div>
+        <div className='rounded-md border px-4 py-3 font-mono text-sm'>@radix-ui/react-dialog</div>
       </CollapsibleContent>
     </Collapsible>
   )
@@ -55,23 +55,23 @@ function CollapsibleDemo() {
 
 export default function CollapsiblePage() {
   return (
-    <div className="flex gap-10">
-      <div className="flex-1 min-w-0 space-y-10">
-        <header className="space-y-4">
+    <div className='flex gap-10'>
+      <div className='flex-1 min-w-0 space-y-10'>
+        <header className='space-y-4'>
           <DocsBreadcrumbs
             items={[{ label: 'Components', href: '/docs/ui/button' }, { label: 'Collapsible' }]}
           />
-          <div className="flex items-center gap-3">
-            <Typography variant="h1">Collapsible</Typography>
-            <Badge variant="brand">Component</Badge>
+          <div className='flex items-center gap-3'>
+            <Typography variant='h1'>Collapsible</Typography>
+            <Badge variant='brand'>Component</Badge>
           </div>
-          <Typography variant="lead" className="max-w-2xl">
+          <Typography variant='lead' className='max-w-2xl'>
             An interactive component which expands/collapses a panel. Built with Radix UI.
           </Typography>
         </header>
 
-        <section id="basic" className="scroll-mt-20 space-y-4">
-          <Typography variant="h2">Basic</Typography>
+        <section id='basic' className='scroll-mt-20 space-y-4'>
+          <Typography variant='h2'>Basic</Typography>
           <DocsComponentPreview
             code={`<Collapsible open={isOpen} onOpenChange={setIsOpen}>
   <CollapsibleTrigger asChild>
@@ -93,10 +93,10 @@ export default function CollapsiblePage() {
           </DocsComponentPreview>
         </section>
 
-        <section id="usage" className="scroll-mt-20 space-y-4 pt-6 border-t">
-          <Typography variant="h2">Usage</Typography>
+        <section id='usage' className='scroll-mt-20 space-y-4 pt-6 border-t'>
+          <Typography variant='h2'>Usage</Typography>
           <DocsCodeBlock
-            language="tsx"
+            language='tsx'
             code={`import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/shared/ui/collapsible'
 
 export function FAQ({ question, answer }: { question: string; answer: string }) {
@@ -117,7 +117,7 @@ export function FAQ({ question, answer }: { question: string; answer: string }) 
           />
         </section>
       </div>
-      <DocsToc items={TOC_ITEMS} className="hidden xl:block" />
+      <DocsToc items={TOC_ITEMS} className='hidden xl:block' />
     </div>
   )
 }

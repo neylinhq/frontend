@@ -47,7 +47,7 @@ export const DrawerConnectionsTab = memo(
     if (totalCount === 0) {
       return (
         <div className={cn('flex items-center justify-center py-12', className)}>
-          <p className="text-sm text-muted-foreground">
+          <p className='text-sm text-muted-foreground'>
             {t('nodeDrawer.connections.noConnections')}
           </p>
         </div>
@@ -57,7 +57,7 @@ export const DrawerConnectionsTab = memo(
     return (
       <div className={cn('space-y-4', className)}>
         {/* Filter Pills */}
-        <div className="flex gap-1.5 p-1 bg-muted/50 rounded-lg w-fit">
+        <div className='flex gap-1.5 p-1 bg-muted/50 rounded-lg w-fit'>
           <FilterPill
             active={filter === 'all'}
             onClick={() => changeFilter('all')}
@@ -79,14 +79,14 @@ export const DrawerConnectionsTab = memo(
         </div>
 
         {/* Grouped connections list */}
-        <div className="space-y-4">
+        <div className='space-y-4'>
           {/* Incoming Section */}
           {incomingEdges.length > 0 && (
             <ConnectionSection
               title={t('nodeDrawer.connections.incoming')}
               count={incomingEdges.length}
-              icon={<ArrowDownLeft className="w-3.5 h-3.5" />}
-              color="blue"
+              icon={<ArrowDownLeft className='w-3.5 h-3.5' />}
+              color='blue'
               showHeader={filter === 'all'}
             >
               {incomingEdges.map(({ edge, node: connectedNode }) => (
@@ -94,7 +94,7 @@ export const DrawerConnectionsTab = memo(
                   key={edge.id}
                   edge={edge}
                   node={connectedNode}
-                  direction="incoming"
+                  direction='incoming'
                   showDirectionHint={filter === 'all'}
                   onOpenNode={onOpenNode}
                   onPanToNode={onPanToNode}
@@ -108,8 +108,8 @@ export const DrawerConnectionsTab = memo(
             <ConnectionSection
               title={t('nodeDrawer.connections.outgoing')}
               count={outgoingEdges.length}
-              icon={<ArrowUpRight className="w-3.5 h-3.5" />}
-              color="emerald"
+              icon={<ArrowUpRight className='w-3.5 h-3.5' />}
+              color='emerald'
               showHeader={filter === 'all'}
             >
               {outgoingEdges.map(({ edge, node: connectedNode }) => (
@@ -117,7 +117,7 @@ export const DrawerConnectionsTab = memo(
                   key={edge.id}
                   edge={edge}
                   node={connectedNode}
-                  direction="outgoing"
+                  direction='outgoing'
                   showDirectionHint={filter === 'all'}
                   onOpenNode={onOpenNode}
                   onPanToNode={onPanToNode}
@@ -147,7 +147,7 @@ interface FilterPillProps {
 function FilterPill({ active, onClick, label, count }: FilterPillProps) {
   return (
     <button
-      type="button"
+      type='button'
       onClick={onClick}
       className={cn(
         'px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-150 cursor-pointer',
@@ -188,7 +188,7 @@ function ConnectionSection({
   return (
     <div>
       {showHeader && (
-        <div className="flex items-center gap-2 mb-2 px-1">
+        <div className='flex items-center gap-2 mb-2 px-1'>
           <span
             className={cn(
               'flex items-center justify-center w-5 h-5 rounded',
@@ -199,11 +199,11 @@ function ConnectionSection({
           >
             {icon}
           </span>
-          <span className="text-xs font-medium text-muted-foreground">{title}</span>
-          <span className="text-xs text-muted-foreground/60 tabular-nums">({count})</span>
+          <span className='text-xs font-medium text-muted-foreground'>{title}</span>
+          <span className='text-xs text-muted-foreground/60 tabular-nums'>({count})</span>
         </div>
       )}
-      <div className="space-y-0.5">{children}</div>
+      <div className='space-y-0.5'>{children}</div>
     </div>
   )
 }

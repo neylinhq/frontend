@@ -28,9 +28,9 @@ export default function PublicLayout() {
   }
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden bg-background text-foreground">
+    <div className='h-screen flex flex-col overflow-hidden bg-background text-foreground'>
       <PublicHeader hideAuthButtons={hideAuthButtons} />
-      <div className="flex-1 min-h-0 overflow-y-auto [scrollbar-gutter:stable]">
+      <div className='flex-1 min-h-0 overflow-y-auto [scrollbar-gutter:stable]'>
         <div
           className={cn(
             'min-h-full flex flex-col border-r',
@@ -38,12 +38,12 @@ export default function PublicLayout() {
           )}
         >
           {centered ? (
-            <div className="w-full max-w-sm">
+            <div className='w-full max-w-sm'>
               <Outlet />
             </div>
           ) : (
             <>
-              <main className="flex-1">
+              <main className='flex-1'>
                 <Outlet />
               </main>
               {!hideFooter && <PublicFooter />}

@@ -225,36 +225,36 @@ export function DocsSearch({ open, onOpenChange }: DocsSearchProps) {
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
-      <DialogContent className="max-w-2xl p-0 gap-0 overflow-hidden [&>button]:hidden">
-        <DialogTitle className="sr-only">Search documentation</DialogTitle>
+      <DialogContent className='max-w-2xl p-0 gap-0 overflow-hidden [&>button]:hidden'>
+        <DialogTitle className='sr-only'>Search documentation</DialogTitle>
 
         {/* Search Input */}
-        <div className="flex items-center border-b px-4">
-          <Search className="h-4 w-4 text-muted-foreground shrink-0" />
+        <div className='flex items-center border-b px-4'>
+          <Search className='h-4 w-4 text-muted-foreground shrink-0' />
           <input
-            type="text"
-            placeholder="Search documentation..."
+            type='text'
+            placeholder='Search documentation...'
             value={query}
             onChange={e => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            className="flex-1 h-14 px-3 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+            className='flex-1 h-14 px-3 bg-transparent text-sm outline-none placeholder:text-muted-foreground'
             autoFocus
           />
-          <kbd className="hidden sm:inline-flex h-5 items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
+          <kbd className='hidden sm:inline-flex h-5 items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground'>
             ESC
           </kbd>
         </div>
 
         {/* Results */}
-        <div className="max-h-[400px] overflow-y-auto p-2">
+        <div className='max-h-[400px] overflow-y-auto p-2'>
           {flatResults.length === 0 ? (
-            <div className="py-12 text-center text-sm text-muted-foreground">
+            <div className='py-12 text-center text-sm text-muted-foreground'>
               No results found for "{query}"
             </div>
           ) : (
             Object.entries(groupedResults).map(([section, items]) => (
-              <div key={section} className="mb-4 last:mb-0">
-                <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
+              <div key={section} className='mb-4 last:mb-0'>
+                <div className='px-2 py-1.5 text-xs font-medium text-muted-foreground'>
                   {section}
                 </div>
                 {items.map(item => {
@@ -281,18 +281,18 @@ export function DocsSearch({ open, onOpenChange }: DocsSearchProps) {
                             : 'border-border bg-muted/50'
                         )}
                       >
-                        <Icon className="h-4 w-4" />
+                        <Icon className='h-4 w-4' />
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="font-medium text-sm truncate">{item.title}</div>
+                      <div className='flex-1 min-w-0'>
+                        <div className='font-medium text-sm truncate'>{item.title}</div>
                         {item.description && (
-                          <div className="text-xs text-muted-foreground truncate">
+                          <div className='text-xs text-muted-foreground truncate'>
                             {item.description}
                           </div>
                         )}
                       </div>
                       {globalIndex === selectedIndex && (
-                        <ArrowRight className="h-4 w-4 text-muted-foreground shrink-0" />
+                        <ArrowRight className='h-4 w-4 text-muted-foreground shrink-0' />
                       )}
                     </button>
                   )
@@ -303,26 +303,26 @@ export function DocsSearch({ open, onOpenChange }: DocsSearchProps) {
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between border-t px-4 py-2 text-xs text-muted-foreground">
-          <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1">
-              <kbd className="inline-flex h-5 items-center rounded border bg-muted px-1.5 font-mono text-[10px]">
+        <div className='flex items-center justify-between border-t px-4 py-2 text-xs text-muted-foreground'>
+          <div className='flex items-center gap-4'>
+            <span className='flex items-center gap-1'>
+              <kbd className='inline-flex h-5 items-center rounded border bg-muted px-1.5 font-mono text-[10px]'>
                 ↑
               </kbd>
-              <kbd className="inline-flex h-5 items-center rounded border bg-muted px-1.5 font-mono text-[10px]">
+              <kbd className='inline-flex h-5 items-center rounded border bg-muted px-1.5 font-mono text-[10px]'>
                 ↓
               </kbd>
-              <span className="ml-1">Navigate</span>
+              <span className='ml-1'>Navigate</span>
             </span>
-            <span className="flex items-center gap-1">
-              <kbd className="inline-flex h-5 items-center rounded border bg-muted px-1.5 font-mono text-[10px]">
+            <span className='flex items-center gap-1'>
+              <kbd className='inline-flex h-5 items-center rounded border bg-muted px-1.5 font-mono text-[10px]'>
                 ↵
               </kbd>
-              <span className="ml-1">Select</span>
+              <span className='ml-1'>Select</span>
             </span>
           </div>
-          <div className="flex items-center gap-1">
-            <Hash className="h-3 w-3" />
+          <div className='flex items-center gap-1'>
+            <Hash className='h-3 w-3' />
             <span>{flatResults.length} results</span>
           </div>
         </div>
@@ -348,9 +348,9 @@ export function DocsSearchTrigger({ className }: DocsSearchTriggerProps) {
           className
         )}
       >
-        <Search className="h-4 w-4" />
-        <span className="hidden sm:inline">Search docs...</span>
-        <kbd className="hidden md:inline-flex h-5 items-center gap-1 rounded border bg-background px-1.5 font-mono text-[10px] font-medium">
+        <Search className='h-4 w-4' />
+        <span className='hidden sm:inline'>Search docs...</span>
+        <kbd className='hidden md:inline-flex h-5 items-center gap-1 rounded border bg-background px-1.5 font-mono text-[10px] font-medium'>
           {isMac ? '⌘' : 'Ctrl+'}K
         </kbd>
       </button>

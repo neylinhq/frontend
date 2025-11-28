@@ -55,19 +55,19 @@ export default function ColorsPage() {
   const { t } = useTranslation()
 
   return (
-    <div className="space-y-8">
-      <div className="space-y-3">
-        <Typography variant="h1">{t('docs.colors.title')}</Typography>
-        <Typography variant="lead">{t('docs.colors.lead')}</Typography>
+    <div className='space-y-8'>
+      <div className='space-y-3'>
+        <Typography variant='h1'>{t('docs.colors.title')}</Typography>
+        <Typography variant='lead'>{t('docs.colors.lead')}</Typography>
       </div>
 
       {/* Semantic Colors */}
-      <section className="space-y-4">
+      <section className='space-y-4'>
         <div>
-          <Typography variant="h2">{t('docs.colors.semantic.title')}</Typography>
-          <Typography variant="muted">{t('docs.colors.semantic.description')}</Typography>
+          <Typography variant='h2'>{t('docs.colors.semantic.title')}</Typography>
+          <Typography variant='muted'>{t('docs.colors.semantic.description')}</Typography>
         </div>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className='grid gap-3 sm:grid-cols-2 lg:grid-cols-3'>
           {SEMANTIC_COLORS.map(color => (
             <ColorCard key={color.var} {...color} />
           ))}
@@ -75,12 +75,12 @@ export default function ColorsPage() {
       </section>
 
       {/* Brand Colors */}
-      <section className="space-y-4 pt-4 border-t">
+      <section className='space-y-4 pt-4 border-t'>
         <div>
-          <Typography variant="h2">{t('docs.colors.brand.title')}</Typography>
-          <Typography variant="muted">{t('docs.colors.brand.description')}</Typography>
+          <Typography variant='h2'>{t('docs.colors.brand.title')}</Typography>
+          <Typography variant='muted'>{t('docs.colors.brand.description')}</Typography>
         </div>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className='grid gap-3 sm:grid-cols-2 lg:grid-cols-3'>
           {BRAND_COLORS.map(color => (
             <ColorCard key={color.var} {...color} />
           ))}
@@ -88,12 +88,12 @@ export default function ColorsPage() {
       </section>
 
       {/* Graph Colors */}
-      <section className="space-y-4 pt-4 border-t">
+      <section className='space-y-4 pt-4 border-t'>
         <div>
-          <Typography variant="h2">{t('docs.colors.graph.title')}</Typography>
-          <Typography variant="muted">{t('docs.colors.graph.description')}</Typography>
+          <Typography variant='h2'>{t('docs.colors.graph.title')}</Typography>
+          <Typography variant='muted'>{t('docs.colors.graph.description')}</Typography>
         </div>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className='grid gap-3 sm:grid-cols-2 lg:grid-cols-3'>
           {GRAPH_COLORS.map(color => (
             <ColorCard key={color.var} {...color} />
           ))}
@@ -101,28 +101,28 @@ export default function ColorsPage() {
       </section>
 
       {/* Usage */}
-      <section className="space-y-4 pt-4 border-t">
-        <Typography variant="h2">Usage</Typography>
+      <section className='space-y-4 pt-4 border-t'>
+        <Typography variant='h2'>Usage</Typography>
         <Card>
           <CardHeader>
             <CardTitle>Использование в коде</CardTitle>
             <CardDescription>Примеры использования CSS переменных</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className='space-y-4'>
             <div>
-              <Typography variant="small" className="mb-2">
+              <Typography variant='small' className='mb-2'>
                 Tailwind CSS:
               </Typography>
-              <pre className="rounded-lg bg-muted p-4 overflow-x-auto">
-                <code className="text-sm">{`<div className="bg-primary text-primary-foreground">\n  Primary content\n</div>`}</code>
+              <pre className='rounded-lg bg-muted p-4 overflow-x-auto'>
+                <code className='text-sm'>{`<div className="bg-primary text-primary-foreground">\n  Primary content\n</div>`}</code>
               </pre>
             </div>
             <div>
-              <Typography variant="small" className="mb-2">
+              <Typography variant='small' className='mb-2'>
                 Inline CSS:
               </Typography>
-              <pre className="rounded-lg bg-muted p-4 overflow-x-auto">
-                <code className="text-sm">{`<div style={{ color: 'hsl(var(--primary))' }}>\n  Custom color\n</div>`}</code>
+              <pre className='rounded-lg bg-muted p-4 overflow-x-auto'>
+                <code className='text-sm'>{`<div style={{ color: 'hsl(var(--primary))' }}>\n  Custom color\n</div>`}</code>
               </pre>
             </div>
           </CardContent>
@@ -135,18 +135,18 @@ export default function ColorsPage() {
 function ColorCard({ name, var: cssVar, desc }: { name: string; var: string; desc: string }) {
   return (
     <Card>
-      <CardHeader className="pb-3">
+      <CardHeader className='pb-3'>
         <div
-          className="h-16 border-b mb-3 -mx-6 -mt-6 rounded-t-xl"
+          className='h-16 border-b mb-3 -mx-6 -mt-6 rounded-t-xl'
           style={{ backgroundColor: `hsl(var(${cssVar}))` }}
         />
-        <CardTitle className="text-base">{name}</CardTitle>
-        <CardDescription className="text-xs">
-          <code className="text-xs">{cssVar}</code>
+        <CardTitle className='text-base'>{name}</CardTitle>
+        <CardDescription className='text-xs'>
+          <code className='text-xs'>{cssVar}</code>
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <Typography variant="small" className="text-muted-foreground">
+        <Typography variant='small' className='text-muted-foreground'>
           {desc}
         </Typography>
       </CardContent>

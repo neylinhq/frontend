@@ -49,16 +49,16 @@ export function DocsCodeBlock({
 
   const codeContent = (
     <>
-      <div className="docs-code-block-header">
-        {filename && <span className="font-medium text-foreground">{filename}</span>}
-        <span className="docs-code-block-language">{language}</span>
+      <div className='docs-code-block-header'>
+        {filename && <span className='font-medium text-foreground'>{filename}</span>}
+        <span className='docs-code-block-language'>{language}</span>
         <button
-          type="button"
+          type='button'
           onClick={handleCopy}
-          className="docs-code-block-copy"
+          className='docs-code-block-copy'
           aria-label={copied ? 'Copied!' : 'Copy code'}
         >
-          {copied ? <Check className="h-4 w-4 text-success" /> : <Copy className="h-4 w-4" />}
+          {copied ? <Check className='h-4 w-4 text-success' /> : <Copy className='h-4 w-4' />}
         </button>
       </div>
       <pre className={cn('docs-code-block-pre', showLineNumbers && 'with-line-numbers')}>
@@ -73,14 +73,14 @@ export function DocsCodeBlock({
         <div className={cn('docs-code-block', className)}>
           <CollapsibleTrigger asChild>
             <Button
-              variant="ghost"
-              size="sm"
-              className="w-full justify-between rounded-none border-b h-auto py-2 px-4"
+              variant='ghost'
+              size='sm'
+              className='w-full justify-between rounded-none border-b h-auto py-2 px-4'
             >
-              <span className="text-xs text-muted-foreground">
+              <span className='text-xs text-muted-foreground'>
                 {filename || `${language} code`}
               </span>
-              {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+              {isOpen ? <ChevronUp className='h-4 w-4' /> : <ChevronDown className='h-4 w-4' />}
             </Button>
           </CollapsibleTrigger>
           <CollapsibleContent>

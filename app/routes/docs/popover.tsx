@@ -27,23 +27,23 @@ const TOC_ITEMS: TocItem[] = [
 
 export default function PopoverPage() {
   return (
-    <div className="flex gap-10">
-      <div className="flex-1 min-w-0 space-y-10">
-        <header className="space-y-4">
+    <div className='flex gap-10'>
+      <div className='flex-1 min-w-0 space-y-10'>
+        <header className='space-y-4'>
           <DocsBreadcrumbs
             items={[{ label: 'Components', href: '/docs/ui/button' }, { label: 'Popover' }]}
           />
-          <div className="flex items-center gap-3">
-            <Typography variant="h1">Popover</Typography>
-            <Badge variant="brand">Component</Badge>
+          <div className='flex items-center gap-3'>
+            <Typography variant='h1'>Popover</Typography>
+            <Badge variant='brand'>Component</Badge>
           </div>
-          <Typography variant="lead" className="max-w-2xl">
+          <Typography variant='lead' className='max-w-2xl'>
             Displays rich content in a portal, triggered by a button. Built with Radix UI.
           </Typography>
         </header>
 
-        <section id="basic" className="scroll-mt-20 space-y-4">
-          <Typography variant="h2">Basic</Typography>
+        <section id='basic' className='scroll-mt-20 space-y-4'>
+          <Typography variant='h2'>Basic</Typography>
           <DocsComponentPreview
             code={`<Popover>
   <PopoverTrigger asChild>
@@ -57,12 +57,12 @@ export default function PopoverPage() {
             <DocsPreview>
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline">Open Popover</Button>
+                  <Button variant='outline'>Open Popover</Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-80">
-                  <div className="space-y-2">
-                    <h4 className="font-medium">Dimensions</h4>
-                    <p className="text-sm text-muted-foreground">
+                <PopoverContent className='w-80'>
+                  <div className='space-y-2'>
+                    <h4 className='font-medium'>Dimensions</h4>
+                    <p className='text-sm text-muted-foreground'>
                       Set the dimensions for the layer.
                     </p>
                   </div>
@@ -72,8 +72,8 @@ export default function PopoverPage() {
           </DocsComponentPreview>
         </section>
 
-        <section id="with-form" className="scroll-mt-20 space-y-4">
-          <Typography variant="h2">With Form</Typography>
+        <section id='with-form' className='scroll-mt-20 space-y-4'>
+          <Typography variant='h2'>With Form</Typography>
           <DocsComponentPreview
             code={`<Popover>
   <PopoverTrigger asChild>
@@ -102,23 +102,23 @@ export default function PopoverPage() {
             <DocsPreview>
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline">Set Dimensions</Button>
+                  <Button variant='outline'>Set Dimensions</Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-80">
-                  <div className="grid gap-4">
-                    <div className="space-y-2">
-                      <h4 className="font-medium">Dimensions</h4>
-                      <p className="text-sm text-muted-foreground">
+                <PopoverContent className='w-80'>
+                  <div className='grid gap-4'>
+                    <div className='space-y-2'>
+                      <h4 className='font-medium'>Dimensions</h4>
+                      <p className='text-sm text-muted-foreground'>
                         Set the dimensions for the layer.
                       </p>
                     </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="width">Width</Label>
-                      <Input id="width" defaultValue="100%" />
+                    <div className='grid gap-2'>
+                      <Label htmlFor='width'>Width</Label>
+                      <Input id='width' defaultValue='100%' />
                     </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="height">Height</Label>
-                      <Input id="height" defaultValue="25px" />
+                    <div className='grid gap-2'>
+                      <Label htmlFor='height'>Height</Label>
+                      <Input id='height' defaultValue='25px' />
                     </div>
                   </div>
                 </PopoverContent>
@@ -127,10 +127,10 @@ export default function PopoverPage() {
           </DocsComponentPreview>
         </section>
 
-        <section id="usage" className="scroll-mt-20 space-y-4 pt-6 border-t">
-          <Typography variant="h2">Usage</Typography>
+        <section id='usage' className='scroll-mt-20 space-y-4 pt-6 border-t'>
+          <Typography variant='h2'>Usage</Typography>
           <DocsCodeBlock
-            language="tsx"
+            language='tsx'
             code={`import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/popover'
 
 export function ColorPicker() {
@@ -151,7 +151,7 @@ export function ColorPicker() {
           />
         </section>
       </div>
-      <DocsToc items={TOC_ITEMS} className="hidden xl:block" />
+      <DocsToc items={TOC_ITEMS} className='hidden xl:block' />
     </div>
   )
 }

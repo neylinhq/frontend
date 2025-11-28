@@ -64,87 +64,87 @@ export function EditorToolbar() {
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-1 border-b border-border bg-muted/50 p-2">
+    <div className='flex flex-wrap items-center gap-1 border-b border-border bg-muted/50 p-2'>
       <Button
-        type="button"
-        variant="ghost"
-        size="sm"
+        type='button'
+        variant='ghost'
+        size='sm'
         onClick={() => editor.dispatchCommand(UNDO_COMMAND, undefined)}
-        className="h-8 w-8 p-0"
+        className='h-8 w-8 p-0'
       >
-        <Undo className="h-4 w-4" />
+        <Undo className='h-4 w-4' />
       </Button>
       <Button
-        type="button"
-        variant="ghost"
-        size="sm"
+        type='button'
+        variant='ghost'
+        size='sm'
         onClick={() => editor.dispatchCommand(REDO_COMMAND, undefined)}
-        className="h-8 w-8 p-0"
+        className='h-8 w-8 p-0'
       >
-        <Redo className="h-4 w-4" />
+        <Redo className='h-4 w-4' />
       </Button>
 
-      <div className="mx-2 h-6 w-px bg-border" />
+      <div className='mx-2 h-6 w-px bg-border' />
 
       <Button
-        type="button"
+        type='button'
         variant={isBold ? 'secondary' : 'ghost'}
-        size="sm"
+        size='sm'
         onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold')}
-        className="h-8 w-8 p-0"
+        className='h-8 w-8 p-0'
       >
-        <Bold className="h-4 w-4" />
+        <Bold className='h-4 w-4' />
       </Button>
       <Button
-        type="button"
+        type='button'
         variant={isItalic ? 'secondary' : 'ghost'}
-        size="sm"
+        size='sm'
         onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic')}
-        className="h-8 w-8 p-0"
+        className='h-8 w-8 p-0'
       >
-        <Italic className="h-4 w-4" />
+        <Italic className='h-4 w-4' />
       </Button>
       <Button
-        type="button"
+        type='button'
         variant={isUnderline ? 'secondary' : 'ghost'}
-        size="sm"
+        size='sm'
         onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline')}
-        className="h-8 w-8 p-0"
+        className='h-8 w-8 p-0'
       >
-        <Underline className="h-4 w-4" />
+        <Underline className='h-4 w-4' />
       </Button>
 
-      <div className="mx-2 h-6 w-px bg-border" />
+      <div className='mx-2 h-6 w-px bg-border' />
 
       <Button
-        type="button"
-        variant="ghost"
-        size="sm"
+        type='button'
+        variant='ghost'
+        size='sm'
         onClick={() => formatHeading('h1')}
-        className="h-8 w-8 p-0"
+        className='h-8 w-8 p-0'
       >
-        <Heading1 className="h-4 w-4" />
+        <Heading1 className='h-4 w-4' />
       </Button>
       <Button
-        type="button"
-        variant="ghost"
-        size="sm"
+        type='button'
+        variant='ghost'
+        size='sm'
         onClick={() => formatHeading('h2')}
-        className="h-8 w-8 p-0"
+        className='h-8 w-8 p-0'
       >
-        <Heading2 className="h-4 w-4" />
+        <Heading2 className='h-4 w-4' />
       </Button>
       <Button
-        type="button"
-        variant="ghost"
-        size="sm"
+        type='button'
+        variant='ghost'
+        size='sm'
         onClick={() => formatHeading('h3')}
-        className="h-8 w-8 p-0"
+        className='h-8 w-8 p-0'
       >
-        <Heading3 className="h-4 w-4" />
+        <Heading3 className='h-4 w-4' />
       </Button>
-      <Button type="button" variant="ghost" size="sm" onClick={formatQuote} className="h-8 w-8 p-0">
-        <Quote className="h-4 w-4" />
+      <Button type='button' variant='ghost' size='sm' onClick={formatQuote} className='h-8 w-8 p-0'>
+        <Quote className='h-4 w-4' />
       </Button>
     </div>
   )

@@ -60,7 +60,7 @@ export function LegalLinks({
       {linkKeys.map((key, idx) => {
         const link = LEGAL_LINKS[key]
         return (
-          <div key={key} className="flex items-center gap-3">
+          <div key={key} className='flex items-center gap-3'>
             <Link to={link.href} className={linkClass}>
               {t(link.titleKey)}
             </Link>

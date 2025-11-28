@@ -15,7 +15,7 @@ import { MarkdownShortcutsPlugin } from './markdown-shortcuts-plugin'
 
 function Placeholder({ text }: { text: string }) {
   return (
-    <div className="pointer-events-none absolute left-4 top-4 text-sm text-muted-foreground">
+    <div className='pointer-events-none absolute left-4 top-4 text-sm text-muted-foreground'>
       {text}
     </div>
   )
@@ -47,10 +47,10 @@ export function NodeEditor({
         )}
       >
         <EditorToolbar />
-        <div className="relative min-h-[400px]">
+        <div className='relative min-h-[400px]'>
           <RichTextPlugin
             contentEditable={
-              <ContentEditable className="min-h-[400px] resize-none p-4 text-sm outline-none" />
+              <ContentEditable className='min-h-[400px] resize-none p-4 text-sm outline-none' />
             }
             placeholder={<Placeholder text={t('form.placeholders.startTyping')} />}
             ErrorBoundary={LexicalErrorBoundary}

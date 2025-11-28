@@ -23,12 +23,12 @@ export function Icon({ data, size = 24, className, ...props }: IconProps) {
 
   return (
     <svg
-      role="img"
+      role='img'
       viewBox={data.viewBox}
-      xmlns="http://www.w3.org/2000/svg"
+      xmlns='http://www.w3.org/2000/svg'
       width={sizeValue}
       height={sizeValue}
-      fill="currentColor"
+      fill='currentColor'
       className={cn('inline-block', className)}
       aria-label={data.displayName}
       {...props}

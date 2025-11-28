@@ -7,9 +7,9 @@ export function CookiesPage() {
   return (
     <LegalLayout>
       <h1>{t('legal.cookies.title')}</h1>
-      <p className="lead">{t('legal.cookies.description')}</p>
+      <p className='lead'>{t('legal.cookies.description')}</p>
 
-      <p className="text-sm text-muted-foreground">
+      <p className='text-sm text-muted-foreground'>
         {t('legal.lastUpdated')}: {new Date().toLocaleDateString()}
       </p>
 
@@ -38,8 +38,8 @@ export function CookiesPage() {
       </ul>
 
       <h2>3. {t('legal.cookies.sections.types.title')}</h2>
-      <div className="overflow-x-auto">
-        <table className="min-w-full">
+      <div className='overflow-x-auto'>
+        <table className='min-w-full'>
           <thead>
             <tr>
               <th>{t('legal.cookies.sections.types.table.name')}</th>
@@ -104,7 +104,7 @@ export function CookiesPage() {
       <h2>8. {t('legal.cookies.sections.contact.title')}</h2>
       <p>
         {t('legal.cookies.sections.contact.content')}{' '}
-        <a href="mailto:privacy@arbor.com">privacy@arbor.com</a>.
+        <a href='mailto:privacy@arbor.com'>privacy@arbor.com</a>.
       </p>
     </LegalLayout>
   )

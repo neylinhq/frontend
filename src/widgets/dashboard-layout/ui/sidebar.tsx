@@ -15,7 +15,7 @@ export function Sidebar({ className, isExpanded }: SidebarProps) {
   return (
     <div className={cn('flex h-full flex-col bg-card', className)}>
       {/* Navigation */}
-      <div className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
+      <div className='flex-1 py-4 px-3 space-y-1 overflow-y-auto'>
         {DASHBOARD_SIDEBAR_ITEMS.map(item => (
           <NavItem key={item.href} to={item.href} icon={item.icon} isExpanded={isExpanded}>
             {t(item.title)}
@@ -47,10 +47,10 @@ function NavItem({
         )
       }
     >
-      <div className="w-10 flex items-center justify-center flex-shrink-0">
-        <Icon className="h-5 w-5" />
+      <div className='w-10 flex items-center justify-center flex-shrink-0'>
+        <Icon className='h-5 w-5' />
       </div>
-      {isExpanded && <span className="whitespace-nowrap pr-3">{children}</span>}
+      {isExpanded && <span className='whitespace-nowrap pr-3'>{children}</span>}
     </NavLink>
   )
 }

@@ -62,26 +62,26 @@ export default function TablePage() {
   ]
 
   return (
-    <div className="flex gap-10">
-      <div className="flex-1 min-w-0 space-y-10">
-        <header className="space-y-4">
+    <div className='flex gap-10'>
+      <div className='flex-1 min-w-0 space-y-10'>
+        <header className='space-y-4'>
           <DocsBreadcrumbs
             items={[
               { label: t('docs.common.components'), href: '/docs/ui/button' },
               { label: 'Table' }
             ]}
           />
-          <div className="flex items-center gap-3">
-            <Typography variant="h1">Table</Typography>
-            <Badge variant="brand">{t('docs.common.component')}</Badge>
+          <div className='flex items-center gap-3'>
+            <Typography variant='h1'>Table</Typography>
+            <Badge variant='brand'>{t('docs.common.component')}</Badge>
           </div>
-          <Typography variant="lead" className="max-w-2xl">
+          <Typography variant='lead' className='max-w-2xl'>
             {t('docs.table.lead')}
           </Typography>
         </header>
 
-        <section id="basic" className="scroll-mt-20 space-y-4">
-          <Typography variant="h2">{t('docs.common.basic')}</Typography>
+        <section id='basic' className='scroll-mt-20 space-y-4'>
+          <Typography variant='h2'>{t('docs.common.basic')}</Typography>
           <DocsComponentPreview
             code={`<Table>
   <TableCaption>${t('docs.table.basic.caption')}</TableCaption>
@@ -105,24 +105,24 @@ export default function TablePage() {
   </TableBody>
 </Table>`}
           >
-            <DocsPreview className="p-0 overflow-auto">
+            <DocsPreview className='p-0 overflow-auto'>
               <Table>
                 <TableCaption>{t('docs.table.basic.caption')}</TableCaption>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[100px]">{t('docs.table.basic.invoice')}</TableHead>
+                    <TableHead className='w-[100px]'>{t('docs.table.basic.invoice')}</TableHead>
                     <TableHead>{t('docs.table.basic.status')}</TableHead>
                     <TableHead>{t('docs.table.basic.method')}</TableHead>
-                    <TableHead className="text-right">{t('docs.table.basic.amount')}</TableHead>
+                    <TableHead className='text-right'>{t('docs.table.basic.amount')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {invoices.map(invoice => (
                     <TableRow key={invoice.invoice}>
-                      <TableCell className="font-medium">{invoice.invoice}</TableCell>
+                      <TableCell className='font-medium'>{invoice.invoice}</TableCell>
                       <TableCell>{invoice.status}</TableCell>
                       <TableCell>{invoice.method}</TableCell>
-                      <TableCell className="text-right">{invoice.amount}</TableCell>
+                      <TableCell className='text-right'>{invoice.amount}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -131,10 +131,10 @@ export default function TablePage() {
           </DocsComponentPreview>
         </section>
 
-        <section id="usage" className="scroll-mt-20 space-y-4 pt-6 border-t">
-          <Typography variant="h2">{t('docs.common.usage')}</Typography>
+        <section id='usage' className='scroll-mt-20 space-y-4 pt-6 border-t'>
+          <Typography variant='h2'>{t('docs.common.usage')}</Typography>
           <DocsCodeBlock
-            language="tsx"
+            language='tsx'
             code={`import {
   Table,
   TableBody,
@@ -170,61 +170,61 @@ export function UsersTable({ users }: { users: User[] }) {
           />
         </section>
 
-        <section id="api-reference" className="scroll-mt-20 space-y-4 pt-6 border-t">
-          <Typography variant="h2">{t('docs.common.apiReference')}</Typography>
-          <div className="rounded-lg border overflow-hidden">
-            <table className="w-full text-sm">
-              <thead className="bg-muted/50">
+        <section id='api-reference' className='scroll-mt-20 space-y-4 pt-6 border-t'>
+          <Typography variant='h2'>{t('docs.common.apiReference')}</Typography>
+          <div className='rounded-lg border overflow-hidden'>
+            <table className='w-full text-sm'>
+              <thead className='bg-muted/50'>
                 <tr>
-                  <th className="text-left px-4 py-3 font-medium">{t('docs.common.component')}</th>
-                  <th className="text-left px-4 py-3 font-medium">
+                  <th className='text-left px-4 py-3 font-medium'>{t('docs.common.component')}</th>
+                  <th className='text-left px-4 py-3 font-medium'>
                     {t('docs.common.description')}
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y">
+              <tbody className='divide-y'>
                 <tr>
-                  <td className="px-4 py-3">
-                    <code className="text-sm font-semibold text-brand">Table</code>
+                  <td className='px-4 py-3'>
+                    <code className='text-sm font-semibold text-brand'>Table</code>
                   </td>
-                  <td className="px-4 py-3">{t('docs.table.api.tableDescription')}</td>
+                  <td className='px-4 py-3'>{t('docs.table.api.tableDescription')}</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3">
-                    <code className="text-sm font-semibold text-brand">TableHeader</code>
+                  <td className='px-4 py-3'>
+                    <code className='text-sm font-semibold text-brand'>TableHeader</code>
                   </td>
-                  <td className="px-4 py-3">{t('docs.table.api.headerDescription')}</td>
+                  <td className='px-4 py-3'>{t('docs.table.api.headerDescription')}</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3">
-                    <code className="text-sm font-semibold text-brand">TableBody</code>
+                  <td className='px-4 py-3'>
+                    <code className='text-sm font-semibold text-brand'>TableBody</code>
                   </td>
-                  <td className="px-4 py-3">{t('docs.table.api.bodyDescription')}</td>
+                  <td className='px-4 py-3'>{t('docs.table.api.bodyDescription')}</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3">
-                    <code className="text-sm font-semibold text-brand">TableRow</code>
+                  <td className='px-4 py-3'>
+                    <code className='text-sm font-semibold text-brand'>TableRow</code>
                   </td>
-                  <td className="px-4 py-3">{t('docs.table.api.rowDescription')}</td>
+                  <td className='px-4 py-3'>{t('docs.table.api.rowDescription')}</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3">
-                    <code className="text-sm font-semibold text-brand">TableHead</code>
+                  <td className='px-4 py-3'>
+                    <code className='text-sm font-semibold text-brand'>TableHead</code>
                   </td>
-                  <td className="px-4 py-3">{t('docs.table.api.headDescription')}</td>
+                  <td className='px-4 py-3'>{t('docs.table.api.headDescription')}</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3">
-                    <code className="text-sm font-semibold text-brand">TableCell</code>
+                  <td className='px-4 py-3'>
+                    <code className='text-sm font-semibold text-brand'>TableCell</code>
                   </td>
-                  <td className="px-4 py-3">{t('docs.table.api.cellDescription')}</td>
+                  <td className='px-4 py-3'>{t('docs.table.api.cellDescription')}</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </section>
       </div>
-      <DocsToc items={TOC_ITEMS} className="hidden xl:block" />
+      <DocsToc items={TOC_ITEMS} className='hidden xl:block' />
     </div>
   )
 }

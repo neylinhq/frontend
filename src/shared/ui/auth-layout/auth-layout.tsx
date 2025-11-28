@@ -9,18 +9,18 @@ interface AuthLayoutProps {
 
 export const AuthLayout = ({ children }: AuthLayoutProps) => {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-8">
+    <div className='min-h-screen flex flex-col items-center justify-center p-8'>
       {/* Controls - top right */}
-      <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
+      <div className='fixed top-4 right-4 z-50 flex items-center gap-2'>
         <LanguageSwitcher />
         <ThemeToggle />
       </div>
 
       {/* Logo */}
-      <Logo size="xl" href="/" className="mb-8" />
+      <Logo size='xl' href='/' className='mb-8' />
 
       {/* Form */}
-      <div className="w-full max-w-sm space-y-6">{children}</div>
+      <div className='w-full max-w-sm space-y-6'>{children}</div>
     </div>
   )
 }

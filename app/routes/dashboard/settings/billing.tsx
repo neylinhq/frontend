@@ -52,16 +52,16 @@ export default function BillingPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       <div>
-        <Typography variant="h2">{t('settings.billing.title')}</Typography>
-        <p className="text-sm text-muted-foreground mt-1">{t('settings.billing.description')}</p>
+        <Typography variant='h2'>{t('settings.billing.title')}</Typography>
+        <p className='text-sm text-muted-foreground mt-1'>{t('settings.billing.description')}</p>
       </div>
 
       {/* Payment Methods */}
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className='flex items-center justify-between'>
             <div>
               <CardTitle>{t('settings.billing.paymentMethods.title')}</CardTitle>
               <CardDescription>{t('settings.billing.paymentMethods.description')}</CardDescription>
@@ -77,7 +77,7 @@ export default function BillingPage() {
             />
           </div>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className='space-y-4'>
           {paymentMethods.length > 0 ? (
             paymentMethods.map(method => (
               <PaymentMethodCard
@@ -94,7 +94,7 @@ export default function BillingPage() {
               />
             ))
           ) : (
-            <p className="text-sm text-muted-foreground text-center py-8">
+            <p className='text-sm text-muted-foreground text-center py-8'>
               {t('settings.billing.paymentMethods.empty')}
             </p>
           )}

@@ -16,21 +16,21 @@ export function OverviewPage({ maps }: OverviewPageProps) {
   const { t } = useTranslation()
 
   return (
-    <div className="container mx-auto py-8 px-4 md:px-8">
-      <div className="flex items-center justify-between mb-8">
+    <div className='container mx-auto py-8 px-4 md:px-8'>
+      <div className='flex items-center justify-between mb-8'>
         <div>
-          <Typography variant="h1">{t('dashboard.overview.title')}</Typography>
-          <p className="text-muted-foreground mt-1">{t('dashboard.overview.description')}</p>
+          <Typography variant='h1'>{t('dashboard.overview.title')}</Typography>
+          <p className='text-muted-foreground mt-1'>{t('dashboard.overview.description')}</p>
         </div>
         <Button asChild>
           <Link to={MAPS_ROUTES.new}>
-            <Plus className="mr-2 h-4 w-4" />
+            <Plus className='mr-2 h-4 w-4' />
             {t('dashboard.overview.createMap')}
           </Link>
         </Button>
       </div>
 
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
         {maps.map(map => (
           <MapCard key={map.id} map={map} />
         ))}

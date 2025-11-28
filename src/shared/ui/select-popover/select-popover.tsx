@@ -47,13 +47,13 @@ export function SelectPopover<T extends string = string>({
     if (item.color) {
       return (
         <span
-          className="h-4 w-4 rounded-full border border-border flex-shrink-0"
+          className='h-4 w-4 rounded-full border border-border flex-shrink-0'
           style={{ backgroundColor: item.color }}
         />
       )
     }
     if (item.icon) {
-      return <span className="flex-shrink-0 [&>svg]:h-4 [&>svg]:w-4">{item.icon}</span>
+      return <span className='flex-shrink-0 [&>svg]:h-4 [&>svg]:w-4'>{item.icon}</span>
     }
     return null
   }
@@ -63,28 +63,28 @@ export function SelectPopover<T extends string = string>({
       <PopoverTrigger asChild>
         {trigger || (
           <Button
-            variant="outline"
-            size="sm"
+            variant='outline'
+            size='sm'
             className={cn(compact ? 'px-2' : 'min-w-[100px]', className)}
           >
-            <span className="flex items-center gap-1.5">
+            <span className='flex items-center gap-1.5'>
               {selectedItem ? (
                 <>
                   {renderIcon(selectedItem)}
-                  {!compact && <span className="truncate">{selectedItem.label}</span>}
+                  {!compact && <span className='truncate'>{selectedItem.label}</span>}
                 </>
               ) : (
-                <span className="text-muted-foreground">{placeholder}</span>
+                <span className='text-muted-foreground'>{placeholder}</span>
               )}
             </span>
           </Button>
         )}
       </PopoverTrigger>
-      <PopoverContent align={align} side={side} className="w-auto min-w-[140px] p-1">
-        <div className="flex flex-col">
+      <PopoverContent align={align} side={side} className='w-auto min-w-[140px] p-1'>
+        <div className='flex flex-col'>
           {items.map(item => (
             <button
-              type="button"
+              type='button'
               key={item.value}
               onClick={() => handleSelect(item.value)}
               className={cn(
@@ -95,8 +95,8 @@ export function SelectPopover<T extends string = string>({
               )}
             >
               {renderIcon(item)}
-              <span className="flex-1 text-left">{item.label}</span>
-              {value === item.value && <Check className="h-4 w-4 text-brand flex-shrink-0" />}
+              <span className='flex-1 text-left'>{item.label}</span>
+              {value === item.value && <Check className='h-4 w-4 text-brand flex-shrink-0' />}
             </button>
           ))}
         </div>

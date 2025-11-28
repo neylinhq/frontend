@@ -458,9 +458,9 @@ function GraphVisualizationContent({
   if (!initialData && isLoading) {
     return (
       <div className={cn('flex items-center justify-center h-[600px]', className)}>
-        <div className="text-center space-y-3">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
-          <p className="text-sm text-muted-foreground">{t('graph.loading')}</p>
+        <div className='text-center space-y-3'>
+          <Loader2 className='h-8 w-8 animate-spin mx-auto text-primary' />
+          <p className='text-sm text-muted-foreground'>{t('graph.loading')}</p>
         </div>
       </div>
     )
@@ -469,9 +469,9 @@ function GraphVisualizationContent({
   if (!initialData && (isError || !fullMap)) {
     return (
       <div className={cn('flex items-center justify-center h-[600px]', className)}>
-        <Card className="p-8 text-center">
-          <p className="text-lg font-semibold text-destructive mb-2">{t('graph.loadingError')}</p>
-          <p className="text-muted-foreground">{t('graph.loadingErrorMessage')}</p>
+        <Card className='p-8 text-center'>
+          <p className='text-lg font-semibold text-destructive mb-2'>{t('graph.loadingError')}</p>
+          <p className='text-muted-foreground'>{t('graph.loadingErrorMessage')}</p>
         </Card>
       </div>
     )
@@ -504,7 +504,7 @@ function GraphVisualizationContent({
         edgeTypes={edgeTypes}
         fitView
         fitViewOptions={{ padding: 0.2 }}
-        className="bg-background"
+        className='bg-background'
         nodesDraggable={interactive}
         nodesConnectable={interactive}
         elementsSelectable={interactive}

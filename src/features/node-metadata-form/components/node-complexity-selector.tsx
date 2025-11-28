@@ -12,10 +12,10 @@ export function NodeComplexitySelector({ value, onChange }: NodeComplexitySelect
   const { t } = useTranslation()
 
   return (
-    <div className="space-y-3">
-      <Label htmlFor="complexity">{t('form.complexity.label')}</Label>
+    <div className='space-y-3'>
+      <Label htmlFor='complexity'>{t('form.complexity.label')}</Label>
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger id="complexity">
+        <SelectTrigger id='complexity'>
           <SelectValue placeholder={t('form.complexity.placeholder')} />
         </SelectTrigger>
         <SelectContent>

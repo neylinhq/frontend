@@ -170,17 +170,17 @@ export function NodeEditPage({
   }
 
   return (
-    <div className="flex h-full">
+    <div className='flex h-full'>
       {/* Main Editor Area */}
       <main
         ref={mainRef}
-        className="flex-1 min-w-0 overflow-y-auto [scrollbar-gutter:stable] relative"
+        className='flex-1 min-w-0 overflow-y-auto [scrollbar-gutter:stable] relative'
       >
         {/* FAB toggle - shown when content is scrollable */}
         {isScrollable && (
           <Button
-            variant="outline"
-            size="icon"
+            variant='outline'
+            size='icon'
             onClick={() => {
               // On lg+ toggle inline sidebar, below lg open sheet
               if (window.innerWidth >= 1024) {
@@ -195,25 +195,25 @@ export function NodeEditPage({
               sidebarOpen ? 'right-4 lg:right-[21rem]' : 'right-4'
             )}
           >
-            {sidebarOpen ? <PanelRightClose className="h-6 w-6 hidden lg:block" /> : null}
+            {sidebarOpen ? <PanelRightClose className='h-6 w-6 hidden lg:block' /> : null}
             <PanelRightOpen className={cn('h-6 w-6', sidebarOpen && 'lg:hidden')} />
           </Button>
         )}
 
         {/* Editor Content */}
-        <div ref={contentRef} className="mx-auto max-w-3xl px-4 md:px-8 py-6 md:py-8">
+        <div ref={contentRef} className='mx-auto max-w-3xl px-4 md:px-8 py-6 md:py-8'>
           {/* Gutter wrapper - provides space for floating menu buttons on desktop */}
-          <div className="md:pl-12">
+          <div className='md:pl-12'>
             {/* Breadcrumb & Actions */}
-            <div className="mb-8 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Button variant="ghost" size="sm" asChild className="h-8 px-2">
+            <div className='mb-8 flex items-center justify-between'>
+              <div className='flex items-center gap-3'>
+                <Button variant='ghost' size='sm' asChild className='h-8 px-2'>
                   <Link to={`/dashboard/maps/${mapId}/view`}>
-                    <ArrowLeft className="h-4 w-4" />
+                    <ArrowLeft className='h-4 w-4' />
                   </Link>
                 </Button>
                 <Badge
-                  variant="secondary"
+                  variant='secondary'
                   className={cn('text-xs font-medium', NODE_TYPE_CONFIG[currentNode.type]?.color)}
                 >
                   {t(
@@ -222,8 +222,8 @@ export function NodeEditPage({
                   )}
                 </Badge>
                 {updateNodeMutation.isPending && (
-                  <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <Loader2 className="h-3 w-3 animate-spin" />
+                  <span className='flex items-center gap-1.5 text-xs text-muted-foreground'>
+                    <Loader2 className='h-3 w-3 animate-spin' />
                     {t('errors.saving')}
                   </span>
                 )}
@@ -231,8 +231,8 @@ export function NodeEditPage({
               {/* Header toggle - shown when content is NOT scrollable */}
               {!isScrollable && (
                 <Button
-                  variant="ghost"
-                  size="sm"
+                  variant='ghost'
+                  size='sm'
                   onClick={() => {
                     if (window.innerWidth >= 1024) {
                       setSidebarOpen(!sidebarOpen)
@@ -240,15 +240,15 @@ export function NodeEditPage({
                       setMobileSheetOpen(true)
                     }
                   }}
-                  className="h-8 w-8 p-0"
+                  className='h-8 w-8 p-0'
                 >
-                  {sidebarOpen ? <PanelRightClose className="h-4 w-4 hidden lg:block" /> : null}
+                  {sidebarOpen ? <PanelRightClose className='h-4 w-4 hidden lg:block' /> : null}
                   <PanelRightOpen className={cn('h-4 w-4', sidebarOpen && 'lg:hidden')} />
                 </Button>
               )}
             </div>
             {/* Editable Title */}
-            <div className="mb-4 md:mb-6">
+            <div className='mb-4 md:mb-6'>
               <textarea
                 ref={titleInputRef}
                 value={title}
@@ -256,7 +256,7 @@ export function NodeEditPage({
                 onKeyDown={handleTitleKeyDown}
                 placeholder={t('nodeEdit.untitledPlaceholder')}
                 rows={1}
-                className="w-full resize-none overflow-hidden border-none bg-transparent text-4xl font-bold leading-tight tracking-tight text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-0"
+                className='w-full resize-none overflow-hidden border-none bg-transparent text-4xl font-bold leading-tight tracking-tight text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-0'
               />
             </div>
 
@@ -265,7 +265,7 @@ export function NodeEditPage({
               initialContent={currentNode.content ? htmlToEditor(currentNode.content) : undefined}
               onEditorUpdate={handleEditorChange}
               placeholder={t('nodeEdit.editorPlaceholder')}
-              className="min-h-[500px]"
+              className='min-h-[500px]'
             />
           </div>
         </div>
@@ -273,17 +273,17 @@ export function NodeEditPage({
 
       {/* Right Sidebar - Desktop (lg+) */}
       {sidebarOpen && (
-        <aside className="hidden lg:flex w-80 flex-shrink-0 border-l border-border h-full">
-          <div className="flex flex-1 flex-col min-h-0">
+        <aside className='hidden lg:flex w-80 flex-shrink-0 border-l border-border h-full'>
+          <div className='flex flex-1 flex-col min-h-0'>
             {/* Sidebar Header */}
-            <div className="flex items-center justify-between border-b border-border/50 px-4 py-3">
-              <h2 className="text-sm font-semibold">{t('nodeEdit.properties')}</h2>
+            <div className='flex items-center justify-between border-b border-border/50 px-4 py-3'>
+              <h2 className='text-sm font-semibold'>{t('nodeEdit.properties')}</h2>
             </div>
 
             {/* Sidebar Content */}
-            <div className="flex-1 overflow-y-auto [scrollbar-gutter:stable] min-h-0 flex flex-col">
+            <div className='flex-1 overflow-y-auto [scrollbar-gutter:stable] min-h-0 flex flex-col'>
               {/* Node Metadata */}
-              <div className="border-b border-border/50 p-4 flex-shrink-0">
+              <div className='border-b border-border/50 p-4 flex-shrink-0'>
                 <NodeMetadataForm
                   node={currentNode}
                   onSubmit={handleMetadataSubmit}
@@ -292,8 +292,8 @@ export function NodeEditPage({
               </div>
 
               {/* Connections - fills remaining space */}
-              <div className="p-4 flex-1">
-                <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              <div className='p-4 flex-1'>
+                <h3 className='mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground'>
                   {t('nodeEdit.connections')}
                 </h3>
                 <NodeConnectionsPanel
@@ -309,14 +309,14 @@ export function NodeEditPage({
 
       {/* Right Sidebar - Mobile Sheet */}
       <Sheet open={mobileSheetOpen} onOpenChange={setMobileSheetOpen}>
-        <SheetContent side="right" className="w-80 p-0 flex flex-col">
-          <SheetHeader className="border-b border-border/50 px-4 py-3">
-            <SheetTitle className="text-sm font-semibold">{t('nodeEdit.properties')}</SheetTitle>
+        <SheetContent side='right' className='w-80 p-0 flex flex-col'>
+          <SheetHeader className='border-b border-border/50 px-4 py-3'>
+            <SheetTitle className='text-sm font-semibold'>{t('nodeEdit.properties')}</SheetTitle>
           </SheetHeader>
 
-          <div className="flex-1 overflow-y-auto [scrollbar-gutter:stable] flex flex-col">
+          <div className='flex-1 overflow-y-auto [scrollbar-gutter:stable] flex flex-col'>
             {/* Node Metadata */}
-            <div className="border-b border-border/50 p-4 flex-shrink-0">
+            <div className='border-b border-border/50 p-4 flex-shrink-0'>
               <NodeMetadataForm
                 node={currentNode}
                 onSubmit={handleMetadataSubmit}
@@ -325,8 +325,8 @@ export function NodeEditPage({
             </div>
 
             {/* Connections - fills remaining space */}
-            <div className="p-4 flex-1">
-              <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <div className='p-4 flex-1'>
+              <h3 className='mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground'>
                 {t('nodeEdit.connections')}
               </h3>
               <NodeConnectionsPanel

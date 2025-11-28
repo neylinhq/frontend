@@ -8,20 +8,20 @@ export const SignUpPage = () => {
   const { t } = useTranslation()
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col space-y-2 text-center text-balance">
-        <Typography variant="h1">{t('auth.signUp.title')}</Typography>
-        <p className="text-sm text-muted-foreground">{t('auth.signUp.description')}</p>
+    <div className='space-y-6'>
+      <div className='flex flex-col space-y-2 text-center text-balance'>
+        <Typography variant='h1'>{t('auth.signUp.title')}</Typography>
+        <p className='text-sm text-muted-foreground'>{t('auth.signUp.description')}</p>
       </div>
 
       <SignUpForm />
 
-      <div className="text-center text-sm text-muted-foreground">
+      <div className='text-center text-sm text-muted-foreground'>
         {t('auth.signUp.hasAccount')}{' '}
         <Link
           to={AUTH_ROUTES.signIn}
-          className="underline underline-offset-4 hover:text-primary"
-          prefetch="intent"
+          className='underline underline-offset-4 hover:text-primary'
+          prefetch='intent'
         >
           {t('auth.signUp.signInLink')}
         </Link>

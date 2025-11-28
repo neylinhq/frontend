@@ -147,12 +147,12 @@ export function PaymentMethodDetailsDialog({
     if (method.type === 'crypto') {
       const iconData = cryptoIcons[method.currency.toLowerCase()]
       if (iconData) {
-        return <Icon data={iconData} size={40} className="text-foreground" />
+        return <Icon data={iconData} size={40} className='text-foreground' />
       }
       return null
     }
     const brand = (method.brand?.toLowerCase() || 'unknown') as CardBrand
-    return <CardBrandIcon brand={brand} size="lg" />
+    return <CardBrandIcon brand={brand} size='lg' />
   }
 
   const renderCardDetails = () => {
@@ -161,26 +161,26 @@ export function PaymentMethodDetailsDialog({
     // Cards are view-only (no edit mode)
     return (
       <>
-        <div className="flex flex-col items-center gap-4 py-4">
+        <div className='flex flex-col items-center gap-4 py-4'>
           {renderIcon()}
-          <span className="font-mono text-lg font-medium">•••• •••• •••• {method.last4}</span>
+          <span className='font-mono text-lg font-medium'>•••• •••• •••• {method.last4}</span>
         </div>
 
-        <div className="space-y-3 text-sm">
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">{t('billing.type')}</span>
-            <span className="font-medium capitalize">{method.brand || 'Card'}</span>
+        <div className='space-y-3 text-sm'>
+          <div className='flex justify-between'>
+            <span className='text-muted-foreground'>{t('billing.type')}</span>
+            <span className='font-medium capitalize'>{method.brand || 'Card'}</span>
           </div>
           {formatExpiry() && (
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">{t('billing.expires')}</span>
-              <span className="font-medium">{formatExpiry()}</span>
+            <div className='flex justify-between'>
+              <span className='text-muted-foreground'>{t('billing.expires')}</span>
+              <span className='font-medium'>{formatExpiry()}</span>
             </div>
           )}
           {method.createdAt && (
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">{t('billing.added')}</span>
-              <span className="font-medium">{formatDate(method.createdAt)}</span>
+            <div className='flex justify-between'>
+              <span className='text-muted-foreground'>{t('billing.added')}</span>
+              <span className='font-medium'>{formatDate(method.createdAt)}</span>
             </div>
           )}
         </div>
@@ -194,10 +194,10 @@ export function PaymentMethodDetailsDialog({
     if (isEditing) {
       return (
         <>
-          <div className="flex flex-col items-center gap-4 py-4">{renderIcon()}</div>
+          <div className='flex flex-col items-center gap-4 py-4'>{renderIcon()}</div>
 
-          <div className="space-y-4">
-            <div className="space-y-2">
+          <div className='space-y-4'>
+            <div className='space-y-2'>
               <Label>{t('billing.editPaymentMethod.walletAddress')}</Label>
               <Input
                 value={editWalletAddress}
@@ -206,17 +206,17 @@ export function PaymentMethodDetailsDialog({
                   setAddressError(null)
                 }}
                 placeholder={t('billing.addCryptoWallet.addressPlaceholder')}
-                className="font-mono text-sm"
+                className='font-mono text-sm'
               />
-              {addressError && <p className="text-sm text-destructive">{addressError}</p>}
+              {addressError && <p className='text-sm text-destructive'>{addressError}</p>}
             </div>
 
-            <div className="space-y-3 text-sm">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">{t('billing.network')}</span>
-                <span className="font-medium">{getNetworkDisplayName(method.network)}</span>
+            <div className='space-y-3 text-sm'>
+              <div className='flex justify-between'>
+                <span className='text-muted-foreground'>{t('billing.network')}</span>
+                <span className='font-medium'>{getNetworkDisplayName(method.network)}</span>
               </div>
-              <span className="text-xs text-muted-foreground">
+              <span className='text-xs text-muted-foreground'>
                 {t('billing.editPaymentMethod.networkNotEditable')}
               </span>
             </div>
@@ -227,32 +227,32 @@ export function PaymentMethodDetailsDialog({
 
     return (
       <>
-        <div className="flex flex-col items-center gap-4 py-4">
+        <div className='flex flex-col items-center gap-4 py-4'>
           {renderIcon()}
-          <div className="flex flex-col items-center gap-2">
-            <span className="font-mono text-sm text-muted-foreground break-all text-center px-4">
+          <div className='flex flex-col items-center gap-2'>
+            <span className='font-mono text-sm text-muted-foreground break-all text-center px-4'>
               {method.walletAddress}
             </span>
-            <Button variant="ghost" size="sm" onClick={handleCopyAddress} className="h-8">
-              <Copy className="h-4 w-4 mr-2" />
+            <Button variant='ghost' size='sm' onClick={handleCopyAddress} className='h-8'>
+              <Copy className='h-4 w-4 mr-2' />
               {t('billing.copyAddress')}
             </Button>
           </div>
         </div>
 
-        <div className="space-y-3 text-sm">
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">{t('billing.network')}</span>
-            <span className="font-medium">{getNetworkDisplayName(method.network)}</span>
+        <div className='space-y-3 text-sm'>
+          <div className='flex justify-between'>
+            <span className='text-muted-foreground'>{t('billing.network')}</span>
+            <span className='font-medium'>{getNetworkDisplayName(method.network)}</span>
           </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">{t('billing.currency')}</span>
-            <span className="font-medium">{getCurrencyDisplayName(method.currency)}</span>
+          <div className='flex justify-between'>
+            <span className='text-muted-foreground'>{t('billing.currency')}</span>
+            <span className='font-medium'>{getCurrencyDisplayName(method.currency)}</span>
           </div>
           {method.createdAt && (
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">{t('billing.added')}</span>
-              <span className="font-medium">{formatDate(method.createdAt)}</span>
+            <div className='flex justify-between'>
+              <span className='text-muted-foreground'>{t('billing.added')}</span>
+              <span className='font-medium'>{formatDate(method.createdAt)}</span>
             </div>
           )}
         </div>
@@ -273,61 +273,61 @@ export function PaymentMethodDetailsDialog({
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className='sm:max-w-md'>
           <DialogHeader>
             <DialogTitle>{getDialogTitle()}</DialogTitle>
           </DialogHeader>
 
-          <div className="space-y-6">
+          <div className='space-y-6'>
             {renderCardDetails()}
             {renderCryptoDetails()}
 
             {/* Actions */}
             {isEditing && canEdit ? (
-              <div className="flex gap-3 pt-2">
+              <div className='flex gap-3 pt-2'>
                 <Button
-                  variant="outline"
-                  className="flex-1"
+                  variant='outline'
+                  className='flex-1'
                   onClick={handleCancelEdit}
                   disabled={updateLoading}
                 >
                   {t('common.cancel')}
                 </Button>
-                <Button className="flex-1" onClick={handleSaveEdit} disabled={updateLoading}>
+                <Button className='flex-1' onClick={handleSaveEdit} disabled={updateLoading}>
                   {t('billing.editPaymentMethod.save')}
                 </Button>
               </div>
             ) : (
-              <div className="flex flex-col gap-2 pt-2">
+              <div className='flex flex-col gap-2 pt-2'>
                 {canEdit && (
                   <Button
-                    variant="outline"
-                    className="w-full"
+                    variant='outline'
+                    className='w-full'
                     onClick={handleStartEdit}
                     disabled={loading}
                   >
-                    <Pencil className="h-4 w-4 mr-2" />
+                    <Pencil className='h-4 w-4 mr-2' />
                     {t('common.edit')}
                   </Button>
                 )}
                 {!method.isDefault && (
                   <Button
-                    variant="outline"
-                    className="w-full"
+                    variant='outline'
+                    className='w-full'
                     onClick={handleSetDefault}
                     disabled={loading}
                   >
-                    <Star className="h-4 w-4 mr-2" />
+                    <Star className='h-4 w-4 mr-2' />
                     {t('billing.setAsDefault')}
                   </Button>
                 )}
                 <Button
-                  variant="outline"
-                  className="w-full text-destructive hover:text-destructive"
+                  variant='outline'
+                  className='w-full text-destructive hover:text-destructive'
                   onClick={() => setIsDeleteOpen(true)}
                   disabled={loading || method.isDefault}
                 >
-                  <Trash2 className="h-4 w-4 mr-2" />
+                  <Trash2 className='h-4 w-4 mr-2' />
                   {t('common.remove')}
                 </Button>
               </div>
@@ -351,7 +351,7 @@ export function PaymentMethodDetailsDialog({
             <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
             >
               {t('billing.removePaymentMethod.confirm')}
             </AlertDialogAction>

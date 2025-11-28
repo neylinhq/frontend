@@ -41,7 +41,7 @@ export const ConnectionItem = memo(
 
     return (
       <button
-        type="button"
+        type='button'
         className={cn(
           'group w-full text-left rounded-lg transition-all duration-150',
           'hover:bg-muted/60',
@@ -49,7 +49,7 @@ export const ConnectionItem = memo(
         )}
         onClick={handleClick}
       >
-        <div className="flex items-center gap-3 px-3 py-2.5">
+        <div className='flex items-center gap-3 px-3 py-2.5'>
           {/* Node icon in subtle container */}
           <div
             className={cn(
@@ -57,13 +57,13 @@ export const ConnectionItem = memo(
               'bg-muted/60 group-hover:bg-muted transition-colors'
             )}
           >
-            <Icon className="w-4 h-4 text-muted-foreground" />
+            <Icon className='w-4 h-4 text-muted-foreground' />
           </div>
 
           {/* Content */}
-          <div className="flex-1 min-w-0">
-            <p className="font-medium text-sm truncate">{node.label}</p>
-            <p className="text-xs text-muted-foreground truncate mt-0.5 flex items-center gap-1">
+          <div className='flex-1 min-w-0'>
+            <p className='font-medium text-sm truncate'>{node.label}</p>
+            <p className='text-xs text-muted-foreground truncate mt-0.5 flex items-center gap-1'>
               {showDirectionHint && (
                 <span
                   className={cn(
@@ -75,15 +75,15 @@ export const ConnectionItem = memo(
                 </span>
               )}
               <span>{t(`graph.edgeTypes.${edge.relationType}`)}</span>
-              {edge.label && <span className="opacity-60">· {edge.label}</span>}
+              {edge.label && <span className='opacity-60'>· {edge.label}</span>}
             </p>
           </div>
 
           {/* Actions - appear on hover */}
-          <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className='flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity'>
             {onPanToNode && (
               <button
-                type="button"
+                type='button'
                 onClick={handlePanClick}
                 className={cn(
                   'p-1.5 rounded-md transition-colors',
@@ -91,12 +91,12 @@ export const ConnectionItem = memo(
                 )}
                 title={t('nodeDrawer.connections.panToNode')}
               >
-                <Eye className="w-3.5 h-3.5" />
+                <Eye className='w-3.5 h-3.5' />
               </button>
             )}
             {onOpenNode && (
               <button
-                type="button"
+                type='button'
                 onClick={e => {
                   e.stopPropagation()
                   handleClick()
@@ -107,7 +107,7 @@ export const ConnectionItem = memo(
                 )}
                 title={t('nodeDrawer.connections.openNode')}
               >
-                <ExternalLink className="w-3.5 h-3.5" />
+                <ExternalLink className='w-3.5 h-3.5' />
               </button>
             )}
           </div>

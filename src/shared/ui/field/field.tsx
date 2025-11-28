@@ -31,16 +31,16 @@ const Field = React.forwardRef<HTMLDivElement, FieldProps>(
       <div ref={ref} className={cn('space-y-1.5', className)}>
         <Label htmlFor={id} className={cn(isInvalid && 'text-destructive')}>
           {label}
-          {required && <span className="text-destructive ml-1">*</span>}
+          {required && <span className='text-destructive ml-1'>*</span>}
         </Label>
 
         {childWithProps}
 
         {!isInvalid && description && (
-          <p className="text-sm text-muted-foreground">{description}</p>
+          <p className='text-sm text-muted-foreground'>{description}</p>
         )}
 
-        {isInvalid && <p className="text-sm font-medium text-destructive">{error}</p>}
+        {isInvalid && <p className='text-sm font-medium text-destructive'>{error}</p>}
       </div>
     )
   }

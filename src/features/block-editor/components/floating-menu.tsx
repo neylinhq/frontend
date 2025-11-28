@@ -747,8 +747,8 @@ export function EditorFloatingMenu({ editor, onAddClick, containerRef }: Floatin
   return (
     <div
       ref={menuRef}
-      role="toolbar"
-      className="editor-floating-menu absolute -left-10 flex items-center gap-0.5 opacity-50 transition-opacity hover:opacity-100"
+      role='toolbar'
+      className='editor-floating-menu absolute -left-10 flex items-center gap-0.5 opacity-50 transition-opacity hover:opacity-100'
       style={{
         top: Math.max(0, menuTop)
       }}
@@ -756,7 +756,7 @@ export function EditorFloatingMenu({ editor, onAddClick, containerRef }: Floatin
       onMouseLeave={handleMenuMouseLeave}
     >
       <button
-        type="button"
+        type='button'
         onMouseDown={handleMouseDownAdd}
         onClick={handleAddClick}
         className={cn(
@@ -765,11 +765,11 @@ export function EditorFloatingMenu({ editor, onAddClick, containerRef }: Floatin
         )}
         title={t('editor.floating.addBlock')}
       >
-        <Plus className="h-4 w-4" />
+        <Plus className='h-4 w-4' />
       </button>
       <button
-        type="button"
-        draggable="true"
+        type='button'
+        draggable='true'
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
         className={cn(
@@ -779,7 +779,7 @@ export function EditorFloatingMenu({ editor, onAddClick, containerRef }: Floatin
         )}
         title={t('editor.floating.dragToMove')}
       >
-        <GripVertical className="h-4 w-4" />
+        <GripVertical className='h-4 w-4' />
       </button>
     </div>
   )

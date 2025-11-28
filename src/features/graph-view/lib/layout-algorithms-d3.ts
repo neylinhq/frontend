@@ -206,7 +206,6 @@ function forceEdgeDirection(
       }
     }
   }
-
   // D3 force interface - strength getter/setter
   ;(force as any).strength = (s?: number) => {
     if (s === undefined) return strength

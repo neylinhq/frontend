@@ -47,18 +47,18 @@ export function DeleteAccountSection() {
 
   return (
     <>
-      <Card className="border-destructive">
+      <Card className='border-destructive'>
         <CardHeader>
-          <div className="flex items-center gap-2">
-            <AlertCircle className="h-5 w-5 text-destructive" />
-            <CardTitle className="text-destructive">
+          <div className='flex items-center gap-2'>
+            <AlertCircle className='h-5 w-5 text-destructive' />
+            <CardTitle className='text-destructive'>
               {t('settings.security.danger.title')}
             </CardTitle>
           </div>
           <CardDescription>{t('settings.security.danger.description')}</CardDescription>
         </CardHeader>
         <CardContent>
-          <Button variant="destructive" onClick={() => setIsDialogOpen(true)}>
+          <Button variant='destructive' onClick={() => setIsDialogOpen(true)}>
             {t('settings.security.danger.deleteAccount')}
           </Button>
         </CardContent>
@@ -74,15 +74,15 @@ export function DeleteAccountSection() {
           </DialogHeader>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
               <FormField
                 control={form.control}
-                name="password"
+                name='password'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{t('settings.security.danger.confirmPassword')}</FormLabel>
                     <FormControl>
-                      <Input type="password" {...field} />
+                      <Input type='password' {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -91,12 +91,12 @@ export function DeleteAccountSection() {
 
               <FormField
                 control={form.control}
-                name="confirmation"
+                name='confirmation'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{t('settings.security.danger.typeDelete')}</FormLabel>
                     <FormControl>
-                      <Input placeholder="DELETE" {...field} />
+                      <Input placeholder='DELETE' {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -104,10 +104,10 @@ export function DeleteAccountSection() {
               />
 
               <DialogFooter>
-                <Button variant="outline" type="button" onClick={() => setIsDialogOpen(false)}>
+                <Button variant='outline' type='button' onClick={() => setIsDialogOpen(false)}>
                   {t('common.cancel')}
                 </Button>
-                <Button variant="destructive" type="submit" disabled={deleteAccount.isPending}>
+                <Button variant='destructive' type='submit' disabled={deleteAccount.isPending}>
                   {deleteAccount.isPending
                     ? t('common.deleting')
                     : t('settings.security.danger.deleteAccount')}

@@ -87,7 +87,7 @@ export const KnowledgeEdge = memo(
               fontSize: 12,
               pointerEvents: 'all'
             }}
-            className="nodrag nopan"
+            className='nodrag nopan'
           >
             <Badge
               className={cn(
@@ -100,7 +100,7 @@ export const KnowledgeEdge = memo(
               {t(`graph.edgeTypes.${data.relationType}`)}
               {data.label && (
                 <>
-                  <span className="mx-1.5">•</span>
+                  <span className='mx-1.5'>•</span>
                   {data.label}
                 </>
               )}

@@ -19,15 +19,15 @@ export function LanguageSwitcher() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-9 w-9">
-          <Globe className="h-4 w-4" />
-          <span className="sr-only">Toggle language</span>
+        <Button variant='ghost' size='icon' className='h-9 w-9'>
+          <Globe className='h-4 w-4' />
+          <span className='sr-only'>Toggle language</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align='end'>
         {LANGUAGES.map(lang => (
           <DropdownMenuItem key={lang.id} onClick={() => changeLanguage(lang.id)}>
-            <lang.Flag className="mr-2 h-5 w-5 rounded-full object-cover border border-border" />
+            <lang.Flag className='mr-2 h-5 w-5 rounded-full object-cover border border-border' />
             {lang.label}
           </DropdownMenuItem>
         ))}

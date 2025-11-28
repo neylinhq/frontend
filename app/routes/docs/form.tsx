@@ -30,27 +30,27 @@ export default function FormPage() {
   ]
 
   return (
-    <div className="flex gap-10">
-      <div className="flex-1 min-w-0 space-y-10">
-        <header className="space-y-4">
+    <div className='flex gap-10'>
+      <div className='flex-1 min-w-0 space-y-10'>
+        <header className='space-y-4'>
           <DocsBreadcrumbs
             items={[
               { label: t('docs.common.components'), href: '/docs/ui/button' },
               { label: 'Form' }
             ]}
           />
-          <div className="flex items-center gap-3">
-            <Typography variant="h1">Form</Typography>
-            <Badge variant="brand">{t('docs.common.component')}</Badge>
+          <div className='flex items-center gap-3'>
+            <Typography variant='h1'>Form</Typography>
+            <Badge variant='brand'>{t('docs.common.component')}</Badge>
           </div>
-          <Typography variant="lead" className="max-w-2xl">
+          <Typography variant='lead' className='max-w-2xl'>
             {t('docs.form.lead')}
           </Typography>
         </header>
 
-        <section id="basic" className="scroll-mt-20 space-y-4">
-          <Typography variant="h2">{t('docs.common.basic')}</Typography>
-          <Typography variant="muted">{t('docs.form.basic.description')}</Typography>
+        <section id='basic' className='scroll-mt-20 space-y-4'>
+          <Typography variant='h2'>{t('docs.common.basic')}</Typography>
+          <Typography variant='muted'>{t('docs.form.basic.description')}</Typography>
           <DocsComponentPreview
             code={`<form className="space-y-4">
   <div className="space-y-2">
@@ -69,24 +69,24 @@ export default function FormPage() {
 </form>`}
           >
             <DocsPreview>
-              <form className="space-y-4 w-full max-w-sm">
-                <div className="space-y-2">
-                  <Label htmlFor="email">{t('docs.form.basic.emailLabel')}</Label>
+              <form className='space-y-4 w-full max-w-sm'>
+                <div className='space-y-2'>
+                  <Label htmlFor='email'>{t('docs.form.basic.emailLabel')}</Label>
                   <Input
-                    id="email"
-                    type="email"
+                    id='email'
+                    type='email'
                     placeholder={t('docs.form.basic.emailPlaceholder')}
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="password">{t('docs.form.basic.passwordLabel')}</Label>
-                  <Input id="password" type="password" />
+                <div className='space-y-2'>
+                  <Label htmlFor='password'>{t('docs.form.basic.passwordLabel')}</Label>
+                  <Input id='password' type='password' />
                 </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox id="remember" />
-                  <Label htmlFor="remember">{t('docs.form.basic.rememberMe')}</Label>
+                <div className='flex items-center space-x-2'>
+                  <Checkbox id='remember' />
+                  <Label htmlFor='remember'>{t('docs.form.basic.rememberMe')}</Label>
                 </div>
-                <Button type="submit" className="w-full">
+                <Button type='submit' className='w-full'>
                   {t('docs.form.basic.signIn')}
                 </Button>
               </form>
@@ -94,9 +94,9 @@ export default function FormPage() {
           </DocsComponentPreview>
         </section>
 
-        <section id="with-validation" className="scroll-mt-20 space-y-4">
-          <Typography variant="h2">{t('docs.form.withValidation.title')}</Typography>
-          <Typography variant="muted">{t('docs.form.withValidation.description')}</Typography>
+        <section id='with-validation' className='scroll-mt-20 space-y-4'>
+          <Typography variant='h2'>{t('docs.form.withValidation.title')}</Typography>
+          <Typography variant='muted'>{t('docs.form.withValidation.description')}</Typography>
           <DocsComponentPreview
             code={`<div className="space-y-2">
   <Label htmlFor="email">${t('docs.form.basic.emailLabel')}</Label>
@@ -112,15 +112,15 @@ export default function FormPage() {
 </div>`}
           >
             <DocsPreview>
-              <div className="space-y-2 w-full max-w-sm">
-                <Label htmlFor="email-error">{t('docs.form.basic.emailLabel')}</Label>
+              <div className='space-y-2 w-full max-w-sm'>
+                <Label htmlFor='email-error'>{t('docs.form.basic.emailLabel')}</Label>
                 <Input
-                  id="email-error"
-                  type="email"
-                  className="border-destructive focus-visible:ring-destructive"
-                  defaultValue="invalid-email"
+                  id='email-error'
+                  type='email'
+                  className='border-destructive focus-visible:ring-destructive'
+                  defaultValue='invalid-email'
                 />
-                <p className="text-sm text-destructive">
+                <p className='text-sm text-destructive'>
                   {t('docs.form.withValidation.errorMessage')}
                 </p>
               </div>
@@ -128,13 +128,13 @@ export default function FormPage() {
           </DocsComponentPreview>
         </section>
 
-        <section id="usage" className="scroll-mt-20 space-y-4 pt-6 border-t">
-          <Typography variant="h2">{t('docs.common.usage')}</Typography>
-          <Typography variant="muted" className="mb-4">
+        <section id='usage' className='scroll-mt-20 space-y-4 pt-6 border-t'>
+          <Typography variant='h2'>{t('docs.common.usage')}</Typography>
+          <Typography variant='muted' className='mb-4'>
             {t('docs.form.usage.description')}
           </Typography>
           <DocsCodeBlock
-            language="tsx"
+            language='tsx'
             code={`import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -205,7 +205,7 @@ export function LoginForm() {
           />
         </section>
       </div>
-      <DocsToc items={TOC_ITEMS} className="hidden xl:block" />
+      <DocsToc items={TOC_ITEMS} className='hidden xl:block' />
     </div>
   )
 }

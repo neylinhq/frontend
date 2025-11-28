@@ -27,30 +27,30 @@ export function AvatarUpload({ currentUrl, fallback, onUpload, isPending }: Avat
   }
 
   return (
-    <div className="flex items-center gap-4">
-      <Avatar className="h-20 w-20">
-        <AvatarImage src={currentUrl} alt="Avatar" />
-        <AvatarFallback className="text-lg">{fallback || 'U'}</AvatarFallback>
+    <div className='flex items-center gap-4'>
+      <Avatar className='h-20 w-20'>
+        <AvatarImage src={currentUrl} alt='Avatar' />
+        <AvatarFallback className='text-lg'>{fallback || 'U'}</AvatarFallback>
       </Avatar>
-      <div className="space-y-2">
+      <div className='space-y-2'>
         <input
           ref={inputRef}
-          type="file"
-          accept="image/*"
-          className="hidden"
+          type='file'
+          accept='image/*'
+          className='hidden'
           onChange={handleChange}
         />
-        <Button variant="outline" size="sm" onClick={handleClick} disabled={isPending}>
+        <Button variant='outline' size='sm' onClick={handleClick} disabled={isPending}>
           {isPending ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2 className='mr-2 h-4 w-4 animate-spin' />
               {t('common.uploading')}
             </>
           ) : (
             t('settings.profile.avatar.upload')
           )}
         </Button>
-        <p className="text-xs text-muted-foreground">{t('settings.profile.avatar.requirements')}</p>
+        <p className='text-xs text-muted-foreground'>{t('settings.profile.avatar.requirements')}</p>
       </div>
     </div>
   )

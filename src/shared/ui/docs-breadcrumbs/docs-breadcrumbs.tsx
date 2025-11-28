@@ -27,15 +27,15 @@ export function DocsBreadcrumbs({ items, className }: DocsBreadcrumbsProps) {
   }
 
   return (
-    <nav aria-label="Breadcrumb" className={cn('flex items-center text-sm', className)}>
-      <ol className="flex items-center gap-1.5">
+    <nav aria-label='Breadcrumb' className={cn('flex items-center text-sm', className)}>
+      <ol className='flex items-center gap-1.5'>
         <li>
           <Link
             to={DOCS_ROUTES.ui}
-            className="text-muted-foreground hover:text-foreground transition-colors"
+            className='text-muted-foreground hover:text-foreground transition-colors'
           >
-            <Home className="h-4 w-4" />
-            <span className="sr-only">Docs Home</span>
+            <Home className='h-4 w-4' />
+            <span className='sr-only'>Docs Home</span>
           </Link>
         </li>
 
@@ -43,8 +43,8 @@ export function DocsBreadcrumbs({ items, className }: DocsBreadcrumbsProps) {
           const isLast = index === breadcrumbs.length - 1
 
           return (
-            <li key={item.label} className="flex items-center gap-1.5">
-              <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/50" />
+            <li key={item.label} className='flex items-center gap-1.5'>
+              <ChevronRight className='h-3.5 w-3.5 text-muted-foreground/50' />
               {isLast || !item.href ? (
                 <span
                   className={cn(
@@ -57,7 +57,7 @@ export function DocsBreadcrumbs({ items, className }: DocsBreadcrumbsProps) {
               ) : (
                 <Link
                   to={item.href}
-                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  className='text-muted-foreground hover:text-foreground transition-colors'
                 >
                   {item.label}
                 </Link>

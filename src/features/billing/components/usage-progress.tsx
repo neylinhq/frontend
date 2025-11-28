@@ -26,12 +26,12 @@ export function UsageProgress({ usage, limits }: UsageProgressProps) {
         <CardTitle>{t('billing.usage.title')}</CardTitle>
         <CardDescription>{t('billing.usage.description')}</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className='space-y-6'>
         {/* Maps usage */}
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm">
+        <div className='space-y-2'>
+          <div className='flex justify-between text-sm'>
             <span>{t('billing.usage.maps')}</span>
-            <span className="text-muted-foreground">
+            <span className='text-muted-foreground'>
               {usage.mapsCount} / {formatLimit(limits.maxMaps)}
             </span>
           </div>
@@ -39,10 +39,10 @@ export function UsageProgress({ usage, limits }: UsageProgressProps) {
         </div>
 
         {/* Nodes usage */}
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm">
+        <div className='space-y-2'>
+          <div className='flex justify-between text-sm'>
             <span>{t('billing.usage.nodes')}</span>
-            <span className="text-muted-foreground">
+            <span className='text-muted-foreground'>
               {usage.totalNodesCount} / {formatLimit(limits.maxTotalNodes)}
             </span>
           </div>
@@ -50,10 +50,10 @@ export function UsageProgress({ usage, limits }: UsageProgressProps) {
         </div>
 
         {/* AI requests usage */}
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm">
+        <div className='space-y-2'>
+          <div className='flex justify-between text-sm'>
             <span>{t('billing.usage.aiRequests')}</span>
-            <span className="text-muted-foreground">
+            <span className='text-muted-foreground'>
               {usage.aiRequestsThisMonth} / {formatLimit(limits.aiRequestsPerMonth)}
             </span>
           </div>
@@ -63,10 +63,10 @@ export function UsageProgress({ usage, limits }: UsageProgressProps) {
         </div>
 
         {/* Storage usage (info only, no limit) */}
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm">
+        <div className='space-y-2'>
+          <div className='flex justify-between text-sm'>
             <span>{t('billing.usage.storage')}</span>
-            <span className="text-muted-foreground">{usage.storageUsedMB.toFixed(1)} MB</span>
+            <span className='text-muted-foreground'>{usage.storageUsedMB.toFixed(1)} MB</span>
           </div>
         </div>
       </CardContent>

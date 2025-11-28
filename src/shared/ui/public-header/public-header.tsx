@@ -20,13 +20,13 @@ export function PublicHeader({ hideAuthButtons }: PublicHeaderProps) {
   const { t } = useTranslation()
 
   return (
-    <header className="h-14 flex-shrink-0 border-b bg-background">
-      <div className="max-w-5xl mx-auto px-4 md:px-6 h-full flex items-center justify-between">
-        <Logo size="lg" />
+    <header className='h-14 flex-shrink-0 border-b bg-background'>
+      <div className='max-w-5xl mx-auto px-4 md:px-6 h-full flex items-center justify-between'>
+        <Logo size='lg' />
 
-        <nav className="flex items-center gap-2">
+        <nav className='flex items-center gap-2'>
           {/* Desktop theme controls */}
-          <div className="hidden md:flex items-center gap-2">
+          <div className='hidden md:flex items-center gap-2'>
             <LanguageSelect compact />
             <PaletteSelect compact />
             <ModeSelect compact />
@@ -35,11 +35,11 @@ export function PublicHeader({ hideAuthButtons }: PublicHeaderProps) {
           {/* Desktop auth buttons */}
           {!hideAuthButtons && (
             <>
-              <div className="hidden md:block h-4 w-px bg-border mx-1" />
-              <Button asChild variant="ghost" size="sm" className="hidden md:inline-flex">
+              <div className='hidden md:block h-4 w-px bg-border mx-1' />
+              <Button asChild variant='ghost' size='sm' className='hidden md:inline-flex'>
                 <Link to={AUTH_ROUTES.signIn}>{t('home.cta.signIn', 'Sign in')}</Link>
               </Button>
-              <Button asChild size="sm" className="hidden md:inline-flex">
+              <Button asChild size='sm' className='hidden md:inline-flex'>
                 <Link to={AUTH_ROUTES.signUp}>{t('home.cta.getStarted', 'Get Started')}</Link>
               </Button>
             </>
@@ -48,18 +48,18 @@ export function PublicHeader({ hideAuthButtons }: PublicHeaderProps) {
           {/* Mobile menu - always visible */}
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden">
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">{t('common.menu', 'Menu')}</span>
+              <Button variant='ghost' size='icon' className='md:hidden'>
+                <Menu className='h-5 w-5' />
+                <span className='sr-only'>{t('common.menu', 'Menu')}</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-[280px] p-0 flex flex-col">
-              <div className="py-4 px-6 border-b">
-                <Logo size="sm" />
+            <SheetContent side='left' className='w-[280px] p-0 flex flex-col'>
+              <div className='py-4 px-6 border-b'>
+                <Logo size='sm' />
               </div>
 
               {/* Navigation */}
-              <div className="flex-1 py-4 px-3 space-y-1">
+              <div className='flex-1 py-4 px-3 space-y-1'>
                 <MobileNavItem to={ROUTES.home} icon={Home}>
                   {t('nav.home', 'Home')}
                 </MobileNavItem>
@@ -69,7 +69,7 @@ export function PublicHeader({ hideAuthButtons }: PublicHeaderProps) {
 
                 {!hideAuthButtons && (
                   <>
-                    <Separator className="my-3" />
+                    <Separator className='my-3' />
                     <MobileNavItem to={AUTH_ROUTES.signIn} icon={LogIn}>
                       {t('home.cta.signIn', 'Sign in')}
                     </MobileNavItem>
@@ -81,7 +81,7 @@ export function PublicHeader({ hideAuthButtons }: PublicHeaderProps) {
               </div>
 
               {/* Theme controls */}
-              <div className="border-t py-4 px-4 flex items-center justify-center gap-2">
+              <div className='border-t py-4 px-4 flex items-center justify-center gap-2'>
                 <LanguageSelect compact />
                 <PaletteSelect compact />
                 <ModeSelect compact />
@@ -114,7 +114,7 @@ function MobileNavItem({
         )
       }
     >
-      <Icon className="h-5 w-5" />
+      <Icon className='h-5 w-5' />
       <span>{children}</span>
     </NavLink>
   )

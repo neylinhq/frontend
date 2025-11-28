@@ -21,7 +21,7 @@ export function PaletteSelect({ compact }: PaletteSelectProps) {
       value={palette}
       onChange={setPalette}
       compact={compact}
-      align="end"
+      align='end'
     />
   )
 }

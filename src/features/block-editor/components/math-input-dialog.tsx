@@ -321,7 +321,7 @@ export function MathInputDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={open => !open && onClose()}>
-      <DialogContent className="max-w-lg max-h-[90vh] flex flex-col">
+      <DialogContent className='max-w-lg max-h-[90vh] flex flex-col'>
         <DialogHeader>
           <DialogTitle>
             {mode === 'block' ? t('editor.math.blockTitle') : t('editor.math.inlineTitle')}
@@ -329,17 +329,17 @@ export function MathInputDialog({
           <DialogDescription>{t('editor.math.hint')}</DialogDescription>
         </DialogHeader>
 
-        <div className="flex-1 overflow-hidden flex flex-col gap-4">
+        <div className='flex-1 overflow-hidden flex flex-col gap-4'>
           {/* Input */}
           <div>
             <label
-              htmlFor="math-latex-input"
-              className="mb-1.5 block text-sm font-medium text-foreground"
+              htmlFor='math-latex-input'
+              className='mb-1.5 block text-sm font-medium text-foreground'
             >
               {t('editor.math.inputLabel')}
             </label>
             <textarea
-              id="math-latex-input"
+              id='math-latex-input'
               ref={inputRef}
               value={latex}
               onChange={e => setLatex(e.target.value)}
@@ -357,7 +357,7 @@ export function MathInputDialog({
 
           {/* Preview */}
           <div>
-            <div className="mb-1.5 text-sm font-medium text-foreground">
+            <div className='mb-1.5 text-sm font-medium text-foreground'>
               {t('editor.math.preview')}
             </div>
             <div
@@ -371,25 +371,25 @@ export function MathInputDialog({
           </div>
 
           {/* Symbol Categories */}
-          <div className="flex-1 overflow-hidden">
-            <div className="mb-1.5 text-sm font-medium text-foreground">
+          <div className='flex-1 overflow-hidden'>
+            <div className='mb-1.5 text-sm font-medium text-foreground'>
               {t('editor.math.symbols')}
             </div>
-            <div className="h-[200px] overflow-y-auto rounded-md border border-input p-2">
-              <div className="space-y-3">
+            <div className='h-[200px] overflow-y-auto rounded-md border border-input p-2'>
+              <div className='space-y-3'>
                 {Object.entries(MATH_SYMBOLS).map(([category, symbols]) => (
                   <div key={category}>
-                    <div className="mb-1 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    <div className='mb-1 text-xs font-medium text-muted-foreground uppercase tracking-wider'>
                       {t(CATEGORY_LABELS[category])}
                     </div>
-                    <div className="flex flex-wrap gap-1">
+                    <div className='flex flex-wrap gap-1'>
                       {symbols.map(symbol => (
                         <button
                           key={symbol.value}
-                          type="button"
+                          type='button'
                           onClick={() => insertSymbol(symbol.value)}
                           title={symbol.title}
-                          className="min-w-[32px] h-8 px-2 rounded border border-input bg-background text-sm hover:bg-accent transition-colors font-mono"
+                          className='min-w-[32px] h-8 px-2 rounded border border-input bg-background text-sm hover:bg-accent transition-colors font-mono'
                         >
                           {symbol.label}
                         </button>
@@ -403,7 +403,7 @@ export function MathInputDialog({
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
+          <Button variant='outline' onClick={onClose}>
             {t('common.cancel')}
           </Button>
           <Button onClick={handleSubmit} disabled={!latex.trim() || !!error}>

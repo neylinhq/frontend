@@ -39,17 +39,17 @@ export function SignUpForm() {
   })
 
   return (
-    <div className="grid gap-6">
+    <div className='grid gap-6'>
       <Form {...form}>
         <form
-          className="grid gap-4"
+          className='grid gap-4'
           onSubmit={form.handleSubmit(data => {
             submit(data, { method: 'post' })
           })}
         >
           <FormField
             control={form.control}
-            name="email"
+            name='email'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>{t('auth.signUp.emailLabel')}</FormLabel>
@@ -63,12 +63,12 @@ export function SignUpForm() {
 
           <FormField
             control={form.control}
-            name="password"
+            name='password'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>{t('auth.signUp.passwordLabel')}</FormLabel>
                 <FormControl>
-                  <Input type="password" {...field} />
+                  <Input type='password' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -77,30 +77,30 @@ export function SignUpForm() {
 
           <FormField
             control={form.control}
-            name="confirmPassword"
+            name='confirmPassword'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>{t('auth.signUp.confirmPasswordLabel')}</FormLabel>
                 <FormControl>
-                  <Input type="password" {...field} />
+                  <Input type='password' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          <Button type='submit' className='w-full' disabled={isLoading}>
+            {isLoading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
             {t('auth.signUp.submitButton')}
           </Button>
 
-          <p className="text-xs text-center text-muted-foreground text-balance">
-            {t('auth.signUp.consent')} <LegalLinks variant="embedded" />
+          <p className='text-xs text-center text-muted-foreground text-balance'>
+            {t('auth.signUp.consent')} <LegalLinks variant='embedded' />
           </p>
 
           <FormDivider>{t('auth.signIn.orDivider')}</FormDivider>
 
-          <Button variant="outline" className="w-full" type="button">
+          <Button variant='outline' className='w-full' type='button'>
             {t('auth.signIn.githubButton')}
           </Button>
         </form>

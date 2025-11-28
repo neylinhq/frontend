@@ -45,20 +45,20 @@ export function EmailChangeForm({ currentEmail }: EmailChangeFormProps) {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
             <FormItem>
               <FormLabel>{t('settings.security.email.current')}</FormLabel>
-              <Input type="email" value={currentEmail} disabled />
+              <Input type='email' value={currentEmail} disabled />
             </FormItem>
 
             <FormField
               control={form.control}
-              name="newEmail"
+              name='newEmail'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t('settings.security.email.new')}</FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder={t('form.placeholders.newEmail')} {...field} />
+                    <Input type='email' placeholder={t('form.placeholders.newEmail')} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -67,13 +67,13 @@ export function EmailChangeForm({ currentEmail }: EmailChangeFormProps) {
 
             <FormField
               control={form.control}
-              name="password"
+              name='password'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t('settings.security.email.confirmPassword')}</FormLabel>
                   <FormControl>
                     <Input
-                      type="password"
+                      type='password'
                       placeholder={t('form.placeholders.password')}
                       {...field}
                     />
@@ -83,16 +83,16 @@ export function EmailChangeForm({ currentEmail }: EmailChangeFormProps) {
               )}
             />
 
-            <div className="flex justify-end gap-2 pt-2">
+            <div className='flex justify-end gap-2 pt-2'>
               <Button
-                variant="outline"
-                type="button"
+                variant='outline'
+                type='button'
                 onClick={() => form.reset()}
                 disabled={!form.formState.isDirty}
               >
                 {t('common.cancel')}
               </Button>
-              <Button type="submit" disabled={changeEmail.isPending || !form.formState.isDirty}>
+              <Button type='submit' disabled={changeEmail.isPending || !form.formState.isDirty}>
                 {changeEmail.isPending ? t('common.saving') : t('settings.security.email.update')}
               </Button>
             </div>

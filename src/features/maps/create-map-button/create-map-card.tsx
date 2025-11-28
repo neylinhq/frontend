@@ -15,7 +15,7 @@ export function CreateMapCard({ className }: CreateMapCardProps) {
 
   return (
     <Button
-      variant="outline"
+      variant='outline'
       className={cn(
         'h-full min-h-[180px] flex flex-col items-center justify-center gap-2 border-dashed hover:bg-accent/50 hover:border-primary/50 whitespace-normal p-6',
         className
@@ -23,11 +23,11 @@ export function CreateMapCard({ className }: CreateMapCardProps) {
       asChild
     >
       <Link to={MAPS_ROUTES.new}>
-        <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
-          <Plus className="h-6 w-6 text-muted-foreground" />
+        <div className='h-10 w-10 rounded-full bg-muted flex items-center justify-center'>
+          <Plus className='h-6 w-6 text-muted-foreground' />
         </div>
-        <span className="font-semibold text-lg">{t('dashboard.createMap.title')}</span>
-        <span className="text-xs text-muted-foreground font-normal text-center px-4">
+        <span className='font-semibold text-lg'>{t('dashboard.createMap.title')}</span>
+        <span className='text-xs text-muted-foreground font-normal text-center px-4'>
           {t('dashboard.createMap.description')}
         </span>
       </Link>

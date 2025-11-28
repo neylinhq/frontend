@@ -54,16 +54,16 @@ export const NodeDrawer = memo(
           showOverlay={isMobile}
           className={cn('p-6', className)}
         >
-          <DrawerHeader className="px-0 pt-0">
-            <div className="flex items-center justify-between">
-              <DrawerTitle className="flex items-center gap-2">
-                <Icon className="w-5 h-5" />
+          <DrawerHeader className='px-0 pt-0'>
+            <div className='flex items-center justify-between'>
+              <DrawerTitle className='flex items-center gap-2'>
+                <Icon className='w-5 h-5' />
                 {node.label}
               </DrawerTitle>
-              <div className="flex gap-2">
+              <div className='flex gap-2'>
                 <Button
                   variant={isFocused ? 'default' : 'outline'}
-                  size="sm"
+                  size='sm'
                   onClick={() => (isFocused ? clearFocus() : focusNode(node.id))}
                   title={
                     isFocused
@@ -71,11 +71,11 @@ export const NodeDrawer = memo(
                       : t('graph.nodeControls.focusMode')
                   }
                 >
-                  <Focus className="h-4 w-4" />
+                  <Focus className='h-4 w-4' />
                 </Button>
-                <Button variant="outline" size="sm" asChild title={t('nodeDrawer.edit')}>
+                <Button variant='outline' size='sm' asChild title={t('nodeDrawer.edit')}>
                   <Link to={`/dashboard/maps/${node.mapId}/node/${node.id}`}>
-                    <Pencil className="h-4 w-4" />
+                    <Pencil className='h-4 w-4' />
                   </Link>
                 </Button>
               </div>
@@ -85,18 +85,18 @@ export const NodeDrawer = memo(
           <Tabs
             value={activeTab === 'view' ? 'overview' : activeTab}
             onValueChange={value => switchTab(value as 'overview' | 'connections')}
-            className="mt-4"
+            className='mt-4'
           >
-            <TabsList className="w-full grid grid-cols-2">
-              <TabsTrigger value="overview">{t('nodeDrawer.tabs.overview')}</TabsTrigger>
-              <TabsTrigger value="connections">{t('nodeDrawer.tabs.connections')}</TabsTrigger>
+            <TabsList className='w-full grid grid-cols-2'>
+              <TabsTrigger value='overview'>{t('nodeDrawer.tabs.overview')}</TabsTrigger>
+              <TabsTrigger value='connections'>{t('nodeDrawer.tabs.connections')}</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="overview" className="mt-4">
+            <TabsContent value='overview' className='mt-4'>
               <DrawerOverviewTab node={node} />
             </TabsContent>
 
-            <TabsContent value="connections" className="mt-4">
+            <TabsContent value='connections' className='mt-4'>
               <DrawerConnectionsTab
                 node={node}
                 edges={edges}

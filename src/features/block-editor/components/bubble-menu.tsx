@@ -284,7 +284,7 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
     return (
       <div
         ref={menuRef}
-        className="absolute z-50 flex items-center gap-1 rounded-lg border border-border bg-popover p-1 shadow-lg"
+        className='absolute z-50 flex items-center gap-1 rounded-lg border border-border bg-popover p-1 shadow-lg'
         style={{
           top: position.top,
           left: position.left,
@@ -293,21 +293,21 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
       >
         <input
           ref={inputRef}
-          type="text"
+          type='text'
           value={menuState.linkUrl}
           onChange={e => dispatch({ type: 'SET_LINK_URL', url: e.target.value })}
           onKeyDown={handleLinkKeyDown}
           placeholder={t('editor.bubble.urlPlaceholder')}
-          className="h-8 w-48 rounded-md border-none bg-transparent px-2 text-sm outline-none placeholder:text-muted-foreground"
+          className='h-8 w-48 rounded-md border-none bg-transparent px-2 text-sm outline-none placeholder:text-muted-foreground'
         />
-        <Button variant="ghost" size="sm" onClick={setLink} className="h-8 px-2 text-xs">
+        <Button variant='ghost' size='sm' onClick={setLink} className='h-8 px-2 text-xs'>
           {t('editor.bubble.save')}
         </Button>
         <Button
-          variant="ghost"
-          size="sm"
+          variant='ghost'
+          size='sm'
           onClick={() => dispatch({ type: 'CLOSE_ALL' })}
-          className="h-8 px-2 text-xs"
+          className='h-8 px-2 text-xs'
         >
           {t('editor.bubble.cancel')}
         </Button>
@@ -318,7 +318,7 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
   return (
     <div
       ref={menuRef}
-      className="absolute z-50 flex items-center gap-0.5 rounded-lg border border-border bg-popover p-1 shadow-lg"
+      className='absolute z-50 flex items-center gap-0.5 rounded-lg border border-border bg-popover p-1 shadow-lg'
       style={{
         top: position.top,
         left: position.left,
@@ -326,9 +326,9 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
       }}
     >
       {/* Turn Into Dropdown */}
-      <div className="relative">
+      <div className='relative'>
         <button
-          type="button"
+          type='button'
           onClick={() => dispatch({ type: 'TOGGLE_MENU', menu: 'turnInto' })}
           className={cn(
             'flex h-8 items-center gap-1 rounded-md px-2 transition-colors',
@@ -337,22 +337,22 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
               : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground'
           )}
         >
-          <CurrentBlockIcon className="h-4 w-4" />
-          <span className="text-xs">
+          <CurrentBlockIcon className='h-4 w-4' />
+          <span className='text-xs'>
             {t(`editor.bubble.blockTypes.${currentBlockType?.name || 'text'}`)}
           </span>
-          <ChevronDown className="h-3 w-3" />
+          <ChevronDown className='h-3 w-3' />
         </button>
 
         {isTurnIntoOpen && (
-          <div className="absolute left-0 top-full mt-1 z-50 min-w-[160px] rounded-lg border border-border bg-popover p-1 shadow-lg">
+          <div className='absolute left-0 top-full mt-1 z-50 min-w-[160px] rounded-lg border border-border bg-popover p-1 shadow-lg'>
             {BLOCK_TYPES.map(blockType => {
               const Icon = blockType.icon
               const isActive = currentBlockType?.name === blockType.name
               return (
                 <button
                   key={blockType.name}
-                  type="button"
+                  type='button'
                   onClick={() => {
                     blockType.command(editor)
                     dispatch({ type: 'CLOSE_ALL' })
@@ -364,7 +364,7 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
                       : 'text-foreground hover:bg-accent/50'
                   )}
                 >
-                  <Icon className="h-4 w-4" />
+                  <Icon className='h-4 w-4' />
                   <span>{t(`editor.bubble.blockTypes.${blockType.name}`)}</span>
                 </button>
               )
@@ -373,89 +373,89 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
         )}
       </div>
 
-      <div className="mx-1 h-6 w-px bg-border" />
+      <div className='mx-1 h-6 w-px bg-border' />
 
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleBold().run()}
         isActive={editor.isActive('bold')}
       >
-        <Bold className="h-4 w-4" />
+        <Bold className='h-4 w-4' />
       </ToolbarButton>
 
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleItalic().run()}
         isActive={editor.isActive('italic')}
       >
-        <Italic className="h-4 w-4" />
+        <Italic className='h-4 w-4' />
       </ToolbarButton>
 
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleUnderline().run()}
         isActive={editor.isActive('underline')}
       >
-        <Underline className="h-4 w-4" />
+        <Underline className='h-4 w-4' />
       </ToolbarButton>
 
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleStrike().run()}
         isActive={editor.isActive('strike')}
       >
-        <Strikethrough className="h-4 w-4" />
+        <Strikethrough className='h-4 w-4' />
       </ToolbarButton>
 
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleCode().run()}
         isActive={editor.isActive('code')}
       >
-        <Code className="h-4 w-4" />
+        <Code className='h-4 w-4' />
       </ToolbarButton>
 
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleHighlight().run()}
         isActive={editor.isActive('highlight')}
       >
-        <Highlighter className="h-4 w-4" />
+        <Highlighter className='h-4 w-4' />
       </ToolbarButton>
 
-      <div className="mx-1 h-6 w-px bg-border" />
+      <div className='mx-1 h-6 w-px bg-border' />
 
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleSubscript().run()}
         isActive={editor.isActive('subscript')}
       >
-        <Subscript className="h-4 w-4" />
+        <Subscript className='h-4 w-4' />
       </ToolbarButton>
 
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleSuperscript().run()}
         isActive={editor.isActive('superscript')}
       >
-        <Superscript className="h-4 w-4" />
+        <Superscript className='h-4 w-4' />
       </ToolbarButton>
 
-      <div className="mx-1 h-6 w-px bg-border" />
+      <div className='mx-1 h-6 w-px bg-border' />
 
       {/* Color Picker */}
-      <div className="relative">
+      <div className='relative'>
         <ToolbarButton
           onClick={() => dispatch({ type: 'TOGGLE_MENU', menu: 'color' })}
           isActive={isColorPickerOpen}
         >
-          <Palette className="h-4 w-4" />
-          <ChevronDown className="h-3 w-3" />
+          <Palette className='h-4 w-4' />
+          <ChevronDown className='h-3 w-3' />
         </ToolbarButton>
 
         {isColorPickerOpen && (
-          <div className="absolute left-0 top-full mt-1 z-50 min-w-[200px] rounded-lg border border-border bg-popover p-2 shadow-lg">
-            <div className="mb-2">
-              <p className="text-xs font-medium text-muted-foreground mb-1">
+          <div className='absolute left-0 top-full mt-1 z-50 min-w-[200px] rounded-lg border border-border bg-popover p-2 shadow-lg'>
+            <div className='mb-2'>
+              <p className='text-xs font-medium text-muted-foreground mb-1'>
                 {t('editor.bubble.textColor')}
               </p>
-              <div className="flex flex-wrap gap-1">
+              <div className='flex flex-wrap gap-1'>
                 {TEXT_COLORS.map(item => (
                   <button
                     key={item.name}
-                    type="button"
+                    type='button'
                     onClick={() => {
                       if (item.color) {
                         editor.chain().focus().setColor(item.color).run()
@@ -475,14 +475,14 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
               </div>
             </div>
             <div>
-              <p className="text-xs font-medium text-muted-foreground mb-1">
+              <p className='text-xs font-medium text-muted-foreground mb-1'>
                 {t('editor.bubble.highlight')}
               </p>
-              <div className="flex flex-wrap gap-1">
+              <div className='flex flex-wrap gap-1'>
                 {HIGHLIGHT_COLORS.map(item => (
                   <button
                     key={item.name}
-                    type="button"
+                    type='button'
                     onClick={() => {
                       if (item.color) {
                         editor.chain().focus().toggleHighlight({ color: item.color }).run()
@@ -505,7 +505,7 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
         )}
       </div>
 
-      <div className="mx-1 h-6 w-px bg-border" />
+      <div className='mx-1 h-6 w-px bg-border' />
 
       <ToolbarButton
         onClick={() => {
@@ -515,31 +515,31 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
         }}
         isActive={editor.isActive('link')}
       >
-        <Link className="h-4 w-4" />
+        <Link className='h-4 w-4' />
       </ToolbarButton>
 
       <ToolbarButton
         onClick={() => onOpenMathDialog?.('inline')}
         isActive={editor.isActive('mathInline')}
       >
-        <Sigma className="h-4 w-4" />
+        <Sigma className='h-4 w-4' />
       </ToolbarButton>
 
-      <div className="mx-1 h-6 w-px bg-border" />
+      <div className='mx-1 h-6 w-px bg-border' />
 
       {/* More Menu */}
-      <div className="relative">
+      <div className='relative'>
         <ToolbarButton
           onClick={() => dispatch({ type: 'TOGGLE_MENU', menu: 'more' })}
           isActive={isMoreMenuOpen}
         >
-          <MoreHorizontal className="h-4 w-4" />
+          <MoreHorizontal className='h-4 w-4' />
         </ToolbarButton>
 
         {isMoreMenuOpen && (
-          <div className="absolute right-0 top-full mt-1 z-50 min-w-[160px] rounded-lg border border-border bg-popover p-1 shadow-lg">
+          <div className='absolute right-0 top-full mt-1 z-50 min-w-[160px] rounded-lg border border-border bg-popover p-1 shadow-lg'>
             <button
-              type="button"
+              type='button'
               onClick={async () => {
                 const { from, to } = editor.state.selection
                 const text = editor.state.doc.textBetween(from, to, ' ')
@@ -566,20 +566,20 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
 
                 dispatch({ type: 'CLOSE_ALL' })
               }}
-              className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-foreground hover:bg-accent/50 transition-colors"
+              className='flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-foreground hover:bg-accent/50 transition-colors'
             >
-              <Copy className="h-4 w-4" />
+              <Copy className='h-4 w-4' />
               <span>{t('editor.bubble.more.copy')}</span>
             </button>
             <button
-              type="button"
+              type='button'
               onClick={() => {
                 editor.chain().focus().deleteSelection().run()
                 dispatch({ type: 'CLOSE_ALL' })
               }}
-              className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-destructive hover:bg-destructive/10 transition-colors"
+              className='flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-destructive hover:bg-destructive/10 transition-colors'
             >
-              <Trash2 className="h-4 w-4" />
+              <Trash2 className='h-4 w-4' />
               <span>{t('editor.bubble.more.delete')}</span>
             </button>
           </div>
@@ -598,7 +598,7 @@ interface ToolbarButtonProps {
 function ToolbarButton({ onClick, isActive, children }: ToolbarButtonProps) {
   return (
     <button
-      type="button"
+      type='button'
       onClick={onClick}
       className={cn(
         'flex h-8 w-8 items-center justify-center rounded-md transition-colors',

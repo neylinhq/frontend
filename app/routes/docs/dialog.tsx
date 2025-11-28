@@ -42,27 +42,27 @@ export default function DialogPage() {
   ]
 
   return (
-    <div className="flex gap-10">
-      <div className="flex-1 min-w-0 space-y-10">
-        <header className="space-y-4">
+    <div className='flex gap-10'>
+      <div className='flex-1 min-w-0 space-y-10'>
+        <header className='space-y-4'>
           <DocsBreadcrumbs
             items={[
               { label: t('docs.common.components'), href: '/docs/ui/button' },
               { label: 'Dialog' }
             ]}
           />
-          <div className="flex items-center gap-3">
-            <Typography variant="h1">Dialog</Typography>
-            <Badge variant="brand">{t('docs.common.component')}</Badge>
+          <div className='flex items-center gap-3'>
+            <Typography variant='h1'>Dialog</Typography>
+            <Badge variant='brand'>{t('docs.common.component')}</Badge>
           </div>
-          <Typography variant="lead" className="max-w-2xl">
+          <Typography variant='lead' className='max-w-2xl'>
             {t('docs.dialog.lead')}
           </Typography>
         </header>
 
-        <section id="basic" className="scroll-mt-20 space-y-4">
-          <Typography variant="h2">{t('docs.common.basic')}</Typography>
-          <Typography variant="muted">{t('docs.dialog.basic.sectionDescription')}</Typography>
+        <section id='basic' className='scroll-mt-20 space-y-4'>
+          <Typography variant='h2'>{t('docs.common.basic')}</Typography>
+          <Typography variant='muted'>{t('docs.dialog.basic.sectionDescription')}</Typography>
 
           <DocsComponentPreview
             code={`<Dialog>
@@ -82,7 +82,7 @@ export default function DialogPage() {
             <DocsPreview>
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button variant="outline">{t('docs.dialog.basic.openDialog')}</Button>
+                  <Button variant='outline'>{t('docs.dialog.basic.openDialog')}</Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
@@ -95,9 +95,9 @@ export default function DialogPage() {
           </DocsComponentPreview>
         </section>
 
-        <section id="with-form" className="scroll-mt-20 space-y-4">
-          <Typography variant="h2">{t('docs.dialog.withForm.title')}</Typography>
-          <Typography variant="muted">{t('docs.dialog.withForm.description')}</Typography>
+        <section id='with-form' className='scroll-mt-20 space-y-4'>
+          <Typography variant='h2'>{t('docs.dialog.withForm.title')}</Typography>
+          <Typography variant='muted'>{t('docs.dialog.withForm.description')}</Typography>
 
           <DocsComponentPreview
             code={`<Dialog>
@@ -132,25 +132,25 @@ export default function DialogPage() {
                 <DialogTrigger asChild>
                   <Button>{t('docs.dialog.withForm.editProfile')}</Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
+                <DialogContent className='sm:max-w-[425px]'>
                   <DialogHeader>
                     <DialogTitle>{t('docs.dialog.withForm.editProfileTitle')}</DialogTitle>
                     <DialogDescription>
                       {t('docs.dialog.withForm.editProfileDescription')}
                     </DialogDescription>
                   </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    <div className="grid gap-2">
-                      <Label htmlFor="name">{t('docs.dialog.withForm.nameLabel')}</Label>
-                      <Input id="name" defaultValue={t('docs.dialog.withForm.nameValue')} />
+                  <div className='grid gap-4 py-4'>
+                    <div className='grid gap-2'>
+                      <Label htmlFor='name'>{t('docs.dialog.withForm.nameLabel')}</Label>
+                      <Input id='name' defaultValue={t('docs.dialog.withForm.nameValue')} />
                     </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="email">{t('docs.dialog.withForm.emailLabel')}</Label>
-                      <Input id="email" defaultValue={t('docs.dialog.withForm.emailValue')} />
+                    <div className='grid gap-2'>
+                      <Label htmlFor='email'>{t('docs.dialog.withForm.emailLabel')}</Label>
+                      <Input id='email' defaultValue={t('docs.dialog.withForm.emailValue')} />
                     </div>
                   </div>
                   <DialogFooter>
-                    <Button type="submit">{t('docs.dialog.withForm.saveChanges')}</Button>
+                    <Button type='submit'>{t('docs.dialog.withForm.saveChanges')}</Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
@@ -158,11 +158,11 @@ export default function DialogPage() {
           </DocsComponentPreview>
         </section>
 
-        <section id="usage" className="scroll-mt-20 space-y-4 pt-6 border-t">
-          <Typography variant="h2">{t('docs.common.usage')}</Typography>
+        <section id='usage' className='scroll-mt-20 space-y-4 pt-6 border-t'>
+          <Typography variant='h2'>{t('docs.common.usage')}</Typography>
 
           <DocsCodeBlock
-            language="tsx"
+            language='tsx'
             code={`import {
   Dialog,
   DialogContent,
@@ -206,66 +206,66 @@ export function ConfirmDialog() {
           />
         </section>
 
-        <section id="api-reference" className="scroll-mt-20 space-y-4 pt-6 border-t">
-          <Typography variant="h2">{t('docs.common.apiReference')}</Typography>
+        <section id='api-reference' className='scroll-mt-20 space-y-4 pt-6 border-t'>
+          <Typography variant='h2'>{t('docs.common.apiReference')}</Typography>
 
-          <div className="rounded-lg border overflow-hidden">
-            <table className="w-full text-sm">
-              <thead className="bg-muted/50">
+          <div className='rounded-lg border overflow-hidden'>
+            <table className='w-full text-sm'>
+              <thead className='bg-muted/50'>
                 <tr>
-                  <th className="text-left px-4 py-3 font-medium">{t('docs.common.component')}</th>
-                  <th className="text-left px-4 py-3 font-medium">
+                  <th className='text-left px-4 py-3 font-medium'>{t('docs.common.component')}</th>
+                  <th className='text-left px-4 py-3 font-medium'>
                     {t('docs.common.description')}
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y">
+              <tbody className='divide-y'>
                 <tr>
-                  <td className="px-4 py-3">
-                    <code className="text-sm font-semibold text-brand">Dialog</code>
+                  <td className='px-4 py-3'>
+                    <code className='text-sm font-semibold text-brand'>Dialog</code>
                   </td>
-                  <td className="px-4 py-3">
-                    <code className="text-xs text-muted-foreground">
+                  <td className='px-4 py-3'>
+                    <code className='text-xs text-muted-foreground'>
                       {t('docs.dialog.api.dialogDescription')}
                     </code>
                   </td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3">
-                    <code className="text-sm font-semibold text-brand">DialogTrigger</code>
+                  <td className='px-4 py-3'>
+                    <code className='text-sm font-semibold text-brand'>DialogTrigger</code>
                   </td>
-                  <td className="px-4 py-3">
-                    <code className="text-xs text-muted-foreground">
+                  <td className='px-4 py-3'>
+                    <code className='text-xs text-muted-foreground'>
                       {t('docs.dialog.api.triggerDescription')}
                     </code>
                   </td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3">
-                    <code className="text-sm font-semibold text-brand">DialogContent</code>
+                  <td className='px-4 py-3'>
+                    <code className='text-sm font-semibold text-brand'>DialogContent</code>
                   </td>
-                  <td className="px-4 py-3">
-                    <code className="text-xs text-muted-foreground">
+                  <td className='px-4 py-3'>
+                    <code className='text-xs text-muted-foreground'>
                       {t('docs.dialog.api.contentDescription')}
                     </code>
                   </td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3">
-                    <code className="text-sm font-semibold text-brand">DialogHeader</code>
+                  <td className='px-4 py-3'>
+                    <code className='text-sm font-semibold text-brand'>DialogHeader</code>
                   </td>
-                  <td className="px-4 py-3">
-                    <code className="text-xs text-muted-foreground">
+                  <td className='px-4 py-3'>
+                    <code className='text-xs text-muted-foreground'>
                       {t('docs.dialog.api.headerDescription')}
                     </code>
                   </td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3">
-                    <code className="text-sm font-semibold text-brand">DialogFooter</code>
+                  <td className='px-4 py-3'>
+                    <code className='text-sm font-semibold text-brand'>DialogFooter</code>
                   </td>
-                  <td className="px-4 py-3">
-                    <code className="text-xs text-muted-foreground">
+                  <td className='px-4 py-3'>
+                    <code className='text-xs text-muted-foreground'>
                       {t('docs.dialog.api.footerDescription')}
                     </code>
                   </td>
@@ -276,7 +276,7 @@ export function ConfirmDialog() {
         </section>
       </div>
 
-      <DocsToc items={TOC_ITEMS} className="hidden xl:block" />
+      <DocsToc items={TOC_ITEMS} className='hidden xl:block' />
     </div>
   )
 }

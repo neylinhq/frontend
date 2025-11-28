@@ -50,30 +50,30 @@ export function NodeContextMenu({
   return (
     <ContextMenu>
       <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
-      <ContextMenuContent className="w-56">
-        <div className="px-2 py-1.5 text-sm font-medium truncate border-b mb-1">{nodeLabel}</div>
+      <ContextMenuContent className='w-56'>
+        <div className='px-2 py-1.5 text-sm font-medium truncate border-b mb-1'>{nodeLabel}</div>
 
         {/* Focus Actions */}
         <ContextMenuSub>
           <ContextMenuSubTrigger>
-            <Focus className="h-4 w-4 mr-2" />
+            <Focus className='h-4 w-4 mr-2' />
             {t('graph.contextMenu.focusOnNode', 'Focus on this node')}
           </ContextMenuSubTrigger>
           <ContextMenuSubContent>
             <ContextMenuItem onClick={() => handleFocus(1)}>
-              <GitBranch className="h-4 w-4 mr-2" />
+              <GitBranch className='h-4 w-4 mr-2' />
               {t('graph.contextMenu.depth1', '1 level deep')}
             </ContextMenuItem>
             <ContextMenuItem onClick={() => handleFocus(2)}>
-              <GitBranch className="h-4 w-4 mr-2" />
+              <GitBranch className='h-4 w-4 mr-2' />
               {t('graph.contextMenu.depth2', '2 levels deep')}
             </ContextMenuItem>
             <ContextMenuItem onClick={() => handleFocus(3)}>
-              <GitBranch className="h-4 w-4 mr-2" />
+              <GitBranch className='h-4 w-4 mr-2' />
               {t('graph.contextMenu.depth3', '3 levels deep')}
             </ContextMenuItem>
             <ContextMenuItem onClick={() => handleFocus(5)}>
-              <Maximize2 className="h-4 w-4 mr-2" />
+              <Maximize2 className='h-4 w-4 mr-2' />
               {t('graph.contextMenu.allConnected', 'All connected')}
             </ContextMenuItem>
           </ContextMenuSubContent>
@@ -81,7 +81,7 @@ export function NodeContextMenu({
 
         {isFocused && (
           <ContextMenuItem onClick={clearFocus}>
-            <Focus className="h-4 w-4 mr-2" />
+            <Focus className='h-4 w-4 mr-2' />
             {t('graph.contextMenu.clearFocus', 'Clear focus')}
           </ContextMenuItem>
         )}
@@ -90,7 +90,7 @@ export function NodeContextMenu({
           <>
             <ContextMenuSeparator />
             <ContextMenuItem onClick={onZoomToNode}>
-              <ZoomIn className="h-4 w-4 mr-2" />
+              <ZoomIn className='h-4 w-4 mr-2' />
               {t('graph.contextMenu.zoomToNode', 'Zoom to node')}
             </ContextMenuItem>
           </>
@@ -101,16 +101,16 @@ export function NodeContextMenu({
             <ContextMenuSeparator />
             {onEdit && (
               <ContextMenuItem onClick={onEdit}>
-                <Pencil className="h-4 w-4 mr-2" />
+                <Pencil className='h-4 w-4 mr-2' />
                 {t('graph.contextMenu.editNode', 'Edit node')}
               </ContextMenuItem>
             )}
             {onDelete && (
               <ContextMenuItem
                 onClick={onDelete}
-                className="text-destructive focus:text-destructive"
+                className='text-destructive focus:text-destructive'
               >
-                <Trash2 className="h-4 w-4 mr-2" />
+                <Trash2 className='h-4 w-4 mr-2' />
                 {t('graph.contextMenu.deleteNode', 'Delete node')}
               </ContextMenuItem>
             )}

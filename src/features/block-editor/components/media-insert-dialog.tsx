@@ -113,30 +113,30 @@ export function MediaInsertDialog({ isOpen, onClose, onSubmit, type }: MediaInse
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
           <DialogTitle>{config.title}</DialogTitle>
           <DialogDescription>{config.description}</DialogDescription>
         </DialogHeader>
 
-        <div className="grid gap-4 py-4">
-          <div className="space-y-2">
+        <div className='grid gap-4 py-4'>
+          <div className='space-y-2'>
             <input
               ref={inputRef}
-              type="url"
+              type='url'
               value={url}
               onChange={handleChange}
               onKeyDown={handleKeyDown}
               placeholder={config.placeholder}
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              autoComplete="off"
+              className='flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
+              autoComplete='off'
             />
-            {error && <p className="text-sm text-destructive">{error}</p>}
+            {error && <p className='text-sm text-destructive'>{error}</p>}
           </div>
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
+          <Button variant='outline' onClick={onClose}>
             {t('editor.mediaDialog.cancel')}
           </Button>
           <Button onClick={handleSubmit}>{t('editor.mediaDialog.insert')}</Button>

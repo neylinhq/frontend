@@ -46,7 +46,7 @@ export const NodeConnectionsPanel = memo(
     if (totalCount === 0) {
       return (
         <div className={cn('flex items-center justify-center py-12', className)}>
-          <p className="text-sm text-muted-foreground">
+          <p className='text-sm text-muted-foreground'>
             {t('nodeDrawer.connections.noConnections')}
           </p>
         </div>
@@ -56,7 +56,7 @@ export const NodeConnectionsPanel = memo(
     return (
       <div className={cn('space-y-4', className)}>
         {/* Filter Pills */}
-        <div className="flex gap-1.5 rounded-lg bg-muted/50 p-1 w-fit">
+        <div className='flex gap-1.5 rounded-lg bg-muted/50 p-1 w-fit'>
           <FilterPill
             active={filter === 'all'}
             onClick={() => changeFilter('all')}
@@ -78,14 +78,14 @@ export const NodeConnectionsPanel = memo(
         </div>
 
         {/* Grouped connections list */}
-        <div className="space-y-4">
+        <div className='space-y-4'>
           {/* Incoming Section */}
           {incomingEdges.length > 0 && (
             <ConnectionSection
               title={t('nodeDrawer.connections.incoming')}
               count={incomingEdges.length}
-              icon={<ArrowDownLeft className="h-3.5 w-3.5" />}
-              color="blue"
+              icon={<ArrowDownLeft className='h-3.5 w-3.5' />}
+              color='blue'
               showHeader={filter === 'all'}
             >
               {incomingEdges.map(({ edge, node: connectedNode }) => (
@@ -93,7 +93,7 @@ export const NodeConnectionsPanel = memo(
                   key={edge.id}
                   edge={edge}
                   node={connectedNode}
-                  direction="incoming"
+                  direction='incoming'
                   showDirectionHint={filter === 'all'}
                 />
               ))}
@@ -105,8 +105,8 @@ export const NodeConnectionsPanel = memo(
             <ConnectionSection
               title={t('nodeDrawer.connections.outgoing')}
               count={outgoingEdges.length}
-              icon={<ArrowUpRight className="h-3.5 w-3.5" />}
-              color="emerald"
+              icon={<ArrowUpRight className='h-3.5 w-3.5' />}
+              color='emerald'
               showHeader={filter === 'all'}
             >
               {outgoingEdges.map(({ edge, node: connectedNode }) => (
@@ -114,7 +114,7 @@ export const NodeConnectionsPanel = memo(
                   key={edge.id}
                   edge={edge}
                   node={connectedNode}
-                  direction="outgoing"
+                  direction='outgoing'
                   showDirectionHint={filter === 'all'}
                 />
               ))}
@@ -142,7 +142,7 @@ interface FilterPillProps {
 function FilterPill({ active, onClick, label, count }: FilterPillProps) {
   return (
     <button
-      type="button"
+      type='button'
       onClick={onClick}
       className={cn(
         'rounded-md px-3 py-1.5 text-xs font-medium transition-all duration-150 cursor-pointer',
@@ -183,7 +183,7 @@ function ConnectionSection({
   return (
     <div>
       {showHeader && (
-        <div className="mb-2 flex items-center gap-2 px-1">
+        <div className='mb-2 flex items-center gap-2 px-1'>
           <span
             className={cn(
               'flex h-5 w-5 items-center justify-center rounded',
@@ -194,11 +194,11 @@ function ConnectionSection({
           >
             {icon}
           </span>
-          <span className="text-xs font-medium text-muted-foreground">{title}</span>
-          <span className="tabular-nums text-xs text-muted-foreground/60">({count})</span>
+          <span className='text-xs font-medium text-muted-foreground'>{title}</span>
+          <span className='tabular-nums text-xs text-muted-foreground/60'>({count})</span>
         </div>
       )}
-      <div className="space-y-0.5">{children}</div>
+      <div className='space-y-0.5'>{children}</div>
     </div>
   )
 }

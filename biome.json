@@ -26,7 +26,14 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "style": {
+        "useConst": "error",
+        "useBlockStatements": "warn"
+      },
+      "suspicious": {
+        "noExplicitAny": "warn"
+      }
     },
     "includes": [
       "**",
@@ -40,6 +47,7 @@
   "javascript": {
     "formatter": {
       "quoteStyle": "single",
+      "jsxQuoteStyle": "single",
       "semicolons": "asNeeded",
       "arrowParentheses": "asNeeded",
       "trailingCommas": "none"

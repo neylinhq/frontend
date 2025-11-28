@@ -19,7 +19,7 @@ const editorTheme = {
 
 function Placeholder({ text }: { text: string }) {
   return (
-    <div className="pointer-events-none absolute left-3 top-3 text-sm text-muted-foreground">
+    <div className='pointer-events-none absolute left-3 top-3 text-sm text-muted-foreground'>
       {text}
     </div>
   )
@@ -55,7 +55,7 @@ export function RichTextEditor({
       <div className={cn('relative rounded-md border border-input bg-background', className)}>
         <RichTextPlugin
           contentEditable={
-            <ContentEditable className="min-h-[200px] resize-none p-3 text-sm outline-none" />
+            <ContentEditable className='min-h-[200px] resize-none p-3 text-sm outline-none' />
           }
           placeholder={<Placeholder text={placeholder} />}
           ErrorBoundary={LexicalErrorBoundary}

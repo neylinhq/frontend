@@ -30,24 +30,24 @@ const TOC_ITEMS: TocItem[] = [
 
 export default function ContextMenuPage() {
   return (
-    <div className="flex gap-10">
-      <div className="flex-1 min-w-0 space-y-10">
-        <header className="space-y-4">
+    <div className='flex gap-10'>
+      <div className='flex-1 min-w-0 space-y-10'>
+        <header className='space-y-4'>
           <DocsBreadcrumbs
             items={[{ label: 'Components', href: '/docs/ui/button' }, { label: 'Context Menu' }]}
           />
-          <div className="flex items-center gap-3">
-            <Typography variant="h1">Context Menu</Typography>
-            <Badge variant="brand">Component</Badge>
+          <div className='flex items-center gap-3'>
+            <Typography variant='h1'>Context Menu</Typography>
+            <Badge variant='brand'>Component</Badge>
           </div>
-          <Typography variant="lead" className="max-w-2xl">
+          <Typography variant='lead' className='max-w-2xl'>
             Displays a menu at pointer position on right-click. Built with Radix UI.
           </Typography>
         </header>
 
-        <section id="basic" className="scroll-mt-20 space-y-4">
-          <Typography variant="h2">Basic</Typography>
-          <Typography variant="muted">Right-click on the area to see the context menu.</Typography>
+        <section id='basic' className='scroll-mt-20 space-y-4'>
+          <Typography variant='h2'>Basic</Typography>
+          <Typography variant='muted'>Right-click on the area to see the context menu.</Typography>
           <DocsComponentPreview
             code={`<ContextMenu>
   <ContextMenuTrigger className="flex h-[150px] w-[300px] items-center justify-center rounded-md border border-dashed">
@@ -67,10 +67,10 @@ export default function ContextMenuPage() {
           >
             <DocsPreview>
               <ContextMenu>
-                <ContextMenuTrigger className="flex h-[150px] w-[300px] items-center justify-center rounded-md border border-dashed text-sm">
+                <ContextMenuTrigger className='flex h-[150px] w-[300px] items-center justify-center rounded-md border border-dashed text-sm'>
                   Right click here
                 </ContextMenuTrigger>
-                <ContextMenuContent className="w-64">
+                <ContextMenuContent className='w-64'>
                   <ContextMenuItem>
                     Back
                     <ContextMenuShortcut>⌘[</ContextMenuShortcut>
@@ -94,10 +94,10 @@ export default function ContextMenuPage() {
           </DocsComponentPreview>
         </section>
 
-        <section id="usage" className="scroll-mt-20 space-y-4 pt-6 border-t">
-          <Typography variant="h2">Usage</Typography>
+        <section id='usage' className='scroll-mt-20 space-y-4 pt-6 border-t'>
+          <Typography variant='h2'>Usage</Typography>
           <DocsCodeBlock
-            language="tsx"
+            language='tsx'
             code={`import {
   ContextMenu,
   ContextMenuContent,
@@ -134,7 +134,7 @@ export function FileContextMenu({ children }: { children: React.ReactNode }) {
           />
         </section>
       </div>
-      <DocsToc items={TOC_ITEMS} className="hidden xl:block" />
+      <DocsToc items={TOC_ITEMS} className='hidden xl:block' />
     </div>
   )
 }

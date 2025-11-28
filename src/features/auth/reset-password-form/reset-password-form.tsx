@@ -32,12 +32,12 @@ export function ResetPasswordForm() {
 
   if (isSuccess) {
     return (
-      <div className="text-center space-y-4 flex flex-col items-center">
-        <div className="h-16 w-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-4">
-          <MailCheck className="h-8 w-8 text-green-600 dark:text-green-400" />
+      <div className='text-center space-y-4 flex flex-col items-center'>
+        <div className='h-16 w-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-4'>
+          <MailCheck className='h-8 w-8 text-green-600 dark:text-green-400' />
         </div>
-        <h3 className="text-xl font-semibold">{t('auth.resetPassword.checkEmailTitle')}</h3>
-        <Button variant="outline" className="w-full" asChild>
+        <h3 className='text-xl font-semibold'>{t('auth.resetPassword.checkEmailTitle')}</h3>
+        <Button variant='outline' className='w-full' asChild>
           <a href={AUTH_ROUTES.signIn}>{t('auth.resetPassword.backToSignIn')}</a>
         </Button>
       </div>
@@ -47,14 +47,14 @@ export function ResetPasswordForm() {
   return (
     <Form {...form}>
       <form
-        className="grid gap-4"
+        className='grid gap-4'
         onSubmit={form.handleSubmit(data => {
           submit(data, { method: 'post' })
         })}
       >
         <FormField
           control={form.control}
-          name="email"
+          name='email'
           render={({ field }) => (
             <FormItem>
               <FormLabel>{t('auth.resetPassword.emailLabel')}</FormLabel>
@@ -65,8 +65,8 @@ export function ResetPasswordForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+        <Button type='submit' className='w-full' disabled={isLoading}>
+          {isLoading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
           {t('auth.resetPassword.submitButton')}
         </Button>
       </form>

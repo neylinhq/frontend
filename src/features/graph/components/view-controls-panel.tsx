@@ -9,7 +9,7 @@ import {
 } from 'lucide-react'
 import { memo, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useGraphUI, useNodeSpacing } from '@/features/graph-view'
+import { useGraphUI, useNodeSpacing } from '../model/graph.store'
 import { cn } from '@/shared/lib/cn'
 import { Button } from '@/shared/ui/button'
 import { Card } from '@/shared/ui/card'

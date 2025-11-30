@@ -59,7 +59,7 @@ export function KeyboardShortcuts({ className }: KeyboardShortcutsProps) {
                 <span className='text-sm text-muted-foreground'>{shortcut.description}</span>
                 <div className='flex items-center gap-1'>
                   {shortcut.keys.map((key, index) => (
-                    <span key={index}>
+                    <span key={key}>
                       <kbd className='inline-flex h-5 min-w-[20px] items-center justify-center rounded border border-border bg-muted px-1.5 text-xs font-medium'>
                         {key}
                       </kbd>
@@ -94,7 +94,7 @@ export function KeyboardShortcutsCompact() {
           <span className='text-muted-foreground'>{shortcut.description}</span>
           <div className='flex items-center gap-0.5'>
             {shortcut.keys.map((key, index) => (
-              <span key={index}>
+              <span key={key}>
                 <kbd className='inline-flex h-4 min-w-[16px] items-center justify-center rounded border border-border bg-muted px-1 text-[10px]'>
                   {key}
                 </kbd>

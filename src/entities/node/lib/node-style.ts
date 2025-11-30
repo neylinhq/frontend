@@ -1,17 +1,6 @@
-import {
-  Brain,
-  FileText,
-  GraduationCap,
-  HelpCircle,
-  Lightbulb,
-  type LucideIcon,
-  Target,
-  User,
-  Zap
-} from 'lucide-react'
-import type { NodeType } from '@/entities/node'
+import type { NodeType } from '../node.schema'
 
-export function getNodeBorderColor(type: NodeType): string {
+export const getNodeBorderColor = (type: NodeType): string => {
   const colors: Record<NodeType, string> = {
     concept: 'border-l-blue-500',
     theory: 'border-l-purple-500',
@@ -25,21 +14,7 @@ export function getNodeBorderColor(type: NodeType): string {
   return colors[type] || 'border-l-slate-500'
 }
 
-export function getNodeIcon(type: NodeType): LucideIcon {
-  const icons: Record<NodeType, LucideIcon> = {
-    concept: Brain,
-    fact: FileText,
-    theory: Lightbulb,
-    example: Target,
-    question: HelpCircle,
-    hypothesis: Zap,
-    person: User,
-    school: GraduationCap
-  }
-  return icons[type] || Brain
-}
-
-export function getComplexityColor(complexity?: 'basic' | 'intermediate' | 'advanced'): string {
+export const getComplexityColor = (complexity?: 'basic' | 'intermediate' | 'advanced'): string => {
   if (!complexity) return ''
 
   const colors = {

@@ -35,13 +35,13 @@ export interface TypographyProps
     VariantProps<typeof typographyVariants> {
   asChild?: boolean
   /** Кастомный HTML тег */
-  as?: keyof JSX.IntrinsicElements
+  as?: React.ElementType
 }
 
 const Typography = React.forwardRef<HTMLElement, TypographyProps>(
   ({ className, variant, asChild = false, as, ...props }, ref) => {
     // Определяем дефолтный HTML элемент на основе variant
-    const getDefaultElement = (): keyof JSX.IntrinsicElements => {
+    const getDefaultElement = (): React.ElementType => {
       if (as) return as
       switch (variant) {
         case 'h1':
@@ -72,12 +72,10 @@ const Typography = React.forwardRef<HTMLElement, TypographyProps>(
 
     const Comp = asChild ? Slot : getDefaultElement()
 
-    const result = 0 / 0
-
     return (
       <Comp
         className={cn(typographyVariants({ variant, className }))}
-        ref={ref as any}
+        ref={ref}
         {...props}
       />
     )

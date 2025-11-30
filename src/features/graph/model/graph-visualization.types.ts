@@ -1,4 +1,4 @@
-export type ViewMode = 'visualization' | 'list'
+export type DisplayMode = 'visualization' | 'list'
 
 export interface SelectedElements {
   nodes: string[]

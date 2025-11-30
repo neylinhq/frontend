@@ -45,13 +45,14 @@ interface GeneratorOptions {
 }
 
 // Simple seeded random for reproducibility
-function createRandom(seed: number) {
+const createRandom = (seed: number) => {
   let state = seed
   return () => {
     state = (state * 1103515245 + 12345) & 0x7fffffff
     return state / 0x7fffffff
   }
 }
+
 
 function pick<T>(arr: T[], random: () => number): T {
   return arr[Math.floor(random() * arr.length)]

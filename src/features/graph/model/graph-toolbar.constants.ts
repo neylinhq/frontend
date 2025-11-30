@@ -1,7 +1,7 @@
 import { Focus, type LucideIcon, Network, Route } from 'lucide-react'
 import type { RelationType } from '@/entities/edge'
 import type { NodeType } from '@/entities/node'
-import type { ViewMode } from '@/features/graph-view'
+import type { ViewMode } from './graph.store'
 
 // View mode icons and labels
 export const VIEW_MODE_CONFIG: Record<ViewMode, { icon: typeof Network; labelKey: string }> = {

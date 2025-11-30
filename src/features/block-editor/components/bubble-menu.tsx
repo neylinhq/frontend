@@ -546,22 +546,8 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
 
                 try {
                   await navigator.clipboard.writeText(text)
-                } catch (err) {
-                  // Fallback for browsers without clipboard API or when permission denied
-                  console.error('Failed to copy to clipboard:', err)
-                  try {
-                    const textarea = document.createElement('textarea')
-                    textarea.value = text
-                    textarea.style.position = 'fixed'
-                    textarea.style.opacity = '0'
-                    textarea.style.pointerEvents = 'none'
-                    document.body.appendChild(textarea)
-                    textarea.select()
-                    document.execCommand('copy')
-                    document.body.removeChild(textarea)
-                  } catch (fallbackErr) {
-                    console.error('Fallback copy also failed:', fallbackErr)
-                  }
+                } catch {
+                  // Clipboard API failed - user denied permission or unsupported
                 }
 
                 dispatch({ type: 'CLOSE_ALL' })

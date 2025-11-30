@@ -2,24 +2,30 @@ import { ArrowDownLeft, ArrowUpRight } from 'lucide-react'
 import { memo, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { useConnectionFilter } from '@/entities/edge'
 import type { Edge } from '@/entities/edge'
+import { getNodeIcon } from '@/entities/node'
 import type { Node } from '@/entities/node'
 import { cn } from '@/shared/lib/cn'
-import { useConnectionFilter } from '../model/connection-filter.hooks'
-import { ConnectionItem } from './connection-item'
+import { ConnectionItem } from '@/shared/ui/connection-item'
 
 interface NodeConnectionsPanelProps {
   node: Node
   edges: Edge[]
   allNodes: Node[]
   className?: string
+  onOpenNode?: (nodeId: string) => void
+  onPanToNode?: (nodeId: string) => void
 }
 
 export const NodeConnectionsPanel = memo(
-  ({ node, edges, allNodes, className }: NodeConnectionsPanelProps) => {
+  ({ node, edges, allNodes, className, onOpenNode, onPanToNode }: NodeConnectionsPanelProps) => {
     const { t } = useTranslation()
     const { filter, changeFilter, filteredEdges, incomingCount, outgoingCount, totalCount } =
       useConnectionFilter(node.id, edges)
+
+    // Create node lookup map for O(1) access
+    const nodesMap = useMemo(() => new Map(allNodes.map(n => [n.id, n])), [allNodes])
 
     // Group edges by direction
     const { incomingEdges, outgoingEdges } = useMemo(() => {
@@ -29,7 +35,7 @@ export const NodeConnectionsPanel = memo(
       for (const edge of filteredEdges) {
         const isIncoming = edge.targetNodeId === node.id
         const connectedNodeId = isIncoming ? edge.sourceNodeId : edge.targetNodeId
-        const connectedNode = allNodes.find(n => n.id === connectedNodeId)
+        const connectedNode = nodesMap.get(connectedNodeId)
 
         if (!connectedNode) continue
 
@@ -41,7 +47,7 @@ export const NodeConnectionsPanel = memo(
       }
 
       return { incomingEdges: incoming, outgoingEdges: outgoing }
-    }, [filteredEdges, node.id, allNodes])
+    }, [filteredEdges, node.id, nodesMap])
 
     if (totalCount === 0) {
       return (
@@ -88,15 +94,26 @@ export const NodeConnectionsPanel = memo(
               color='blue'
               showHeader={filter === 'all'}
             >
-              {incomingEdges.map(({ edge, node: connectedNode }) => (
-                <ConnectionItem
-                  key={edge.id}
-                  edge={edge}
-                  node={connectedNode}
-                  direction='incoming'
-                  showDirectionHint={filter === 'all'}
-                />
-              ))}
+              {incomingEdges.map(({ edge, node: connectedNode }) => {
+                const NodeIcon = getNodeIcon(connectedNode.type)
+                return (
+                  <ConnectionItem
+                    key={edge.id}
+                    icon={<NodeIcon className='w-4 h-4 text-muted-foreground' />}
+                    label={connectedNode.label}
+                    subtitle={
+                      <>
+                        <span>{t(`graph.edgeTypes.${edge.relationType}`)}</span>
+                        {edge.label && <span className='opacity-60'>· {edge.label}</span>}
+                      </>
+                    }
+                    direction='incoming'
+                    showDirectionHint={filter === 'all'}
+                    onOpen={onOpenNode ? () => onOpenNode(connectedNode.id) : undefined}
+                    onPanTo={onPanToNode ? () => onPanToNode(connectedNode.id) : undefined}
+                  />
+                )
+              })}
             </ConnectionSection>
           )}
 
@@ -109,15 +126,26 @@ export const NodeConnectionsPanel = memo(
               color='emerald'
               showHeader={filter === 'all'}
             >
-              {outgoingEdges.map(({ edge, node: connectedNode }) => (
-                <ConnectionItem
-                  key={edge.id}
-                  edge={edge}
-                  node={connectedNode}
-                  direction='outgoing'
-                  showDirectionHint={filter === 'all'}
-                />
-              ))}
+              {outgoingEdges.map(({ edge, node: connectedNode }) => {
+                const NodeIcon = getNodeIcon(connectedNode.type)
+                return (
+                  <ConnectionItem
+                    key={edge.id}
+                    icon={<NodeIcon className='w-4 h-4 text-muted-foreground' />}
+                    label={connectedNode.label}
+                    subtitle={
+                      <>
+                        <span>{t(`graph.edgeTypes.${edge.relationType}`)}</span>
+                        {edge.label && <span className='opacity-60'>· {edge.label}</span>}
+                      </>
+                    }
+                    direction='outgoing'
+                    showDirectionHint={filter === 'all'}
+                    onOpen={onOpenNode ? () => onOpenNode(connectedNode.id) : undefined}
+                    onPanTo={onPanToNode ? () => onPanToNode(connectedNode.id) : undefined}
+                  />
+                )
+              })}
             </ConnectionSection>
           )}
         </div>

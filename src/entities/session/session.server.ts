@@ -26,12 +26,11 @@ export async function getSession(request: Request): Promise<SessionData | null> 
   return session as SessionData
 }
 
-export const commitSession = (session: SessionData) => {
+export const commitSession = async (session: SessionData) => {
   return await sessionCookie.serialize(session)
 }
 
-
-export const destroySession = () => {
+export const destroySession = async () => {
   return await sessionCookie.serialize('', { maxAge: 0 }) // удаляем
 }
 

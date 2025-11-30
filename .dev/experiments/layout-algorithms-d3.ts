@@ -20,7 +20,7 @@ import {
   type SimulationNodeDatum
 } from 'd3-force'
 import type { RelationType } from '@/entities/edge'
-import type { ViewMode } from '../../src/features/graph-view/model/graph-view.store'
+import type { ViewMode } from '@/features/graph'
 
 interface LayoutOptions {
   viewMode: ViewMode

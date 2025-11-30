@@ -3,14 +3,14 @@ import { memo, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import type { Edge, Node } from '@/entities/map'
-import { useFocusMode } from '@/features/graph-view'
-import { getNodeIcon } from '@/features/graph-visualization/lib/get-node-style'
+import { getNodeIcon } from '@/entities/node'
+import { useFocusMode } from '@/features/graph'
+import { NodeConnectionsPanel } from '@/features/node-connections-panel'
 import { cn } from '@/shared/lib/cn'
 import { Button } from '@/shared/ui/button'
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/shared/ui/drawer'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/tabs'
 import { useDrawerTabs } from '../model/drawer-tabs.hooks'
-import { DrawerConnectionsTab } from './drawer-connections-tab'
 import { DrawerOverviewTab } from './drawer-overview-tab'
 
 interface NodeDrawerProps {
@@ -97,7 +97,7 @@ export const NodeDrawer = memo(
             </TabsContent>
 
             <TabsContent value='connections' className='mt-4'>
-              <DrawerConnectionsTab
+              <NodeConnectionsPanel
                 node={node}
                 edges={edges}
                 allNodes={nodes}

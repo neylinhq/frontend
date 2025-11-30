@@ -148,7 +148,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   if (localLocale && localLocale !== cookieLocale) {
                     document.cookie = 'i18nextLng=' + localLocale + '; path=/; max-age=31536000; SameSite=Lax';
                   }
-                } catch (e) {}
+                } catch (e) { /* localStorage unavailable - use defaults */ }
               })();
             `
           }}

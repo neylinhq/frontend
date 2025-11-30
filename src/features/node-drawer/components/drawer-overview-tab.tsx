@@ -1,11 +1,7 @@
 import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Node } from '@/entities/map'
-import {
-  getComplexityColor,
-  getNodeBorderColor,
-  getNodeIcon
-} from '@/features/graph-visualization/lib/get-node-style'
+import { getComplexityColor, getNodeBorderColor } from '@/entities/node'
 import { cn } from '@/shared/lib/cn'
 import { Badge } from '@/shared/ui/badge'
 
@@ -16,7 +12,6 @@ interface DrawerOverviewTabProps {
 
 export const DrawerOverviewTab = memo(({ node, className }: DrawerOverviewTabProps) => {
   const { t, i18n } = useTranslation()
-  const Icon = getNodeIcon(node.type)
 
   return (
     <div className={cn('space-y-6', className)}>

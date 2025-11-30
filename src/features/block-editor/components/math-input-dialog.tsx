@@ -242,6 +242,9 @@ export function MathInputDialog({
       if (focusTimeoutRef.current) clearTimeout(focusTimeoutRef.current)
       focusTimeoutRef.current = window.setTimeout(() => inputRef.current?.focus(), 100)
     }
+    return () => {
+      if (focusTimeoutRef.current) clearTimeout(focusTimeoutRef.current)
+    }
   }, [isOpen, initialValue])
 
   // Render preview with race condition protection

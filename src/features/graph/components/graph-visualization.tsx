@@ -3,7 +3,9 @@ import {
   addEdge,
   Background,
   type Connection,
+  type EdgeChange,
   MiniMap,
+  type NodeChange,
   ReactFlow,
   ReactFlowProvider,
   useEdgesState,
@@ -12,26 +14,27 @@ import {
   useViewport
 } from '@xyflow/react'
 import { Loader2 } from 'lucide-react'
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { type FullMap, useFullMap } from '@/entities/map'
+import { NodeDrawer } from '@/features/node-drawer'
+import { cn } from '@/shared/lib/cn'
+import { useDarkMode } from '@/shared/lib/use-dark-mode'
+import { Card } from '@/shared/ui/card'
+import { applyLayout } from '../lib/layout-algorithms-optimized'
+import { transformEdgesToFlow, transformNodesToFlow } from '../lib/transform-data'
 import {
-  applyLayout,
-  getNodesWithinDepth,
   layoutEvent,
   useFilters,
   useFocusMode,
-  useGraphKeyboard,
   useGraphUI,
   useNodeSpacing,
   useViewMode
-} from '@/features/graph-view'
-import { NodeDrawer } from '@/features/node-drawer'
-import { cn } from '@/shared/lib/cn'
-import { Card } from '@/shared/ui/card'
-import { transformEdgesToFlow, transformNodesToFlow } from '../lib/transform-data'
-import { easeOutCubic, useAnimatedLayout } from '../lib/use-animated-layout'
+} from '../model/graph.store'
 import { useGraphControls } from '../model/graph-controls.hooks'
+import { useFilteredGraphData } from '../model/graph-data.hooks'
+import { useGraphKeyboard } from '../model/graph-keyboard.hooks'
+import { easeOutCubic, useAnimatedLayout } from '../model/graph-layout.hooks'
 import { useNodeSelection } from '../model/node-selection.hooks'
 import { GraphToolbar } from './graph-toolbar'
 import { KnowledgeEdge } from './knowledge-edge'
@@ -93,17 +96,7 @@ function GraphVisualizationContent({
   const { animateToPositions } = useAnimatedLayout()
 
   // Track dark mode for theme-aware styling
-  const [isDark, setIsDark] = useState(
-    () => typeof document !== 'undefined' && document.documentElement.classList.contains('dark')
-  )
-
-  useEffect(() => {
-    const observer = new MutationObserver(() => {
-      setIsDark(document.documentElement.classList.contains('dark'))
-    })
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
-    return () => observer.disconnect()
-  }, [])
+  const isDark = useDarkMode()
 
   // Use refs for layout params to avoid stale closures when triggerLayout fires
   const layoutParamsRef = useRef({
@@ -121,53 +114,15 @@ function GraphVisualizationContent({
     animationDuration
   }
 
-  // Calculate counts by type for filters
-  const { nodeCountsByType, edgeCountsByType } = useMemo(() => {
-    if (!fullMap) return { nodeCountsByType: {}, edgeCountsByType: {} }
-
-    const nodeCounts: Record<string, number> = {}
-    const edgeCounts: Record<string, number> = {}
-
-    for (const node of fullMap.nodes) {
-      nodeCounts[node.type] = (nodeCounts[node.type] || 0) + 1
-    }
-
-    for (const edge of fullMap.edges) {
-      edgeCounts[edge.relationType] = (edgeCounts[edge.relationType] || 0) + 1
-    }
-
-    return { nodeCountsByType: nodeCounts, edgeCountsByType: edgeCounts }
-  }, [fullMap])
-
-  // Filter nodes based on visibility settings and focus mode
-  const filteredData = useMemo(() => {
-    if (!fullMap) return { nodes: [], edges: [] }
-
-    // Start with type-filtered nodes
-    let visibleNodes = fullMap.nodes.filter(node => visibleNodeTypes.has(node.type))
-
-    // Filter edges by type
-    let visibleEdges = fullMap.edges.filter(edge => visibleEdgeTypes.has(edge.relationType))
-
-    // In focus mode, further filter to nodes within depth
-    if (viewMode === 'focus' && focusedNodeId) {
-      // Get flow edges for depth calculation
-      const flowEdges = visibleEdges.map(e => ({
-        id: e.id,
-        source: e.sourceNodeId,
-        target: e.targetNodeId
-      }))
-
-      const nodesInRange = getNodesWithinDepth(focusedNodeId, flowEdges, focusDepth)
-
-      visibleNodes = visibleNodes.filter(n => nodesInRange.has(n.id))
-      visibleEdges = visibleEdges.filter(
-        e => nodesInRange.has(e.sourceNodeId) && nodesInRange.has(e.targetNodeId)
-      )
-    }
-
-    return { nodes: visibleNodes, edges: visibleEdges }
-  }, [fullMap, visibleNodeTypes, visibleEdgeTypes, viewMode, focusedNodeId, focusDepth])
+  // Get filtered data and counts using extracted hook
+  const { filteredData, nodeCountsByType, edgeCountsByType } = useFilteredGraphData({
+    fullMap,
+    visibleNodeTypes,
+    visibleEdgeTypes,
+    viewMode,
+    focusedNodeId,
+    focusDepth
+  })
 
   // Handle node click - in focus mode, focus on clicked node
   const handleNodeClick = useCallback(
@@ -372,7 +327,7 @@ function GraphVisualizationContent({
 
   // Handle node changes
   const handleNodesChange = useCallback(
-    (changes: any) => {
+    (changes: NodeChange[]) => {
       if (!interactive) return
       onNodesChange(changes)
     },
@@ -381,7 +336,7 @@ function GraphVisualizationContent({
 
   // Handle edge changes
   const handleEdgesChange = useCallback(
-    (changes: any) => {
+    (changes: EdgeChange[]) => {
       if (!interactive) return
       onEdgesChange(changes)
     },

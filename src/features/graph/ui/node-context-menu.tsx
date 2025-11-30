@@ -11,7 +11,7 @@ import {
   ContextMenuSubTrigger,
   ContextMenuTrigger
 } from '@/shared/ui/context-menu'
-import { useGraphViewStore } from '../model/graph-view.store'
+import { useGraphViewStore } from '../model/graph.store'
 
 interface NodeContextMenuProps {
   children: React.ReactNode

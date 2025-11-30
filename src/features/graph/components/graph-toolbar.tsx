@@ -11,7 +11,7 @@ import {
   useFocusMode,
   useViewMode,
   type ViewMode
-} from '@/features/graph-view'
+} from '../model/graph.store'
 import { cn } from '@/shared/lib/cn'
 import { Badge } from '@/shared/ui/badge'
 import { Button } from '@/shared/ui/button'

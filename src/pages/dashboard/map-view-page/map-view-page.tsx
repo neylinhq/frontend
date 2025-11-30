@@ -1,5 +1,5 @@
 import type { FullMap } from '@/entities/map'
-import { GraphVisualization } from '@/features/graph-visualization'
+import { GraphVisualization } from '@/features/graph'
 
 interface MapViewPageProps {
   map: FullMap

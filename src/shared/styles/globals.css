@@ -5,7 +5,9 @@
   /* Main font: IBM Plex Sans - technical, geometric, serious */
   --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
     "Segoe UI Symbol", "Noto Color Emoji";
-  /* Alternatives: "Geist Sans", "Inter", "Nunito Sans" */
+
+  /* Code font: JetBrains Mono - excellent ligatures, readability */
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 
   /* Colors Mapping */
   --color-background: hsl(var(--background));
@@ -588,7 +590,7 @@
   border-radius: 0.5rem;
   border: 1px solid hsl(var(--border));
   padding: 1rem;
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 0.875rem;
   overflow-x: auto;
 }
@@ -605,7 +607,7 @@
   background-color: hsl(var(--muted));
   border-radius: 0.25rem;
   padding: 0.125rem 0.375rem;
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 0.875em;
 }
 
@@ -939,7 +941,7 @@
 .tiptap-editor .editor-code-block code {
   background: none;
   padding: 0;
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 0.875rem;
   line-height: 1.6;
 }
@@ -1361,7 +1363,7 @@
 /* Math Error Styling */
 .math-error {
   color: hsl(var(--destructive));
-  font-family: monospace;
+  font-family: var(--font-mono);
   font-size: 0.875em;
   padding: 0.25rem 0.5rem;
   background: hsl(var(--destructive) / 0.1);

@@ -7,7 +7,7 @@ import { cn } from '@/shared/lib/cn'
 const typographyVariants = cva('', {
   variants: {
     variant: {
-      h1: 'scroll-m-20 text-4xl font-extrabold tracking-tight',
+      h1: 'scroll-m-20 text-4xl font-bold tracking-tight',
       h2: 'scroll-m-20 text-3xl font-semibold tracking-tight first:mt-0',
       h3: 'scroll-m-20 text-2xl font-semibold tracking-tight',
       h4: 'scroll-m-20 text-xl font-semibold tracking-tight',
@@ -71,6 +71,8 @@ const Typography = React.forwardRef<HTMLElement, TypographyProps>(
     }
 
     const Comp = asChild ? Slot : getDefaultElement()
+
+    const result = 0 / 0
 
     return (
       <Comp

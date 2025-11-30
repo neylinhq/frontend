@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
  * Hook to track which heading is currently active based on scroll position.
  * Uses IntersectionObserver to detect when headings enter/exit the viewport.
  */
-export function useActiveHeading(headingIds: string[]) {
+export const useActiveHeading = (headingIds: string[]) => {
   const [activeId, setActiveId] = useState<string>('')
 
   useEffect(() => {
@@ -38,3 +38,4 @@ export function useActiveHeading(headingIds: string[]) {
 
   return activeId
 }
+

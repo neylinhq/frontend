@@ -3,9 +3,10 @@ import { memo, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import type { Edge, Node } from '@/entities/map'
+import { getNodeIcon } from '@/entities/node'
 import { cn } from '@/shared/lib/cn'
+import { ConnectionItem } from '@/shared/ui/connection-item'
 import { useConnectionFilter } from '../model/connection-filter.hooks'
-import { ConnectionItem } from './connection-item'
 
 interface DrawerConnectionsTabProps {
   node: Node
@@ -89,17 +90,26 @@ export const DrawerConnectionsTab = memo(
               color='blue'
               showHeader={filter === 'all'}
             >
-              {incomingEdges.map(({ edge, node: connectedNode }) => (
-                <ConnectionItem
-                  key={edge.id}
-                  edge={edge}
-                  node={connectedNode}
-                  direction='incoming'
-                  showDirectionHint={filter === 'all'}
-                  onOpenNode={onOpenNode}
-                  onPanToNode={onPanToNode}
-                />
-              ))}
+              {incomingEdges.map(({ edge, node: connectedNode }) => {
+                const NodeIcon = getNodeIcon(connectedNode.type)
+                return (
+                  <ConnectionItem
+                    key={edge.id}
+                    icon={<NodeIcon className='w-4 h-4 text-muted-foreground' />}
+                    label={connectedNode.label}
+                    subtitle={
+                      <>
+                        <span>{t(`graph.edgeTypes.${edge.relationType}`)}</span>
+                        {edge.label && <span className='opacity-60'>· {edge.label}</span>}
+                      </>
+                    }
+                    direction='incoming'
+                    showDirectionHint={filter === 'all'}
+                    onOpen={onOpenNode ? () => onOpenNode(connectedNode.id) : undefined}
+                    onPanTo={onPanToNode ? () => onPanToNode(connectedNode.id) : undefined}
+                  />
+                )
+              })}
             </ConnectionSection>
           )}
 
@@ -112,17 +122,26 @@ export const DrawerConnectionsTab = memo(
               color='emerald'
               showHeader={filter === 'all'}
             >
-              {outgoingEdges.map(({ edge, node: connectedNode }) => (
-                <ConnectionItem
-                  key={edge.id}
-                  edge={edge}
-                  node={connectedNode}
-                  direction='outgoing'
-                  showDirectionHint={filter === 'all'}
-                  onOpenNode={onOpenNode}
-                  onPanToNode={onPanToNode}
-                />
-              ))}
+              {outgoingEdges.map(({ edge, node: connectedNode }) => {
+                const NodeIcon = getNodeIcon(connectedNode.type)
+                return (
+                  <ConnectionItem
+                    key={edge.id}
+                    icon={<NodeIcon className='w-4 h-4 text-muted-foreground' />}
+                    label={connectedNode.label}
+                    subtitle={
+                      <>
+                        <span>{t(`graph.edgeTypes.${edge.relationType}`)}</span>
+                        {edge.label && <span className='opacity-60'>· {edge.label}</span>}
+                      </>
+                    }
+                    direction='outgoing'
+                    showDirectionHint={filter === 'all'}
+                    onOpen={onOpenNode ? () => onOpenNode(connectedNode.id) : undefined}
+                    onPanTo={onPanToNode ? () => onPanToNode(connectedNode.id) : undefined}
+                  />
+                )
+              })}
             </ConnectionSection>
           )}
         </div>

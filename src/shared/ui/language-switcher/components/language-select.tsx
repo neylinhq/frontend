@@ -11,7 +11,7 @@ type LanguageSelectProps = {
   compact?: boolean
 }
 
-export function LanguageSelect({ compact }: LanguageSelectProps) {
+export const LanguageSelect = ({ compact }: LanguageSelectProps) => {
   const { i18n } = useTranslation()
   const [open, setOpen] = useState(false)
 

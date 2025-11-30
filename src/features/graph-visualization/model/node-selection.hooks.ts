@@ -2,7 +2,7 @@ import type { Edge as FlowEdge, Node as FlowNode } from '@xyflow/react'
 import { useCallback, useState } from 'react'
 import type { SelectedElements } from './graph-visualization.types'
 
-export function useNodeSelection() {
+export const useNodeSelection = () => {
   const [selectedElements, setSelectedElements] = useState<SelectedElements>({
     nodes: [],
     edges: []
@@ -36,3 +36,4 @@ export function useNodeSelection() {
     selectedNodeId: drawerNodeId
   }
 }
+

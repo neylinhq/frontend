@@ -16,7 +16,7 @@ export function editorToHTML(editor: Editor): string {
  *
  * NOTE: This function requires DOM API and will return undefined during SSR
  */
-export function htmlToEditor(html: string) {
+export const htmlToEditor = (html: string) => {
   // Guard: generateJSON requires window/DOM, not available during SSR
   if (typeof window === 'undefined') {
     return undefined
@@ -25,6 +25,7 @@ export function htmlToEditor(html: string) {
   const extensions = createExtensions()
   return generateJSON(html, extensions)
 }
+
 
 /**
  * Extract plain text from HTML (for description field)

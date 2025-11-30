@@ -20,7 +20,6 @@ import {
   type SimulationNodeDatum
 } from 'd3-force'
 import type { RelationType } from '@/entities/edge'
-import { ENABLE_EDGE_CROSSING_MINIMIZATION } from '../../src/features/graph-view/model/graph-view.constants'
 import type { ViewMode } from '../../src/features/graph-view/model/graph-view.store'
 
 interface LayoutOptions {
@@ -34,6 +33,10 @@ interface LayoutResult {
   nodes: Node[]
   edges: Edge[]
 }
+
+// Enable experimental edge crossing minimization force
+// This adds O(m²) complexity but can reduce edge crossings at low direction values
+const ENABLE_EDGE_CROSSING_MINIMIZATION = false
 
 // Edge weights for clustering - prerequisite is strongest
 const EDGE_WEIGHTS: Record<RelationType, number> = {

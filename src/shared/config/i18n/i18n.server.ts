@@ -54,7 +54,7 @@ export function detectLanguage(acceptLanguage: string | null): SupportedLanguage
 /**
  * Get i18n data for SSR - to be used in root loader
  */
-export function getI18nData(request: Request) {
+export const getI18nData = (request: Request) => {
   // Check cookie first (user preference), then Accept-Language header
   const cookieHeader = request.headers.get('Cookie')
   const cookieLocale = cookieHeader
@@ -76,3 +76,4 @@ export function getI18nData(request: Request) {
     translations
   }
 }
+

@@ -19,8 +19,7 @@ export {
 } from './lib/layout-algorithms-optimized'
 // Hooks
 export { useGraphKeyboard } from './lib/use-graph-keyboard'
-// Constants
-export { USE_D3_LAYOUT } from './model/graph-view.constants'
+// Store
 export {
   ALL_EDGE_TYPES,
   ALL_NODE_TYPES,

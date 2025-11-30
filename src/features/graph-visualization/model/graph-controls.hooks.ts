@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react'
 import type { GraphControls } from './graph-visualization.types'
 
-export function useGraphControls() {
+export const useGraphControls = () => {
   const [controls, setControls] = useState<GraphControls>({
     zoom: 100,
     isFullscreen: false,
@@ -27,3 +27,4 @@ export function useGraphControls() {
     toggleMinimap
   }
 }
+

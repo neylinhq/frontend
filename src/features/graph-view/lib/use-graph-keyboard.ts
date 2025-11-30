@@ -10,13 +10,13 @@ interface UseGraphKeyboardOptions {
   enabled?: boolean
 }
 
-export function useGraphKeyboard({
+export const useGraphKeyboard = ({
   selectedNodeId,
   onFitView,
   onZoomIn,
   onZoomOut,
   enabled = true
-}: UseGraphKeyboardOptions) {
+}: UseGraphKeyboardOptions) => {
   const {
     viewMode,
     setViewMode,
@@ -165,3 +165,4 @@ export function useGraphKeyboard({
     ]
   }
 }
+

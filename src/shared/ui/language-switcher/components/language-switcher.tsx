@@ -7,9 +7,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/shared/ui/dropdown-menu'
-import { LANGUAGES } from './language-switcher.constants'
+import { LANGUAGES } from '../language-switcher.constants'
 
-export function LanguageSwitcher() {
+export const LanguageSwitcher = () => {
   const { i18n } = useTranslation()
 
   const changeLanguage = (lng: string) => {
@@ -27,7 +27,6 @@ export function LanguageSwitcher() {
       <DropdownMenuContent align='end'>
         {LANGUAGES.map(lang => (
           <DropdownMenuItem key={lang.id} onClick={() => changeLanguage(lang.id)}>
-            <lang.Flag className='mr-2 h-5 w-5 rounded-full object-cover border border-border' />
             {lang.label}
           </DropdownMenuItem>
         ))}

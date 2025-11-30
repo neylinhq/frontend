@@ -24,6 +24,6 @@
   border-radius: 0.25rem;
   border: 1px solid hsl(var(--border));
   background: hsl(var(--background));
-  font-family: ui-monospace, monospace;
+  font-family: var(--font-mono);
   font-size: 0.625rem;
 }

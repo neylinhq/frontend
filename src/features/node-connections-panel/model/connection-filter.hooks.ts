@@ -3,7 +3,7 @@ import type { Edge } from '@/entities/edge'
 
 export type ConnectionFilterType = 'all' | 'incoming' | 'outgoing'
 
-export function useConnectionFilter(nodeId: string, edges: Edge[]) {
+export const useConnectionFilter = (nodeId: string, edges: Edge[]) => {
   const [filter, setFilter] = useState<ConnectionFilterType>('all')
 
   const incomingEdges = useMemo(() => {
@@ -38,3 +38,4 @@ export function useConnectionFilter(nodeId: string, edges: Edge[]) {
     totalCount: incomingEdges.length + outgoingEdges.length
   }
 }
+

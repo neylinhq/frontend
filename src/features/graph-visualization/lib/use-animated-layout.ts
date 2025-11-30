@@ -17,7 +17,7 @@ const DEFAULT_CONFIG: AnimationConfig = {
   easing: easeOutCubic
 }
 
-export function useAnimatedLayout() {
+export const useAnimatedLayout = () => {
   const animationRef = useRef<number | null>(null)
   const { setNodes, setCenter } = useReactFlow()
   const { zoom } = useViewport()
@@ -156,3 +156,4 @@ export function useAnimatedLayout() {
     cancelAnimation
   }
 }
+

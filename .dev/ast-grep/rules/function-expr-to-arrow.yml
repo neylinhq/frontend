@@ -1,0 +1,11 @@
+id: function-expr-to-arrow
+language: typescript
+rule:
+  pattern: |
+    export function $NAME($$$PARAMS) {
+      $$$BODY
+    }
+fix: |
+  export const $NAME = ($$$PARAMS) => {
+    $$$BODY
+  }

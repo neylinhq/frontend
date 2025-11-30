@@ -20,7 +20,7 @@ let initialized = false
 /**
  * Initialize i18n with SSR data (translations from server)
  */
-export function initI18n(data?: I18nInitData) {
+export const initI18n = (data?: I18nInitData) => {
   if (initialized) return i18n
 
   if (data?.translations) {
@@ -83,5 +83,6 @@ export function initI18n(data?: I18nInitData) {
   initialized = true
   return i18n
 }
+
 
 export default i18n

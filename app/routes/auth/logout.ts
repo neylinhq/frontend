@@ -2,7 +2,7 @@ import { redirect } from 'react-router'
 import { sessionApi } from '@/entities/session/session.api'
 import { destroySession } from '@/entities/session/session.server'
 
-export async function action() {
+export const action = () => {
   // Call logout API to cleanup server-side session if needed
   await sessionApi.logout()
 
@@ -13,3 +13,4 @@ export async function action() {
     }
   })
 }
+

@@ -1,6 +1,6 @@
 import type * as React from 'react'
 import { ThemeToggle } from '@/app/theme/components/theme-toggle'
-import { LanguageSwitcher } from '@/features/language-switcher'
+import { LanguageSwitcher } from '@/shared/ui/language-switcher'
 import { Logo } from '@/shared/ui/logo'
 
 interface AuthLayoutProps {

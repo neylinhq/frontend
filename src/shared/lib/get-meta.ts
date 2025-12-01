@@ -46,7 +46,7 @@ const META_TRANSLATIONS = {
     },
     license: {
       title: 'Лицензионное соглашение',
-      description: 'Условия лицензирования программного обеспечения Arbor'
+      description: 'Условия лицензирования программного обеспечения Neylin'
     },
     notFound: {
       title: 'Страница не найдена',
@@ -108,7 +108,7 @@ const META_TRANSLATIONS = {
     },
     license: {
       title: 'License Agreement',
-      description: 'Arbor software licensing terms'
+      description: 'Neylin software licensing terms'
     },
     notFound: {
       title: 'Page Not Found',

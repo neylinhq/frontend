@@ -44,7 +44,7 @@ export const PricingPage = ({ plans }: PricingPageProps) => {
         <div className='text-center mt-16'>
           <p className='text-sm text-muted-foreground'>
             {t('pricing.questions', 'Questions?')}{' '}
-            <a href='mailto:support@arbor.com' className='text-foreground hover:underline'>
+            <a href='mailto:support@neylin.com' className='text-foreground hover:underline'>
               {t('pricing.contactUs', 'Contact us')}
             </a>
           </p>

@@ -50,7 +50,7 @@ export const TermsPage = () => {
       <Typography variant='h2'>9. {t('legal.terms.sections.contact.title')}</Typography>
       <p>
         {t('legal.terms.sections.contact.content')}{' '}
-        <a href='mailto:legal@arbor.com'>legal@arbor.com</a>.
+        <a href='mailto:legal@neylin.com'>legal@neylin.com</a>.
       </p>
     </LegalLayout>
   )

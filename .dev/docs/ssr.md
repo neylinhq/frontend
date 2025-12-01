@@ -2,7 +2,7 @@
 
 ## Overview
 
-Arbor использует React Router v7 с SSR (Server-Side Rendering). Основные проблемы SSR — это FOUC (Flash of Unstyled Content) и мигание при загрузке lazy CSS. Эта документация описывает архитектурные решения для их предотвращения.
+Neylin использует React Router v7 с SSR (Server-Side Rendering). Основные проблемы SSR — это FOUC (Flash of Unstyled Content) и мигание при загрузке lazy CSS. Эта документация описывает архитектурные решения для их предотвращения.
 
 ---
 

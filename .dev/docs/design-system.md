@@ -1,4 +1,4 @@
-# Arbor Design System
+# Neylin Design System
 
 ## Philosophy
 

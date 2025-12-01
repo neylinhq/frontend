@@ -1,4 +1,4 @@
-# Архитектура Backend: Arbor
+# Архитектура Backend: Neylin
 
 ## 1. Обзор Clean Architecture
 
@@ -58,7 +58,7 @@ Clean Architecture — архитектурный паттерн, где биз�
 ## 2. Структура проекта
 
 ```
-arbor-backend/
+neylin-backend/
 ├── cmd/
 │   └── server/
 │       └── main.go                 # Entry point
@@ -306,7 +306,7 @@ import (
     "time"
 
     "github.com/google/uuid"
-    "arbor/internal/domain/valueobject"
+    "neylin/internal/domain/valueobject"
 )
 
 type User struct {
@@ -454,7 +454,7 @@ import (
     "time"
 
     "github.com/google/uuid"
-    "arbor/internal/domain/valueobject"
+    "neylin/internal/domain/valueobject"
 )
 
 type Node struct {
@@ -541,7 +541,7 @@ import (
     "time"
 
     "github.com/google/uuid"
-    "arbor/internal/domain/valueobject"
+    "neylin/internal/domain/valueobject"
 )
 
 type Edge struct {
@@ -620,7 +620,7 @@ import (
     "net/mail"
     "strings"
 
-    "arbor/internal/domain/error"
+    "neylin/internal/domain/error"
 )
 
 type Email string
@@ -652,7 +652,7 @@ package valueobject
 import (
     "unicode"
 
-    "arbor/internal/domain/error"
+    "neylin/internal/domain/error"
 )
 
 type Password string
@@ -694,7 +694,7 @@ func (p Password) String() string {
 // internal/domain/valueobject/node_type.go
 package valueobject
 
-import "arbor/internal/domain/error"
+import "neylin/internal/domain/error"
 
 type NodeType string
 
@@ -733,7 +733,7 @@ func NewNodeType(value string) (NodeType, error) {
 // internal/domain/valueobject/relation_type.go
 package valueobject
 
-import "arbor/internal/domain/error"
+import "neylin/internal/domain/error"
 
 type RelationType string
 
@@ -795,8 +795,8 @@ Domain Services — бизнес-логика, не принадлежащая �
 package service
 
 import (
-    "arbor/internal/domain/entity"
-    "arbor/internal/domain/valueobject"
+    "neylin/internal/domain/entity"
+    "neylin/internal/domain/valueobject"
 )
 
 type PlanLimits struct {
@@ -934,8 +934,8 @@ import (
     "context"
 
     "github.com/google/uuid"
-    "arbor/internal/domain/entity"
-    "arbor/internal/domain/valueobject"
+    "neylin/internal/domain/entity"
+    "neylin/internal/domain/valueobject"
 )
 
 type UserRepository interface {
@@ -959,7 +959,7 @@ import (
     "context"
 
     "github.com/google/uuid"
-    "arbor/internal/domain/entity"
+    "neylin/internal/domain/entity"
 )
 
 type MapRepository interface {
@@ -988,8 +988,8 @@ import (
     "context"
 
     "github.com/google/uuid"
-    "arbor/internal/domain/entity"
-    "arbor/internal/domain/valueobject"
+    "neylin/internal/domain/entity"
+    "neylin/internal/domain/valueobject"
 )
 
 type NodeRepository interface {
@@ -1024,8 +1024,8 @@ import (
     "context"
 
     "github.com/google/uuid"
-    "arbor/internal/domain/entity"
-    "arbor/internal/domain/valueobject"
+    "neylin/internal/domain/entity"
+    "neylin/internal/domain/valueobject"
 )
 
 type AuthService interface {
@@ -1070,7 +1070,7 @@ package service
 import (
     "context"
 
-    "arbor/internal/domain/entity"
+    "neylin/internal/domain/entity"
 )
 
 type AIService interface {
@@ -1096,12 +1096,12 @@ package auth
 import (
     "context"
 
-    "arbor/internal/application/dto"
-    "arbor/internal/application/port/repository"
-    "arbor/internal/application/port/service"
-    "arbor/internal/domain/entity"
-    "arbor/internal/domain/error"
-    "arbor/internal/domain/valueobject"
+    "neylin/internal/application/dto"
+    "neylin/internal/application/port/repository"
+    "neylin/internal/application/port/service"
+    "neylin/internal/domain/entity"
+    "neylin/internal/domain/error"
+    "neylin/internal/domain/valueobject"
 )
 
 type RegisterUseCase struct {
@@ -1214,12 +1214,12 @@ import (
     "context"
 
     "github.com/google/uuid"
-    "arbor/internal/application/dto"
-    "arbor/internal/application/port/repository"
-    "arbor/internal/domain/entity"
-    "arbor/internal/domain/error"
-    "arbor/internal/domain/service"
-    "arbor/internal/domain/valueobject"
+    "neylin/internal/application/dto"
+    "neylin/internal/application/port/repository"
+    "neylin/internal/domain/entity"
+    "neylin/internal/domain/error"
+    "neylin/internal/domain/service"
+    "neylin/internal/domain/valueobject"
 )
 
 type CreateMapUseCase struct {
@@ -1281,12 +1281,12 @@ import (
     "context"
 
     "github.com/google/uuid"
-    "arbor/internal/application/dto"
-    "arbor/internal/application/port/repository"
-    "arbor/internal/domain/entity"
-    "arbor/internal/domain/error"
-    "arbor/internal/domain/service"
-    "arbor/internal/domain/valueobject"
+    "neylin/internal/application/dto"
+    "neylin/internal/application/port/repository"
+    "neylin/internal/domain/entity"
+    "neylin/internal/domain/error"
+    "neylin/internal/domain/service"
+    "neylin/internal/domain/valueobject"
 )
 
 type CreateNodeUseCase struct {
@@ -1388,7 +1388,7 @@ import (
     "time"
 
     "github.com/google/uuid"
-    "arbor/internal/domain/entity"
+    "neylin/internal/domain/entity"
 )
 
 type UserDTO struct {
@@ -1458,7 +1458,7 @@ import (
     "time"
 
     "github.com/google/uuid"
-    "arbor/internal/domain/entity"
+    "neylin/internal/domain/entity"
 )
 
 type MapDTO struct {
@@ -1542,9 +1542,9 @@ package handler
 
 import (
     "github.com/gofiber/fiber/v2"
-    "arbor/internal/adapter/http/request"
-    "arbor/internal/adapter/http/response"
-    "arbor/internal/application/usecase/auth"
+    "neylin/internal/adapter/http/request"
+    "neylin/internal/adapter/http/response"
+    "neylin/internal/application/usecase/auth"
 )
 
 type AuthHandler struct {
@@ -1672,9 +1672,9 @@ package handler
 import (
     "github.com/gofiber/fiber/v2"
     "github.com/google/uuid"
-    "arbor/internal/adapter/http/request"
-    "arbor/internal/adapter/http/response"
-    mapuc "arbor/internal/application/usecase/map"
+    "neylin/internal/adapter/http/request"
+    "neylin/internal/adapter/http/response"
+    mapuc "neylin/internal/application/usecase/map"
 )
 
 type MapHandler struct {
@@ -1879,8 +1879,8 @@ import (
     "strings"
 
     "github.com/gofiber/fiber/v2"
-    "arbor/internal/adapter/http/response"
-    "arbor/internal/application/port/service"
+    "neylin/internal/adapter/http/response"
+    "neylin/internal/application/port/service"
 )
 
 func AuthMiddleware(authService service.AuthService) fiber.Handler {
@@ -2047,7 +2047,7 @@ import (
     "time"
 
     "github.com/gofiber/fiber/v2"
-    "arbor/internal/domain/error"
+    "neylin/internal/domain/error"
 )
 
 type Response struct {
@@ -2144,9 +2144,9 @@ package router
 
 import (
     "github.com/gofiber/fiber/v2"
-    "arbor/internal/adapter/http/handler"
-    "arbor/internal/adapter/http/middleware"
-    "arbor/internal/application/port/service"
+    "neylin/internal/adapter/http/handler"
+    "neylin/internal/adapter/http/middleware"
+    "neylin/internal/application/port/service"
 )
 
 func Setup(
@@ -2267,8 +2267,8 @@ import (
 
     "github.com/google/uuid"
     "github.com/jmoiron/sqlx"
-    "arbor/internal/domain/entity"
-    "arbor/internal/domain/valueobject"
+    "neylin/internal/domain/entity"
+    "neylin/internal/domain/valueobject"
 )
 
 type UserRepository struct {
@@ -2524,8 +2524,8 @@ type S3Config struct {
     Region        string `envconfig:"S3_REGION" default:"auto"`
     AccessKey     string `envconfig:"S3_ACCESS_KEY" required:"true"`
     SecretKey     string `envconfig:"S3_SECRET_KEY" required:"true"`
-    BucketAvatars string `envconfig:"S3_BUCKET_AVATARS" default:"arbor-avatars"`
-    BucketPreviews string `envconfig:"S3_BUCKET_PREVIEWS" default:"arbor-previews"`
+    BucketAvatars string `envconfig:"S3_BUCKET_AVATARS" default:"neylin-avatars"`
+    BucketPreviews string `envconfig:"S3_BUCKET_PREVIEWS" default:"neylin-previews"`
 }
 
 type SMTPConfig struct {
@@ -2533,8 +2533,8 @@ type SMTPConfig struct {
     Port     int    `envconfig:"SMTP_PORT" default:"587"`
     User     string `envconfig:"SMTP_USER"`
     Password string `envconfig:"SMTP_PASSWORD"`
-    From     string `envconfig:"EMAIL_FROM" default:"noreply@arbor.io"`
-    FromName string `envconfig:"EMAIL_FROM_NAME" default:"Arbor"`
+    From     string `envconfig:"EMAIL_FROM" default:"noreply@neylin.io"`
+    FromName string `envconfig:"EMAIL_FROM_NAME" default:"Neylin"`
 }
 
 type LogConfig struct {
@@ -2564,7 +2564,7 @@ import (
 
     "github.com/jmoiron/sqlx"
     _ "github.com/lib/pq"
-    "arbor/internal/infrastructure/config"
+    "neylin/internal/infrastructure/config"
 )
 
 func NewPostgres(cfg config.DatabaseConfig) (*sqlx.DB, error) {
@@ -2598,7 +2598,7 @@ import (
     "time"
 
     "github.com/redis/go-redis/v9"
-    "arbor/internal/infrastructure/config"
+    "neylin/internal/infrastructure/config"
 )
 
 func NewRedis(cfg config.RedisConfig) (*redis.Client, error) {
@@ -2634,10 +2634,10 @@ import (
     "github.com/golang-jwt/jwt/v5"
     "github.com/google/uuid"
     "golang.org/x/crypto/bcrypt"
-    "arbor/internal/application/port/service"
-    "arbor/internal/domain/entity"
-    "arbor/internal/domain/valueobject"
-    "arbor/internal/infrastructure/config"
+    "neylin/internal/application/port/service"
+    "neylin/internal/domain/entity"
+    "neylin/internal/domain/valueobject"
+    "neylin/internal/infrastructure/config"
 )
 
 type JWTService struct {
@@ -2751,8 +2751,8 @@ import (
     "context"
 
     "github.com/sashabaranov/go-openai"
-    "arbor/internal/domain/entity"
-    "arbor/internal/infrastructure/config"
+    "neylin/internal/domain/entity"
+    "neylin/internal/infrastructure/config"
 )
 
 type Client struct {
@@ -2812,7 +2812,7 @@ import (
     "github.com/stripe/stripe-go/v76/checkout/session"
     "github.com/stripe/stripe-go/v76/customer"
     "github.com/stripe/stripe-go/v76/subscription"
-    "arbor/internal/infrastructure/config"
+    "neylin/internal/infrastructure/config"
 )
 
 type Client struct {
@@ -2871,17 +2871,17 @@ package main
 
 import (
     "github.com/google/wire"
-    "arbor/internal/adapter/http/handler"
-    "arbor/internal/adapter/http/router"
-    "arbor/internal/adapter/repository/postgres"
-    "arbor/internal/application/usecase/auth"
-    "arbor/internal/application/usecase/map"
+    "neylin/internal/adapter/http/handler"
+    "neylin/internal/adapter/http/router"
+    "neylin/internal/adapter/repository/postgres"
+    "neylin/internal/application/usecase/auth"
+    "neylin/internal/application/usecase/map"
     // ... other imports
-    "arbor/internal/infrastructure/config"
-    "arbor/internal/infrastructure/database"
-    infraAuth "arbor/internal/infrastructure/auth"
-    "arbor/internal/infrastructure/external/stripe"
-    "arbor/internal/infrastructure/external/openai"
+    "neylin/internal/infrastructure/config"
+    "neylin/internal/infrastructure/database"
+    infraAuth "neylin/internal/infrastructure/auth"
+    "neylin/internal/infrastructure/external/stripe"
+    "neylin/internal/infrastructure/external/openai"
 )
 
 func InitializeApp(cfg *config.Config) (*App, error) {
@@ -2952,7 +2952,7 @@ import (
     "time"
 
     "go.uber.org/zap"
-    "arbor/internal/infrastructure/config"
+    "neylin/internal/infrastructure/config"
 )
 
 func main() {
@@ -3012,7 +3012,7 @@ func main() {
 ### 8.1 Структура тестов
 
 ```
-arbor-backend/
+neylin-backend/
 ├── internal/
 │   ├── domain/
 │   │   └── entity/
@@ -3050,8 +3050,8 @@ import (
     "testing"
 
     "github.com/stretchr/testify/assert"
-    "arbor/internal/domain/entity"
-    "arbor/internal/domain/valueobject"
+    "neylin/internal/domain/entity"
+    "neylin/internal/domain/valueobject"
 )
 
 func TestNewUser(t *testing.T) {
@@ -3106,10 +3106,10 @@ import (
 
     "github.com/stretchr/testify/assert"
     "github.com/stretchr/testify/mock"
-    "arbor/internal/application/usecase/auth"
-    "arbor/internal/domain/entity"
-    "arbor/internal/domain/valueobject"
-    "arbor/internal/mocks"
+    "neylin/internal/application/usecase/auth"
+    "neylin/internal/domain/entity"
+    "neylin/internal/domain/valueobject"
+    "neylin/internal/mocks"
 )
 
 func TestRegisterUseCase_Execute(t *testing.T) {
@@ -3177,10 +3177,10 @@ import (
 
     "github.com/stretchr/testify/assert"
     "github.com/stretchr/testify/suite"
-    "arbor/internal/adapter/repository/postgres"
-    "arbor/internal/domain/entity"
-    "arbor/internal/domain/valueobject"
-    "arbor/tests/testdb"
+    "neylin/internal/adapter/repository/postgres"
+    "neylin/internal/domain/entity"
+    "neylin/internal/domain/valueobject"
+    "neylin/tests/testdb"
 )
 
 type UserRepositoryTestSuite struct {
@@ -3246,7 +3246,7 @@ import (
     "testing"
 
     "github.com/stretchr/testify/assert"
-    "arbor/tests/testapp"
+    "neylin/tests/testapp"
 )
 
 func TestAuthFlow(t *testing.T) {
@@ -3360,7 +3360,7 @@ services:
       - "8080:8080"
     environment:
       - APP_ENV=development
-      - DATABASE_URL=postgres://arbor:arbor@postgres:5432/arbor?sslmode=disable
+      - DATABASE_URL=postgres://neylin:neylin@postgres:5432/neylin?sslmode=disable
       - REDIS_URL=redis://redis:6379/0
       - JWT_PRIVATE_KEY_PATH=/secrets/jwt-private.pem
       - JWT_PUBLIC_KEY_PATH=/secrets/jwt-public.pem
@@ -3378,9 +3378,9 @@ services:
   postgres:
     image: postgres:16-alpine
     environment:
-      - POSTGRES_USER=arbor
-      - POSTGRES_PASSWORD=arbor
-      - POSTGRES_DB=arbor
+      - POSTGRES_USER=neylin
+      - POSTGRES_PASSWORD=neylin
+      - POSTGRES_DB=neylin
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -3395,7 +3395,7 @@ services:
     image: migrate/migrate:v4.17.0
     volumes:
       - ../../migrations:/migrations
-    command: ["-path", "/migrations", "-database", "postgres://arbor:arbor@postgres:5432/arbor?sslmode=disable", "up"]
+    command: ["-path", "/migrations", "-database", "postgres://neylin:neylin@postgres:5432/neylin?sslmode=disable", "up"]
     depends_on:
       - postgres
 
@@ -3444,7 +3444,7 @@ migrate-create:
 
 # Docker
 docker-build:
-	docker build -f deployments/docker/Dockerfile -t arbor-api .
+	docker build -f deployments/docker/Dockerfile -t neylin-api .
 
 docker-up:
 	docker-compose -f deployments/docker/docker-compose.yml up -d

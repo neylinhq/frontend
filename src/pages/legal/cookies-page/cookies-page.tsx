@@ -104,7 +104,7 @@ export const CookiesPage = () => {
       <h2>8. {t('legal.cookies.sections.contact.title')}</h2>
       <p>
         {t('legal.cookies.sections.contact.content')}{' '}
-        <a href='mailto:privacy@arbor.com'>privacy@arbor.com</a>.
+        <a href='mailto:privacy@neylin.com'>privacy@neylin.com</a>.
       </p>
     </LegalLayout>
   )

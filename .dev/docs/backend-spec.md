@@ -1,10 +1,10 @@
-# Техническое задание: Arbor Backend
+# Техническое задание: Neylin Backend
 
 ## 1. Обзор проекта
 
 ### 1.1 Назначение
 
-**Arbor** — платформа для создания и визуализации карт знаний (knowledge graphs). Система позволяет пользователям организовывать знания в виде связанных концепций с семантическими отношениями.
+**Neylin** — платформа для создания и визуализации карт знаний (knowledge graphs). Система позволяет пользователям организовывать знания в виде связанных концепций с семантическими отношениями.
 
 ### 1.2 Стек технологий
 
@@ -531,7 +531,7 @@ Authorization: Bearer <access_token>
     "displayName": "Johnny",
     "username": "johnny_doe",
     "bio": "Knowledge enthusiast",
-    "avatarUrl": "https://storage.arbor.app/avatars/uuid.jpg",
+    "avatarUrl": "https://storage.neylin.app/avatars/uuid.jpg",
     "role": "user",
     "preferences": {
       "notifications": {
@@ -578,7 +578,7 @@ Authorization: Bearer <access_token>
 ```json
 {
   "data": {
-    "avatarUrl": "https://storage.arbor.app/avatars/uuid.jpg"
+    "avatarUrl": "https://storage.neylin.app/avatars/uuid.jpg"
   }
 }
 ```
@@ -667,7 +667,7 @@ Authorization: Bearer <access_token>
       "title": "Neural Networks",
       "description": "ML concepts map",
       "nodesCount": 42,
-      "previewUrl": "https://storage.arbor.app/previews/uuid.png",
+      "previewUrl": "https://storage.neylin.app/previews/uuid.png",
       "createdAt": "2024-01-15T10:30:00Z",
       "updatedAt": "2024-01-20T15:45:00Z"
     }
@@ -1167,8 +1167,8 @@ Batch обновление позиций узлов.
 {
   "planType": "pro",
   "billingPeriod": "monthly",
-  "successUrl": "https://app.arbor.io/dashboard?success=true",
-  "cancelUrl": "https://app.arbor.io/pricing"
+  "successUrl": "https://app.neylin.io/dashboard?success=true",
+  "cancelUrl": "https://app.neylin.io/pricing"
 }
 ```
 
@@ -1751,8 +1751,8 @@ S3_ENDPOINT=https://...
 S3_REGION=auto
 S3_ACCESS_KEY=...
 S3_SECRET_KEY=...
-S3_BUCKET_AVATARS=arbor-avatars
-S3_BUCKET_PREVIEWS=arbor-previews
+S3_BUCKET_AVATARS=neylin-avatars
+S3_BUCKET_PREVIEWS=neylin-previews
 ```
 
 **Buckets:**
@@ -1767,8 +1767,8 @@ SMTP_HOST=smtp.sendgrid.net
 SMTP_PORT=587
 SMTP_USER=apikey
 SMTP_PASSWORD=SG...
-EMAIL_FROM=noreply@arbor.io
-EMAIL_FROM_NAME=Arbor
+EMAIL_FROM=noreply@neylin.io
+EMAIL_FROM_NAME=Neylin
 ```
 
 **Templates:**
@@ -1872,7 +1872,7 @@ APP_PORT=8080
 APP_HOST=0.0.0.0
 
 # Database
-DATABASE_URL=postgres://user:pass@host:5432/arbor?sslmode=require
+DATABASE_URL=postgres://user:pass@host:5432/neylin?sslmode=require
 DATABASE_MAX_CONNECTIONS=50
 
 # Redis
@@ -1903,16 +1903,16 @@ S3_ENDPOINT=https://s3.amazonaws.com
 S3_REGION=us-east-1
 S3_ACCESS_KEY=...
 S3_SECRET_KEY=...
-S3_BUCKET_AVATARS=arbor-avatars
-S3_BUCKET_PREVIEWS=arbor-previews
+S3_BUCKET_AVATARS=neylin-avatars
+S3_BUCKET_PREVIEWS=neylin-previews
 
 # Email
 SMTP_HOST=smtp.sendgrid.net
 SMTP_PORT=587
 SMTP_USER=apikey
 SMTP_PASSWORD=SG...
-EMAIL_FROM=noreply@arbor.io
-EMAIL_FROM_NAME=Arbor
+EMAIL_FROM=noreply@neylin.io
+EMAIL_FROM_NAME=Neylin
 
 # Observability
 LOG_LEVEL=info
@@ -1920,7 +1920,7 @@ LOG_FORMAT=json
 OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
 
 # Security
-CORS_ORIGINS=https://app.arbor.io
+CORS_ORIGINS=https://app.neylin.io
 RATE_LIMIT_REQUESTS=100
 RATE_LIMIT_WINDOW=1m
 ```

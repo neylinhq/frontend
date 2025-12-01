@@ -112,7 +112,7 @@ export const LicensePage = () => {
       <h2>{t('legal.license.sections.contact.title')}</h2>
       <p>
         {t('legal.license.sections.contact.content')}{' '}
-        <a href='mailto:legal@arbor.com'>legal@arbor.com</a>.
+        <a href='mailto:legal@neylin.com'>legal@neylin.com</a>.
       </p>
     </LegalLayout>
   )

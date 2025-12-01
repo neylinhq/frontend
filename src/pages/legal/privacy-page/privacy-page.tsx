@@ -81,7 +81,7 @@ export const PrivacyPage = () => {
       <Typography variant='h2'>10. {t('legal.privacy.sections.contact.title')}</Typography>
       <p>
         {t('legal.privacy.sections.contact.content')}{' '}
-        <a href='mailto:privacy@arbor.com'>privacy@arbor.com</a>.
+        <a href='mailto:privacy@neylin.com'>privacy@neylin.com</a>.
       </p>
     </LegalLayout>
   )

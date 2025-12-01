@@ -2,14 +2,14 @@
 import { ChevronsUpDown } from 'lucide-react'
 import { useState } from 'react'
 import { getMeta } from '@/shared/lib/get-meta'
-import { Badge } from '@/shared/ui/badge'
-import { Button } from '@/shared/ui/button'
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/shared/ui/collapsible'
-import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
-import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
-import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
-import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
-import { Typography } from '@/shared/ui/typography'
+import { Badge } from '@/shared/components/badge'
+import { Button } from '@/shared/components/button'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/shared/components/collapsible'
+import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
+import { DocsCodeBlock } from '@/shared/components/docs-code-block'
+import { DocsComponentPreview, DocsPreview } from '@/shared/components/docs-component-preview'
+import { DocsToc, type TocItem } from '@/shared/components/docs-toc'
+import { Typography } from '@/shared/components/typography'
 import type { Route } from './+types/collapsible'
 
 export const handle = {
@@ -96,7 +96,7 @@ const CollapsiblePage = () => {
           <Typography variant='h2'>Usage</Typography>
           <DocsCodeBlock
             language='tsx'
-            code={`import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/shared/ui/collapsible'
+            code={`import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/shared/components/collapsible'
 
 export function FAQ({ question, answer }: { question: string; answer: string }) {
   const [open, setOpen] = useState(false)

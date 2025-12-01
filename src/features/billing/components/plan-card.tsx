@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 import type { PlanDetails } from '@/entities/subscription'
 import { cn } from '@/shared/lib/cn'
-import { Button } from '@/shared/ui/button'
+import { Button } from '@/shared/components/button'
 
 interface PlanCardProps {
   plan: PlanDetails

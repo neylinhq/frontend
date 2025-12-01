@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import type { CryptoCurrency, CryptoNetwork } from '@/entities/subscription'
 import { cn } from '@/shared/lib/cn'
-import { Button } from '@/shared/ui/button'
+import { Button } from '@/shared/components/button'
 import {
   Dialog,
   DialogContent,
@@ -15,11 +15,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger
-} from '@/shared/ui/dialog'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form'
-import { cryptoIcons, Icon } from '@/shared/ui/icon'
-import { Input } from '@/shared/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select'
+} from '@/shared/components/dialog'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/components/form'
+import { cryptoIcons, Icon } from '@/shared/components/icon'
+import { Input } from '@/shared/components/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/select'
 import {
   type CardBrand,
   detectCardBrand,

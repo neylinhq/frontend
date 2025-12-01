@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next'
 import { getMeta } from '@/shared/lib/get-meta'
-import { Badge } from '@/shared/ui/badge'
-import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
-import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
-import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
-import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
+import { Badge } from '@/shared/components/badge'
+import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
+import { DocsCodeBlock } from '@/shared/components/docs-code-block'
+import { DocsComponentPreview, DocsPreview } from '@/shared/components/docs-component-preview'
+import { DocsToc, type TocItem } from '@/shared/components/docs-toc'
 import {
   Table,
   TableBody,
@@ -13,8 +13,8 @@ import {
   TableHead,
   TableHeader,
   TableRow
-} from '@/shared/ui/table'
-import { Typography } from '@/shared/ui/typography'
+} from '@/shared/components/table'
+import { Typography } from '@/shared/components/typography'
 import type { Route } from './+types/table'
 
 export const handle = {
@@ -143,7 +143,7 @@ const TablePage = () => {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/shared/ui/table'
+} from '@/shared/components/table'
 
 export function UsersTable({ users }: { users: User[] }) {
   return (

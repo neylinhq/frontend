@@ -2,29 +2,26 @@ import { Focus, Pencil } from 'lucide-react'
 import { memo, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-import type { Edge, Node } from '@/entities/map'
+import type { Node } from '@/entities/map'
 import { getNodeIcon } from '@/entities/node'
-import { NodeConnectionsPanel } from '@/features/node-connections-panel'
+import { Button } from '@/shared/components/button'
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/shared/components/drawer'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/components/tabs'
 import { cn } from '@/shared/lib/cn'
-import { Button } from '@/shared/ui/button'
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/shared/ui/drawer'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/tabs'
-import { useFocusMode } from '../model/graph.store'
 import { useDrawerTabs } from '../model/drawer-tabs.hooks'
+import { useFocusMode } from '../model/graph.store'
 import { DrawerOverviewTab } from './drawer-overview-tab'
 
 interface NodeDrawerProps {
   node: Node | null
-  edges: Edge[]
-  nodes: Node[]
   onClose: () => void
-  onSelectNode?: (nodeId: string) => void
-  onPanToNode?: (nodeId: string) => void
+  /** Render prop for connections tab content - injected by parent to avoid cross-feature import */
+  connectionsTab?: React.ReactNode
   className?: string
 }
 
 export const NodeDrawer = memo(
-  ({ node, edges, nodes, onClose, onSelectNode, onPanToNode, className }: NodeDrawerProps) => {
+  ({ node, onClose, connectionsTab, className }: NodeDrawerProps) => {
     const { t } = useTranslation()
     const [isMobile, setIsMobile] = useState(false)
     const { activeTab, switchTab } = useDrawerTabs()
@@ -99,13 +96,7 @@ export const NodeDrawer = memo(
             </TabsContent>
 
             <TabsContent value='connections' className='mt-4'>
-              <NodeConnectionsPanel
-                node={node}
-                edges={edges}
-                allNodes={nodes}
-                onOpenNode={onSelectNode}
-                onPanToNode={onPanToNode}
-              />
+              {connectionsTab}
             </TabsContent>
           </Tabs>
         </DrawerContent>

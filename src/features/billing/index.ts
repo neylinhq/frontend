@@ -11,9 +11,30 @@ export { PaymentMethodDetailsDialog } from './components/payment-method-details-
 export { PlanCard } from './components/plan-card'
 export { UsageProgress } from './components/usage-progress'
 
-// Utils
-export * from './lib/card-utils'
-export * from './lib/crypto-utils'
+// Card utils
+export {
+  type CardBrand,
+  CARD_BRAND_COLORS,
+  detectCardBrand,
+  getCardBrandConfig,
+  isValidLuhn,
+  formatCardNumber,
+  formatExpiry,
+  parseExpiry,
+  isValidExpiry,
+  getMaxCardLength,
+  getCvcLength,
+  maskCardNumber
+} from './lib/card-utils'
+
+// Crypto utils
+export {
+  shortenWalletAddress,
+  getNetworkDisplayName,
+  getCurrencyDisplayName,
+  isValidWalletAddress,
+  copyToClipboard
+} from './lib/crypto-utils'
 
 // Validation
 export {

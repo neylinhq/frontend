@@ -1,10 +1,10 @@
 import { Download } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import type { PaymentHistory } from '@/entities/subscription'
-import { Badge } from '@/shared/ui/badge'
-import { Button } from '@/shared/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui/table'
+import { Badge } from '@/shared/components/badge'
+import { Button } from '@/shared/components/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/components/table'
 
 interface PaymentHistoryTableProps {
   payments: PaymentHistory[]

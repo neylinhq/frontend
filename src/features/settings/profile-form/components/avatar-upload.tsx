@@ -1,8 +1,8 @@
 import { Loader2 } from 'lucide-react'
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar'
-import { Button } from '@/shared/ui/button'
+import { Avatar, AvatarFallback, AvatarImage } from '@/shared/components/avatar'
+import { Button } from '@/shared/components/button'
 
 interface AvatarUploadProps {
   currentUrl?: string

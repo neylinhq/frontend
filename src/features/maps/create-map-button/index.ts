@@ -1,1 +1,1 @@
-export * from './create-map-card'
+export { CreateMapCard } from './create-map-card'

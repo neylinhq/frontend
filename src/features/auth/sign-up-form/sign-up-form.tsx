@@ -4,11 +4,11 @@ import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useNavigation, useSubmit } from 'react-router'
 import { z } from 'zod'
-import { Button } from '@/shared/ui/button'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form'
-import { FormDivider } from '@/shared/ui/form-divider'
-import { Input } from '@/shared/ui/input'
-import { LegalLinks } from '@/shared/ui/legal-links'
+import { Button } from '@/shared/components/button'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/components/form'
+import { FormDivider } from '@/shared/components/form-divider'
+import { Input } from '@/shared/components/input'
+import { LegalLinks } from '@/shared/components/legal-links'
 
 export const SignUpForm = () => {
   const { t } = useTranslation()

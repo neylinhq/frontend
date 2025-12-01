@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { LegalLayout } from '@/shared/ui/legal-layout'
+import { LegalLayout } from '@/shared/components/legal-layout'
 
 export const CookiesPage = () => {
   const { t } = useTranslation()

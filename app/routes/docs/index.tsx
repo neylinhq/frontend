@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { DOCS_ROUTES } from '@/shared/config'
 import { getMeta } from '@/shared/lib/get-meta'
-import { Badge } from '@/shared/ui/badge'
-import { Button } from '@/shared/ui/button'
-import { Typography } from '@/shared/ui/typography'
+import { Badge } from '@/shared/components/badge'
+import { Button } from '@/shared/components/button'
+import { Typography } from '@/shared/components/typography'
 import type { Route } from './+types/index'
 
 export const handle = {
@@ -113,7 +113,7 @@ const UiIndexPage = () => {
           <span className='text-blue-500'>import</span>
           {' { Button } '}
           <span className='text-blue-500'>from</span>
-          {" '@/shared/ui/button'"}
+          {" '@/shared/components/button'"}
           <br />
           <br />
           {'<'}

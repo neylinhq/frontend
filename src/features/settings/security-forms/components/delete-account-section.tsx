@@ -5,8 +5,8 @@ import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { useDeleteAccount } from '@/entities/user'
-import { Button } from '@/shared/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
+import { Button } from '@/shared/components/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
 import {
   Dialog,
   DialogContent,
@@ -14,9 +14,9 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle
-} from '@/shared/ui/dialog'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form'
-import { Input } from '@/shared/ui/input'
+} from '@/shared/components/dialog'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/components/form'
+import { Input } from '@/shared/components/input'
 import { type DeleteAccountValues, deleteAccountSchema } from '../lib/validation'
 
 export const DeleteAccountSection = () => {

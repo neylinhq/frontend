@@ -1,12 +1,12 @@
 import { getMeta } from '@/shared/lib/get-meta'
-import { Badge } from '@/shared/ui/badge'
-import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
-import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
-import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
-import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
-import { Label } from '@/shared/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select'
-import { Typography } from '@/shared/ui/typography'
+import { Badge } from '@/shared/components/badge'
+import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
+import { DocsCodeBlock } from '@/shared/components/docs-code-block'
+import { DocsComponentPreview, DocsPreview } from '@/shared/components/docs-component-preview'
+import { DocsToc, type TocItem } from '@/shared/components/docs-toc'
+import { Label } from '@/shared/components/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/select'
+import { Typography } from '@/shared/components/typography'
 import type { Route } from './+types/select'
 
 export const handle = {
@@ -120,7 +120,7 @@ const SelectPage = () => {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/shared/ui/select'
+} from '@/shared/components/select'
 
 export function ThemeSelect() {
   const [theme, setTheme] = useState('system')

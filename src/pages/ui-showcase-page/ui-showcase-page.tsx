@@ -1,6 +1,6 @@
-import { ThemeToggle } from '@/app/theme'
-import { Badge } from '@/shared/ui/badge'
-import { Button } from '@/shared/ui/button'
+import { ThemeToggle } from '@/features/theme/theme-toggle'
+import { Badge } from '@/shared/components/badge'
+import { Button } from '@/shared/components/button'
 import {
   Card,
   CardContent,
@@ -8,8 +8,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle
-} from '@/shared/ui/card'
-import { Checkbox } from '@/shared/ui/checkbox'
+} from '@/shared/components/card'
+import { Checkbox } from '@/shared/components/checkbox'
 import {
   Dialog,
   DialogContent,
@@ -18,10 +18,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger
-} from '@/shared/ui/dialog'
-import { Input } from '@/shared/ui/input'
-import { Label } from '@/shared/ui/label'
-import { RadioGroup, RadioGroupItem } from '@/shared/ui/radio-group'
+} from '@/shared/components/dialog'
+import { Input } from '@/shared/components/input'
+import { Label } from '@/shared/components/label'
+import { RadioGroup, RadioGroupItem } from '@/shared/components/radio-group'
 import {
   Select,
   SelectContent,
@@ -30,9 +30,9 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue
-} from '@/shared/ui/select'
-import { Switch } from '@/shared/ui/switch'
-import { Textarea } from '@/shared/ui/textarea'
+} from '@/shared/components/select'
+import { Switch } from '@/shared/components/switch'
+import { Textarea } from '@/shared/components/textarea'
 
 export const UiShowcasePage = () => {
   return (

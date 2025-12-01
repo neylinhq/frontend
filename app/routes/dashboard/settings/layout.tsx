@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Link, Outlet, useLoaderData, useLocation } from 'react-router'
 import { type User, userApi } from '@/entities/user'
-import { SETTINGS_NAV_ITEMS } from '@/features/settings'
+import { SETTINGS_NAV_ITEMS } from '@/shared/config'
 import { cn } from '@/shared/lib/cn'
 import type { Route } from './+types/layout'
 

@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { getMeta } from '@/shared/lib/get-meta'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
-import { Typography } from '@/shared/ui/typography'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
+import { Typography } from '@/shared/components/typography'
 import type { Route } from './+types/typography'
 
 export const meta = (_args: Route.MetaArgs) => {
@@ -159,7 +159,7 @@ const TypographyPage = () => {
                 Базовое использование:
               </Typography>
               <pre className='rounded-lg bg-muted p-4 overflow-x-auto'>
-                <code className='text-sm'>{`import { Typography } from '@/shared/ui/typography'
+                <code className='text-sm'>{`import { Typography } from '@/shared/components/typography'
 
 <Typography variant="h1">Заголовок</Typography>
 <Typography variant="p">Параграф текста</Typography>

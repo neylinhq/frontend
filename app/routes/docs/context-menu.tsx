@@ -1,5 +1,5 @@
 import { getMeta } from '@/shared/lib/get-meta'
-import { Badge } from '@/shared/ui/badge'
+import { Badge } from '@/shared/components/badge'
 import {
   ContextMenu,
   ContextMenuContent,
@@ -7,12 +7,12 @@ import {
   ContextMenuSeparator,
   ContextMenuShortcut,
   ContextMenuTrigger
-} from '@/shared/ui/context-menu'
-import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
-import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
-import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
-import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
-import { Typography } from '@/shared/ui/typography'
+} from '@/shared/components/context-menu'
+import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
+import { DocsCodeBlock } from '@/shared/components/docs-code-block'
+import { DocsComponentPreview, DocsPreview } from '@/shared/components/docs-component-preview'
+import { DocsToc, type TocItem } from '@/shared/components/docs-toc'
+import { Typography } from '@/shared/components/typography'
 import type { Route } from './+types/context-menu'
 
 export const handle = {
@@ -105,7 +105,7 @@ const ContextMenuPage = () => {
   ContextMenuSeparator,
   ContextMenuShortcut,
   ContextMenuTrigger,
-} from '@/shared/ui/context-menu'
+} from '@/shared/components/context-menu'
 
 export function FileContextMenu({ children }: { children: React.ReactNode }) {
   return (

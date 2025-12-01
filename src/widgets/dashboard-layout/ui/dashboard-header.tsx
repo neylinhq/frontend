@@ -1,9 +1,9 @@
 import { Menu } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { DASHBOARD_ROUTES } from '@/shared/config'
-import { Button } from '@/shared/ui/button'
-import { Logo } from '@/shared/ui/logo'
-import { Sheet, SheetContent, SheetTrigger } from '@/shared/ui/sheet'
+import { Button } from '@/shared/components/button'
+import { Logo } from '@/shared/components/logo'
+import { Sheet, SheetContent, SheetTrigger } from '@/shared/components/sheet'
 import { UserNav } from '@/widgets/user-nav'
 import { Sidebar } from './sidebar'
 

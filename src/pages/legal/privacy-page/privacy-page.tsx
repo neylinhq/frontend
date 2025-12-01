@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { LEGAL_ROUTES } from '@/shared/config'
-import { LegalLayout } from '@/shared/ui/legal-layout'
-import { Typography } from '@/shared/ui/typography'
+import { LegalLayout } from '@/shared/components/legal-layout'
+import { Typography } from '@/shared/components/typography'
 
 export const PrivacyPage = () => {
   const { t } = useTranslation()

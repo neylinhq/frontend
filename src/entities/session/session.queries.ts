@@ -1,13 +1,36 @@
-// session.queries.ts - заглушки для клиентских запросов (пока всё на server actions)
+import { useMutation } from '@tanstack/react-query'
+import { useNavigate } from 'react-router'
+import { useSessionStore } from './session.store'
+import { sessionApi } from './session.api'
+
+export const useLoginMutation = () => {
+  const login = useSessionStore(s => s.login)
+  const navigate = useNavigate()
+
+  return useMutation({
+    mutationFn: sessionApi.login,
+    onSuccess: ({ user, token }) => {
+      login(user, token)
+      navigate('/dashboard/overview')
+    }
+  })
+}
 
 export const useRegisterMutation = () => {
-  return { mutate: () => {}, isPending: false }
+  const login = useSessionStore(s => s.login)
+  const navigate = useNavigate()
+
+  return useMutation({
+    mutationFn: sessionApi.register,
+    onSuccess: ({ user, token }) => {
+      login(user, token)
+      navigate('/dashboard/overview')
+    }
+  })
 }
 
 export const useResetPasswordMutation = () => {
-  return {
-    mutate: (_data: { email: string }) => {},
-    isPending: false,
-    isSuccess: false
-  }
+  return useMutation({
+    mutationFn: sessionApi.resetPassword
+  })
 }

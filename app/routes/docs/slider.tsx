@@ -1,11 +1,11 @@
 import { getMeta } from '@/shared/lib/get-meta'
-import { Badge } from '@/shared/ui/badge'
-import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
-import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
-import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
-import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
-import { Slider } from '@/shared/ui/slider'
-import { Typography } from '@/shared/ui/typography'
+import { Badge } from '@/shared/components/badge'
+import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
+import { DocsCodeBlock } from '@/shared/components/docs-code-block'
+import { DocsComponentPreview, DocsPreview } from '@/shared/components/docs-component-preview'
+import { DocsToc, type TocItem } from '@/shared/components/docs-toc'
+import { Slider } from '@/shared/components/slider'
+import { Typography } from '@/shared/components/typography'
 import type { Route } from './+types/slider'
 
 export const handle = {
@@ -68,7 +68,7 @@ const SliderPage = () => {
           <Typography variant='h2'>Usage</Typography>
           <DocsCodeBlock
             language='tsx'
-            code={`import { Slider } from '@/shared/ui/slider'
+            code={`import { Slider } from '@/shared/components/slider'
 
 export function VolumeControl() {
   const [volume, setVolume] = useState([50])

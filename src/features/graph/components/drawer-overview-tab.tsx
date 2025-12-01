@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import type { Node } from '@/entities/map'
 import { getComplexityColor, getNodeBorderColor } from '@/entities/node'
 import { cn } from '@/shared/lib/cn'
-import { Badge } from '@/shared/ui/badge'
+import { Badge } from '@/shared/components/badge'
 
 interface DrawerOverviewTabProps {
   node: Node

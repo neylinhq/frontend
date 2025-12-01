@@ -1,11 +1,12 @@
-import { createContext, useContext, useLayoutEffect, useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
 import {
   MODE_COOKIE_KEY,
   MODE_STORAGE_KEY,
   PALETTE_COOKIE_KEY,
-  PALETTE_STORAGE_KEY
-} from '../theme.constants'
-import type { Mode, Palette, ThemeProviderState } from '../theme.types'
+  PALETTE_STORAGE_KEY,
+  ThemeContext
+} from '@/shared/lib/theme'
+import type { Mode, Palette, ThemeContextState } from '@/shared/lib/theme'
 
 const setCookie = (name: string, value: string) => {
   const maxAge = 60 * 60 * 24 * 365 // 1 year
@@ -30,16 +31,6 @@ const resolveMode = (mode: Mode) => {
   }
   return mode
 }
-
-const initialState: ThemeProviderState = {
-  mode: 'system',
-  setMode: () => null,
-  resolvedMode: 'light',
-  palette: 'classic',
-  setPalette: () => null
-}
-
-const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
 
 type ThemeProviderProps = {
   children: React.ReactNode
@@ -112,7 +103,7 @@ export const ThemeProvider = ({
     return () => mediaQuery.removeEventListener('change', handleChange)
   }, [mode])
 
-  const value: ThemeProviderState = {
+  const value: ThemeContextState = {
     mode,
     setMode: (newMode: Mode) => {
       withoutTransitions(() => {
@@ -133,18 +124,8 @@ export const ThemeProvider = ({
   }
 
   return (
-    <ThemeProviderContext.Provider {...props} value={value}>
+    <ThemeContext.Provider {...props} value={value}>
       {children}
-    </ThemeProviderContext.Provider>
+    </ThemeContext.Provider>
   )
-}
-
-export const useTheme = () => {
-  const context = useContext(ThemeProviderContext)
-
-  if (context === undefined) {
-    throw new Error('useTheme must be used within a ThemeProvider')
-  }
-
-  return context
 }

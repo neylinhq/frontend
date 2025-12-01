@@ -1,10 +1,10 @@
 import { X } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Badge } from '@/shared/ui/badge'
-import { Button } from '@/shared/ui/button'
-import { Input } from '@/shared/ui/input'
-import { Label } from '@/shared/ui/label'
+import { Badge } from '@/shared/components/badge'
+import { Button } from '@/shared/components/button'
+import { Input } from '@/shared/components/input'
+import { Label } from '@/shared/components/label'
 
 interface NodeTagsInputProps {
   value: string[]

@@ -6,7 +6,7 @@ import { useConnectionFilter } from '@/entities/edge'
 import type { Node } from '@/entities/node'
 import { getNodeIcon } from '@/entities/node'
 import { cn } from '@/shared/lib/cn'
-import { ConnectionItem } from '@/shared/ui/connection-item'
+import { ConnectionItem } from '@/shared/components/connection-item'
 
 interface NodeConnectionsPanelProps {
   node: Node

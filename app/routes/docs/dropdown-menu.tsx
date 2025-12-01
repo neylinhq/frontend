@@ -1,10 +1,10 @@
 import { getMeta } from '@/shared/lib/get-meta'
-import { Badge } from '@/shared/ui/badge'
-import { Button } from '@/shared/ui/button'
-import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
-import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
-import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
-import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
+import { Badge } from '@/shared/components/badge'
+import { Button } from '@/shared/components/button'
+import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
+import { DocsCodeBlock } from '@/shared/components/docs-code-block'
+import { DocsComponentPreview, DocsPreview } from '@/shared/components/docs-component-preview'
+import { DocsToc, type TocItem } from '@/shared/components/docs-toc'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,8 +12,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger
-} from '@/shared/ui/dropdown-menu'
-import { Typography } from '@/shared/ui/typography'
+} from '@/shared/components/dropdown-menu'
+import { Typography } from '@/shared/components/typography'
 import type { Route } from './+types/dropdown-menu'
 
 export const handle = {
@@ -92,7 +92,7 @@ const DropdownMenuPage = () => {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/shared/ui/dropdown-menu'
+} from '@/shared/components/dropdown-menu'
 
 export function UserMenu() {
   return (

@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { SignUpForm } from '@/features/auth/sign-up-form'
 import { AUTH_ROUTES } from '@/shared/config'
-import { Typography } from '@/shared/ui/typography'
+import { Typography } from '@/shared/components/typography'
 
 export const SignUpPage = () => {
   const { t } = useTranslation()

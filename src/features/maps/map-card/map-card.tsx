@@ -6,14 +6,14 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
 import type { MapEntity } from '@/entities/map'
-import { Button } from '@/shared/ui/button'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/shared/ui/card'
+import { Button } from '@/shared/components/button'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/shared/components/card'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger
-} from '@/shared/ui/dropdown-menu'
+} from '@/shared/components/dropdown-menu'
 
 interface MapCardProps {
   map: MapEntity

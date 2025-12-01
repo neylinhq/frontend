@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next'
-import { ThemeToggle } from '@/app/theme/components/theme-toggle'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
-import { Label } from '@/shared/ui/label'
-import { LanguageSwitcher } from '@/shared/ui/language-switcher'
+import { ThemeToggle } from '@/features/theme/theme-toggle'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
+import { Label } from '@/shared/components/label'
+import { LanguageSwitcher } from '@/shared/components/language-switcher'
 
 const ThemePage = () => {
   const { t } = useTranslation()

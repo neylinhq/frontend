@@ -1,8 +1,8 @@
 import { BellRing, Check } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { getMeta } from '@/shared/lib/get-meta'
-import { Badge } from '@/shared/ui/badge'
-import { Button } from '@/shared/ui/button'
+import { Badge } from '@/shared/components/badge'
+import { Button } from '@/shared/components/button'
 import {
   Card,
   CardContent,
@@ -10,8 +10,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle
-} from '@/shared/ui/card'
-import { Typography } from '@/shared/ui/typography'
+} from '@/shared/components/card'
+import { Typography } from '@/shared/components/typography'
 import type { Route } from './+types/card'
 
 export const meta = (_args: Route.MetaArgs) => {
@@ -190,7 +190,7 @@ const CardPage = () => {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/shared/ui/card'
+} from '@/shared/components/card'
 
 <Card>
   <CardHeader>

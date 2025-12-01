@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next'
 import { getMeta } from '@/shared/lib/get-meta'
-import { Badge } from '@/shared/ui/badge'
-import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
-import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
-import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
-import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
-import { Typography } from '@/shared/ui/typography'
+import { Badge } from '@/shared/components/badge'
+import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
+import { DocsCodeBlock } from '@/shared/components/docs-code-block'
+import { DocsComponentPreview, DocsPreview } from '@/shared/components/docs-component-preview'
+import { DocsToc, type TocItem } from '@/shared/components/docs-toc'
+import { Typography } from '@/shared/components/typography'
 import type { Route } from './+types/badge'
 
 export const handle = {
@@ -83,7 +83,7 @@ const BadgePage = () => {
 
           <DocsCodeBlock
             language='tsx'
-            code={`import { Badge } from '@/shared/ui/badge'
+            code={`import { Badge } from '@/shared/components/badge'
 
 export function StatusBadge({ status }: { status: '${t('docs.badge.usage.active')}' | '${t('docs.badge.usage.inactive')}' }) {
   return (

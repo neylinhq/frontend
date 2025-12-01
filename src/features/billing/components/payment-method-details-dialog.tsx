@@ -12,12 +12,12 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle
-} from '@/shared/ui/alert-dialog'
-import { Button } from '@/shared/ui/button'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/ui/dialog'
-import { cryptoIcons, Icon } from '@/shared/ui/icon'
-import { Input } from '@/shared/ui/input'
-import { Label } from '@/shared/ui/label'
+} from '@/shared/components/alert-dialog'
+import { Button } from '@/shared/components/button'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/components/dialog'
+import { cryptoIcons, Icon } from '@/shared/components/icon'
+import { Input } from '@/shared/components/input'
+import { Label } from '@/shared/components/label'
 import type { CardBrand } from '../lib/card-utils'
 import {
   copyToClipboard,

@@ -12,16 +12,16 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle
-} from '@/shared/ui/alert-dialog'
-import { Button } from '@/shared/ui/button'
+} from '@/shared/components/alert-dialog'
+import { Button } from '@/shared/components/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger
-} from '@/shared/ui/dropdown-menu'
-import { cryptoIcons, Icon } from '@/shared/ui/icon'
+} from '@/shared/components/dropdown-menu'
+import { cryptoIcons, Icon } from '@/shared/components/icon'
 import type { CardBrand } from '../lib/card-utils'
 import { CardBrandIcon } from './card-brand-icon'
 

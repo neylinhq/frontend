@@ -1,13 +1,30 @@
 @import "tailwindcss";
 @import "katex/dist/katex.min.css";
 
+/* Geist Font - Vercel's modern typeface (loaded from CDN) */
+@font-face {
+  font-family: "Geist";
+  src: url("https://cdn.jsdelivr.net/npm/geist@1.5.1/dist/fonts/geist-sans/Geist-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist Mono";
+  src: url("https://cdn.jsdelivr.net/npm/geist@1.5.1/dist/fonts/geist-mono/GeistMono-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
-  /* Main font: IBM Plex Sans - technical, geometric, serious */
-  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+  /* Main font: Geist - Vercel's modern geometric typeface */
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
     "Segoe UI Symbol", "Noto Color Emoji";
 
-  /* Code font: JetBrains Mono - excellent ligatures, readability */
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  /* Code font: Geist Mono - matching monospace from Vercel */
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 
   /* Colors Mapping */
   --color-background: hsl(var(--background));
@@ -55,6 +72,7 @@
   --color-preview-classic: hsl(var(--preview-classic));
   --color-preview-vanilla: hsl(var(--preview-vanilla));
   --color-preview-vivid: hsl(var(--preview-vivid));
+  --color-preview-mono: hsl(var(--preview-mono));
 
   /* Radii */
   --radius-lg: var(--radius);
@@ -106,6 +124,7 @@
     --preview-classic: 220 100% 50%;
     --preview-vanilla: 24 80% 50%;
     --preview-vivid: 160 84% 39%;
+    --preview-mono: 220 100% 50%;
 
     --background: 0 0% 100%;           /* #FFFFFF - pure white */
     --foreground: 0 0% 9%;             /* #171717 - near black */
@@ -118,7 +137,7 @@
     --secondary: 0 0% 96%;             /* #F5F5F5 */
     --secondary-foreground: 0 0% 9%;
     --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;      /* #737373 */
+    --muted-foreground: 0 0% 40%;      /* #666666 - improved contrast */
     --accent: 0 0% 96%;
     --accent-foreground: 0 0% 9%;
     --destructive: 0 84% 60%;
@@ -160,7 +179,7 @@
     --secondary: 0 0% 13%;             /* #212121 */
     --secondary-foreground: 0 0% 98%;
     --muted: 0 0% 13%;
-    --muted-foreground: 0 0% 55%;
+    --muted-foreground: 0 0% 60%;      /* improved contrast */
     --accent: 0 0% 15%;
     --accent-foreground: 0 0% 93%;
     --destructive: 0 72% 50%;
@@ -211,7 +230,7 @@
     --secondary: 36 18% 94%;           /* Warm gray */
     --secondary-foreground: 24 10% 15%;
     --muted: 36 14% 93%;
-    --muted-foreground: 24 6% 45%;
+    --muted-foreground: 24 6% 40%;     /* improved contrast */
     --accent: 36 20% 92%;
     --accent-foreground: 24 10% 12%;
     --destructive: 8 80% 58%;           /* Warm coral red */
@@ -249,7 +268,7 @@
     --secondary: 24 8% 13%;            /* #231F1B */
     --secondary-foreground: 36 15% 92%;
     --muted: 24 8% 13%;
-    --muted-foreground: 36 8% 50%;
+    --muted-foreground: 36 8% 55%;     /* improved contrast */
     --accent: 24 10% 15%;
     --accent-foreground: 36 15% 90%;
     --destructive: 8 75% 52%;
@@ -289,7 +308,7 @@
     --secondary: 210 20% 94%;          /* Cool gray */
     --secondary-foreground: 210 18% 12%;
     --muted: 210 16% 93%;
-    --muted-foreground: 210 10% 45%;
+    --muted-foreground: 210 10% 40%;   /* improved contrast */
     --accent: 210 24% 92%;
     --accent-foreground: 210 18% 10%;
     --destructive: 355 90% 55%;         /* Cool pink-red */
@@ -327,7 +346,7 @@
     --secondary: 215 15% 13%;          /* #1C2128 */
     --secondary-foreground: 210 15% 94%;
     --muted: 215 15% 13%;
-    --muted-foreground: 210 10% 52%;
+    --muted-foreground: 210 10% 57%;   /* improved contrast */
     --accent: 215 18% 15%;
     --accent-foreground: 210 15% 92%;
     --destructive: 355 100% 60%;       /* Neon pink-red */
@@ -352,6 +371,87 @@
     --graph-emerald: 160 100% 50%;     /* Neon mint */
     --graph-amber: 50 100% 55%;        /* Neon yellow */
     --graph-rose: 330 100% 65%;        /* Neon pink */
+  }
+
+  /* ========================================
+     Mono Theme - Terminal/Brutalist aesthetic
+     Near black & white with pure blue accent
+     ======================================== */
+  [data-palette="mono"] {
+    --background: 0 0% 99%;            /* #FCFCFC - near white */
+    --foreground: 0 0% 4%;             /* #0A0A0A - near black */
+    --card: 0 0% 99%;
+    --card-foreground: 0 0% 4%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 4%;
+    --primary: 0 0% 4%;
+    --primary-foreground: 0 0% 99%;
+    --secondary: 0 0% 96%;             /* #F5F5F5 */
+    --secondary-foreground: 0 0% 4%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 35%;      /* #595959 - good contrast */
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 4%;
+    --destructive: 0 100% 50%;         /* Pure red */
+    --destructive-foreground: 0 0% 100%;
+    --success: 120 100% 35%;           /* Pure green */
+    --success-foreground: 0 0% 100%;
+    --warning: 60 100% 45%;            /* Pure yellow */
+    --warning-foreground: 0 0% 0%;
+    --info: 220 100% 50%;              /* Pure blue */
+    --info-foreground: 0 0% 100%;
+    --border: 0 0% 88%;                /* #E0E0E0 */
+    --input: 0 0% 88%;
+    --ring: 220 100% 50%;
+    --brand: 220 100% 50%;             /* #0055FF - Pure blue */
+    --brand-foreground: 0 0% 100%;
+    --brand-muted: 220 100% 95%;
+
+    /* Graph node colors - monochrome + blue accent */
+    --graph-violet: 0 0% 30%;          /* Dark gray */
+    --graph-blue: 220 100% 50%;        /* Pure blue - the accent */
+    --graph-cyan: 0 0% 45%;            /* Medium gray */
+    --graph-emerald: 0 0% 55%;         /* Light-medium gray */
+    --graph-amber: 0 0% 65%;           /* Light gray */
+    --graph-rose: 0 0% 20%;            /* Very dark gray */
+  }
+  [data-palette="mono"].dark {
+    --background: 0 0% 4%;             /* #0A0A0A - near black */
+    --foreground: 0 0% 96%;            /* #F5F5F5 - near white */
+    --card: 0 0% 4%;
+    --card-foreground: 0 0% 96%;
+    --popover: 0 0% 6%;                /* #0F0F0F */
+    --popover-foreground: 0 0% 96%;
+    --primary: 0 0% 96%;
+    --primary-foreground: 0 0% 4%;
+    --secondary: 0 0% 8%;              /* #141414 */
+    --secondary-foreground: 0 0% 96%;
+    --muted: 0 0% 8%;
+    --muted-foreground: 0 0% 65%;      /* #A6A6A6 - good contrast */
+    --accent: 0 0% 10%;
+    --accent-foreground: 0 0% 96%;
+    --destructive: 0 100% 55%;         /* Slightly brighter red */
+    --destructive-foreground: 0 0% 100%;
+    --success: 120 100% 45%;           /* Brighter green */
+    --success-foreground: 0 0% 0%;
+    --warning: 60 100% 50%;            /* Brighter yellow */
+    --warning-foreground: 0 0% 0%;
+    --info: 220 100% 50%;              /* Same pure blue */
+    --info-foreground: 0 0% 100%;
+    --border: 0 0% 15%;                /* #262626 */
+    --input: 0 0% 15%;
+    --ring: 220 100% 50%;
+    --brand: 220 100% 50%;             /* #0055FF - SAME pure blue */
+    --brand-foreground: 0 0% 100%;
+    --brand-muted: 220 50% 10%;
+
+    /* Graph node colors - monochrome + blue (dark mode) */
+    --graph-violet: 0 0% 70%;          /* Light gray */
+    --graph-blue: 220 100% 50%;        /* Pure blue - same as light */
+    --graph-cyan: 0 0% 55%;            /* Medium gray */
+    --graph-emerald: 0 0% 45%;         /* Medium-dark gray */
+    --graph-amber: 0 0% 35%;           /* Dark gray */
+    --graph-rose: 0 0% 80%;            /* Very light gray */
   }
 
   * {

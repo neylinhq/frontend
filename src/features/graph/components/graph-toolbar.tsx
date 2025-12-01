@@ -5,9 +5,9 @@ import { Link } from 'react-router'
 import type { RelationType } from '@/entities/edge'
 import type { NodeType } from '@/entities/node'
 import { cn } from '@/shared/lib/cn'
-import { Badge } from '@/shared/ui/badge'
-import { Button } from '@/shared/ui/button'
-import { Card } from '@/shared/ui/card'
+import { Badge } from '@/shared/components/badge'
+import { Button } from '@/shared/components/button'
+import { Card } from '@/shared/components/card'
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -15,7 +15,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger
-} from '@/shared/ui/dropdown-menu'
+} from '@/shared/components/dropdown-menu'
 import {
   ALL_EDGE_TYPES,
   ALL_NODE_TYPES,

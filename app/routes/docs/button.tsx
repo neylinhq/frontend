@@ -1,13 +1,13 @@
 import { ChevronRight, Loader2, Mail } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { getMeta } from '@/shared/lib/get-meta'
-import { Badge } from '@/shared/ui/badge'
-import { Button } from '@/shared/ui/button'
-import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
-import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
-import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
-import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
-import { Typography } from '@/shared/ui/typography'
+import { Badge } from '@/shared/components/badge'
+import { Button } from '@/shared/components/button'
+import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
+import { DocsCodeBlock } from '@/shared/components/docs-code-block'
+import { DocsComponentPreview, DocsPreview } from '@/shared/components/docs-component-preview'
+import { DocsToc, type TocItem } from '@/shared/components/docs-toc'
+import { Typography } from '@/shared/components/typography'
 import type { Route } from './+types/button'
 
 export const handle = {
@@ -214,7 +214,7 @@ const ButtonPage = () => {
               </Typography>
               <DocsCodeBlock
                 language='tsx'
-                code={`import { Button } from '@/shared/ui/button'
+                code={`import { Button } from '@/shared/components/button'
 
 export function MyComponent() {
   return (
@@ -233,7 +233,7 @@ export function MyComponent() {
               <DocsCodeBlock
                 language='tsx'
                 code={`import { Link } from 'react-router'
-import { Button } from '@/shared/ui/button'
+import { Button } from '@/shared/components/button'
 import { DASHBOARD_ROUTES } from '@/shared/config'
 
 <Button asChild>

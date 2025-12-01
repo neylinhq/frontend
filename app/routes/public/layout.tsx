@@ -1,8 +1,8 @@
 import { Outlet, useMatches } from 'react-router'
 
 import { cn } from '@/shared/lib/cn'
-import { PublicFooter } from '@/shared/ui/public-footer'
-import { PublicHeader } from '@/shared/ui/public-header'
+import { PublicFooter } from '@/shared/components/public-footer'
+import { PublicHeader } from '@/widgets/public-header'
 
 interface RouteHandle {
   hideFooter?: boolean

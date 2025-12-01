@@ -28,7 +28,7 @@ import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'r
 import { useTranslation } from 'react-i18next'
 
 import { cn } from '@/shared/lib/cn'
-import { Button } from '@/shared/ui/button'
+import { Button } from '@/shared/components/button'
 
 // Constants for menu dimensions (approximate)
 const MENU_HEIGHT = 44

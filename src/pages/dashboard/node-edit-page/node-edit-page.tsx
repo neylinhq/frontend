@@ -18,9 +18,9 @@ import { NodeConnectionsPanel } from '@/features/node-connections-panel'
 import { useAutoSave } from '@/features/node-editor/model/use-auto-save.hooks'
 import { NodeMetadataForm, type NodeMetadataFormValues } from '@/features/node-metadata-form'
 import { cn } from '@/shared/lib/cn'
-import { Badge } from '@/shared/ui/badge'
-import { Button } from '@/shared/ui/button'
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/shared/ui/sheet'
+import { Badge } from '@/shared/components/badge'
+import { Button } from '@/shared/components/button'
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/shared/components/sheet'
 
 const NODE_TYPE_CONFIG: Record<NodeType, { color: string; label: string }> = {
   concept: { color: 'bg-blue-500/10 text-blue-600 dark:text-blue-400', label: 'Concept' },

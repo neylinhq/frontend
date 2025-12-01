@@ -1,11 +1,11 @@
 import { getMeta } from '@/shared/lib/get-meta'
-import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar'
-import { Badge } from '@/shared/ui/badge'
-import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
-import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
-import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
-import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
-import { Typography } from '@/shared/ui/typography'
+import { Avatar, AvatarFallback, AvatarImage } from '@/shared/components/avatar'
+import { Badge } from '@/shared/components/badge'
+import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
+import { DocsCodeBlock } from '@/shared/components/docs-code-block'
+import { DocsComponentPreview, DocsPreview } from '@/shared/components/docs-component-preview'
+import { DocsToc, type TocItem } from '@/shared/components/docs-toc'
+import { Typography } from '@/shared/components/typography'
 import type { Route } from './+types/avatar'
 
 export const handle = {
@@ -123,7 +123,7 @@ const AvatarPage = () => {
 
           <DocsCodeBlock
             language='tsx'
-            code={`import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar'
+            code={`import { Avatar, AvatarFallback, AvatarImage } from '@/shared/components/avatar'
 
 export function UserAvatar({ user }: { user: { name: string; avatar?: string } }) {
   const initials = user.name

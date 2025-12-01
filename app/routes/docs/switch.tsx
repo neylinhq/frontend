@@ -1,12 +1,12 @@
 import { getMeta } from '@/shared/lib/get-meta'
-import { Badge } from '@/shared/ui/badge'
-import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
-import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
-import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
-import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
-import { Label } from '@/shared/ui/label'
-import { Switch } from '@/shared/ui/switch'
-import { Typography } from '@/shared/ui/typography'
+import { Badge } from '@/shared/components/badge'
+import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
+import { DocsCodeBlock } from '@/shared/components/docs-code-block'
+import { DocsComponentPreview, DocsPreview } from '@/shared/components/docs-component-preview'
+import { DocsToc, type TocItem } from '@/shared/components/docs-toc'
+import { Label } from '@/shared/components/label'
+import { Switch } from '@/shared/components/switch'
+import { Typography } from '@/shared/components/typography'
 import type { Route } from './+types/switch'
 
 export const handle = {
@@ -107,8 +107,8 @@ const SwitchPage = () => {
 
           <DocsCodeBlock
             language='tsx'
-            code={`import { Switch } from '@/shared/ui/switch'
-import { Label } from '@/shared/ui/label'
+            code={`import { Switch } from '@/shared/components/switch'
+import { Label } from '@/shared/components/label'
 
 export function NotificationSettings() {
   const [enabled, setEnabled] = useState(true)

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { cn } from '@/shared/lib/cn'
-import { Button } from '@/shared/ui/button'
+import { Button } from '@/shared/components/button'
 import {
   Dialog,
   DialogContent,
@@ -11,7 +11,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle
-} from '@/shared/ui/dialog'
+} from '@/shared/components/dialog'
 
 const escapeHtml = (text: string) => {
   return text

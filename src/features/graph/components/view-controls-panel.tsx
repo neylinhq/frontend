@@ -10,10 +10,10 @@ import {
 import { memo, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/shared/lib/cn'
-import { Button } from '@/shared/ui/button'
-import { Card } from '@/shared/ui/card'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/shared/ui/dropdown-menu'
-import { Slider } from '@/shared/ui/slider'
+import { Button } from '@/shared/components/button'
+import { Card } from '@/shared/components/card'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/shared/components/dropdown-menu'
+import { Slider } from '@/shared/components/slider'
 import { useGraphUI, useNodeSpacing } from '../model/graph.store'
 
 interface ViewControlsPanelProps {

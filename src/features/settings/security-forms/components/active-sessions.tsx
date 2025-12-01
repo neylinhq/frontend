@@ -1,7 +1,7 @@
 import { Laptop, Smartphone } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { Button } from '@/shared/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
+import { Button } from '@/shared/components/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
 
 // Static mock data - in real app this would come from API
 const activeSessions = [

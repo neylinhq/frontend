@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import type { NodeType } from '@/entities/node'
-import { Label } from '@/shared/ui/label'
-import { RadioGroup, RadioGroupItem } from '@/shared/ui/radio-group'
+import { Label } from '@/shared/components/label'
+import { RadioGroup, RadioGroupItem } from '@/shared/components/radio-group'
 import { NODE_TYPE_CONFIGS } from '../model/node-type-selector.constants'
 
 interface NodeTypeSelectorProps {

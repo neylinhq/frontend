@@ -5,9 +5,9 @@ import { useTranslation } from 'react-i18next'
 import { useActionData, useNavigation, useSubmit } from 'react-router'
 import { z } from 'zod'
 import { AUTH_ROUTES } from '@/shared/config'
-import { Button } from '@/shared/ui/button'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form'
-import { Input } from '@/shared/ui/input'
+import { Button } from '@/shared/components/button'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/components/form'
+import { Input } from '@/shared/components/input'
 
 export const ResetPasswordForm = () => {
   const { t } = useTranslation()

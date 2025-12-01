@@ -5,8 +5,8 @@ import {
   DeleteAccountSection,
   EmailChangeForm,
   PasswordChangeForm
-} from '@/features/settings'
-import { Typography } from '@/shared/ui/typography'
+} from '@/features/settings/security-forms'
+import { Typography } from '@/shared/components/typography'
 import type { SettingsContext } from './layout'
 
 const SecurityPage = () => {

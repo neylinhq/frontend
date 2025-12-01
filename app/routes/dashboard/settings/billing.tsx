@@ -17,8 +17,8 @@ import {
   PaymentMethodCard,
   PaymentMethodDetailsDialog
 } from '@/features/billing'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
-import { Typography } from '@/shared/ui/typography'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
+import { Typography } from '@/shared/components/typography'
 
 export const loader = async () => {
   const [paymentMethods, paymentHistory] = await Promise.all([

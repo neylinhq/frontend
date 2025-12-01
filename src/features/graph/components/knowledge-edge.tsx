@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { getEdgeBadgeClass } from '@/entities/edge'
 import type { Edge } from '@/entities/map'
 import { cn } from '@/shared/lib/cn'
-import { Badge } from '@/shared/ui/badge'
+import { Badge } from '@/shared/components/badge'
 import { getEdgeDashArray, getEdgeStrokeByType, getEdgeWidth } from '../lib/get-edge-style'
 
 interface KnowledgeEdgeProps {

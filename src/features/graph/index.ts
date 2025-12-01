@@ -38,5 +38,4 @@ export type {
   ToolbarState
 } from './model/graph-visualization.types'
 export { useNodeSelection } from './model/node-selection.hooks'
-// UI
-export { NodeContextMenu } from './ui/node-context-menu'
+export { NodeContextMenu } from './components/node-context-menu'

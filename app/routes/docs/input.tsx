@@ -1,13 +1,13 @@
 import { useTranslation } from 'react-i18next'
 import { getMeta } from '@/shared/lib/get-meta'
-import { Badge } from '@/shared/ui/badge'
-import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
-import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
-import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
-import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
-import { Input } from '@/shared/ui/input'
-import { Label } from '@/shared/ui/label'
-import { Typography } from '@/shared/ui/typography'
+import { Badge } from '@/shared/components/badge'
+import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
+import { DocsCodeBlock } from '@/shared/components/docs-code-block'
+import { DocsComponentPreview, DocsPreview } from '@/shared/components/docs-component-preview'
+import { DocsToc, type TocItem } from '@/shared/components/docs-toc'
+import { Input } from '@/shared/components/input'
+import { Label } from '@/shared/components/label'
+import { Typography } from '@/shared/components/typography'
 import type { Route } from './+types/input'
 
 export const handle = {
@@ -125,8 +125,8 @@ const InputPage = () => {
 
           <DocsCodeBlock
             language='tsx'
-            code={`import { Input } from '@/shared/ui/input'
-import { Label } from '@/shared/ui/label'
+            code={`import { Input } from '@/shared/components/input'
+import { Label } from '@/shared/components/label'
 
 export function MyForm() {
   return (

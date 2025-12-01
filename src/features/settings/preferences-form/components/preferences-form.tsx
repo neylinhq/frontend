@@ -6,11 +6,11 @@ import {
   type UserPreferences,
   useUpdatePreferences
 } from '@/entities/user'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
-import { Label } from '@/shared/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select'
-import { Switch } from '@/shared/ui/switch'
-import { Typography } from '@/shared/ui/typography'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
+import { Label } from '@/shared/components/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/select'
+import { Switch } from '@/shared/components/switch'
+import { Typography } from '@/shared/components/typography'
 import {
   DENSITY_OPTIONS,
   INTERFACE_SWITCH_SETTINGS,

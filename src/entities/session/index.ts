@@ -1,9 +1,13 @@
-// Клиентский API экспортируем явно
+// API
+export { sessionApi } from './session.api'
 
-export * from './session.api' // Если есть клиентские запросы
-export * from './session.queries' // Если есть хуки React Query
-export * from './session.store'
-export * from './session.types'
+// Queries
+export { useLoginMutation, useRegisterMutation, useResetPasswordMutation } from './session.queries'
 
-// Серверный код НЕ экспортируем через index.ts, его нужно импортировать напрямую из файла .server.ts
-// Это правило React Router/Remix: серверный код должен быть изолирован
+// Store
+export { useSessionStore } from './session.store'
+
+// Types
+export type { SessionData, SessionState } from './session.types'
+
+// Серверный код НЕ экспортируем через index.ts - импортируйте напрямую из session.server.ts

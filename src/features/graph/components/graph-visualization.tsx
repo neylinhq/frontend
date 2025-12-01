@@ -16,11 +16,11 @@ import {
 import { Loader2 } from 'lucide-react'
 import { memo, useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { type FullMap, useFullMap } from '@/entities/map'
-import { NodeDrawer } from './node-drawer'
+import { type Edge, type FullMap, type Node, useFullMap } from '@/entities/map'
 import { cn } from '@/shared/lib/cn'
-import { useDarkMode } from '@/shared/lib/use-dark-mode'
-import { Card } from '@/shared/ui/card'
+import { NodeDrawer } from './node-drawer'
+import { useDarkMode } from '@/shared/hooks'
+import { Card } from '@/shared/components/card'
 import { applyLayout } from '../lib/layout-algorithms-optimized'
 import { transformEdgesToFlow, transformNodesToFlow } from '../lib/transform-data'
 import {
@@ -54,13 +54,22 @@ interface GraphVisualizationProps {
   className?: string
   interactive?: boolean
   initialData?: FullMap
+  /** Render prop for connections panel - injected by widget to avoid cross-feature import */
+  renderConnectionsPanel?: (
+    node: Node,
+    edges: Edge[],
+    allNodes: Node[],
+    onOpenNode?: (id: string) => void,
+    onPanToNode?: (id: string) => void
+  ) => React.ReactNode
 }
 
 const GraphVisualizationContent = ({
   mapId,
   className,
   interactive = true,
-  initialData
+  initialData,
+  renderConnectionsPanel
 }: GraphVisualizationProps) => {
   const { t } = useTranslation()
   // Use initialData if provided (SSR), otherwise fetch client-side
@@ -530,11 +539,17 @@ const GraphVisualizationContent = ({
       {/* Node drawer */}
       <NodeDrawer
         node={selectedNode}
-        edges={fullMap.edges}
-        nodes={fullMap.nodes}
         onClose={clearSelection}
-        onSelectNode={selectNode}
-        onPanToNode={handlePanToNode}
+        connectionsTab={
+          selectedNode &&
+          renderConnectionsPanel?.(
+            selectedNode,
+            fullMap.edges,
+            fullMap.nodes,
+            selectNode,
+            handlePanToNode
+          )
+        }
       />
     </div>
   )

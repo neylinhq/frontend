@@ -10,11 +10,12 @@
 - [Patterns](./architecture/patterns.md) - Код-стайл и архитектурные паттерны
 
 ### 🎨 [Design](./design)
-- [Design System](./design/design-system.md) - UI/UX принципы, компоненты, стили, layout паттерны
+- [Design Manifesto](./design/design-manifesto.md) - Фундаментальная философия дизайна и визуальные принципы
 
 ### 📦 [Legacy](./legacy)
 - [Architecture (old)](./legacy/architecture.md) - Старая документация архитектуры
 - [SSR](./legacy/ssr.md) - Server-Side Rendering (устаревшее)
+- [Design System (old)](./legacy/design-system.md) - Старая документация дизайн-системы
 
 ---
 
@@ -78,4 +79,4 @@ src/
 ## 🔗 Полезные ссылки
 
 - [FSD Layers](./architecture/fsd-layers.md) - Структура модулей, файловые паттерны, правила импортов
-- [Design System](./design/design-system.md) - UI/UX гайдлайны
+- [Design Manifesto](./design/design-manifesto.md) - Фундаментальная философия дизайна

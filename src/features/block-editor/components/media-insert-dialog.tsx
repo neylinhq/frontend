@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { Button } from '@/shared/ui/button'
+import { Button } from '@/shared/components/button'
 import {
   Dialog,
   DialogContent,
@@ -9,7 +9,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle
-} from '@/shared/ui/dialog'
+} from '@/shared/components/dialog'
 
 export type MediaType = 'image' | 'imageFigure' | 'video'
 

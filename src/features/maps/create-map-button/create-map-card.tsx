@@ -5,7 +5,7 @@ import { Link } from 'react-router'
 
 import { MAPS_ROUTES } from '@/shared/config'
 import { cn } from '@/shared/lib/cn'
-import { Button } from '@/shared/ui/button'
+import { Button } from '@/shared/components/button'
 
 interface CreateMapCardProps {
   className?: string

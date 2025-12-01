@@ -16,17 +16,11 @@ import '@/shared/styles/globals.css'
 import type React from 'react'
 import { useEffect, useRef } from 'react'
 import { type I18nInitData, initI18n } from '@/app/i18n'
-import { MODE_COOKIE_KEY, PALETTE_COOKIE_KEY } from '@/app/theme/theme.constants'
+import { MODE_COOKIE_KEY, PALETTE_COOKIE_KEY } from '@/shared/lib/theme'
 import type { Route } from './+types/root'
 
 export const links: Route.LinksFunction = () => [
-  { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-  { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous' },
-  {
-    rel: 'stylesheet',
-    // IBM Plex Sans (UI) + JetBrains Mono (code blocks)
-    href: 'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap'
-  }
+  // Geist fonts loaded from npm package via CSS @font-face in globals.css
 ]
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
@@ -77,6 +71,9 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
               /* Vivid theme */
               html[data-palette="vivid"] { background-color: #f8fafc; color: #151921; }
               html[data-palette="vivid"].dark { background-color: #0f1318; color: #e6e9ec; }
+              /* Mono theme */
+              html[data-palette="mono"] { background-color: #fcfcfc; color: #0a0a0a; }
+              html[data-palette="mono"].dark { background-color: #0a0a0a; color: #f5f5f5; }
             `
           }}
         />

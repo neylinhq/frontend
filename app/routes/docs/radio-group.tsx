@@ -1,12 +1,12 @@
 import { getMeta } from '@/shared/lib/get-meta'
-import { Badge } from '@/shared/ui/badge'
-import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
-import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
-import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
-import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
-import { Label } from '@/shared/ui/label'
-import { RadioGroup, RadioGroupItem } from '@/shared/ui/radio-group'
-import { Typography } from '@/shared/ui/typography'
+import { Badge } from '@/shared/components/badge'
+import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
+import { DocsCodeBlock } from '@/shared/components/docs-code-block'
+import { DocsComponentPreview, DocsPreview } from '@/shared/components/docs-component-preview'
+import { DocsToc, type TocItem } from '@/shared/components/docs-toc'
+import { Label } from '@/shared/components/label'
+import { RadioGroup, RadioGroupItem } from '@/shared/components/radio-group'
+import { Typography } from '@/shared/components/typography'
 import type { Route } from './+types/radio-group'
 
 export const handle = {
@@ -76,8 +76,8 @@ const RadioGroupPage = () => {
           <Typography variant='h2'>Usage</Typography>
           <DocsCodeBlock
             language='tsx'
-            code={`import { RadioGroup, RadioGroupItem } from '@/shared/ui/radio-group'
-import { Label } from '@/shared/ui/label'
+            code={`import { RadioGroup, RadioGroupItem } from '@/shared/components/radio-group'
+import { Label } from '@/shared/components/label'
 
 export function ThemeSelector() {
   const [theme, setTheme] = useState('system')

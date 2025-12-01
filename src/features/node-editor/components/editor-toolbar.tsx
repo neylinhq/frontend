@@ -20,7 +20,7 @@ import {
   Undo
 } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
-import { Button } from '@/shared/ui/button'
+import { Button } from '@/shared/components/button'
 
 export const EditorToolbar = () => {
   const [editor] = useLexicalComposerContext()

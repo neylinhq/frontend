@@ -4,7 +4,7 @@ import { EditorContent, useEditor } from '@tiptap/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { useTheme } from '@/app/theme'
+import { useTheme } from '@/shared/lib/theme'
 import { cn } from '@/shared/lib/cn'
 
 import { createExtensions } from '../lib/extensions'

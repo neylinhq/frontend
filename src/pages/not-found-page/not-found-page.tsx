@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
 import { DASHBOARD_ROUTES, ROUTES } from '@/shared/config'
-import { Button } from '@/shared/ui/button'
-import { Typography } from '@/shared/ui/typography'
+import { Button } from '@/shared/components/button'
+import { Typography } from '@/shared/components/typography'
 
 export const NotFoundPage = () => {
   const { t } = useTranslation()

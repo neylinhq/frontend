@@ -3,8 +3,8 @@ import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { type User, useUpdateProfile, useUploadAvatar } from '@/entities/user'
-import { Button } from '@/shared/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
+import { Button } from '@/shared/components/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
 import {
   Form,
   FormControl,
@@ -13,10 +13,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage
-} from '@/shared/ui/form'
-import { Input } from '@/shared/ui/input'
-import { Textarea } from '@/shared/ui/textarea'
-import { Typography } from '@/shared/ui/typography'
+} from '@/shared/components/form'
+import { Input } from '@/shared/components/input'
+import { Textarea } from '@/shared/components/textarea'
+import { Typography } from '@/shared/components/typography'
 import { type ProfileFormValues, profileFormSchema } from '../lib/validation'
 import { AvatarUpload } from './avatar-upload'
 

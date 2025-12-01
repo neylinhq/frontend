@@ -1,14 +1,14 @@
 import { getMeta } from '@/shared/lib/get-meta'
-import { Badge } from '@/shared/ui/badge'
-import { Button } from '@/shared/ui/button'
-import { DocsBreadcrumbs } from '@/shared/ui/docs-breadcrumbs'
-import { DocsCodeBlock } from '@/shared/ui/docs-code-block'
-import { DocsComponentPreview, DocsPreview } from '@/shared/ui/docs-component-preview'
-import { DocsToc, type TocItem } from '@/shared/ui/docs-toc'
-import { Input } from '@/shared/ui/input'
-import { Label } from '@/shared/ui/label'
-import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/popover'
-import { Typography } from '@/shared/ui/typography'
+import { Badge } from '@/shared/components/badge'
+import { Button } from '@/shared/components/button'
+import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
+import { DocsCodeBlock } from '@/shared/components/docs-code-block'
+import { DocsComponentPreview, DocsPreview } from '@/shared/components/docs-component-preview'
+import { DocsToc, type TocItem } from '@/shared/components/docs-toc'
+import { Input } from '@/shared/components/input'
+import { Label } from '@/shared/components/label'
+import { Popover, PopoverContent, PopoverTrigger } from '@/shared/components/popover'
+import { Typography } from '@/shared/components/typography'
 import type { Route } from './+types/popover'
 
 export const handle = {
@@ -131,7 +131,7 @@ const PopoverPage = () => {
           <Typography variant='h2'>Usage</Typography>
           <DocsCodeBlock
             language='tsx'
-            code={`import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/popover'
+            code={`import { Popover, PopoverContent, PopoverTrigger } from '@/shared/components/popover'
 
 export function ColorPicker() {
   return (

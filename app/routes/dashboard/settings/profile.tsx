@@ -1,5 +1,5 @@
 import { useOutletContext } from 'react-router'
-import { ProfileForm } from '@/features/settings'
+import { ProfileForm } from '@/features/settings/profile-form'
 import type { SettingsContext } from './layout'
 
 const ProfilePage = () => {

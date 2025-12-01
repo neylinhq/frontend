@@ -1,6 +1,6 @@
 import { Puzzle } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
 
 const IntegrationsPage = () => {
   const { t } = useTranslation()

@@ -322,35 +322,108 @@
 
 ## 3. REST API Resources
 
-### 3.1 Общие принципы
+### 3.1 Общие принципы (Stripe-style API)
 
 #### Базовый URL
 ```
 /api/v1
 ```
 
-#### Формат ответа
+#### ID Generation (ULID с префиксами)
+Все ID генерируются как ULID с типовыми префиксами:
+```
+usr_01HXYZ5GV3JBXK...  - User
+map_01HXYZ5GV3JBXK...  - Map
+nod_01HXYZ5GV3JBXK...  - Node
+edg_01HXYZ5GV3JBXK...  - Edge
+sub_01HXYZ5GV3JBXK...  - Subscription
+pay_01HXYZ5GV3JBXK...  - Payment
+pm_01HXYZ5GV3JBXK...   - Payment Method
+req_01HXYZ5GV3JBXK...  - Request ID
+```
+
+#### Формат ответа (Single Object)
 ```json
 {
-  "data": { ... },
-  "meta": {
-    "timestamp": "2024-01-15T10:30:00Z"
-  }
+  "object": "user",
+  "id": "usr_01HXYZ5GV3JBXK...",
+  "email": "user@example.com",
+  "created_at": 1699488000,
+  "updated_at": 1699488000,
+  "livemode": true
 }
 ```
 
-#### Формат ошибки
+#### Формат ответа (List с Cursor Pagination)
 ```json
 {
+  "object": "list",
+  "data": [
+    { "object": "map", "id": "map_01HXYZ..." }
+  ],
+  "has_more": true,
+  "next_cursor": "map_01HABC...",
+  "total_count": 42
+}
+```
+
+#### Формат ошибки (RFC 7807 + Extensions)
+```json
+{
+  "object": "error",
   "error": {
-    "code": "VALIDATION_ERROR",
-    "message": "Human readable message",
+    "type": "validation_error",
+    "code": "map_limit_exceeded",
+    "message": "You have reached the maximum number of maps for your plan",
+    "param": null,
+    "doc_url": "https://docs.neylin.io/errors/map_limit_exceeded",
+    "request_id": "req_01HXYZ...",
     "details": {
-      "field": ["error1", "error2"]
+      "current": 3,
+      "limit": 3,
+      "plan": "free",
+      "upgrade_url": "https://app.neylin.io/settings/billing"
     }
   }
 }
 ```
+
+#### Error Types
+| Type | HTTP Status | Описание |
+|------|-------------|----------|
+| `invalid_request_error` | 400 | Неверные параметры запроса |
+| `authentication_error` | 401 | Отсутствует или невалидный токен |
+| `authorization_error` | 403 | Нет прав доступа |
+| `not_found_error` | 404 | Ресурс не найден |
+| `conflict_error` | 409 | Конфликт (дубликат) |
+| `validation_error` | 422 | Бизнес-правило нарушено |
+| `rate_limit_error` | 429 | Превышен лимит запросов |
+| `api_error` | 500 | Внутренняя ошибка сервера |
+| `service_unavailable` | 503 | Сервис временно недоступен |
+
+#### Error Codes
+| Code | Type | Описание |
+|------|------|----------|
+| `auth_invalid_credentials` | authentication_error | Неверный email или пароль |
+| `auth_token_expired` | authentication_error | Токен истёк |
+| `auth_token_revoked` | authentication_error | Токен отозван |
+| `auth_rate_limited` | rate_limit_error | Превышен лимит попыток входа |
+| `user_email_exists` | conflict_error | Email уже используется |
+| `user_username_exists` | conflict_error | Username уже занят |
+| `user_not_found` | not_found_error | Пользователь не найден |
+| `map_not_found` | not_found_error | Карта не найдена |
+| `map_limit_exceeded` | validation_error | Превышен лимит карт |
+| `node_not_found` | not_found_error | Узел не найден |
+| `node_limit_exceeded` | validation_error | Превышен лимит узлов |
+| `edge_not_found` | not_found_error | Связь не найдена |
+| `edge_self_loop` | invalid_request_error | Нельзя связать узел с самим собой |
+| `edge_duplicate` | conflict_error | Связь уже существует |
+| `edge_cross_map` | invalid_request_error | Узлы принадлежат разным картам |
+| `ai_quota_exceeded` | rate_limit_error | Превышен лимит AI запросов |
+| `ai_model_not_allowed` | authorization_error | Модель недоступна для плана |
+| `payment_method_invalid` | invalid_request_error | Невалидный платёжный метод |
+| `payment_declined` | validation_error | Платёж отклонён |
+| `subscription_inactive` | authorization_error | Подписка неактивна |
 
 #### HTTP статусы
 | Статус | Использование |
@@ -358,18 +431,34 @@
 | 200 | Успешный GET, PUT, PATCH |
 | 201 | Успешный POST (создание) |
 | 204 | Успешный DELETE |
-| 400 | Ошибка валидации |
-| 401 | Не аутентифицирован |
-| 403 | Нет доступа |
-| 404 | Ресурс не найден |
-| 409 | Конфликт (дубликат) |
-| 422 | Бизнес-правило нарушено |
-| 429 | Rate limit |
-| 500 | Внутренняя ошибка |
+| 400 | Неверные параметры (`invalid_request_error`) |
+| 401 | Не аутентифицирован (`authentication_error`) |
+| 402 | Платёж отклонён (`payment_declined`) |
+| 403 | Нет доступа (`authorization_error`) |
+| 404 | Ресурс не найден (`not_found_error`) |
+| 409 | Конфликт (`conflict_error`) |
+| 410 | Ресурс удалён (soft deleted) |
+| 422 | Бизнес-правило нарушено (`validation_error`) |
+| 429 | Rate limit (`rate_limit_error`) |
+| 500 | Внутренняя ошибка (`api_error`) |
+| 503 | Сервис недоступен (`service_unavailable`) |
 
-#### Аутентификация
-```
+#### Request Headers
+```http
 Authorization: Bearer <access_token>
+Content-Type: application/json
+X-Request-ID: req_01HXYZ...          # Optional, auto-generated if missing
+Idempotency-Key: <unique_key>        # For POST/PUT (optional)
+```
+
+#### Response Headers
+```http
+X-Request-ID: req_01HXYZ...
+X-RateLimit-Limit: 1000
+X-RateLimit-Remaining: 999
+X-RateLimit-Reset: 1699488000
+Retry-After: 30                       # Only on 429
+Idempotent-Replayed: true            # If response was cached
 ```
 
 ---
@@ -1860,6 +1949,137 @@ REDIS_URL=redis://localhost:6379/0
 - Health check endpoint: `GET /health`
 - Readiness probe: `GET /ready`
 - Graceful shutdown (30s timeout)
+
+### 7.6 Intelligent Rate Limiting
+
+#### Multi-Layer Strategy
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    RATE LIMITING LAYERS                         │
+├─────────────────────────────────────────────────────────────────┤
+│ L1: Global        │ 10,000 req/s across all instances          │
+│ L2: Per-IP        │ 100 req/min (anonymous), 1000 req/min (auth)│
+│ L3: Per-User      │ Based on plan tier                          │
+│ L4: Per-Endpoint  │ Custom limits for sensitive operations      │
+│ L5: Per-Resource  │ AI model-specific limits                    │
+│ L6: Burst         │ Token bucket for traffic spikes             │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+#### Rate Limits по планам
+
+| Лимит | Free | Pro | Ultra |
+|-------|------|-----|-------|
+| Requests/min | 60 | 300 | 1000 |
+| Requests/hour | 1000 | 10000 | 50000 |
+| Requests/day | 10000 | 100000 | 500000 |
+| Burst size | 10 | 50 | 200 |
+| AI requests/hour | 5 | 50 | 500 |
+| Upload MB/hour | 50 | 500 | 5000 |
+
+#### Endpoint-Specific Limits
+
+| Endpoint | Лимит | Scope |
+|----------|-------|-------|
+| `POST /auth/login` | 5 / 15 min | Per IP |
+| `POST /auth/register` | 3 / hour | Per IP |
+| `POST /auth/forgot-password` | 3 / hour | Per IP |
+| `POST /maps/:id/analyze` | 10 / hour | Per User |
+| `POST /ai/suggest-edges` | 50 / hour | Per User |
+| `POST /maps` | 10 / min | Per User |
+| `POST /maps/:id/nodes` | 60 / min | Per User |
+| `POST /users/me/avatar` | 10 / hour | Per User |
+| `PATCH /maps/:id/nodes/positions` | 10 / sec | Per User |
+
+#### Token Bucket Algorithm (Redis)
+- Реализация через Redis Lua script
+- Atomic операции для consistency
+- TTL на ключах для auto-cleanup
+- Refill rate зависит от плана
+
+#### Adaptive Rate Limiting
+- Снижение лимитов при CPU > 80%
+- Снижение при latency p99 > 500ms
+- Снижение при error rate > 5%
+- Автоматическое восстановление при нормализации
+
+#### Response Headers
+```http
+X-RateLimit-Limit: 1000
+X-RateLimit-Remaining: 999
+X-RateLimit-Reset: 1699488000
+X-RateLimit-Policy: "1000;w=60"
+Retry-After: 30
+```
+
+### 7.7 Circuit Breaker Pattern
+
+#### External Services
+| Сервис | Max Failures | Reset Timeout | Half-Open Max |
+|--------|--------------|---------------|---------------|
+| Stripe | 5 | 30s | 3 |
+| OpenAI | 3 | 60s | 2 |
+| Anthropic | 3 | 60s | 2 |
+| S3 | 5 | 30s | 3 |
+| SMTP | 5 | 60s | 3 |
+
+#### Retry Policy
+- Max attempts: 3
+- Initial delay: 100ms
+- Max delay: 10s
+- Multiplier: 2.0
+- Jitter: 10%
+
+#### AI Provider Fallback Chain
+1. Primary: GPT-4-turbo (OpenAI)
+2. Fallback 1: Claude-3-opus (Anthropic)
+3. Fallback 2: GPT-4 (OpenAI)
+4. Last resort: GPT-3.5-turbo (OpenAI)
+
+### 7.8 Synchronization & Concurrency
+
+#### Optimistic Locking
+- Version field в Maps/Nodes/Edges
+- `ErrConcurrentModification` при конфликте
+- Automatic retry with fresh data
+
+#### Distributed Locking (Redis)
+- Используется для concurrent map edits
+- TTL: 30 секунд
+- Heartbeat для продления
+- Lua script для безопасного release
+
+#### Event Sourcing
+- Для критических операций (subscriptions, payments)
+- Audit trail в events table
+- Immutable event log
+
+### 7.9 Testing Requirements
+
+#### Coverage Targets
+| Слой | Coverage |
+|------|----------|
+| Domain (entities, VOs) | 95%+ |
+| Application (use cases) | 90%+ |
+| Adapter (handlers) | 85%+ |
+| Integration | Key paths |
+| E2E | Critical flows |
+
+#### Test Structure
+```
+tests/
+├── unit/
+│   ├── domain/         # Entity, VO tests
+│   ├── application/    # Use case tests (mocked repos)
+│   └── adapter/        # Handler tests (mocked use cases)
+├── integration/
+│   ├── repository/     # Real PostgreSQL (testcontainers)
+│   ├── redis/          # Real Redis
+│   └── external/       # Mocked external APIs
+└── e2e/
+    ├── api/            # Full API tests
+    └── fixtures/       # Test data
+```
 
 ---
 

@@ -15,8 +15,8 @@ import { ThemeProvider } from '@/app/theme'
 import '@/shared/styles/globals.css'
 import type React from 'react'
 import { useEffect, useRef } from 'react'
+import { type I18nInitData, initI18n } from '@/app/i18n'
 import { MODE_COOKIE_KEY, PALETTE_COOKIE_KEY } from '@/app/theme/theme.constants'
-import { type I18nInitData, initI18n } from '@/shared/config/i18n'
 import type { Route } from './+types/root'
 
 export const links: Route.LinksFunction = () => [
@@ -31,7 +31,7 @@ export const links: Route.LinksFunction = () => [
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   // Dynamic imports to avoid bundling Node.js modules for client
-  const { getI18nData } = await import('@/shared/config/i18n/i18n.server')
+  const { getI18nData } = await import('@/app/i18n/i18n.server')
   const { getThemeData } = await import('@/app/theme/theme.server')
 
   const i18nData = getI18nData(request)

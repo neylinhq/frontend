@@ -247,26 +247,30 @@ duration-200             — default duration
 
 ```
 src/
-├── app/           — providers, theme, routing
-├── pages/         — route-level components
-├── features/      — feature modules
-├── entities/      — business entities
-├── widgets/       — complex UI compositions
-├── shared/        — reusable utilities
-│   ├── ui/        — base components
-│   ├── lib/       — utilities
-│   └── api/       — HTTP client
-└── processes/     — business workflows
+├── app/             — providers, theme, routing
+├── pages/           — route-level components
+├── widgets/         — complex UI compositions
+├── features/        — feature modules
+├── entities/        — business entities
+└── shared/          — reusable utilities
+    ├── components/  — generic components (button, input, dialog, etc.)
+    ├── lib/         — utilities, helpers
+    ├── api/         — HTTP client
+    ├── config/      — configuration
+    └── styles/      — global styles
 ```
 
 ### Naming Conventions
 
 - Directories: `kebab-case`
 - Components: `kebab-case.tsx`
-- Types: `*.types.ts`
-- API: `*.api.ts`
-- Queries: `*.queries.ts`
-- Schemas: `*.schema.ts`
+- Types: `[domain].types.ts`
+- API: `[domain].api.ts`
+- Queries: `[domain].queries.ts`
+- Schemas: `[domain].schema.ts`
+- Stores: `[domain].store.ts`
+- Hooks: `[domain].hooks.ts`
+- Utils: `[domain].utils.ts`
 
 ---
 

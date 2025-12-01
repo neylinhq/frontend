@@ -3521,3 +3521,2044 @@ mocks:
 | Unit | Domain logic, Use Cases | `*_test.go` рядом с кодом |
 | Integration | Repositories, Handlers | `*_test.go` рядом с кодом |
 | E2E | Full API flow | `tests/e2e/` |
+
+---
+
+## 12. Redis Architecture
+
+### 12.1 Enhanced Configuration
+
+```go
+// internal/infrastructure/config/config.go
+type RedisConfig struct {
+    URL              string        `envconfig:"REDIS_URL" required:"true"`
+    ClusterURLs      string        `envconfig:"REDIS_CLUSTER_URLS"`           // Comma-separated for cluster mode
+    Mode             string        `envconfig:"REDIS_MODE" default:"single"`  // single, sentinel, cluster
+    SentinelMaster   string        `envconfig:"REDIS_SENTINEL_MASTER"`
+    Password         string        `envconfig:"REDIS_PASSWORD"`
+    DB               int           `envconfig:"REDIS_DB" default:"0"`
+
+    // Connection Pool
+    PoolSize         int           `envconfig:"REDIS_POOL_SIZE" default:"100"`
+    MinIdleConns     int           `envconfig:"REDIS_MIN_IDLE" default:"10"`
+    MaxRetries       int           `envconfig:"REDIS_MAX_RETRIES" default:"3"`
+
+    // Timeouts
+    DialTimeout      time.Duration `envconfig:"REDIS_DIAL_TIMEOUT" default:"5s"`
+    ReadTimeout      time.Duration `envconfig:"REDIS_READ_TIMEOUT" default:"3s"`
+    WriteTimeout     time.Duration `envconfig:"REDIS_WRITE_TIMEOUT" default:"3s"`
+    PoolTimeout      time.Duration `envconfig:"REDIS_POOL_TIMEOUT" default:"4s"`
+
+    // TLS
+    TLSEnabled       bool          `envconfig:"REDIS_TLS_ENABLED" default:"false"`
+    TLSCertPath      string        `envconfig:"REDIS_TLS_CERT_PATH"`
+}
+```
+
+### 12.2 Key Naming Convention
+
+**Pattern**: `neylin:{env}:{type}:{id}:{subkey}`
+
+| Prefix | Purpose | TTL | Example |
+|--------|---------|-----|---------|
+| `session` | User sessions | 720h | `neylin:prod:session:usr_01HX...` |
+| `rate` | Rate limit buckets | 1h | `neylin:prod:rate:ip:192.168.1.1` |
+| `cache` | Data cache | varies | `neylin:prod:cache:map:map_01HX...` |
+| `lock` | Distributed locks | 30s | `neylin:prod:lock:map:map_01HX...` |
+| `idempotency` | Idempotency keys | 24h | `neylin:prod:idempotency:req_01HX...` |
+| `queue` | Background jobs | - | `neylin:prod:queue:ai:analyze` |
+| `pubsub` | Real-time events | - | `neylin:prod:pubsub:map:map_01HX...` |
+| `circuit` | Circuit breaker state | 5m | `neylin:prod:circuit:stripe` |
+
+```go
+// internal/infrastructure/redis/keys.go
+package redis
+
+import (
+    "fmt"
+    "os"
+)
+
+var env = os.Getenv("APP_ENV")
+
+type KeyBuilder struct {
+    prefix string
+}
+
+func NewKeyBuilder() *KeyBuilder {
+    return &KeyBuilder{prefix: fmt.Sprintf("neylin:%s", env)}
+}
+
+// Session keys
+func (k *KeyBuilder) Session(userID string) string {
+    return fmt.Sprintf("%s:session:%s", k.prefix, userID)
+}
+
+func (k *KeyBuilder) SessionRefresh(tokenID string) string {
+    return fmt.Sprintf("%s:session:refresh:%s", k.prefix, tokenID)
+}
+
+// Rate limiting keys
+func (k *KeyBuilder) RateGlobal() string {
+    return fmt.Sprintf("%s:rate:global", k.prefix)
+}
+
+func (k *KeyBuilder) RateIP(ip string) string {
+    return fmt.Sprintf("%s:rate:ip:%s", k.prefix, ip)
+}
+
+func (k *KeyBuilder) RateUser(userID string) string {
+    return fmt.Sprintf("%s:rate:user:%s", k.prefix, userID)
+}
+
+func (k *KeyBuilder) RateEndpoint(userID, endpoint string) string {
+    return fmt.Sprintf("%s:rate:endpoint:%s:%s", k.prefix, userID, endpoint)
+}
+
+func (k *KeyBuilder) RateResource(resourceType, resourceID string) string {
+    return fmt.Sprintf("%s:rate:resource:%s:%s", k.prefix, resourceType, resourceID)
+}
+
+// Cache keys
+func (k *KeyBuilder) CacheMap(mapID string) string {
+    return fmt.Sprintf("%s:cache:map:%s", k.prefix, mapID)
+}
+
+func (k *KeyBuilder) CacheMapFull(mapID string) string {
+    return fmt.Sprintf("%s:cache:map:full:%s", k.prefix, mapID)
+}
+
+func (k *KeyBuilder) CacheUserMaps(userID string) string {
+    return fmt.Sprintf("%s:cache:user:maps:%s", k.prefix, userID)
+}
+
+func (k *KeyBuilder) CacheUserSubscription(userID string) string {
+    return fmt.Sprintf("%s:cache:user:subscription:%s", k.prefix, userID)
+}
+
+// Lock keys
+func (k *KeyBuilder) LockMap(mapID string) string {
+    return fmt.Sprintf("%s:lock:map:%s", k.prefix, mapID)
+}
+
+func (k *KeyBuilder) LockUser(userID string) string {
+    return fmt.Sprintf("%s:lock:user:%s", k.prefix, userID)
+}
+
+func (k *KeyBuilder) LockSubscription(userID string) string {
+    return fmt.Sprintf("%s:lock:subscription:%s", k.prefix, userID)
+}
+
+// Idempotency keys
+func (k *KeyBuilder) Idempotency(key string) string {
+    return fmt.Sprintf("%s:idempotency:%s", k.prefix, key)
+}
+
+// Queue keys
+func (k *KeyBuilder) QueueAIAnalyze() string {
+    return fmt.Sprintf("%s:queue:ai:analyze", k.prefix)
+}
+
+func (k *KeyBuilder) QueueEmail() string {
+    return fmt.Sprintf("%s:queue:email", k.prefix)
+}
+
+// Pub/Sub channels
+func (k *KeyBuilder) PubSubMapUpdates(mapID string) string {
+    return fmt.Sprintf("%s:pubsub:map:%s", k.prefix, mapID)
+}
+
+func (k *KeyBuilder) PubSubUserNotifications(userID string) string {
+    return fmt.Sprintf("%s:pubsub:user:%s", k.prefix, userID)
+}
+
+// Circuit breaker keys
+func (k *KeyBuilder) CircuitBreaker(service string) string {
+    return fmt.Sprintf("%s:circuit:%s", k.prefix, service)
+}
+```
+
+### 12.3 Redis Client Factory
+
+```go
+// internal/infrastructure/database/redis.go
+package database
+
+import (
+    "context"
+    "crypto/tls"
+    "strings"
+    "time"
+
+    "github.com/redis/go-redis/v9"
+    "neylin/internal/infrastructure/config"
+)
+
+type RedisClient interface {
+    redis.Cmdable
+    Close() error
+    Subscribe(ctx context.Context, channels ...string) *redis.PubSub
+}
+
+func NewRedis(cfg config.RedisConfig) (RedisClient, error) {
+    var client RedisClient
+    var err error
+
+    switch cfg.Mode {
+    case "cluster":
+        client, err = newClusterClient(cfg)
+    case "sentinel":
+        client, err = newSentinelClient(cfg)
+    default:
+        client, err = newSingleClient(cfg)
+    }
+
+    if err != nil {
+        return nil, err
+    }
+
+    // Verify connection
+    ctx, cancel := context.WithTimeout(context.Background(), cfg.DialTimeout)
+    defer cancel()
+
+    if err := client.Ping(ctx).Err(); err != nil {
+        return nil, err
+    }
+
+    return client, nil
+}
+
+func newSingleClient(cfg config.RedisConfig) (*redis.Client, error) {
+    opts, err := redis.ParseURL(cfg.URL)
+    if err != nil {
+        return nil, err
+    }
+
+    opts.PoolSize = cfg.PoolSize
+    opts.MinIdleConns = cfg.MinIdleConns
+    opts.MaxRetries = cfg.MaxRetries
+    opts.DialTimeout = cfg.DialTimeout
+    opts.ReadTimeout = cfg.ReadTimeout
+    opts.WriteTimeout = cfg.WriteTimeout
+    opts.PoolTimeout = cfg.PoolTimeout
+
+    if cfg.TLSEnabled {
+        opts.TLSConfig = &tls.Config{
+            MinVersion: tls.VersionTLS12,
+        }
+    }
+
+    return redis.NewClient(opts), nil
+}
+
+func newClusterClient(cfg config.RedisConfig) (*redis.ClusterClient, error) {
+    addrs := strings.Split(cfg.ClusterURLs, ",")
+
+    opts := &redis.ClusterOptions{
+        Addrs:        addrs,
+        Password:     cfg.Password,
+        PoolSize:     cfg.PoolSize,
+        MinIdleConns: cfg.MinIdleConns,
+        MaxRetries:   cfg.MaxRetries,
+        DialTimeout:  cfg.DialTimeout,
+        ReadTimeout:  cfg.ReadTimeout,
+        WriteTimeout: cfg.WriteTimeout,
+        PoolTimeout:  cfg.PoolTimeout,
+    }
+
+    if cfg.TLSEnabled {
+        opts.TLSConfig = &tls.Config{
+            MinVersion: tls.VersionTLS12,
+        }
+    }
+
+    return redis.NewClusterClient(opts), nil
+}
+
+func newSentinelClient(cfg config.RedisConfig) (*redis.Client, error) {
+    addrs := strings.Split(cfg.ClusterURLs, ",")
+
+    opts := &redis.FailoverOptions{
+        MasterName:    cfg.SentinelMaster,
+        SentinelAddrs: addrs,
+        Password:      cfg.Password,
+        DB:            cfg.DB,
+        PoolSize:      cfg.PoolSize,
+        MinIdleConns:  cfg.MinIdleConns,
+        MaxRetries:    cfg.MaxRetries,
+        DialTimeout:   cfg.DialTimeout,
+        ReadTimeout:   cfg.ReadTimeout,
+        WriteTimeout:  cfg.WriteTimeout,
+        PoolTimeout:   cfg.PoolTimeout,
+    }
+
+    if cfg.TLSEnabled {
+        opts.TLSConfig = &tls.Config{
+            MinVersion: tls.VersionTLS12,
+        }
+    }
+
+    return redis.NewFailoverClient(opts), nil
+}
+```
+
+### 12.4 Session Management
+
+```go
+// internal/infrastructure/redis/session.go
+package redis
+
+import (
+    "context"
+    "encoding/json"
+    "time"
+
+    "github.com/redis/go-redis/v9"
+)
+
+type SessionData struct {
+    UserID       string    `json:"user_id"`
+    Email        string    `json:"email"`
+    Role         string    `json:"role"`
+    DeviceID     string    `json:"device_id"`
+    UserAgent    string    `json:"user_agent"`
+    IP           string    `json:"ip"`
+    CreatedAt    time.Time `json:"created_at"`
+    LastActivity time.Time `json:"last_activity"`
+}
+
+type SessionManager struct {
+    client RedisClient
+    keys   *KeyBuilder
+    ttl    time.Duration
+}
+
+func NewSessionManager(client RedisClient, ttl time.Duration) *SessionManager {
+    return &SessionManager{
+        client: client,
+        keys:   NewKeyBuilder(),
+        ttl:    ttl,
+    }
+}
+
+// CreateSession creates a new session for user
+func (m *SessionManager) CreateSession(ctx context.Context, data *SessionData) error {
+    key := m.keys.Session(data.UserID)
+
+    jsonData, err := json.Marshal(data)
+    if err != nil {
+        return err
+    }
+
+    // Use HSET for storing session data with device-specific field
+    return m.client.HSet(ctx, key, data.DeviceID, jsonData).Err()
+}
+
+// GetSession retrieves session data
+func (m *SessionManager) GetSession(ctx context.Context, userID, deviceID string) (*SessionData, error) {
+    key := m.keys.Session(userID)
+
+    jsonData, err := m.client.HGet(ctx, key, deviceID).Bytes()
+    if err == redis.Nil {
+        return nil, nil
+    }
+    if err != nil {
+        return nil, err
+    }
+
+    var data SessionData
+    if err := json.Unmarshal(jsonData, &data); err != nil {
+        return nil, err
+    }
+
+    return &data, nil
+}
+
+// GetAllSessions retrieves all active sessions for user
+func (m *SessionManager) GetAllSessions(ctx context.Context, userID string) ([]*SessionData, error) {
+    key := m.keys.Session(userID)
+
+    results, err := m.client.HGetAll(ctx, key).Result()
+    if err != nil {
+        return nil, err
+    }
+
+    sessions := make([]*SessionData, 0, len(results))
+    for _, jsonData := range results {
+        var data SessionData
+        if err := json.Unmarshal([]byte(jsonData), &data); err != nil {
+            continue
+        }
+        sessions = append(sessions, &data)
+    }
+
+    return sessions, nil
+}
+
+// UpdateActivity updates last activity timestamp
+func (m *SessionManager) UpdateActivity(ctx context.Context, userID, deviceID string) error {
+    session, err := m.GetSession(ctx, userID, deviceID)
+    if err != nil || session == nil {
+        return err
+    }
+
+    session.LastActivity = time.Now()
+    return m.CreateSession(ctx, session)
+}
+
+// DeleteSession removes a specific session
+func (m *SessionManager) DeleteSession(ctx context.Context, userID, deviceID string) error {
+    key := m.keys.Session(userID)
+    return m.client.HDel(ctx, key, deviceID).Err()
+}
+
+// DeleteAllSessions removes all sessions for user (logout all devices)
+func (m *SessionManager) DeleteAllSessions(ctx context.Context, userID string) error {
+    key := m.keys.Session(userID)
+    return m.client.Del(ctx, key).Err()
+}
+
+// Refresh token storage
+func (m *SessionManager) StoreRefreshToken(ctx context.Context, tokenID, userID string, ttl time.Duration) error {
+    key := m.keys.SessionRefresh(tokenID)
+    return m.client.Set(ctx, key, userID, ttl).Err()
+}
+
+func (m *SessionManager) GetRefreshTokenUser(ctx context.Context, tokenID string) (string, error) {
+    key := m.keys.SessionRefresh(tokenID)
+    return m.client.Get(ctx, key).Result()
+}
+
+func (m *SessionManager) RevokeRefreshToken(ctx context.Context, tokenID string) error {
+    key := m.keys.SessionRefresh(tokenID)
+    return m.client.Del(ctx, key).Err()
+}
+```
+
+### 12.5 Rate Limiting Implementation
+
+```go
+// internal/infrastructure/redis/ratelimit.go
+package redis
+
+import (
+    "context"
+    "fmt"
+    "time"
+
+    "github.com/redis/go-redis/v9"
+)
+
+// Token Bucket Algorithm implemented with Lua script
+var tokenBucketScript = redis.NewScript(`
+    local key = KEYS[1]
+    local capacity = tonumber(ARGV[1])
+    local refill_rate = tonumber(ARGV[2])
+    local now = tonumber(ARGV[3])
+    local requested = tonumber(ARGV[4])
+
+    local bucket = redis.call('HMGET', key, 'tokens', 'last_refill')
+    local tokens = tonumber(bucket[1])
+    local last_refill = tonumber(bucket[2])
+
+    -- Initialize bucket if not exists
+    if tokens == nil then
+        tokens = capacity
+        last_refill = now
+    end
+
+    -- Calculate refill
+    local elapsed = now - last_refill
+    local refill = elapsed * refill_rate
+    tokens = math.min(capacity, tokens + refill)
+
+    -- Check if we have enough tokens
+    local allowed = 0
+    local remaining = tokens
+    local retry_after = 0
+
+    if tokens >= requested then
+        tokens = tokens - requested
+        allowed = 1
+        remaining = tokens
+    else
+        retry_after = math.ceil((requested - tokens) / refill_rate)
+    end
+
+    -- Save state
+    redis.call('HMSET', key, 'tokens', tokens, 'last_refill', now)
+    redis.call('EXPIRE', key, 3600)
+
+    return {allowed, remaining, retry_after}
+`)
+
+type RateLimitResult struct {
+    Allowed    bool
+    Remaining  int
+    RetryAfter int // seconds
+    Limit      int
+}
+
+type RateLimiter struct {
+    client RedisClient
+    keys   *KeyBuilder
+}
+
+func NewRateLimiter(client RedisClient) *RateLimiter {
+    return &RateLimiter{
+        client: client,
+        keys:   NewKeyBuilder(),
+    }
+}
+
+// CheckLimit checks rate limit using token bucket algorithm
+func (r *RateLimiter) CheckLimit(ctx context.Context, key string, capacity, refillRate int) (*RateLimitResult, error) {
+    now := float64(time.Now().Unix())
+
+    result, err := tokenBucketScript.Run(ctx, r.client, []string{key}, capacity, refillRate, now, 1).Int64Slice()
+    if err != nil {
+        return nil, err
+    }
+
+    return &RateLimitResult{
+        Allowed:    result[0] == 1,
+        Remaining:  int(result[1]),
+        RetryAfter: int(result[2]),
+        Limit:      capacity,
+    }, nil
+}
+
+// Multi-layer rate limiting
+func (r *RateLimiter) CheckMultiLayer(ctx context.Context, ip, userID, endpoint string) (*RateLimitResult, string, error) {
+    layers := []struct {
+        key      string
+        capacity int
+        rate     int
+        name     string
+    }{
+        {r.keys.RateGlobal(), 10000, 1000, "global"},
+        {r.keys.RateIP(ip), 100, 10, "ip"},
+    }
+
+    if userID != "" {
+        layers = append(layers,
+            struct {
+                key      string
+                capacity int
+                rate     int
+                name     string
+            }{r.keys.RateUser(userID), 1000, 100, "user"},
+            struct {
+                key      string
+                capacity int
+                rate     int
+                name     string
+            }{r.keys.RateEndpoint(userID, endpoint), 60, 6, "endpoint"},
+        )
+    }
+
+    for _, layer := range layers {
+        result, err := r.CheckLimit(ctx, layer.key, layer.capacity, layer.rate)
+        if err != nil {
+            return nil, "", err
+        }
+        if !result.Allowed {
+            return result, layer.name, nil
+        }
+    }
+
+    return &RateLimitResult{Allowed: true, Remaining: -1, Limit: -1}, "", nil
+}
+
+// Sliding window counter for specific operations
+var slidingWindowScript = redis.NewScript(`
+    local key = KEYS[1]
+    local window = tonumber(ARGV[1])
+    local limit = tonumber(ARGV[2])
+    local now = tonumber(ARGV[3])
+
+    -- Remove old entries
+    redis.call('ZREMRANGEBYSCORE', key, '-inf', now - window)
+
+    -- Count current entries
+    local count = redis.call('ZCARD', key)
+
+    if count < limit then
+        redis.call('ZADD', key, now, now .. ':' .. math.random())
+        redis.call('EXPIRE', key, window)
+        return {1, limit - count - 1}
+    end
+
+    -- Calculate retry after
+    local oldest = redis.call('ZRANGE', key, 0, 0, 'WITHSCORES')
+    local retry_after = 0
+    if #oldest > 0 then
+        retry_after = window - (now - tonumber(oldest[2]))
+    end
+
+    return {0, retry_after}
+`)
+
+// CheckSlidingWindow for precise rate limiting (e.g., AI requests per month)
+func (r *RateLimiter) CheckSlidingWindow(ctx context.Context, key string, windowSeconds, limit int) (*RateLimitResult, error) {
+    now := time.Now().Unix()
+
+    result, err := slidingWindowScript.Run(ctx, r.client, []string{key}, windowSeconds, limit, now).Int64Slice()
+    if err != nil {
+        return nil, err
+    }
+
+    return &RateLimitResult{
+        Allowed:    result[0] == 1,
+        Remaining:  int(result[1]),
+        RetryAfter: int(result[1]),
+        Limit:      limit,
+    }, nil
+}
+```
+
+### 12.6 Distributed Locking
+
+```go
+// internal/infrastructure/redis/lock.go
+package redis
+
+import (
+    "context"
+    "crypto/rand"
+    "encoding/hex"
+    "errors"
+    "time"
+
+    "github.com/redis/go-redis/v9"
+)
+
+var (
+    ErrLockNotAcquired = errors.New("lock not acquired")
+    ErrLockNotOwned    = errors.New("lock not owned by this instance")
+)
+
+// Lua script for safe lock release (only if we own it)
+var releaseLockScript = redis.NewScript(`
+    if redis.call('GET', KEYS[1]) == ARGV[1] then
+        return redis.call('DEL', KEYS[1])
+    end
+    return 0
+`)
+
+// Lua script for lock extension
+var extendLockScript = redis.NewScript(`
+    if redis.call('GET', KEYS[1]) == ARGV[1] then
+        return redis.call('PEXPIRE', KEYS[1], ARGV[2])
+    end
+    return 0
+`)
+
+type Lock struct {
+    key    string
+    token  string
+    client RedisClient
+    ttl    time.Duration
+}
+
+type LockManager struct {
+    client RedisClient
+    keys   *KeyBuilder
+}
+
+func NewLockManager(client RedisClient) *LockManager {
+    return &LockManager{
+        client: client,
+        keys:   NewKeyBuilder(),
+    }
+}
+
+// AcquireLock attempts to acquire a distributed lock
+func (m *LockManager) AcquireLock(ctx context.Context, key string, ttl time.Duration) (*Lock, error) {
+    token := generateToken()
+
+    acquired, err := m.client.SetNX(ctx, key, token, ttl).Result()
+    if err != nil {
+        return nil, err
+    }
+
+    if !acquired {
+        return nil, ErrLockNotAcquired
+    }
+
+    return &Lock{
+        key:    key,
+        token:  token,
+        client: m.client,
+        ttl:    ttl,
+    }, nil
+}
+
+// AcquireLockWithRetry attempts to acquire lock with retries
+func (m *LockManager) AcquireLockWithRetry(ctx context.Context, key string, ttl time.Duration, maxRetries int, retryDelay time.Duration) (*Lock, error) {
+    for i := 0; i < maxRetries; i++ {
+        lock, err := m.AcquireLock(ctx, key, ttl)
+        if err == nil {
+            return lock, nil
+        }
+        if err != ErrLockNotAcquired {
+            return nil, err
+        }
+
+        select {
+        case <-ctx.Done():
+            return nil, ctx.Err()
+        case <-time.After(retryDelay):
+        }
+    }
+    return nil, ErrLockNotAcquired
+}
+
+// LockMap acquires lock for map editing
+func (m *LockManager) LockMap(ctx context.Context, mapID string, ttl time.Duration) (*Lock, error) {
+    return m.AcquireLock(ctx, m.keys.LockMap(mapID), ttl)
+}
+
+// LockUser acquires lock for user operations
+func (m *LockManager) LockUser(ctx context.Context, userID string, ttl time.Duration) (*Lock, error) {
+    return m.AcquireLock(ctx, m.keys.LockUser(userID), ttl)
+}
+
+// LockSubscription acquires lock for subscription changes
+func (m *LockManager) LockSubscription(ctx context.Context, userID string, ttl time.Duration) (*Lock, error) {
+    return m.AcquireLock(ctx, m.keys.LockSubscription(userID), ttl)
+}
+
+// Release releases the lock
+func (l *Lock) Release(ctx context.Context) error {
+    result, err := releaseLockScript.Run(ctx, l.client, []string{l.key}, l.token).Int64()
+    if err != nil {
+        return err
+    }
+    if result == 0 {
+        return ErrLockNotOwned
+    }
+    return nil
+}
+
+// Extend extends the lock TTL
+func (l *Lock) Extend(ctx context.Context, ttl time.Duration) error {
+    result, err := extendLockScript.Run(ctx, l.client, []string{l.key}, l.token, ttl.Milliseconds()).Int64()
+    if err != nil {
+        return err
+    }
+    if result == 0 {
+        return ErrLockNotOwned
+    }
+    l.ttl = ttl
+    return nil
+}
+
+// StartHeartbeat starts automatic lock extension
+func (l *Lock) StartHeartbeat(ctx context.Context) {
+    go func() {
+        ticker := time.NewTicker(l.ttl / 3)
+        defer ticker.Stop()
+
+        for {
+            select {
+            case <-ctx.Done():
+                return
+            case <-ticker.C:
+                if err := l.Extend(ctx, l.ttl); err != nil {
+                    return
+                }
+            }
+        }
+    }()
+}
+
+func generateToken() string {
+    b := make([]byte, 16)
+    rand.Read(b)
+    return hex.EncodeToString(b)
+}
+```
+
+### 12.7 Cache Layer
+
+```go
+// internal/infrastructure/redis/cache.go
+package redis
+
+import (
+    "context"
+    "encoding/json"
+    "time"
+
+    "github.com/redis/go-redis/v9"
+)
+
+type CacheEntry struct {
+    Data      []byte    `json:"data"`
+    Version   int64     `json:"version"`
+    CreatedAt time.Time `json:"created_at"`
+    Tags      []string  `json:"tags"`
+}
+
+type CacheManager struct {
+    client RedisClient
+    keys   *KeyBuilder
+}
+
+func NewCacheManager(client RedisClient) *CacheManager {
+    return &CacheManager{
+        client: client,
+        keys:   NewKeyBuilder(),
+    }
+}
+
+// Get retrieves item from cache
+func (c *CacheManager) Get(ctx context.Context, key string, dest interface{}) (bool, error) {
+    data, err := c.client.Get(ctx, key).Bytes()
+    if err == redis.Nil {
+        return false, nil
+    }
+    if err != nil {
+        return false, err
+    }
+
+    var entry CacheEntry
+    if err := json.Unmarshal(data, &entry); err != nil {
+        return false, err
+    }
+
+    if err := json.Unmarshal(entry.Data, dest); err != nil {
+        return false, err
+    }
+
+    return true, nil
+}
+
+// Set stores item in cache with TTL and optional tags
+func (c *CacheManager) Set(ctx context.Context, key string, value interface{}, ttl time.Duration, tags ...string) error {
+    data, err := json.Marshal(value)
+    if err != nil {
+        return err
+    }
+
+    entry := CacheEntry{
+        Data:      data,
+        Version:   time.Now().UnixNano(),
+        CreatedAt: time.Now(),
+        Tags:      tags,
+    }
+
+    entryData, err := json.Marshal(entry)
+    if err != nil {
+        return err
+    }
+
+    pipe := c.client.Pipeline()
+    pipe.Set(ctx, key, entryData, ttl)
+
+    // Add key to tag sets for invalidation
+    for _, tag := range tags {
+        tagKey := c.keys.prefix + ":cache:tag:" + tag
+        pipe.SAdd(ctx, tagKey, key)
+        pipe.Expire(ctx, tagKey, ttl+time.Hour) // Keep tag set slightly longer
+    }
+
+    _, err = pipe.Exec(ctx)
+    return err
+}
+
+// Delete removes item from cache
+func (c *CacheManager) Delete(ctx context.Context, keys ...string) error {
+    if len(keys) == 0 {
+        return nil
+    }
+    return c.client.Del(ctx, keys...).Err()
+}
+
+// InvalidateByTag removes all cache entries with given tag
+func (c *CacheManager) InvalidateByTag(ctx context.Context, tag string) error {
+    tagKey := c.keys.prefix + ":cache:tag:" + tag
+
+    keys, err := c.client.SMembers(ctx, tagKey).Result()
+    if err != nil {
+        return err
+    }
+
+    if len(keys) == 0 {
+        return nil
+    }
+
+    pipe := c.client.Pipeline()
+    pipe.Del(ctx, keys...)
+    pipe.Del(ctx, tagKey)
+    _, err = pipe.Exec(ctx)
+    return err
+}
+
+// GetOrSet implements cache-aside pattern
+func (c *CacheManager) GetOrSet(ctx context.Context, key string, dest interface{}, ttl time.Duration, loader func() (interface{}, error), tags ...string) error {
+    // Try to get from cache
+    found, err := c.Get(ctx, key, dest)
+    if err != nil {
+        return err
+    }
+    if found {
+        return nil
+    }
+
+    // Load from source
+    value, err := loader()
+    if err != nil {
+        return err
+    }
+
+    // Store in cache
+    if err := c.Set(ctx, key, value, ttl, tags...); err != nil {
+        // Log but don't fail - cache miss is acceptable
+    }
+
+    // Marshal to destination
+    data, err := json.Marshal(value)
+    if err != nil {
+        return err
+    }
+    return json.Unmarshal(data, dest)
+}
+
+// Cache TTL constants
+const (
+    CacheTTLShort  = 5 * time.Minute   // Frequently changing data
+    CacheTTLMedium = 30 * time.Minute  // Semi-stable data
+    CacheTTLLong   = 2 * time.Hour     // Stable data
+    CacheTTLDay    = 24 * time.Hour    // Very stable data
+)
+
+// Specific cache methods for domain objects
+func (c *CacheManager) GetMap(ctx context.Context, mapID string) (map[string]interface{}, bool, error) {
+    var data map[string]interface{}
+    found, err := c.Get(ctx, c.keys.CacheMap(mapID), &data)
+    return data, found, err
+}
+
+func (c *CacheManager) SetMap(ctx context.Context, mapID string, data interface{}) error {
+    return c.Set(ctx, c.keys.CacheMap(mapID), data, CacheTTLMedium, "map:"+mapID)
+}
+
+func (c *CacheManager) InvalidateMap(ctx context.Context, mapID string) error {
+    return c.InvalidateByTag(ctx, "map:"+mapID)
+}
+
+func (c *CacheManager) InvalidateUserMaps(ctx context.Context, userID string) error {
+    return c.Delete(ctx, c.keys.CacheUserMaps(userID))
+}
+```
+
+### 12.8 Pub/Sub for Real-Time Updates
+
+```go
+// internal/infrastructure/redis/pubsub.go
+package redis
+
+import (
+    "context"
+    "encoding/json"
+    "time"
+
+    "github.com/redis/go-redis/v9"
+)
+
+type EventType string
+
+const (
+    EventNodeCreated   EventType = "node.created"
+    EventNodeUpdated   EventType = "node.updated"
+    EventNodeDeleted   EventType = "node.deleted"
+    EventEdgeCreated   EventType = "edge.created"
+    EventEdgeDeleted   EventType = "edge.deleted"
+    EventMapAnalyzed   EventType = "map.analyzed"
+    EventUserUpdated   EventType = "user.updated"
+)
+
+type Event struct {
+    Type      EventType              `json:"type"`
+    MapID     string                 `json:"map_id,omitempty"`
+    UserID    string                 `json:"user_id,omitempty"`
+    EntityID  string                 `json:"entity_id,omitempty"`
+    Data      map[string]interface{} `json:"data,omitempty"`
+    Timestamp time.Time              `json:"timestamp"`
+}
+
+type PubSubManager struct {
+    client RedisClient
+    keys   *KeyBuilder
+}
+
+func NewPubSubManager(client RedisClient) *PubSubManager {
+    return &PubSubManager{
+        client: client,
+        keys:   NewKeyBuilder(),
+    }
+}
+
+// Publish sends event to channel
+func (p *PubSubManager) Publish(ctx context.Context, channel string, event *Event) error {
+    event.Timestamp = time.Now()
+
+    data, err := json.Marshal(event)
+    if err != nil {
+        return err
+    }
+
+    return p.client.Publish(ctx, channel, data).Err()
+}
+
+// PublishMapEvent publishes event to map channel
+func (p *PubSubManager) PublishMapEvent(ctx context.Context, mapID string, event *Event) error {
+    event.MapID = mapID
+    return p.Publish(ctx, p.keys.PubSubMapUpdates(mapID), event)
+}
+
+// PublishUserEvent publishes event to user channel
+func (p *PubSubManager) PublishUserEvent(ctx context.Context, userID string, event *Event) error {
+    event.UserID = userID
+    return p.Publish(ctx, p.keys.PubSubUserNotifications(userID), event)
+}
+
+// Subscribe creates subscription to channel
+func (p *PubSubManager) Subscribe(ctx context.Context, channels ...string) *Subscription {
+    pubsub := p.client.Subscribe(ctx, channels...)
+    return &Subscription{pubsub: pubsub}
+}
+
+// SubscribeToMap subscribes to map updates
+func (p *PubSubManager) SubscribeToMap(ctx context.Context, mapID string) *Subscription {
+    return p.Subscribe(ctx, p.keys.PubSubMapUpdates(mapID))
+}
+
+// SubscribeToUser subscribes to user notifications
+func (p *PubSubManager) SubscribeToUser(ctx context.Context, userID string) *Subscription {
+    return p.Subscribe(ctx, p.keys.PubSubUserNotifications(userID))
+}
+
+type Subscription struct {
+    pubsub *redis.PubSub
+}
+
+// Channel returns channel for receiving events
+func (s *Subscription) Channel() <-chan *Event {
+    ch := make(chan *Event, 100)
+
+    go func() {
+        defer close(ch)
+
+        msgCh := s.pubsub.Channel()
+        for msg := range msgCh {
+            var event Event
+            if err := json.Unmarshal([]byte(msg.Payload), &event); err != nil {
+                continue
+            }
+            ch <- &event
+        }
+    }()
+
+    return ch
+}
+
+// Close closes the subscription
+func (s *Subscription) Close() error {
+    return s.pubsub.Close()
+}
+```
+
+### 12.9 Idempotency Support
+
+```go
+// internal/infrastructure/redis/idempotency.go
+package redis
+
+import (
+    "context"
+    "encoding/json"
+    "time"
+
+    "github.com/redis/go-redis/v9"
+)
+
+type IdempotencyResult struct {
+    Status     string          `json:"status"` // "processing", "completed", "failed"
+    Response   json.RawMessage `json:"response,omitempty"`
+    StatusCode int             `json:"status_code,omitempty"`
+    Error      string          `json:"error,omitempty"`
+    CreatedAt  time.Time       `json:"created_at"`
+}
+
+type IdempotencyManager struct {
+    client RedisClient
+    keys   *KeyBuilder
+    ttl    time.Duration
+}
+
+func NewIdempotencyManager(client RedisClient, ttl time.Duration) *IdempotencyManager {
+    return &IdempotencyManager{
+        client: client,
+        keys:   NewKeyBuilder(),
+        ttl:    ttl,
+    }
+}
+
+// Check checks if request was already processed
+// Returns (result, isProcessing, error)
+func (m *IdempotencyManager) Check(ctx context.Context, key string) (*IdempotencyResult, bool, error) {
+    fullKey := m.keys.Idempotency(key)
+
+    data, err := m.client.Get(ctx, fullKey).Bytes()
+    if err == redis.Nil {
+        return nil, false, nil
+    }
+    if err != nil {
+        return nil, false, err
+    }
+
+    var result IdempotencyResult
+    if err := json.Unmarshal(data, &result); err != nil {
+        return nil, false, err
+    }
+
+    return &result, result.Status == "processing", nil
+}
+
+// Start marks request as being processed
+func (m *IdempotencyManager) Start(ctx context.Context, key string) error {
+    fullKey := m.keys.Idempotency(key)
+
+    result := IdempotencyResult{
+        Status:    "processing",
+        CreatedAt: time.Now(),
+    }
+
+    data, err := json.Marshal(result)
+    if err != nil {
+        return err
+    }
+
+    // Use SetNX to ensure only one request wins
+    set, err := m.client.SetNX(ctx, fullKey, data, m.ttl).Result()
+    if err != nil {
+        return err
+    }
+    if !set {
+        return ErrLockNotAcquired
+    }
+
+    return nil
+}
+
+// Complete stores successful response
+func (m *IdempotencyManager) Complete(ctx context.Context, key string, statusCode int, response interface{}) error {
+    fullKey := m.keys.Idempotency(key)
+
+    respData, err := json.Marshal(response)
+    if err != nil {
+        return err
+    }
+
+    result := IdempotencyResult{
+        Status:     "completed",
+        Response:   respData,
+        StatusCode: statusCode,
+        CreatedAt:  time.Now(),
+    }
+
+    data, err := json.Marshal(result)
+    if err != nil {
+        return err
+    }
+
+    return m.client.Set(ctx, fullKey, data, m.ttl).Err()
+}
+
+// Fail stores error response
+func (m *IdempotencyManager) Fail(ctx context.Context, key string, statusCode int, errMsg string) error {
+    fullKey := m.keys.Idempotency(key)
+
+    result := IdempotencyResult{
+        Status:     "failed",
+        StatusCode: statusCode,
+        Error:      errMsg,
+        CreatedAt:  time.Now(),
+    }
+
+    data, err := json.Marshal(result)
+    if err != nil {
+        return err
+    }
+
+    return m.client.Set(ctx, fullKey, data, m.ttl).Err()
+}
+```
+
+### 12.10 Circuit Breaker State Storage
+
+```go
+// internal/infrastructure/redis/circuit.go
+package redis
+
+import (
+    "context"
+    "encoding/json"
+    "time"
+
+    "github.com/redis/go-redis/v9"
+)
+
+type CircuitState string
+
+const (
+    CircuitClosed   CircuitState = "closed"
+    CircuitOpen     CircuitState = "open"
+    CircuitHalfOpen CircuitState = "half_open"
+)
+
+type CircuitBreakerState struct {
+    State           CircuitState `json:"state"`
+    Failures        int          `json:"failures"`
+    Successes       int          `json:"successes"`
+    LastFailureTime time.Time    `json:"last_failure_time"`
+    LastStateChange time.Time    `json:"last_state_change"`
+}
+
+type CircuitBreakerStorage struct {
+    client RedisClient
+    keys   *KeyBuilder
+}
+
+func NewCircuitBreakerStorage(client RedisClient) *CircuitBreakerStorage {
+    return &CircuitBreakerStorage{
+        client: client,
+        keys:   NewKeyBuilder(),
+    }
+}
+
+func (s *CircuitBreakerStorage) GetState(ctx context.Context, service string) (*CircuitBreakerState, error) {
+    key := s.keys.CircuitBreaker(service)
+
+    data, err := s.client.Get(ctx, key).Bytes()
+    if err == redis.Nil {
+        return &CircuitBreakerState{
+            State:           CircuitClosed,
+            LastStateChange: time.Now(),
+        }, nil
+    }
+    if err != nil {
+        return nil, err
+    }
+
+    var state CircuitBreakerState
+    if err := json.Unmarshal(data, &state); err != nil {
+        return nil, err
+    }
+
+    return &state, nil
+}
+
+func (s *CircuitBreakerStorage) SetState(ctx context.Context, service string, state *CircuitBreakerState) error {
+    key := s.keys.CircuitBreaker(service)
+
+    data, err := json.Marshal(state)
+    if err != nil {
+        return err
+    }
+
+    return s.client.Set(ctx, key, data, 5*time.Minute).Err()
+}
+
+func (s *CircuitBreakerStorage) RecordFailure(ctx context.Context, service string) (*CircuitBreakerState, error) {
+    state, err := s.GetState(ctx, service)
+    if err != nil {
+        return nil, err
+    }
+
+    state.Failures++
+    state.LastFailureTime = time.Now()
+
+    if err := s.SetState(ctx, service, state); err != nil {
+        return nil, err
+    }
+
+    return state, nil
+}
+
+func (s *CircuitBreakerStorage) RecordSuccess(ctx context.Context, service string) error {
+    state, err := s.GetState(ctx, service)
+    if err != nil {
+        return err
+    }
+
+    state.Successes++
+
+    return s.SetState(ctx, service, state)
+}
+
+func (s *CircuitBreakerStorage) TransitionState(ctx context.Context, service string, newState CircuitState) error {
+    state, err := s.GetState(ctx, service)
+    if err != nil {
+        return err
+    }
+
+    state.State = newState
+    state.LastStateChange = time.Now()
+
+    if newState == CircuitClosed {
+        state.Failures = 0
+        state.Successes = 0
+    }
+
+    return s.SetState(ctx, service, state)
+}
+```
+
+---
+
+## 13. Observability
+
+### 13.1 Configuration
+
+```go
+// internal/infrastructure/config/config.go
+type ObservabilityConfig struct {
+    // Tracing
+    TracingEnabled    bool   `envconfig:"TRACING_ENABLED" default:"true"`
+    TracingEndpoint   string `envconfig:"TRACING_ENDPOINT" default:"localhost:4317"`
+    TracingSampler    string `envconfig:"TRACING_SAMPLER" default:"parentbased_traceidratio"`
+    TracingSampleRate float64 `envconfig:"TRACING_SAMPLE_RATE" default:"0.1"`
+
+    // Metrics
+    MetricsEnabled bool   `envconfig:"METRICS_ENABLED" default:"true"`
+    MetricsPath    string `envconfig:"METRICS_PATH" default:"/metrics"`
+    MetricsPort    int    `envconfig:"METRICS_PORT" default:"9090"`
+
+    // Logging
+    LogLevel  string `envconfig:"LOG_LEVEL" default:"info"`
+    LogFormat string `envconfig:"LOG_FORMAT" default:"json"`
+
+    // Service info
+    ServiceName    string `envconfig:"SERVICE_NAME" default:"neylin-api"`
+    ServiceVersion string `envconfig:"SERVICE_VERSION" default:"1.0.0"`
+    Environment    string `envconfig:"APP_ENV" default:"development"`
+}
+```
+
+### 13.2 OpenTelemetry Setup
+
+```go
+// internal/infrastructure/observability/tracing.go
+package observability
+
+import (
+    "context"
+
+    "go.opentelemetry.io/otel"
+    "go.opentelemetry.io/otel/attribute"
+    "go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
+    "go.opentelemetry.io/otel/propagation"
+    "go.opentelemetry.io/otel/sdk/resource"
+    sdktrace "go.opentelemetry.io/otel/sdk/trace"
+    semconv "go.opentelemetry.io/otel/semconv/v1.21.0"
+    "go.opentelemetry.io/otel/trace"
+    "neylin/internal/infrastructure/config"
+)
+
+type TracerProvider struct {
+    provider *sdktrace.TracerProvider
+    tracer   trace.Tracer
+}
+
+func NewTracerProvider(cfg config.ObservabilityConfig) (*TracerProvider, error) {
+    if !cfg.TracingEnabled {
+        return &TracerProvider{
+            tracer: otel.Tracer(cfg.ServiceName),
+        }, nil
+    }
+
+    ctx := context.Background()
+
+    // Create OTLP exporter
+    exporter, err := otlptracegrpc.New(ctx,
+        otlptracegrpc.WithEndpoint(cfg.TracingEndpoint),
+        otlptracegrpc.WithInsecure(), // Use TLS in production
+    )
+    if err != nil {
+        return nil, err
+    }
+
+    // Create resource with service info
+    res, err := resource.New(ctx,
+        resource.WithAttributes(
+            semconv.ServiceName(cfg.ServiceName),
+            semconv.ServiceVersion(cfg.ServiceVersion),
+            semconv.DeploymentEnvironment(cfg.Environment),
+        ),
+    )
+    if err != nil {
+        return nil, err
+    }
+
+    // Create sampler
+    var sampler sdktrace.Sampler
+    switch cfg.TracingSampler {
+    case "always_on":
+        sampler = sdktrace.AlwaysSample()
+    case "always_off":
+        sampler = sdktrace.NeverSample()
+    default:
+        sampler = sdktrace.ParentBased(
+            sdktrace.TraceIDRatioBased(cfg.TracingSampleRate),
+        )
+    }
+
+    // Create trace provider
+    provider := sdktrace.NewTracerProvider(
+        sdktrace.WithBatcher(exporter),
+        sdktrace.WithResource(res),
+        sdktrace.WithSampler(sampler),
+    )
+
+    // Set global provider
+    otel.SetTracerProvider(provider)
+    otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(
+        propagation.TraceContext{},
+        propagation.Baggage{},
+    ))
+
+    return &TracerProvider{
+        provider: provider,
+        tracer:   provider.Tracer(cfg.ServiceName),
+    }, nil
+}
+
+func (t *TracerProvider) Tracer() trace.Tracer {
+    return t.tracer
+}
+
+func (t *TracerProvider) Shutdown(ctx context.Context) error {
+    if t.provider != nil {
+        return t.provider.Shutdown(ctx)
+    }
+    return nil
+}
+
+// Span helpers
+func StartSpan(ctx context.Context, name string, opts ...trace.SpanStartOption) (context.Context, trace.Span) {
+    return otel.Tracer("neylin").Start(ctx, name, opts...)
+}
+
+func SpanFromContext(ctx context.Context) trace.Span {
+    return trace.SpanFromContext(ctx)
+}
+
+func AddSpanAttributes(ctx context.Context, attrs ...attribute.KeyValue) {
+    span := trace.SpanFromContext(ctx)
+    span.SetAttributes(attrs...)
+}
+
+func RecordSpanError(ctx context.Context, err error) {
+    span := trace.SpanFromContext(ctx)
+    span.RecordError(err)
+}
+
+// Common attribute keys
+var (
+    AttrUserID    = attribute.Key("user.id")
+    AttrMapID     = attribute.Key("map.id")
+    AttrNodeID    = attribute.Key("node.id")
+    AttrEdgeID    = attribute.Key("edge.id")
+    AttrRequestID = attribute.Key("request.id")
+    AttrEndpoint  = attribute.Key("http.endpoint")
+    AttrMethod    = attribute.Key("http.method")
+    AttrStatus    = attribute.Key("http.status_code")
+    AttrDuration  = attribute.Key("duration_ms")
+    AttrDBQuery   = attribute.Key("db.query")
+    AttrCacheHit  = attribute.Key("cache.hit")
+)
+```
+
+### 13.3 Prometheus Metrics
+
+```go
+// internal/infrastructure/observability/metrics.go
+package observability
+
+import (
+    "github.com/prometheus/client_golang/prometheus"
+    "github.com/prometheus/client_golang/prometheus/promauto"
+)
+
+// HTTP metrics
+var (
+    HTTPRequestsTotal = promauto.NewCounterVec(
+        prometheus.CounterOpts{
+            Name: "neylin_http_requests_total",
+            Help: "Total number of HTTP requests",
+        },
+        []string{"method", "endpoint", "status"},
+    )
+
+    HTTPRequestDuration = promauto.NewHistogramVec(
+        prometheus.HistogramOpts{
+            Name:    "neylin_http_request_duration_seconds",
+            Help:    "HTTP request duration in seconds",
+            Buckets: []float64{.005, .01, .025, .05, .1, .25, .5, 1, 2.5, 5, 10},
+        },
+        []string{"method", "endpoint"},
+    )
+
+    HTTPRequestSize = promauto.NewHistogramVec(
+        prometheus.HistogramOpts{
+            Name:    "neylin_http_request_size_bytes",
+            Help:    "HTTP request size in bytes",
+            Buckets: prometheus.ExponentialBuckets(100, 10, 8),
+        },
+        []string{"method", "endpoint"},
+    )
+
+    HTTPResponseSize = promauto.NewHistogramVec(
+        prometheus.HistogramOpts{
+            Name:    "neylin_http_response_size_bytes",
+            Help:    "HTTP response size in bytes",
+            Buckets: prometheus.ExponentialBuckets(100, 10, 8),
+        },
+        []string{"method", "endpoint"},
+    )
+
+    HTTPActiveRequests = promauto.NewGauge(
+        prometheus.GaugeOpts{
+            Name: "neylin_http_active_requests",
+            Help: "Number of active HTTP requests",
+        },
+    )
+)
+
+// Database metrics
+var (
+    DBQueryTotal = promauto.NewCounterVec(
+        prometheus.CounterOpts{
+            Name: "neylin_db_queries_total",
+            Help: "Total number of database queries",
+        },
+        []string{"operation", "table", "status"},
+    )
+
+    DBQueryDuration = promauto.NewHistogramVec(
+        prometheus.HistogramOpts{
+            Name:    "neylin_db_query_duration_seconds",
+            Help:    "Database query duration in seconds",
+            Buckets: []float64{.001, .005, .01, .025, .05, .1, .25, .5, 1},
+        },
+        []string{"operation", "table"},
+    )
+
+    DBConnectionsActive = promauto.NewGauge(
+        prometheus.GaugeOpts{
+            Name: "neylin_db_connections_active",
+            Help: "Number of active database connections",
+        },
+    )
+
+    DBConnectionsIdle = promauto.NewGauge(
+        prometheus.GaugeOpts{
+            Name: "neylin_db_connections_idle",
+            Help: "Number of idle database connections",
+        },
+    )
+)
+
+// Redis metrics
+var (
+    RedisOperationsTotal = promauto.NewCounterVec(
+        prometheus.CounterOpts{
+            Name: "neylin_redis_operations_total",
+            Help: "Total number of Redis operations",
+        },
+        []string{"operation", "status"},
+    )
+
+    RedisOperationDuration = promauto.NewHistogramVec(
+        prometheus.HistogramOpts{
+            Name:    "neylin_redis_operation_duration_seconds",
+            Help:    "Redis operation duration in seconds",
+            Buckets: []float64{.0001, .0005, .001, .005, .01, .025, .05, .1},
+        },
+        []string{"operation"},
+    )
+
+    RedisCacheHits = promauto.NewCounter(
+        prometheus.CounterOpts{
+            Name: "neylin_redis_cache_hits_total",
+            Help: "Total number of cache hits",
+        },
+    )
+
+    RedisCacheMisses = promauto.NewCounter(
+        prometheus.CounterOpts{
+            Name: "neylin_redis_cache_misses_total",
+            Help: "Total number of cache misses",
+        },
+    )
+)
+
+// Business metrics
+var (
+    MapsCreatedTotal = promauto.NewCounter(
+        prometheus.CounterOpts{
+            Name: "neylin_maps_created_total",
+            Help: "Total number of maps created",
+        },
+    )
+
+    NodesCreatedTotal = promauto.NewCounter(
+        prometheus.CounterOpts{
+            Name: "neylin_nodes_created_total",
+            Help: "Total number of nodes created",
+        },
+    )
+
+    AIRequestsTotal = promauto.NewCounterVec(
+        prometheus.CounterOpts{
+            Name: "neylin_ai_requests_total",
+            Help: "Total number of AI requests",
+        },
+        []string{"provider", "model", "status"},
+    )
+
+    AIRequestDuration = promauto.NewHistogramVec(
+        prometheus.HistogramOpts{
+            Name:    "neylin_ai_request_duration_seconds",
+            Help:    "AI request duration in seconds",
+            Buckets: []float64{1, 2, 5, 10, 20, 30, 60, 120},
+        },
+        []string{"provider", "model"},
+    )
+
+    ActiveUsersGauge = promauto.NewGauge(
+        prometheus.GaugeOpts{
+            Name: "neylin_active_users",
+            Help: "Number of active users (sessions)",
+        },
+    )
+
+    SubscriptionsByPlan = promauto.NewGaugeVec(
+        prometheus.GaugeOpts{
+            Name: "neylin_subscriptions_by_plan",
+            Help: "Number of subscriptions by plan type",
+        },
+        []string{"plan"},
+    )
+)
+
+// Rate limiting metrics
+var (
+    RateLimitHits = promauto.NewCounterVec(
+        prometheus.CounterOpts{
+            Name: "neylin_rate_limit_hits_total",
+            Help: "Total number of rate limit hits",
+        },
+        []string{"layer", "endpoint"},
+    )
+)
+
+// Circuit breaker metrics
+var (
+    CircuitBreakerState = promauto.NewGaugeVec(
+        prometheus.GaugeOpts{
+            Name: "neylin_circuit_breaker_state",
+            Help: "Circuit breaker state (0=closed, 1=open, 2=half-open)",
+        },
+        []string{"service"},
+    )
+
+    CircuitBreakerTrips = promauto.NewCounterVec(
+        prometheus.CounterOpts{
+            Name: "neylin_circuit_breaker_trips_total",
+            Help: "Total number of circuit breaker trips",
+        },
+        []string{"service"},
+    )
+)
+```
+
+### 13.4 Structured Logging
+
+```go
+// internal/infrastructure/observability/logger.go
+package observability
+
+import (
+    "context"
+    "os"
+
+    "go.opentelemetry.io/otel/trace"
+    "go.uber.org/zap"
+    "go.uber.org/zap/zapcore"
+    "neylin/internal/infrastructure/config"
+)
+
+type Logger struct {
+    *zap.Logger
+}
+
+func NewLogger(cfg config.ObservabilityConfig) (*Logger, error) {
+    var zapConfig zap.Config
+
+    if cfg.Environment == "production" {
+        zapConfig = zap.NewProductionConfig()
+    } else {
+        zapConfig = zap.NewDevelopmentConfig()
+        zapConfig.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+    }
+
+    // Set log level
+    level, err := zapcore.ParseLevel(cfg.LogLevel)
+    if err != nil {
+        level = zapcore.InfoLevel
+    }
+    zapConfig.Level = zap.NewAtomicLevelAt(level)
+
+    // Set format
+    if cfg.LogFormat == "json" {
+        zapConfig.Encoding = "json"
+    } else {
+        zapConfig.Encoding = "console"
+    }
+
+    // Add common fields
+    zapConfig.InitialFields = map[string]interface{}{
+        "service": cfg.ServiceName,
+        "version": cfg.ServiceVersion,
+        "env":     cfg.Environment,
+    }
+
+    logger, err := zapConfig.Build(
+        zap.AddCaller(),
+        zap.AddStacktrace(zapcore.ErrorLevel),
+    )
+    if err != nil {
+        return nil, err
+    }
+
+    return &Logger{Logger: logger}, nil
+}
+
+// WithContext adds trace context to logger
+func (l *Logger) WithContext(ctx context.Context) *zap.Logger {
+    span := trace.SpanFromContext(ctx)
+    if !span.SpanContext().IsValid() {
+        return l.Logger
+    }
+
+    return l.Logger.With(
+        zap.String("trace_id", span.SpanContext().TraceID().String()),
+        zap.String("span_id", span.SpanContext().SpanID().String()),
+    )
+}
+
+// WithRequestID adds request ID to logger
+func (l *Logger) WithRequestID(requestID string) *zap.Logger {
+    return l.Logger.With(zap.String("request_id", requestID))
+}
+
+// WithUserID adds user ID to logger
+func (l *Logger) WithUserID(userID string) *zap.Logger {
+    return l.Logger.With(zap.String("user_id", userID))
+}
+
+// Request logger fields
+func RequestFields(method, path, ip, userAgent string) []zap.Field {
+    return []zap.Field{
+        zap.String("method", method),
+        zap.String("path", path),
+        zap.String("ip", ip),
+        zap.String("user_agent", userAgent),
+    }
+}
+
+// Response logger fields
+func ResponseFields(status int, duration float64, size int) []zap.Field {
+    return []zap.Field{
+        zap.Int("status", status),
+        zap.Float64("duration_ms", duration),
+        zap.Int("response_size", size),
+    }
+}
+
+// Error logger fields
+func ErrorFields(err error, code string) []zap.Field {
+    return []zap.Field{
+        zap.Error(err),
+        zap.String("error_code", code),
+    }
+}
+
+// DB logger fields
+func DBFields(operation, table string, duration float64) []zap.Field {
+    return []zap.Field{
+        zap.String("db_operation", operation),
+        zap.String("db_table", table),
+        zap.Float64("db_duration_ms", duration),
+    }
+}
+```
+
+### 13.5 Metrics Middleware
+
+```go
+// internal/adapter/http/middleware/metrics.go
+package middleware
+
+import (
+    "strconv"
+    "time"
+
+    "github.com/gofiber/fiber/v2"
+    "neylin/internal/infrastructure/observability"
+)
+
+func MetricsMiddleware() fiber.Handler {
+    return func(c *fiber.Ctx) error {
+        start := time.Now()
+
+        // Track active requests
+        observability.HTTPActiveRequests.Inc()
+        defer observability.HTTPActiveRequests.Dec()
+
+        // Get endpoint pattern (use route pattern, not actual path)
+        endpoint := c.Route().Path
+        method := c.Method()
+
+        // Track request size
+        observability.HTTPRequestSize.WithLabelValues(method, endpoint).
+            Observe(float64(len(c.Body())))
+
+        // Process request
+        err := c.Next()
+
+        // Record metrics
+        duration := time.Since(start).Seconds()
+        status := strconv.Itoa(c.Response().StatusCode())
+
+        observability.HTTPRequestsTotal.WithLabelValues(method, endpoint, status).Inc()
+        observability.HTTPRequestDuration.WithLabelValues(method, endpoint).Observe(duration)
+        observability.HTTPResponseSize.WithLabelValues(method, endpoint).
+            Observe(float64(len(c.Response().Body())))
+
+        return err
+    }
+}
+```
+
+### 13.6 Tracing Middleware
+
+```go
+// internal/adapter/http/middleware/tracing.go
+package middleware
+
+import (
+    "github.com/gofiber/fiber/v2"
+    "go.opentelemetry.io/otel"
+    "go.opentelemetry.io/otel/attribute"
+    "go.opentelemetry.io/otel/propagation"
+    semconv "go.opentelemetry.io/otel/semconv/v1.21.0"
+    "go.opentelemetry.io/otel/trace"
+)
+
+func TracingMiddleware(serviceName string) fiber.Handler {
+    tracer := otel.Tracer(serviceName)
+    propagator := otel.GetTextMapPropagator()
+
+    return func(c *fiber.Ctx) error {
+        // Extract trace context from headers
+        ctx := propagator.Extract(c.Context(), propagation.HeaderCarrier(c.GetReqHeaders()))
+
+        // Start span
+        spanName := c.Method() + " " + c.Route().Path
+        ctx, span := tracer.Start(ctx, spanName,
+            trace.WithSpanKind(trace.SpanKindServer),
+            trace.WithAttributes(
+                semconv.HTTPMethod(c.Method()),
+                semconv.HTTPRoute(c.Route().Path),
+                semconv.HTTPTarget(c.OriginalURL()),
+                semconv.NetHostName(c.Hostname()),
+                semconv.HTTPUserAgent(c.Get("User-Agent")),
+                attribute.String("http.client_ip", c.IP()),
+            ),
+        )
+        defer span.End()
+
+        // Store in context
+        c.SetUserContext(ctx)
+
+        // Add trace ID to response headers
+        if span.SpanContext().IsValid() {
+            c.Set("X-Trace-ID", span.SpanContext().TraceID().String())
+        }
+
+        // Process request
+        err := c.Next()
+
+        // Record status
+        span.SetAttributes(semconv.HTTPStatusCode(c.Response().StatusCode()))
+
+        if err != nil {
+            span.RecordError(err)
+        }
+
+        return err
+    }
+}
+```
+
+### 13.7 Health Checks
+
+```go
+// internal/adapter/http/handler/health.go
+package handler
+
+import (
+    "context"
+    "time"
+
+    "github.com/gofiber/fiber/v2"
+    "github.com/jmoiron/sqlx"
+    "github.com/redis/go-redis/v9"
+)
+
+type HealthHandler struct {
+    db      *sqlx.DB
+    redis   redis.Cmdable
+    version string
+}
+
+type HealthResponse struct {
+    Status    string            `json:"status"`
+    Version   string            `json:"version"`
+    Timestamp string            `json:"timestamp"`
+    Checks    map[string]Check  `json:"checks"`
+}
+
+type Check struct {
+    Status   string `json:"status"`
+    Duration string `json:"duration,omitempty"`
+    Error    string `json:"error,omitempty"`
+}
+
+func NewHealthHandler(db *sqlx.DB, redis redis.Cmdable, version string) *HealthHandler {
+    return &HealthHandler{
+        db:      db,
+        redis:   redis,
+        version: version,
+    }
+}
+
+// Liveness - simple check that service is running
+// GET /health/live
+func (h *HealthHandler) Liveness(c *fiber.Ctx) error {
+    return c.JSON(fiber.Map{
+        "status": "ok",
+    })
+}
+
+// Readiness - check all dependencies
+// GET /health/ready
+func (h *HealthHandler) Readiness(c *fiber.Ctx) error {
+    ctx, cancel := context.WithTimeout(c.Context(), 5*time.Second)
+    defer cancel()
+
+    checks := make(map[string]Check)
+    overallStatus := "healthy"
+
+    // Check PostgreSQL
+    dbCheck := h.checkDB(ctx)
+    checks["postgresql"] = dbCheck
+    if dbCheck.Status != "healthy" {
+        overallStatus = "unhealthy"
+    }
+
+    // Check Redis
+    redisCheck := h.checkRedis(ctx)
+    checks["redis"] = redisCheck
+    if redisCheck.Status != "healthy" {
+        overallStatus = "unhealthy"
+    }
+
+    response := HealthResponse{
+        Status:    overallStatus,
+        Version:   h.version,
+        Timestamp: time.Now().UTC().Format(time.RFC3339),
+        Checks:    checks,
+    }
+
+    if overallStatus == "unhealthy" {
+        return c.Status(fiber.StatusServiceUnavailable).JSON(response)
+    }
+
+    return c.JSON(response)
+}
+
+func (h *HealthHandler) checkDB(ctx context.Context) Check {
+    start := time.Now()
+
+    if err := h.db.PingContext(ctx); err != nil {
+        return Check{
+            Status:   "unhealthy",
+            Duration: time.Since(start).String(),
+            Error:    err.Error(),
+        }
+    }
+
+    return Check{
+        Status:   "healthy",
+        Duration: time.Since(start).String(),
+    }
+}
+
+func (h *HealthHandler) checkRedis(ctx context.Context) Check {
+    start := time.Now()
+
+    if err := h.redis.Ping(ctx).Err(); err != nil {
+        return Check{
+            Status:   "unhealthy",
+            Duration: time.Since(start).String(),
+            Error:    err.Error(),
+        }
+    }
+
+    return Check{
+        Status:   "healthy",
+        Duration: time.Since(start).String(),
+    }
+}
+
+// Detailed metrics endpoint
+// GET /health/metrics
+func (h *HealthHandler) Metrics(c *fiber.Ctx) error {
+    ctx := c.Context()
+
+    // Get DB stats
+    dbStats := h.db.Stats()
+
+    // Get Redis info
+    redisInfo, _ := h.redis.Info(ctx, "clients", "memory", "stats").Result()
+
+    return c.JSON(fiber.Map{
+        "database": fiber.Map{
+            "open_connections":    dbStats.OpenConnections,
+            "in_use":              dbStats.InUse,
+            "idle":                dbStats.Idle,
+            "wait_count":          dbStats.WaitCount,
+            "wait_duration":       dbStats.WaitDuration.String(),
+            "max_idle_closed":     dbStats.MaxIdleClosed,
+            "max_lifetime_closed": dbStats.MaxLifetimeClosed,
+        },
+        "redis": redisInfo,
+    })
+}

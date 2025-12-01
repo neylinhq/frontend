@@ -6,7 +6,7 @@ type PaletteSelectProps = {
   compact?: boolean
 }
 
-export function PaletteSelect({ compact }: PaletteSelectProps) {
+export const PaletteSelect = ({ compact }: PaletteSelectProps) => {
   const { palette, setPalette } = useTheme()
 
   const items = PALETTES.map(p => ({

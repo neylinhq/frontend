@@ -49,7 +49,7 @@ type MenuAction =
   | { type: 'SET_LINK_URL'; url: string }
   | { type: 'TOGGLE_MENU'; menu: MenuType }
 
-function menuReducer(state: MenuState, action: MenuAction): MenuState {
+const menuReducer = (state: MenuState, action: MenuAction) => {
   switch (action.type) {
     case 'OPEN_MENU':
       return { ...state, activeMenu: action.menu }
@@ -155,7 +155,7 @@ interface EditorBubbleMenuProps {
   onOpenMathDialog?: (mode: 'block' | 'inline') => void
 }
 
-export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuProps) {
+export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuProps) => {
   const { t } = useTranslation()
   const [isVisible, setIsVisible] = useState(false)
   const [position, setPosition] = useState({ top: 0, left: 0 })
@@ -196,7 +196,9 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
 
     // Get editor container for relative positioning
     const editorElement = view.dom.closest('.tiptap-editor') as HTMLElement
-    if (!editorElement) return
+    if (!editorElement) {
+      return
+    }
     const editorRect = editorElement.getBoundingClientRect()
 
     // Calculate position relative to editor container (for absolute positioning)
@@ -265,13 +267,27 @@ export function EditorBubbleMenu({ editor, onOpenMathDialog }: EditorBubbleMenuP
   // OPT-2: Memoize current block type to avoid redundant isActive() checks on every render
   // Note: editor dependency causes recalc when editor state changes, which is needed for isActive()
   const currentBlockType = useMemo(() => {
-    if (editor.isActive('heading', { level: 1 })) return BLOCK_TYPES[1] // heading1
-    if (editor.isActive('heading', { level: 2 })) return BLOCK_TYPES[2] // heading2
-    if (editor.isActive('heading', { level: 3 })) return BLOCK_TYPES[3] // heading3
-    if (editor.isActive('bulletList')) return BLOCK_TYPES[4] // bulletList
-    if (editor.isActive('orderedList')) return BLOCK_TYPES[5] // numberedList
-    if (editor.isActive('taskList')) return BLOCK_TYPES[6] // todoList
-    if (editor.isActive('blockquote')) return BLOCK_TYPES[7] // quote
+    if (editor.isActive('heading', { level: 1 })) {
+      return BLOCK_TYPES[1] // heading1
+    }
+    if (editor.isActive('heading', { level: 2 })) {
+      return BLOCK_TYPES[2] // heading2
+    }
+    if (editor.isActive('heading', { level: 3 })) {
+      return BLOCK_TYPES[3] // heading3
+    }
+    if (editor.isActive('bulletList')) {
+      return BLOCK_TYPES[4] // bulletList
+    }
+    if (editor.isActive('orderedList')) {
+      return BLOCK_TYPES[5] // numberedList
+    }
+    if (editor.isActive('taskList')) {
+      return BLOCK_TYPES[6] // todoList
+    }
+    if (editor.isActive('blockquote')) {
+      return BLOCK_TYPES[7] // quote
+    }
     return BLOCK_TYPES[0] // text
   }, [editor])
   const CurrentBlockIcon = currentBlockType?.icon || Type
@@ -581,7 +597,7 @@ interface ToolbarButtonProps {
   children: React.ReactNode
 }
 
-function ToolbarButton({ onClick, isActive, children }: ToolbarButtonProps) {
+const ToolbarButton = ({ onClick, isActive, children }: ToolbarButtonProps) => {
   return (
     <button
       type='button'

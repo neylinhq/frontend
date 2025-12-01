@@ -12,7 +12,7 @@ export const handle = {
   breadcrumb: 'Avatar'
 }
 
-export function meta(_args: Route.MetaArgs) {
+export const meta = (_args: Route.MetaArgs) => {
   return getMeta('uiShowcase')
 }
 
@@ -24,7 +24,7 @@ const TOC_ITEMS: TocItem[] = [
   { id: 'api-reference', title: 'API Reference', level: 2 }
 ]
 
-export default function AvatarPage() {
+const AvatarPage = () => {
   return (
     <div className='flex gap-10'>
       <div className='flex-1 min-w-0 space-y-10'>
@@ -192,3 +192,5 @@ export function UserAvatar({ user }: { user: { name: string; avatar?: string } }
     </div>
   )
 }
+
+export default AvatarPage

@@ -1,7 +1,0 @@
-id: test-export-function
-language: tsx
-rule:
-  kind: function_declaration
-  has:
-    kind: export_statement
-fix: "// MATCHED"

@@ -1,10 +1,12 @@
 import { PrivacyPage } from '@/pages/legal/privacy-page'
 import { getMeta } from '@/shared/lib/get-meta'
 
-export function meta() {
+export const meta = () => {
   return getMeta('privacy')
 }
 
-export default function PrivacyRoute() {
+const PrivacyRoute = () => {
   return <PrivacyPage />
 }
+
+export default PrivacyRoute

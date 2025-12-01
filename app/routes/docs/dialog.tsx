@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { getMeta } from '@/shared/lib/get-meta'
 import { Badge } from '@/shared/ui/badge'
@@ -27,11 +26,11 @@ export const handle = {
   breadcrumb: 'Dialog'
 }
 
-export function meta(_args: Route.MetaArgs) {
+export const meta = (_args: Route.MetaArgs) => {
   return getMeta('uiShowcase')
 }
 
-export default function DialogPage() {
+const DialogPage = () => {
   const { t } = useTranslation()
 
   const TOC_ITEMS: TocItem[] = [
@@ -280,3 +279,5 @@ export function ConfirmDialog() {
     </div>
   )
 }
+
+export default DialogPage

@@ -1,5 +1,4 @@
 'use client'
-
 import { ChevronsUpDown } from 'lucide-react'
 import { useState } from 'react'
 import { getMeta } from '@/shared/lib/get-meta'
@@ -17,7 +16,7 @@ export const handle = {
   breadcrumb: 'Collapsible'
 }
 
-export function meta(_args: Route.MetaArgs) {
+export const meta = (_args: Route.MetaArgs) => {
   return getMeta('uiShowcase')
 }
 
@@ -26,7 +25,7 @@ const TOC_ITEMS: TocItem[] = [
   { id: 'usage', title: 'Usage', level: 2 }
 ]
 
-function CollapsibleDemo() {
+const CollapsibleDemo = () => {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -53,7 +52,7 @@ function CollapsibleDemo() {
   )
 }
 
-export default function CollapsiblePage() {
+const CollapsiblePage = () => {
   return (
     <div className='flex gap-10'>
       <div className='flex-1 min-w-0 space-y-10'>
@@ -121,3 +120,5 @@ export function FAQ({ question, answer }: { question: string; answer: string }) 
     </div>
   )
 }
+
+export default CollapsiblePage

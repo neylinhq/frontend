@@ -1,6 +1,6 @@
 import { TRANSFORMERS } from '@lexical/markdown'
 import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin'
 
-export function MarkdownShortcutsPlugin() {
+export const MarkdownShortcutsPlugin = () => {
   return <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
 }

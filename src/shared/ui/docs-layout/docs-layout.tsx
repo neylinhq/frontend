@@ -15,7 +15,7 @@ interface DocsLayoutProps {
   className?: string
 }
 
-export function DocsLayout({ children, sidebar, toc, className }: DocsLayoutProps) {
+export const DocsLayout = ({ children, sidebar, toc, className }: DocsLayoutProps) => {
   return (
     <div className='h-screen flex flex-col overflow-hidden bg-background text-foreground'>
       <DocsHeader mobileNav={sidebar} />

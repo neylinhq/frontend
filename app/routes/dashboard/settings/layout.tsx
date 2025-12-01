@@ -6,7 +6,7 @@ import { cn } from '@/shared/lib/cn'
 import type { Route } from './+types/layout'
 
 // SSR loader - fetch user data on the server
-export async function loader(_args: Route.LoaderArgs) {
+export const loader = async (_args: Route.LoaderArgs) => {
   const user = await userApi.getCurrentUser()
   return { user }
 }
@@ -16,7 +16,7 @@ export type SettingsContext = {
   user: User
 }
 
-export default function SettingsLayout() {
+const SettingsLayout = () => {
   const { t } = useTranslation()
   const location = useLocation()
   const { user } = useLoaderData<typeof loader>()
@@ -65,3 +65,5 @@ export default function SettingsLayout() {
     </div>
   )
 }
+
+export default SettingsLayout

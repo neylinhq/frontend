@@ -14,7 +14,7 @@ type ModeSelectProps = {
   compact?: boolean
 }
 
-export function ModeSelect({ compact }: ModeSelectProps) {
+export const ModeSelect = ({ compact }: ModeSelectProps) => {
   const { t } = useTranslation()
   const { mode, setMode } = useTheme()
 

@@ -20,8 +20,7 @@ interface MediaInsertDialogProps {
   type: MediaType
 }
 
-// Validate URL format
-function isValidUrl(url: string): boolean {
+const isValidUrl = (url: string) => {
   try {
     new URL(url)
     return true
@@ -30,8 +29,7 @@ function isValidUrl(url: string): boolean {
   }
 }
 
-// Get dialog configuration based on media type
-function getDialogConfig(type: MediaType, t: (key: string) => string) {
+const getDialogConfig = (type: MediaType, t: (key: string) => string) => {
   switch (type) {
     case 'image':
       return {
@@ -54,7 +52,7 @@ function getDialogConfig(type: MediaType, t: (key: string) => string) {
   }
 }
 
-export function MediaInsertDialog({ isOpen, onClose, onSubmit, type }: MediaInsertDialogProps) {
+export const MediaInsertDialog = ({ isOpen, onClose, onSubmit, type }: MediaInsertDialogProps) => {
   const { t } = useTranslation()
   const [url, setUrl] = useState('')
   const [error, setError] = useState('')
@@ -64,7 +62,9 @@ export function MediaInsertDialog({ isOpen, onClose, onSubmit, type }: MediaInse
 
   // Reset state when dialog opens/closes
   useEffect(() => {
-    if (!isOpen) return
+    if (!isOpen) {
+      return
+    }
 
     setUrl('')
     setError('')
@@ -106,7 +106,9 @@ export function MediaInsertDialog({ isOpen, onClose, onSubmit, type }: MediaInse
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setUrl(e.target.value)
-      if (error) setError('')
+      if (error) {
+        setError('')
+      }
     },
     [error]
   )

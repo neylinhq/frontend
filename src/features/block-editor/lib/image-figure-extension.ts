@@ -1,8 +1,9 @@
 import { mergeAttributes, Node } from '@tiptap/core'
 
-// Sanitize URL to prevent javascript: and data: XSS attacks
-function sanitizeUrl(url: string | null | undefined): string {
-  if (!url) return ''
+const sanitizeUrl = (url: string | null | undefined) => {
+  if (!url) {
+    return ''
+  }
   const trimmed = url.trim().toLowerCase()
 
   // Block javascript: protocol
@@ -31,9 +32,10 @@ function sanitizeUrl(url: string | null | undefined): string {
   return url
 }
 
-// Sanitize text attributes to prevent HTML injection
-function sanitizeText(text: string | null | undefined): string {
-  if (!text) return ''
+const sanitizeText = (text: string | null | undefined) => {
+  if (!text) {
+    return ''
+  }
   return text
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -152,7 +154,9 @@ export const ImageFigure = Node.create<ImageFigureOptions>({
         ({ commands }) => {
           const sanitizedSrc = sanitizeUrl(options.src)
           // Don't insert if URL is blocked
-          if (!sanitizedSrc) return false
+          if (!sanitizedSrc) {
+            return false
+          }
 
           return commands.insertContent({
             type: this.name,

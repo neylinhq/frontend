@@ -40,12 +40,12 @@ interface NodeEditPageProps {
   nodeId: string
 }
 
-export function NodeEditPage({
+export const NodeEditPage = ({
   node: currentNode,
   map: lightweightMap,
   mapId,
   nodeId
-}: NodeEditPageProps) {
+}: NodeEditPageProps) => {
   const { t } = useTranslation()
   const updateNodeMutation = useUpdateNode(mapId)
   const [sidebarOpen, setSidebarOpen] = useState(true)
@@ -60,7 +60,9 @@ export function NodeEditPage({
   useEffect(() => {
     const main = mainRef.current
     const content = contentRef.current
-    if (!main) return
+    if (!main) {
+      return
+    }
 
     const checkScrollable = () => {
       setIsScrollable(main.scrollHeight > main.clientHeight)
@@ -97,7 +99,9 @@ export function NodeEditPage({
 
   // Auto-save for title
   const debouncedTitleSave = useAutoSave((newTitle: string) => {
-    if (!nodeId) return
+    if (!nodeId) {
+      return
+    }
     if (newTitle.trim() && newTitle !== currentNode?.label) {
       updateNodeMutation.mutate(
         { id: nodeId, data: { label: newTitle.trim() } },
@@ -108,7 +112,9 @@ export function NodeEditPage({
 
   // Auto-save for editor content
   const debouncedContentSave = useAutoSave((editor: Editor) => {
-    if (!nodeId) return
+    if (!nodeId) {
+      return
+    }
 
     const html = editorToHTML(editor)
     const description = htmlToPlainText(html, 200)

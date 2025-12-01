@@ -75,12 +75,7 @@ const addCryptoWalletSchema = z.object({
 
 type AddCryptoWalletValues = z.infer<typeof addCryptoWalletSchema>
 
-// ============================================================================
-// Reusable Components
-// ============================================================================
-
-/** Card for selecting payment method type */
-function SelectionCard({
+const SelectionCard = ({
   icon,
   title,
   description,
@@ -90,7 +85,7 @@ function SelectionCard({
   title: string
   description: string
   onClick: () => void
-}) {
+}) => {
   return (
     <button
       type='button'
@@ -111,8 +106,7 @@ function SelectionCard({
   )
 }
 
-/** Breadcrumb navigation for multi-step dialog */
-function DialogBreadcrumb({
+const DialogBreadcrumb = ({
   parentLabel,
   currentLabel,
   onBack,
@@ -122,7 +116,7 @@ function DialogBreadcrumb({
   currentLabel: string
   onBack: () => void
   disabled?: boolean
-}) {
+}) => {
   return (
     <div className='flex items-center gap-1.5 text-sm mb-4'>
       <button
@@ -139,8 +133,7 @@ function DialogBreadcrumb({
   )
 }
 
-/** Security notice with lock icon */
-function SecurityNotice({ children }: { children: React.ReactNode }) {
+const SecurityNotice = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className='flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 p-3 rounded-lg'>
       <Lock className='h-4 w-4 flex-shrink-0' />
@@ -153,13 +146,13 @@ function SecurityNotice({ children }: { children: React.ReactNode }) {
 // Main Component
 // ============================================================================
 
-export function AddPaymentMethodDialog({
+export const AddPaymentMethodDialog = ({
   onAddCard,
   onAddCrypto,
   loadingCard,
   loadingCrypto,
   trigger
-}: AddPaymentMethodDialogProps) {
+}: AddPaymentMethodDialogProps) => {
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const [step, setStep] = useState<Step>('select')
@@ -212,9 +205,13 @@ export function AddPaymentMethodDialog({
 
   const handleCardSubmit = (values: AddPaymentMethodValues) => {
     const parsedExpiry = parseExpiry(values.expiry)
-    if (!parsedExpiry) return
+    if (!parsedExpiry) {
+      return
+    }
 
-    if (cardBrand === 'unknown') return
+    if (cardBrand === 'unknown') {
+      return
+    }
 
     const cardDigits = values.cardNumber.replace(/\D/g, '')
 

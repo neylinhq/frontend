@@ -22,14 +22,14 @@ interface NodeContextMenuProps {
   onZoomToNode?: () => void
 }
 
-export function NodeContextMenu({
+export const NodeContextMenu = ({
   children,
   nodeId,
   nodeLabel,
   onEdit,
   onDelete,
   onZoomToNode
-}: NodeContextMenuProps) {
+}: NodeContextMenuProps) => {
   const { t } = useTranslation()
   const { focusNode, focusedNodeId, clearFocus, setFocusDepth } = useGraphViewStore(
     useShallow(s => ({

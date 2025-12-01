@@ -7,7 +7,7 @@ import { Button } from '@/shared/ui/button'
 import { Typography } from '@/shared/ui/typography'
 import { HOME_FEATURES } from './home-page.constants'
 
-export function HomePage() {
+export const HomePage = () => {
   const { t } = useTranslation()
 
   return (

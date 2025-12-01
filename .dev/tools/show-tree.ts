@@ -1,6 +1,4 @@
-#!/usr/bin/env npx tsx
-
-import * as fs from 'node:fs'
+#!/usr/bin/env npx tsximport * as fs from 'node:fs'
 import * as path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -38,10 +36,7 @@ interface DirEntry {
   isDirectory: () => boolean
 }
 
-/**
- * Gets sorted directory entries (folders first)
- */
-function getSortedEntries(dirPath: string): DirEntry[] {
+const getSortedEntries = (dirPath: string) => {
   const entries = fs.readdirSync(dirPath, { withFileTypes: true })
 
   // Filter ignored files and folders
@@ -57,12 +52,9 @@ function getSortedEntries(dirPath: string): DirEntry[] {
     if (!a.isDirectory() && b.isDirectory()) return 1
     return a.name.localeCompare(b.name)
   })
-}
+};
 
-/**
- * Recursively builds tree
- */
-function buildTree(dirPath: string, prefix = ''): void {
+const buildTree = (dirPath: string, prefix = '') => {
   const entries = getSortedEntries(dirPath)
 
   entries.forEach((entry, index) => {
@@ -78,16 +70,13 @@ function buildTree(dirPath: string, prefix = ''): void {
       buildTree(fullPath, newPrefix)
     }
   })
-}
+};
 
-/**
- * Counts total files and folders
- */
-function countItems(dirPath: string): { files: number; dirs: number } {
+const countItems = (dirPath: string) => {
   let files = 0
   let dirs = 0
 
-  function walk(currentPath: string): void {
+  const walk = (currentPath: string) => {
     const entries = getSortedEntries(currentPath)
 
     entries.forEach(entry => {
@@ -99,14 +88,13 @@ function countItems(dirPath: string): { files: number; dirs: number } {
         files++
       }
     })
-  }
+  };
 
   walk(dirPath)
   return { files, dirs }
-}
+};
 
-// Main function
-function main(): void {
+const main = () => {
   const startPath = process.argv[2] || PROJECT_ROOT
   const projectName = path.basename(startPath)
 
@@ -116,7 +104,7 @@ function main(): void {
 
   const { files, dirs } = countItems(startPath)
   console.log(`\n${dirs} directories, ${files} files\n`)
-}
+};
 
 // Run
 main()

@@ -12,13 +12,13 @@ interface DocsComponentPreviewProps {
   previewClassName?: string
 }
 
-export function DocsComponentPreview({
+export const DocsComponentPreview = ({
   children,
   code,
   language = 'tsx',
   className,
   previewClassName
-}: DocsComponentPreviewProps) {
+}: DocsComponentPreviewProps) => {
   return (
     <div className={cn('rounded-lg border', className)}>
       <Tabs defaultValue='preview'>
@@ -55,6 +55,6 @@ interface DocsPreviewProps {
 /**
  * Simple preview container without tabs
  */
-export function DocsPreview({ children, className }: DocsPreviewProps) {
+export const DocsPreview = ({ children, className }: DocsPreviewProps) => {
   return <div className={cn('docs-preview', className)}>{children}</div>
 }

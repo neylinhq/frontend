@@ -8,7 +8,7 @@ interface NodeComplexitySelectorProps {
   onChange: (value: string) => void
 }
 
-export function NodeComplexitySelector({ value, onChange }: NodeComplexitySelectorProps) {
+export const NodeComplexitySelector = ({ value, onChange }: NodeComplexitySelectorProps) => {
   const { t } = useTranslation()
 
   return (

@@ -24,7 +24,7 @@ type SelectPopoverProps<T extends string = string> = {
   className?: string
 }
 
-export function SelectPopover<T extends string = string>({
+export const SelectPopover = <T extends string = string>({
   items,
   value,
   onChange,
@@ -34,7 +34,7 @@ export function SelectPopover<T extends string = string>({
   align = 'start',
   side = 'bottom',
   className
-}: SelectPopoverProps<T>) {
+}: SelectPopoverProps<T>) => {
   const [open, setOpen] = useState(false)
   const selectedItem = items.find(item => item.value === value)
 

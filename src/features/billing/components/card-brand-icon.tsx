@@ -17,7 +17,7 @@ const sizeMap = {
   lg: 40
 }
 
-export function CardBrandIcon({ brand, className, size = 'md' }: CardBrandIconProps) {
+export const CardBrandIcon = ({ brand, className, size = 'md' }: CardBrandIconProps) => {
   const normalizedBrand = brand.toLowerCase()
   const iconData = paymentBrandIcons[normalizedBrand]
 

@@ -13,7 +13,7 @@ import { AutoSavePlugin } from './auto-save-plugin'
 import { EditorToolbar } from './editor-toolbar'
 import { MarkdownShortcutsPlugin } from './markdown-shortcuts-plugin'
 
-function Placeholder({ text }: { text: string }) {
+const Placeholder = ({ text }: { text: string }) => {
   return (
     <div className='pointer-events-none absolute left-4 top-4 text-sm text-muted-foreground'>
       {text}
@@ -21,14 +21,14 @@ function Placeholder({ text }: { text: string }) {
   )
 }
 
-export function NodeEditor({
+export const NodeEditor = ({
   mapId,
   nodeId,
   initialContent,
   onSave,
   autoSaveDelay = 2000,
   className
-}: NodeEditorProps) {
+}: NodeEditorProps) => {
   const { t } = useTranslation()
   const editorConfig = createEditorConfig('NodeEditor', true)
 

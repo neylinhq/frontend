@@ -14,4 +14,3 @@ export const useDrawerTabs = (defaultTab: DrawerTab = 'overview') => {
     switchTab
   }
 }
-

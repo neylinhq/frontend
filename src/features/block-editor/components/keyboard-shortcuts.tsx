@@ -40,7 +40,7 @@ interface KeyboardShortcutsProps {
   className?: string
 }
 
-export function KeyboardShortcuts({ className }: KeyboardShortcutsProps) {
+export const KeyboardShortcuts = ({ className }: KeyboardShortcutsProps) => {
   return (
     <div className={cn('space-y-4', className)}>
       <div className='flex items-center gap-2 text-sm font-medium'>
@@ -79,7 +79,7 @@ export function KeyboardShortcuts({ className }: KeyboardShortcutsProps) {
 }
 
 // Compact version for tooltip
-export function KeyboardShortcutsCompact() {
+export const KeyboardShortcutsCompact = () => {
   const essentialShortcuts = [
     { keys: ['Ctrl', 'B'], description: 'Bold' },
     { keys: ['Ctrl', 'I'], description: 'Italic' },

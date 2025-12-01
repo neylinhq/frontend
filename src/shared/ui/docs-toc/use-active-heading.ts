@@ -8,7 +8,9 @@ export const useActiveHeading = (headingIds: string[]) => {
   const [activeId, setActiveId] = useState<string>('')
 
   useEffect(() => {
-    if (headingIds.length === 0) return
+    if (headingIds.length === 0) {
+      return
+    }
 
     const observer = new IntersectionObserver(
       entries => {
@@ -38,4 +40,3 @@ export const useActiveHeading = (headingIds: string[]) => {
 
   return activeId
 }
-

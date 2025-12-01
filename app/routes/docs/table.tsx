@@ -21,11 +21,11 @@ export const handle = {
   breadcrumb: 'Table'
 }
 
-export function meta(_args: Route.MetaArgs) {
+export const meta = (_args: Route.MetaArgs) => {
   return getMeta('uiShowcase')
 }
 
-export default function TablePage() {
+const TablePage = () => {
   const { t } = useTranslation()
 
   const TOC_ITEMS: TocItem[] = [
@@ -228,3 +228,5 @@ export function UsersTable({ users }: { users: User[] }) {
     </div>
   )
 }
+
+export default TablePage

@@ -12,11 +12,11 @@ export const handle = {
   breadcrumb: 'Introduction'
 }
 
-export function meta(_args: Route.MetaArgs) {
+export const meta = (_args: Route.MetaArgs) => {
   return getMeta('docs')
 }
 
-export default function UiIndexPage() {
+const UiIndexPage = () => {
   const { t } = useTranslation()
   return (
     <div className='space-y-12'>
@@ -127,7 +127,7 @@ export default function UiIndexPage() {
   )
 }
 
-function QuickLinkCard({
+const QuickLinkCard = ({
   icon,
   title,
   description,
@@ -139,7 +139,7 @@ function QuickLinkCard({
   description: string
   href: string
   badge?: string
-}) {
+}) => {
   return (
     <Link to={href} className='group'>
       <div className='docs-card-hover h-full rounded-xl border bg-card p-5 transition-all'>
@@ -160,7 +160,7 @@ function QuickLinkCard({
   )
 }
 
-function FeatureCard({
+const FeatureCard = ({
   icon,
   title,
   description
@@ -168,7 +168,7 @@ function FeatureCard({
   icon: React.ReactNode
   title: string
   description: string
-}) {
+}) => {
   return (
     <div className='flex gap-4 p-4 rounded-lg border bg-card/50'>
       <div className='flex-shrink-0 mt-0.5'>{icon}</div>
@@ -179,3 +179,5 @@ function FeatureCard({
     </div>
   )
 }
+
+export default UiIndexPage

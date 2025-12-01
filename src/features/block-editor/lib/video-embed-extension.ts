@@ -13,12 +13,15 @@ declare module '@tiptap/core' {
   }
 }
 
-// Extract video ID and platform from URL
-function parseVideoUrl(url: string): { platform: string; videoId: string } | null {
+const parseVideoUrl = (url: string) => {
   // FIX: Validate input - handle null, undefined, empty strings
-  if (!url || typeof url !== 'string') return null
+  if (!url || typeof url !== 'string') {
+    return null
+  }
   const trimmed = url.trim()
-  if (!trimmed) return null
+  if (!trimmed) {
+    return null
+  }
 
   // YouTube
   const youtubeMatch = trimmed.match(
@@ -43,9 +46,10 @@ function parseVideoUrl(url: string): { platform: string; videoId: string } | nul
   return null
 }
 
-// Validate videoId format to prevent injection
-function isValidVideoId(platform: string, videoId: string): boolean {
-  if (!videoId || typeof videoId !== 'string') return false
+const isValidVideoId = (platform: string, videoId: string) => {
+  if (!videoId || typeof videoId !== 'string') {
+    return false
+  }
 
   switch (platform) {
     case 'youtube':
@@ -62,7 +66,7 @@ function isValidVideoId(platform: string, videoId: string): boolean {
   }
 }
 
-function getEmbedUrl(platform: string, videoId: string): string {
+const getEmbedUrl = (platform: string, videoId: string) => {
   // Validate videoId before creating URL
   if (!isValidVideoId(platform, videoId)) {
     return ''

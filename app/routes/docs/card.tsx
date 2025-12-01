@@ -14,11 +14,11 @@ import {
 import { Typography } from '@/shared/ui/typography'
 import type { Route } from './+types/card'
 
-export function meta(_args: Route.MetaArgs) {
+export const meta = (_args: Route.MetaArgs) => {
   return getMeta('uiShowcase')
 }
 
-export default function CardPage() {
+const CardPage = () => {
   const { t } = useTranslation()
 
   const notifications = [
@@ -262,3 +262,5 @@ export default function CardPage() {
     </div>
   )
 }
+
+export default CardPage

@@ -12,7 +12,7 @@ export const handle = {
   breadcrumb: 'Progress'
 }
 
-export function meta(_args: Route.MetaArgs) {
+export const meta = (_args: Route.MetaArgs) => {
   return getMeta('uiShowcase')
 }
 
@@ -22,7 +22,7 @@ const TOC_ITEMS: TocItem[] = [
   { id: 'usage', title: 'Usage', level: 2 }
 ]
 
-export default function ProgressPage() {
+const ProgressPage = () => {
   return (
     <div className='flex gap-10'>
       <div className='flex-1 min-w-0 space-y-10'>
@@ -106,3 +106,5 @@ export function UploadProgress({ progress }: { progress: number }) {
     </div>
   )
 }
+
+export default ProgressPage

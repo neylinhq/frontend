@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next'
 import { ThemeToggle } from '@/app/theme/components/theme-toggle'
-import { LanguageSwitcher } from '@/shared/ui/language-switcher'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
 import { Label } from '@/shared/ui/label'
+import { LanguageSwitcher } from '@/shared/ui/language-switcher'
 
-export default function ThemePage() {
+const ThemePage = () => {
   const { t } = useTranslation()
 
   return (
@@ -52,3 +52,5 @@ export default function ThemePage() {
     </div>
   )
 }
+
+export default ThemePage

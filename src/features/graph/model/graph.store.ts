@@ -245,8 +245,12 @@ export const useGraphViewStore = create<GraphViewState & GraphViewActions>()(
       getActiveFiltersCount: () => {
         const state = get()
         let count = 0
-        if (state.visibleNodeTypes.size < ALL_NODE_TYPES.length) count++
-        if (state.visibleEdgeTypes.size < ALL_EDGE_TYPES.length) count++
+        if (state.visibleNodeTypes.size < ALL_NODE_TYPES.length) {
+          count++
+        }
+        if (state.visibleEdgeTypes.size < ALL_EDGE_TYPES.length) {
+          count++
+        }
         return count
       },
 
@@ -258,7 +262,9 @@ export const useGraphViewStore = create<GraphViewState & GraphViewActions>()(
       storage: {
         getItem: name => {
           const str = localStorage.getItem(name)
-          if (!str) return null
+          if (!str) {
+            return null
+          }
           try {
             const parsed = JSON.parse(str)
             return {

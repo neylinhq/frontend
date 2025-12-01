@@ -9,7 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/shared/ui/input'
 import { type PasswordChangeValues, passwordChangeSchema } from '../lib/validation'
 
-export function PasswordChangeForm() {
+export const PasswordChangeForm = () => {
   const { t } = useTranslation()
   const changePassword = useChangePassword()
 

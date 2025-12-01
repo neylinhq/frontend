@@ -7,11 +7,11 @@ import { getMeta } from '@/shared/lib/get-meta'
 // Tell parent layout to disable scroll
 export const handle = { disableScroll: true }
 
-export function meta() {
+export const meta = () => {
   return getMeta('nodeEdit')
 }
 
-export async function loader({ params }: LoaderFunctionArgs) {
+export const loader = async ({ params }: LoaderFunctionArgs) => {
   const { mapId, nodeId } = params
   if (!mapId || !nodeId) {
     throw new Response('Map ID and Node ID are required', { status: 400 })
@@ -22,11 +22,17 @@ export async function loader({ params }: LoaderFunctionArgs) {
     mapApi.getFullMap(mapId, false) // lightweight - no content
   ])
 
+  if (!node || !map) {
+    throw new Response('Node or Map not found', { status: 404 })
+  }
+
   return { node, map, mapId, nodeId }
 }
 
-export default function NodeEditRoute() {
+const NodeEditRoute = () => {
   const { node, map, mapId, nodeId } = useLoaderData<typeof loader>()
 
   return <NodeEditPage node={node} map={map} mapId={mapId} nodeId={nodeId} />
 }
+
+export default NodeEditRoute

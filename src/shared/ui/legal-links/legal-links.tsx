@@ -14,12 +14,12 @@ interface LegalLinksProps {
   separator?: boolean
 }
 
-export function LegalLinks({
+export const LegalLinks = ({
   variant = 'footer',
   links,
   className,
   separator = variant === 'inline'
-}: LegalLinksProps) {
+}: LegalLinksProps) => {
   const { t } = useTranslation()
 
   const linkKeys = links || DEFAULT_LINKS_BY_VARIANT[variant]

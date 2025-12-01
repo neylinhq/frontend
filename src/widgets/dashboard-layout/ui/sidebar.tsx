@@ -9,7 +9,7 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   isExpanded?: boolean
 }
 
-export function Sidebar({ className, isExpanded }: SidebarProps) {
+export const Sidebar = ({ className, isExpanded }: SidebarProps) => {
   const { t } = useTranslation()
 
   return (
@@ -26,7 +26,7 @@ export function Sidebar({ className, isExpanded }: SidebarProps) {
   )
 }
 
-function NavItem({
+const NavItem = ({
   to,
   icon: Icon,
   children,
@@ -36,7 +36,7 @@ function NavItem({
   icon: LucideIcon
   children: React.ReactNode
   isExpanded?: boolean
-}) {
+}) => {
   return (
     <NavLink
       to={to}

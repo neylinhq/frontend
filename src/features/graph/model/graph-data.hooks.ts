@@ -21,7 +21,9 @@ export const useFilteredGraphData = ({
 }: UseFilteredGraphDataParams) => {
   // Calculate counts by type for filters
   const { nodeCountsByType, edgeCountsByType } = useMemo(() => {
-    if (!fullMap) return { nodeCountsByType: {}, edgeCountsByType: {} }
+    if (!fullMap) {
+      return { nodeCountsByType: {}, edgeCountsByType: {} }
+    }
 
     const nodeCounts: Record<string, number> = {}
     const edgeCounts: Record<string, number> = {}
@@ -39,7 +41,9 @@ export const useFilteredGraphData = ({
 
   // Filter nodes based on visibility settings and focus mode
   const filteredData = useMemo(() => {
-    if (!fullMap) return { nodes: [], edges: [] }
+    if (!fullMap) {
+      return { nodes: [], edges: [] }
+    }
 
     // Start with type-filtered nodes
     let visibleNodes = fullMap.nodes.filter(node => visibleNodeTypes.has(node.type))

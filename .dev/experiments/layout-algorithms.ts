@@ -34,7 +34,7 @@ const EDGE_WEIGHTS: Record<RelationType, number> = {
 /**
  * Apply layout based on view mode
  */
-export function applyLayout(nodes: Node[], edges: Edge[], options: LayoutOptions): LayoutResult {
+export const applyLayout = (nodes: Node[], edges: Edge[], options: LayoutOptions) => {
   const { viewMode, spacingPercent = 100, directionStrength = 100 } = options
 
   if (nodes.length === 0) return { nodes, edges }
@@ -64,7 +64,7 @@ export function applyLayout(nodes: Node[], edges: Edge[], options: LayoutOptions
     default:
       return forceDirectedLayout(nodes, edges, internalOptions)
   }
-}
+};
 
 interface InternalLayoutOptions {
   nodeSpacing: number
@@ -72,15 +72,7 @@ interface InternalLayoutOptions {
   directionStrength: number // 0-2 (normalized from 0-200)
 }
 
-/**
- * Force-directed layout with weighted edges for clustering
- * Used in Overview mode
- */
-function forceDirectedLayout(
-  nodes: Node[],
-  edges: Edge[],
-  options: InternalLayoutOptions
-): LayoutResult {
+const forceDirectedLayout = (nodes: Node[], edges: Edge[], options: InternalLayoutOptions) => {
   const { nodeSpacing } = options
   const iterations = 150
   const idealDistance = nodeSpacing * 1.5
@@ -203,13 +195,9 @@ function forceDirectedLayout(
   })
 
   return { nodes: positionedNodes, edges }
-}
+};
 
-/**
- * Linear/tree layout based on prerequisite edges
- * Used in Path mode
- */
-function pathLayout(nodes: Node[], edges: Edge[], options: InternalLayoutOptions): LayoutResult {
+const pathLayout = (nodes: Node[], edges: Edge[], options: InternalLayoutOptions) => {
   const { nodeSpacing, levelSpacing } = options
 
   // Filter to only prerequisite edges
@@ -295,16 +283,12 @@ function pathLayout(nodes: Node[], edges: Edge[], options: InternalLayoutOptions
   })
 
   return { nodes: positionedNodes, edges }
-}
+};
 
 /**
  * Get connected nodes within N levels from start node
  */
-export function getNodesWithinDepth(
-  startNodeId: string,
-  edges: Edge[],
-  depth: number
-): Set<string> {
+export const getNodesWithinDepth = (startNodeId: string, edges: Edge[], depth: number) => {
   const connected = new Set<string>([startNodeId])
 
   // Build adjacency
@@ -335,11 +319,11 @@ export function getNodesWithinDepth(
   }
 
   return connected
-}
+};
 
 /**
  * Get edges between a set of nodes
  */
-export function getEdgesBetweenNodes(edges: Edge[], nodeIds: Set<string>): Edge[] {
+export const getEdgesBetweenNodes = (edges: Edge[], nodeIds: Set<string>) => {
   return edges.filter(e => nodeIds.has(e.source) && nodeIds.has(e.target))
-}
+};

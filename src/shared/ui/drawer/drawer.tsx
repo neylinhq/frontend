@@ -65,7 +65,9 @@ const DrawerContent = React.forwardRef<
   ) => {
     // Определяем стили размера в зависимости от стороны
     const sizeStyles = React.useMemo(() => {
-      if (!size) return undefined
+      if (!size) {
+        return undefined
+      }
 
       if (side === 'left' || side === 'right') {
         return { width: size }

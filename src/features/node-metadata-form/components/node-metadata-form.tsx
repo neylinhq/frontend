@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { Button } from '@/shared/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form'
 import { Input } from '@/shared/ui/input'
-import { Label } from '@/shared/ui/label'
 import { Slider } from '@/shared/ui/slider'
 import { type NodeMetadataFormValues, nodeMetadataFormSchema } from '../lib/validation'
 import type { NodeMetadataFormProps } from '../model/node-metadata-form.types'
@@ -12,7 +11,7 @@ import { NodeComplexitySelector } from './node-complexity-selector'
 import { NodeTagsInput } from './node-tags-input'
 import { NodeTypeSelector } from './node-type-selector'
 
-export function NodeMetadataForm({ node, onSubmit, isPending }: NodeMetadataFormProps) {
+export const NodeMetadataForm = ({ node, onSubmit, isPending }: NodeMetadataFormProps) => {
   const { t } = useTranslation()
   const form = useForm<NodeMetadataFormValues>({
     resolver: zodResolver(nodeMetadataFormSchema),
@@ -48,7 +47,7 @@ export function NodeMetadataForm({ node, onSubmit, isPending }: NodeMetadataForm
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <NodeTypeSelector value={field.value} onChange={field.onChange} />
+                <NodeTypeSelector value={field.value ?? 'concept'} onChange={field.onChange} />
               </FormControl>
               <FormMessage />
             </FormItem>

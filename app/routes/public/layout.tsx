@@ -11,7 +11,7 @@ interface RouteHandle {
   bypassPublicLayout?: boolean
 }
 
-export default function PublicLayout() {
+const PublicLayout = () => {
   const matches = useMatches()
 
   const getHandle = (key: keyof RouteHandle) =>
@@ -54,3 +54,5 @@ export default function PublicLayout() {
     </div>
   )
 }
+
+export default PublicLayout

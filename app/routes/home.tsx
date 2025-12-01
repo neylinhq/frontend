@@ -1,10 +1,12 @@
 import { HomePage } from '@/pages/home-page'
 import { getMeta } from '@/shared/lib/get-meta'
 
-export function meta() {
+export const meta = () => {
   return getMeta('home')
 }
 
-export default function Home() {
+const Home = () => {
   return <HomePage />
 }
+
+export default Home

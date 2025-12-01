@@ -3,16 +3,18 @@ import type { PlanDetails } from '@/entities/subscription/subscription.schema'
 import { PricingPage } from '@/pages/pricing-page'
 import { getMeta } from '@/shared/lib/get-meta'
 
-export function meta() {
+export const meta = () => {
   return getMeta('pricing')
 }
 
-export async function loader() {
+export const loader = async () => {
   // Fetch plans on server for SSR
   const plans = await subscriptionApi.getPlans()
   return { plans }
 }
 
-export default function Pricing({ loaderData }: { loaderData: { plans: PlanDetails[] } }) {
+const Pricing = ({ loaderData }: { loaderData: { plans: PlanDetails[] } }) => {
   return <PricingPage plans={loaderData.plans} />
 }
+
+export default Pricing

@@ -1,11 +1,10 @@
 import { ArrowDownLeft, ArrowUpRight } from 'lucide-react'
 import { memo, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-
-import { useConnectionFilter } from '@/entities/edge'
 import type { Edge } from '@/entities/edge'
-import { getNodeIcon } from '@/entities/node'
+import { useConnectionFilter } from '@/entities/edge'
 import type { Node } from '@/entities/node'
+import { getNodeIcon } from '@/entities/node'
 import { cn } from '@/shared/lib/cn'
 import { ConnectionItem } from '@/shared/ui/connection-item'
 
@@ -37,7 +36,9 @@ export const NodeConnectionsPanel = memo(
         const connectedNodeId = isIncoming ? edge.sourceNodeId : edge.targetNodeId
         const connectedNode = nodesMap.get(connectedNodeId)
 
-        if (!connectedNode) continue
+        if (!connectedNode) {
+          continue
+        }
 
         if (isIncoming) {
           incoming.push({ edge, node: connectedNode })
@@ -167,7 +168,7 @@ interface FilterPillProps {
   count: number
 }
 
-function FilterPill({ active, onClick, label, count }: FilterPillProps) {
+const FilterPill = ({ active, onClick, label, count }: FilterPillProps) => {
   return (
     <button
       type='button'
@@ -200,14 +201,14 @@ interface ConnectionSectionProps {
   children: React.ReactNode
 }
 
-function ConnectionSection({
+const ConnectionSection = ({
   title,
   count,
   icon,
   color,
   showHeader,
   children
-}: ConnectionSectionProps) {
+}: ConnectionSectionProps) => {
   return (
     <div>
       {showHeader && (

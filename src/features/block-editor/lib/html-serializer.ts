@@ -6,7 +6,7 @@ import { createExtensions } from './extensions'
  * Convert TipTap editor instance to HTML
  * Uses the editor's built-in getHTML() method
  */
-export function editorToHTML(editor: Editor): string {
+export const editorToHTML = (editor: Editor) => {
   return editor.getHTML()
 }
 
@@ -26,7 +26,6 @@ export const htmlToEditor = (html: string) => {
   return generateJSON(html, extensions)
 }
 
-
 /**
  * Extract plain text from HTML (for description field)
  * Max 200 chars by default, smart truncation at word boundaries
@@ -35,7 +34,7 @@ export const htmlToEditor = (html: string) => {
  * @param maxLength - Maximum length of extracted text (default: 200)
  * @returns Plain text string, truncated if necessary
  */
-export function htmlToPlainText(html: string, maxLength = 200): string {
+export const htmlToPlainText = (html: string, maxLength = 200) => {
   // Remove HTML tags and normalize whitespace
   const text = html
     .replace(/<[^>]+>/g, ' ') // Remove all HTML tags
@@ -46,7 +45,9 @@ export function htmlToPlainText(html: string, maxLength = 200): string {
     .replace(/\s+/g, ' ') // Collapse multiple spaces
     .trim()
 
-  if (text.length <= maxLength) return text
+  if (text.length <= maxLength) {
+    return text
+  }
 
   // Truncate at word boundary for better readability
   const truncated = text.slice(0, maxLength)

@@ -12,7 +12,7 @@ interface OverviewPageProps {
   maps: MapEntity[]
 }
 
-export function OverviewPage({ maps }: OverviewPageProps) {
+export const OverviewPage = ({ maps }: OverviewPageProps) => {
   const { t } = useTranslation()
 
   return (

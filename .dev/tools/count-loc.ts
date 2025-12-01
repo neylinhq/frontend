@@ -1,6 +1,4 @@
-#!/usr/bin/env npx tsx
-
-import * as fs from 'node:fs'
+#!/usr/bin/env npx tsximport * as fs from 'node:fs'
 import * as path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -55,10 +53,7 @@ const stats: Record<FileCategory, CategoryStats> = {
   other: { total: 0, nonEmpty: 0, files: 0 }
 }
 
-/**
- * Determines file category by extension
- */
-function getFileCategory(filePath: string): FileCategory {
+const getFileCategory = (filePath: string) => {
   const ext = path.extname(filePath).toLowerCase()
 
   for (const [category, extensions] of Object.entries(FILE_CATEGORIES)) {
@@ -68,22 +63,19 @@ function getFileCategory(filePath: string): FileCategory {
   }
 
   return 'other'
-}
+};
 
-/**
- * Removes comments from code
- */
-function removeComments(content: string, category: FileCategory): string {
+const removeComments = (content: string, category: FileCategory) => {
   if (category === 'json') {
     return content
   }
 
   if (category === 'css') {
-    return content.replace(/\/\*[\s\S]*?\*\//g, '')
+    return content.replace(/\/\*[\s\S]*?\*\//g, '');
   }
 
   if (category === 'html' || category === 'markdown') {
-    return content.replace(/<!--[\s\S]*?-->/g, '')
+    return content.replace(/<!--[\s\S]*?-->/g, '');
   }
 
   // For JS/TS remove multi-line and single-line comments
@@ -107,13 +99,10 @@ function removeComments(content: string, category: FileCategory): string {
       }
       return line
     })
-    .join('\n')
-}
+    .join('\n');
+};
 
-/**
- * Analyzes a file
- */
-function analyzeFile(filePath: string): void {
+const analyzeFile = (filePath: string) => {
   try {
     const content = fs.readFileSync(filePath, 'utf-8')
     const category = getFileCategory(filePath)
@@ -129,12 +118,9 @@ function analyzeFile(filePath: string): void {
     const message = error instanceof Error ? error.message : 'Unknown error'
     console.error(`Error analyzing ${filePath}: ${message}`)
   }
-}
+};
 
-/**
- * Recursively walks a directory
- */
-function walkDirectory(dirPath: string): void {
+const walkDirectory = (dirPath: string) => {
   const entries = fs.readdirSync(dirPath, { withFileTypes: true })
 
   for (const entry of entries) {
@@ -152,19 +138,13 @@ function walkDirectory(dirPath: string): void {
       analyzeFile(fullPath)
     }
   }
-}
+};
 
-/**
- * Formats number with thousand separators
- */
-function formatNumber(num: number): string {
-  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-}
+const formatNumber = (num: number) => {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};
 
-/**
- * Prints statistics
- */
-function printStats(): void {
+const printStats = () => {
   console.log('\nLines of Code Statistics\n')
   console.log('='.repeat(80))
 
@@ -206,10 +186,9 @@ function printStats(): void {
   console.log(`\nEmpty lines: ${formatNumber(emptyLines)} (${emptyPercent}%)`)
   console.log(`Code lines: ${formatNumber(totalNonEmpty)}`)
   console.log(`Total files: ${formatNumber(totalFiles)}`)
-}
+};
 
-// Main function
-function main(): void {
+const main = () => {
   const startPath = process.argv[2] || PROJECT_ROOT
 
   console.log(`\nAnalyzing directory: ${startPath}`)
@@ -225,7 +204,7 @@ function main(): void {
   printStats()
 
   console.log(`\nExecution time: ${duration}s\n`)
-}
+};
 
 // Run
 main()

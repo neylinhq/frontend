@@ -26,7 +26,7 @@ interface DocsSidebarProps {
   className?: string
 }
 
-export function DocsSidebar({ sections, className }: DocsSidebarProps) {
+export const DocsSidebar = ({ sections, className }: DocsSidebarProps) => {
   return (
     <nav className={cn('docs-sidebar space-y-2.5', className)}>
       {sections.map(section => (
@@ -36,7 +36,7 @@ export function DocsSidebar({ sections, className }: DocsSidebarProps) {
   )
 }
 
-function DocsSidebarSectionComponent({ section }: { section: DocsSidebarSection }) {
+const DocsSidebarSectionComponent = ({ section }: { section: DocsSidebarSection }) => {
   const { t } = useTranslation()
   const [isOpen, setIsOpen] = React.useState(section.defaultOpen ?? true)
   const Icon = section.icon

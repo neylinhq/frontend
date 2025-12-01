@@ -43,11 +43,11 @@ interface HeroGraphProps {
   connectionDistance?: number
 }
 
-export function HeroGraph({
+export const HeroGraph = ({
   className = '',
   nodeCount = 50,
   connectionDistance = 150
-}: HeroGraphProps) {
+}: HeroGraphProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const nodesRef = useRef<Node[]>([])
   const edgesRef = useRef<Edge[]>([])
@@ -98,10 +98,14 @@ export function HeroGraph({
   const render = useCallback(
     (time: number) => {
       const canvas = canvasRef.current
-      if (!canvas) return
+      if (!canvas) {
+        return
+      }
 
       const ctx = canvas.getContext('2d', { alpha: true })
-      if (!ctx) return
+      if (!ctx) {
+        return
+      }
 
       // Throttle to ~40fps for better performance
       const delta = time - lastTimeRef.current
@@ -132,8 +136,12 @@ export function HeroGraph({
         node.y += node.vy
 
         // Bounce off edges
-        if (node.x < 20 || node.x > w - 20) node.vx *= -1
-        if (node.y < 20 || node.y > h - 20) node.vy *= -1
+        if (node.x < 20 || node.x > w - 20) {
+          node.vx *= -1
+        }
+        if (node.y < 20 || node.y > h - 20) {
+          node.vy *= -1
+        }
 
         // Clamp
         node.x = Math.max(10, Math.min(w - 10, node.x))
@@ -167,7 +175,7 @@ export function HeroGraph({
 
         if (dist < connectionDistance * 1.2) {
           const alpha = Math.max(0, 0.15 * (1 - dist / (connectionDistance * 1.2)))
-          ctx.strokeStyle = lineColor + alpha + ')'
+          ctx.strokeStyle = `${lineColor + alpha})`
           ctx.beginPath()
           ctx.moveTo(n1.x * dpr, n1.y * dpr)
           ctx.lineTo(n2.x * dpr, n2.y * dpr)
@@ -213,7 +221,9 @@ export function HeroGraph({
 
   useEffect(() => {
     const canvas = canvasRef.current
-    if (!canvas) return
+    if (!canvas) {
+      return
+    }
 
     // Check dark mode
     const checkDark = () => {
@@ -226,7 +236,9 @@ export function HeroGraph({
 
     const handleResize = () => {
       const rect = canvas.parentElement?.getBoundingClientRect()
-      if (!rect) return
+      if (!rect) {
+        return
+      }
 
       const dpr = window.devicePixelRatio || 1
       canvas.width = rect.width * dpr

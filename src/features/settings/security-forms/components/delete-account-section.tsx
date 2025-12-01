@@ -19,7 +19,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/shared/ui/input'
 import { type DeleteAccountValues, deleteAccountSchema } from '../lib/validation'
 
-export function DeleteAccountSection() {
+export const DeleteAccountSection = () => {
   const { t } = useTranslation()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const deleteAccount = useDeleteAccount()

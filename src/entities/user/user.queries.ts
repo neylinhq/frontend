@@ -38,7 +38,9 @@ export const useUpdatePreferences = () => {
     mutationFn: (data: UserPreferences) => userApi.updatePreferences(data),
     onSuccess: preferences => {
       queryClient.setQueryData<User>(userKeys.current(), old => {
-        if (!old) return old
+        if (!old) {
+          return old
+        }
         return {
           ...old,
           preferences
@@ -55,7 +57,9 @@ export const useUploadAvatar = () => {
     mutationFn: (file: File) => userApi.uploadAvatar(file),
     onSuccess: ({ avatarUrl }) => {
       queryClient.setQueryData<User>(userKeys.current(), old => {
-        if (!old) return old
+        if (!old) {
+          return old
+        }
         return {
           ...old,
           avatarUrl

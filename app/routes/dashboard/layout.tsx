@@ -4,7 +4,7 @@ import { useSessionStore } from '@/entities/session'
 import { getSession } from '@/entities/session/session.server'
 import { DashboardLayout } from '@/widgets/dashboard-layout/ui/dashboard-layout'
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const session = await getSession(request)
 
   if (!session || !session.user) {
@@ -18,7 +18,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   return { user: session.user }
 }
 
-export default function DashboardRoute() {
+const DashboardRoute = () => {
   const { user } = useLoaderData<typeof loader>()
   const setUser = useSessionStore(state => state.setUser)
   const matches = useMatches()
@@ -41,3 +41,5 @@ export default function DashboardRoute() {
     </DashboardLayout>
   )
 }
+
+export default DashboardRoute

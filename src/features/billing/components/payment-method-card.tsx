@@ -33,13 +33,13 @@ interface PaymentMethodCardProps {
   loading?: boolean
 }
 
-export function PaymentMethodCard({
+export const PaymentMethodCard = ({
   method,
   onRemove,
   onSetDefault,
   onEdit,
   loading
-}: PaymentMethodCardProps) {
+}: PaymentMethodCardProps) => {
   const { t } = useTranslation()
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
 

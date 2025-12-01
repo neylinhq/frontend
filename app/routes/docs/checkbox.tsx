@@ -14,11 +14,11 @@ export const handle = {
   breadcrumb: 'Checkbox'
 }
 
-export function meta(_args: Route.MetaArgs) {
+export const meta = (_args: Route.MetaArgs) => {
   return getMeta('uiShowcase')
 }
 
-export default function CheckboxPage() {
+const CheckboxPage = () => {
   const { t } = useTranslation()
 
   const TOC_ITEMS: TocItem[] = [
@@ -190,3 +190,5 @@ export function RememberMe() {
     </div>
   )
 }
+
+export default CheckboxPage

@@ -10,11 +10,11 @@ export const handle = {
   centered: true
 }
 
-export function meta() {
+export const meta = () => {
   return getMeta('signIn')
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData()
   const email = formData.get('email') as string
   const password = formData.get('password') as string
@@ -41,6 +41,8 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 }
 
-export default function SignInRoute() {
+const SignInRoute = () => {
   return <SignInPage />
 }
+
+export default SignInRoute

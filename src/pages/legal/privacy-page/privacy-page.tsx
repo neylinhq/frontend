@@ -3,7 +3,7 @@ import { LEGAL_ROUTES } from '@/shared/config'
 import { LegalLayout } from '@/shared/ui/legal-layout'
 import { Typography } from '@/shared/ui/typography'
 
-export function PrivacyPage() {
+export const PrivacyPage = () => {
   const { t } = useTranslation()
 
   return (

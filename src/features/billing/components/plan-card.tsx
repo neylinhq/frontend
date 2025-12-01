@@ -1,4 +1,5 @@
 import { Check } from 'lucide-react'
+import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import type { PlanDetails } from '@/entities/subscription'
@@ -13,7 +14,13 @@ interface PlanCardProps {
   highlighted?: boolean
 }
 
-export function PlanCard({ plan, isCurrentPlan, onSelect, loading, highlighted }: PlanCardProps) {
+export const PlanCard = memo(({
+  plan,
+  isCurrentPlan,
+  onSelect,
+  loading,
+  highlighted
+}: PlanCardProps) => {
   const { t } = useTranslation()
 
   const formatPrice = (cents: number) => {
@@ -86,4 +93,6 @@ export function PlanCard({ plan, isCurrentPlan, onSelect, loading, highlighted }
       </Button>
     </div>
   )
-}
+})
+
+PlanCard.displayName = 'PlanCard'

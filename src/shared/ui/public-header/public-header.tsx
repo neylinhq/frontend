@@ -4,10 +4,10 @@ import { useTranslation } from 'react-i18next'
 import { Link, NavLink } from 'react-router'
 import { ModeSelect } from '@/app/theme/components/mode-select'
 import { PaletteSelect } from '@/app/theme/components/palette-select'
-import { LanguageSelect } from '@/shared/ui/language-switcher'
 import { AUTH_ROUTES, ROUTES } from '@/shared/config'
 import { cn } from '@/shared/lib/cn'
 import { Button } from '@/shared/ui/button'
+import { LanguageSelect } from '@/shared/ui/language-switcher'
 import { Logo } from '@/shared/ui/logo'
 import { Separator } from '@/shared/ui/separator'
 import { Sheet, SheetContent, SheetTrigger } from '@/shared/ui/sheet'
@@ -16,7 +16,7 @@ interface PublicHeaderProps {
   hideAuthButtons?: boolean
 }
 
-export function PublicHeader({ hideAuthButtons }: PublicHeaderProps) {
+export const PublicHeader = ({ hideAuthButtons }: PublicHeaderProps) => {
   const { t } = useTranslation()
 
   return (
@@ -94,7 +94,7 @@ export function PublicHeader({ hideAuthButtons }: PublicHeaderProps) {
   )
 }
 
-function MobileNavItem({
+const MobileNavItem = ({
   to,
   icon: Icon,
   children
@@ -102,7 +102,7 @@ function MobileNavItem({
   to: string
   icon: LucideIcon
   children: React.ReactNode
-}) {
+}) => {
   return (
     <NavLink
       to={to}

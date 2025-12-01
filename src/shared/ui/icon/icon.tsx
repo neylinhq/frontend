@@ -18,7 +18,7 @@ export interface IconProps extends Omit<SVGProps<SVGSVGElement>, 'viewBox' | 'ch
  * @example
  * <Icon data={visaIcon} size={24} className="text-blue-600" />
  */
-export function Icon({ data, size = 24, className, ...props }: IconProps) {
+export const Icon = ({ data, size = 24, className, ...props }: IconProps) => {
   const sizeValue = typeof size === 'number' ? `${size}px` : size
 
   return (

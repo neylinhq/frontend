@@ -9,7 +9,7 @@ export type ThemeData = {
 /**
  * Get theme data from cookies for SSR
  */
-export function getThemeData(request: Request): ThemeData {
+export const getThemeData = (request: Request) => {
   const cookieHeader = request.headers.get('Cookie') ?? ''
 
   const getCookie = (name: string): string | undefined =>

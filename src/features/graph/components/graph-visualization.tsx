@@ -17,7 +17,7 @@ import { Loader2 } from 'lucide-react'
 import { memo, useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { type FullMap, useFullMap } from '@/entities/map'
-import { NodeDrawer } from '@/features/node-drawer'
+import { NodeDrawer } from './node-drawer'
 import { cn } from '@/shared/lib/cn'
 import { useDarkMode } from '@/shared/lib/use-dark-mode'
 import { Card } from '@/shared/ui/card'
@@ -56,12 +56,12 @@ interface GraphVisualizationProps {
   initialData?: FullMap
 }
 
-function GraphVisualizationContent({
+const GraphVisualizationContent = ({
   mapId,
   className,
   interactive = true,
   initialData
-}: GraphVisualizationProps) {
+}: GraphVisualizationProps) => {
   const { t } = useTranslation()
   // Use initialData if provided (SSR), otherwise fetch client-side
   const { data: fetchedMap, isLoading, isError } = useFullMap(mapId, { enabled: !initialData })
@@ -155,7 +155,9 @@ function GraphVisualizationContent({
 
   // Find the node closest to the viewport center
   const getClosestNodeToViewportCenter = useCallback(() => {
-    if (reactFlowNodes.length === 0) return null
+    if (reactFlowNodes.length === 0) {
+      return null
+    }
 
     // Get viewport center in screen coordinates and convert to flow coordinates
     const centerScreenX = window.innerWidth / 2
@@ -181,7 +183,9 @@ function GraphVisualizationContent({
   // Apply auto-layout function - uses ref to get latest params when triggered by store events
   const doApplyLayout = useCallback(
     (shouldFitView = true, anchorNodeId?: string | null, animated = false) => {
-      if (reactFlowNodes.length === 0) return
+      if (reactFlowNodes.length === 0) {
+        return
+      }
 
       const params = layoutParamsRef.current
       const result = applyLayout(reactFlowNodes, reactFlowEdges, {
@@ -328,7 +332,9 @@ function GraphVisualizationContent({
   // Handle node changes
   const handleNodesChange = useCallback(
     (changes: NodeChange[]) => {
-      if (!interactive) return
+      if (!interactive) {
+        return
+      }
       onNodesChange(changes)
     },
     [onNodesChange, interactive]
@@ -337,7 +343,9 @@ function GraphVisualizationContent({
   // Handle edge changes
   const handleEdgesChange = useCallback(
     (changes: EdgeChange[]) => {
-      if (!interactive) return
+      if (!interactive) {
+        return
+      }
       onEdgesChange(changes)
     },
     [onEdgesChange, interactive]
@@ -346,7 +354,9 @@ function GraphVisualizationContent({
   // Handle new connections
   const onConnect = useCallback(
     (params: Connection) => {
-      if (!interactive) return
+      if (!interactive) {
+        return
+      }
       setEdges(eds => addEdge({ ...params, type: 'knowledgeEdge' }, eds))
     },
     [setEdges, interactive]
@@ -433,7 +443,9 @@ function GraphVisualizationContent({
   }
 
   // At this point fullMap is guaranteed to be defined (either from initialData or fetchedMap)
-  if (!fullMap) return null
+  if (!fullMap) {
+    return null
+  }
 
   const selectedNode = fullMap.nodes.find(n => n.id === selectedNodeId) || null
 

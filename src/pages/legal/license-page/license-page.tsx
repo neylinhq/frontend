@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { LegalLayout } from '@/shared/ui/legal-layout'
 
-export function LicensePage() {
+export const LicensePage = () => {
   const { t } = useTranslation()
 
   return (

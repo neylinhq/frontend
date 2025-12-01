@@ -6,7 +6,7 @@ import { DASHBOARD_ROUTES, ROUTES } from '@/shared/config'
 import { Button } from '@/shared/ui/button'
 import { Typography } from '@/shared/ui/typography'
 
-export function NotFoundPage() {
+export const NotFoundPage = () => {
   const { t } = useTranslation()
 
   return (

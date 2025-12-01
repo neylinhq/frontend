@@ -1,6 +1,7 @@
 import { formatDistanceToNow } from 'date-fns'
 import { de, enUS, ru } from 'date-fns/locale'
 import { GitBranch, MoreHorizontal } from 'lucide-react'
+import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
@@ -24,7 +25,7 @@ const DATE_LOCALES = {
   de
 }
 
-export function MapCard({ map }: MapCardProps) {
+export const MapCard = memo(({ map }: MapCardProps) => {
   const { t, i18n } = useTranslation()
   const dateLocale = DATE_LOCALES[i18n.language as keyof typeof DATE_LOCALES] || ru
 
@@ -68,4 +69,6 @@ export function MapCard({ map }: MapCardProps) {
       </CardFooter>
     </Card>
   )
-}
+})
+
+MapCard.displayName = 'MapCard'

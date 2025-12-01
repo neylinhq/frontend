@@ -8,7 +8,7 @@ interface AnimationConfig {
 }
 
 // Easing function: fast start, smooth deceleration
-export function easeOutCubic(t: number): number {
+export const easeOutCubic = (t: number) => {
   return 1 - (1 - t) ** 3
 }
 
@@ -156,4 +156,3 @@ export const useAnimatedLayout = () => {
     cancelAnimation
   }
 }
-

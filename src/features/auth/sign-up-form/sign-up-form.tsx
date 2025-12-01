@@ -10,7 +10,7 @@ import { FormDivider } from '@/shared/ui/form-divider'
 import { Input } from '@/shared/ui/input'
 import { LegalLinks } from '@/shared/ui/legal-links'
 
-export function SignUpForm() {
+export const SignUpForm = () => {
   const { t } = useTranslation()
   const navigation = useNavigation()
   const submit = useSubmit()

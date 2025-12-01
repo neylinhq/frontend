@@ -9,11 +9,11 @@ export const handle = {
   centered: true
 }
 
-export function meta() {
+export const meta = () => {
   return getMeta('resetPassword')
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData()
   const email = formData.get('email') as string
 
@@ -28,6 +28,8 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 }
 
-export default function ResetPasswordRoute() {
+const ResetPasswordRoute = () => {
   return <ResetPasswordPage />
 }
+
+export default ResetPasswordRoute

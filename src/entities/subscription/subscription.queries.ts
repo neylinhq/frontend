@@ -166,7 +166,9 @@ export const useUpdatePaymentMethod = () => {
 
       queryClient.setQueryData<PaymentMethod[]>(subscriptionKeys.paymentMethods(), old =>
         old?.map(m => {
-          if (m.id !== input.id) return m
+          if (m.id !== input.id) {
+            return m
+          }
           if ('expiryMonth' in input && m.type === 'card') {
             return { ...m, expiryMonth: input.expiryMonth, expiryYear: input.expiryYear }
           }

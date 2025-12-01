@@ -1,5 +1,5 @@
-import * as fs from 'fs'
-import * as path from 'path'
+import * as fs from 'node:fs'
+import * as path from 'node:path'
 
 export const supportedLanguages = ['en', 'ru'] as const
 export type SupportedLanguage = (typeof supportedLanguages)[number]
@@ -8,7 +8,7 @@ export const defaultLanguage: SupportedLanguage = 'en'
 /**
  * Get translations for a specific language on the server side
  */
-export function getTranslations(locale: SupportedLanguage): Record<string, unknown> {
+export const getTranslations = (locale: SupportedLanguage): Record<string, unknown> => {
   const filePath = path.join(process.cwd(), 'public', 'locales', locale, 'translation.json')
 
   try {
@@ -26,8 +26,10 @@ export function getTranslations(locale: SupportedLanguage): Record<string, unkno
 /**
  * Detect language from request headers (Accept-Language)
  */
-export function detectLanguage(acceptLanguage: string | null): SupportedLanguage {
-  if (!acceptLanguage) return defaultLanguage
+export const detectLanguage = (acceptLanguage: string | null) => {
+  if (!acceptLanguage) {
+    return defaultLanguage
+  }
 
   // Parse Accept-Language header (e.g., "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7")
   const languages = acceptLanguage
@@ -76,4 +78,3 @@ export const getI18nData = (request: Request) => {
     translations
   }
 }
-

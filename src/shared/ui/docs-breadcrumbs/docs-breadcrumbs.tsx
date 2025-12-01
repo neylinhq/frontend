@@ -1,5 +1,4 @@
 'use client'
-
 import { ChevronRight, Home } from 'lucide-react'
 import { Link, useMatches } from 'react-router'
 
@@ -16,7 +15,7 @@ interface DocsBreadcrumbsProps {
   className?: string
 }
 
-export function DocsBreadcrumbs({ items, className }: DocsBreadcrumbsProps) {
+export const DocsBreadcrumbs = ({ items, className }: DocsBreadcrumbsProps) => {
   const matches = useMatches()
 
   // Auto-generate breadcrumbs from route if items not provided
@@ -70,7 +69,7 @@ export function DocsBreadcrumbs({ items, className }: DocsBreadcrumbsProps) {
   )
 }
 
-function generateBreadcrumbs(matches: ReturnType<typeof useMatches>): BreadcrumbItem[] {
+const generateBreadcrumbs = (matches: ReturnType<typeof useMatches>) => {
   const breadcrumbs: BreadcrumbItem[] = []
 
   for (const match of matches) {

@@ -21,7 +21,7 @@ interface PreferencesFormProps {
   user: User
 }
 
-export function PreferencesForm({ user }: PreferencesFormProps) {
+export const PreferencesForm = ({ user }: PreferencesFormProps) => {
   const { t } = useTranslation()
   const updatePreferences = useUpdatePreferences()
 

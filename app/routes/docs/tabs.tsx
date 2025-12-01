@@ -12,7 +12,7 @@ export const handle = {
   breadcrumb: 'Tabs'
 }
 
-export function meta(_args: Route.MetaArgs) {
+export const meta = (_args: Route.MetaArgs) => {
   return getMeta('uiShowcase')
 }
 
@@ -22,7 +22,7 @@ const TOC_ITEMS: TocItem[] = [
   { id: 'api-reference', title: 'API Reference', level: 2 }
 ]
 
-export default function TabsPage() {
+const TabsPage = () => {
   return (
     <div className='flex gap-10'>
       <div className='flex-1 min-w-0 space-y-10'>
@@ -168,3 +168,5 @@ export function SettingsTabs() {
     </div>
   )
 }
+
+export default TabsPage

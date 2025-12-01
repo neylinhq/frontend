@@ -15,7 +15,9 @@ export const getNodeBorderColor = (type: NodeType): string => {
 }
 
 export const getComplexityColor = (complexity?: 'basic' | 'intermediate' | 'advanced'): string => {
-  if (!complexity) return ''
+  if (!complexity) {
+    return ''
+  }
 
   const colors = {
     basic: 'bg-slate-200 text-slate-800 dark:bg-slate-800 dark:text-slate-200',

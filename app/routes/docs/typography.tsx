@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/sha
 import { Typography } from '@/shared/ui/typography'
 import type { Route } from './+types/typography'
 
-export function meta(_args: Route.MetaArgs) {
+export const meta = (_args: Route.MetaArgs) => {
   return getMeta('docs')
 }
 
@@ -78,7 +78,7 @@ const TYPOGRAPHY_EXAMPLES = [
   }
 ]
 
-export default function TypographyPage() {
+const TypographyPage = () => {
   const { t } = useTranslation()
 
   return (
@@ -192,3 +192,5 @@ export default function TypographyPage() {
     </div>
   )
 }
+
+export default TypographyPage

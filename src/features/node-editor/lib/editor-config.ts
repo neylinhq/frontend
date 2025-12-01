@@ -1,11 +1,10 @@
 import { CodeNode } from '@lexical/code'
 import { LinkNode } from '@lexical/link'
 import { ListItemNode, ListNode } from '@lexical/list'
-import type { InitialConfigType } from '@lexical/react/LexicalComposer'
 import { HeadingNode, QuoteNode } from '@lexical/rich-text'
 import { editorTheme } from './editor-theme'
 
-export function createEditorConfig(namespace = 'NodeEditor', editable = true): InitialConfigType {
+export const createEditorConfig = (namespace = 'NodeEditor', editable = true) => {
   return {
     namespace,
     theme: editorTheme,

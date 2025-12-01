@@ -8,14 +8,13 @@ interface DashboardLayoutProps {
   children: React.ReactNode
 }
 
-export function DashboardLayout({ disableScroll = false, children }: DashboardLayoutProps) {
+export const DashboardLayout = ({ disableScroll = false, children }: DashboardLayoutProps) => {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false)
 
   return (
     <div className='h-screen flex flex-col overflow-hidden'>
       {/* Header */}
       <DashboardHeader />
-
       <div className='flex flex-1 min-h-0'>
         {/* Desktop Sidebar */}
         <aside

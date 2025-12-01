@@ -35,7 +35,7 @@ interface LogoProps extends VariantProps<typeof logoVariants> {
   href?: string | false
 }
 
-export function Logo({ size, className, showAlpha = false, href = '/' }: LogoProps) {
+export const Logo = ({ size, className, showAlpha = false, href = '/' }: LogoProps) => {
   const content = (
     <>
       <span className='logo-name font-semibold tracking-tight'>{APP_NAME}</span>

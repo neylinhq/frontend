@@ -1,4 +1,4 @@
-import { Focus, type LucideIcon, Network, Route } from 'lucide-react'
+import { Focus, Network, Route } from 'lucide-react'
 import type { RelationType } from '@/entities/edge'
 import type { NodeType } from '@/entities/node'
 import type { ViewMode } from './graph.store'

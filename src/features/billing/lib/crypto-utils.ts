@@ -6,7 +6,7 @@ import type { CryptoCurrency, CryptoNetwork } from '@/entities/subscription'
  * @param startChars - Number of characters to show at start (default: 6)
  * @param endChars - Number of characters to show at end (default: 4)
  */
-export function shortenWalletAddress(address: string, startChars = 6, endChars = 4): string {
+export const shortenWalletAddress = (address: string, startChars = 6, endChars = 4) => {
   if (address.length <= startChars + endChars + 3) {
     return address
   }
@@ -16,7 +16,7 @@ export function shortenWalletAddress(address: string, startChars = 6, endChars =
 /**
  * Get the network name for display
  */
-export function getNetworkDisplayName(network: CryptoNetwork): string {
+export const getNetworkDisplayName = (network: CryptoNetwork) => {
   const names: Record<CryptoNetwork, string> = {
     bitcoin: 'Bitcoin',
     ethereum: 'Ethereum',
@@ -29,7 +29,7 @@ export function getNetworkDisplayName(network: CryptoNetwork): string {
 /**
  * Get the currency display name
  */
-export function getCurrencyDisplayName(currency: CryptoCurrency): string {
+export const getCurrencyDisplayName = (currency: CryptoCurrency) => {
   const names: Record<CryptoCurrency, string> = {
     BTC: 'Bitcoin',
     ETH: 'Ethereum',
@@ -43,7 +43,7 @@ export function getCurrencyDisplayName(currency: CryptoCurrency): string {
 /**
  * Validate wallet address format based on network
  */
-export function isValidWalletAddress(address: string, network: CryptoNetwork): boolean {
+export const isValidWalletAddress = (address: string, network: CryptoNetwork) => {
   switch (network) {
     case 'ethereum':
     case 'tron':
@@ -67,7 +67,7 @@ export function isValidWalletAddress(address: string, network: CryptoNetwork): b
 /**
  * Copy text to clipboard
  */
-export async function copyToClipboard(text: string): Promise<boolean> {
+export const copyToClipboard = async (text: string) => {
   try {
     await navigator.clipboard.writeText(text)
     return true

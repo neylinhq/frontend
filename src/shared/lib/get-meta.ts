@@ -132,7 +132,7 @@ const META_TRANSLATIONS = {
 type MetaKey = keyof typeof META_TRANSLATIONS.ru
 type Language = keyof typeof META_TRANSLATIONS
 
-function getCurrentLanguage(): Language {
+const getCurrentLanguage = () => {
   // Проверяем localStorage (где i18next хранит язык)
   if (typeof window !== 'undefined') {
     const savedLang = localStorage.getItem('i18nextLng')
@@ -151,4 +151,3 @@ export const getMeta = (key: MetaKey) => {
 
   return [{ title: `${APP_NAME} — ${title}` }, { name: 'description', content: description }]
 }
-

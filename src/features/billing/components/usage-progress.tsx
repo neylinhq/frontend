@@ -8,11 +8,13 @@ interface UsageProgressProps {
   limits: PlanLimits
 }
 
-export function UsageProgress({ usage, limits }: UsageProgressProps) {
+export const UsageProgress = ({ usage, limits }: UsageProgressProps) => {
   const { t } = useTranslation()
 
   const calculatePercentage = (current: number, max: number | null) => {
-    if (max === null) return 0 // unlimited
+    if (max === null) {
+      return 0 // unlimited
+    }
     return Math.min((current / max) * 100, 100)
   }
 

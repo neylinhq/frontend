@@ -23,7 +23,7 @@ const activeSessions = [
   }
 ]
 
-export function ActiveSessions() {
+export const ActiveSessions = () => {
   const { t } = useTranslation()
 
   return (

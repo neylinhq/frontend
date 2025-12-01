@@ -7,14 +7,12 @@ import {
 } from '../theme.constants'
 import type { Mode, Palette, ThemeProviderState } from '../theme.types'
 
-// Helper to set cookie (1 year expiry)
-function setCookie(name: string, value: string) {
+const setCookie = (name: string, value: string) => {
   const maxAge = 60 * 60 * 24 * 365 // 1 year
   document.cookie = `${name}=${value}; path=/; max-age=${maxAge}; SameSite=Lax`
 }
 
-// Disable transitions during theme change to prevent flickering
-function withoutTransitions(callback: () => void) {
+const withoutTransitions = (callback: () => void) => {
   const root = document.documentElement
   root.classList.add('theme-transition-disabled')
   callback()
@@ -26,8 +24,7 @@ function withoutTransitions(callback: () => void) {
   })
 }
 
-// Resolve system preference to actual mode
-function resolveMode(mode: Mode): 'dark' | 'light' {
+const resolveMode = (mode: Mode) => {
   if (mode === 'system') {
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
   }
@@ -98,7 +95,9 @@ export const ThemeProvider = ({
 
   // Listen to system preference changes
   useLayoutEffect(() => {
-    if (mode !== 'system') return
+    if (mode !== 'system') {
+      return
+    }
 
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
     const handleChange = () => {
@@ -143,7 +142,9 @@ export const ThemeProvider = ({
 export const useTheme = () => {
   const context = useContext(ThemeProviderContext)
 
-  if (context === undefined) throw new Error('useTheme must be used within a ThemeProvider')
+  if (context === undefined) {
+    throw new Error('useTheme must be used within a ThemeProvider')
+  }
 
   return context
 }

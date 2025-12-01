@@ -20,7 +20,7 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
 import { Typography } from '@/shared/ui/typography'
 
-export async function loader() {
+export const loader = async () => {
   const [paymentMethods, paymentHistory] = await Promise.all([
     subscriptionApi.getPaymentMethods(),
     subscriptionApi.getPaymentHistory()
@@ -33,7 +33,7 @@ interface LoaderData {
   paymentHistory: PaymentHistory[]
 }
 
-export default function BillingPage() {
+const BillingPage = () => {
   const { t } = useTranslation()
   const { paymentMethods, paymentHistory } = useLoaderData() as LoaderData
 
@@ -125,3 +125,5 @@ export default function BillingPage() {
     </div>
   )
 }
+
+export default BillingPage

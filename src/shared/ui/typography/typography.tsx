@@ -42,7 +42,9 @@ const Typography = React.forwardRef<HTMLElement, TypographyProps>(
   ({ className, variant, asChild = false, as, ...props }, ref) => {
     // Определяем дефолтный HTML элемент на основе variant
     const getDefaultElement = (): React.ElementType => {
-      if (as) return as
+      if (as) {
+        return as
+      }
       switch (variant) {
         case 'h1':
         case 'h2':
@@ -72,13 +74,7 @@ const Typography = React.forwardRef<HTMLElement, TypographyProps>(
 
     const Comp = asChild ? Slot : getDefaultElement()
 
-    return (
-      <Comp
-        className={cn(typographyVariants({ variant, className }))}
-        ref={ref}
-        {...props}
-      />
-    )
+    return <Comp className={cn(typographyVariants({ variant, className }))} ref={ref} {...props} />
   }
 )
 Typography.displayName = 'Typography'

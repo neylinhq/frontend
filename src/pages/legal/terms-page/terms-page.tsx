@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { LegalLayout } from '@/shared/ui/legal-layout'
 import { Typography } from '@/shared/ui/typography'
 
-export function TermsPage() {
+export const TermsPage = () => {
   const { t } = useTranslation()
 
   return (

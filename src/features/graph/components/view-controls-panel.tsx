@@ -9,12 +9,12 @@ import {
 } from 'lucide-react'
 import { memo, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useGraphUI, useNodeSpacing } from '../model/graph.store'
 import { cn } from '@/shared/lib/cn'
 import { Button } from '@/shared/ui/button'
 import { Card } from '@/shared/ui/card'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/shared/ui/dropdown-menu'
 import { Slider } from '@/shared/ui/slider'
+import { useGraphUI, useNodeSpacing } from '../model/graph.store'
 
 interface ViewControlsPanelProps {
   zoom: number

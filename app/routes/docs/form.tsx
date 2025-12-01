@@ -16,11 +16,11 @@ export const handle = {
   breadcrumb: 'Form'
 }
 
-export function meta(_args: Route.MetaArgs) {
+export const meta = (_args: Route.MetaArgs) => {
   return getMeta('uiShowcase')
 }
 
-export default function FormPage() {
+const FormPage = () => {
   const { t } = useTranslation()
 
   const TOC_ITEMS: TocItem[] = [
@@ -209,3 +209,5 @@ export function LoginForm() {
     </div>
   )
 }
+
+export default FormPage

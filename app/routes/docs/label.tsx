@@ -14,7 +14,7 @@ export const handle = {
   breadcrumb: 'Label'
 }
 
-export function meta(_args: Route.MetaArgs) {
+export const meta = (_args: Route.MetaArgs) => {
   return getMeta('uiShowcase')
 }
 
@@ -25,7 +25,7 @@ const TOC_ITEMS: TocItem[] = [
   { id: 'usage', title: 'Usage', level: 2 }
 ]
 
-export default function LabelPage() {
+const LabelPage = () => {
   return (
     <div className='flex gap-10'>
       <div className='flex-1 min-w-0 space-y-10'>
@@ -107,3 +107,5 @@ export function FormField() {
     </div>
   )
 }
+
+export default LabelPage

@@ -4,14 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import type { RelationType } from '@/entities/edge'
 import type { NodeType } from '@/entities/node'
-import {
-  ALL_EDGE_TYPES,
-  ALL_NODE_TYPES,
-  useFilters,
-  useFocusMode,
-  useViewMode,
-  type ViewMode
-} from '../model/graph.store'
 import { cn } from '@/shared/lib/cn'
 import { Badge } from '@/shared/ui/badge'
 import { Button } from '@/shared/ui/button'
@@ -24,6 +16,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/shared/ui/dropdown-menu'
+import {
+  ALL_EDGE_TYPES,
+  ALL_NODE_TYPES,
+  useFilters,
+  useFocusMode,
+  useViewMode,
+  type ViewMode
+} from '../model/graph.store'
 import {
   EDGE_TYPE_LABELS,
   NODE_TYPE_LABELS,

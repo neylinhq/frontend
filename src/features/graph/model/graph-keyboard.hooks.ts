@@ -145,7 +145,9 @@ export const useGraphKeyboard = ({
   )
 
   useEffect(() => {
-    if (!enabled) return
+    if (!enabled) {
+      return
+    }
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
@@ -165,4 +167,3 @@ export const useGraphKeyboard = ({
     ]
   }
 }
-

@@ -4,12 +4,12 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import type { Edge, Node } from '@/entities/map'
 import { getNodeIcon } from '@/entities/node'
-import { useFocusMode } from '@/features/graph'
 import { NodeConnectionsPanel } from '@/features/node-connections-panel'
 import { cn } from '@/shared/lib/cn'
 import { Button } from '@/shared/ui/button'
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/shared/ui/drawer'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/tabs'
+import { useFocusMode } from '../model/graph.store'
 import { useDrawerTabs } from '../model/drawer-tabs.hooks'
 import { DrawerOverviewTab } from './drawer-overview-tab'
 
@@ -41,7 +41,9 @@ export const NodeDrawer = memo(
       return () => window.removeEventListener('resize', checkMobile)
     }, [])
 
-    if (!node) return null
+    if (!node) {
+      return null
+    }
 
     const Icon = getNodeIcon(node.type)
     const isFocused = focusedNodeId === node.id

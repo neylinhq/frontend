@@ -8,7 +8,7 @@ interface PricingPageProps {
   plans: PlanDetails[]
 }
 
-export function PricingPage({ plans }: PricingPageProps) {
+export const PricingPage = ({ plans }: PricingPageProps) => {
   const { t } = useTranslation()
 
   return (

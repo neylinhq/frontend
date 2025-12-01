@@ -22,7 +22,7 @@ import {
 import { useCallback, useEffect, useState } from 'react'
 import { Button } from '@/shared/ui/button'
 
-export function EditorToolbar() {
+export const EditorToolbar = () => {
   const [editor] = useLexicalComposerContext()
   const [isBold, setIsBold] = useState(false)
   const [isItalic, setIsItalic] = useState(false)

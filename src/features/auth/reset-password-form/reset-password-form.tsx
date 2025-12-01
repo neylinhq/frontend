@@ -9,7 +9,7 @@ import { Button } from '@/shared/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/ui/form'
 import { Input } from '@/shared/ui/input'
 
-export function ResetPasswordForm() {
+export const ResetPasswordForm = () => {
   const { t } = useTranslation()
   const navigation = useNavigation()
   const actionData = useActionData<{ success?: boolean }>()

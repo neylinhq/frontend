@@ -6,10 +6,12 @@ export const handle = {
   centered: true
 }
 
-export function meta() {
+export const meta = () => {
   return getMeta('notFound')
 }
 
-export default function NotFoundRoute() {
+const NotFoundRoute = () => {
   return <NotFoundPage />
 }
+
+export default NotFoundRoute

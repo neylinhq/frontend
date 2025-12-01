@@ -28,7 +28,7 @@ export interface InternalLayoutOptions {
  * Linear/tree layout based on prerequisite edges
  * Used in Path mode
  */
-export function pathLayout(
+export const pathLayout = (
   nodes: Node[],
   edges: Edge[],
   options: InternalLayoutOptions,
@@ -37,7 +37,7 @@ export function pathLayout(
     edges: Edge[],
     options: InternalLayoutOptions
   ) => { nodes: Node[]; edges: Edge[] }
-): { nodes: Node[]; edges: Edge[] } {
+) => {
   const { nodeSpacing, levelSpacing } = options
 
   // Filter to only prerequisite edges
@@ -76,7 +76,9 @@ export function pathLayout(
 
   while (queue.length > 0) {
     const nodeId = queue.shift()
-    if (!nodeId) continue
+    if (!nodeId) {
+      continue
+    }
     const currentLevel = levels.get(nodeId) ?? 0
 
     outgoing.get(nodeId)?.forEach(targetId => {
@@ -91,7 +93,9 @@ export function pathLayout(
   // Handle nodes not in prerequisite chain
   let maxLevel = 0
   levels.forEach(l => {
-    if (l > maxLevel) maxLevel = l
+    if (l > maxLevel) {
+      maxLevel = l
+    }
   })
   nodes.forEach(n => {
     if (!levels.has(n.id)) {
@@ -102,7 +106,9 @@ export function pathLayout(
   // Group by level
   const levelGroups = new Map<number, string[]>()
   levels.forEach((level, nodeId) => {
-    if (!levelGroups.has(level)) levelGroups.set(level, [])
+    if (!levelGroups.has(level)) {
+      levelGroups.set(level, [])
+    }
     levelGroups.get(level)?.push(nodeId)
   })
 
@@ -128,19 +134,19 @@ export function pathLayout(
 /**
  * Get connected nodes within N levels from start node
  */
-export function getNodesWithinDepth(
-  startNodeId: string,
-  edges: Edge[],
-  depth: number
-): Set<string> {
+export const getNodesWithinDepth = (startNodeId: string, edges: Edge[], depth: number) => {
   const connected = new Set<string>([startNodeId])
 
   // Build adjacency
   const adjacency = new Map<string, Set<string>>()
 
   edges.forEach(e => {
-    if (!adjacency.has(e.source)) adjacency.set(e.source, new Set())
-    if (!adjacency.has(e.target)) adjacency.set(e.target, new Set())
+    if (!adjacency.has(e.source)) {
+      adjacency.set(e.source, new Set())
+    }
+    if (!adjacency.has(e.target)) {
+      adjacency.set(e.target, new Set())
+    }
     adjacency.get(e.source)?.add(e.target)
     adjacency.get(e.target)?.add(e.source)
   })
@@ -168,6 +174,6 @@ export function getNodesWithinDepth(
 /**
  * Get edges between a set of nodes
  */
-export function getEdgesBetweenNodes(edges: Edge[], nodeIds: Set<string>): Edge[] {
+export const getEdgesBetweenNodes = (edges: Edge[], nodeIds: Set<string>) => {
   return edges.filter(e => nodeIds.has(e.source) && nodeIds.has(e.target))
 }

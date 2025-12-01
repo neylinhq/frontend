@@ -11,7 +11,7 @@ interface NodeTagsInputProps {
   onChange: (tags: string[]) => void
 }
 
-export function NodeTagsInput({ value, onChange }: NodeTagsInputProps) {
+export const NodeTagsInput = ({ value, onChange }: NodeTagsInputProps) => {
   const { t } = useTranslation()
   const [inputValue, setInputValue] = useState('')
 

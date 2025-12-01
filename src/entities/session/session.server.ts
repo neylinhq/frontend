@@ -11,11 +11,11 @@ export const sessionCookie = createCookie('arbor_session', {
   maxAge: 60 * 60 * 24 * 30 // 30 days
 })
 
-function isValidSession(value: unknown): value is SessionData {
+const isValidSession = (value: unknown) => {
   return typeof value === 'object' && value !== null && 'user' in value && 'token' in value
 }
 
-export async function getSession(request: Request): Promise<SessionData | null> {
+export const getSession = async (request: Request) => {
   const cookieHeader = request.headers.get('Cookie')
   const session = await sessionCookie.parse(cookieHeader)
 
@@ -33,4 +33,3 @@ export const commitSession = async (session: SessionData) => {
 export const destroySession = async () => {
   return await sessionCookie.serialize('', { maxAge: 0 }) // удаляем
 }
-

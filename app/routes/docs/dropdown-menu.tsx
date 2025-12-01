@@ -20,7 +20,7 @@ export const handle = {
   breadcrumb: 'Dropdown Menu'
 }
 
-export function meta(_args: Route.MetaArgs) {
+export const meta = (_args: Route.MetaArgs) => {
   return getMeta('uiShowcase')
 }
 
@@ -30,7 +30,7 @@ const TOC_ITEMS: TocItem[] = [
   { id: 'api-reference', title: 'API Reference', level: 2 }
 ]
 
-export default function DropdownMenuPage() {
+const DropdownMenuPage = () => {
   return (
     <div className='flex gap-10'>
       <div className='flex-1 min-w-0 space-y-10'>
@@ -172,3 +172,5 @@ export function UserMenu() {
     </div>
   )
 }
+
+export default DropdownMenuPage

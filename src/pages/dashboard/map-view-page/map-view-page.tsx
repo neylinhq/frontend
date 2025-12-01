@@ -6,7 +6,7 @@ interface MapViewPageProps {
   mapId: string
 }
 
-export function MapViewPage({ map, mapId }: MapViewPageProps) {
+export const MapViewPage = ({ map, mapId }: MapViewPageProps) => {
   return (
     <div className='h-[calc(100vh-3.5rem)] p-2 md:p-4'>
       <GraphVisualization

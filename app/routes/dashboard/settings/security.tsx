@@ -9,7 +9,7 @@ import {
 import { Typography } from '@/shared/ui/typography'
 import type { SettingsContext } from './layout'
 
-export default function SecurityPage() {
+const SecurityPage = () => {
   const { t } = useTranslation()
   const { user } = useOutletContext<SettingsContext>()
 
@@ -27,3 +27,5 @@ export default function SecurityPage() {
     </div>
   )
 }
+
+export default SecurityPage

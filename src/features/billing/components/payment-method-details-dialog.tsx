@@ -38,7 +38,7 @@ interface PaymentMethodDetailsDialogProps {
   updateLoading?: boolean
 }
 
-export function PaymentMethodDetailsDialog({
+export const PaymentMethodDetailsDialog = ({
   method,
   open,
   onOpenChange,
@@ -47,7 +47,7 @@ export function PaymentMethodDetailsDialog({
   onUpdate,
   loading,
   updateLoading
-}: PaymentMethodDetailsDialogProps) {
+}: PaymentMethodDetailsDialogProps) => {
   const { t } = useTranslation()
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
@@ -67,16 +67,24 @@ export function PaymentMethodDetailsDialog({
     }
   }, [method, open])
 
-  if (!method) return null
+  if (!method) {
+    return null
+  }
 
   const formatExpiry = () => {
-    if (method.type !== 'card') return null
-    if (!method.expiryMonth || !method.expiryYear) return null
+    if (method.type !== 'card') {
+      return null
+    }
+    if (!method.expiryMonth || !method.expiryYear) {
+      return null
+    }
     return `${method.expiryMonth.toString().padStart(2, '0')}/${method.expiryYear.toString().slice(-2)}`
   }
 
   const formatDate = (dateString?: string) => {
-    if (!dateString) return null
+    if (!dateString) {
+      return null
+    }
     return new Date(dateString).toLocaleDateString(undefined, {
       year: 'numeric',
       month: 'short',
@@ -95,7 +103,9 @@ export function PaymentMethodDetailsDialog({
   }
 
   const handleCopyAddress = async () => {
-    if (method.type !== 'crypto') return
+    if (method.type !== 'crypto') {
+      return
+    }
     const success = await copyToClipboard(method.walletAddress)
     if (success) {
       toast.success(t('billing.addressCopied'))
@@ -116,7 +126,9 @@ export function PaymentMethodDetailsDialog({
   }
 
   const handleSaveEdit = () => {
-    if (!onUpdate || method.type !== 'crypto') return
+    if (!onUpdate || method.type !== 'crypto') {
+      return
+    }
 
     // Validate wallet address
     if (!isValidWalletAddress(editWalletAddress, method.network)) {
@@ -156,7 +168,9 @@ export function PaymentMethodDetailsDialog({
   }
 
   const renderCardDetails = () => {
-    if (method.type !== 'card') return null
+    if (method.type !== 'card') {
+      return null
+    }
 
     // Cards are view-only (no edit mode)
     return (
@@ -189,7 +203,9 @@ export function PaymentMethodDetailsDialog({
   }
 
   const renderCryptoDetails = () => {
-    if (method.type !== 'crypto') return null
+    if (method.type !== 'crypto') {
+      return null
+    }
 
     if (isEditing) {
       return (

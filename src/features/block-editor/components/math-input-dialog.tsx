@@ -13,8 +13,7 @@ import {
   DialogTitle
 } from '@/shared/ui/dialog'
 
-// Helper to escape HTML entities for safe rendering
-function escapeHtml(text: string): string {
+const escapeHtml = (text: string) => {
   return text
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -210,13 +209,13 @@ const CATEGORY_LABELS: Record<string, string> = {
   misc: 'editor.math.categories.misc'
 }
 
-export function MathInputDialog({
+export const MathInputDialog = ({
   isOpen,
   onClose,
   onSubmit,
   initialValue = '',
   mode = 'block'
-}: MathInputDialogProps) {
+}: MathInputDialogProps) => {
   const { t } = useTranslation()
   const [latex, setLatex] = useState(initialValue)
   const [error, setError] = useState<string | null>(null)
@@ -228,8 +227,12 @@ export function MathInputDialog({
   // Cleanup timeouts on unmount
   useEffect(() => {
     return () => {
-      if (focusTimeoutRef.current) clearTimeout(focusTimeoutRef.current)
-      if (insertTimeoutRef.current) clearTimeout(insertTimeoutRef.current)
+      if (focusTimeoutRef.current) {
+        clearTimeout(focusTimeoutRef.current)
+      }
+      if (insertTimeoutRef.current) {
+        clearTimeout(insertTimeoutRef.current)
+      }
     }
   }, [])
 
@@ -239,11 +242,15 @@ export function MathInputDialog({
       setLatex(initialValue)
       setError(null)
       // Focus input after a small delay to ensure dialog is rendered
-      if (focusTimeoutRef.current) clearTimeout(focusTimeoutRef.current)
+      if (focusTimeoutRef.current) {
+        clearTimeout(focusTimeoutRef.current)
+      }
       focusTimeoutRef.current = window.setTimeout(() => inputRef.current?.focus(), 100)
     }
     return () => {
-      if (focusTimeoutRef.current) clearTimeout(focusTimeoutRef.current)
+      if (focusTimeoutRef.current) {
+        clearTimeout(focusTimeoutRef.current)
+      }
     }
   }, [isOpen, initialValue])
 
@@ -255,7 +262,9 @@ export function MathInputDialog({
       if (previewRef.current && isMounted) {
         previewRef.current.innerHTML = `<span class="text-muted-foreground text-sm">${t('editor.math.previewPlaceholder')}</span>`
       }
-      if (isMounted) setError(null)
+      if (isMounted) {
+        setError(null)
+      }
       return () => {
         isMounted = false
       }
@@ -267,7 +276,9 @@ export function MathInputDialog({
         throwOnError: true,
         errorColor: '#ef4444'
       })
-      if (isMounted) setError(null)
+      if (isMounted) {
+        setError(null)
+      }
     } catch (err) {
       if (isMounted && err instanceof Error) {
         setError(err.message)
@@ -284,8 +295,12 @@ export function MathInputDialog({
   }, [latex, mode, t])
 
   const handleSubmit = useCallback(() => {
-    if (!latex.trim()) return
-    if (error) return
+    if (!latex.trim()) {
+      return
+    }
+    if (error) {
+      return
+    }
     onSubmit(latex)
     onClose()
   }, [latex, error, onSubmit, onClose])
@@ -303,14 +318,18 @@ export function MathInputDialog({
   const insertSymbol = useCallback((value: string) => {
     setLatex(prev => {
       const textarea = inputRef.current
-      if (!textarea) return prev + value
+      if (!textarea) {
+        return prev + value
+      }
 
       const start = textarea.selectionStart
       const end = textarea.selectionEnd
       const newValue = prev.substring(0, start) + value + prev.substring(end)
 
       // Set cursor position after inserted text (tracked for cleanup)
-      if (insertTimeoutRef.current) clearTimeout(insertTimeoutRef.current)
+      if (insertTimeoutRef.current) {
+        clearTimeout(insertTimeoutRef.current)
+      }
       insertTimeoutRef.current = window.setTimeout(() => {
         if (inputRef.current) {
           inputRef.current.selectionStart = inputRef.current.selectionEnd = start + value.length

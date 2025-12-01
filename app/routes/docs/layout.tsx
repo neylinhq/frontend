@@ -9,7 +9,7 @@ export const handle = {
   bypassPublicLayout: true
 }
 
-export default function UiLayout() {
+const UiLayout = () => {
   const { t } = useTranslation()
 
   // Navigation structure with icons
@@ -66,3 +66,5 @@ export default function UiLayout() {
     </DocsLayout>
   )
 }
+
+export default UiLayout

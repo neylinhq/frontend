@@ -1,4 +1,4 @@
-import type { EditorState, LexicalEditor } from 'lexical'
+import type { LexicalEditor } from 'lexical'
 
 export interface NodeEditorProps {
   mapId: string

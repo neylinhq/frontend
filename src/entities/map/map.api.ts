@@ -54,7 +54,9 @@ export const mapApi = {
     const nodesToDelete = ALL_NODES.filter(n => n.mapId === id)
     nodesToDelete.forEach(node => {
       const nodeIndex = ALL_NODES.findIndex(n => n.id === node.id)
-      if (nodeIndex !== -1) ALL_NODES.splice(nodeIndex, 1)
+      if (nodeIndex !== -1) {
+        ALL_NODES.splice(nodeIndex, 1)
+      }
     })
     const edgesToDelete = ALL_EDGES.filter(e => {
       const sourceNode = ALL_NODES.find(n => n.id === e.sourceNodeId)
@@ -62,7 +64,9 @@ export const mapApi = {
     })
     edgesToDelete.forEach(edge => {
       const edgeIndex = ALL_EDGES.findIndex(e => e.id === edge.id)
-      if (edgeIndex !== -1) ALL_EDGES.splice(edgeIndex, 1)
+      if (edgeIndex !== -1) {
+        ALL_EDGES.splice(edgeIndex, 1)
+      }
     })
   },
 
@@ -170,7 +174,9 @@ export const mapApi = {
       const edgesToDelete = ALL_EDGES.filter(e => e.sourceNodeId === id || e.targetNodeId === id)
       edgesToDelete.forEach(edge => {
         const edgeIndex = ALL_EDGES.findIndex(e => e.id === edge.id)
-        if (edgeIndex !== -1) ALL_EDGES.splice(edgeIndex, 1)
+        if (edgeIndex !== -1) {
+          ALL_EDGES.splice(edgeIndex, 1)
+        }
       })
     }
   },
@@ -235,7 +241,9 @@ export const mapApi = {
     await delay(API_DELAYS.MAP_GET_FULL_MAP)
 
     const map = await mapApi.getMapById(mapId)
-    if (!map) return null
+    if (!map) {
+      return null
+    }
 
     const nodes = includeContent
       ? await Promise.all(

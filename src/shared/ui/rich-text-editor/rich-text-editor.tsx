@@ -17,7 +17,7 @@ const editorTheme = {
   }
 }
 
-function Placeholder({ text }: { text: string }) {
+const Placeholder = ({ text }: { text: string }) => {
   return (
     <div className='pointer-events-none absolute left-3 top-3 text-sm text-muted-foreground'>
       {text}
@@ -25,13 +25,13 @@ function Placeholder({ text }: { text: string }) {
   )
 }
 
-export function RichTextEditor({
+export const RichTextEditor = ({
   value,
   onChange,
   placeholder = 'Start typing...',
   editable = true,
   className
-}: RichTextEditorProps) {
+}: RichTextEditorProps) => {
   const initialConfig = {
     namespace: 'RichTextEditor',
     theme: editorTheme,
@@ -42,7 +42,9 @@ export function RichTextEditor({
   }
 
   const handleChange = (editorState: EditorState) => {
-    if (!onChange) return
+    if (!onChange) {
+      return
+    }
 
     editorState.read(() => {
       const json = JSON.stringify(editorState.toJSON())

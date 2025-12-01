@@ -3,7 +3,6 @@ import { Link, useFetcher } from 'react-router'
 import { ModeSelect } from '@/app/theme/components/mode-select'
 import { PaletteSelect } from '@/app/theme/components/palette-select'
 import { useSessionStore } from '@/entities/session'
-import { LanguageSelect } from '@/shared/ui/language-switcher'
 import { getShortcut } from '@/shared/lib/platform'
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar'
 import { Button } from '@/shared/ui/button'
@@ -17,14 +16,17 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger
 } from '@/shared/ui/dropdown-menu'
+import { LanguageSelect } from '@/shared/ui/language-switcher'
 import { USER_NAV_LOGOUT_ITEM, USER_NAV_MAIN_SECTION } from './user-nav.constants'
 
-export function UserNav() {
+export const UserNav = () => {
   const { user } = useSessionStore()
   const fetcher = useFetcher()
   const { t } = useTranslation()
 
-  if (!user) return null
+  if (!user) {
+    return null
+  }
 
   const handleLogout = () => {
     fetcher.submit(null, { method: 'post', action: '/auth/logout' })

@@ -13,7 +13,7 @@ interface EmailChangeFormProps {
   currentEmail: string
 }
 
-export function EmailChangeForm({ currentEmail }: EmailChangeFormProps) {
+export const EmailChangeForm = ({ currentEmail }: EmailChangeFormProps) => {
   const { t } = useTranslation()
   const changeEmail = useChangeEmail()
 

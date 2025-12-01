@@ -15,8 +15,8 @@ import { ThemeProvider } from '@/app/theme'
 import '@/shared/styles/globals.css'
 import type React from 'react'
 import { useEffect, useRef } from 'react'
-import { type I18nInitData, initI18n } from '@/shared/config/i18n'
 import { MODE_COOKIE_KEY, PALETTE_COOKIE_KEY } from '@/app/theme/theme.constants'
+import { type I18nInitData, initI18n } from '@/shared/config/i18n'
 import type { Route } from './+types/root'
 
 export const links: Route.LinksFunction = () => [
@@ -29,7 +29,7 @@ export const links: Route.LinksFunction = () => [
   }
 ]
 
-export async function loader({ request }: Route.LoaderArgs) {
+export const loader = async ({ request }: Route.LoaderArgs) => {
   // Dynamic imports to avoid bundling Node.js modules for client
   const { getI18nData } = await import('@/shared/config/i18n/i18n.server')
   const { getThemeData } = await import('@/app/theme/theme.server')
@@ -40,7 +40,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   return { i18n: i18nData, theme: themeData }
 }
 
-export function Layout({ children }: { children: React.ReactNode }) {
+export const Layout = ({ children }: { children: React.ReactNode }) => {
   // SSR Theme Injection: получаем тему из loader для применения на сервере
   // Используем inference от loader через 'root' route ID
   const data = useRouteLoaderData<typeof loader>('root')
@@ -163,7 +163,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   )
 }
 
-export default function App() {
+const App = () => {
   const { i18n: i18nData, theme: themeData } = useLoaderData<typeof loader>()
   const initializedRef = useRef(false)
   const navigation = useNavigation()
@@ -202,7 +202,7 @@ export default function App() {
   )
 }
 
-export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+export const ErrorBoundary = ({ error }: Route.ErrorBoundaryProps) => {
   let message = 'Oops!'
   let details = 'An unexpected error occurred.'
   let stack: string | undefined
@@ -228,3 +228,5 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
     </main>
   )
 }
+
+export default App

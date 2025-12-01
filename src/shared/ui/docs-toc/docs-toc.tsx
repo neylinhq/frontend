@@ -14,7 +14,7 @@ interface DocsTocProps {
   className?: string
 }
 
-export function DocsToc({ items, className }: DocsTocProps) {
+export const DocsToc = ({ items, className }: DocsTocProps) => {
   const { t } = useTranslation()
   const activeId = useActiveHeading(items.map(item => item.id))
 

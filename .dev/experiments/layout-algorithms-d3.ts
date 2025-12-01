@@ -76,7 +76,7 @@ interface NodeMetrics {
 /**
  * Apply layout based on view mode (D3-Force implementation)
  */
-export function applyLayout(nodes: Node[], edges: Edge[], options: LayoutOptions): LayoutResult {
+export const applyLayout = (nodes: Node[], edges: Edge[], options: LayoutOptions) => {
   const { viewMode, spacingPercent = 100, directionStrength = 100 } = options
 
   if (nodes.length === 0) return { nodes, edges }
@@ -92,17 +92,14 @@ export function applyLayout(nodes: Node[], edges: Edge[], options: LayoutOptions
     default:
       return forceDirectedLayout(nodes, edges, { spacingPercent, directionStrength })
   }
-}
+};
 
 interface InternalOptions {
   spacingPercent: number
   directionStrength: number
 }
 
-/**
- * Compute metrics for each node (degree, leaf/hub status, horizontal bias)
- */
-function computeNodeMetrics(nodes: D3Node[], links: D3Link[]): Map<string, NodeMetrics> {
+const computeNodeMetrics = (nodes: D3Node[], links: D3Link[]) => {
   const metrics = new Map<string, NodeMetrics>()
 
   // Initialize all nodes
@@ -144,37 +141,22 @@ function computeNodeMetrics(nodes: D3Node[], links: D3Link[]): Map<string, NodeM
   }
 
   return metrics
-}
+};
 
-/**
- * Generate deterministic -1 or 1 based on string hash
- */
-function hashToSide(str: string): number {
+const hashToSide = (str: string) => {
   let hash = 0
   for (let i = 0; i < str.length; i++) {
     hash = (hash << 5) - hash + str.charCodeAt(i)
     hash = hash & hash
   }
   return hash % 2 === 0 ? -1 : 1
-}
+};
 
-/**
- * Custom D3 force: Edge-based vertical positioning
- * Source nodes are pushed UP, target nodes are pushed DOWN
- * This creates natural hierarchy based on edge directions
- *
- * Note: D3 accumulates velocities differently than original algorithm.
- * Original resets velocities each iteration; D3 uses velocity decay (0.4 default).
- * Multipliers are scaled down to compensate: ~0.15 instead of 1.2
- */
-function forceEdgeDirection(
-  links: D3Link[],
-  options: { strength: number; idealDistance: number }
-): Force<D3Node, D3Link> {
+const forceEdgeDirection = (links: D3Link[], options: { strength: number; idealDistance: number }) => {
   const { idealDistance } = options
   let strength = options.strength
 
-  function force(alpha: number) {
+  const force = (alpha: number) => {
     if (strength <= 0) return
 
     for (const link of links) {
@@ -208,21 +190,19 @@ function forceEdgeDirection(
         }
       }
     }
-  }
+  };
+
   // D3 force interface - strength getter/setter
   ;(force as any).strength = (s?: number) => {
-    if (s === undefined) return strength
-    strength = s
-    return force
-  }
+      if (s === undefined) return strength
+      strength = s
+      return force
+    }
 
   return force as Force<D3Node, D3Link>
-}
+};
 
-/**
- * Check if two line segments intersect
- */
-function segmentsIntersect(
+const segmentsIntersect = (
   x1: number,
   y1: number,
   x2: number,
@@ -231,7 +211,7 @@ function segmentsIntersect(
   y3: number,
   x4: number,
   y4: number
-): boolean {
+) => {
   const denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
   if (Math.abs(denom) < 1e-10) return false
 
@@ -239,17 +219,12 @@ function segmentsIntersect(
   const u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / denom
 
   return t > 0.01 && t < 0.99 && u > 0.01 && u < 0.99
-}
+};
 
-/**
- * Custom D3 force: Edge crossing minimization
- * Detects edge crossings and applies forces to uncross them
- * Complexity: O(m²) where m = number of edges
- */
-function forceEdgeCrossing(links: D3Link[], options: { strength: number }): Force<D3Node, D3Link> {
+const forceEdgeCrossing = (links: D3Link[], options: { strength: number }) => {
   let strength = options.strength
 
-  function force(alpha: number) {
+  const force = (alpha: number) => {
     if (strength <= 0 || links.length < 2) return
 
     // Check all pairs of edges for crossings
@@ -307,32 +282,18 @@ function forceEdgeCrossing(links: D3Link[], options: { strength: number }): Forc
         }
       }
     }
-  }
+  };
 
-  ;(force as any).strength = (s?: number) => {
-    if (s === undefined) return strength
-    strength = s
-    return force
-  }
+  (force as any).strength = (s?: number) => {
+      if (s === undefined) return strength
+      strength = s
+      return force
+    }
 
   return force as Force<D3Node, D3Link>
-}
+};
 
-/**
- * Force-directed layout using d3-force with Barnes-Hut optimization
- * Complexity: O(n log n) instead of O(n²)
- *
- * Parameters tuned to match original layout-algorithms.ts:
- * - idealDistance = nodeSpacing * 1.5 = 200 * 1.5 * spacingFactor = 300 * spacingFactor
- * - Repulsion force ~= idealDistance² / dist (approximated by D3 charge)
- * - Attraction force = dist² / idealDistance * weight
- * - Center gravity = 0.01
- *
- * Adaptive behavior based on directionStrength:
- * - direction=0: maximize spread, minimize crossings, no hierarchy
- * - direction=200: maximize flow (source→target top-to-bottom)
- */
-function forceDirectedLayout(nodes: Node[], edges: Edge[], options: InternalOptions): LayoutResult {
+const forceDirectedLayout = (nodes: Node[], edges: Edge[], options: InternalOptions) => {
   const { spacingPercent, directionStrength } = options
 
   // Match original algorithm: nodeSpacing = 200 * factor, idealDistance = nodeSpacing * 1.5 = 300 * factor
@@ -469,13 +430,9 @@ function forceDirectedLayout(nodes: Node[], edges: Edge[], options: InternalOpti
   }))
 
   return { nodes: positionedNodes, edges }
-}
+};
 
-/**
- * Linear/tree layout based on prerequisite edges
- * Used in Path mode (same as original implementation)
- */
-function pathLayout(nodes: Node[], edges: Edge[], options: InternalOptions): LayoutResult {
+const pathLayout = (nodes: Node[], edges: Edge[], options: InternalOptions) => {
   const { spacingPercent } = options
   const nodeSpacing = 200 * (spacingPercent / 100)
   const levelSpacing = 300 * (spacingPercent / 100)
@@ -564,16 +521,12 @@ function pathLayout(nodes: Node[], edges: Edge[], options: InternalOptions): Lay
   })
 
   return { nodes: positionedNodes, edges }
-}
+};
 
 /**
  * Get connected nodes within N levels from start node
  */
-export function getNodesWithinDepth(
-  startNodeId: string,
-  edges: Edge[],
-  depth: number
-): Set<string> {
+export const getNodesWithinDepth = (startNodeId: string, edges: Edge[], depth: number) => {
   const connected = new Set<string>([startNodeId])
 
   // Build adjacency
@@ -604,11 +557,11 @@ export function getNodesWithinDepth(
   }
 
   return connected
-}
+};
 
 /**
  * Get edges between a set of nodes
  */
-export function getEdgesBetweenNodes(edges: Edge[], nodeIds: Set<string>): Edge[] {
+export const getEdgesBetweenNodes = (edges: Edge[], nodeIds: Set<string>) => {
   return edges.filter(e => nodeIds.has(e.source) && nodeIds.has(e.target))
-}
+};

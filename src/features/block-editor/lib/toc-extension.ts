@@ -20,8 +20,7 @@ declare module '@tiptap/core' {
   }
 }
 
-// Generate a slug from text
-function slugify(text: string): string {
+const slugify = (text: string) => {
   const slug = text
     .toLowerCase()
     .replace(/[^\w\s-]/g, '')
@@ -32,8 +31,7 @@ function slugify(text: string): string {
   return slug || 'heading'
 }
 
-// FIX: Generate unique heading ID using position to prevent collisions
-function generateHeadingId(text: string, pos: number): string {
+const generateHeadingId = (text: string, pos: number) => {
   return `${slugify(text)}-${pos}`
 }
 
@@ -92,10 +90,14 @@ export const TableOfContents = Node.create<TableOfContentsOptions>({
           // Use event delegation to avoid memory leaks
           const handleTocClick = (e: Event) => {
             const target = e.target as HTMLElement
-            if (target.tagName !== 'A') return
+            if (target.tagName !== 'A') {
+              return
+            }
 
             const headingId = target.getAttribute('data-heading-id')
-            if (!headingId) return
+            if (!headingId) {
+              return
+            }
 
             e.preventDefault()
 

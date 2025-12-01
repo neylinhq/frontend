@@ -120,7 +120,7 @@ const CARD_BRANDS: CardBrandConfig[] = [
 /**
  * Detect card brand from card number
  */
-export function detectCardBrand(cardNumber: string): CardBrand {
+export const detectCardBrand = (cardNumber: string) => {
   const digits = cardNumber.replace(/\D/g, '')
 
   for (const config of CARD_BRANDS) {
@@ -135,17 +135,19 @@ export function detectCardBrand(cardNumber: string): CardBrand {
 /**
  * Get card brand configuration
  */
-export function getCardBrandConfig(brand: CardBrand): CardBrandConfig | undefined {
+export const getCardBrandConfig = (brand: CardBrand) => {
   return CARD_BRANDS.find(config => config.brand === brand)
 }
 
 /**
  * Luhn algorithm for card number validation
  */
-export function isValidLuhn(cardNumber: string): boolean {
+export const isValidLuhn = (cardNumber: string) => {
   const digits = cardNumber.replace(/\D/g, '')
 
-  if (digits.length === 0) return false
+  if (digits.length === 0) {
+    return false
+  }
 
   let sum = 0
   let isEven = false
@@ -170,7 +172,7 @@ export function isValidLuhn(cardNumber: string): boolean {
 /**
  * Format card number with spaces
  */
-export function formatCardNumber(value: string): string {
+export const formatCardNumber = (value: string) => {
   const digits = value.replace(/\D/g, '')
   const brand = detectCardBrand(digits)
   const config = getCardBrandConfig(brand)
@@ -193,10 +195,12 @@ export function formatCardNumber(value: string): string {
 /**
  * Format expiry date as MM/YY
  */
-export function formatExpiry(value: string): string {
+export const formatExpiry = (value: string) => {
   const digits = value.replace(/\D/g, '')
 
-  if (digits.length === 0) return ''
+  if (digits.length === 0) {
+    return ''
+  }
   if (digits.length === 1) {
     // Auto-prefix with 0 if user types 2-9
     if (parseInt(digits, 10) > 1) {
@@ -214,9 +218,11 @@ export function formatExpiry(value: string): string {
 /**
  * Parse expiry string to month and year
  */
-export function parseExpiry(expiry: string): { month: string; year: string } | null {
+export const parseExpiry = (expiry: string) => {
   const match = expiry.match(/^(\d{2})\/(\d{2})$/)
-  if (!match) return null
+  if (!match) {
+    return null
+  }
 
   const month = match[1]
   const year = `20${match[2]}`
@@ -227,21 +233,29 @@ export function parseExpiry(expiry: string): { month: string; year: string } | n
 /**
  * Validate expiry date
  */
-export function isValidExpiry(expiry: string): boolean {
+export const isValidExpiry = (expiry: string) => {
   const parsed = parseExpiry(expiry)
-  if (!parsed) return false
+  if (!parsed) {
+    return false
+  }
 
   const month = parseInt(parsed.month, 10)
   const year = parseInt(parsed.year, 10)
 
-  if (month < 1 || month > 12) return false
+  if (month < 1 || month > 12) {
+    return false
+  }
 
   const now = new Date()
   const currentYear = now.getFullYear()
   const currentMonth = now.getMonth() + 1
 
-  if (year < currentYear) return false
-  if (year === currentYear && month < currentMonth) return false
+  if (year < currentYear) {
+    return false
+  }
+  if (year === currentYear && month < currentMonth) {
+    return false
+  }
 
   return true
 }
@@ -249,7 +263,7 @@ export function isValidExpiry(expiry: string): boolean {
 /**
  * Get max card number length for brand
  */
-export function getMaxCardLength(brand: CardBrand): number {
+export const getMaxCardLength = (brand: CardBrand) => {
   const config = getCardBrandConfig(brand)
   return config ? Math.max(...config.lengths) : 19
 }
@@ -257,7 +271,7 @@ export function getMaxCardLength(brand: CardBrand): number {
 /**
  * Get CVC length for brand
  */
-export function getCvcLength(brand: CardBrand): number {
+export const getCvcLength = (brand: CardBrand) => {
   const config = getCardBrandConfig(brand)
   return config?.cvcLength ?? 3
 }
@@ -265,8 +279,10 @@ export function getCvcLength(brand: CardBrand): number {
 /**
  * Mask card number for display (show last 4)
  */
-export function maskCardNumber(cardNumber: string): string {
+export const maskCardNumber = (cardNumber: string) => {
   const digits = cardNumber.replace(/\D/g, '')
-  if (digits.length < 4) return digits
+  if (digits.length < 4) {
+    return digits
+  }
   return `•••• ${digits.slice(-4)}`
 }

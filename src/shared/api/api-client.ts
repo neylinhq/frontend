@@ -17,7 +17,7 @@ export class ApiError extends Error {
   }
 }
 
-async function request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
+const request = async <T>(endpoint: string, options: RequestOptions = {}): Promise<T> => {
   const { json, headers, ...customOptions } = options
 
   const config: RequestInit = {
@@ -35,7 +35,7 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
   const response = await fetch(`${API_URL}${endpoint}`, config)
 
   if (!response.ok) {
-    let errorData
+    let errorData: unknown
     try {
       errorData = await response.json()
     } catch {

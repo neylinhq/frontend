@@ -38,10 +38,7 @@ const EDGE_WEIGHTS: Record<RelationType, number> = {
   contradicts: 0.2
 }
 
-/**
- * Generate deterministic -1 or 1 based on string hash
- */
-function hashToSide(str: string): number {
+const hashToSide = (str: string) => {
   let hash = 0
   for (let i = 0; i < str.length; i++) {
     hash = (hash << 5) - hash + str.charCodeAt(i)
@@ -66,7 +63,7 @@ interface QuadNode {
   body: { x: number; y: number } | null
 }
 
-function createQuadNode(x: number, y: number, width: number, height: number): QuadNode {
+const createQuadNode = (x: number, y: number, width: number, height: number) => {
   return {
     x,
     y,
@@ -80,18 +77,20 @@ function createQuadNode(x: number, y: number, width: number, height: number): Qu
   }
 }
 
-function getQuadrant(node: QuadNode, px: number, py: number): number {
+const getQuadrant = (node: QuadNode, px: number, py: number) => {
   const midX = node.x + node.width / 2
   const midY = node.y + node.height / 2
   const west = px < midX
   const north = py < midY
-  if (north) return west ? 0 : 1 // NW : NE
+  if (north) {
+    return west ? 0 : 1 // NW : NE
+  }
   return west ? 2 : 3 // SW : SE
 }
 
 const MAX_QUADTREE_DEPTH = 20
 
-function insertIntoQuadtree(node: QuadNode, px: number, py: number, depth = 0): void {
+const insertIntoQuadtree = (node: QuadNode, px: number, py: number, depth = 0) => {
   if (node.mass === 0 && node.body === null) {
     node.body = { x: px, y: py }
     node.cx = px
@@ -123,8 +122,10 @@ function insertIntoQuadtree(node: QuadNode, px: number, py: number, depth = 0): 
   node.mass = totalMass
 }
 
-function insertIntoChild(node: QuadNode, px: number, py: number, depth: number): void {
-  if (!node.children) return
+const insertIntoChild = (node: QuadNode, px: number, py: number, depth: number) => {
+  if (!node.children) {
+    return
+  }
 
   const quadrant = getQuadrant(node, px, py)
   const halfW = node.width / 2
@@ -139,7 +140,7 @@ function insertIntoChild(node: QuadNode, px: number, py: number, depth: number):
   insertIntoQuadtree(node.children[quadrant]!, px, py, depth + 1)
 }
 
-function buildQuadtree(positions: { x: number; y: number }[]): QuadNode {
+const buildQuadtree = (positions: { x: number; y: number }[]) => {
   if (positions.length === 0) {
     return createQuadNode(0, 0, 1, 1)
   }
@@ -171,17 +172,19 @@ function buildQuadtree(positions: { x: number; y: number }[]): QuadNode {
   return root
 }
 
-function calculateRepulsionBarnesHut(
+const calculateRepulsionBarnesHut = (
   node: QuadNode,
   px: number,
   py: number,
   idealDistanceSq: number,
   theta: number
-): { fx: number; fy: number } {
+) => {
   let fx = 0
   let fy = 0
 
-  if (node.mass === 0) return { fx: 0, fy: 0 }
+  if (node.mass === 0) {
+    return { fx: 0, fy: 0 }
+  }
 
   const dx = node.cx - px
   const dy = node.cy - py
@@ -235,10 +238,12 @@ interface InternalLayoutOptions {
   directionStrength: number
 }
 
-export function applyLayout(nodes: Node[], edges: Edge[], options: LayoutOptions): LayoutResult {
+export const applyLayout = (nodes: Node[], edges: Edge[], options: LayoutOptions) => {
   const { viewMode, spacingPercent = 100, directionStrength = 100 } = options
 
-  if (nodes.length === 0) return { nodes, edges }
+  if (nodes.length === 0) {
+    return { nodes, edges }
+  }
 
   const spacingFactor = spacingPercent / 100
   const nodeSpacing = DEFAULT_NODE_SPACING * spacingFactor
@@ -261,11 +266,7 @@ export function applyLayout(nodes: Node[], edges: Edge[], options: LayoutOptions
   }
 }
 
-function forceDirectedLayout(
-  nodes: Node[],
-  edges: Edge[],
-  options: InternalLayoutOptions
-): LayoutResult {
+const forceDirectedLayout = (nodes: Node[], edges: Edge[], options: InternalLayoutOptions) => {
   const { nodeSpacing } = options
   const iterations = 150
   const idealDistance = nodeSpacing * 1.5
@@ -311,7 +312,9 @@ function forceDirectedLayout(
     edges.forEach(e => {
       const source = posMap.get(e.source)
       const target = posMap.get(e.target)
-      if (!source || !target) return
+      if (!source || !target) {
+        return
+      }
 
       const dx = target.x - source.x
       const dy = target.y - source.y
@@ -406,7 +409,7 @@ function forceDirectedLayout(
   return { nodes: positionedNodes, edges }
 }
 
-function pathLayout(nodes: Node[], edges: Edge[], options: InternalLayoutOptions): LayoutResult {
+const pathLayout = (nodes: Node[], edges: Edge[], options: InternalLayoutOptions) => {
   const { nodeSpacing, levelSpacing } = options
 
   const prereqEdges = edges.filter(e => (e.data?.relationType as RelationType) === 'prerequisite')
@@ -440,7 +443,9 @@ function pathLayout(nodes: Node[], edges: Edge[], options: InternalLayoutOptions
 
   while (queue.length > 0) {
     const nodeId = queue.shift()
-    if (!nodeId) continue
+    if (!nodeId) {
+      continue
+    }
     const currentLevel = levels.get(nodeId) ?? 0
 
     outgoing.get(nodeId)?.forEach(targetId => {
@@ -454,7 +459,9 @@ function pathLayout(nodes: Node[], edges: Edge[], options: InternalLayoutOptions
 
   let maxLevel = 0
   levels.forEach(l => {
-    if (l > maxLevel) maxLevel = l
+    if (l > maxLevel) {
+      maxLevel = l
+    }
   })
   nodes.forEach(n => {
     if (!levels.has(n.id)) {
@@ -464,7 +471,9 @@ function pathLayout(nodes: Node[], edges: Edge[], options: InternalLayoutOptions
 
   const levelGroups = new Map<number, string[]>()
   levels.forEach((level, nodeId) => {
-    if (!levelGroups.has(level)) levelGroups.set(level, [])
+    if (!levelGroups.has(level)) {
+      levelGroups.set(level, [])
+    }
     levelGroups.get(level)?.push(nodeId)
   })
 
@@ -486,17 +495,17 @@ function pathLayout(nodes: Node[], edges: Edge[], options: InternalLayoutOptions
   return { nodes: positionedNodes, edges }
 }
 
-export function getNodesWithinDepth(
-  startNodeId: string,
-  edges: Edge[],
-  depth: number
-): Set<string> {
+export const getNodesWithinDepth = (startNodeId: string, edges: Edge[], depth: number) => {
   const connected = new Set<string>([startNodeId])
   const adjacency = new Map<string, Set<string>>()
 
   edges.forEach(e => {
-    if (!adjacency.has(e.source)) adjacency.set(e.source, new Set())
-    if (!adjacency.has(e.target)) adjacency.set(e.target, new Set())
+    if (!adjacency.has(e.source)) {
+      adjacency.set(e.source, new Set())
+    }
+    if (!adjacency.has(e.target)) {
+      adjacency.set(e.target, new Set())
+    }
     adjacency.get(e.source)?.add(e.target)
     adjacency.get(e.target)?.add(e.source)
   })
@@ -521,6 +530,6 @@ export function getNodesWithinDepth(
   return connected
 }
 
-export function getEdgesBetweenNodes(edges: Edge[], nodeIds: Set<string>): Edge[] {
+export const getEdgesBetweenNodes = (edges: Edge[], nodeIds: Set<string>) => {
   return edges.filter(e => nodeIds.has(e.source) && nodeIds.has(e.target))
 }

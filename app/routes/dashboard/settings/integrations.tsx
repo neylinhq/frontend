@@ -2,7 +2,7 @@ import { Puzzle } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
 
-export default function IntegrationsPage() {
+const IntegrationsPage = () => {
   const { t } = useTranslation()
 
   return (
@@ -33,3 +33,5 @@ export default function IntegrationsPage() {
     </div>
   )
 }
+
+export default IntegrationsPage

@@ -22,9 +22,8 @@ const Field = React.forwardRef<HTMLDivElement, FieldProps>(
     const childWithProps = React.isValidElement(children)
       ? React.cloneElement(children, {
           id,
-          'aria-invalid': isInvalid ? ('true' as const) : undefined,
-          ...children.props
-        })
+          'aria-invalid': isInvalid ? ('true' as const) : undefined
+        } as React.Attributes & Record<string, unknown>)
       : children
 
     return (

@@ -24,7 +24,7 @@ interface ProfileFormProps {
   user: User
 }
 
-export function ProfileForm({ user }: ProfileFormProps) {
+export const ProfileForm = ({ user }: ProfileFormProps) => {
   const { t } = useTranslation()
   const updateProfile = useUpdateProfile()
   const uploadAvatar = useUploadAvatar()

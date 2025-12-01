@@ -130,7 +130,7 @@ interface DocsSearchProps {
   onOpenChange?: (open: boolean) => void
 }
 
-export function DocsSearch({ open, onOpenChange }: DocsSearchProps) {
+export const DocsSearch = ({ open, onOpenChange }: DocsSearchProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(0)
@@ -142,7 +142,9 @@ export function DocsSearch({ open, onOpenChange }: DocsSearchProps) {
 
   // Фильтрация результатов
   const results = useMemo(() => {
-    if (!query.trim()) return SEARCH_INDEX
+    if (!query.trim()) {
+      return SEARCH_INDEX
+    }
 
     const normalizedQuery = query.toLowerCase().trim()
     const terms = normalizedQuery.split(/\s+/)
@@ -221,7 +223,7 @@ export function DocsSearch({ open, onOpenChange }: DocsSearchProps) {
   // Сброс выбора при изменении запроса
   useEffect(() => {
     setSelectedIndex(0)
-  }, [query])
+  }, [])
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
@@ -336,7 +338,7 @@ interface DocsSearchTriggerProps {
   className?: string
 }
 
-export function DocsSearchTrigger({ className }: DocsSearchTriggerProps) {
+export const DocsSearchTrigger = ({ className }: DocsSearchTriggerProps) => {
   const [open, setOpen] = useState(false)
 
   return (

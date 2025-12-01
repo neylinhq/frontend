@@ -11,7 +11,7 @@ interface AvatarUploadProps {
   isPending: boolean
 }
 
-export function AvatarUpload({ currentUrl, fallback, onUpload, isPending }: AvatarUploadProps) {
+export const AvatarUpload = ({ currentUrl, fallback, onUpload, isPending }: AvatarUploadProps) => {
   const { t } = useTranslation()
   const inputRef = useRef<HTMLInputElement>(null)
 

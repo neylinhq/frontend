@@ -10,7 +10,7 @@ interface PaymentHistoryTableProps {
   payments: PaymentHistory[]
 }
 
-export function PaymentHistoryTable({ payments }: PaymentHistoryTableProps) {
+export const PaymentHistoryTable = ({ payments }: PaymentHistoryTableProps) => {
   const { t } = useTranslation()
 
   const formatAmount = (cents: number, currency: string) => {

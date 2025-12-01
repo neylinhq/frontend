@@ -16,8 +16,7 @@ declare module '@tiptap/core' {
   }
 }
 
-// Helper to safely render math with proper error handling (no XSS)
-function renderMathSafe(latex: string, displayMode: boolean): { html: string; isError: boolean } {
+const renderMathSafe = (latex: string, displayMode: boolean) => {
   try {
     return {
       html: katex.renderToString(latex, {
@@ -144,7 +143,9 @@ export const MathBlock = Node.create<MathBlockOptions>({
       return {
         dom,
         update: updatedNode => {
-          if (updatedNode.type.name !== this.name) return false
+          if (updatedNode.type.name !== this.name) {
+            return false
+          }
           node = updatedNode
           updateContent()
           return true
@@ -252,7 +253,9 @@ export const MathInline = Node.create({
       return {
         dom,
         update: updatedNode => {
-          if (updatedNode.type.name !== this.name) return false
+          if (updatedNode.type.name !== this.name) {
+            return false
+          }
           node = updatedNode
           updateContent()
           return true

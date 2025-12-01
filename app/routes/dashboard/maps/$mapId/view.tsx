@@ -4,20 +4,25 @@ import { mapApi } from '@/entities/map'
 import { MapViewPage } from '@/pages/dashboard/map-view-page'
 import { getMeta } from '@/shared/lib/get-meta'
 
-export function meta() {
+export const meta = () => {
   return getMeta('mapView')
 }
 
-export async function loader({ params }: LoaderFunctionArgs) {
+export const loader = async ({ params }: LoaderFunctionArgs) => {
   const mapId = params.mapId
   if (!mapId) {
     throw new Response('Map ID is required', { status: 400 })
   }
   const map = await mapApi.getFullMap(mapId, true)
+  if (!map) {
+    throw new Response('Map not found', { status: 404 })
+  }
   return { map, mapId }
 }
 
-export default function MapViewRoute() {
+const MapViewRoute = () => {
   const { map, mapId } = useLoaderData<typeof loader>()
   return <MapViewPage map={map} mapId={mapId} />
 }
+
+export default MapViewRoute

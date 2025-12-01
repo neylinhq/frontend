@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/sha
 import { Typography } from '@/shared/ui/typography'
 import type { Route } from './+types/colors'
 
-export function meta(_args: Route.MetaArgs) {
+export const meta = (_args: Route.MetaArgs) => {
   return getMeta('docs')
 }
 
@@ -51,7 +51,7 @@ const GRAPH_COLORS = [
   { name: 'Rose', var: '--graph-rose', desc: 'Розовый для графа' }
 ]
 
-export default function ColorsPage() {
+const ColorsPage = () => {
   const { t } = useTranslation()
 
   return (
@@ -132,7 +132,7 @@ export default function ColorsPage() {
   )
 }
 
-function ColorCard({ name, var: cssVar, desc }: { name: string; var: string; desc: string }) {
+const ColorCard = ({ name, var: cssVar, desc }: { name: string; var: string; desc: string }) => {
   return (
     <Card>
       <CardHeader className='pb-3'>
@@ -153,3 +153,5 @@ function ColorCard({ name, var: cssVar, desc }: { name: string; var: string; des
     </Card>
   )
 }
+
+export default ColorsPage

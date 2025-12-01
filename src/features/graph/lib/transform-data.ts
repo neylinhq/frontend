@@ -1,13 +1,12 @@
-import type { Edge as FlowEdge, Node as FlowNode } from '@xyflow/react'
 import type { Edge, Node } from '@/entities/map'
 
-export function transformNodesToFlow(
+export const transformNodesToFlow = (
   nodes: Node[],
   selectedNodeIds: string[] = [],
   onSelect?: (id: string) => void,
   focusedNodeId?: string | null,
   animated?: boolean
-): FlowNode[] {
+) => {
   return nodes.map(node => ({
     id: node.id,
     type: 'knowledgeNode',
@@ -23,7 +22,7 @@ export function transformNodesToFlow(
   }))
 }
 
-export function transformEdgesToFlow(edges: Edge[], selectedEdgeIds: string[] = []): FlowEdge[] {
+export const transformEdgesToFlow = (edges: Edge[], selectedEdgeIds: string[] = []) => {
   return edges.map(edge => ({
     id: edge.id,
     type: 'knowledgeEdge',

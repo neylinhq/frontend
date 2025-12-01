@@ -17,7 +17,7 @@ interface DocsCodeBlockProps {
   className?: string
 }
 
-export function DocsCodeBlock({
+export const DocsCodeBlock = ({
   code,
   language = 'tsx',
   filename,
@@ -25,7 +25,7 @@ export function DocsCodeBlock({
   collapsible = false,
   defaultCollapsed = false,
   className
-}: DocsCodeBlockProps) {
+}: DocsCodeBlockProps) => {
   const [copied, setCopied] = React.useState(false)
   const [isOpen, setIsOpen] = React.useState(!defaultCollapsed)
 

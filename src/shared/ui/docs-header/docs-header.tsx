@@ -3,10 +3,10 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { ModeSelect } from '@/app/theme/components/mode-select'
 import { PaletteSelect } from '@/app/theme/components/palette-select'
-import { LanguageSelect } from '@/shared/ui/language-switcher'
 import { DOCS_ROUTES, ROUTES } from '@/shared/config'
 import { Button } from '@/shared/ui/button'
 import { DocsSearchTrigger } from '@/shared/ui/docs-search'
+import { LanguageSelect } from '@/shared/ui/language-switcher'
 import { Logo } from '@/shared/ui/logo'
 import { Sheet, SheetContent, SheetTrigger } from '@/shared/ui/sheet'
 
@@ -14,7 +14,7 @@ interface DocsHeaderProps {
   mobileNav?: React.ReactNode
 }
 
-export function DocsHeader({ mobileNav }: DocsHeaderProps) {
+export const DocsHeader = ({ mobileNav }: DocsHeaderProps) => {
   const { t } = useTranslation()
   return (
     <header className='h-14 flex-shrink-0 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50'>

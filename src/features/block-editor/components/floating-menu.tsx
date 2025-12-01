@@ -14,11 +14,7 @@ interface FloatingMenuProps {
   containerRef: React.RefObject<HTMLDivElement | null>
 }
 
-// Throttle helper with cleanup support
-function createThrottle<T extends (...args: Parameters<T>) => void>(
-  fn: T,
-  delayMs: number
-): { throttled: T; cleanup: () => void } {
+const createThrottle = <T extends (...args: never[]) => unknown>(fn: T, delayMs: number) => {
   let lastCall = 0
   let timeoutId: ReturnType<typeof setTimeout> | null = null
 
@@ -48,7 +44,7 @@ function createThrottle<T extends (...args: Parameters<T>) => void>(
   return { throttled, cleanup }
 }
 
-export function EditorFloatingMenu({ editor, onAddClick, containerRef }: FloatingMenuProps) {
+export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: FloatingMenuProps) => {
   const { t } = useTranslation()
   const [position, setPosition] = useState({ top: 0, height: 0 })
   const [shouldShow, setShouldShow] = useState(false)
@@ -76,14 +72,20 @@ export function EditorFloatingMenu({ editor, onAddClick, containerRef }: Floatin
   // Cleanup timeouts on unmount
   useEffect(() => {
     return () => {
-      if (ghostCleanupTimeoutRef.current) clearTimeout(ghostCleanupTimeoutRef.current)
-      if (menuHideTimeoutRef.current) clearTimeout(menuHideTimeoutRef.current)
+      if (ghostCleanupTimeoutRef.current) {
+        clearTimeout(ghostCleanupTimeoutRef.current)
+      }
+      if (menuHideTimeoutRef.current) {
+        clearTimeout(menuHideTimeoutRef.current)
+      }
     }
   }, [])
 
   // Hide menu on scroll (position becomes stale)
   useEffect(() => {
-    if (!shouldShow) return
+    if (!shouldShow) {
+      return
+    }
 
     const handleScroll = () => {
       if (!isDraggingRef.current) {
@@ -99,13 +101,19 @@ export function EditorFloatingMenu({ editor, onAddClick, containerRef }: Floatin
 
   // Hide menu on click outside
   useEffect(() => {
-    if (!shouldShow) return
+    if (!shouldShow) {
+      return
+    }
 
     const handleClickOutside = (e: MouseEvent) => {
-      if (isDraggingRef.current) return
+      if (isDraggingRef.current) {
+        return
+      }
 
       const target = e.target as HTMLElement
-      if (menuRef.current?.contains(target)) return
+      if (menuRef.current?.contains(target)) {
+        return
+      }
 
       setHoveredBlock(null)
       setShouldShow(false)
@@ -164,21 +172,31 @@ export function EditorFloatingMenu({ editor, onAddClick, containerRef }: Floatin
   // Handle mouse move to show menu on block hover (throttled for performance)
   useEffect(() => {
     // Guard: editor view must be mounted before accessing DOM
-    if (!editor.view?.dom || editor.isDestroyed) return
+    if (!editor.view?.dom || editor.isDestroyed) {
+      return
+    }
 
     // Use container for hover detection (includes gutter zone)
     const container = containerRef.current
-    if (!container) return
+    if (!container) {
+      return
+    }
 
     // Find .tiptap-editor inside container for ProseMirror access
     const editorElement = container.querySelector('.tiptap-editor') as HTMLElement
-    if (!editorElement) return
+    if (!editorElement) {
+      return
+    }
 
     const processMouseMove = (e: MouseEvent) => {
-      if (isDragging || isHoveringMenuRef.current || editor.isDestroyed) return
+      if (isDragging || isHoveringMenuRef.current || editor.isDestroyed) {
+        return
+      }
 
       const proseMirror = editorElement.querySelector('.ProseMirror')
-      if (!proseMirror) return
+      if (!proseMirror) {
+        return
+      }
 
       // Use container rect for coordinates (includes gutter)
       const containerRect = container.getBoundingClientRect()
@@ -256,7 +274,9 @@ export function EditorFloatingMenu({ editor, onAddClick, containerRef }: Floatin
     )
 
     const handleMouseLeave = (e: MouseEvent) => {
-      if (isDragging) return
+      if (isDragging) {
+        return
+      }
 
       const relatedTarget = e.relatedTarget as HTMLElement | null
       if (relatedTarget && menuRef.current?.contains(relatedTarget)) {
@@ -284,12 +304,16 @@ export function EditorFloatingMenu({ editor, onAddClick, containerRef }: Floatin
   // Handle drag events using ProseMirror API
   useEffect(() => {
     // Guard: editor view must be mounted before accessing DOM
-    if (!editor.view?.dom || editor.isDestroyed) return
+    if (!editor.view?.dom || editor.isDestroyed) {
+      return
+    }
 
     const view = editor.view
 
     const handleDragOver = (e: DragEvent) => {
-      if (!isDraggingRef.current || dragStartPosRef.current === null || editor.isDestroyed) return
+      if (!isDraggingRef.current || dragStartPosRef.current === null || editor.isDestroyed) {
+        return
+      }
 
       e.preventDefault()
       if (e.dataTransfer) {
@@ -297,7 +321,9 @@ export function EditorFloatingMenu({ editor, onAddClick, containerRef }: Floatin
       }
 
       const editorElement = view.dom.closest('.tiptap-editor') as HTMLElement
-      if (!editorElement) return
+      if (!editorElement) {
+        return
+      }
 
       const coords = { left: e.clientX, top: e.clientY }
       const posResult = view.posAtCoords(coords)
@@ -310,7 +336,9 @@ export function EditorFloatingMenu({ editor, onAddClick, containerRef }: Floatin
           (el): el is HTMLElement => el instanceof HTMLElement
         )
 
-        if (blocks.length === 0) return
+        if (blocks.length === 0) {
+          return
+        }
 
         let targetBlock: HTMLElement | null = null
         let insertAfter = false
@@ -537,7 +565,7 @@ export function EditorFloatingMenu({ editor, onAddClick, containerRef }: Floatin
             tr.insert(mappedEnd, sourceNode)
           } else {
             // Wrap content in list structure
-            let contentToInsert
+            let contentToInsert: typeof sourceNode
             if (sourceNode.type.name === 'listItem' || sourceNode.type.name === 'taskItem') {
               // Source is already a list item - wrap in list
               contentToInsert = listType.create(null, sourceNode)
@@ -699,7 +727,9 @@ export function EditorFloatingMenu({ editor, onAddClick, containerRef }: Floatin
       e.dataTransfer.setDragImage(ghost, 0, 0)
     } finally {
       // Schedule cleanup - runs after drag image is captured (tracked for unmount cleanup)
-      if (ghostCleanupTimeoutRef.current) clearTimeout(ghostCleanupTimeoutRef.current)
+      if (ghostCleanupTimeoutRef.current) {
+        clearTimeout(ghostCleanupTimeoutRef.current)
+      }
       ghostCleanupTimeoutRef.current = window.setTimeout(() => {
         if (ghost.parentNode) {
           document.body.removeChild(ghost)
@@ -728,7 +758,9 @@ export function EditorFloatingMenu({ editor, onAddClick, containerRef }: Floatin
     isHoveringMenuRef.current = false
     if (!isDragging) {
       // Tracked timeout for cleanup on unmount
-      if (menuHideTimeoutRef.current) clearTimeout(menuHideTimeoutRef.current)
+      if (menuHideTimeoutRef.current) {
+        clearTimeout(menuHideTimeoutRef.current)
+      }
       menuHideTimeoutRef.current = window.setTimeout(() => {
         if (!isHoveringMenuRef.current && !isDraggingRef.current) {
           setHoveredBlock(null)

@@ -1,10 +1,12 @@
 import { CookiesPage } from '@/pages/legal/cookies-page'
 import { getMeta } from '@/shared/lib/get-meta'
 
-export function meta() {
+export const meta = () => {
   return getMeta('cookies')
 }
 
-export default function CookiesRoute() {
+const CookiesRoute = () => {
   return <CookiesPage />
 }
+
+export default CookiesRoute

@@ -53,12 +53,11 @@ const createRandom = (seed: number) => {
   }
 }
 
-
-function pick<T>(arr: T[], random: () => number): T {
+const pick = <T>(arr: T[], random: () => number): T => {
   return arr[Math.floor(random() * arr.length)]
 }
 
-function shuffle<T>(arr: T[], random: () => number): T[] {
+const shuffle = <T>(arr: T[], random: () => number): T[] => {
   const result = [...arr]
   for (let i = result.length - 1; i > 0; i--) {
     const j = Math.floor(random() * (i + 1))
@@ -67,10 +66,7 @@ function shuffle<T>(arr: T[], random: () => number): T[] {
   return result
 }
 
-export function generateMockGraph(options: GeneratorOptions = {}): {
-  nodes: Node[]
-  edges: Edge[]
-} {
+export const generateMockGraph = (options: GeneratorOptions = {}) => {
   const {
     nodeCount = 30,
     mapId = 'test',
@@ -183,7 +179,9 @@ export function generateMockGraph(options: GeneratorOptions = {}): {
 
     // Add grandchildren
     for (const child of children) {
-      if (remaining <= 0) break
+      if (remaining <= 0) {
+        break
+      }
       const grandchild = createNode(`Лист от ${child.label}`, 'fact')
       nodes.push(grandchild)
       remaining--

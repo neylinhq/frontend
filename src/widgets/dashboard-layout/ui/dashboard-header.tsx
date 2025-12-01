@@ -7,7 +7,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/shared/ui/sheet'
 import { UserNav } from '@/widgets/user-nav'
 import { Sidebar } from './sidebar'
 
-export function DashboardHeader() {
+export const DashboardHeader = () => {
   const { t } = useTranslation()
 
   return (

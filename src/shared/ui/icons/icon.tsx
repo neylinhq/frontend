@@ -1,6 +1,6 @@
 import type { SVGProps } from 'react'
 
-export function FlagRU(props: SVGProps<SVGSVGElement>) {
+export const FlagRU = (props: SVGProps<SVGSVGElement>) => {
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
@@ -24,7 +24,7 @@ export function FlagRU(props: SVGProps<SVGSVGElement>) {
   )
 }
 
-export function FlagDE(props: SVGProps<SVGSVGElement>) {
+export const FlagDE = (props: SVGProps<SVGSVGElement>) => {
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
@@ -48,7 +48,7 @@ export function FlagDE(props: SVGProps<SVGSVGElement>) {
   )
 }
 
-export function FlagUS(props: SVGProps<SVGSVGElement>) {
+export const FlagUS = (props: SVGProps<SVGSVGElement>) => {
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'

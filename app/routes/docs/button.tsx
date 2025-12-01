@@ -14,11 +14,11 @@ export const handle = {
   breadcrumb: 'Button'
 }
 
-export function meta(_args: Route.MetaArgs) {
+export const meta = (_args: Route.MetaArgs) => {
   return getMeta('uiShowcase')
 }
 
-export default function ButtonPage() {
+const ButtonPage = () => {
   const { t } = useTranslation()
 
   const TOC_ITEMS: TocItem[] = [
@@ -282,7 +282,7 @@ import { DASHBOARD_ROUTES } from '@/shared/config'
   )
 }
 
-function PropRow({
+const PropRow = ({
   name,
   type,
   defaultValue
@@ -290,7 +290,7 @@ function PropRow({
   name: string
   type: string
   defaultValue: string
-}) {
+}) => {
   return (
     <tr>
       <td className='px-4 py-3'>
@@ -305,3 +305,5 @@ function PropRow({
     </tr>
   )
 }
+
+export default ButtonPage

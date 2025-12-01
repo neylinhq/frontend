@@ -21,14 +21,14 @@ const SLASH_MENU_HEIGHT = 400
 const SLASH_MENU_WIDTH = 320
 const VIEWPORT_PADDING = 8
 
-export function BlockEditor({
+export const BlockEditor = ({
   initialContent,
   onChange,
   onEditorUpdate,
   editable = true,
   className,
   placeholder
-}: BlockEditorProps) {
+}: BlockEditorProps) => {
   const { resolvedMode } = useTheme()
   const { t } = useTranslation()
   const [showSlashMenu, setShowSlashMenu] = useState(false)
@@ -214,7 +214,9 @@ export function BlockEditor({
 
   // Memoize filtered items (only recompute when query or items change)
   const slashItems = useMemo(() => {
-    if (!slashMenuQuery) return allSlashItems
+    if (!slashMenuQuery) {
+      return allSlashItems
+    }
     const query = slashMenuQuery.toLowerCase()
     return allSlashItems.filter(item => item.title.toLowerCase().includes(query))
   }, [allSlashItems, slashMenuQuery])
@@ -222,7 +224,9 @@ export function BlockEditor({
   // Handle slash menu command
   const handleSlashCommand = useCallback(
     (item: { command: () => void }) => {
-      if (!editor) return
+      if (!editor) {
+        return
+      }
 
       // Delete the slash command text
       const { selection } = editor.state
@@ -243,14 +247,18 @@ export function BlockEditor({
   )
 
   const handleAddBlock = useCallback(() => {
-    if (!editor) return
+    if (!editor) {
+      return
+    }
     // Insert slash to trigger the menu
     editor.chain().focus().insertContent('/').run()
   }, [editor])
 
   const handleMathSubmit = useCallback(
     (latex: string) => {
-      if (!editor) return
+      if (!editor) {
+        return
+      }
 
       // If we're editing an existing math node
       if (mathEditPosition !== null) {
@@ -277,7 +285,9 @@ export function BlockEditor({
   // UX-1: Handle media submit from dialog
   const handleMediaSubmit = useCallback(
     (url: string) => {
-      if (!editor) return
+      if (!editor) {
+        return
+      }
 
       switch (mediaDialogType) {
         case 'image':

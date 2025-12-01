@@ -9,24 +9,23 @@ export interface BlockSelectionState {
   decorations: DecorationSet
 }
 
-/**
- * Finds all blocks that are fully selected by the current selection.
- * A block is "fully selected" if the selection covers all its content.
- * For lists, each list item is treated as a separate block.
- */
-function findFullySelectedBlocks(
+const findFullySelectedBlocks = (
   doc: import('@tiptap/pm/model').Node,
   from: number,
   to: number
-): Array<{ from: number; to: number }> {
+) => {
   const selectedBlocks: Array<{ from: number; to: number }> = []
 
   // Don't highlight if selection is collapsed (cursor only)
-  if (from === to) return selectedBlocks
+  if (from === to) {
+    return selectedBlocks
+  }
 
   doc.nodesBetween(from, to, (node, pos, parent) => {
     // Skip the doc node itself
-    if (node.type.name === 'doc') return true
+    if (node.type.name === 'doc') {
+      return true
+    }
 
     const nodeStart = pos
     const nodeEnd = pos + node.nodeSize
@@ -152,7 +151,9 @@ export const BlockSelection = Extension.create({
         (pos: number) =>
         ({ tr, state, dispatch }) => {
           const $pos = state.doc.resolve(pos)
-          if ($pos.depth < 1) return false
+          if ($pos.depth < 1) {
+            return false
+          }
 
           const blockStart = $pos.before(1)
           const blockEnd = $pos.after(1)

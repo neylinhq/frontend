@@ -1,4 +1,5 @@
 import { Plus } from 'lucide-react'
+import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
@@ -10,7 +11,7 @@ interface CreateMapCardProps {
   className?: string
 }
 
-export function CreateMapCard({ className }: CreateMapCardProps) {
+export const CreateMapCard = memo(({ className }: CreateMapCardProps) => {
   const { t } = useTranslation()
 
   return (
@@ -33,4 +34,6 @@ export function CreateMapCard({ className }: CreateMapCardProps) {
       </Link>
     </Button>
   )
-}
+})
+
+CreateMapCard.displayName = 'CreateMapCard'

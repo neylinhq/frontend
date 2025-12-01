@@ -267,7 +267,9 @@ export const subscriptionApi = {
   getPlanDetails: async (planType: PlanType): Promise<PlanDetails> => {
     await delay(API_DELAYS.SUBSCRIPTION_GET_PLAN_DETAILS)
     const plan = MOCK_PLANS.find(p => p.type === planType)
-    if (!plan) throw new Error(`Plan ${planType} not found`)
+    if (!plan) {
+      throw new Error(`Plan ${planType} not found`)
+    }
     return plan
   },
 
@@ -347,7 +349,9 @@ export const subscriptionApi = {
   updatePaymentMethod: async (input: UpdatePaymentMethodInput): Promise<PaymentMethod> => {
     await delay(API_DELAYS.SUBSCRIPTION_UPDATE_PAYMENT_METHOD)
     const method = MOCK_PAYMENT_METHODS.find(m => m.id === input.id)
-    if (!method) throw new Error('Payment method not found')
+    if (!method) {
+      throw new Error('Payment method not found')
+    }
 
     if ('expiryMonth' in input && method.type === 'card') {
       return { ...method, expiryMonth: input.expiryMonth, expiryYear: input.expiryYear }

@@ -9,7 +9,7 @@ interface NodeTypeSelectorProps {
   onChange: (value: NodeType) => void
 }
 
-export function NodeTypeSelector({ value, onChange }: NodeTypeSelectorProps) {
+export const NodeTypeSelector = ({ value, onChange }: NodeTypeSelectorProps) => {
   const { t } = useTranslation()
 
   return (

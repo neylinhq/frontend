@@ -13,4 +13,3 @@ export const action = async () => {
     }
   })
 }
-

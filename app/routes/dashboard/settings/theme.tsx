@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { PaletteSelect } from '@/features/theme/palette-select'
-import { ThemeToggle } from '@/features/theme/theme-toggle'
+import { ModeToggle } from '@/features/theme/mode-toggle'
+import { PaletteToggle } from '@/features/theme/palette-toggle'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
 import { Label } from '@/shared/components/label'
 import { LanguageSwitcher } from '@/shared/components/language-switcher'
@@ -28,7 +28,7 @@ const ThemePage = () => {
                 {t('settings.theme.appearance.modeDescription')}
               </p>
             </div>
-            <ThemeToggle />
+            <ModeToggle />
           </div>
 
           <div className='flex items-center justify-between'>
@@ -38,7 +38,7 @@ const ThemePage = () => {
                 {t('settings.theme.appearance.paletteDescription')}
               </p>
             </div>
-            <PaletteSelect />
+            <PaletteToggle />
           </div>
         </CardContent>
       </Card>

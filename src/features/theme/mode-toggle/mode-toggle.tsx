@@ -9,7 +9,7 @@ import {
 } from '@/shared/components/dropdown-menu'
 import { MODES, useTheme } from '@/shared/lib/theme'
 
-export const ThemeToggle = () => {
+export const ModeToggle = () => {
   const { setMode } = useTheme()
   const { t } = useTranslation()
 

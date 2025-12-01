@@ -1,4 +1,4 @@
-import { ThemeToggle } from '@/features/theme/theme-toggle'
+import { ModeToggle } from '@/features/theme/mode-toggle'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import {
@@ -62,7 +62,7 @@ const Header = () => (
         A collection of reusable components built with Radix UI and Tailwind CSS.
       </p>
     </div>
-    <ThemeToggle />
+    <ModeToggle />
   </div>
 )
 

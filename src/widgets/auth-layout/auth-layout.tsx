@@ -1,5 +1,5 @@
 import type * as React from 'react'
-import { ThemeToggle } from '@/features/theme/theme-toggle'
+import { ModeToggle } from '@/features/theme/mode-toggle'
 import { LanguageSwitcher } from '@/shared/components/language-switcher'
 import { Logo } from '@/shared/components/logo'
 
@@ -13,7 +13,7 @@ export const AuthLayout = ({ children }: AuthLayoutProps) => {
       {/* Controls - top right */}
       <div className='fixed top-4 right-4 z-50 flex items-center gap-2'>
         <LanguageSwitcher />
-        <ThemeToggle />
+        <ModeToggle />
       </div>
 
       {/* Logo */}

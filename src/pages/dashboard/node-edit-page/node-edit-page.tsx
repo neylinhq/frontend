@@ -8,14 +8,9 @@ import { toast } from 'sonner'
 import type { FullMap, Node } from '@/entities/map'
 import { useUpdateNode } from '@/entities/map'
 import type { NodeType } from '@/entities/node'
-import { BlockEditor } from '@/features/block-editor'
-import {
-  editorToHTML,
-  htmlToEditor,
-  htmlToPlainText
-} from '@/features/block-editor/lib/html-serializer'
+import { BlockEditor, editorToHTML, htmlToEditor, htmlToPlainText } from '@/features/block-editor'
+import { useAutoSave } from '@/features/node-editor'
 import { NodeConnectionsPanel } from '@/features/node-connections-panel'
-import { useAutoSave } from '@/features/node-editor/model/use-auto-save.hooks'
 import { NodeMetadataForm, type NodeMetadataFormValues } from '@/features/node-metadata-form'
 import { cn } from '@/shared/lib/cn'
 import { Badge } from '@/shared/components/badge'

@@ -1,6 +1,7 @@
 // Components
 export { GraphToolbar } from './components/graph-toolbar'
 export { GraphVisualization } from './components/graph-visualization'
+export { NodeSearch, NodeSearchTrigger } from './components/node-search'
 export { KnowledgeEdge } from './components/knowledge-edge'
 export { KnowledgeNode } from './components/knowledge-node'
 export { ViewControlsPanel } from './components/view-controls-panel'

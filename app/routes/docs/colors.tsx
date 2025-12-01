@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
-import { getMeta } from '@/shared/lib/get-meta'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
 import { Typography } from '@/shared/components/typography'
+import { getMeta } from '@/shared/lib/get-meta'
 import type { Route } from './+types/colors'
 
 export const meta = (_args: Route.MetaArgs) => {
@@ -137,7 +137,7 @@ const ColorCard = ({ name, var: cssVar, desc }: { name: string; var: string; des
     <Card>
       <CardHeader className='pb-3'>
         <div
-          className='h-16 border-b mb-3 -mx-6 -mt-6 rounded-t-xl'
+          className='h-16 border-b mb-3 -mx-6 -mt-6'
           style={{ backgroundColor: `hsl(var(${cssVar}))` }}
         />
         <CardTitle className='text-base'>{name}</CardTitle>

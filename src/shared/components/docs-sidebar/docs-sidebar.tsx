@@ -3,7 +3,7 @@ import * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import { NavLink } from 'react-router'
 import { cn } from '@/shared/lib/cn'
-import './docs-sidebar.module.css'
+import styles from './docs-sidebar.module.css'
 import { Badge } from '@/shared/components/badge'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/shared/components/collapsible'
 
@@ -28,7 +28,7 @@ interface DocsSidebarProps {
 
 export const DocsSidebar = ({ sections, className }: DocsSidebarProps) => {
   return (
-    <nav className={cn('docs-sidebar space-y-2.5', className)}>
+    <nav className={cn(styles.sidebar, 'space-y-2.5', className)}>
       {sections.map(section => (
         <DocsSidebarSectionComponent key={section.title} section={section} />
       ))}
@@ -43,7 +43,7 @@ const DocsSidebarSectionComponent = ({ section }: { section: DocsSidebarSection 
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <CollapsibleTrigger className='docs-nav-section-header w-full'>
+      <CollapsibleTrigger className={cn(styles.sectionHeader, 'w-full')}>
         <div className='flex items-center gap-2 flex-1'>
           {Icon && <Icon className='h-4 w-4 opacity-70' />}
           <span>{section.title}</span>
@@ -62,7 +62,9 @@ const DocsSidebarSectionComponent = ({ section }: { section: DocsSidebarSection 
               key={item.href}
               to={item.href}
               end={item.href === '/docs/ui'}
-              className={({ isActive }) => cn('docs-nav-item', isActive && 'active')}
+              className={({ isActive }) =>
+                cn(styles.navItem, isActive && styles.navItemActive)
+              }
             >
               <span className='flex-1 truncate'>{item.title}</span>
               {item.isNew && (

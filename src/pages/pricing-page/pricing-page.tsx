@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
-import type { PlanDetails } from '@/entities/subscription/subscription.schema'
-import { PlanCard } from '@/features/billing'
+import type { PlanDetails } from '@/entities/subscription'
+import { PlanCard } from '@/features/billing/plan-card'
 import { Typography } from '@/shared/components/typography'
 
 interface PricingPageProps {

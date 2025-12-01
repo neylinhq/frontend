@@ -1,6 +1,6 @@
 /* Docs Search Styles */
 
-.docs-search-trigger {
+.trigger {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -14,12 +14,12 @@
   cursor: pointer;
 }
 
-.docs-search-trigger:hover {
+.trigger:hover {
   background: hsl(var(--muted) / 0.5);
   border-color: hsl(var(--border) / 0.8);
 }
 
-.docs-search-trigger kbd {
+.trigger kbd {
   padding: 0.125rem 0.375rem;
   border-radius: 0.25rem;
   border: 1px solid hsl(var(--border));

@@ -103,7 +103,7 @@ const UiIndexPage = () => {
         <Typography variant='p'>
           {t('docs.index.quickStart.description')}{' '}
           <code className='relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm'>
-            src/shared/ui/
+            src/shared/components/
           </code>
           {t('docs.index.quickStart.importText')}
         </Typography>

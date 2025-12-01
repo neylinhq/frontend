@@ -3,7 +3,7 @@ import { CreditCard } from 'lucide-react'
 import { cn } from '@/shared/lib/cn'
 import { Icon, paymentBrandIcons } from '@/shared/components/icon'
 
-import type { CardBrand } from '../lib/card-utils'
+import type { CardBrand } from '@/shared/lib/card-utils'
 
 interface CardBrandIconProps {
   brand: CardBrand | string

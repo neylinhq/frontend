@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/shared/lib/cn'
-import './docs-toc.module.css'
+import styles from './docs-toc.module.css'
 import { useActiveHeading } from './use-active-heading'
 
 export interface TocItem {
@@ -41,9 +41,9 @@ export const DocsToc = ({ items, className }: DocsTocProps) => {
           href={`#${item.id}`}
           onClick={e => handleClick(e, item.id)}
           className={cn(
-            'docs-toc-item',
+            styles.item,
             item.level === 3 && 'pl-4',
-            activeId === item.id && 'active'
+            activeId === item.id && styles.itemActive
           )}
         >
           {item.title}

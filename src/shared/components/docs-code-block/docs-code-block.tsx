@@ -3,7 +3,7 @@
 import { Check, ChevronDown, ChevronUp, Copy } from 'lucide-react'
 import * as React from 'react'
 import { cn } from '@/shared/lib/cn'
-import './docs-code-block.module.css'
+import styles from './docs-code-block.module.css'
 import { Button } from '@/shared/components/button'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/shared/components/collapsible'
 
@@ -11,9 +11,9 @@ interface DocsCodeBlockProps {
   code: string
   language?: string
   filename?: string
-  showLineNumbers?: boolean
   collapsible?: boolean
   defaultCollapsed?: boolean
+  embedded?: boolean
   className?: string
 }
 
@@ -21,9 +21,9 @@ export const DocsCodeBlock = ({
   code,
   language = 'tsx',
   filename,
-  showLineNumbers = false,
   collapsible = false,
   defaultCollapsed = false,
+  embedded = false,
   className
 }: DocsCodeBlockProps) => {
   const [copied, setCopied] = React.useState(false)
@@ -41,19 +41,19 @@ export const DocsCodeBlock = ({
 
   const codeContent = (
     <>
-      <div className='docs-code-block-header'>
+      <div className={styles.header}>
         {filename && <span className='font-medium text-foreground'>{filename}</span>}
-        <span className='docs-code-block-language'>{language}</span>
+        <span className={styles.language}>{language}</span>
         <button
           type='button'
           onClick={handleCopy}
-          className='docs-code-block-copy'
+          className={styles.copy}
           aria-label={copied ? 'Copied!' : 'Copy code'}
         >
           {copied ? <Check className='h-4 w-4 text-success' /> : <Copy className='h-4 w-4' />}
         </button>
       </div>
-      <pre className={cn('docs-code-block-pre', showLineNumbers && 'with-line-numbers')}>
+      <pre className={styles.pre}>
         <code className={`language-${language} text-sm`}>{code}</code>
       </pre>
     </>
@@ -62,7 +62,7 @@ export const DocsCodeBlock = ({
   if (collapsible) {
     return (
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-        <div className={cn('docs-code-block', className)}>
+        <div className={cn(styles.block, embedded && styles.embedded, className)}>
           <CollapsibleTrigger asChild>
             <Button
               variant='ghost'
@@ -76,7 +76,7 @@ export const DocsCodeBlock = ({
             </Button>
           </CollapsibleTrigger>
           <CollapsibleContent>
-            <pre className={cn('docs-code-block-pre', showLineNumbers && 'with-line-numbers')}>
+            <pre className={styles.pre}>
               <code className={`language-${language} text-sm`}>{code}</code>
             </pre>
           </CollapsibleContent>
@@ -85,5 +85,9 @@ export const DocsCodeBlock = ({
     )
   }
 
-  return <div className={cn('docs-code-block', className)}>{codeContent}</div>
+  return (
+    <div className={cn(styles.block, embedded && styles.embedded, className)}>
+      {codeContent}
+    </div>
+  )
 }

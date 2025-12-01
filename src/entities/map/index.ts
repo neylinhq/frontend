@@ -17,7 +17,9 @@ export {
   useMaps,
   useNodeWithContent,
   useUpdateEdge,
-  useUpdateNode
+  useUpdateNode,
+  useUpdateNodePosition,
+  useUpdateNodePositions
 } from './map.queries'
 export type { Edge, FullMap, MapEntity, Node, RelationType } from './map.schema'
 export {

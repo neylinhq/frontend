@@ -205,3 +205,18 @@ export const useAnalyzeGraph = (mapId: string) => {
     }
   })
 }
+
+// ====== Position updates (optimistic, no cache invalidation) ======
+export const useUpdateNodePosition = () => {
+  return useMutation({
+    mutationFn: ({ id, position }: { id: string; position: { x: number; y: number } }) =>
+      mapApi.updateNodePosition(id, position)
+  })
+}
+
+export const useUpdateNodePositions = () => {
+  return useMutation({
+    mutationFn: (updates: Array<{ id: string; position: { x: number; y: number } }>) =>
+      mapApi.updateNodePositions(updates)
+  })
+}

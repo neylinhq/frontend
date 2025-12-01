@@ -1,16 +1,14 @@
 'use client'
 
-import { ArrowRight, BookOpen, FileText, Hash, Package, Palette, Search, Type } from 'lucide-react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { ArrowRight, BookOpen, FileText, Package, Palette, Search, Type } from 'lucide-react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router'
 
 import { cn } from '@/shared/lib/cn'
-import './docs-search.module.css'
 import { isMac } from '@/shared/lib/platform'
-import { Dialog, DialogContent, DialogTitle } from '@/shared/components/dialog'
+import { CommandPalette, type CommandPaletteItem } from '@/shared/components/command-palette'
 
-interface SearchItem {
-  id: string
+interface SearchItem extends CommandPaletteItem {
   title: string
   description?: string
   href: string
@@ -19,7 +17,7 @@ interface SearchItem {
   keywords?: string[]
 }
 
-// Статический индекс документации
+// Static documentation index
 const SEARCH_INDEX: SearchItem[] = [
   // Getting Started
   {
@@ -125,6 +123,44 @@ const SEARCH_INDEX: SearchItem[] = [
   }
 ]
 
+// Filter function for search
+const filterSearchItem = (item: SearchItem, query: string): boolean => {
+  const normalizedQuery = query.toLowerCase().trim()
+  const terms = normalizedQuery.split(/\s+/)
+
+  const searchableText = [item.title, item.description, item.section, ...(item.keywords || [])]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase()
+
+  return terms.every(term => searchableText.includes(term))
+}
+
+// Render function for search items
+const renderSearchItem = (item: SearchItem, isSelected: boolean) => {
+  const Icon = item.icon
+
+  return (
+    <div className='flex items-center gap-3 px-3 py-2.5 text-left'>
+      <div
+        className={cn(
+          'flex h-9 w-9 items-center justify-center rounded-md border',
+          isSelected ? 'border-accent-foreground/20 bg-background' : 'border-border bg-muted/50'
+        )}
+      >
+        <Icon className='h-4 w-4' />
+      </div>
+      <div className='flex-1 min-w-0'>
+        <div className='font-medium text-sm truncate'>{item.title}</div>
+        {item.description && (
+          <div className='text-xs text-muted-foreground truncate'>{item.description}</div>
+        )}
+      </div>
+      {isSelected && <ArrowRight className='h-4 w-4 text-muted-foreground shrink-0' />}
+    </div>
+  )
+}
+
 interface DocsSearchProps {
   open?: boolean
   onOpenChange?: (open: boolean) => void
@@ -132,208 +168,33 @@ interface DocsSearchProps {
 
 export const DocsSearch = ({ open, onOpenChange }: DocsSearchProps) => {
   const [isOpen, setIsOpen] = useState(false)
-  const [query, setQuery] = useState('')
-  const [selectedIndex, setSelectedIndex] = useState(0)
   const navigate = useNavigate()
 
   const controlled = open !== undefined
   const isDialogOpen = controlled ? open : isOpen
-  const setDialogOpen = controlled ? onOpenChange! : setIsOpen
+  const setDialogOpen = controlled && onOpenChange ? onOpenChange : setIsOpen
 
-  // Фильтрация результатов
-  const results = useMemo(() => {
-    if (!query.trim()) {
-      return SEARCH_INDEX
-    }
-
-    const normalizedQuery = query.toLowerCase().trim()
-    const terms = normalizedQuery.split(/\s+/)
-
-    return SEARCH_INDEX.filter(item => {
-      const searchableText = [item.title, item.description, item.section, ...(item.keywords || [])]
-        .filter(Boolean)
-        .join(' ')
-        .toLowerCase()
-
-      return terms.every(term => searchableText.includes(term))
-    })
-  }, [query])
-
-  // Группировка по секциям
-  const groupedResults = useMemo(() => {
-    const groups: Record<string, SearchItem[]> = {}
-    for (const item of results) {
-      if (!groups[item.section]) {
-        groups[item.section] = []
-      }
-      groups[item.section].push(item)
-    }
-    return groups
-  }, [results])
-
-  // Плоский список для навигации
-  const flatResults = useMemo(() => results, [results])
-
-  // Обработка выбора
-  const handleSelect = useCallback(
-    (item: SearchItem) => {
-      navigate(item.href)
-      setDialogOpen(false)
-      setQuery('')
-    },
-    [navigate, setDialogOpen]
-  )
-
-  // Клавиатурная навигация
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      switch (e.key) {
-        case 'ArrowDown':
-          e.preventDefault()
-          setSelectedIndex(i => (i + 1) % flatResults.length)
-          break
-        case 'ArrowUp':
-          e.preventDefault()
-          setSelectedIndex(i => (i - 1 + flatResults.length) % flatResults.length)
-          break
-        case 'Enter':
-          e.preventDefault()
-          if (flatResults[selectedIndex]) {
-            handleSelect(flatResults[selectedIndex])
-          }
-          break
-      }
-    },
-    [flatResults, selectedIndex, handleSelect]
-  )
-
-  // Глобальный хоткей Cmd+K / Ctrl+K
-  useEffect(() => {
-    const down = (e: KeyboardEvent) => {
-      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault()
-        setDialogOpen(!isDialogOpen)
-      }
-    }
-
-    document.addEventListener('keydown', down)
-    return () => document.removeEventListener('keydown', down)
-  }, [isDialogOpen, setDialogOpen])
-
-  // Сброс выбора при изменении запроса
-  useEffect(() => {
-    setSelectedIndex(0)
-  }, [])
+  const handleSelect = (item: SearchItem) => {
+    navigate(item.href)
+  }
 
   return (
-    <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
-      <DialogContent className='max-w-2xl p-0 gap-0 overflow-hidden [&>button]:hidden'>
-        <DialogTitle className='sr-only'>Search documentation</DialogTitle>
-
-        {/* Search Input */}
-        <div className='flex items-center border-b px-4'>
-          <Search className='h-4 w-4 text-muted-foreground shrink-0' />
-          <input
-            type='text'
-            placeholder='Search documentation...'
-            value={query}
-            onChange={e => setQuery(e.target.value)}
-            onKeyDown={handleKeyDown}
-            className='flex-1 h-14 px-3 bg-transparent text-sm outline-none placeholder:text-muted-foreground'
-            autoFocus
-          />
-          <kbd className='hidden sm:inline-flex h-5 items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground'>
-            ESC
-          </kbd>
-        </div>
-
-        {/* Results */}
-        <div className='max-h-[400px] overflow-y-auto p-2'>
-          {flatResults.length === 0 ? (
-            <div className='py-12 text-center text-sm text-muted-foreground'>
-              No results found for "{query}"
-            </div>
-          ) : (
-            Object.entries(groupedResults).map(([section, items]) => (
-              <div key={section} className='mb-4 last:mb-0'>
-                <div className='px-2 py-1.5 text-xs font-medium text-muted-foreground'>
-                  {section}
-                </div>
-                {items.map(item => {
-                  const globalIndex = flatResults.indexOf(item)
-                  const Icon = item.icon
-
-                  return (
-                    <button
-                      key={item.id}
-                      onClick={() => handleSelect(item)}
-                      onMouseEnter={() => setSelectedIndex(globalIndex)}
-                      className={cn(
-                        'w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors',
-                        globalIndex === selectedIndex
-                          ? 'bg-accent text-accent-foreground'
-                          : 'hover:bg-accent/50'
-                      )}
-                    >
-                      <div
-                        className={cn(
-                          'flex h-9 w-9 items-center justify-center rounded-md border',
-                          globalIndex === selectedIndex
-                            ? 'border-accent-foreground/20 bg-background'
-                            : 'border-border bg-muted/50'
-                        )}
-                      >
-                        <Icon className='h-4 w-4' />
-                      </div>
-                      <div className='flex-1 min-w-0'>
-                        <div className='font-medium text-sm truncate'>{item.title}</div>
-                        {item.description && (
-                          <div className='text-xs text-muted-foreground truncate'>
-                            {item.description}
-                          </div>
-                        )}
-                      </div>
-                      {globalIndex === selectedIndex && (
-                        <ArrowRight className='h-4 w-4 text-muted-foreground shrink-0' />
-                      )}
-                    </button>
-                  )
-                })}
-              </div>
-            ))
-          )}
-        </div>
-
-        {/* Footer */}
-        <div className='flex items-center justify-between border-t px-4 py-2 text-xs text-muted-foreground'>
-          <div className='flex items-center gap-4'>
-            <span className='flex items-center gap-1'>
-              <kbd className='inline-flex h-5 items-center rounded border bg-muted px-1.5 font-mono text-[10px]'>
-                ↑
-              </kbd>
-              <kbd className='inline-flex h-5 items-center rounded border bg-muted px-1.5 font-mono text-[10px]'>
-                ↓
-              </kbd>
-              <span className='ml-1'>Navigate</span>
-            </span>
-            <span className='flex items-center gap-1'>
-              <kbd className='inline-flex h-5 items-center rounded border bg-muted px-1.5 font-mono text-[10px]'>
-                ↵
-              </kbd>
-              <span className='ml-1'>Select</span>
-            </span>
-          </div>
-          <div className='flex items-center gap-1'>
-            <Hash className='h-3 w-3' />
-            <span>{flatResults.length} results</span>
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
+    <CommandPalette
+      open={isDialogOpen}
+      onOpenChange={setDialogOpen}
+      items={SEARCH_INDEX}
+      filterFn={filterSearchItem}
+      groupBy={item => item.section}
+      renderItem={renderSearchItem}
+      onSelect={handleSelect}
+      placeholder='Search documentation...'
+      emptyMessage='No results found for'
+      title='Search documentation'
+    />
   )
 }
 
-// Компонент-триггер для поисковой строки
+// Trigger component for search button
 interface DocsSearchTriggerProps {
   className?: string
 }
@@ -344,9 +205,10 @@ export const DocsSearchTrigger = ({ className }: DocsSearchTriggerProps) => {
   return (
     <>
       <button
+        type='button'
         onClick={() => setOpen(true)}
         className={cn(
-          'docs-search-trigger inline-flex items-center gap-2 rounded-lg border bg-muted/40 px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground',
+          'inline-flex items-center gap-2 rounded-lg border bg-muted/40 px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground',
           className
         )}
       >

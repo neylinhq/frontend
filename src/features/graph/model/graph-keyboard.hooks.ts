@@ -7,6 +7,8 @@ interface UseGraphKeyboardOptions {
   onFitView?: () => void
   onZoomIn?: () => void
   onZoomOut?: () => void
+  onUndo?: () => void
+  onRedo?: () => void
   enabled?: boolean
 }
 
@@ -15,6 +17,8 @@ export const useGraphKeyboard = ({
   onFitView,
   onZoomIn,
   onZoomOut,
+  onUndo,
+  onRedo,
   enabled = true
 }: UseGraphKeyboardOptions) => {
   const {
@@ -127,6 +131,18 @@ export const useGraphKeyboard = ({
         onZoomOut?.()
         e.preventDefault()
       }
+
+      // Ctrl/Cmd+Z - Undo layout
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+        onUndo?.()
+        e.preventDefault()
+      }
+
+      // Ctrl/Cmd+Shift+Z - Redo layout
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z' && e.shiftKey) {
+        onRedo?.()
+        e.preventDefault()
+      }
     },
     [
       selectedNodeId,
@@ -140,7 +156,9 @@ export const useGraphKeyboard = ({
       resetFilters,
       onFitView,
       onZoomIn,
-      onZoomOut
+      onZoomOut,
+      onUndo,
+      onRedo
     ]
   )
 
@@ -163,7 +181,9 @@ export const useGraphKeyboard = ({
       { key: '+/-', description: 'Adjust focus depth' },
       { key: 'R', description: 'Reset filters' },
       { key: 'L', description: 'Apply layout' },
-      { key: 'Ctrl+0', description: 'Fit view' }
+      { key: 'Ctrl+0', description: 'Fit view' },
+      { key: 'Ctrl+Z', description: 'Undo layout' },
+      { key: 'Ctrl+Shift+Z', description: 'Redo layout' }
     ]
   }
 }

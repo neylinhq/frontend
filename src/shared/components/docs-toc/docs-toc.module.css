@@ -1,6 +1,6 @@
 /* Docs Table of Contents Styles */
 
-.docs-toc-item {
+.item {
   display: block;
   padding: 0.25rem 0;
   font-size: 0.875rem;
@@ -8,11 +8,11 @@
   transition: color 0.15s ease;
 }
 
-.docs-toc-item:hover {
+.item:hover {
   color: hsl(var(--foreground));
 }
 
-.docs-toc-item.active {
+.itemActive {
   color: hsl(var(--foreground));
   font-weight: 500;
 }

@@ -3,18 +3,22 @@ import {
   MapIcon,
   Maximize2,
   Minimize2,
+  Search,
   SlidersHorizontal,
   ZoomIn,
   ZoomOut
 } from 'lucide-react'
 import { memo, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import type { LightweightNode } from '@/entities/node'
 import { cn } from '@/shared/lib/cn'
+import { isMac } from '@/shared/lib/platform'
 import { Button } from '@/shared/components/button'
 import { Card } from '@/shared/components/card'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/shared/components/dropdown-menu'
 import { Slider } from '@/shared/components/slider'
 import { useGraphUI, useNodeSpacing } from '../model/graph.store'
+import { NodeSearch } from './node-search'
 
 interface ViewControlsPanelProps {
   zoom: number
@@ -23,6 +27,8 @@ interface ViewControlsPanelProps {
   onZoomOut: () => void
   onCenter: () => void
   onToggleFullscreen: () => void
+  nodes?: LightweightNode[]
+  onNodeSelect?: (node: LightweightNode) => void
   className?: string
 }
 
@@ -34,10 +40,13 @@ export const ViewControlsPanel = memo(
     onZoomOut,
     onCenter,
     onToggleFullscreen,
+    nodes,
+    onNodeSelect,
     className
   }: ViewControlsPanelProps) => {
     const { t } = useTranslation()
     const { showMinimap, toggleMinimap } = useGraphUI()
+    const [searchOpen, setSearchOpen] = useState(false)
     const {
       nodeSpacing,
       setNodeSpacing,
@@ -201,6 +210,31 @@ export const ViewControlsPanel = memo(
           >
             {isFullscreen ? <Minimize2 className='w-4 h-4' /> : <Maximize2 className='w-4 h-4' />}
           </Button>
+
+          {/* Search */}
+          {nodes && nodes.length > 0 && onNodeSelect && (
+            <>
+              <div className='h-4 w-px bg-border' />
+              <Button
+                size='sm'
+                variant='ghost'
+                onClick={() => setSearchOpen(true)}
+                className='h-8 px-2 gap-1.5'
+                title={t('graph.search.title', 'Search nodes')}
+              >
+                <Search className='w-4 h-4' />
+                <kbd className='hidden sm:inline-flex h-5 items-center rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground'>
+                  {isMac ? '⌘' : '⌃'}K
+                </kbd>
+              </Button>
+              <NodeSearch
+                nodes={nodes}
+                open={searchOpen}
+                onOpenChange={setSearchOpen}
+                onSelect={onNodeSelect}
+              />
+            </>
+          )}
         </Card>
       </div>
     )

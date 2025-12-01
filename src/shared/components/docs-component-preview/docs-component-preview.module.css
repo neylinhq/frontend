@@ -1,6 +1,6 @@
 /* Docs Component Preview Styles */
 
-.docs-preview {
+.preview {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -11,17 +11,17 @@
   transition: all 0.2s ease;
 }
 
-.docs-preview:hover {
+.preview:hover {
   border-color: hsl(var(--border) / 0.8);
   background: linear-gradient(to bottom, hsl(var(--muted) / 0.3), hsl(var(--muted) / 0.1));
 }
 
 /* Card hover effect for docs */
-.docs-card-hover {
+.cardHover {
   transition: all 0.2s ease;
 }
 
-.docs-card-hover:hover {
+.cardHover:hover {
   transform: translateY(-2px);
   box-shadow:
     0 10px 15px -3px rgb(0 0 0 / 0.1),

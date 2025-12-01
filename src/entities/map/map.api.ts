@@ -116,6 +116,12 @@ export const mapApi = {
       return MOCK_NODE_WITH_CONTENT
     }
 
+    // Check generated graph nodes (for map '4')
+    const generatedNode = GENERATED_GRAPH.nodes.find(n => n.id === nodeId)
+    if (generatedNode) {
+      return generatedNode
+    }
+
     const allMockNodes = [...NEURAL_NETWORKS_NODES, ...PHILOSOPHY_NODES, ...GRAPH_THEORY_NODES]
 
     return allMockNodes.find(n => n.id === nodeId) || null
@@ -153,6 +159,51 @@ export const mapApi = {
     }
     Object.assign(node, { ...data, updatedAt: new Date().toISOString() })
     return node
+  },
+
+  // Update only node position (optimized for drag operations)
+  updateNodePosition: async (
+    id: string,
+    position: { x: number; y: number }
+  ): Promise<void> => {
+    await delay(50) // Minimal delay for position updates
+    // Check generated graph nodes first
+    const generatedNode = GENERATED_GRAPH.nodes.find(n => n.id === id)
+    if (generatedNode) {
+      generatedNode.position = position
+      generatedNode.updatedAt = new Date().toISOString()
+      return
+    }
+
+    const allMockNodes = [...NEURAL_NETWORKS_NODES, ...PHILOSOPHY_NODES, ...GRAPH_THEORY_NODES]
+    const node = allMockNodes.find(n => n.id === id)
+    if (node) {
+      node.position = position
+      node.updatedAt = new Date().toISOString()
+    }
+  },
+
+  // Batch update positions (for re-layout)
+  updateNodePositions: async (
+    updates: Array<{ id: string; position: { x: number; y: number } }>
+  ): Promise<void> => {
+    await delay(100) // Slightly longer for batch
+    for (const { id, position } of updates) {
+      // Check generated graph nodes first
+      const generatedNode = GENERATED_GRAPH.nodes.find(n => n.id === id)
+      if (generatedNode) {
+        generatedNode.position = position
+        generatedNode.updatedAt = new Date().toISOString()
+        continue
+      }
+
+      const allMockNodes = [...NEURAL_NETWORKS_NODES, ...PHILOSOPHY_NODES, ...GRAPH_THEORY_NODES]
+      const node = allMockNodes.find(n => n.id === id)
+      if (node) {
+        node.position = position
+        node.updatedAt = new Date().toISOString()
+      }
+    }
   },
 
   deleteNode: async (id: string): Promise<void> => {

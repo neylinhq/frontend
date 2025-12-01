@@ -1,6 +1,6 @@
 import type * as React from 'react'
 import { cn } from '@/shared/lib/cn'
-import './docs-component-preview.module.css'
+import styles from './docs-component-preview.module.css'
 import { DocsCodeBlock } from '@/shared/components/docs-code-block'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/components/tabs'
 
@@ -40,7 +40,7 @@ export const DocsComponentPreview = ({
           <div className={cn('p-10 min-h-[100px]', previewClassName)}>{children}</div>
         </TabsContent>
         <TabsContent value='code' className='mt-0'>
-          <DocsCodeBlock code={code} language={language} className='embedded' />
+          <DocsCodeBlock code={code} language={language} embedded />
         </TabsContent>
       </Tabs>
     </div>
@@ -56,5 +56,5 @@ interface DocsPreviewProps {
  * Simple preview container without tabs
  */
 export const DocsPreview = ({ children, className }: DocsPreviewProps) => {
-  return <div className={cn('docs-preview', className)}>{children}</div>
+  return <div className={cn(styles.preview, className)}>{children}</div>
 }

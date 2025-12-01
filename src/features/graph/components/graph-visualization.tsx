@@ -16,7 +16,14 @@ import {
 import { Loader2 } from 'lucide-react'
 import { memo, useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { type Edge, type FullMap, type Node, useFullMap } from '@/entities/map'
+import {
+  type Edge,
+  type FullMap,
+  type Node,
+  useFullMap,
+  useUpdateNodePosition,
+  useUpdateNodePositions
+} from '@/entities/map'
 import { cn } from '@/shared/lib/cn'
 import { NodeDrawer } from './node-drawer'
 import { useDarkMode } from '@/shared/hooks'
@@ -31,6 +38,7 @@ import {
   useNodeSpacing,
   useViewMode
 } from '../model/graph.store'
+import { useLayoutHistory } from '../model/layout-history.store'
 import { useGraphControls } from '../model/graph-controls.hooks'
 import { useFilteredGraphData } from '../model/graph-data.hooks'
 import { useGraphKeyboard } from '../model/graph-keyboard.hooks'
@@ -80,6 +88,10 @@ const GraphVisualizationContent = ({
   const { controls, toggleFullscreen } = useGraphControls()
   const layoutAppliedRef = useRef(false)
 
+  // Mutations for persisting positions to DB
+  const updatePositionMutation = useUpdateNodePosition()
+  const updatePositionsMutation = useUpdateNodePositions()
+
   const { zoomIn, zoomOut, fitView, setCenter, getNode, screenToFlowPosition } = useReactFlow()
   const { zoom: viewportZoom } = useViewport()
 
@@ -90,7 +102,7 @@ const GraphVisualizationContent = ({
       if (node) {
         const x = node.position.x + (node.measured?.width ?? 200) / 2
         const y = node.position.y + (node.measured?.height ?? 100) / 2
-        setCenter(x, y, { zoom: viewportZoom, duration: 300 })
+        setCenter(x, y, { zoom: viewportZoom, duration: layoutParamsRef.current.animationDuration })
       }
     },
     [getNode, setCenter, viewportZoom]
@@ -103,6 +115,7 @@ const GraphVisualizationContent = ({
   const { showMinimap } = useGraphUI()
   const { nodeSpacing, directionStrength, animationDuration } = useNodeSpacing()
   const { animateToPositions } = useAnimatedLayout()
+  const { saveSnapshot, undo, redo } = useLayoutHistory()
 
   // Track dark mode for theme-aware styling
   const isDark = useDarkMode()
@@ -189,12 +202,30 @@ const GraphVisualizationContent = ({
     return closestNodeId
   }, [reactFlowNodes, screenToFlowPosition])
 
+  // Get the appropriate anchor node based on current view mode
+  const getAnchorNodeId = useCallback(() => {
+    const params = layoutParamsRef.current
+    // In focus mode, anchor to the focused node
+    if (params.viewMode === 'focus' && params.focusedNodeId) {
+      return params.focusedNodeId
+    }
+    // Otherwise, anchor to the node closest to viewport center
+    return getClosestNodeToViewportCenter()
+  }, [getClosestNodeToViewportCenter])
+
   // Apply auto-layout function - uses ref to get latest params when triggered by store events
   const doApplyLayout = useCallback(
     (shouldFitView = true, anchorNodeId?: string | null, animated = false) => {
       if (reactFlowNodes.length === 0) {
         return
       }
+
+      // Save snapshot before layout change (for undo)
+      const currentPositions = new Map<string, { x: number; y: number }>()
+      for (const node of reactFlowNodes) {
+        currentPositions.set(node.id, { x: node.position.x, y: node.position.y })
+      }
+      saveSnapshot(currentPositions)
 
       const params = layoutParamsRef.current
       const result = applyLayout(reactFlowNodes, reactFlowEdges, {
@@ -203,6 +234,13 @@ const GraphVisualizationContent = ({
         spacingPercent: params.nodeSpacing,
         directionStrength: params.directionStrength
       })
+
+      // Persist all new positions to DB (batch update)
+      const positionUpdates = result.nodes.map(n => ({
+        id: n.id,
+        position: { x: Math.round(n.position.x), y: Math.round(n.position.y) }
+      }))
+      updatePositionsMutation.mutate(positionUpdates)
 
       if (animated) {
         // Smooth animation with synchronized camera
@@ -213,38 +251,49 @@ const GraphVisualizationContent = ({
         })
         // If no anchor but need to fit view, do it after animation completes
         if (!anchorNodeId && shouldFitView) {
-          setTimeout(() => fitView({ padding: 0.2, duration: 300 }), duration + 50)
+          setTimeout(() => fitView({ padding: 0.2, duration }), duration + 50)
         }
       } else {
         // Instant update
         setNodes(result.nodes)
+        const instantDuration = params.animationDuration
         if (anchorNodeId) {
           const anchorNode = result.nodes.find(n => n.id === anchorNodeId)
           if (anchorNode) {
             const x = anchorNode.position.x + (anchorNode.measured?.width ?? 200) / 2
             const y = anchorNode.position.y + (anchorNode.measured?.height ?? 100) / 2
-            setCenter(x, y, { zoom: viewportZoom, duration: 300 })
+            setCenter(x, y, { zoom: viewportZoom, duration: instantDuration })
           }
         } else if (shouldFitView) {
-          fitView({ padding: 0.2, duration: 300 })
+          fitView({ padding: 0.2, duration: instantDuration })
         }
       }
     },
-    [reactFlowNodes, reactFlowEdges, setNodes, fitView, setCenter, viewportZoom, animateToPositions]
+    [reactFlowNodes, reactFlowEdges, setNodes, fitView, setCenter, viewportZoom, animateToPositions, updatePositionsMutation, saveSnapshot]
   )
 
-  // Apply initial auto-layout when nodes are first loaded
+  // Apply initial layout when nodes are first loaded
+  // Use positions from DB if available, otherwise auto-layout
   useEffect(() => {
     if (!layoutAppliedRef.current && initialNodes.length > 0 && fullMap) {
       layoutAppliedRef.current = true
-      // Apply layout on initial load
-      const result = applyLayout(initialNodes, initialEdges, {
-        viewMode,
-        focusedNodeId,
-        spacingPercent: nodeSpacing,
-        directionStrength
-      })
-      setNodes(result.nodes)
+
+      // Check if positions from DB are valid (at least one non-zero position)
+      const hasValidPositions = initialNodes.some(n => n.position.x !== 0 || n.position.y !== 0)
+
+      if (hasValidPositions) {
+        // Use positions from DB directly (stable layout)
+        setNodes(initialNodes)
+      } else {
+        // No saved positions - apply auto-layout
+        const result = applyLayout(initialNodes, initialEdges, {
+          viewMode,
+          focusedNodeId,
+          spacingPercent: nodeSpacing,
+          directionStrength
+        })
+        setNodes(result.nodes)
+      }
     }
   }, [
     initialNodes.length,
@@ -263,20 +312,21 @@ const GraphVisualizationContent = ({
     const handleLayoutEvent = (e: Event) => {
       const customEvent = e as CustomEvent<{
         fitView?: boolean
-        anchorToCenter?: boolean
+        useAnchor?: boolean
         animated?: boolean
       }>
       const shouldFitView = customEvent.detail?.fitView ?? true
-      const anchorToCenter = customEvent.detail?.anchorToCenter ?? false
+      const useAnchor = customEvent.detail?.useAnchor ?? false
       const animated = customEvent.detail?.animated ?? false
 
-      const anchorNodeId = anchorToCenter ? getClosestNodeToViewportCenter() : null
+      // Use smart anchor selection (focus mode = focused node, overview = closest to center)
+      const anchorNodeId = useAnchor ? getAnchorNodeId() : null
       doApplyLayout(shouldFitView, anchorNodeId, animated)
     }
 
     layoutEvent.addEventListener('layout', handleLayoutEvent)
     return () => layoutEvent.removeEventListener('layout', handleLayoutEvent)
-  }, [doApplyLayout, getClosestNodeToViewportCenter])
+  }, [doApplyLayout, getAnchorNodeId])
 
   // Sync nodes when filtered data changes
   const prevNodeIdsRef = useRef<string>('')
@@ -294,12 +344,16 @@ const GraphVisualizationContent = ({
           spacingPercent: nodeSpacing,
           directionStrength
         })
-        // Animate to new positions
-        animateToPositions(reactFlowNodes, result.nodes, null, {
+        // Animate to new positions with anchor
+        const anchorId = getAnchorNodeId()
+        animateToPositions(reactFlowNodes, result.nodes, anchorId, {
           duration: animationDuration,
           easing: easeOutCubic
         })
-        setTimeout(() => fitView({ padding: 0.2, duration: 300 }), animationDuration + 50)
+        // Only fitView if no anchor (camera already follows anchor)
+        if (!anchorId) {
+          setTimeout(() => fitView({ padding: 0.2, duration: animationDuration }), animationDuration + 50)
+        }
       }
       prevNodeIdsRef.current = nodeIds
     }
@@ -313,7 +367,8 @@ const GraphVisualizationContent = ({
     animationDuration,
     reactFlowNodes,
     animateToPositions,
-    fitView
+    fitView,
+    getAnchorNodeId
   ])
 
   // Sync edges when data changes
@@ -328,15 +383,6 @@ const GraphVisualizationContent = ({
     }
     prevEdgeIdsRef.current = edgeIds
   }, [initialEdges, setEdges])
-
-  // Keyboard shortcuts
-  useGraphKeyboard({
-    selectedNodeId,
-    onFitView: () => fitView({ padding: 0.2, duration: 300 }),
-    onZoomIn: zoomIn,
-    onZoomOut: zoomOut,
-    enabled: interactive
-  })
 
   // Handle node changes
   const handleNodesChange = useCallback(
@@ -371,6 +417,82 @@ const GraphVisualizationContent = ({
     [setEdges, interactive]
   )
 
+  // Helper to get current positions as Map
+  const getCurrentPositionsMap = useCallback(() => {
+    const positions = new Map<string, { x: number; y: number }>()
+    for (const node of reactFlowNodes) {
+      positions.set(node.id, { x: node.position.x, y: node.position.y })
+    }
+    return positions
+  }, [reactFlowNodes])
+
+  // Save position to DB after drag ends
+  const handleNodeDragStop = useCallback(
+    (_event: React.MouseEvent, node: { id: string; position: { x: number; y: number } }) => {
+      if (!interactive) {
+        return
+      }
+      // Save snapshot before the drag (for undo)
+      saveSnapshot(getCurrentPositionsMap())
+
+      // Persist position to DB (fire-and-forget, optimistic)
+      updatePositionMutation.mutate({
+        id: node.id,
+        position: { x: Math.round(node.position.x), y: Math.round(node.position.y) }
+      })
+    },
+    [interactive, updatePositionMutation, saveSnapshot, getCurrentPositionsMap]
+  )
+
+  // Undo handler - restore previous layout snapshot
+  const handleUndo = useCallback(() => {
+    const snapshot = undo()
+    if (snapshot) {
+      setNodes(nodes =>
+        nodes.map(node => {
+          const pos = snapshot.positions.get(node.id)
+          return pos ? { ...node, position: pos } : node
+        })
+      )
+      // Persist restored positions to DB
+      const updates = Array.from(snapshot.positions.entries()).map(([id, position]) => ({
+        id,
+        position: { x: Math.round(position.x), y: Math.round(position.y) }
+      }))
+      updatePositionsMutation.mutate(updates)
+    }
+  }, [undo, setNodes, updatePositionsMutation])
+
+  // Redo handler - restore next layout snapshot
+  const handleRedo = useCallback(() => {
+    const snapshot = redo()
+    if (snapshot) {
+      setNodes(nodes =>
+        nodes.map(node => {
+          const pos = snapshot.positions.get(node.id)
+          return pos ? { ...node, position: pos } : node
+        })
+      )
+      // Persist restored positions to DB
+      const updates = Array.from(snapshot.positions.entries()).map(([id, position]) => ({
+        id,
+        position: { x: Math.round(position.x), y: Math.round(position.y) }
+      }))
+      updatePositionsMutation.mutate(updates)
+    }
+  }, [redo, setNodes, updatePositionsMutation])
+
+  // Keyboard shortcuts (must be after handlers are defined)
+  useGraphKeyboard({
+    selectedNodeId,
+    onFitView: () => fitView({ padding: 0.2, duration: layoutParamsRef.current.animationDuration }),
+    onZoomIn: zoomIn,
+    onZoomOut: zoomOut,
+    onUndo: handleUndo,
+    onRedo: handleRedo,
+    enabled: interactive
+  })
+
   // Zoom handlers - use ReactFlow's built-in zoom
   const handleZoomIn = useCallback(() => {
     zoomIn()
@@ -381,8 +503,9 @@ const GraphVisualizationContent = ({
   }, [zoomOut])
 
   const handleCenter = useCallback(() => {
+    const duration = layoutParamsRef.current.animationDuration
     if (reactFlowNodes.length === 0) {
-      fitView({ padding: 0.2, duration: 300 })
+      fitView({ padding: 0.2, duration })
       return
     }
 
@@ -420,12 +543,12 @@ const GraphVisualizationContent = ({
       if (node) {
         const x = node.position.x + (node.measured?.width ?? 200) / 2
         const y = node.position.y + (node.measured?.height ?? 100) / 2
-        setCenter(x, y, { zoom: viewportZoom, duration: 300 })
+        setCenter(x, y, { zoom: viewportZoom, duration })
         return
       }
     }
 
-    fitView({ padding: 0.2, duration: 300 })
+    fitView({ padding: 0.2, duration })
   }, [reactFlowNodes, getNode, setCenter, viewportZoom, fitView])
 
   // Show loading only when fetching client-side (no initialData)
@@ -476,6 +599,7 @@ const GraphVisualizationContent = ({
         onConnect={onConnect}
         onSelectionChange={handleSelectionChange}
         onNodeClick={(_event, node) => handleNodeClick(node.id)}
+        onNodeDragStop={handleNodeDragStop}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         fitView
@@ -513,7 +637,7 @@ const GraphVisualizationContent = ({
             pannable
             zoomable
             onClick={(_event, position) =>
-              setCenter(position.x, position.y, { zoom: viewportZoom, duration: 200 })
+              setCenter(position.x, position.y, { zoom: viewportZoom, duration: layoutParamsRef.current.animationDuration })
             }
           />
         )}
@@ -527,6 +651,11 @@ const GraphVisualizationContent = ({
         onZoomOut={handleZoomOut}
         onCenter={handleCenter}
         onToggleFullscreen={toggleFullscreen}
+        nodes={fullMap?.nodes}
+        onNodeSelect={node => {
+          selectNode(node.id)
+          handlePanToNode(node.id)
+        }}
       />
 
       {/* Toolbar - view modes, focus controls, filters */}

@@ -238,6 +238,7 @@ widgets/
 
 **Что можно**:
 - ✅ Импортировать features, entities, shared
+- ✅ **Импортировать другие widgets** (cross-widget)
 - ✅ Содержать layout логику
 - ✅ Композировать features
 
@@ -245,6 +246,23 @@ widgets/
 - ❌ Импортировать pages
 - ❌ Содержать бизнес-логику
 - ❌ Напрямую работать с API
+- ❌ Создавать циклические зависимости между widgets
+
+### Cross-widget imports
+
+**Widgets могут импортировать другие widgets** для композиции сложных layout-ов.
+
+Это прагматичное расширение FSD, избегающее prop-drilling через pages.
+
+```tsx
+// ✅ Разрешено
+// widgets/dashboard-layout/ui/dashboard-header.tsx
+import { UserNav } from '@/widgets/user-nav'
+```
+
+**Ограничения**:
+- Не создавать циклических зависимостей между widgets
+- Предпочитать композицию через children, если widget используется в 1-2 местах
 
 **Пример**:
 ```tsx

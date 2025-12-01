@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { PaletteSelect } from '@/features/theme/palette-select'
 import { ThemeToggle } from '@/features/theme/theme-toggle'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
 import { Label } from '@/shared/components/label'
@@ -28,6 +29,16 @@ const ThemePage = () => {
               </p>
             </div>
             <ThemeToggle />
+          </div>
+
+          <div className='flex items-center justify-between'>
+            <div className='space-y-0.5'>
+              <Label>{t('settings.theme.appearance.palette')}</Label>
+              <p className='text-sm text-muted-foreground'>
+                {t('settings.theme.appearance.paletteDescription')}
+              </p>
+            </div>
+            <PaletteSelect />
           </div>
         </CardContent>
       </Card>

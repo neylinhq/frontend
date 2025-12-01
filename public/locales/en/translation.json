@@ -886,7 +886,9 @@
         "title": "Appearance",
         "description": "Select your preferred theme mode",
         "mode": "Theme mode",
-        "modeDescription": "Choose between light, dark, or system theme"
+        "modeDescription": "Choose between light, dark, or system theme",
+        "palette": "Color palette",
+        "paletteDescription": "Choose a color scheme for the interface"
       },
       "language": {
         "title": "Language",

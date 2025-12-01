@@ -124,7 +124,7 @@
     --preview-classic: 220 100% 50%;
     --preview-vanilla: 24 80% 50%;
     --preview-vivid: 160 84% 39%;
-    --preview-mono: 220 100% 50%;
+    --preview-mono: 0 100% 50%;
 
     --background: 0 0% 100%;           /* #FFFFFF - pure white */
     --foreground: 0 0% 9%;             /* #171717 - near black */
@@ -142,7 +142,7 @@
     --accent-foreground: 0 0% 9%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --success: 142 76% 36%;            /* Tailwind green-600 */
+    --success: 142 76% 30%;            /* Darker green for better contrast */
     --success-foreground: 0 0% 98%;
     --warning: 45 93% 47%;             /* Tailwind amber-500 */
     --warning-foreground: 0 0% 9%;     /* Dark text for yellow */
@@ -184,7 +184,7 @@
     --accent-foreground: 0 0% 93%;
     --destructive: 0 72% 50%;
     --destructive-foreground: 0 0% 98%;
-    --success: 142 70% 45%;
+    --success: 142 70% 42%;
     --success-foreground: 0 0% 98%;
     --warning: 45 93% 52%;
     --warning-foreground: 0 0% 9%;
@@ -235,7 +235,7 @@
     --accent-foreground: 24 10% 12%;
     --destructive: 8 80% 58%;           /* Warm coral red */
     --destructive-foreground: 0 0% 98%;
-    --success: 150 70% 38%;            /* Warmer green → lime */
+    --success: 150 70% 32%;            /* Warmer green → lime, darker */
     --success-foreground: 0 0% 98%;
     --warning: 38 90% 50%;             /* Warmer → orange */
     --warning-foreground: 0 0% 9%;
@@ -273,7 +273,7 @@
     --accent-foreground: 36 15% 90%;
     --destructive: 8 75% 52%;
     --destructive-foreground: 0 0% 98%;
-    --success: 150 65% 48%;
+    --success: 150 65% 45%;
     --success-foreground: 0 0% 98%;
     --warning: 38 90% 55%;
     --warning-foreground: 0 0% 9%;
@@ -313,7 +313,7 @@
     --accent-foreground: 210 18% 10%;
     --destructive: 355 90% 55%;         /* Cool pink-red */
     --destructive-foreground: 0 0% 98%;
-    --success: 160 85% 38%;            /* Mint/cyan green */
+    --success: 160 85% 32%;            /* Mint/cyan green, darker */
     --success-foreground: 0 0% 98%;
     --warning: 50 95% 50%;             /* Lemon yellow */
     --warning-foreground: 0 0% 9%;
@@ -394,7 +394,7 @@
     --accent-foreground: 0 0% 4%;
     --destructive: 0 100% 50%;         /* Pure red */
     --destructive-foreground: 0 0% 100%;
-    --success: 120 100% 35%;           /* Pure green */
+    --success: 120 100% 28%;           /* Pure green, darker */
     --success-foreground: 0 0% 100%;
     --warning: 60 100% 45%;            /* Pure yellow */
     --warning-foreground: 0 0% 0%;
@@ -402,14 +402,14 @@
     --info-foreground: 0 0% 100%;
     --border: 0 0% 88%;                /* #E0E0E0 */
     --input: 0 0% 88%;
-    --ring: 220 100% 50%;
-    --brand: 220 100% 50%;             /* #0055FF - Pure blue */
+    --ring: 0 100% 50%;
+    --brand: 0 100% 50%;               /* #FF0000 - Pure red */
     --brand-foreground: 0 0% 100%;
-    --brand-muted: 220 100% 95%;
+    --brand-muted: 0 100% 95%;
 
-    /* Graph node colors - monochrome + blue accent */
+    /* Graph node colors - monochrome + red accent */
     --graph-violet: 0 0% 30%;          /* Dark gray */
-    --graph-blue: 220 100% 50%;        /* Pure blue - the accent */
+    --graph-blue: 0 100% 50%;          /* Pure red - the accent */
     --graph-cyan: 0 0% 45%;            /* Medium gray */
     --graph-emerald: 0 0% 55%;         /* Light-medium gray */
     --graph-amber: 0 0% 65%;           /* Light gray */
@@ -432,7 +432,7 @@
     --accent-foreground: 0 0% 96%;
     --destructive: 0 100% 55%;         /* Slightly brighter red */
     --destructive-foreground: 0 0% 100%;
-    --success: 120 100% 45%;           /* Brighter green */
+    --success: 120 100% 42%;           /* Brighter green */
     --success-foreground: 0 0% 0%;
     --warning: 60 100% 50%;            /* Brighter yellow */
     --warning-foreground: 0 0% 0%;
@@ -440,14 +440,14 @@
     --info-foreground: 0 0% 100%;
     --border: 0 0% 15%;                /* #262626 */
     --input: 0 0% 15%;
-    --ring: 220 100% 50%;
-    --brand: 220 100% 50%;             /* #0055FF - SAME pure blue */
+    --ring: 0 100% 50%;
+    --brand: 0 100% 50%;               /* #FF0000 - SAME pure red */
     --brand-foreground: 0 0% 100%;
-    --brand-muted: 220 50% 10%;
+    --brand-muted: 0 50% 10%;
 
-    /* Graph node colors - monochrome + blue (dark mode) */
+    /* Graph node colors - monochrome + red (dark mode) */
     --graph-violet: 0 0% 70%;          /* Light gray */
-    --graph-blue: 220 100% 50%;        /* Pure blue - same as light */
+    --graph-blue: 0 100% 50%;          /* Pure red - same as light */
     --graph-cyan: 0 0% 55%;            /* Medium gray */
     --graph-emerald: 0 0% 45%;         /* Medium-dark gray */
     --graph-amber: 0 0% 35%;           /* Dark gray */

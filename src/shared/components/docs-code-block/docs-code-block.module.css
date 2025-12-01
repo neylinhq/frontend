@@ -1,18 +1,18 @@
 /* Docs Code Block Styles */
 
-.docs-code-block {
+.block {
   border-radius: 0.5rem;
   border: 1px solid hsl(var(--border));
   background: hsl(var(--muted) / 0.3);
   overflow: hidden;
 }
 
-.docs-code-block.embedded {
+.embedded {
   border: none;
   border-radius: 0;
 }
 
-.docs-code-block-header {
+.header {
   flex: 1;
   display: flex;
   align-items: center;
@@ -25,7 +25,7 @@
   color: hsl(var(--muted-foreground));
 }
 
-.docs-code-block-language {
+.language {
   padding: 0.125rem 0.5rem;
   border-radius: 0.375rem;
   background: hsl(var(--muted));
@@ -35,7 +35,7 @@
   letter-spacing: 0.05em;
 }
 
-.docs-code-block-copy {
+.copy {
   margin-left: 0.5rem;
   padding: 0.375rem;
   border-radius: 0.375rem;
@@ -45,16 +45,16 @@
   cursor: pointer;
 }
 
-.docs-code-block:hover .docs-code-block-copy {
+.block:hover .copy {
   opacity: 1;
 }
 
-.docs-code-block-copy:hover {
+.copy:hover {
   background: hsl(var(--accent));
   color: hsl(var(--accent-foreground));
 }
 
-.docs-code-block-pre {
+.pre {
   margin: 0;
   padding: 1rem;
   overflow-x: auto;

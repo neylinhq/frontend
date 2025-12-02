@@ -210,12 +210,15 @@ const GraphVisualizationContent = ({
 
   // Get the appropriate anchor node based on current view mode
   const getAnchorNodeId = useCallback(() => {
-    const params = layoutParamsRef.current
-    // In focus mode, anchor to the focused node
-    if (params.viewMode === 'focus' && params.focusedNodeId) {
-      return params.focusedNodeId
-    }
-    // Otherwise, anchor to the node closest to viewport center
+    // TODO: Consider anchoring to focused node in focus mode
+    // Currently disabled because user might explore far from focused node,
+    // and layout changes would jump camera back unexpectedly
+    // const params = layoutParamsRef.current
+    // if (params.viewMode === 'focus' && params.focusedNodeId) {
+    //   return params.focusedNodeId
+    // }
+
+    // Always anchor to the node closest to viewport center
     return getClosestNodeToViewportCenter()
   }, [getClosestNodeToViewportCenter])
 
@@ -704,7 +707,7 @@ const GraphVisualizationContent = ({
             fullMap.edges,
             fullMap.nodes,
             selectNode,
-            handlePanToNode
+            focusNode // Focus on node instead of just panning - ensures node is visible
           )
         }
       />

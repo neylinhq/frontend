@@ -111,6 +111,18 @@ const GraphVisualizationContent = ({
   // Store hooks for view settings
   const { viewMode } = useViewMode()
   const { focusedNodeId, focusDepth, focusNode } = useFocusMode()
+
+  // Focus on node and pan to it (for connections panel eye icon)
+  const handleFocusAndPanToNode = useCallback(
+    (nodeId: string) => {
+      focusNode(nodeId)
+      // Pan after state updates and node becomes visible
+      setTimeout(() => {
+        handlePanToNode(nodeId)
+      }, 50)
+    },
+    [focusNode, handlePanToNode]
+  )
   const { visibleNodeTypes, visibleEdgeTypes } = useFilters()
   const { showMinimap } = useGraphUI()
   const { nodeSpacing, directionStrength, animationDuration } = useNodeSpacing()
@@ -352,55 +364,17 @@ const GraphVisualizationContent = ({
           positionCacheRef.current.set(node.id, { ...node.position })
         }
 
-        // In focus mode: preserve positions from cache, no auto-layout
-        // In overview mode: apply layout when nodes change
-        if (viewMode === 'focus') {
-          // Merge: use cached positions (includes previously visible nodes), fallback to saved
-          const mergedNodes = initialNodes.map(node => ({
-            ...node,
-            position: positionCacheRef.current.get(node.id) ?? node.position
-          }))
-          setNodes(mergedNodes)
-        } else {
-          // Overview mode - apply layout with animation when nodes change
-          const result = applyLayout(initialNodes, initialEdges, {
-            viewMode,
-            focusedNodeId,
-            spacingPercent: nodeSpacing,
-            directionStrength
-          })
-          // Update cache with new layout positions
-          for (const node of result.nodes) {
-            positionCacheRef.current.set(node.id, { ...node.position })
-          }
-          // Animate to new positions with anchor
-          const anchorId = getAnchorNodeId()
-          animateToPositions(reactFlowNodes, result.nodes, anchorId, {
-            duration: animationDuration,
-            easing: easeOutCubic
-          })
-          // Only fitView if no anchor (camera already follows anchor)
-          if (!anchorId) {
-            setTimeout(() => fitView({ padding: 0.2, duration: animationDuration }), animationDuration + 50)
-          }
-        }
+        // Always preserve positions from cache when nodes change (mode switch, filter change, etc.)
+        // Only apply fresh layout via explicit re-layout button
+        const mergedNodes = initialNodes.map(node => ({
+          ...node,
+          position: positionCacheRef.current.get(node.id) ?? node.position
+        }))
+        setNodes(mergedNodes)
       }
       prevNodeIdsRef.current = nodeIds
     }
-  }, [
-    initialNodes,
-    initialEdges,
-    viewMode,
-    focusedNodeId,
-    nodeSpacing,
-    directionStrength,
-    animationDuration,
-    reactFlowNodes,
-    animateToPositions,
-    fitView,
-    getAnchorNodeId,
-    setNodes
-  ])
+  }, [initialNodes, reactFlowNodes, setNodes])
 
   // Sync edges when data changes
   const prevEdgeIdsRef = useRef<string>('')
@@ -707,7 +681,7 @@ const GraphVisualizationContent = ({
             fullMap.edges,
             fullMap.nodes,
             selectNode,
-            focusNode // Focus on node instead of just panning - ensures node is visible
+            handleFocusAndPanToNode // Focus on node and pan to it
           )
         }
       />

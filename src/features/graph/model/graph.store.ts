@@ -146,18 +146,13 @@ export const useGraphViewStore = create<GraphViewState & GraphViewActions>()(
 
       // View mode
       setViewMode: mode => {
-        const currentFocusedNodeId = get().focusedNodeId
         set({ viewMode: mode })
         // Clear focus when switching away from focus mode
+        // No triggerLayout - positions preserved via cache, just show/hide nodes
         if (mode !== 'focus') {
           set({ focusedNodeId: null })
-          triggerLayout()
-        } else if (currentFocusedNodeId) {
-          // Only trigger layout if we have a focused node when switching to focus mode
-          triggerLayout()
         }
-        // When switching to focus mode without a focused node, don't trigger layout
-        // User will click a node to focus on it
+        // When switching to focus mode, user will click a node to focus on it
       },
 
       // Focus actions - no auto layout, sync effect handles visual updates

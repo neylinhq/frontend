@@ -719,6 +719,16 @@
       "cancel": "Cancel",
       "textColor": "Text Color",
       "highlight": "Highlight",
+      "bold": "Bold",
+      "italic": "Italic",
+      "underline": "Underline",
+      "strikethrough": "Strikethrough",
+      "code": "Code",
+      "highlightButton": "Highlight",
+      "subscript": "Subscript",
+      "superscript": "Superscript",
+      "link": "Link",
+      "math": "Insert math formula",
       "blockTypes": {
         "text": "Text",
         "heading1": "Heading 1",
@@ -755,6 +765,27 @@
         "functions": "Functions",
         "matrices": "Matrices",
         "misc": "Other"
+      }
+    },
+    "mediaDialog": {
+      "urlLabel": "URL",
+      "image": {
+        "title": "Insert Image",
+        "description": "Enter the URL of an image"
+      },
+      "imageFigure": {
+        "title": "Insert Image with Caption",
+        "description": "Enter the URL of an image"
+      },
+      "video": {
+        "title": "Embed Video",
+        "description": "Enter the URL of a YouTube, Vimeo, or Loom video"
+      },
+      "insert": "Insert",
+      "cancel": "Cancel",
+      "errors": {
+        "empty": "URL cannot be empty",
+        "invalid": "Please enter a valid URL"
       }
     }
   },

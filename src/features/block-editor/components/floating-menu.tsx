@@ -791,6 +791,7 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
         type='button'
         onMouseDown={handleMouseDownAdd}
         onClick={handleAddClick}
+        aria-label={t('editor.floating.addBlock')}
         className={cn(
           'flex h-6 w-6 items-center justify-center rounded transition-colors',
           'text-muted-foreground hover:bg-accent hover:text-foreground'
@@ -804,6 +805,7 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
         draggable='true'
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
+        aria-label={t('editor.floating.dragToMove')}
         className={cn(
           'flex h-6 w-6 items-center justify-center rounded transition-colors',
           'text-muted-foreground hover:bg-accent hover:text-foreground',

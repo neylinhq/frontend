@@ -745,6 +745,16 @@
       "cancel": "Отмена",
       "textColor": "Цвет текста",
       "highlight": "Выделение",
+      "bold": "Жирный",
+      "italic": "Курсив",
+      "underline": "Подчеркнутый",
+      "strikethrough": "Зачеркнутый",
+      "code": "Код",
+      "highlightButton": "Выделение",
+      "subscript": "Нижний индекс",
+      "superscript": "Верхний индекс",
+      "link": "Ссылка",
+      "math": "Вставить формулу",
       "blockTypes": {
         "text": "Текст",
         "heading1": "Заголовок 1",
@@ -781,6 +791,27 @@
         "functions": "Функции",
         "matrices": "Матрицы",
         "misc": "Прочее"
+      }
+    },
+    "mediaDialog": {
+      "urlLabel": "URL",
+      "image": {
+        "title": "Вставить изображение",
+        "description": "Введите URL изображения"
+      },
+      "imageFigure": {
+        "title": "Вставить изображение с подписью",
+        "description": "Введите URL изображения"
+      },
+      "video": {
+        "title": "Встроить видео",
+        "description": "Введите URL видео с YouTube, Vimeo или Loom"
+      },
+      "insert": "Вставить",
+      "cancel": "Отмена",
+      "errors": {
+        "empty": "URL не может быть пустым",
+        "invalid": "Пожалуйста, введите действительный URL"
       }
     }
   },

@@ -96,10 +96,27 @@
   --color-complexity-advanced: hsl(var(--complexity-advanced));
   --color-complexity-advanced-bg: hsl(var(--complexity-advanced-bg));
 
-  /* Edge colors */
-  --color-edge-strong: hsl(var(--edge-strong));
-  --color-edge-medium: hsl(var(--edge-medium));
-  --color-edge-weak: hsl(var(--edge-weak));
+  /* Edge colors - 10 unique types */
+  --color-edge-prerequisite: hsl(var(--edge-prerequisite));
+  --color-edge-prerequisite-muted: hsl(var(--edge-prerequisite-muted));
+  --color-edge-causes: hsl(var(--edge-causes));
+  --color-edge-causes-muted: hsl(var(--edge-causes-muted));
+  --color-edge-explains: hsl(var(--edge-explains));
+  --color-edge-explains-muted: hsl(var(--edge-explains-muted));
+  --color-edge-is-a: hsl(var(--edge-is-a));
+  --color-edge-is-a-muted: hsl(var(--edge-is-a-muted));
+  --color-edge-has-a: hsl(var(--edge-has-a));
+  --color-edge-has-a-muted: hsl(var(--edge-has-a-muted));
+  --color-edge-part-of: hsl(var(--edge-part-of));
+  --color-edge-part-of-muted: hsl(var(--edge-part-of-muted));
+  --color-edge-influences: hsl(var(--edge-influences));
+  --color-edge-influences-muted: hsl(var(--edge-influences-muted));
+  --color-edge-related-to: hsl(var(--edge-related-to));
+  --color-edge-related-to-muted: hsl(var(--edge-related-to-muted));
+  --color-edge-contradicts: hsl(var(--edge-contradicts));
+  --color-edge-contradicts-muted: hsl(var(--edge-contradicts-muted));
+  --color-edge-similar-to: hsl(var(--edge-similar-to));
+  --color-edge-similar-to-muted: hsl(var(--edge-similar-to-muted));
 
   /* Radii */
   --radius-lg: var(--radius);
@@ -193,7 +210,7 @@
     --graph-amber: 40 95% 55%;
     --graph-rose: 350 90% 60%;
 
-    /* Semantic colors - S+ Elite color system */
+    /* Semantic colors - Node types */
     --semantic-knowledge: 217 91% 60%;       /* Blue - concept, theory */
     --semantic-knowledge-muted: 217 60% 94%;
     --semantic-fact: 142 76% 36%;            /* Green - fact */
@@ -202,23 +219,40 @@
     --semantic-question-muted: 262 50% 94%;
     --semantic-example: 32 95% 44%;          /* Amber - example, person, school */
     --semantic-example-muted: 32 70% 93%;
-    --semantic-conflict: 0 84% 60%;          /* Red - contradiction, conflict */
+    --semantic-conflict: 0 84% 60%;          /* Red - contradiction */
     --semantic-conflict-muted: 0 60% 94%;
     --semantic-neutral: 220 9% 46%;          /* Gray - neutral */
     --semantic-neutral-muted: 220 9% 94%;
 
     /* Complexity colors */
-    --complexity-basic: 220 9% 46%;          /* Gray - basic */
+    --complexity-basic: 220 9% 46%;
     --complexity-basic-bg: 220 9% 94%;
-    --complexity-intermediate: 217 91% 60%;  /* Blue - intermediate */
+    --complexity-intermediate: 217 91% 60%;
     --complexity-intermediate-bg: 217 60% 94%;
-    --complexity-advanced: 0 84% 60%;        /* Red - advanced */
+    --complexity-advanced: 0 84% 60%;
     --complexity-advanced-bg: 0 60% 94%;
 
-    /* Edge type colors - intensity based */
-    --edge-strong: 217 91% 50%;              /* Strong relations - saturated */
-    --edge-medium: 217 50% 55%;              /* Medium relations */
-    --edge-weak: 220 9% 55%;                 /* Weak relations - desaturated */
+    /* Edge type colors - 10 unique semantic colors */
+    --edge-prerequisite: 24 95% 53%;         /* Orange - dependency */
+    --edge-prerequisite-muted: 24 70% 93%;
+    --edge-causes: 0 84% 60%;                /* Red - causation */
+    --edge-causes-muted: 0 60% 94%;
+    --edge-explains: 262 83% 58%;            /* Violet - explanation */
+    --edge-explains-muted: 262 50% 94%;
+    --edge-is-a: 239 84% 67%;                /* Indigo - taxonomy */
+    --edge-is-a-muted: 239 50% 94%;
+    --edge-has-a: 160 84% 39%;               /* Emerald - composition */
+    --edge-has-a-muted: 160 50% 92%;
+    --edge-part-of: 174 84% 40%;             /* Teal - aggregation */
+    --edge-part-of-muted: 174 50% 92%;
+    --edge-influences: 45 93% 47%;           /* Amber - influence */
+    --edge-influences-muted: 45 60% 93%;
+    --edge-related-to: 215 16% 47%;          /* Slate - weak relation */
+    --edge-related-to-muted: 215 16% 94%;
+    --edge-contradicts: 0 72% 51%;           /* Red-600 - conflict */
+    --edge-contradicts-muted: 0 50% 93%;
+    --edge-similar-to: 84 85% 43%;           /* Lime - similarity */
+    --edge-similar-to-muted: 84 50% 92%;
   }
 
   .dark {
@@ -266,7 +300,7 @@
     --graph-amber: 45 100% 60%;
     --graph-rose: 340 90% 65%;
 
-    /* Semantic colors - S+ Elite (dark mode) */
+    /* Semantic colors - Node types (dark mode) */
     --semantic-knowledge: 217 91% 65%;
     --semantic-knowledge-muted: 217 40% 18%;
     --semantic-fact: 142 70% 45%;
@@ -288,10 +322,27 @@
     --complexity-advanced: 0 72% 55%;
     --complexity-advanced-bg: 0 40% 16%;
 
-    /* Edge type colors (dark mode) */
-    --edge-strong: 217 91% 60%;
-    --edge-medium: 217 50% 60%;
-    --edge-weak: 220 9% 60%;
+    /* Edge type colors (dark mode - brighter) */
+    --edge-prerequisite: 24 95% 58%;
+    --edge-prerequisite-muted: 24 50% 16%;
+    --edge-causes: 0 80% 58%;
+    --edge-causes-muted: 0 45% 16%;
+    --edge-explains: 262 80% 65%;
+    --edge-explains-muted: 262 40% 17%;
+    --edge-is-a: 239 80% 72%;
+    --edge-is-a-muted: 239 40% 17%;
+    --edge-has-a: 160 80% 48%;
+    --edge-has-a-muted: 160 40% 15%;
+    --edge-part-of: 174 80% 48%;
+    --edge-part-of-muted: 174 40% 15%;
+    --edge-influences: 45 93% 55%;
+    --edge-influences-muted: 45 45% 16%;
+    --edge-related-to: 215 16% 60%;
+    --edge-related-to-muted: 215 16% 17%;
+    --edge-contradicts: 0 72% 58%;
+    --edge-contradicts-muted: 0 40% 16%;
+    --edge-similar-to: 84 80% 50%;
+    --edge-similar-to-muted: 84 40% 15%;
   }
 
   /* ========================================
@@ -329,40 +380,57 @@
     --brand-foreground: 0 0% 100%;
     --brand-muted: 24 55% 94%;
 
-    /* Graph node colors - warm shifted */
-    --graph-violet: 280 85% 60%;       /* Warmer purple */
-    --graph-blue: 230 90% 58%;         /* Warmer blue */
-    --graph-cyan: 195 85% 48%;         /* Warmer cyan */
-    --graph-emerald: 155 75% 42%;      /* Warmer green */
-    --graph-amber: 32 95% 52%;         /* More orange */
-    --graph-rose: 12 90% 58%;          /* Coral/terracotta */
+    /* Graph node colors - warm hue shift +5° */
+    --graph-violet: 256 85% 62%;
+    --graph-blue: 216 85% 58%;
+    --graph-cyan: 190 85% 48%;
+    --graph-emerald: 155 75% 42%;
+    --graph-amber: 35 85% 52%;
+    --graph-rose: 345 80% 58%;
 
-    /* Semantic colors - warm shifted */
-    --semantic-knowledge: 230 85% 55%;       /* Warm blue */
-    --semantic-knowledge-muted: 230 50% 93%;
-    --semantic-fact: 150 70% 36%;            /* Warm green */
-    --semantic-fact-muted: 150 45% 92%;
-    --semantic-question: 280 75% 55%;        /* Warm purple */
-    --semantic-question-muted: 280 45% 93%;
-    --semantic-example: 24 90% 45%;          /* Orange-amber */
-    --semantic-example-muted: 24 65% 92%;
-    --semantic-conflict: 8 80% 55%;          /* Coral red */
-    --semantic-conflict-muted: 8 55% 93%;
-    --semantic-neutral: 24 10% 45%;          /* Warm gray */
-    --semantic-neutral-muted: 24 10% 93%;
+    /* Semantic colors - warm hue shift +5° */
+    --semantic-knowledge: 222 80% 58%;
+    --semantic-knowledge-muted: 222 50% 93%;
+    --semantic-fact: 148 65% 34%;
+    --semantic-fact-muted: 148 45% 92%;
+    --semantic-question: 268 75% 56%;
+    --semantic-question-muted: 268 45% 93%;
+    --semantic-example: 28 85% 44%;
+    --semantic-example-muted: 28 60% 92%;
+    --semantic-conflict: 5 75% 58%;
+    --semantic-conflict-muted: 5 50% 93%;
+    --semantic-neutral: 30 6% 45%;
+    --semantic-neutral-muted: 30 6% 93%;
 
-    /* Complexity colors - warm */
-    --complexity-basic: 24 10% 45%;
-    --complexity-basic-bg: 24 10% 93%;
-    --complexity-intermediate: 230 85% 55%;
-    --complexity-intermediate-bg: 230 50% 93%;
-    --complexity-advanced: 8 80% 55%;
-    --complexity-advanced-bg: 8 55% 93%;
+    /* Complexity colors - warm hue shift */
+    --complexity-basic: 30 6% 45%;
+    --complexity-basic-bg: 30 6% 93%;
+    --complexity-intermediate: 222 80% 58%;
+    --complexity-intermediate-bg: 222 50% 93%;
+    --complexity-advanced: 5 75% 58%;
+    --complexity-advanced-bg: 5 50% 93%;
 
-    /* Edge type colors - warm */
-    --edge-strong: 24 80% 45%;
-    --edge-medium: 24 50% 50%;
-    --edge-weak: 24 10% 55%;
+    /* Edge type colors - warm hue shift +5° */
+    --edge-prerequisite: 20 85% 51%;
+    --edge-prerequisite-muted: 20 60% 92%;
+    --edge-causes: 5 75% 58%;
+    --edge-causes-muted: 5 50% 93%;
+    --edge-explains: 268 75% 56%;
+    --edge-explains-muted: 268 45% 93%;
+    --edge-is-a: 245 75% 65%;
+    --edge-is-a-muted: 245 45% 93%;
+    --edge-has-a: 155 75% 38%;
+    --edge-has-a-muted: 155 45% 91%;
+    --edge-part-of: 168 75% 38%;
+    --edge-part-of-muted: 168 45% 91%;
+    --edge-influences: 40 85% 46%;
+    --edge-influences-muted: 40 55% 92%;
+    --edge-related-to: 30 10% 45%;
+    --edge-related-to-muted: 30 10% 93%;
+    --edge-contradicts: 5 65% 49%;
+    --edge-contradicts-muted: 5 45% 92%;
+    --edge-similar-to: 78 75% 42%;
+    --edge-similar-to-muted: 78 45% 91%;
   }
   [data-palette="vanilla"].dark {
     --background: 24 10% 8%;           /* #161412 - warm dark */
@@ -394,40 +462,57 @@
     --brand-foreground: 0 0% 100%;
     --brand-muted: 24 40% 15%;
 
-    /* Graph node colors - warm shifted (dark) */
-    --graph-violet: 280 90% 72%;
-    --graph-blue: 230 95% 68%;
-    --graph-cyan: 195 90% 55%;
-    --graph-emerald: 155 85% 50%;
-    --graph-amber: 32 100% 58%;
-    --graph-rose: 12 95% 62%;
+    /* Graph node colors - warm hue shift +5° (dark) */
+    --graph-violet: 256 90% 72%;
+    --graph-blue: 216 90% 68%;
+    --graph-cyan: 190 90% 52%;
+    --graph-emerald: 155 85% 48%;
+    --graph-amber: 35 95% 58%;
+    --graph-rose: 345 85% 62%;
 
-    /* Semantic colors - warm (dark mode) */
-    --semantic-knowledge: 230 80% 62%;
-    --semantic-knowledge-muted: 230 35% 17%;
-    --semantic-fact: 150 65% 45%;
-    --semantic-fact-muted: 150 30% 15%;
-    --semantic-question: 280 70% 62%;
-    --semantic-question-muted: 280 35% 17%;
-    --semantic-example: 24 85% 55%;
-    --semantic-example-muted: 24 45% 15%;
-    --semantic-conflict: 8 75% 52%;
-    --semantic-conflict-muted: 8 35% 15%;
-    --semantic-neutral: 24 8% 58%;
-    --semantic-neutral-muted: 24 8% 17%;
+    /* Semantic colors - warm hue shift +5° (dark) */
+    --semantic-knowledge: 222 80% 63%;
+    --semantic-knowledge-muted: 222 35% 17%;
+    --semantic-fact: 148 60% 43%;
+    --semantic-fact-muted: 148 30% 15%;
+    --semantic-question: 268 70% 63%;
+    --semantic-question-muted: 268 35% 17%;
+    --semantic-example: 28 80% 52%;
+    --semantic-example-muted: 28 45% 15%;
+    --semantic-conflict: 5 65% 53%;
+    --semantic-conflict-muted: 5 35% 15%;
+    --semantic-neutral: 30 6% 58%;
+    --semantic-neutral-muted: 30 6% 17%;
 
-    /* Complexity colors - warm (dark) */
-    --complexity-basic: 24 8% 58%;
-    --complexity-basic-bg: 24 8% 17%;
-    --complexity-intermediate: 230 80% 62%;
-    --complexity-intermediate-bg: 230 35% 17%;
-    --complexity-advanced: 8 75% 52%;
-    --complexity-advanced-bg: 8 35% 15%;
+    /* Complexity colors - warm hue shift (dark) */
+    --complexity-basic: 30 6% 58%;
+    --complexity-basic-bg: 30 6% 17%;
+    --complexity-intermediate: 222 80% 63%;
+    --complexity-intermediate-bg: 222 35% 17%;
+    --complexity-advanced: 5 65% 53%;
+    --complexity-advanced-bg: 5 35% 15%;
 
-    /* Edge type colors - warm (dark) */
-    --edge-strong: 24 75% 55%;
-    --edge-medium: 24 45% 55%;
-    --edge-weak: 24 8% 55%;
+    /* Edge type colors - warm hue shift +5° (dark) */
+    --edge-prerequisite: 20 85% 56%;
+    --edge-prerequisite-muted: 20 45% 15%;
+    --edge-causes: 5 70% 56%;
+    --edge-causes-muted: 5 40% 15%;
+    --edge-explains: 268 70% 63%;
+    --edge-explains-muted: 268 35% 16%;
+    --edge-is-a: 245 70% 70%;
+    --edge-is-a-muted: 245 35% 16%;
+    --edge-has-a: 155 70% 46%;
+    --edge-has-a-muted: 155 35% 14%;
+    --edge-part-of: 168 70% 46%;
+    --edge-part-of-muted: 168 35% 14%;
+    --edge-influences: 40 85% 53%;
+    --edge-influences-muted: 40 42% 15%;
+    --edge-related-to: 30 10% 58%;
+    --edge-related-to-muted: 30 10% 16%;
+    --edge-contradicts: 5 65% 56%;
+    --edge-contradicts-muted: 5 38% 15%;
+    --edge-similar-to: 78 70% 48%;
+    --edge-similar-to-muted: 78 35% 14%;
   }
 
   /* Vivid Theme - cool, modern, energetic */
@@ -461,40 +546,57 @@
     --brand-foreground: 0 0% 100%;
     --brand-muted: 160 60% 94%;
 
-    /* Graph node colors - cool shifted, more vibrant */
-    --graph-violet: 260 100% 62%;      /* Electric violet */
-    --graph-blue: 200 100% 55%;        /* Cooler blue */
-    --graph-cyan: 175 100% 45%;        /* Teal */
-    --graph-emerald: 160 90% 42%;      /* Mint */
-    --graph-amber: 50 95% 50%;         /* Yellow-green tint */
-    --graph-rose: 330 95% 58%;         /* Magenta-pink */
+    /* Graph node colors - cool hue shift -5° */
+    --graph-violet: 244 100% 65%;
+    --graph-blue: 204 100% 60%;
+    --graph-cyan: 180 100% 50%;
+    --graph-emerald: 165 95% 45%;
+    --graph-amber: 45 100% 55%;
+    --graph-rose: 345 100% 60%;
 
-    /* Semantic colors - cool, saturated */
-    --semantic-knowledge: 200 100% 50%;      /* Cyan-blue */
-    --semantic-knowledge-muted: 200 70% 92%;
-    --semantic-fact: 160 90% 36%;            /* Mint green */
-    --semantic-fact-muted: 160 60% 91%;
-    --semantic-question: 260 95% 55%;        /* Electric purple */
-    --semantic-question-muted: 260 60% 93%;
-    --semantic-example: 50 95% 42%;          /* Yellow-gold */
-    --semantic-example-muted: 50 70% 91%;
-    --semantic-conflict: 355 90% 55%;        /* Pink-red */
+    /* Semantic colors - cool hue shift -5° */
+    --semantic-knowledge: 212 100% 60%;
+    --semantic-knowledge-muted: 212 70% 93%;
+    --semantic-fact: 138 90% 36%;
+    --semantic-fact-muted: 138 60% 91%;
+    --semantic-question: 256 100% 58%;
+    --semantic-question-muted: 256 60% 93%;
+    --semantic-example: 36 100% 46%;
+    --semantic-example-muted: 36 75% 92%;
+    --semantic-conflict: 355 95% 60%;
     --semantic-conflict-muted: 355 65% 93%;
-    --semantic-neutral: 210 15% 45%;         /* Cool gray */
-    --semantic-neutral-muted: 210 15% 93%;
+    --semantic-neutral: 215 14% 45%;
+    --semantic-neutral-muted: 215 14% 93%;
 
-    /* Complexity colors - vivid */
-    --complexity-basic: 210 15% 45%;
-    --complexity-basic-bg: 210 15% 93%;
-    --complexity-intermediate: 200 100% 50%;
-    --complexity-intermediate-bg: 200 70% 92%;
-    --complexity-advanced: 355 90% 55%;
+    /* Complexity colors - cool hue shift -5° */
+    --complexity-basic: 215 14% 45%;
+    --complexity-basic-bg: 215 14% 93%;
+    --complexity-intermediate: 212 100% 60%;
+    --complexity-intermediate-bg: 212 70% 93%;
+    --complexity-advanced: 355 95% 60%;
     --complexity-advanced-bg: 355 65% 93%;
 
-    /* Edge type colors - vivid */
-    --edge-strong: 160 90% 40%;
-    --edge-medium: 160 50% 45%;
-    --edge-weak: 210 15% 50%;
+    /* Edge type colors - cool hue shift -5° */
+    --edge-prerequisite: 28 100% 53%;
+    --edge-prerequisite-muted: 28 75% 92%;
+    --edge-causes: 355 95% 60%;
+    --edge-causes-muted: 355 65% 93%;
+    --edge-explains: 256 100% 58%;
+    --edge-explains-muted: 256 60% 93%;
+    --edge-is-a: 234 100% 67%;
+    --edge-is-a-muted: 234 60% 93%;
+    --edge-has-a: 165 95% 39%;
+    --edge-has-a-muted: 165 60% 91%;
+    --edge-part-of: 178 95% 40%;
+    --edge-part-of-muted: 178 60% 91%;
+    --edge-influences: 50 100% 47%;
+    --edge-influences-muted: 50 70% 92%;
+    --edge-related-to: 210 20% 47%;
+    --edge-related-to-muted: 210 20% 93%;
+    --edge-contradicts: 355 85% 51%;
+    --edge-contradicts-muted: 355 55% 92%;
+    --edge-similar-to: 90 95% 43%;
+    --edge-similar-to-muted: 90 55% 91%;
   }
   [data-palette="vivid"].dark {
     --background: 215 20% 7%;          /* #0F1318 - cool dark blue */
@@ -526,40 +628,57 @@
     --brand-foreground: 0 0% 0%;       /* Black text for neon */
     --brand-muted: 150 50% 15%;
 
-    /* Graph node colors - cool shifted, neon (dark) */
-    --graph-violet: 260 100% 72%;      /* Neon violet */
-    --graph-blue: 200 100% 65%;        /* Bright cyan-blue */
-    --graph-cyan: 175 100% 55%;        /* Neon teal */
-    --graph-emerald: 160 100% 50%;     /* Neon mint */
-    --graph-amber: 50 100% 55%;        /* Neon yellow */
-    --graph-rose: 330 100% 65%;        /* Neon pink */
+    /* Graph node colors - cool hue shift -5° (dark) */
+    --graph-violet: 244 100% 75%;
+    --graph-blue: 204 100% 70%;
+    --graph-cyan: 180 100% 55%;
+    --graph-emerald: 165 100% 50%;
+    --graph-amber: 45 100% 60%;
+    --graph-rose: 345 100% 65%;
 
-    /* Semantic colors - neon (dark mode) */
-    --semantic-knowledge: 200 100% 60%;
-    --semantic-knowledge-muted: 200 50% 15%;
-    --semantic-fact: 160 100% 48%;
-    --semantic-fact-muted: 160 50% 14%;
-    --semantic-question: 260 100% 65%;
-    --semantic-question-muted: 260 50% 16%;
-    --semantic-example: 50 100% 52%;
-    --semantic-example-muted: 50 50% 14%;
+    /* Semantic colors - cool hue shift -5° (dark) */
+    --semantic-knowledge: 212 100% 65%;
+    --semantic-knowledge-muted: 212 50% 17%;
+    --semantic-fact: 138 100% 48%;
+    --semantic-fact-muted: 138 50% 15%;
+    --semantic-question: 256 100% 65%;
+    --semantic-question-muted: 256 50% 17%;
+    --semantic-example: 36 100% 54%;
+    --semantic-example-muted: 36 55% 15%;
     --semantic-conflict: 355 100% 58%;
     --semantic-conflict-muted: 355 50% 15%;
-    --semantic-neutral: 210 12% 58%;
-    --semantic-neutral-muted: 210 12% 17%;
+    --semantic-neutral: 215 14% 58%;
+    --semantic-neutral-muted: 215 14% 17%;
 
-    /* Complexity colors - neon (dark) */
-    --complexity-basic: 210 12% 58%;
-    --complexity-basic-bg: 210 12% 17%;
-    --complexity-intermediate: 200 100% 60%;
-    --complexity-intermediate-bg: 200 50% 15%;
+    /* Complexity colors - cool hue shift -5° (dark) */
+    --complexity-basic: 215 14% 58%;
+    --complexity-basic-bg: 215 14% 17%;
+    --complexity-intermediate: 212 100% 65%;
+    --complexity-intermediate-bg: 212 50% 17%;
     --complexity-advanced: 355 100% 58%;
     --complexity-advanced-bg: 355 50% 15%;
 
-    /* Edge type colors - neon (dark) */
-    --edge-strong: 160 100% 50%;
-    --edge-medium: 160 60% 50%;
-    --edge-weak: 210 12% 55%;
+    /* Edge type colors - cool hue shift -5° (dark) */
+    --edge-prerequisite: 28 100% 58%;
+    --edge-prerequisite-muted: 28 55% 15%;
+    --edge-causes: 355 100% 58%;
+    --edge-causes-muted: 355 55% 15%;
+    --edge-explains: 256 100% 65%;
+    --edge-explains-muted: 256 50% 16%;
+    --edge-is-a: 234 100% 72%;
+    --edge-is-a-muted: 234 50% 16%;
+    --edge-has-a: 165 100% 48%;
+    --edge-has-a-muted: 165 50% 14%;
+    --edge-part-of: 178 100% 48%;
+    --edge-part-of-muted: 178 50% 14%;
+    --edge-influences: 50 100% 55%;
+    --edge-influences-muted: 50 50% 15%;
+    --edge-related-to: 210 18% 58%;
+    --edge-related-to-muted: 210 18% 17%;
+    --edge-contradicts: 355 100% 58%;
+    --edge-contradicts-muted: 355 50% 15%;
+    --edge-similar-to: 90 100% 48%;
+    --edge-similar-to-muted: 90 50% 14%;
   }
 
   /* ========================================
@@ -596,40 +715,57 @@
     --brand-foreground: 0 0% 100%;
     --brand-muted: 0 100% 95%;
 
-    /* Graph node colors - monochrome + red accent */
-    --graph-violet: 0 0% 30%;          /* Dark gray */
-    --graph-blue: 0 100% 50%;          /* Pure red - the accent */
-    --graph-cyan: 0 0% 45%;            /* Medium gray */
-    --graph-emerald: 0 0% 55%;         /* Light-medium gray */
-    --graph-amber: 0 0% 65%;           /* Light gray */
-    --graph-rose: 0 0% 20%;            /* Very dark gray */
+    /* Graph node colors - pure RGB (rounded to 30°) */
+    --graph-violet: 270 100% 65%;
+    --graph-blue: 210 100% 60%;
+    --graph-cyan: 180 100% 50%;
+    --graph-emerald: 150 100% 45%;
+    --graph-amber: 30 100% 55%;
+    --graph-rose: 330 100% 60%;
 
-    /* Semantic colors - monochrome with intensity */
-    --semantic-knowledge: 0 0% 25%;          /* Dark gray */
-    --semantic-knowledge-muted: 0 0% 94%;
-    --semantic-fact: 0 0% 35%;               /* Medium-dark gray */
-    --semantic-fact-muted: 0 0% 92%;
-    --semantic-question: 0 0% 45%;           /* Medium gray */
-    --semantic-question-muted: 0 0% 94%;
-    --semantic-example: 0 0% 55%;            /* Light-medium gray */
-    --semantic-example-muted: 0 0% 93%;
-    --semantic-conflict: 0 100% 50%;         /* Pure red - accent */
-    --semantic-conflict-muted: 0 50% 94%;
-    --semantic-neutral: 0 0% 50%;            /* Mid gray */
+    /* Semantic colors - pure RGB (rounded to 30°) */
+    --semantic-knowledge: 210 100% 60%;
+    --semantic-knowledge-muted: 210 70% 93%;
+    --semantic-fact: 150 100% 36%;
+    --semantic-fact-muted: 150 60% 91%;
+    --semantic-question: 270 100% 58%;
+    --semantic-question-muted: 270 60% 93%;
+    --semantic-example: 30 100% 46%;
+    --semantic-example-muted: 30 75% 92%;
+    --semantic-conflict: 0 100% 60%;
+    --semantic-conflict-muted: 0 65% 93%;
+    --semantic-neutral: 0 0% 46%;
     --semantic-neutral-muted: 0 0% 94%;
 
-    /* Complexity colors - mono */
-    --complexity-basic: 0 0% 50%;
+    /* Complexity colors - pure RGB */
+    --complexity-basic: 0 0% 46%;
     --complexity-basic-bg: 0 0% 94%;
-    --complexity-intermediate: 0 0% 35%;
-    --complexity-intermediate-bg: 0 0% 92%;
-    --complexity-advanced: 0 100% 50%;
-    --complexity-advanced-bg: 0 50% 94%;
+    --complexity-intermediate: 210 100% 60%;
+    --complexity-intermediate-bg: 210 70% 93%;
+    --complexity-advanced: 0 100% 60%;
+    --complexity-advanced-bg: 0 65% 93%;
 
-    /* Edge type colors - mono */
-    --edge-strong: 0 0% 25%;
-    --edge-medium: 0 0% 45%;
-    --edge-weak: 0 0% 65%;
+    /* Edge type colors - pure RGB (rounded to 30°) */
+    --edge-prerequisite: 30 100% 53%;
+    --edge-prerequisite-muted: 30 75% 92%;
+    --edge-causes: 0 100% 60%;
+    --edge-causes-muted: 0 65% 93%;
+    --edge-explains: 270 100% 58%;
+    --edge-explains-muted: 270 60% 93%;
+    --edge-is-a: 240 100% 67%;
+    --edge-is-a-muted: 240 60% 93%;
+    --edge-has-a: 150 100% 39%;
+    --edge-has-a-muted: 150 60% 91%;
+    --edge-part-of: 180 100% 40%;
+    --edge-part-of-muted: 180 60% 91%;
+    --edge-influences: 60 100% 47%;
+    --edge-influences-muted: 60 70% 92%;
+    --edge-related-to: 0 0% 47%;
+    --edge-related-to-muted: 0 0% 94%;
+    --edge-contradicts: 0 100% 51%;
+    --edge-contradicts-muted: 0 60% 92%;
+    --edge-similar-to: 90 100% 43%;
+    --edge-similar-to-muted: 90 60% 91%;
   }
   [data-palette="mono"].dark {
     --background: 0 0% 4%;             /* #0A0A0A - near black */
@@ -661,40 +797,57 @@
     --brand-foreground: 0 0% 100%;
     --brand-muted: 0 50% 10%;
 
-    /* Graph node colors - monochrome + red (dark mode) */
-    --graph-violet: 0 0% 70%;          /* Light gray */
-    --graph-blue: 0 100% 50%;          /* Pure red - same as light */
-    --graph-cyan: 0 0% 55%;            /* Medium gray */
-    --graph-emerald: 0 0% 45%;         /* Medium-dark gray */
-    --graph-amber: 0 0% 35%;           /* Dark gray */
-    --graph-rose: 0 0% 80%;            /* Very light gray */
+    /* Graph node colors - pure RGB (rounded to 30°), brighter for dark */
+    --graph-violet: 270 100% 75%;
+    --graph-blue: 210 100% 70%;
+    --graph-cyan: 180 100% 55%;
+    --graph-emerald: 150 100% 50%;
+    --graph-amber: 30 100% 60%;
+    --graph-rose: 330 100% 65%;
 
-    /* Semantic colors - monochrome (dark mode) */
-    --semantic-knowledge: 0 0% 75%;          /* Light gray */
-    --semantic-knowledge-muted: 0 0% 12%;
-    --semantic-fact: 0 0% 65%;               /* Medium-light gray */
-    --semantic-fact-muted: 0 0% 14%;
-    --semantic-question: 0 0% 55%;           /* Medium gray */
-    --semantic-question-muted: 0 0% 12%;
-    --semantic-example: 0 0% 45%;            /* Medium-dark gray */
-    --semantic-example-muted: 0 0% 13%;
-    --semantic-conflict: 0 100% 55%;         /* Brighter red */
-    --semantic-conflict-muted: 0 40% 12%;
-    --semantic-neutral: 0 0% 50%;            /* Mid gray */
-    --semantic-neutral-muted: 0 0% 12%;
+    /* Semantic colors - pure RGB (rounded to 30°), brighter for dark */
+    --semantic-knowledge: 210 100% 65%;
+    --semantic-knowledge-muted: 210 50% 17%;
+    --semantic-fact: 150 100% 48%;
+    --semantic-fact-muted: 150 50% 15%;
+    --semantic-question: 270 100% 65%;
+    --semantic-question-muted: 270 50% 17%;
+    --semantic-example: 30 100% 54%;
+    --semantic-example-muted: 30 55% 15%;
+    --semantic-conflict: 0 100% 58%;
+    --semantic-conflict-muted: 0 50% 15%;
+    --semantic-neutral: 0 0% 60%;
+    --semantic-neutral-muted: 0 0% 18%;
 
-    /* Complexity colors - mono (dark) */
-    --complexity-basic: 0 0% 50%;
-    --complexity-basic-bg: 0 0% 12%;
-    --complexity-intermediate: 0 0% 65%;
-    --complexity-intermediate-bg: 0 0% 14%;
-    --complexity-advanced: 0 100% 55%;
-    --complexity-advanced-bg: 0 40% 12%;
+    /* Complexity colors - pure RGB, brighter for dark */
+    --complexity-basic: 0 0% 60%;
+    --complexity-basic-bg: 0 0% 18%;
+    --complexity-intermediate: 210 100% 65%;
+    --complexity-intermediate-bg: 210 50% 17%;
+    --complexity-advanced: 0 100% 58%;
+    --complexity-advanced-bg: 0 50% 15%;
 
-    /* Edge type colors - mono (dark) */
-    --edge-strong: 0 0% 75%;
-    --edge-medium: 0 0% 55%;
-    --edge-weak: 0 0% 35%;
+    /* Edge type colors - pure RGB (rounded to 30°), brighter for dark */
+    --edge-prerequisite: 30 100% 58%;
+    --edge-prerequisite-muted: 30 55% 15%;
+    --edge-causes: 0 100% 58%;
+    --edge-causes-muted: 0 55% 15%;
+    --edge-explains: 270 100% 65%;
+    --edge-explains-muted: 270 50% 16%;
+    --edge-is-a: 240 100% 72%;
+    --edge-is-a-muted: 240 50% 16%;
+    --edge-has-a: 150 100% 48%;
+    --edge-has-a-muted: 150 50% 14%;
+    --edge-part-of: 180 100% 48%;
+    --edge-part-of-muted: 180 50% 14%;
+    --edge-influences: 60 100% 55%;
+    --edge-influences-muted: 60 50% 15%;
+    --edge-related-to: 0 0% 60%;
+    --edge-related-to-muted: 0 0% 17%;
+    --edge-contradicts: 0 100% 58%;
+    --edge-contradicts-muted: 0 50% 15%;
+    --edge-similar-to: 90 100% 48%;
+    --edge-similar-to-muted: 90 50% 14%;
   }
 
   * {
@@ -1121,13 +1274,19 @@
   border: 1px solid transparent;
 }
 
-.tiptap-editor .callout::before {
-  font-size: 1.25rem;
-  line-height: 1.5;
+.tiptap-editor .callout-icon {
+  width: 1.25rem;
+  height: 1.25rem;
   flex-shrink: 0;
+  margin-top: 0.125rem;
 }
 
-.tiptap-editor .callout > * {
+.tiptap-editor .callout-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.tiptap-editor .callout-content > * {
   margin: 0;
 }
 
@@ -1137,13 +1296,17 @@
   border-color: hsl(210 100% 85%);
 }
 
-.tiptap-editor .callout-info::before {
-  content: "ℹ️";
+.tiptap-editor .callout-info .callout-icon {
+  color: hsl(210 100% 50%);
 }
 
 .dark .tiptap-editor .callout-info {
   background-color: hsl(210 100% 15% / 0.3);
   border-color: hsl(210 100% 30%);
+}
+
+.dark .tiptap-editor .callout-info .callout-icon {
+  color: hsl(210 100% 70%);
 }
 
 /* Warning Callout */
@@ -1152,13 +1315,17 @@
   border-color: hsl(45 100% 70%);
 }
 
-.tiptap-editor .callout-warning::before {
-  content: "⚠️";
+.tiptap-editor .callout-warning .callout-icon {
+  color: hsl(45 100% 40%);
 }
 
 .dark .tiptap-editor .callout-warning {
   background-color: hsl(45 100% 15% / 0.3);
   border-color: hsl(45 100% 30%);
+}
+
+.dark .tiptap-editor .callout-warning .callout-icon {
+  color: hsl(45 100% 60%);
 }
 
 /* Success Callout */
@@ -1167,13 +1334,17 @@
   border-color: hsl(142 70% 70%);
 }
 
-.tiptap-editor .callout-success::before {
-  content: "✅";
+.tiptap-editor .callout-success .callout-icon {
+  color: hsl(142 70% 45%);
 }
 
 .dark .tiptap-editor .callout-success {
   background-color: hsl(142 70% 15% / 0.3);
   border-color: hsl(142 70% 30%);
+}
+
+.dark .tiptap-editor .callout-success .callout-icon {
+  color: hsl(142 70% 60%);
 }
 
 /* Error Callout */
@@ -1652,7 +1823,7 @@
 .editor-drop-indicator {
   position: absolute;
   height: 2px;
-  background: rgba(139, 92, 246, 0.5);
+  background: hsl(var(--brand) / 0.5);
   border-radius: 1px;
   pointer-events: none;
   z-index: 100;
@@ -1726,33 +1897,16 @@
   background: hsl(var(--muted) / 0.5);
 }
 
-/* Focus node glow pulse animation */
-/* Light theme: indigo glow (brand color) */
-@keyframes glow-pulse-light {
-  0%, 100% {
-    box-shadow: 0 0 45px rgba(99, 102, 241, 0.45);
-  }
-  50% {
-    box-shadow: 0 0 60px rgba(99, 102, 241, 0.55);
-  }
-}
-
-/* Dark theme: white glow, more subtle */
-@keyframes glow-pulse-dark {
-  0%, 100% {
-    box-shadow: 0 0 45px rgba(255, 255, 255, 0.15);
-  }
-  50% {
-    box-shadow: 0 0 60px rgba(255, 255, 255, 0.25);
-  }
-}
-
+/* Focus node highlight (static, no animation per design manifesto) */
+/* Design note: Removed infinite animation - replaced with static ring per manifesto */
 .animate-glow-pulse {
-  animation: glow-pulse-light 5s ease-in-out infinite;
+  box-shadow: 0 0 0 2px hsl(var(--primary)), 0 0 20px hsl(var(--primary) / 0.3);
+  transition: box-shadow 0.2s ease;
 }
 
 .dark .animate-glow-pulse {
-  animation: glow-pulse-dark 5s ease-in-out infinite;
+  box-shadow: 0 0 0 2px hsl(var(--primary)), 0 0 20px hsl(var(--primary) / 0.5);
+  transition: box-shadow 0.2s ease;
 }
 
 /* ========================================
@@ -1767,4 +1921,25 @@ html.theme-transition-disabled *::before,
 html.theme-transition-disabled *::after {
   transition: none !important;
   transition-duration: 0s !important;
+}
+
+/* ========================================
+   Reduced Motion Support (WCAG 2.3.3)
+   CRITICAL: Respect user's motion preferences
+   ======================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Disable specific animations */
+  .animate-glow-pulse {
+    animation: none !important;
+    transition: none !important;
+  }
 }

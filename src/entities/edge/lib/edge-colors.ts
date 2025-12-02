@@ -1,73 +1,41 @@
 import type { RelationType } from '../model/edge.schema'
 
 /**
- * S+ Elite Semantic Edge Color System
- * Consolidates 10 edge types into 4 semantic groups:
- * - Knowledge (structural): prerequisite, is-a, has-a, part-of
- * - Question (causal): causes, explains, influences
- * - Neutral (associative): related-to, similar-to
- * - Conflict: contradicts
- *
- * Uses CSS variables for palette-adaptive colors
+ * Edge Color System
+ * Each edge type has its own unique color that adapts to the palette.
+ * Colors are defined in globals.css as --edge-{type} variables.
  */
 
-// Semantic group mapping
-type SemanticGroup = 'knowledge' | 'question' | 'neutral' | 'conflict'
-
-const EDGE_SEMANTIC_GROUP: Record<RelationType, SemanticGroup> = {
-  // Structural/foundational relations → Knowledge (blue)
-  prerequisite: 'knowledge',
-  'is-a': 'knowledge',
-  'has-a': 'knowledge',
-  'part-of': 'knowledge',
-  // Causal/reasoning relations → Question (purple)
-  causes: 'question',
-  explains: 'question',
-  influences: 'question',
-  // Associative relations → Neutral (gray)
-  'related-to': 'neutral',
-  'similar-to': 'neutral',
-  // Conflict relations → Conflict (red)
-  contradicts: 'conflict'
-}
-
-// CSS variable for SVG stroke (uses hsl(var(...)) syntax)
+// CSS variable for SVG stroke - each type has unique color
 export const EDGE_STROKE_COLORS: Record<RelationType, string> = {
-  prerequisite: 'hsl(var(--semantic-knowledge))',
-  'is-a': 'hsl(var(--semantic-knowledge))',
-  'has-a': 'hsl(var(--semantic-knowledge))',
-  'part-of': 'hsl(var(--semantic-knowledge))',
-  causes: 'hsl(var(--semantic-question))',
-  explains: 'hsl(var(--semantic-question))',
-  influences: 'hsl(var(--semantic-question))',
-  'related-to': 'hsl(var(--semantic-neutral))',
-  'similar-to': 'hsl(var(--semantic-neutral))',
-  contradicts: 'hsl(var(--semantic-conflict))'
+  prerequisite: 'hsl(var(--edge-prerequisite))',
+  causes: 'hsl(var(--edge-causes))',
+  explains: 'hsl(var(--edge-explains))',
+  'is-a': 'hsl(var(--edge-is-a))',
+  'has-a': 'hsl(var(--edge-has-a))',
+  'part-of': 'hsl(var(--edge-part-of))',
+  influences: 'hsl(var(--edge-influences))',
+  'related-to': 'hsl(var(--edge-related-to))',
+  contradicts: 'hsl(var(--edge-contradicts))',
+  'similar-to': 'hsl(var(--edge-similar-to))'
 }
 
-// Tailwind classes for badge - using semantic colors
+// Tailwind classes for badge - using registered edge colors
 export const EDGE_BADGE_CLASSES: Record<RelationType, string> = {
-  // Knowledge group
-  prerequisite: 'bg-semantic-knowledge-muted text-semantic-knowledge border-transparent',
-  'is-a': 'bg-semantic-knowledge-muted text-semantic-knowledge border-transparent',
-  'has-a': 'bg-semantic-knowledge-muted text-semantic-knowledge border-transparent',
-  'part-of': 'bg-semantic-knowledge-muted text-semantic-knowledge border-transparent',
-  // Question group
-  causes: 'bg-semantic-question-muted text-semantic-question border-transparent',
-  explains: 'bg-semantic-question-muted text-semantic-question border-transparent',
-  influences: 'bg-semantic-question-muted text-semantic-question border-transparent',
-  // Neutral group
-  'related-to': 'bg-semantic-neutral-muted text-semantic-neutral border-transparent',
-  'similar-to': 'bg-semantic-neutral-muted text-semantic-neutral border-transparent',
-  // Conflict group
-  contradicts: 'bg-semantic-conflict-muted text-semantic-conflict border-transparent'
+  prerequisite: 'bg-edge-prerequisite-muted text-edge-prerequisite border-transparent',
+  causes: 'bg-edge-causes-muted text-edge-causes border-transparent',
+  explains: 'bg-edge-explains-muted text-edge-explains border-transparent',
+  'is-a': 'bg-edge-is-a-muted text-edge-is-a border-transparent',
+  'has-a': 'bg-edge-has-a-muted text-edge-has-a border-transparent',
+  'part-of': 'bg-edge-part-of-muted text-edge-part-of border-transparent',
+  influences: 'bg-edge-influences-muted text-edge-influences border-transparent',
+  'related-to': 'bg-edge-related-to-muted text-edge-related-to border-transparent',
+  contradicts: 'bg-edge-contradicts-muted text-edge-contradicts border-transparent',
+  'similar-to': 'bg-edge-similar-to-muted text-edge-similar-to border-transparent'
 }
 
 export const getEdgeStrokeColor = (type: RelationType) =>
-  EDGE_STROKE_COLORS[type] || 'hsl(var(--semantic-neutral))'
+  EDGE_STROKE_COLORS[type] || 'hsl(var(--edge-related-to))'
 
 export const getEdgeBadgeClass = (type: RelationType) =>
-  EDGE_BADGE_CLASSES[type] || 'bg-semantic-neutral-muted text-semantic-neutral border-transparent'
-
-export const getEdgeSemanticGroup = (type: RelationType): SemanticGroup =>
-  EDGE_SEMANTIC_GROUP[type] || 'neutral'
+  EDGE_BADGE_CLASSES[type] || 'bg-edge-related-to-muted text-edge-related-to border-transparent'

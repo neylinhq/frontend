@@ -394,6 +394,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleBold().run()}
         isActive={editor.isActive('bold')}
+        aria-label={t('editor.bubble.bold')}
       >
         <Bold className='h-4 w-4' />
       </ToolbarButton>
@@ -401,6 +402,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleItalic().run()}
         isActive={editor.isActive('italic')}
+        aria-label={t('editor.bubble.italic')}
       >
         <Italic className='h-4 w-4' />
       </ToolbarButton>
@@ -408,6 +410,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleUnderline().run()}
         isActive={editor.isActive('underline')}
+        aria-label={t('editor.bubble.underline')}
       >
         <Underline className='h-4 w-4' />
       </ToolbarButton>
@@ -415,6 +418,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleStrike().run()}
         isActive={editor.isActive('strike')}
+        aria-label={t('editor.bubble.strikethrough')}
       >
         <Strikethrough className='h-4 w-4' />
       </ToolbarButton>
@@ -422,6 +426,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleCode().run()}
         isActive={editor.isActive('code')}
+        aria-label={t('editor.bubble.code')}
       >
         <Code className='h-4 w-4' />
       </ToolbarButton>
@@ -429,6 +434,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleHighlight().run()}
         isActive={editor.isActive('highlight')}
+        aria-label={t('editor.bubble.highlightButton')}
       >
         <Highlighter className='h-4 w-4' />
       </ToolbarButton>
@@ -438,6 +444,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleSubscript().run()}
         isActive={editor.isActive('subscript')}
+        aria-label={t('editor.bubble.subscript')}
       >
         <Subscript className='h-4 w-4' />
       </ToolbarButton>
@@ -445,6 +452,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleSuperscript().run()}
         isActive={editor.isActive('superscript')}
+        aria-label={t('editor.bubble.superscript')}
       >
         <Superscript className='h-4 w-4' />
       </ToolbarButton>
@@ -530,6 +538,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
           dispatch({ type: 'OPEN_MENU', menu: 'link' })
         }}
         isActive={editor.isActive('link')}
+        aria-label={t('editor.bubble.link')}
       >
         <Link className='h-4 w-4' />
       </ToolbarButton>
@@ -537,6 +546,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
       <ToolbarButton
         onClick={() => onOpenMathDialog?.('inline')}
         isActive={editor.isActive('mathInline')}
+        aria-label={t('editor.bubble.math')}
       >
         <Sigma className='h-4 w-4' />
       </ToolbarButton>
@@ -595,13 +605,15 @@ interface ToolbarButtonProps {
   onClick: () => void
   isActive: boolean
   children: React.ReactNode
+  'aria-label'?: string
 }
 
-const ToolbarButton = ({ onClick, isActive, children }: ToolbarButtonProps) => {
+const ToolbarButton = ({ onClick, isActive, children, 'aria-label': ariaLabel }: ToolbarButtonProps) => {
   return (
     <button
       type='button'
       onClick={onClick}
+      aria-label={ariaLabel}
       className={cn(
         'flex h-8 w-8 items-center justify-center rounded-md transition-colors',
         isActive

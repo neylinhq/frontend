@@ -1,4 +1,6 @@
 import { mergeAttributes, Node } from '@tiptap/core'
+import { ReactNodeViewRenderer } from '@tiptap/react'
+import { CalloutNodeView } from '../components/callout-nodeview'
 
 export type CalloutType = 'info' | 'warning' | 'success' | 'error' | 'tip'
 
@@ -92,5 +94,9 @@ export const Callout = Node.create<CalloutOptions>({
     return {
       'Mod-Shift-c': () => this.editor.commands.toggleCallout()
     }
+  },
+
+  addNodeView() {
+    return ReactNodeViewRenderer(CalloutNodeView)
   }
 })

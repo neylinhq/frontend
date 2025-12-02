@@ -10,6 +10,7 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/shared/components/dialog'
+import { Label } from '@/shared/components/label'
 
 export type MediaType = 'image' | 'imageFigure' | 'video'
 
@@ -123,7 +124,9 @@ export const MediaInsertDialog = ({ isOpen, onClose, onSubmit, type }: MediaInse
 
         <div className='grid gap-4 py-4'>
           <div className='space-y-2'>
+            <Label htmlFor='media-url-input'>{t('editor.mediaDialog.urlLabel')}</Label>
             <input
+              id='media-url-input'
               ref={inputRef}
               type='url'
               value={url}

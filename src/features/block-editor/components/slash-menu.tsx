@@ -303,7 +303,7 @@ export const getSlashMenuItems = (
     {
       title: t('editor.slash.video.title'),
       description: t('editor.slash.video.description'),
-      icon: <Youtube className='h-5 w-5 text-red-500' />,
+      icon: <Youtube className='h-5 w-5' />,
       // UX-1: Use dialog instead of window.prompt
       command: () => openMediaDialog?.('video'),
       category: t('editor.slash.categories.media')
@@ -326,14 +326,14 @@ export const getSlashMenuItems = (
     {
       title: t('editor.slash.mathBlock.title'),
       description: t('editor.slash.mathBlock.description'),
-      icon: <SquareSigma className='h-5 w-5 text-indigo-500' />,
+      icon: <SquareSigma className='h-5 w-5' />,
       command: () => openMathDialog?.('block'),
       category: t('editor.slash.categories.media')
     },
     {
       title: t('editor.slash.mathInline.title'),
       description: t('editor.slash.mathInline.description'),
-      icon: <Sigma className='h-5 w-5 text-indigo-500' />,
+      icon: <Sigma className='h-5 w-5' />,
       command: () => openMathDialog?.('inline'),
       category: t('editor.slash.categories.media')
     },
@@ -342,35 +342,35 @@ export const getSlashMenuItems = (
     {
       title: t('editor.slash.calloutInfo.title'),
       description: t('editor.slash.calloutInfo.description'),
-      icon: <Info className='h-5 w-5 text-blue-500' />,
+      icon: <Info className='h-5 w-5' />,
       command: () => editor.chain().focus().setCallout({ type: 'info' }).run(),
       category: t('editor.slash.categories.advanced')
     },
     {
       title: t('editor.slash.calloutWarning.title'),
       description: t('editor.slash.calloutWarning.description'),
-      icon: <AlertTriangle className='h-5 w-5 text-amber-500' />,
+      icon: <AlertTriangle className='h-5 w-5' />,
       command: () => editor.chain().focus().setCallout({ type: 'warning' }).run(),
       category: t('editor.slash.categories.advanced')
     },
     {
       title: t('editor.slash.calloutSuccess.title'),
       description: t('editor.slash.calloutSuccess.description'),
-      icon: <CheckCircle className='h-5 w-5 text-emerald-500' />,
+      icon: <CheckCircle className='h-5 w-5' />,
       command: () => editor.chain().focus().setCallout({ type: 'success' }).run(),
       category: t('editor.slash.categories.advanced')
     },
     {
       title: t('editor.slash.calloutError.title'),
       description: t('editor.slash.calloutError.description'),
-      icon: <AlertCircle className='h-5 w-5 text-red-500' />,
+      icon: <AlertCircle className='h-5 w-5' />,
       command: () => editor.chain().focus().setCallout({ type: 'error' }).run(),
       category: t('editor.slash.categories.advanced')
     },
     {
       title: t('editor.slash.calloutTip.title'),
       description: t('editor.slash.calloutTip.description'),
-      icon: <Lightbulb className='h-5 w-5 text-purple-500' />,
+      icon: <Lightbulb className='h-5 w-5' />,
       command: () => editor.chain().focus().setCallout({ type: 'tip' }).run(),
       category: t('editor.slash.categories.advanced')
     },

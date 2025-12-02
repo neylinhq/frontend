@@ -1,5 +1,5 @@
 import { Focus, Pencil } from 'lucide-react'
-import { memo, useEffect, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import type { Node } from '@/entities/map'
@@ -27,13 +27,22 @@ export const NodeDrawer = memo(
     const { activeTab, switchTab } = useDrawerTabs()
     const { focusedNodeId, focusNode, clearFocus } = useFocusMode()
 
-    // Keep track of the last valid node for smooth transitions
+    // Keep track of the displayed node in state for smooth transitions
     // This prevents drawer from closing/reopening when switching nodes
-    const displayNodeRef = useRef<Node | null>(null)
-    if (node) {
-      displayNodeRef.current = node
-    }
-    const displayNode = displayNodeRef.current
+    const [displayNode, setDisplayNode] = useState<Node | null>(null)
+
+    // Update display node when prop changes (only when truthy)
+    useEffect(() => {
+      if (node) {
+        setDisplayNode(node)
+      }
+    }, [node])
+
+    // Handle explicit drawer close
+    const handleClose = useCallback(() => {
+      setDisplayNode(null)
+      onClose()
+    }, [onClose])
 
     // Check mobile via matchMedia
     useEffect(() => {
@@ -46,7 +55,6 @@ export const NodeDrawer = memo(
       return () => window.removeEventListener('resize', checkMobile)
     }, [])
 
-    // Use node for open state, but displayNode for content
     if (!displayNode) {
       return null
     }
@@ -55,12 +63,14 @@ export const NodeDrawer = memo(
     const isFocused = focusedNodeId === displayNode.id
 
     return (
-      <Drawer open={!!node} onOpenChange={onClose}>
+      <Drawer open={!!displayNode} onOpenChange={open => !open && handleClose()} modal={false}>
         <DrawerContent
           side={isMobile ? 'bottom' : 'right'}
           size={isMobile ? '70vh' : '360px'}
           showOverlay={isMobile}
           className={cn('p-6', className)}
+          onInteractOutside={e => e.preventDefault()}
+          onPointerDownOutside={e => e.preventDefault()}
         >
           <DrawerHeader className='px-0 pt-0'>
             <div className='flex items-center justify-between'>

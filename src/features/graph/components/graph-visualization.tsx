@@ -578,8 +578,8 @@ const GraphVisualizationContent = ({
       className={cn(
         'relative bg-background',
         controls.isFullscreen
-          ? 'fixed inset-0 z-50 !w-screen !h-screen rounded-none border-0'
-          : 'h-full w-full rounded-lg border',
+          ? 'fixed inset-0 z-50 !w-screen !h-screen'
+          : 'h-full w-full',
         className
       )}
     >

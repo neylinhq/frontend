@@ -49,7 +49,7 @@ type MenuAction =
   | { type: 'SET_LINK_URL'; url: string }
   | { type: 'TOGGLE_MENU'; menu: MenuType }
 
-const menuReducer = (state: MenuState, action: MenuAction) => {
+const menuReducer = (state: MenuState, action: MenuAction): MenuState => {
   switch (action.type) {
     case 'OPEN_MENU':
       return { ...state, activeMenu: action.menu }

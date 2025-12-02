@@ -88,9 +88,9 @@ export const GraphToolbar = memo(
                 <Button
                   key={mode}
                   size='sm'
-                  variant={isActive ? 'secondary' : 'ghost'}
+                  variant={isActive ? 'default' : 'ghost'}
                   onClick={() => setViewMode(mode)}
-                  className={cn('h-7 px-2.5 gap-1.5', isActive && 'shadow-sm')}
+                  className='h-7 px-2.5 gap-1.5'
                   title={t(config.labelKey)}
                 >
                   <Icon className='w-3.5 h-3.5' />

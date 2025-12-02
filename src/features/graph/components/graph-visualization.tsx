@@ -273,27 +273,19 @@ const GraphVisualizationContent = ({
   )
 
   // Apply initial layout when nodes are first loaded
-  // Use positions from DB if available, otherwise auto-layout
+  // TODO: When real backend exists, check if positions are valid and skip layout
   useEffect(() => {
     if (!layoutAppliedRef.current && initialNodes.length > 0 && fullMap) {
       layoutAppliedRef.current = true
 
-      // Check if positions from DB are valid (at least one non-zero position)
-      const hasValidPositions = initialNodes.some(n => n.position.x !== 0 || n.position.y !== 0)
-
-      if (hasValidPositions) {
-        // Use positions from DB directly (stable layout)
-        setNodes(initialNodes)
-      } else {
-        // No saved positions - apply auto-layout
-        const result = applyLayout(initialNodes, initialEdges, {
-          viewMode,
-          focusedNodeId,
-          spacingPercent: nodeSpacing,
-          directionStrength
-        })
-        setNodes(result.nodes)
-      }
+      // Always apply layout on first load (mock data doesn't have real saved positions)
+      const result = applyLayout(initialNodes, initialEdges, {
+        viewMode,
+        focusedNodeId,
+        spacingPercent: nodeSpacing,
+        directionStrength
+      })
+      setNodes(result.nodes)
     }
   }, [
     initialNodes.length,

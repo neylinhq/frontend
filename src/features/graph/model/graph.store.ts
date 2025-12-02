@@ -90,7 +90,7 @@ const initialState: GraphViewState = {
   visibleEdgeTypes: new Set(ALL_EDGE_TYPES),
   showMinimap: true,
   nodeSpacing: 100,
-  directionStrength: 100,
+  directionStrength: 0, // 0 = no directional bias, 100 = full hierarchy
   animationDuration: 300
 }
 
@@ -117,7 +117,7 @@ const setSerializer = {
     ),
     showMinimap: stored.showMinimap !== false,
     nodeSpacing: (stored.nodeSpacing as number) || 100,
-    directionStrength: (stored.directionStrength as number) ?? 100,
+    directionStrength: (stored.directionStrength as number) ?? 0,
     animationDuration: (stored.animationDuration as number) || 300
   })
 }

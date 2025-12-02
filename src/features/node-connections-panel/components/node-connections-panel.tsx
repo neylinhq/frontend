@@ -7,6 +7,7 @@ import type { Node } from '@/entities/node'
 import { getNodeIcon } from '@/entities/node'
 import { cn } from '@/shared/lib/cn'
 import { ConnectionItem } from '@/shared/components/connection-item'
+import { SegmentedControl } from '@/shared/components/segmented-control'
 
 interface NodeConnectionsPanelProps {
   node: Node
@@ -62,27 +63,16 @@ export const NodeConnectionsPanel = memo(
 
     return (
       <div className={cn('space-y-4', className)}>
-        {/* Filter Pills */}
-        <div className='flex gap-1.5 rounded-lg bg-muted/50 p-1 w-fit'>
-          <FilterPill
-            active={filter === 'all'}
-            onClick={() => changeFilter('all')}
-            label={t('nodeDrawer.connections.all')}
-            count={totalCount}
-          />
-          <FilterPill
-            active={filter === 'incoming'}
-            onClick={() => changeFilter('incoming')}
-            label={t('nodeDrawer.connections.incoming')}
-            count={incomingCount}
-          />
-          <FilterPill
-            active={filter === 'outgoing'}
-            onClick={() => changeFilter('outgoing')}
-            label={t('nodeDrawer.connections.outgoing')}
-            count={outgoingCount}
-          />
-        </div>
+        {/* Filter */}
+        <SegmentedControl
+          value={filter}
+          onChange={changeFilter}
+          options={[
+            { value: 'all', label: t('nodeDrawer.connections.all'), count: totalCount },
+            { value: 'incoming', label: t('nodeDrawer.connections.incoming'), count: incomingCount },
+            { value: 'outgoing', label: t('nodeDrawer.connections.outgoing'), count: outgoingCount }
+          ]}
+        />
 
         {/* Grouped connections list */}
         <div className='space-y-4'>
@@ -156,37 +146,6 @@ export const NodeConnectionsPanel = memo(
 )
 
 NodeConnectionsPanel.displayName = 'NodeConnectionsPanel'
-
-/* ─────────────────────────────────────────────────────────────────────────────
- * Filter Pill
- * ───────────────────────────────────────────────────────────────────────────── */
-
-interface FilterPillProps {
-  active: boolean
-  onClick: () => void
-  label: string
-  count: number
-}
-
-const FilterPill = ({ active, onClick, label, count }: FilterPillProps) => {
-  return (
-    <button
-      type='button'
-      onClick={onClick}
-      className={cn(
-        'rounded-md px-3 py-1.5 text-xs font-medium transition-all duration-150 cursor-pointer',
-        active
-          ? 'bg-background text-foreground shadow-sm'
-          : 'text-muted-foreground hover:text-foreground'
-      )}
-    >
-      {label}
-      <span className={cn('ml-1.5 tabular-nums', active ? 'text-muted-foreground' : 'opacity-60')}>
-        {count}
-      </span>
-    </button>
-  )
-}
 
 /* ─────────────────────────────────────────────────────────────────────────────
  * Connection Section

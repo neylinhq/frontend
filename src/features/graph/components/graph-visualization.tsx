@@ -146,15 +146,18 @@ const GraphVisualizationContent = ({
     focusDepth
   })
 
-  // Handle node click - in focus mode, focus on clicked node
+  // Handle node click:
+  // - In focus mode without focused node → focus on clicked node
+  // - In focus mode with focused node → just open drawer
+  // - In overview mode → just open drawer
   const handleNodeClick = useCallback(
     (nodeId: string) => {
-      if (viewMode === 'focus') {
+      if (viewMode === 'focus' && !focusedNodeId) {
         focusNode(nodeId)
       }
       selectNode(nodeId)
     },
-    [viewMode, focusNode, selectNode]
+    [viewMode, focusedNodeId, focusNode, selectNode]
   )
 
   // Transform nodes for XYFlow
@@ -174,6 +177,9 @@ const GraphVisualizationContent = ({
 
   const [reactFlowNodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [reactFlowEdges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
+
+  // Cache ALL node positions (including hidden nodes) to preserve layout when depth changes
+  const positionCacheRef = useRef<Map<string, { x: number; y: number }>>(new Map())
 
   // Find the node closest to the viewport center
   const getClosestNodeToViewportCenter = useCallback(() => {
@@ -235,6 +241,11 @@ const GraphVisualizationContent = ({
         directionStrength: params.directionStrength
       })
 
+      // Update position cache with new layout
+      for (const node of result.nodes) {
+        positionCacheRef.current.set(node.id, { ...node.position })
+      }
+
       // Persist all new positions to DB (batch update)
       const positionUpdates = result.nodes.map(n => ({
         id: n.id,
@@ -285,6 +296,10 @@ const GraphVisualizationContent = ({
         spacingPercent: nodeSpacing,
         directionStrength
       })
+      // Populate position cache with initial layout
+      for (const node of result.nodes) {
+        positionCacheRef.current.set(node.id, { ...node.position })
+      }
       setNodes(result.nodes)
     }
   }, [
@@ -322,6 +337,7 @@ const GraphVisualizationContent = ({
 
   // Sync nodes when filtered data changes
   const prevNodeIdsRef = useRef<string>('')
+  const prevFocusedNodeIdRef = useRef<string | null>(null)
   useEffect(() => {
     const nodeIds = initialNodes
       .map(n => n.id)
@@ -329,26 +345,48 @@ const GraphVisualizationContent = ({
       .join(',')
     if (prevNodeIdsRef.current !== nodeIds) {
       if (prevNodeIdsRef.current !== '') {
-        // Nodes changed - apply layout for new set with animation
-        const result = applyLayout(initialNodes, initialEdges, {
-          viewMode,
-          focusedNodeId,
-          spacingPercent: nodeSpacing,
-          directionStrength
-        })
-        // Animate to new positions with anchor
-        const anchorId = getAnchorNodeId()
-        animateToPositions(reactFlowNodes, result.nodes, anchorId, {
-          duration: animationDuration,
-          easing: easeOutCubic
-        })
-        // Only fitView if no anchor (camera already follows anchor)
-        if (!anchorId) {
-          setTimeout(() => fitView({ padding: 0.2, duration: animationDuration }), animationDuration + 50)
+        // Check if only depth changed (same focused node, just more/fewer nodes)
+        const onlyDepthChanged = focusedNodeId === prevFocusedNodeIdRef.current && viewMode === 'focus'
+
+        // Always update cache with current visible node positions before any changes
+        for (const node of reactFlowNodes) {
+          positionCacheRef.current.set(node.id, { ...node.position })
+        }
+
+        if (onlyDepthChanged) {
+          // Merge: use cached positions (includes previously visible nodes), fallback to saved
+          const mergedNodes = initialNodes.map(node => ({
+            ...node,
+            position: positionCacheRef.current.get(node.id) ?? node.position
+          }))
+          setNodes(mergedNodes)
+        } else {
+          // Nodes changed due to focus node change or mode change - apply layout with animation
+          const result = applyLayout(initialNodes, initialEdges, {
+            viewMode,
+            focusedNodeId,
+            spacingPercent: nodeSpacing,
+            directionStrength
+          })
+          // Update cache with new layout positions
+          for (const node of result.nodes) {
+            positionCacheRef.current.set(node.id, { ...node.position })
+          }
+          // Animate to new positions with anchor
+          const anchorId = getAnchorNodeId()
+          animateToPositions(reactFlowNodes, result.nodes, anchorId, {
+            duration: animationDuration,
+            easing: easeOutCubic
+          })
+          // Only fitView if no anchor (camera already follows anchor)
+          if (!anchorId) {
+            setTimeout(() => fitView({ padding: 0.2, duration: animationDuration }), animationDuration + 50)
+          }
         }
       }
       prevNodeIdsRef.current = nodeIds
     }
+    prevFocusedNodeIdRef.current = focusedNodeId
   }, [
     initialNodes,
     initialEdges,
@@ -360,7 +398,8 @@ const GraphVisualizationContent = ({
     reactFlowNodes,
     animateToPositions,
     fitView,
-    getAnchorNodeId
+    getAnchorNodeId,
+    setNodes
   ])
 
   // Sync edges when data changes

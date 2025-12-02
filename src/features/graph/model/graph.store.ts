@@ -162,11 +162,15 @@ export const useGraphViewStore = create<GraphViewState & GraphViewActions>()(
 
       // Focus actions
       focusNode: nodeId => {
+        const wasInFocusMode = get().viewMode === 'focus'
         set({
           focusedNodeId: nodeId,
           viewMode: 'focus' // Auto-switch to focus mode
         })
-        triggerLayout()
+        // Only trigger layout when entering focus mode, not when switching between nodes
+        if (!wasInFocusMode) {
+          triggerLayout()
+        }
       },
 
       clearFocus: () => {

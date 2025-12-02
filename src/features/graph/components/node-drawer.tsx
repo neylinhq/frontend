@@ -1,5 +1,5 @@
 import { Focus, Pencil } from 'lucide-react'
-import { memo, useEffect, useState } from 'react'
+import { memo, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import type { Node } from '@/entities/map'
@@ -27,6 +27,14 @@ export const NodeDrawer = memo(
     const { activeTab, switchTab } = useDrawerTabs()
     const { focusedNodeId, focusNode, clearFocus } = useFocusMode()
 
+    // Keep track of the last valid node for smooth transitions
+    // This prevents drawer from closing/reopening when switching nodes
+    const displayNodeRef = useRef<Node | null>(null)
+    if (node) {
+      displayNodeRef.current = node
+    }
+    const displayNode = displayNodeRef.current
+
     // Check mobile via matchMedia
     useEffect(() => {
       const checkMobile = () => {
@@ -38,12 +46,13 @@ export const NodeDrawer = memo(
       return () => window.removeEventListener('resize', checkMobile)
     }, [])
 
-    if (!node) {
+    // Use node for open state, but displayNode for content
+    if (!displayNode) {
       return null
     }
 
-    const Icon = getNodeIcon(node.type)
-    const isFocused = focusedNodeId === node.id
+    const Icon = getNodeIcon(displayNode.type)
+    const isFocused = focusedNodeId === displayNode.id
 
     return (
       <Drawer open={!!node} onOpenChange={onClose}>
@@ -57,13 +66,13 @@ export const NodeDrawer = memo(
             <div className='flex items-center justify-between'>
               <DrawerTitle className='flex items-center gap-2'>
                 <Icon className='w-5 h-5' />
-                {node.label}
+                {displayNode.label}
               </DrawerTitle>
               <div className='flex gap-2'>
                 <Button
                   variant={isFocused ? 'default' : 'outline'}
                   size='sm'
-                  onClick={() => (isFocused ? clearFocus() : focusNode(node.id))}
+                  onClick={() => (isFocused ? clearFocus() : focusNode(displayNode.id))}
                   title={
                     isFocused
                       ? t('graph.nodeControls.clearFocus')
@@ -73,7 +82,7 @@ export const NodeDrawer = memo(
                   <Focus className='h-4 w-4' />
                 </Button>
                 <Button variant='outline' size='sm' asChild title={t('nodeDrawer.edit')}>
-                  <Link to={`/dashboard/maps/${node.mapId}/node/${node.id}`}>
+                  <Link to={`/dashboard/maps/${displayNode.mapId}/node/${displayNode.id}`}>
                     <Pencil className='h-4 w-4' />
                   </Link>
                 </Button>
@@ -92,7 +101,7 @@ export const NodeDrawer = memo(
             </TabsList>
 
             <TabsContent value='overview' className='mt-4'>
-              <DrawerOverviewTab node={node} />
+              <DrawerOverviewTab node={displayNode} />
             </TabsContent>
 
             <TabsContent value='connections' className='mt-4'>

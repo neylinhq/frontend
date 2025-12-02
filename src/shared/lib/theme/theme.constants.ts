@@ -20,8 +20,8 @@ export const MODES: { name: string; value: Mode }[] = [
 // Preview colors use CSS variables that automatically switch for light/dark mode
 // See globals.css: --preview-classic, --preview-vanilla, --preview-vivid, --preview-mono
 export const PALETTES: { name: string; value: Palette; previewColor: string }[] = [
+  { name: 'Mono', value: 'mono', previewColor: 'var(--color-preview-mono)' },
   { name: 'Classic', value: 'classic', previewColor: 'var(--color-preview-classic)' },
   { name: 'Vanilla', value: 'vanilla', previewColor: 'var(--color-preview-vanilla)' },
-  { name: 'Vivid', value: 'vivid', previewColor: 'var(--color-preview-vivid)' },
-  { name: 'Mono', value: 'mono', previewColor: 'var(--color-preview-mono)' }
+  { name: 'Vivid', value: 'vivid', previewColor: 'var(--color-preview-vivid)' }
 ]

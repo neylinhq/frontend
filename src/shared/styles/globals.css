@@ -74,6 +74,33 @@
   --color-preview-vivid: hsl(var(--preview-vivid));
   --color-preview-mono: hsl(var(--preview-mono));
 
+  /* Semantic colors - S+ Elite */
+  --color-semantic-knowledge: hsl(var(--semantic-knowledge));
+  --color-semantic-knowledge-muted: hsl(var(--semantic-knowledge-muted));
+  --color-semantic-fact: hsl(var(--semantic-fact));
+  --color-semantic-fact-muted: hsl(var(--semantic-fact-muted));
+  --color-semantic-question: hsl(var(--semantic-question));
+  --color-semantic-question-muted: hsl(var(--semantic-question-muted));
+  --color-semantic-example: hsl(var(--semantic-example));
+  --color-semantic-example-muted: hsl(var(--semantic-example-muted));
+  --color-semantic-conflict: hsl(var(--semantic-conflict));
+  --color-semantic-conflict-muted: hsl(var(--semantic-conflict-muted));
+  --color-semantic-neutral: hsl(var(--semantic-neutral));
+  --color-semantic-neutral-muted: hsl(var(--semantic-neutral-muted));
+
+  /* Complexity colors */
+  --color-complexity-basic: hsl(var(--complexity-basic));
+  --color-complexity-basic-bg: hsl(var(--complexity-basic-bg));
+  --color-complexity-intermediate: hsl(var(--complexity-intermediate));
+  --color-complexity-intermediate-bg: hsl(var(--complexity-intermediate-bg));
+  --color-complexity-advanced: hsl(var(--complexity-advanced));
+  --color-complexity-advanced-bg: hsl(var(--complexity-advanced-bg));
+
+  /* Edge colors */
+  --color-edge-strong: hsl(var(--edge-strong));
+  --color-edge-medium: hsl(var(--edge-medium));
+  --color-edge-weak: hsl(var(--edge-weak));
+
   /* Radii */
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
@@ -165,6 +192,33 @@
     --graph-emerald: 160 85% 45%;
     --graph-amber: 40 95% 55%;
     --graph-rose: 350 90% 60%;
+
+    /* Semantic colors - S+ Elite color system */
+    --semantic-knowledge: 217 91% 60%;       /* Blue - concept, theory */
+    --semantic-knowledge-muted: 217 60% 94%;
+    --semantic-fact: 142 76% 36%;            /* Green - fact */
+    --semantic-fact-muted: 142 50% 92%;
+    --semantic-question: 262 83% 58%;        /* Purple - question, hypothesis */
+    --semantic-question-muted: 262 50% 94%;
+    --semantic-example: 32 95% 44%;          /* Amber - example, person, school */
+    --semantic-example-muted: 32 70% 93%;
+    --semantic-conflict: 0 84% 60%;          /* Red - contradiction, conflict */
+    --semantic-conflict-muted: 0 60% 94%;
+    --semantic-neutral: 220 9% 46%;          /* Gray - neutral */
+    --semantic-neutral-muted: 220 9% 94%;
+
+    /* Complexity colors */
+    --complexity-basic: 220 9% 46%;          /* Gray - basic */
+    --complexity-basic-bg: 220 9% 94%;
+    --complexity-intermediate: 217 91% 60%;  /* Blue - intermediate */
+    --complexity-intermediate-bg: 217 60% 94%;
+    --complexity-advanced: 0 84% 60%;        /* Red - advanced */
+    --complexity-advanced-bg: 0 60% 94%;
+
+    /* Edge type colors - intensity based */
+    --edge-strong: 217 91% 50%;              /* Strong relations - saturated */
+    --edge-medium: 217 50% 55%;              /* Medium relations */
+    --edge-weak: 220 9% 55%;                 /* Weak relations - desaturated */
   }
 
   .dark {
@@ -211,6 +265,33 @@
     --graph-emerald: 150 100% 50%;
     --graph-amber: 45 100% 60%;
     --graph-rose: 340 90% 65%;
+
+    /* Semantic colors - S+ Elite (dark mode) */
+    --semantic-knowledge: 217 91% 65%;
+    --semantic-knowledge-muted: 217 40% 18%;
+    --semantic-fact: 142 70% 45%;
+    --semantic-fact-muted: 142 35% 16%;
+    --semantic-question: 262 80% 65%;
+    --semantic-question-muted: 262 40% 18%;
+    --semantic-example: 32 90% 52%;
+    --semantic-example-muted: 32 50% 16%;
+    --semantic-conflict: 0 72% 55%;
+    --semantic-conflict-muted: 0 40% 16%;
+    --semantic-neutral: 220 9% 60%;
+    --semantic-neutral-muted: 220 9% 18%;
+
+    /* Complexity colors (dark mode) */
+    --complexity-basic: 220 9% 60%;
+    --complexity-basic-bg: 220 9% 18%;
+    --complexity-intermediate: 217 91% 65%;
+    --complexity-intermediate-bg: 217 40% 18%;
+    --complexity-advanced: 0 72% 55%;
+    --complexity-advanced-bg: 0 40% 16%;
+
+    /* Edge type colors (dark mode) */
+    --edge-strong: 217 91% 60%;
+    --edge-medium: 217 50% 60%;
+    --edge-weak: 220 9% 60%;
   }
 
   /* ========================================
@@ -255,6 +336,33 @@
     --graph-emerald: 155 75% 42%;      /* Warmer green */
     --graph-amber: 32 95% 52%;         /* More orange */
     --graph-rose: 12 90% 58%;          /* Coral/terracotta */
+
+    /* Semantic colors - warm shifted */
+    --semantic-knowledge: 230 85% 55%;       /* Warm blue */
+    --semantic-knowledge-muted: 230 50% 93%;
+    --semantic-fact: 150 70% 36%;            /* Warm green */
+    --semantic-fact-muted: 150 45% 92%;
+    --semantic-question: 280 75% 55%;        /* Warm purple */
+    --semantic-question-muted: 280 45% 93%;
+    --semantic-example: 24 90% 45%;          /* Orange-amber */
+    --semantic-example-muted: 24 65% 92%;
+    --semantic-conflict: 8 80% 55%;          /* Coral red */
+    --semantic-conflict-muted: 8 55% 93%;
+    --semantic-neutral: 24 10% 45%;          /* Warm gray */
+    --semantic-neutral-muted: 24 10% 93%;
+
+    /* Complexity colors - warm */
+    --complexity-basic: 24 10% 45%;
+    --complexity-basic-bg: 24 10% 93%;
+    --complexity-intermediate: 230 85% 55%;
+    --complexity-intermediate-bg: 230 50% 93%;
+    --complexity-advanced: 8 80% 55%;
+    --complexity-advanced-bg: 8 55% 93%;
+
+    /* Edge type colors - warm */
+    --edge-strong: 24 80% 45%;
+    --edge-medium: 24 50% 50%;
+    --edge-weak: 24 10% 55%;
   }
   [data-palette="vanilla"].dark {
     --background: 24 10% 8%;           /* #161412 - warm dark */
@@ -293,6 +401,33 @@
     --graph-emerald: 155 85% 50%;
     --graph-amber: 32 100% 58%;
     --graph-rose: 12 95% 62%;
+
+    /* Semantic colors - warm (dark mode) */
+    --semantic-knowledge: 230 80% 62%;
+    --semantic-knowledge-muted: 230 35% 17%;
+    --semantic-fact: 150 65% 45%;
+    --semantic-fact-muted: 150 30% 15%;
+    --semantic-question: 280 70% 62%;
+    --semantic-question-muted: 280 35% 17%;
+    --semantic-example: 24 85% 55%;
+    --semantic-example-muted: 24 45% 15%;
+    --semantic-conflict: 8 75% 52%;
+    --semantic-conflict-muted: 8 35% 15%;
+    --semantic-neutral: 24 8% 58%;
+    --semantic-neutral-muted: 24 8% 17%;
+
+    /* Complexity colors - warm (dark) */
+    --complexity-basic: 24 8% 58%;
+    --complexity-basic-bg: 24 8% 17%;
+    --complexity-intermediate: 230 80% 62%;
+    --complexity-intermediate-bg: 230 35% 17%;
+    --complexity-advanced: 8 75% 52%;
+    --complexity-advanced-bg: 8 35% 15%;
+
+    /* Edge type colors - warm (dark) */
+    --edge-strong: 24 75% 55%;
+    --edge-medium: 24 45% 55%;
+    --edge-weak: 24 8% 55%;
   }
 
   /* Vivid Theme - cool, modern, energetic */
@@ -333,6 +468,33 @@
     --graph-emerald: 160 90% 42%;      /* Mint */
     --graph-amber: 50 95% 50%;         /* Yellow-green tint */
     --graph-rose: 330 95% 58%;         /* Magenta-pink */
+
+    /* Semantic colors - cool, saturated */
+    --semantic-knowledge: 200 100% 50%;      /* Cyan-blue */
+    --semantic-knowledge-muted: 200 70% 92%;
+    --semantic-fact: 160 90% 36%;            /* Mint green */
+    --semantic-fact-muted: 160 60% 91%;
+    --semantic-question: 260 95% 55%;        /* Electric purple */
+    --semantic-question-muted: 260 60% 93%;
+    --semantic-example: 50 95% 42%;          /* Yellow-gold */
+    --semantic-example-muted: 50 70% 91%;
+    --semantic-conflict: 355 90% 55%;        /* Pink-red */
+    --semantic-conflict-muted: 355 65% 93%;
+    --semantic-neutral: 210 15% 45%;         /* Cool gray */
+    --semantic-neutral-muted: 210 15% 93%;
+
+    /* Complexity colors - vivid */
+    --complexity-basic: 210 15% 45%;
+    --complexity-basic-bg: 210 15% 93%;
+    --complexity-intermediate: 200 100% 50%;
+    --complexity-intermediate-bg: 200 70% 92%;
+    --complexity-advanced: 355 90% 55%;
+    --complexity-advanced-bg: 355 65% 93%;
+
+    /* Edge type colors - vivid */
+    --edge-strong: 160 90% 40%;
+    --edge-medium: 160 50% 45%;
+    --edge-weak: 210 15% 50%;
   }
   [data-palette="vivid"].dark {
     --background: 215 20% 7%;          /* #0F1318 - cool dark blue */
@@ -371,6 +533,33 @@
     --graph-emerald: 160 100% 50%;     /* Neon mint */
     --graph-amber: 50 100% 55%;        /* Neon yellow */
     --graph-rose: 330 100% 65%;        /* Neon pink */
+
+    /* Semantic colors - neon (dark mode) */
+    --semantic-knowledge: 200 100% 60%;
+    --semantic-knowledge-muted: 200 50% 15%;
+    --semantic-fact: 160 100% 48%;
+    --semantic-fact-muted: 160 50% 14%;
+    --semantic-question: 260 100% 65%;
+    --semantic-question-muted: 260 50% 16%;
+    --semantic-example: 50 100% 52%;
+    --semantic-example-muted: 50 50% 14%;
+    --semantic-conflict: 355 100% 58%;
+    --semantic-conflict-muted: 355 50% 15%;
+    --semantic-neutral: 210 12% 58%;
+    --semantic-neutral-muted: 210 12% 17%;
+
+    /* Complexity colors - neon (dark) */
+    --complexity-basic: 210 12% 58%;
+    --complexity-basic-bg: 210 12% 17%;
+    --complexity-intermediate: 200 100% 60%;
+    --complexity-intermediate-bg: 200 50% 15%;
+    --complexity-advanced: 355 100% 58%;
+    --complexity-advanced-bg: 355 50% 15%;
+
+    /* Edge type colors - neon (dark) */
+    --edge-strong: 160 100% 50%;
+    --edge-medium: 160 60% 50%;
+    --edge-weak: 210 12% 55%;
   }
 
   /* ========================================
@@ -414,6 +603,33 @@
     --graph-emerald: 0 0% 55%;         /* Light-medium gray */
     --graph-amber: 0 0% 65%;           /* Light gray */
     --graph-rose: 0 0% 20%;            /* Very dark gray */
+
+    /* Semantic colors - monochrome with intensity */
+    --semantic-knowledge: 0 0% 25%;          /* Dark gray */
+    --semantic-knowledge-muted: 0 0% 94%;
+    --semantic-fact: 0 0% 35%;               /* Medium-dark gray */
+    --semantic-fact-muted: 0 0% 92%;
+    --semantic-question: 0 0% 45%;           /* Medium gray */
+    --semantic-question-muted: 0 0% 94%;
+    --semantic-example: 0 0% 55%;            /* Light-medium gray */
+    --semantic-example-muted: 0 0% 93%;
+    --semantic-conflict: 0 100% 50%;         /* Pure red - accent */
+    --semantic-conflict-muted: 0 50% 94%;
+    --semantic-neutral: 0 0% 50%;            /* Mid gray */
+    --semantic-neutral-muted: 0 0% 94%;
+
+    /* Complexity colors - mono */
+    --complexity-basic: 0 0% 50%;
+    --complexity-basic-bg: 0 0% 94%;
+    --complexity-intermediate: 0 0% 35%;
+    --complexity-intermediate-bg: 0 0% 92%;
+    --complexity-advanced: 0 100% 50%;
+    --complexity-advanced-bg: 0 50% 94%;
+
+    /* Edge type colors - mono */
+    --edge-strong: 0 0% 25%;
+    --edge-medium: 0 0% 45%;
+    --edge-weak: 0 0% 65%;
   }
   [data-palette="mono"].dark {
     --background: 0 0% 4%;             /* #0A0A0A - near black */
@@ -452,6 +668,33 @@
     --graph-emerald: 0 0% 45%;         /* Medium-dark gray */
     --graph-amber: 0 0% 35%;           /* Dark gray */
     --graph-rose: 0 0% 80%;            /* Very light gray */
+
+    /* Semantic colors - monochrome (dark mode) */
+    --semantic-knowledge: 0 0% 75%;          /* Light gray */
+    --semantic-knowledge-muted: 0 0% 12%;
+    --semantic-fact: 0 0% 65%;               /* Medium-light gray */
+    --semantic-fact-muted: 0 0% 14%;
+    --semantic-question: 0 0% 55%;           /* Medium gray */
+    --semantic-question-muted: 0 0% 12%;
+    --semantic-example: 0 0% 45%;            /* Medium-dark gray */
+    --semantic-example-muted: 0 0% 13%;
+    --semantic-conflict: 0 100% 55%;         /* Brighter red */
+    --semantic-conflict-muted: 0 40% 12%;
+    --semantic-neutral: 0 0% 50%;            /* Mid gray */
+    --semantic-neutral-muted: 0 0% 12%;
+
+    /* Complexity colors - mono (dark) */
+    --complexity-basic: 0 0% 50%;
+    --complexity-basic-bg: 0 0% 12%;
+    --complexity-intermediate: 0 0% 65%;
+    --complexity-intermediate-bg: 0 0% 14%;
+    --complexity-advanced: 0 100% 55%;
+    --complexity-advanced-bg: 0 40% 12%;
+
+    /* Edge type colors - mono (dark) */
+    --edge-strong: 0 0% 75%;
+    --edge-medium: 0 0% 55%;
+    --edge-weak: 0 0% 35%;
   }
 
   * {

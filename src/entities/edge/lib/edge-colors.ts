@@ -1,44 +1,73 @@
 import type { RelationType } from '../model/edge.schema'
 
-// HEX для SVG stroke
-export const EDGE_STROKE_COLORS: Record<RelationType, string> = {
-  prerequisite: '#f97316', // orange-500
-  causes: '#ef4444', // red-500
-  explains: '#8b5cf6', // violet-500
-  'is-a': '#6366f1', // indigo-500
-  'has-a': '#10b981', // emerald-500
-  'part-of': '#14b8a6', // teal-500
-  influences: '#f59e0b', // amber-500
-  'related-to': '#64748b', // slate-500
-  contradicts: '#dc2626', // red-600
-  'similar-to': '#84cc16' // lime-500
+/**
+ * S+ Elite Semantic Edge Color System
+ * Consolidates 10 edge types into 4 semantic groups:
+ * - Knowledge (structural): prerequisite, is-a, has-a, part-of
+ * - Question (causal): causes, explains, influences
+ * - Neutral (associative): related-to, similar-to
+ * - Conflict: contradicts
+ *
+ * Uses CSS variables for palette-adaptive colors
+ */
+
+// Semantic group mapping
+type SemanticGroup = 'knowledge' | 'question' | 'neutral' | 'conflict'
+
+const EDGE_SEMANTIC_GROUP: Record<RelationType, SemanticGroup> = {
+  // Structural/foundational relations → Knowledge (blue)
+  prerequisite: 'knowledge',
+  'is-a': 'knowledge',
+  'has-a': 'knowledge',
+  'part-of': 'knowledge',
+  // Causal/reasoning relations → Question (purple)
+  causes: 'question',
+  explains: 'question',
+  influences: 'question',
+  // Associative relations → Neutral (gray)
+  'related-to': 'neutral',
+  'similar-to': 'neutral',
+  // Conflict relations → Conflict (red)
+  contradicts: 'conflict'
 }
 
-// Tailwind классы для badge
+// CSS variable for SVG stroke (uses hsl(var(...)) syntax)
+export const EDGE_STROKE_COLORS: Record<RelationType, string> = {
+  prerequisite: 'hsl(var(--semantic-knowledge))',
+  'is-a': 'hsl(var(--semantic-knowledge))',
+  'has-a': 'hsl(var(--semantic-knowledge))',
+  'part-of': 'hsl(var(--semantic-knowledge))',
+  causes: 'hsl(var(--semantic-question))',
+  explains: 'hsl(var(--semantic-question))',
+  influences: 'hsl(var(--semantic-question))',
+  'related-to': 'hsl(var(--semantic-neutral))',
+  'similar-to': 'hsl(var(--semantic-neutral))',
+  contradicts: 'hsl(var(--semantic-conflict))'
+}
+
+// Tailwind classes for badge - using semantic colors
 export const EDGE_BADGE_CLASSES: Record<RelationType, string> = {
-  prerequisite:
-    'bg-orange-200 text-orange-800 border-transparent dark:bg-orange-950/50 dark:text-orange-300',
-  causes: 'bg-red-200 text-red-800 border-transparent dark:bg-red-950/50 dark:text-red-300',
-  explains:
-    'bg-violet-200 text-violet-800 border-transparent dark:bg-violet-950/50 dark:text-violet-300',
-  'is-a':
-    'bg-indigo-200 text-indigo-800 border-transparent dark:bg-indigo-950/50 dark:text-indigo-300',
-  'has-a':
-    'bg-emerald-200 text-emerald-800 border-transparent dark:bg-emerald-950/50 dark:text-emerald-300',
-  'part-of':
-    'bg-teal-200 text-teal-800 border-transparent dark:bg-teal-950/50 dark:text-teal-300',
-  influences:
-    'bg-amber-200 text-amber-800 border-transparent dark:bg-amber-950/50 dark:text-amber-300',
-  'related-to':
-    'bg-slate-200 text-slate-800 border-transparent dark:bg-slate-950/50 dark:text-slate-300',
-  contradicts:
-    'bg-red-300 text-red-900 border-transparent dark:bg-red-900/50 dark:text-red-200',
-  'similar-to':
-    'bg-lime-200 text-lime-800 border-transparent dark:bg-lime-950/50 dark:text-lime-300'
+  // Knowledge group
+  prerequisite: 'bg-semantic-knowledge-muted text-semantic-knowledge border-transparent',
+  'is-a': 'bg-semantic-knowledge-muted text-semantic-knowledge border-transparent',
+  'has-a': 'bg-semantic-knowledge-muted text-semantic-knowledge border-transparent',
+  'part-of': 'bg-semantic-knowledge-muted text-semantic-knowledge border-transparent',
+  // Question group
+  causes: 'bg-semantic-question-muted text-semantic-question border-transparent',
+  explains: 'bg-semantic-question-muted text-semantic-question border-transparent',
+  influences: 'bg-semantic-question-muted text-semantic-question border-transparent',
+  // Neutral group
+  'related-to': 'bg-semantic-neutral-muted text-semantic-neutral border-transparent',
+  'similar-to': 'bg-semantic-neutral-muted text-semantic-neutral border-transparent',
+  // Conflict group
+  contradicts: 'bg-semantic-conflict-muted text-semantic-conflict border-transparent'
 }
 
 export const getEdgeStrokeColor = (type: RelationType) =>
-  EDGE_STROKE_COLORS[type] || '#64748b'
+  EDGE_STROKE_COLORS[type] || 'hsl(var(--semantic-neutral))'
 
 export const getEdgeBadgeClass = (type: RelationType) =>
-  EDGE_BADGE_CLASSES[type] || 'bg-slate-200 text-slate-800 border-transparent'
+  EDGE_BADGE_CLASSES[type] || 'bg-semantic-neutral-muted text-semantic-neutral border-transparent'
+
+export const getEdgeSemanticGroup = (type: RelationType): SemanticGroup =>
+  EDGE_SEMANTIC_GROUP[type] || 'neutral'

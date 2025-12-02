@@ -1,28 +1,46 @@
 import type { NodeType } from '../node.schema'
 
+/**
+ * S+ Elite Semantic Color System
+ * - Knowledge (concept, theory): Blue
+ * - Fact: Green
+ * - Question (question, hypothesis): Purple
+ * - Example (example, person, school): Amber
+ * Uses CSS variables that adapt to palette (mono/classic/vanilla/vivid)
+ */
 export const getNodeBorderColor = (type: NodeType): string => {
   const colors: Record<NodeType, string> = {
-    concept: 'border-l-blue-500',
-    theory: 'border-l-purple-500',
-    fact: 'border-l-emerald-500',
-    example: 'border-l-amber-500',
-    question: 'border-l-rose-500',
-    hypothesis: 'border-l-cyan-500',
-    person: 'border-l-orange-500',
-    school: 'border-l-indigo-500'
+    // Knowledge group - Blue
+    concept: 'border-l-semantic-knowledge',
+    theory: 'border-l-semantic-knowledge',
+    // Fact group - Green
+    fact: 'border-l-semantic-fact',
+    // Question group - Purple
+    question: 'border-l-semantic-question',
+    hypothesis: 'border-l-semantic-question',
+    // Example group - Amber
+    example: 'border-l-semantic-example',
+    person: 'border-l-semantic-example',
+    school: 'border-l-semantic-example'
   }
-  return colors[type] || 'border-l-slate-500'
+  return colors[type] || 'border-l-semantic-neutral'
 }
 
+/**
+ * Complexity colors using semantic system
+ * - Basic: Neutral (gray)
+ * - Intermediate: Knowledge (blue)
+ * - Advanced: Conflict (red) - signals difficulty
+ */
 export const getComplexityColor = (complexity?: 'basic' | 'intermediate' | 'advanced'): string => {
   if (!complexity) {
     return ''
   }
 
   const colors = {
-    basic: 'bg-slate-200 text-slate-800 dark:bg-slate-800 dark:text-slate-200',
-    intermediate: 'bg-blue-200 text-blue-800 dark:bg-blue-900/60 dark:text-blue-200',
-    advanced: 'bg-rose-200 text-rose-800 dark:bg-rose-900/60 dark:text-rose-200'
+    basic: 'bg-complexity-basic-bg text-complexity-basic',
+    intermediate: 'bg-complexity-intermediate-bg text-complexity-intermediate',
+    advanced: 'bg-complexity-advanced-bg text-complexity-advanced'
   }
   return colors[complexity]
 }

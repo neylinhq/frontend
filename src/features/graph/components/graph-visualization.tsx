@@ -337,7 +337,6 @@ const GraphVisualizationContent = ({
 
   // Sync nodes when filtered data changes
   const prevNodeIdsRef = useRef<string>('')
-  const prevFocusedNodeIdRef = useRef<string | null>(null)
   useEffect(() => {
     const nodeIds = initialNodes
       .map(n => n.id)
@@ -345,15 +344,14 @@ const GraphVisualizationContent = ({
       .join(',')
     if (prevNodeIdsRef.current !== nodeIds) {
       if (prevNodeIdsRef.current !== '') {
-        // Check if only depth changed (same focused node, just more/fewer nodes)
-        const onlyDepthChanged = focusedNodeId === prevFocusedNodeIdRef.current && viewMode === 'focus'
-
         // Always update cache with current visible node positions before any changes
         for (const node of reactFlowNodes) {
           positionCacheRef.current.set(node.id, { ...node.position })
         }
 
-        if (onlyDepthChanged) {
+        // In focus mode: preserve positions from cache, no auto-layout
+        // In overview mode: apply layout when nodes change
+        if (viewMode === 'focus') {
           // Merge: use cached positions (includes previously visible nodes), fallback to saved
           const mergedNodes = initialNodes.map(node => ({
             ...node,
@@ -361,7 +359,7 @@ const GraphVisualizationContent = ({
           }))
           setNodes(mergedNodes)
         } else {
-          // Nodes changed due to focus node change or mode change - apply layout with animation
+          // Overview mode - apply layout with animation when nodes change
           const result = applyLayout(initialNodes, initialEdges, {
             viewMode,
             focusedNodeId,
@@ -386,7 +384,6 @@ const GraphVisualizationContent = ({
       }
       prevNodeIdsRef.current = nodeIds
     }
-    prevFocusedNodeIdRef.current = focusedNodeId
   }, [
     initialNodes,
     initialEdges,

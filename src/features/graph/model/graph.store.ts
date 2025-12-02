@@ -160,13 +160,12 @@ export const useGraphViewStore = create<GraphViewState & GraphViewActions>()(
         // User will click a node to focus on it
       },
 
-      // Focus actions
+      // Focus actions - no auto layout, sync effect handles visual updates
       focusNode: nodeId => {
         set({
           focusedNodeId: nodeId,
           viewMode: 'focus' // Auto-switch to focus mode
         })
-        triggerLayout()
       },
 
       clearFocus: () => {

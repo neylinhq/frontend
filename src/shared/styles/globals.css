@@ -758,8 +758,8 @@
     --edge-has-a-muted: 150 60% 91%;
     --edge-part-of: 180 100% 40%;
     --edge-part-of-muted: 180 60% 91%;
-    --edge-influences: 60 100% 47%;
-    --edge-influences-muted: 60 70% 92%;
+    --edge-influences: 30 100% 47%;
+    --edge-influences-muted: 30 70% 92%;
     --edge-related-to: 0 0% 47%;
     --edge-related-to-muted: 0 0% 94%;
     --edge-contradicts: 0 100% 51%;
@@ -840,8 +840,8 @@
     --edge-has-a-muted: 150 50% 14%;
     --edge-part-of: 180 100% 48%;
     --edge-part-of-muted: 180 50% 14%;
-    --edge-influences: 60 100% 55%;
-    --edge-influences-muted: 60 50% 15%;
+    --edge-influences: 30 100% 55%;
+    --edge-influences-muted: 30 50% 15%;
     --edge-related-to: 0 0% 60%;
     --edge-related-to-muted: 0 0% 17%;
     --edge-contradicts: 0 100% 58%;
@@ -1353,13 +1353,17 @@
   border-color: hsl(0 100% 80%);
 }
 
-.tiptap-editor .callout-error::before {
-  content: "❌";
+.tiptap-editor .callout-error .callout-icon {
+  color: hsl(0 100% 50%);
 }
 
 .dark .tiptap-editor .callout-error {
   background-color: hsl(0 100% 15% / 0.3);
   border-color: hsl(0 100% 30%);
+}
+
+.dark .tiptap-editor .callout-error .callout-icon {
+  color: hsl(0 100% 70%);
 }
 
 /* Tip Callout */
@@ -1368,13 +1372,17 @@
   border-color: hsl(270 100% 80%);
 }
 
-.tiptap-editor .callout-tip::before {
-  content: "💡";
+.tiptap-editor .callout-tip .callout-icon {
+  color: hsl(270 100% 50%);
 }
 
 .dark .tiptap-editor .callout-tip {
   background-color: hsl(270 100% 15% / 0.3);
   border-color: hsl(270 100% 30%);
+}
+
+.dark .tiptap-editor .callout-tip .callout-icon {
+  color: hsl(270 100% 70%);
 }
 
 /* ========================================

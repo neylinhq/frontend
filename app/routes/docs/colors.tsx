@@ -51,6 +51,47 @@ const GRAPH_COLORS = [
   { name: 'Rose', var: '--graph-rose', desc: 'Розовый для графа' }
 ]
 
+/**
+ * Semantic Node Colors - S+ Elite System
+ * Цвета для типов нод в графе знаний
+ */
+const NODE_SEMANTIC_COLORS = [
+  { name: 'Knowledge', var: '--semantic-knowledge', desc: 'Синий — concept, theory' },
+  { name: 'Fact', var: '--semantic-fact', desc: 'Зелёный — fact' },
+  { name: 'Question', var: '--semantic-question', desc: 'Фиолетовый — question, hypothesis' },
+  { name: 'Example', var: '--semantic-example', desc: 'Янтарный — example, person, school' },
+  { name: 'Conflict', var: '--semantic-conflict', desc: 'Красный — противоречия' },
+  { name: 'Neutral', var: '--semantic-neutral', desc: 'Серый — нейтральный' }
+]
+
+/**
+ * Complexity Colors
+ * Цвета для уровней сложности контента
+ */
+const COMPLEXITY_COLORS = [
+  { name: 'Basic', var: '--complexity-basic', desc: 'Серый — базовый уровень' },
+  { name: 'Intermediate', var: '--complexity-intermediate', desc: 'Синий — средний уровень' },
+  { name: 'Advanced', var: '--complexity-advanced', desc: 'Красный — продвинутый' }
+]
+
+/**
+ * Edge Colors - 10 Unique Relation Types
+ * Каждый тип связи имеет уникальный цвет
+ * Цвета адаптируются к палитре (Classic/Vanilla/Vivid/Mono)
+ */
+const EDGE_COLORS = [
+  { name: 'Prerequisite', var: '--edge-prerequisite', desc: 'Оранжевый — зависимость, требование' },
+  { name: 'Causes', var: '--edge-causes', desc: 'Красный — причинно-следственная связь' },
+  { name: 'Explains', var: '--edge-explains', desc: 'Фиолетовый — объяснение' },
+  { name: 'Is-A', var: '--edge-is-a', desc: 'Индиго — таксономия (тип/подтип)' },
+  { name: 'Has-A', var: '--edge-has-a', desc: 'Изумрудный — композиция (имеет)' },
+  { name: 'Part-Of', var: '--edge-part-of', desc: 'Бирюзовый — агрегация (часть)' },
+  { name: 'Influences', var: '--edge-influences', desc: 'Янтарный — влияние' },
+  { name: 'Related-To', var: '--edge-related-to', desc: 'Серый — слабая связь' },
+  { name: 'Contradicts', var: '--edge-contradicts', desc: 'Тёмно-красный — противоречие' },
+  { name: 'Similar-To', var: '--edge-similar-to', desc: 'Лаймовый — сходство' }
+]
+
 const ColorsPage = () => {
   const { t } = useTranslation()
 
@@ -95,6 +136,53 @@ const ColorsPage = () => {
         </div>
         <div className='grid gap-3 sm:grid-cols-2 lg:grid-cols-3'>
           {GRAPH_COLORS.map(color => (
+            <ColorCard key={color.var} {...color} />
+          ))}
+        </div>
+      </section>
+
+      {/* Node Semantic Colors */}
+      <section className='space-y-4 pt-4 border-t'>
+        <div>
+          <Typography variant='h2'>Node Semantic Colors</Typography>
+          <Typography variant='muted'>
+            S+ Elite система — 6 семантических цветов для типов нод в графе знаний.
+            Адаптируются к палитре (Classic/Vanilla/Vivid/Mono).
+          </Typography>
+        </div>
+        <div className='grid gap-3 sm:grid-cols-2 lg:grid-cols-3'>
+          {NODE_SEMANTIC_COLORS.map(color => (
+            <ColorCard key={color.var} {...color} />
+          ))}
+        </div>
+      </section>
+
+      {/* Complexity Colors */}
+      <section className='space-y-4 pt-4 border-t'>
+        <div>
+          <Typography variant='h2'>Complexity Colors</Typography>
+          <Typography variant='muted'>
+            3 уровня сложности контента с визуальной дифференциацией.
+          </Typography>
+        </div>
+        <div className='grid gap-3 sm:grid-cols-2 lg:grid-cols-3'>
+          {COMPLEXITY_COLORS.map(color => (
+            <ColorCard key={color.var} {...color} />
+          ))}
+        </div>
+      </section>
+
+      {/* Edge Colors */}
+      <section className='space-y-4 pt-4 border-t'>
+        <div>
+          <Typography variant='h2'>Edge Colors</Typography>
+          <Typography variant='muted'>
+            10 уникальных цветов для типов связей между нодами.
+            Каждый тип связи имеет свой цвет, который адаптируется к палитре.
+          </Typography>
+        </div>
+        <div className='grid gap-3 sm:grid-cols-2 lg:grid-cols-4'>
+          {EDGE_COLORS.map(color => (
             <ColorCard key={color.var} {...color} />
           ))}
         </div>

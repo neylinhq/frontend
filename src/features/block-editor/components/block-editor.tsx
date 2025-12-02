@@ -12,6 +12,7 @@ import type { BlockEditorProps } from '../model/block-editor.types'
 
 import { EditorBubbleMenu } from './bubble-menu'
 import { EditorFloatingMenu } from './floating-menu'
+import { LiveRegion } from './live-region'
 import { MathInputDialog } from './math-input-dialog'
 import { MediaInsertDialog, type MediaType } from './media-insert-dialog'
 import { getSlashMenuItems, SlashMenu } from './slash-menu'
@@ -41,6 +42,7 @@ export const BlockEditor = ({
   // UX-1: Media insert dialog state (replaces window.prompt)
   const [mediaDialogOpen, setMediaDialogOpen] = useState(false)
   const [mediaDialogType, setMediaDialogType] = useState<MediaType>('image')
+  const [liveRegionMessage, setLiveRegionMessage] = useState('')
   const slashMenuRef = useRef<{ onKeyDown: (event: KeyboardEvent) => boolean }>(null)
   const editorRef = useRef<HTMLDivElement>(null)
   const editorWrapperRef = useRef<HTMLDivElement>(null)
@@ -223,7 +225,7 @@ export const BlockEditor = ({
 
   // Handle slash menu command
   const handleSlashCommand = useCallback(
-    (item: { command: () => void }) => {
+    (item: { command: () => void; title: string }) => {
       if (!editor) {
         return
       }
@@ -242,8 +244,11 @@ export const BlockEditor = ({
       // Execute command
       item.command()
       setShowSlashMenu(false)
+
+      // Announce to screen readers
+      setLiveRegionMessage(t('editor.announcements.blockInserted', { block: item.title }))
     },
-    [editor]
+    [editor, t]
   )
 
   const handleAddBlock = useCallback(() => {
@@ -371,6 +376,9 @@ export const BlockEditor = ({
         onAddClick={handleAddBlock}
         containerRef={editorWrapperRef}
       />
+
+      {/* Live region for screen reader announcements */}
+      <LiveRegion message={liveRegionMessage} />
     </div>
   )
 }

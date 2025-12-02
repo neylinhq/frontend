@@ -787,6 +787,9 @@
         "empty": "URL cannot be empty",
         "invalid": "Please enter a valid URL"
       }
+    },
+    "announcements": {
+      "blockInserted": "{{block}} inserted"
     }
   },
   "form": {

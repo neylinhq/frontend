@@ -813,6 +813,9 @@
         "empty": "URL не может быть пустым",
         "invalid": "Пожалуйста, введите действительный URL"
       }
+    },
+    "announcements": {
+      "blockInserted": "{{block}} вставлен"
     }
   },
   "form": {

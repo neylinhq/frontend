@@ -210,8 +210,8 @@ export class GraphEngine {
       id: node.id,
       label: node.label,
       description: node.description,
-      node_type: this.mapNodeType(node.type),
-      position: node.position || { x: 0, y: 0 },
+      node_type: node.type, // Already in kebab-case format
+      position: node.position,
       size: { width: 180, height: 100 },
     };
   }

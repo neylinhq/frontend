@@ -1,8 +1,8 @@
 import { memo } from 'react'
 import type { Edge, FullMap, Node } from '@/entities/map'
 // Switch graph engine by commenting/uncommenting:
-// import { GraphVisualization } from '@/features/graph'         // xyflow (React Flow)
-import { GraphVisualization } from '@/features/graph-webgl'  // WebGL + WASM (high-performance)
+import { GraphVisualization } from '@/features/graph'         // xyflow (React Flow)
+// import { GraphVisualization } from '@/features/graph-webgl'  // WebGL + WASM (high-performance)
 import { NodeConnectionsPanel } from '@/features/node-connections-panel'
 
 interface GraphViewProps {

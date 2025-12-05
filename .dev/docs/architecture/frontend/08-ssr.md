@@ -236,34 +236,279 @@ const dehydratedState = dehydrate(queryClient)
 - Layout shifts при загрузке шрифтов
 - Компоненты "прыгают" при hydration
 
-**Решения:**
+---
 
-```html
-<!-- 1. Critical CSS inline в <head> -->
+## Эталонная реализация Anti-Flash (Neylin)
+
+Комплексное решение из 5 слоёв защиты:
+
+### Слой 1: Critical CSS inline
+
+```tsx
+// app/root.tsx — Layout component
 <head>
-  <style>
-    /* Минимальный CSS для предотвращения flash */
-    html { background: #fff; color: #000; }
-    html.dark { background: #121212; color: #fff; }
-  </style>
-</head>
+  {/* ПЕРВЫМ в head для немедленного применения */}
+  <style dangerouslySetInnerHTML={{
+    __html: `
+      /* Отключение transitions при смене темы */
+      html.theme-transition-disabled,
+      html.theme-transition-disabled *,
+      html.theme-transition-disabled *::before,
+      html.theme-transition-disabled *::after {
+        transition: none !important;
+      }
 
-<!-- 2. Blocking script в <head> ДО body -->
-<head>
-  <script>
-    // Выполняется синхронно, до рендера body
-    (function() {
-      const theme = document.cookie.match(/theme=(\w+)/)?.[1]
-        ?? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-      document.documentElement.classList.add(theme)
-    })()
-  </script>
-</head>
+      /* Classic theme (default) */
+      html { background-color: #ffffff; color: #171717; }
+      html.dark { background-color: #121212; color: #ededed; }
 
-<!-- 3. Cookie-first approach -->
-<!-- Сервер читает cookie и добавляет class в HTML сразу -->
-<html class="dark"> <!-- Уже с классом с сервера -->
+      /* Все палитры */
+      html[data-palette="vanilla"] { background-color: #faf9f7; color: #211d1a; }
+      html[data-palette="vanilla"].dark { background-color: #161412; color: #e8e4de; }
+      /* ... другие палитры */
+    `
+  }} />
+  <Meta />
+  <Links />
+</head>
 ```
+
+### Слой 2: SSR Theme Injection
+
+```tsx
+// app/theme/theme.server.ts
+export const getThemeData = (request: Request) => {
+  const cookieHeader = request.headers.get('Cookie') ?? ''
+
+  const getCookie = (name: string): string | undefined =>
+    cookieHeader
+      .split(';')
+      .find(c => c.trim().startsWith(`${name}=`))
+      ?.split('=')[1]
+      ?.trim()
+
+  const mode = (getCookie(MODE_COOKIE_KEY) as Mode) || 'system'
+  const palette = (getCookie(PALETTE_COOKIE_KEY) as Palette) || 'classic'
+
+  return { mode, palette }
+}
+
+// app/root.tsx — Layout
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { getThemeData } = await import('@/app/theme/theme.server')
+  return { theme: getThemeData(request) }
+}
+
+const Layout = ({ children }) => {
+  const data = useRouteLoaderData<typeof loader>('root')
+
+  // SSR: применяем класс если mode === 'dark'
+  const ssrDarkClass = data?.theme?.mode === 'dark' ? 'dark' : undefined
+  const ssrPalette = data?.theme?.palette !== 'classic' ? data.theme.palette : undefined
+
+  return (
+    <html className={ssrDarkClass} data-palette={ssrPalette} suppressHydrationWarning>
+      {/* ... */}
+    </html>
+  )
+}
+```
+
+### Слой 3: Blocking Script (синхронизация)
+
+```tsx
+// app/root.tsx — в <head> после Critical CSS
+<script dangerouslySetInnerHTML={{
+  __html: `
+    (function() {
+      try {
+        var MODE_KEY = 'theme-mode';
+        var PALETTE_KEY = 'theme-palette';
+
+        // Отключаем transitions до hydration
+        document.documentElement.classList.add('theme-transition-disabled');
+
+        function getCookie(n) {
+          var m = document.cookie.match('(^|;)\\\\s*' + n + '\\\\s*=\\\\s*([^;]+)');
+          return m ? m.pop() : null;
+        }
+
+        // Приоритет: localStorage > cookie > system
+        var localMode = localStorage.getItem(MODE_KEY);
+        var cookieMode = getCookie(MODE_KEY);
+        var mode = localMode || cookieMode;
+        var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var shouldBeDark = mode === 'dark' || (mode === 'system' && systemDark) || (!mode && systemDark);
+
+        // Синхронизация с SSR
+        var hasDark = document.documentElement.classList.contains('dark');
+        if (shouldBeDark && !hasDark) {
+          document.documentElement.classList.add('dark');
+        } else if (!shouldBeDark && hasDark) {
+          document.documentElement.classList.remove('dark');
+        }
+
+        // Sync localStorage -> cookie (для будущих SSR)
+        if (localMode && localMode !== cookieMode) {
+          document.cookie = MODE_KEY + '=' + localMode + '; path=/; max-age=31536000; SameSite=Lax';
+        }
+
+        // Palette
+        var localPalette = localStorage.getItem(PALETTE_KEY);
+        var cookiePalette = getCookie(PALETTE_KEY);
+        var palette = localPalette || cookiePalette;
+
+        if (palette && palette !== 'classic') {
+          document.documentElement.dataset.palette = palette;
+        }
+
+        if (localPalette && localPalette !== cookiePalette) {
+          document.cookie = PALETTE_KEY + '=' + localPalette + '; path=/; max-age=31536000; SameSite=Lax';
+        }
+      } catch (e) { /* localStorage unavailable */ }
+    })();
+  `
+}} />
+```
+
+### Слой 4: ThemeProvider с useLayoutEffect
+
+```tsx
+// app/theme/components/theme-provider.tsx
+
+// Отключение transitions при программной смене темы
+const withoutTransitions = (callback: () => void) => {
+  const root = document.documentElement
+  root.classList.add('theme-transition-disabled')
+  callback()
+  // Re-enable after paint
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      root.classList.remove('theme-transition-disabled')
+    })
+  })
+}
+
+export const ThemeProvider = ({ children, defaultMode, defaultPalette }) => {
+  const [mode, setModeState] = useState<Mode>(() =>
+    typeof window !== 'undefined'
+      ? localStorage.getItem(MODE_STORAGE_KEY) || defaultMode
+      : defaultMode
+  )
+
+  // useLayoutEffect — синхронно ДО paint
+  useLayoutEffect(() => {
+    const root = document.documentElement
+    const resolved = resolveMode(mode)
+
+    // Обновляем только если класс отличается (предотвращает лишний repaint)
+    if (!root.classList.contains(resolved)) {
+      root.classList.remove('light', 'dark')
+      root.classList.add(resolved)
+    }
+  }, [mode])
+
+  // Слушаем изменения системной темы
+  useLayoutEffect(() => {
+    if (mode !== 'system') return
+
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    const handleChange = () => {
+      const resolved = resolveMode('system')
+      document.documentElement.classList.remove('light', 'dark')
+      document.documentElement.classList.add(resolved)
+    }
+
+    mediaQuery.addEventListener('change', handleChange)
+    return () => mediaQuery.removeEventListener('change', handleChange)
+  }, [mode])
+
+  const setMode = (newMode: Mode) => {
+    withoutTransitions(() => {
+      localStorage.setItem(MODE_STORAGE_KEY, newMode)
+      setCookie(MODE_COOKIE_KEY, newMode)
+      setModeState(newMode)
+    })
+  }
+
+  // ...
+}
+```
+
+### Слой 5: Navigation Flash Prevention
+
+```tsx
+// app/root.tsx — App component
+const App = () => {
+  const navigation = useNavigation()
+
+  // Отключаем transitions при навигации (lazy CSS loading)
+  useEffect(() => {
+    if (navigation.state === 'loading') {
+      document.documentElement.classList.add('theme-transition-disabled')
+    } else if (navigation.state === 'idle') {
+      const timer = setTimeout(() => {
+        document.documentElement.classList.remove('theme-transition-disabled')
+      }, 50)
+      return () => clearTimeout(timer)
+    }
+  }, [navigation.state])
+
+  return (/* ... */)
+}
+```
+
+### Архитектура решения
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│ REQUEST                                                          │
+└─────────────────────────┬───────────────────────────────────────┘
+                          ▼
+┌─────────────────────────────────────────────────────────────────┐
+│ 1. SERVER: getThemeData(request)                                 │
+│    └─ Читаем mode/palette из Cookie                              │
+│    └─ Return { mode: 'dark', palette: 'vanilla' }                │
+└─────────────────────────┬───────────────────────────────────────┘
+                          ▼
+┌─────────────────────────────────────────────────────────────────┐
+│ 2. SERVER: Render HTML                                           │
+│    └─ <html class="dark" data-palette="vanilla">                 │
+│    └─ Critical CSS inline (background + colors)                  │
+│    └─ Blocking script (синхронизация localStorage → cookie)      │
+└─────────────────────────┬───────────────────────────────────────┘
+                          ▼
+┌─────────────────────────────────────────────────────────────────┐
+│ 3. BROWSER: Parse HTML                                           │
+│    └─ Critical CSS применяется немедленно                        │
+│    └─ Blocking script проверяет localStorage                     │
+│    └─ Если localStorage ≠ SSR → исправляет class                 │
+│    └─ theme-transition-disabled предотвращает анимацию           │
+└─────────────────────────┬───────────────────────────────────────┘
+                          ▼
+┌─────────────────────────────────────────────────────────────────┐
+│ 4. BROWSER: Hydration                                            │
+│    └─ ThemeProvider инициализируется с SSR данными               │
+│    └─ useLayoutEffect проверяет/применяет тему                   │
+│    └─ theme-transition-disabled снимается                        │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Known Limitations
+
+| Проблема | Причина | Решение |
+|----------|---------|---------|
+| Микро-flash при `mode: system` | Сервер не знает системную тему | Blocking script исправляет до paint |
+| Client Hints не везде | `Sec-CH-Prefers-Color-Scheme` | Fallback на blocking script |
+
+### Файлы
+
+| Файл | Назначение |
+|------|------------|
+| `app/root.tsx` | Critical CSS, blocking script, Layout |
+| `app/theme/theme.server.ts` | SSR чтение cookie |
+| `app/theme/components/theme-provider.tsx` | Client-side state + useLayoutEffect |
+| `shared/lib/theme/theme.constants.ts` | Cookie/storage ключи |
 
 ---
 
@@ -846,352 +1091,18 @@ const LogoutButton = () => {
 
 ---
 
-## Next.js (App Router)
+## Правила SSR
 
-### Структура
-
-```
-app/
-├── layout.tsx            # Root layout (обязателен)
-├── page.tsx              # / (Home)
-├── loading.tsx           # Loading UI
-├── error.tsx             # Error boundary
-├── not-found.tsx         # 404
-└── dashboard/
-    ├── layout.tsx        # Dashboard layout
-    ├── page.tsx          # /dashboard
-    └── [mapId]/
-        └── page.tsx      # /dashboard/[mapId]
-```
-
-### Server Components (по умолчанию)
-
-```tsx
-// app/dashboard/page.tsx
-// Server Component — БЕЗ 'use client'
-
-import { getSession } from '@/lib/session'
-import { redirect } from 'next/navigation'
-
-export default async function DashboardPage() {
-  // Прямой async/await, нет useEffect!
-  const session = await getSession()
-
-  if (!session) {
-    redirect('/login')
-  }
-
-  const data = await fetchDashboardData(session.userId)
-
-  return (
-    <div>
-      <h1>Dashboard</h1>
-      <DashboardContent data={data} />
-    </div>
-  )
-}
-```
-
-### Client Components
-
-```tsx
-// app/dashboard/interactive-chart.tsx
-'use client' // Обязательная директива
-
-import { useState } from 'react'
-
-export const InteractiveChart = ({ data }) => {
-  const [selected, setSelected] = useState(null)
-
-  // Можно использовать hooks, event handlers, browser API
-  return (
-    <Chart
-      data={data}
-      onSelect={setSelected}
-      selected={selected}
-    />
-  )
-}
-```
-
-### Server Actions
-
-```tsx
-// app/actions.ts
-'use server'
-
-export async function createMap(formData: FormData) {
-  const session = await getSession()
-  if (!session) throw new Error('Unauthorized')
-
-  const title = formData.get('title') as string
-
-  const map = await db.map.create({
-    data: { title, userId: session.userId }
-  })
-
-  revalidatePath('/dashboard')
-  redirect(`/maps/${map.id}`)
-}
-
-// Использование в Client Component
-'use client'
-
-import { createMap } from './actions'
-
-export function NewMapForm() {
-  return (
-    <form action={createMap}>
-      <input name="title" required />
-      <button type="submit">Create</button>
-    </form>
-  )
-}
-```
-
-### Data Fetching Options
-
-```tsx
-// SSR (no cache) — каждый запрос
-const data = await fetch(url, { cache: 'no-store' })
-
-// SSG (static) — кэшируется навсегда
-const data = await fetch(url) // или { cache: 'force-cache' }
-
-// ISR (revalidate) — кэш с TTL
-const data = await fetch(url, { next: { revalidate: 60 } }) // 60 секунд
-
-// Tags для инвалидации
-const data = await fetch(url, { next: { tags: ['maps'] } })
-// В action: revalidateTag('maps')
-```
+1. **Cookie-first** — для theme/locale/auth (читается на сервере)
+2. **Server-only изоляция** — не давать серверному коду утечь на клиент (`.server.ts`)
+3. **Hydration-safe** — не использовать browser API в initial render
+4. **Request-scoped state** — не использовать singleton stores на сервере
+5. **Blocking scripts** — для предотвращения FOUC (theme, locale)
 
 ---
 
-## Nuxt 3
+## См. также
 
-### Структура
-
-```
-pages/
-├── index.vue             # /
-├── dashboard.vue         # /dashboard
-└── maps/
-    └── [id].vue          # /maps/:id
-
-server/
-├── api/
-│   └── maps.ts           # /api/maps
-└── middleware/
-    └── auth.ts
-
-composables/
-└── useAuth.ts            # Auto-imported composables
-```
-
-### Data Fetching
-
-```vue
-<!-- pages/dashboard.vue -->
-<script setup>
-// SSR-safe fetch с автоматической дедупликацией
-const { data: maps, pending, error } = await useFetch('/api/maps')
-
-// Или с lazy loading (fetch после mount)
-const { data: stats, pending: statsPending } = useLazyFetch('/api/stats')
-
-// С query params
-const page = ref(1)
-const { data } = await useFetch('/api/maps', {
-  query: { page }
-})
-</script>
-
-<template>
-  <div v-if="pending">Loading...</div>
-  <div v-else-if="error">Error: {{ error.message }}</div>
-  <div v-else>
-    <MapCard v-for="map in maps" :key="map.id" :map="map" />
-  </div>
-</template>
-```
-
-### Server API Routes
-
-```ts
-// server/api/maps.ts
-export default defineEventHandler(async (event) => {
-  // Middleware уже проверила auth, session в event.context
-  const session = event.context.session
-
-  if (!session) {
-    throw createError({ statusCode: 401, message: 'Unauthorized' })
-  }
-
-  const maps = await db.map.findMany({
-    where: { userId: session.userId }
-  })
-
-  return maps
-})
-```
-
-### Server Middleware
-
-```ts
-// server/middleware/auth.ts
-export default defineEventHandler(async (event) => {
-  const session = await getSession(event)
-  event.context.session = session
-})
-```
-
-### Client-Only Components
-
-```vue
-<template>
-  <ClientOnly>
-    <CanvasGraph :data="nodes" />
-
-    <template #fallback>
-      <GraphSkeleton />
-    </template>
-  </ClientOnly>
-</template>
-```
-
----
-
-## SvelteKit
-
-### Структура
-
-```
-src/routes/
-├── +layout.svelte        # Root layout
-├── +layout.server.ts     # Root server load
-├── +page.svelte          # /
-├── +page.ts              # Universal load
-└── dashboard/
-    ├── +page.svelte
-    ├── +page.server.ts   # Server-only load
-    └── +page.ts          # Universal load
-```
-
-### Load Functions
-
-```ts
-// src/routes/dashboard/+page.server.ts
-// Server-only — доступ к cookies, DB, secrets
-import type { PageServerLoad } from './$types'
-
-export const load: PageServerLoad = async ({ cookies, locals }) => {
-  const session = cookies.get('session')
-
-  if (!session) {
-    throw redirect(302, '/login')
-  }
-
-  const user = await getUser(session)
-  const maps = await getMaps(user.id)
-
-  return { user, maps }
-}
-```
-
-```ts
-// src/routes/dashboard/+page.ts
-// Universal — работает на сервере И клиенте
-import type { PageLoad } from './$types'
-
-export const load: PageLoad = async ({ fetch, data }) => {
-  // data — из +page.server.ts
-  // fetch — universal (работает везде)
-
-  const stats = await fetch('/api/stats').then(r => r.json())
-
-  return { ...data, stats }
-}
-```
-
-### Form Actions
-
-```ts
-// src/routes/maps/new/+page.server.ts
-import type { Actions } from './$types'
-
-export const actions: Actions = {
-  default: async ({ request, cookies }) => {
-    const session = cookies.get('session')
-    if (!session) {
-      return fail(401, { error: 'Unauthorized' })
-    }
-
-    const data = await request.formData()
-    const title = data.get('title')
-
-    try {
-      const map = await createMap({ title, userId: session.userId })
-      throw redirect(302, `/maps/${map.id}`)
-    } catch (e) {
-      return fail(400, { error: 'Failed to create map' })
-    }
-  }
-}
-```
-
-```svelte
-<!-- src/routes/maps/new/+page.svelte -->
-<script lang="ts">
-  import { enhance } from '$app/forms'
-
-  export let form // Результат action (errors)
-</script>
-
-<form method="POST" use:enhance>
-  {#if form?.error}
-    <p class="error">{form.error}</p>
-  {/if}
-
-  <input name="title" required />
-  <button type="submit">Create Map</button>
-</form>
-```
-
-### Browser Check
-
-```svelte
-<script>
-  import { browser } from '$app/environment'
-
-  // Безопасно использовать browser API
-  $: if (browser) {
-    localStorage.setItem('key', value)
-  }
-</script>
-```
-
----
-
-## Сравнение фреймворков
-
-| Аспект | React Router 7 | Next.js 14+ | Nuxt 3 | SvelteKit |
-|--------|----------------|-------------|--------|-----------|
-| **Data Fetch** | `loader` | `async` Server Component | `useFetch` | `load` |
-| **Mutations** | `action` + `Form` | Server Actions | `useFetch` POST | `actions` |
-| **Server-only** | `.server.ts` | Server Components | `server/` | `+page.server.ts` |
-| **Client-only** | `ClientOnly` wrapper | `'use client'` | `<ClientOnly>` | `browser` check |
-| **Streaming** | ✅ `defer` | ✅ `loading.tsx` | ✅ `useLazyFetch` | ✅ `await` |
-| **Type Safety** | ✅ `typeof loader` | ✅ | ⚠️ Manual | ✅ `$types` |
-| **File Routing** | `routes.ts` config | ✅ Convention | ✅ Convention | ✅ Convention |
-
----
-
-## Правила
-
-1. **Фундамент одинаков** — проблемы SSR одни и те же во всех фреймворках
-2. **Синтаксис разный** — каждый фреймворк решает по-своему
-3. **Cookie-first** — для theme/locale/auth (читается на сервере)
-4. **Server-only изоляция** — не давать серверному коду утечь на клиент
-5. **Hydration-safe** — не использовать browser API в initial render
-6. **Request-scoped state** — не использовать singleton stores на сервере
+- [05-server.md](./05-server.md) — Server-only код
+- [10-i18n.md](./10-i18n.md) — Интернационализация с SSR
+- [04-state.md](./04-state.md) — State management и SSR

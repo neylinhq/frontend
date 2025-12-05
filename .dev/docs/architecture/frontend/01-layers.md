@@ -1,5 +1,7 @@
 # Слои архитектуры
 
+> **Фреймворк**: React Router 7 (SSR)
+
 ## Диаграмма слоёв
 
 ```
@@ -294,3 +296,76 @@ shared/
 - ❌ Импортировать из app, pages, widgets, features, entities
 - ❌ Содержать бизнес-логику
 - ❌ Знать о domain моделях
+
+---
+
+## Server-only файлы (`.server.ts`)
+
+Файлы с суффиксом `.server.ts` содержат код, который выполняется **только на сервере** и никогда не попадает в клиентский бандл.
+
+**Где могут находиться:**
+- `pages/` — loaders, actions
+- `entities/` — серверные API функции
+- `shared/` — серверные утилиты
+
+**Правила:**
+```tsx
+// ✅ Прямой импорт в другом .server.ts файле
+import { getSession } from '@/entities/session/session.server'
+
+// ❌ НИКОГДА не экспортировать через barrel (index.ts)
+// entities/session/index.ts
+export { getSession } from './session.server' // утечёт на клиент!
+```
+
+> **Подробнее**: [05-server.md](./05-server.md)
+
+---
+
+## Circular Dependencies
+
+### Обнаружение
+
+```bash
+# Проверка циклических зависимостей
+npx madge --circular src/
+
+# Визуализация графа зависимостей
+npx madge --image graph.svg src/
+```
+
+### Частые причины
+
+| Проблема | Решение |
+|----------|---------|
+| Entity A импортирует Entity B и наоборот | Выделить общие types в shared |
+| Feature использует другую feature | Вынести общую логику в entities |
+| Barrel export тянет лишнее | Использовать прямые импорты |
+
+### Исправление
+
+```tsx
+// ❌ ПЛОХО: Circular dependency
+// entities/node/node.schema.ts
+import { EdgeSchema } from '@/entities/edge'
+
+// entities/edge/edge.schema.ts
+import { NodeSchema } from '@/entities/node'
+
+// ✅ ХОРОШО: Общие типы в shared
+// shared/types/graph.ts
+export type NodeId = Brand<string, 'NodeId'>
+export type EdgeId = Brand<string, 'EdgeId'>
+
+// entities/node/node.schema.ts
+import { NodeId, EdgeId } from '@/shared/types/graph'
+```
+
+---
+
+## См. также
+
+- [02-modules.md](./02-modules.md) — Структура модулей
+- [03-dependencies.md](./03-dependencies.md) — Правила импортов
+- [05-server.md](./05-server.md) — Server-only код
+- [08-ssr.md](./08-ssr.md) — SSR и hydration

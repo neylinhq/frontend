@@ -1,5 +1,7 @@
 # Best Practices
 
+> **Фреймворк**: React Router 7 (SSR)
+
 ## Quick Reference Чеклист
 
 ### Кодирование
@@ -156,3 +158,89 @@ tree src/features --dirsfirst
 # Проверить что .server.ts не в client bundle
 grep -r "requireAuth" .output/client/
 ```
+
+---
+
+## Конфигурация
+
+### biome.json
+
+```json
+{
+  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "organizeImports": { "enabled": true },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "suspicious": {
+        "noExplicitAny": "error",
+        "noConsoleLog": "warn"
+      },
+      "style": {
+        "useConst": "error",
+        "noUnusedTemplateLiteral": "error"
+      }
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single",
+      "semicolons": "asNeeded",
+      "trailingCommas": "none"
+    }
+  }
+}
+```
+
+### tsconfig.json (выжимка)
+
+```json
+{
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noUncheckedIndexedAccess": true,
+    "moduleResolution": "bundler",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
+}
+```
+
+### vite.config.ts (выжимка)
+
+```ts
+export default defineConfig({
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          router: ['react-router']
+        }
+      }
+    }
+  },
+  esbuild: {
+    drop: ['console', 'debugger'] // Удаляем в production
+  }
+})
+```
+
+---
+
+## См. также
+
+- [01-layers.md](./01-layers.md) — Слои архитектуры
+- [02-modules.md](./02-modules.md) — Структура модулей
+- [06-testing.md](./06-testing.md) — Тестирование
+- [09-security.md](./09-security.md) — Безопасность

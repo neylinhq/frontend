@@ -354,71 +354,143 @@ type RefreshRequest struct {
 
 ### Response Helpers
 
+Все API ответы имеют унифицированный формат:
+
+```json
+// Успешный ответ
+{
+  "success": true,
+  "data": { ... }
+}
+
+// Ответ с ошибкой
+{
+  "success": false,
+  "error": {
+    "code": "USER_NOT_FOUND",
+    "message": "user not found",
+    "details": { "field": "error message" }  // опционально, для валидации
+  }
+}
+
+// Пагинированный ответ
+{
+  "success": true,
+  "data": [...],
+  "meta": {
+    "total": 100,
+    "limit": 20,
+    "offset": 0
+  }
+}
+```
+
 ```go
 // internal/adapter/http/response/response.go
 package response
 
 type Response struct {
-    Data interface{} `json:"data,omitempty"`
-    Meta Meta        `json:"meta"`
+    Success bool        `json:"success"`
+    Data    interface{} `json:"data,omitempty"`
+    Error   *ErrorInfo  `json:"error,omitempty"`
 }
 
-type Meta struct {
-    Timestamp time.Time `json:"timestamp"`
-}
-
-type ErrorResponse struct {
-    Error ErrorBody `json:"error"`
-}
-
-type ErrorBody struct {
+type ErrorInfo struct {
     Code    string            `json:"code"`
     Message string            `json:"message"`
     Details map[string]string `json:"details,omitempty"`
 }
 
-func Success(data interface{}) Response {
-    return Response{
-        Data: data,
-        Meta: Meta{Timestamp: time.Now()},
-    }
+type PaginatedResponse struct {
+    Success bool        `json:"success"`
+    Data    interface{} `json:"data"`
+    Meta    *Pagination `json:"meta,omitempty"`
 }
 
-func BadRequest(c *fiber.Ctx, message string) error {
-    return c.Status(fiber.StatusBadRequest).JSON(ErrorResponse{
-        Error: ErrorBody{Code: "BAD_REQUEST", Message: message},
+type Pagination struct {
+    Total  int `json:"total"`
+    Limit  int `json:"limit"`
+    Offset int `json:"offset"`
+}
+
+func Success(c *fiber.Ctx, data interface{}) error {
+    return c.JSON(Response{
+        Success: true,
+        Data:    data,
     })
 }
 
-func Unauthorized(c *fiber.Ctx, message string) error {
-    return c.Status(fiber.StatusUnauthorized).JSON(ErrorResponse{
-        Error: ErrorBody{Code: "UNAUTHORIZED", Message: message},
+func Created(c *fiber.Ctx, data interface{}) error {
+    return c.Status(fiber.StatusCreated).JSON(Response{
+        Success: true,
+        Data:    data,
     })
 }
 
-func FromDomainError(c *fiber.Ctx, err error) error {
-    code, status := mapDomainError(err)
-    return c.Status(status).JSON(ErrorResponse{
-        Error: ErrorBody{Code: code, Message: err.Error()},
+func NoContent(c *fiber.Ctx) error {
+    return c.SendStatus(fiber.StatusNoContent)
+}
+
+func Paginated(c *fiber.Ctx, data interface{}, total, limit, offset int) error {
+    return c.JSON(PaginatedResponse{
+        Success: true,
+        Data:    data,
+        Meta: &Pagination{
+            Total:  total,
+            Limit:  limit,
+            Offset: offset,
+        },
     })
 }
 
-func mapDomainError(err error) (string, int) {
-    switch err {
-    case domainerror.ErrUserNotFound:
-        return "USER_NOT_FOUND", fiber.StatusNotFound
-    case domainerror.ErrUserEmailExists:
-        return "USER_EMAIL_EXISTS", fiber.StatusConflict
-    case domainerror.ErrInvalidCredentials:
-        return "AUTH_INVALID_CREDENTIALS", fiber.StatusUnauthorized
-    case domainerror.ErrMapNotFound:
-        return "MAP_NOT_FOUND", fiber.StatusNotFound
-    case domainerror.ErrMapLimitExceeded:
-        return "MAP_LIMIT_EXCEEDED", fiber.StatusUnprocessableEntity
-    case domainerror.ErrForbidden:
-        return "FORBIDDEN", fiber.StatusForbidden
+func Error(c *fiber.Ctx, err error) error {
+    status, code, message := mapError(err)
+    return c.Status(status).JSON(Response{
+        Success: false,
+        Error: &ErrorInfo{
+            Code:    code,
+            Message: message,
+        },
+    })
+}
+
+func ValidationError(c *fiber.Ctx, details map[string]string) error {
+    return c.Status(fiber.StatusBadRequest).JSON(Response{
+        Success: false,
+        Error: &ErrorInfo{
+            Code:    "VALIDATION_ERROR",
+            Message: "Validation failed",
+            Details: details,
+        },
+    })
+}
+
+func mapError(err error) (status int, code string, message string) {
+    switch {
+    // Not found
+    case errors.Is(err, domainerror.ErrUserNotFound):
+        return fiber.StatusNotFound, "USER_NOT_FOUND", err.Error()
+    case errors.Is(err, domainerror.ErrMapNotFound):
+        return fiber.StatusNotFound, "MAP_NOT_FOUND", err.Error()
+
+    // Conflict
+    case errors.Is(err, domainerror.ErrUserEmailExists):
+        return fiber.StatusConflict, "EMAIL_EXISTS", err.Error()
+
+    // Auth
+    case errors.Is(err, domainerror.ErrInvalidCredentials):
+        return fiber.StatusUnauthorized, "INVALID_CREDENTIALS", err.Error()
+    case errors.Is(err, domainerror.ErrUnauthorized):
+        return fiber.StatusUnauthorized, "UNAUTHORIZED", err.Error()
+    case errors.Is(err, domainerror.ErrForbidden):
+        return fiber.StatusForbidden, "FORBIDDEN", err.Error()
+
+    // Business rules
+    case errors.Is(err, domainerror.ErrMapLimitExceeded):
+        return fiber.StatusForbidden, "MAP_LIMIT_EXCEEDED", err.Error()
+
     default:
-        return "INTERNAL_ERROR", fiber.StatusInternalServerError
+        return fiber.StatusInternalServerError, "INTERNAL_ERROR", "An internal error occurred"
     }
 }
 ```

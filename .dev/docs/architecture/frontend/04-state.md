@@ -271,3 +271,141 @@ export const useThemeStore = create(
 - ✅ Draft данные (черновик формы)
 - ❌ Не для server state (используйте React Query cache)
 - ❌ Не для sensitive данные (токены → httpOnly cookies)
+
+---
+
+## SSR & Hydration
+
+При использовании SSR (React Router 7) необходимо учитывать hydration.
+
+### Проблема
+
+```tsx
+// ❌ ПЛОХО: Hydration mismatch
+const useThemeStore = create(
+  persist(
+    (set) => ({
+      theme: 'dark'  // На сервере всегда 'dark', на клиенте из localStorage
+    }),
+    { name: 'theme' }
+  )
+)
+```
+
+### Решение: Cookie-first
+
+```tsx
+// ✅ ХОРОШО: Тема из cookie (доступна на сервере)
+// app/root.tsx (loader)
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const theme = request.headers.get('Cookie')?.match(/theme=(\w+)/)?.[1] ?? 'light'
+  return { theme }
+}
+
+// Компонент
+const { theme } = useLoaderData<typeof loader>()
+```
+
+### Решение: Deferred hydration
+
+```tsx
+// ✅ ХОРОШО: Zustand инициализируется после hydration
+const useClientStore = create((set) => ({
+  value: null,  // Default для SSR
+  hydrated: false,
+  hydrate: (value) => set({ value, hydrated: true })
+}))
+
+// В компоненте
+useEffect(() => {
+  const saved = localStorage.getItem('value')
+  if (saved) hydrate(JSON.parse(saved))
+}, [])
+```
+
+> **Подробнее**: [08-ssr.md](./08-ssr.md)
+
+---
+
+## State Reset
+
+### При logout
+
+```tsx
+// entities/session/session.store.ts
+export const useSessionStore = create<SessionState>((set) => ({
+  user: null,
+  isAuthenticated: false,
+  logout: () => {
+    // 1. Очистить свой state
+    set({ user: null, isAuthenticated: false })
+
+    // 2. Очистить React Query cache
+    queryClient.clear()
+
+    // 3. Очистить другие stores (если нужно)
+    useMapContext.getState().reset()
+    useGraphViewStore.getState().reset()
+  }
+}))
+```
+
+### При смене контекста
+
+```tsx
+// При переходе на другую map
+const useMapContext = create((set) => ({
+  currentMapId: null,
+  setCurrentMap: (id) => {
+    // Сбросить зависимый state
+    useGraphViewStore.getState().reset()
+    set({ currentMapId: id })
+  },
+  reset: () => set({ currentMapId: null })
+}))
+```
+
+---
+
+## Anti-pattern: State Duplication
+
+> **Внимание**: Это известная проблема в текущем коде.
+
+```tsx
+// ❌ ПЛОХО: Два источника истины для user
+// entities/session/session.store.ts
+export const useSessionStore = create(() => ({
+  user: null,  // Zustand
+}))
+
+// entities/user/user.queries.ts
+export const useUser = () => useQuery({
+  queryKey: ['user'],
+  queryFn: fetchUser  // React Query
+})
+```
+
+**Проблемы:**
+- Race conditions между источниками
+- Stale data в одном из источников
+- Сложность синхронизации
+
+**Решение:**
+```tsx
+// ✅ ХОРОШО: Один источник истины
+// React Query = данные пользователя
+export const useUser = () => useQuery({ queryKey: ['user'], queryFn: fetchUser })
+
+// Zustand = только UI state (isAuthenticated computed из React Query)
+export const useSessionStore = create(() => ({
+  // Нет user здесь!
+  loginRedirectPath: null
+}))
+```
+
+---
+
+## См. также
+
+- [08-ssr.md](./08-ssr.md) — SSR и hydration
+- [09-security.md](./09-security.md) — Безопасное хранение данных

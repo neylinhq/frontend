@@ -90,8 +90,8 @@
 | `ErrUserEmailExists` | 409 Conflict |
 | `ErrInvalidCredentials` | 401 Unauthorized |
 | `ErrMapNotFound` | 404 Not Found |
-| `ErrMapLimitExceeded` | 422 Unprocessable Entity |
-| `ErrNodeLimitExceeded` | 422 Unprocessable Entity |
+| `ErrMapLimitExceeded` | 403 Forbidden |
+| `ErrNodeLimitExceeded` | 403 Forbidden |
 | `ErrForbidden` | 403 Forbidden |
 | Validation errors | 400 Bad Request |
 | Unknown errors | 500 Internal Server Error |
@@ -102,7 +102,10 @@
 
 | Prefix | Purpose | TTL |
 |--------|---------|-----|
-| `session` | User sessions | 720h |
+| `refresh_token` | Refresh tokens by user | 7d |
+| `blacklist` | Revoked access tokens | 15m |
+| `user_sessions` | User's active sessions | 7d |
+| `session` | User sessions (legacy) | 720h |
 | `rate` | Rate limit buckets | 1h |
 | `cache` | Data cache | 5m-24h |
 | `lock` | Distributed locks | 30s |

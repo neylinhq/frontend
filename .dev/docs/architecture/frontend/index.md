@@ -1,5 +1,7 @@
 # Modular FSD - Neylin Frontend Architecture
 
+> **Фреймворк**: React Router 7 (SSR)
+
 ## Обзор
 
 Neylin использует архитектуру **Modular FSD** — кастомную вариацию [Feature-Sliced Design](https://feature-sliced.design) с дополнительными правилами организации файлов и именования.
@@ -46,13 +48,13 @@ features/auth/              # Семантическая группа
 | [06-testing](./06-testing.md) | Стратегия тестирования |
 | [07-error-handling](./07-error-handling.md) | Error boundaries |
 | [08-ssr](./08-ssr.md) | Server-Side Rendering |
+| [09-security](./09-security.md) | Безопасность, a11y, known issues |
+| [10-i18n](./10-i18n.md) | Интернационализация |
+| [11-performance](./11-performance.md) | Оптимизация производительности |
+| [12-realtime](./12-realtime.md) | WebSocket, polling, SSE |
+| [13-feature-flags](./13-feature-flags.md) | Feature flags |
+| [14-local-dev](./14-local-dev.md) | Локальная разработка |
 | [99-best-practices](./99-best-practices.md) | Чеклист и quick reference |
-
----
-
-## Полная версия
-
-Все разделы в одном файле: [all.md](./all.md)
 
 ---
 

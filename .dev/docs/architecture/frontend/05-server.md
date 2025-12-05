@@ -165,3 +165,148 @@ export const createPaymentIntent = async (amount: number) => {
 ```
 
 **Правило**: Любой `process.env.SECRET_*` должен быть в `.server.ts`.
+
+---
+
+## Error Handling в Loaders
+
+### Типы ошибок
+
+| Тип | Обработка | HTTP Status |
+|-----|-----------|-------------|
+| Not found | throw Response | 404 |
+| Unauthorized | throw redirect | 302 → /sign-in |
+| Forbidden | throw Response | 403 |
+| Validation | return { errors } | 200 (с errors) |
+| Server error | throw Response | 500 |
+
+### Примеры
+
+```tsx
+// pages/maps/map-page/map-page.server.ts
+import { data, redirect } from 'react-router'
+
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
+  // 1. Auth check
+  const session = await getSession(request)
+  if (!session) {
+    throw redirect('/sign-in')
+  }
+
+  // 2. Fetch data
+  const map = await mapApi.getById(params.mapId)
+
+  // 3. Not found
+  if (!map) {
+    throw data({ message: 'Map not found' }, { status: 404 })
+  }
+
+  // 4. Forbidden
+  if (map.userId !== session.userId) {
+    throw data({ message: 'Access denied' }, { status: 403 })
+  }
+
+  return { map }
+}
+```
+
+### Actions с валидацией
+
+```tsx
+export const action = async ({ request }: ActionFunctionArgs) => {
+  const formData = await request.formData()
+
+  // Валидация — НЕ throw, а return с errors
+  const result = MapSchema.safeParse(Object.fromEntries(formData))
+  if (!result.success) {
+    return data(
+      { errors: result.error.flatten().fieldErrors },
+      { status: 400 }
+    )
+  }
+
+  try {
+    await mapApi.create(result.data)
+    return redirect('/dashboard')
+  } catch (error) {
+    // Серверная ошибка
+    console.error('Failed to create map:', error)
+    throw data(
+      { message: 'Failed to create map' },
+      { status: 500 }
+    )
+  }
+}
+```
+
+### Error Boundary
+
+Ошибки из loaders перехватываются ErrorBoundary:
+
+```tsx
+// app/root.tsx
+export const ErrorBoundary = () => {
+  const error = useRouteError()
+
+  if (isRouteErrorResponse(error)) {
+    // Наша ошибка (404, 403, 500)
+    return <ErrorPage status={error.status} message={error.data.message} />
+  }
+
+  // Неожиданная ошибка
+  return <ErrorPage status={500} message="Something went wrong" />
+}
+```
+
+> **Подробнее**: [07-error-handling.md](./07-error-handling.md)
+
+---
+
+## Security в Loaders
+
+### Input Validation
+
+```tsx
+// ✅ Всегда валидируйте params и query
+export const loader = async ({ params }: LoaderFunctionArgs) => {
+  const mapId = z.string().uuid().safeParse(params.mapId)
+  if (!mapId.success) {
+    throw data({ message: 'Invalid map ID' }, { status: 400 })
+  }
+
+  // Теперь mapId.data типизирован и валиден
+  const map = await mapApi.getById(mapId.data)
+}
+```
+
+### Rate Limiting
+
+```tsx
+// shared/lib/rate-limit.server.ts
+import { RateLimiter } from 'limiter'
+
+const limiters = new Map<string, RateLimiter>()
+
+export const checkRateLimit = (ip: string, limit = 100) => {
+  let limiter = limiters.get(ip)
+  if (!limiter) {
+    limiter = new RateLimiter({ tokensPerInterval: limit, interval: 'minute' })
+    limiters.set(ip, limiter)
+  }
+
+  if (!limiter.tryRemoveTokens(1)) {
+    throw data({ message: 'Too many requests' }, { status: 429 })
+  }
+}
+```
+
+> **Подробнее**: [09-security.md](./09-security.md)
+
+---
+
+## См. также
+
+- [01-layers.md](./01-layers.md) — Где размещать .server.ts файлы
+- [07-error-handling.md](./07-error-handling.md) — Error boundaries
+- [08-ssr.md](./08-ssr.md) — SSR и loaders
+- [09-security.md](./09-security.md) — Безопасность

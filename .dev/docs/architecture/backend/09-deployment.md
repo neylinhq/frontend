@@ -337,6 +337,196 @@ DROP TABLE IF EXISTS users;
 
 ---
 
+## Migration Strategy
+
+### Zero-Downtime Migrations
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│ EXPAND-CONTRACT PATTERN                                          │
+│                                                                  │
+│ Phase 1: EXPAND                                                  │
+│ - Add new column (nullable or with default)                     │
+│ - Add new table                                                  │
+│ - Add new index CONCURRENTLY                                    │
+│                                                                  │
+│ Phase 2: MIGRATE DATA                                            │
+│ - Backfill new columns                                          │
+│ - Transform data if needed                                      │
+│                                                                  │
+│ Phase 3: CODE DEPLOY                                             │
+│ - Deploy code that writes to both old and new                   │
+│ - Deploy code that reads from new                               │
+│                                                                  │
+│ Phase 4: CONTRACT                                                │
+│ - Remove old column/table (separate migration)                  │
+│ - Remove old code paths                                         │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Safe Migration Examples
+
+```sql
+-- ✅ SAFE: Add nullable column
+ALTER TABLE users ADD COLUMN phone VARCHAR(20);
+
+-- ✅ SAFE: Add column with default (Postgres 11+)
+ALTER TABLE users ADD COLUMN verified BOOLEAN NOT NULL DEFAULT false;
+
+-- ✅ SAFE: Create index concurrently
+CREATE INDEX CONCURRENTLY idx_users_phone ON users(phone);
+
+-- ✅ SAFE: Add new table
+CREATE TABLE user_preferences (...);
+
+-- ❌ DANGEROUS: Rename column (breaks running code)
+ALTER TABLE users RENAME COLUMN name TO full_name;
+
+-- ❌ DANGEROUS: Change column type
+ALTER TABLE users ALTER COLUMN age TYPE BIGINT;
+
+-- ❌ DANGEROUS: Add NOT NULL to existing column
+ALTER TABLE users ALTER COLUMN phone SET NOT NULL;
+```
+
+### Rename Column (Safe Pattern)
+
+```sql
+-- Migration 1: Add new column
+ALTER TABLE users ADD COLUMN full_name VARCHAR(200);
+
+-- Migration 2: Backfill (run in batches)
+UPDATE users SET full_name = name WHERE full_name IS NULL LIMIT 1000;
+
+-- Deploy code: write to both, read from full_name with fallback
+-- SELECT COALESCE(full_name, name) as full_name FROM users
+
+-- Migration 3: Set NOT NULL (after all data migrated)
+ALTER TABLE users ALTER COLUMN full_name SET NOT NULL;
+
+-- Deploy code: write/read only full_name
+
+-- Migration 4: Drop old column
+ALTER TABLE users DROP COLUMN name;
+```
+
+### Pre-Deploy Migrations
+
+Миграции запускаются ДО деплоя нового кода:
+
+```yaml
+# GitHub Actions
+deploy:
+  steps:
+    - name: Run migrations
+      run: migrate -path migrations -database "$DATABASE_URL" up
+
+    - name: Wait for migrations
+      run: sleep 10  # Ensure replicas synced
+
+    - name: Deploy new code
+      run: kubectl rollout restart deployment/api
+```
+
+### Rollback Strategy
+
+```makefile
+# Rollback last migration
+migrate-down:
+	migrate -path migrations -database "$(DATABASE_URL)" down 1
+
+# Force version (after failed migration)
+migrate-force:
+	migrate -path migrations -database "$(DATABASE_URL)" force $(version)
+```
+
+**Правило**: Каждая миграция должна иметь рабочий `down.sql`:
+
+```sql
+-- 000010_add_user_phone.up.sql
+ALTER TABLE users ADD COLUMN phone VARCHAR(20);
+
+-- 000010_add_user_phone.down.sql
+ALTER TABLE users DROP COLUMN phone;
+```
+
+---
+
+## Deployment Strategies
+
+### Blue-Green Deployment
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         LOAD BALANCER                            │
+│                              │                                   │
+│              ┌───────────────┼───────────────┐                  │
+│              ▼                               ▼                   │
+│      ┌──────────────┐               ┌──────────────┐            │
+│      │  BLUE (v1)   │               │  GREEN (v2)  │            │
+│      │   3 pods     │               │   3 pods     │            │
+│      │   ACTIVE     │               │   STANDBY    │            │
+│      └──────────────┘               └──────────────┘            │
+│                                                                  │
+│  1. Deploy v2 to GREEN                                          │
+│  2. Run smoke tests on GREEN                                    │
+│  3. Switch traffic to GREEN                                     │
+│  4. Keep BLUE for rollback                                      │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Canary Deployment
+
+```yaml
+# Kubernetes canary with Istio
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+spec:
+  http:
+    - route:
+        - destination:
+            host: api
+            subset: stable
+          weight: 90
+        - destination:
+            host: api
+            subset: canary
+          weight: 10  # 10% traffic to new version
+```
+
+### Rolling Update (Default)
+
+```yaml
+# deployments/k8s/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1        # Max pods above desired
+      maxUnavailable: 0  # Zero downtime
+  template:
+    spec:
+      containers:
+        - name: api
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+```
+
+---
+
 ## CI/CD
 
 ### GitHub Actions

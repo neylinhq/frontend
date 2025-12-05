@@ -43,6 +43,9 @@ Neylin Backend использует **Clean Architecture** (Uncle Bob) на Go.
 | 6 | [Redis](./06-redis.md) | Sessions, Caching, Rate Limiting, Pub/Sub |
 | 7 | [Observability](./07-observability.md) | Tracing, Metrics, Logging, Health |
 | 8 | [Testing](./08-testing.md) | Unit, Integration, E2E |
-| 9 | [Deployment](./09-deployment.md) | Docker, Makefile |
+| 9 | [Deployment](./09-deployment.md) | Docker, Migrations, CI/CD |
+| 10 | [Error Handling](./10-error-handling.md) | Domain errors, Retry, Circuit Breaker |
+| 11 | [Security](./11-security.md) | Validation, CSRF, Rate Limiting, Audit |
+| 12 | [Auth Flow](./12-auth-flow.md) | JWT, Tokens, Sessions, 2FA |
 | 99 | [Checklists](./99-checklists.md) | Quick Reference |
 

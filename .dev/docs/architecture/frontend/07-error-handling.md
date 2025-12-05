@@ -325,3 +325,121 @@ export const useErrorReporter = () => {
 5. **Fallback UI** должен давать понятную информацию
 6. **401 ошибки** → редирект на логин (глобально)
 7. **Retry** → включайте для network ошибок, выключайте для 4xx
+
+---
+
+## SSR Error Handling
+
+### Ошибки в Loaders
+
+В React Router 7 ошибки из loaders перехватываются `errorElement` или `ErrorBoundary`:
+
+```tsx
+// app/root.tsx
+import { isRouteErrorResponse, useRouteError } from 'react-router'
+
+export const ErrorBoundary = () => {
+  const error = useRouteError()
+
+  // Ошибки из loader (404, 403, 500)
+  if (isRouteErrorResponse(error)) {
+    return (
+      <ErrorPage
+        status={error.status}
+        title={getErrorTitle(error.status)}
+        message={error.data?.message}
+      />
+    )
+  }
+
+  // Неожиданные ошибки
+  return (
+    <ErrorPage
+      status={500}
+      title="Unexpected Error"
+      message={error instanceof Error ? error.message : 'Unknown error'}
+    />
+  )
+}
+
+const getErrorTitle = (status: number) => {
+  switch (status) {
+    case 404: return 'Not Found'
+    case 403: return 'Access Denied'
+    case 401: return 'Unauthorized'
+    default: return 'Error'
+  }
+}
+```
+
+### Streaming и Suspense
+
+При использовании streaming ошибки в Suspense boundaries обрабатываются по-другому:
+
+```tsx
+// ❌ ПРОБЛЕМА: Ошибка в defer потеряется
+export const loader = async () => {
+  return defer({
+    // Если это упадёт — клиент получит ошибку, не сервер
+    slowData: fetchSlowData()
+  })
+}
+
+// ✅ ХОРОШО: Обработка в Await
+<Suspense fallback={<Skeleton />}>
+  <Await
+    resolve={data.slowData}
+    errorElement={<ErrorWidget message="Failed to load data" />}
+  >
+    {(resolved) => <DataDisplay data={resolved} />}
+  </Await>
+</Suspense>
+```
+
+### Nested Error Boundaries
+
+```tsx
+// routes/dashboard.tsx
+export const ErrorBoundary = () => {
+  // Dashboard-specific error UI
+  return <DashboardError />
+}
+
+// routes/dashboard/map.$id.tsx
+export const ErrorBoundary = () => {
+  // Map-specific error UI (more granular)
+  return <MapError />
+}
+```
+
+Иерархия: Ближайший ErrorBoundary к месту ошибки перехватывает её.
+
+---
+
+## Known Issue: Single Root Boundary
+
+> **Текущее состояние кода**: Только root-level Error Boundary
+
+**Проблема**: Любая ошибка в любом компоненте роняет всё приложение.
+
+**Решение**: Добавить granular boundaries:
+
+```tsx
+// widgets/graph-canvas/graph-canvas.tsx
+<ErrorBoundary fallback={<GraphErrorFallback />}>
+  <GraphCanvas />
+</ErrorBoundary>
+
+// widgets/node-editor/node-editor.tsx
+<ErrorBoundary fallback={<EditorErrorFallback />}>
+  <NodeEditor />
+</ErrorBoundary>
+```
+
+---
+
+## См. также
+
+- [05-server.md](./05-server.md) — Error handling в loaders
+- [08-ssr.md](./08-ssr.md) — SSR и streaming
+- [09-security.md](./09-security.md) — Security-related errors

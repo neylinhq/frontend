@@ -271,3 +271,136 @@ export const createMockUser = (overrides?: Partial<User>): User => ({
 - UI тесты хрупкие (ломаются при любом изменении)
 - Лучше покрыть E2E критические пути
 - Unit-тесты для чистой логики, не UI
+
+---
+
+## Coverage Thresholds
+
+### Минимальные требования
+
+| Метрика | Порог | Примечание |
+|---------|-------|------------|
+| Statements | 60% | Базовый уровень |
+| Branches | 50% | Условная логика |
+| Functions | 60% | Покрытие функций |
+| Lines | 60% | Строки кода |
+
+### Конфигурация (vitest.config.ts)
+
+```ts
+export default defineConfig({
+  test: {
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html'],
+      thresholds: {
+        statements: 60,
+        branches: 50,
+        functions: 60,
+        lines: 60
+      },
+      include: [
+        'src/entities/**/*.ts',
+        'src/features/**/lib/**/*.ts',
+        'src/shared/lib/**/*.ts'
+      ],
+      exclude: [
+        '**/*.test.ts',
+        '**/index.ts',
+        '**/*.d.ts'
+      ]
+    }
+  }
+})
+```
+
+---
+
+## Дополнительные типы тестов
+
+### Visual Regression (опционально)
+
+```bash
+# Playwright для visual tests
+pnpm playwright test --project=visual
+```
+
+```ts
+// tests/visual/button.visual.test.ts
+test('button variants', async ({ page }) => {
+  await page.goto('/storybook/button')
+  await expect(page).toHaveScreenshot('button-variants.png')
+})
+```
+
+### Accessibility Testing
+
+```ts
+// Используем @axe-core/playwright
+import { test, expect } from '@playwright/test'
+import AxeBuilder from '@axe-core/playwright'
+
+test('page has no a11y violations', async ({ page }) => {
+  await page.goto('/dashboard')
+
+  const results = await new AxeBuilder({ page }).analyze()
+
+  expect(results.violations).toEqual([])
+})
+```
+
+### Performance Testing
+
+```ts
+// Lighthouse CI в pipeline
+// lighthouserc.js
+module.exports = {
+  ci: {
+    collect: {
+      url: ['http://localhost:3000/'],
+      numberOfRuns: 3
+    },
+    assert: {
+      assertions: {
+        'categories:performance': ['error', { minScore: 0.8 }],
+        'categories:accessibility': ['error', { minScore: 0.9 }]
+      }
+    }
+  }
+}
+```
+
+---
+
+## CI/CD Integration
+
+```yaml
+# .github/workflows/test.yml
+name: Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - run: pnpm install
+      - run: pnpm test:coverage
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+```
+
+---
+
+## См. также
+
+- [09-security.md](./09-security.md) — Security testing
+- [99-best-practices.md](./99-best-practices.md) — Чеклист

@@ -633,6 +633,56 @@ module/
 └── [domain].test.ts      # Тесты
 ```
 
+#### Server-only код (`.server.ts`)
+
+Файлы `.server.ts` содержат код, который **НИКОГДА не должен попасть в клиентский бандл**.
+
+**Что класть в `.server.ts`:**
+
+| Тип | Пример |
+|-----|--------|
+| **Loaders** | Загрузка данных для страницы (React Router) |
+| **Actions** | Обработка форм, мутации |
+| **Auth guards** | `requireAuth()`, `requireAdmin()` |
+| **Секреты** | Доступ к env-переменным, API keys |
+| **Database** | Прямые запросы к БД (если есть) |
+
+**Пример:**
+```tsx
+// entities/session/session.server.ts
+import { redirect } from 'react-router'
+
+export const requireAuth = async (request: Request) => {
+  const session = await getSession(request)
+  if (!session.userId) {
+    throw redirect('/sign-in')
+  }
+  return session
+}
+
+// pages/dashboard/overview-page/overview-page.server.ts
+import { requireAuth } from '@/entities/session/session.server'
+import { mapApi } from '@/entities/map'
+
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const session = await requireAuth(request)
+  return mapApi.getUserMaps(session.userId)
+}
+```
+
+**Почему НЕ экспортировать через index.ts?**
+```tsx
+// ❌ ОПАСНО - серверный код может утечь на клиент
+// entities/session/index.ts
+export { requireAuth } from './session.server'
+
+// ✅ ПРАВИЛЬНО - импорт напрямую в .server.ts файлах
+// pages/dashboard/overview-page/overview-page.server.ts
+import { requireAuth } from '@/entities/session/session.server'
+```
+
+**Правило**: `.server.ts` импортируется только из других `.server.ts` файлов.
+
 **❌ НЕЛЬЗЯ**:
 - Обычный `.css` (только `.module.css` в модулях, обычный `.css` → `/shared/styles`)
 - `.js`, `.jsx` файлы

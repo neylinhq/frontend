@@ -15,7 +15,7 @@ export interface UseGraphEngineReturn {
   initEngine: (canvas: HTMLCanvasElement) => Promise<void>;
 }
 
-export function useGraphEngine(options: UseGraphEngineOptions = {}): UseGraphEngineReturn {
+export const useGraphEngine = (options: UseGraphEngineOptions = {}): UseGraphEngineReturn => {
   const { autoInit = true } = options;
 
   const [engine, setEngine] = useState<GraphEngine | null>(null);

@@ -5,7 +5,7 @@ interface LiveRegionProps {
   assertive?: boolean
 }
 
-export function LiveRegion({ message, assertive = false }: LiveRegionProps) {
+export const LiveRegion = ({ message, assertive = false }: LiveRegionProps) => {
   const regionRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {

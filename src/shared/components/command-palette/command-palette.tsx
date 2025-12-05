@@ -7,7 +7,7 @@ import { cn } from '@/shared/lib/cn'
 import { Dialog, DialogContent, DialogTitle } from '@/shared/components/dialog'
 import type { CommandPaletteItem, CommandPaletteProps } from './command-palette.types'
 
-export function CommandPalette<T extends CommandPaletteItem>({
+export const CommandPalette = <T extends CommandPaletteItem>({
   open,
   onOpenChange,
   items,
@@ -21,7 +21,7 @@ export function CommandPalette<T extends CommandPaletteItem>({
   enableHotkey = true,
   footer,
   title = 'Command palette'
-}: CommandPaletteProps<T>) {
+}: CommandPaletteProps<T>) => {
   const [query, setQuery] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(0)
 

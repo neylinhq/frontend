@@ -194,6 +194,31 @@ pages/
 
 **Правило**: Группа = папка БЕЗ файлов. Если нужен общий код - создайте widget или вынесите в shared/entities.
 
+### ⚠️ Группа ≠ Модуль
+
+**ВАЖНО для LLM и новых разработчиков:**
+
+Группа (`features/auth/`, `pages/dashboard/`) — это **ПРОСТО ПАПКА** для визуального разделения в IDE.
+
+```
+features/
+├── auth/                    # ← ЭТО ГРУППА (просто папка, НЕТ index.ts)
+│   ├── sign-in-form/        # ← ЭТО МОДУЛЬ (есть index.ts)
+│   │   ├── index.ts         # ✅ Barrel export
+│   │   └── sign-in-form.tsx
+│   └── sign-up-form/        # ← ЭТО МОДУЛЬ
+│       ├── index.ts         # ✅ Barrel export
+│       └── sign-up-form.tsx
+```
+
+**❌ НЕПРАВИЛЬНО думать:**
+- "auth/ — это модуль, нужен index.ts для реэкспорта sign-in-form и sign-up-form"
+
+**✅ ПРАВИЛЬНО понимать:**
+- Группа = namespace для организации файлов в IDE
+- Модуль = единица с public API (index.ts)
+- Импорт идёт напрямую в модуль: `@/features/auth/sign-in-form`, НЕ `@/features/auth`
+
 **Что можно**:
 - ✅ Импортировать widgets, features, entities, shared
 - ✅ Композировать features и widgets
@@ -253,6 +278,33 @@ widgets/
 **Widgets могут импортировать другие widgets** для композиции сложных layout-ов.
 
 Это прагматичное расширение FSD, избегающее prop-drilling через pages.
+
+#### Почему cross-widget imports разрешены?
+
+Виджет по определению = **композиция**. Запрет cross-widget создаёт проблемы:
+
+**Без cross-widget (плохо):**
+```tsx
+// pages/dashboard/overview-page.tsx
+import { DashboardLayout } from '@/widgets/dashboard-layout'
+import { UserNav } from '@/widgets/user-nav'
+
+// Page вынужден знать о внутренностях layout
+<DashboardLayout userNav={<UserNav />}>
+  {children}
+</DashboardLayout>
+```
+
+**С cross-widget (хорошо):**
+```tsx
+// widgets/dashboard-layout/dashboard-layout.tsx
+import { UserNav } from '@/widgets/user-nav'
+
+// Layout сам управляет своей композицией
+<Header>
+  <UserNav />
+</Header>
+```
 
 ```tsx
 // ✅ Разрешено
@@ -402,7 +454,6 @@ entities/
 - ❌ Импортировать **hooks/api/queries** из других entities
 - ❌ Импортировать features, pages, widgets
 - ❌ Содержать UI компоненты
-- ❌ **Содержать stores** (Zustand/state management) - это уровень features/pages
 
 **Пример**:
 ```tsx
@@ -422,26 +473,65 @@ export const useCurrentUser = () => {
 }  // ← ЕДИНЫЙ источник истины для User данных
 ```
 
-**Почему НЕТ stores в entities**:
-- Entities = domain models + data fetching (React Query)
-- Stores = UI state (form fields, editing mode, UI filters)
-- UI state живет в features/pages, НЕ в entities
+### Stores в Entities
+
+**Entities МОГУТ содержать stores**, если это shared state между несколькими features.
+
+| Где store | Когда | Пример |
+|-----------|-------|--------|
+| **entities** | Shared domain state для нескольких features | `entities/session/session.store.ts` |
+| **features** | Локальный UI state одной фичи | `features/node-editor/model/editor.store.ts` |
+
+**Пример shared store в entities:**
+```tsx
+// entities/session/session.store.ts
+import type { User } from '@/entities/user'  // ✅ cross-entity type import
+
+export const useSessionStore = create<{
+  user: User | null
+  isAuthenticated: boolean
+  login: (user: User) => void
+  logout: () => void
+}>((set) => ({
+  user: null,
+  isAuthenticated: false,
+  login: (user) => set({ user, isAuthenticated: true }),
+  logout: () => set({ user: null, isAuthenticated: false })
+}))
+```
+
+**Использование в любой feature:**
+```tsx
+// features/billing/plan-card/plan-card.tsx
+import { useSessionStore } from '@/entities/session'
+
+export const PlanCard = () => {
+  const { isAuthenticated } = useSessionStore()
+  // ...
+}
+```
+
+**Правило разделения:**
+- **UI state** (isEditing, draftFields, selectedTab) → **features**
+- **Domain state** (session, user, currentMap) → **entities**
 
 ```tsx
-// ✅ ПРАВИЛЬНО - данные в entities
-entities/user/user.queries.ts:
-export const useCurrentUser = () => useQuery(...)
+// ✅ ПРАВИЛЬНО - domain state в entities
+entities/session/session.store.ts:
+export const useSessionStore = create(...)  // shared между features
 
-// ✅ ПРАВИЛЬНО - UI состояние в features
+// ✅ ПРАВИЛЬНО - UI state в features
 features/user-profile/model/profile.store.ts:
 export const useProfileStore = create(() => ({
   isEditing: false,
   draftFields: {}
 }))
 
-// ❌ ПЛОХО - store в entities
-entities/user/user.store.ts:
-export const useUserStore = create(...)  // НЕЛЬЗЯ!
+// ❌ ПЛОХО - UI state в entities
+entities/user/user-ui.store.ts:
+export const useUserUIStore = create(() => ({
+  isProfileOpen: false  // это UI state, не domain!
+}))
 ```
 
 ---

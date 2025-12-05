@@ -10,7 +10,7 @@ const CALLOUT_ICONS: Record<CalloutType, React.ComponentType<{ className?: strin
   tip: Lightbulb
 }
 
-export function CalloutNodeView({ node }: NodeViewProps) {
+export const CalloutNodeView = ({ node }: NodeViewProps) => {
   const type = (node.attrs.type as CalloutType) || 'info'
   const Icon = CALLOUT_ICONS[type] || CALLOUT_ICONS.info
 

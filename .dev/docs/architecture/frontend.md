@@ -69,6 +69,57 @@ function Component() { this.state = ... }  // если нужен this (очен
 
 **Правило**: Если можно написать через arrow function - пишите через arrow function.
 
+### Tooling: Biome
+
+Проект использует **[Biome](https://biomejs.dev)** вместо ESLint + Prettier.
+
+**Почему Biome?**
+- Единый инструмент для линтинга И форматирования
+- В 10-100x быстрее ESLint/Prettier (написан на Rust)
+- Меньше конфигурации, меньше конфликтов
+
+**Конфигурация (`biome.json`):**
+
+| Правило | Значение |
+|---------|----------|
+| Отступы | 2 пробела |
+| Ширина строки | 100 символов |
+| Кавычки | single (`'`) |
+| Точка с запятой | нет (ASI) |
+| Trailing commas | нет |
+| Line endings | LF |
+
+**Ключевые правила линтера:**
+
+```json
+{
+  "style": {
+    "useConst": "error",
+    "useBlockStatements": "warn"
+  },
+  "suspicious": {
+    "noExplicitAny": "warn"
+  }
+}
+```
+
+**Команды:**
+
+```bash
+# Форматирование
+pnpm biome format --write .
+
+# Линтинг
+pnpm biome lint .
+
+# Всё вместе (format + lint)
+pnpm biome check --write .
+```
+
+**IDE интеграция:**
+- VSCode: установить [Biome extension](https://marketplace.visualstudio.com/items?itemName=biomejs.biome)
+- Включить "Format on Save" в настройках
+
 ---
 
 ## Слои (от верхнего к нижнему)
@@ -1111,20 +1162,21 @@ Nullable, Brand, DeepPartial, Prettify, AsyncReturnType
 ## Best Practices
 
 1. **Arrow functions везде**: `function` только для генераторов/this
-2. **Группировка = семантика**: БЕЗ файлов на уровне группы (pages/features)
-3. **Entities = данные**: React Query ЕДИНЫЙ источник истины, stores в features
+2. **Группа ≠ Модуль**: Группа = папка для IDE, модуль = единица с index.ts
+3. **Stores: domain → entities, UI → features**: Shared state в entities, локальный UI state в features
 4. **Cross-entity imports**: types + schemas через явный barrel (НЕ hooks/api/queries)
-5. **Domain types в entities**: Source of truth для NodeId, UserId, etc.
-6. **Utility types в shared**: Nullable, Brand - generic helpers
-7. **Начинайте снизу вверх**: Сначала entities, потом features, потом pages
-8. **Не бойтесь дублировать**: Лучше дублировать код, чем нарушать boundaries
-9. **Barrel exports**: Явные экспорты в `index.ts`, НЕ `export *`
-10. **Сегментируйте при > 5 файлах**: Если модуль растёт - разделяйте
-11. **Co-locate тесты**: `.test.ts` рядом с файлом для unit, `app/__tests__/` для integration/e2e
-12. **Именуйте чётко**: `user.queries.ts`, `user.api.ts` - понятно без документации
-13. **/lib всегда плоская**: Разделяйте по логике (`layout-utils.ts`), НЕ по типам (`/lib/hooks`)
-14. **У 90%+ модулей простая структура**: Не создавайте сегменты без необходимости
-15. **`.server.ts` НЕ экспортируем**: Как `.hooks.ts`, `.test.ts` - internal only
+5. **Cross-widget imports разрешены**: Widgets = композиция, могут импортировать друг друга
+6. **Domain types в entities**: Source of truth для NodeId, UserId, etc.
+7. **Utility types в shared**: Nullable, Brand - generic helpers
+8. **Начинайте снизу вверх**: Сначала entities, потом features, потом pages
+9. **Не бойтесь дублировать**: Лучше дублировать код, чем нарушать boundaries
+10. **Barrel exports**: Явные экспорты в `index.ts`, НЕ `export *`
+11. **Сегментируйте при > 5 файлах**: Если модуль растёт - разделяйте
+12. **Co-locate тесты**: `.test.ts` рядом с файлом для unit, `app/__tests__/` для integration/e2e
+13. **Именуйте чётко**: `user.queries.ts`, `user.api.ts` - понятно без документации
+14. **/lib всегда плоская**: Разделяйте по логике (`layout-utils.ts`), НЕ по типам (`/lib/hooks`)
+15. **У 90%+ модулей простая структура**: Не создавайте сегменты без необходимости
+16. **`.server.ts` только из `.server.ts`**: Импортируется напрямую, НЕ через barrel
 
 ---
 

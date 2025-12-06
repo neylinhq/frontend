@@ -1,7 +1,7 @@
 {
   "auth": {
     "signIn": {
-      "title": "Sign in to your account",
+      "title": "Sign in to an account",
       "description": "Enter your email below to login to your account",
       "emailLabel": "Email",
       "emailPlaceholder": "name@example.com",
@@ -31,19 +31,44 @@
     },
     "resetPassword": {
       "title": "Reset password",
-      "description": "Enter your email address and we will send you a link to reset your password.",
+      "description": "Enter your email address and we will send you a code to reset your password.",
       "emailLabel": "Email",
-      "submitButton": "Reset",
+      "submitButton": "Send Code",
       "rememberPassword": "Remember your password?",
       "signInLink": "Sign in",
-      "checkEmailTitle": "Check your email",
-      "backToSignIn": "Back"
+      "codeTitle": "Enter verification code",
+      "codeDescription": "We sent a 6-digit code to your email",
+      "newPasswordLabel": "New password",
+      "confirmPasswordLabel": "Confirm password",
+      "resetButton": "Reset Password",
+      "noCode": "Didn't receive code?",
+      "resendButton": "Resend",
+      "resendIn": "{{seconds}}s",
+      "invalidCode": "Please enter a valid 6-digit code",
+      "successTitle": "Password Reset",
+      "successDescription": "Your password has been successfully reset. You can now sign in with your new password.",
+      "successMessage": "Password reset successfully",
+      "backToSignIn": "Sign in",
+      "error": "Password reset failed"
+    },
+    "verifyEmail": {
+      "title": "Verify your email",
+      "description": "Enter the 6-digit code we sent to your email",
+      "submitButton": "Verify",
+      "noCode": "Didn't receive code?",
+      "resendButton": "Resend",
+      "resendIn": "{{seconds}}s",
+      "resendSuccess": "Verification code sent",
+      "wrongEmail": "Wrong email?",
+      "signUpAgain": "Sign up again",
+      "error": "Verification failed"
     }
   },
   "validation": {
     "email": "Invalid email address",
     "passwordMin": "Password must be at least {{min}} characters",
     "passwordMismatch": "Passwords do not match",
+    "passwordMatch": "Passwords do not match",
     "required": "Required field"
   },
   "nav": {
@@ -558,19 +583,19 @@
             "purpose": "Purpose",
             "duration": "Duration",
             "language": {
-              "name": "i18nextLng",
+              "name": "neylin-lang",
               "purpose": "Stores your language preference",
               "duration": "Persistent"
             },
             "theme": {
-              "name": "theme",
-              "purpose": "Stores your theme preference (light/dark)",
+              "name": "neylin-mode, neylin-palette",
+              "purpose": "Stores your theme preference (light/dark) and palette",
               "duration": "Persistent"
             },
             "auth": {
-              "name": "auth_token",
+              "name": "neylin-session",
               "purpose": "Authentication session token",
-              "duration": "Session"
+              "duration": "30 days"
             }
           }
         },
@@ -1003,11 +1028,37 @@
     "similarNodes": "Similar Nodes (RAG)",
     "noSimilarNodes": "No similar nodes found. Generate embeddings to enable similarity search.",
     "view": "View",
-    "startPractice": "Start Practice Session"
+    "generateExercises": "Generate Exercises",
+    "generatingExercises": "Generating...",
+    "exercisesGenerated": "Exercises Generated!",
+    "startPractice": "Start Practice Session",
+    "chat": {
+      "placeholder": "Ask AI to help with this node...",
+      "contextLabel": "Context",
+      "quickActions": "Quick Actions",
+      "saveAll": "Save All ({{count}})",
+      "saved": "{{count}} items saved",
+      "streaming": "AI is thinking...",
+      "error": "Something went wrong. Try again.",
+      "noMessages": "Start a conversation with AI to get help with this node"
+    },
+    "preview": {
+      "edit": "Edit",
+      "remove": "Remove",
+      "apply": "Apply",
+      "regenerate": "Regenerate",
+      "exercise": "Exercise {{n}}/{{total}}",
+      "enrichment": "Enhancement Preview",
+      "currentValue": "Current",
+      "proposedValue": "Proposed"
+    }
   },
   "practice": {
     "session": "Practice Session",
-    "noExercises": "No exercises available. Generate exercises first.",
+    "noExercises": "No exercises available",
+    "noExercisesDescription": "Generate exercises with AI to start practicing this knowledge map",
+    "generateExercises": "Generate Exercises",
+    "generating": "Generating...",
     "submit": "Submit Answer",
     "next": "Next Exercise"
   },

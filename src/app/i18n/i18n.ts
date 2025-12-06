@@ -1,89 +1,64 @@
 import i18n from 'i18next'
-import LanguageDetector from 'i18next-browser-languagedetector'
 import Backend from 'i18next-http-backend'
 import { initReactI18next } from 'react-i18next'
-
-// Настраиваем детекцию языка (Browser -> LocalStorage -> Navigator)
-const detectionOptions = {
-  order: ['localStorage', 'navigator'],
-  lookupLocalStorage: 'i18nextLng',
-  caches: ['localStorage']
-}
 
 export interface I18nInitData {
   locale: string
   translations: Record<string, unknown>
 }
 
-let initialized = false
-
 /**
- * Initialize i18n with SSR data (translations from server)
+ * Initialize i18n with SSR data
  */
-export const initI18n = (data?: I18nInitData) => {
-  if (initialized) {
+export const initI18n = (data: I18nInitData) => {
+  // Already initialized
+  if (i18n.isInitialized) {
+    // But language mismatch - add resources and switch
+    if (i18n.language !== data.locale) {
+      i18n.addResourceBundle(data.locale, 'translation', data.translations, true, true)
+      i18n.changeLanguage(data.locale)
+    }
     return i18n
   }
 
-  if (data?.translations) {
-    // SSR mode: синхронная инициализация с готовыми переводами
-    // Backend включен для загрузки других языков при переключении
-    i18n
-      .use(Backend)
-      .use(initReactI18next)
-      .init({
-        lng: data.locale,
-        fallbackLng: 'en',
-        debug: false,
-        initImmediate: true,
+  i18n
+    .use(Backend)
+    .use(initReactI18next)
+    .init({
+      lng: data.locale,
+      fallbackLng: 'en',
+      debug: false,
 
-        // Текущий язык уже загружен, остальные загрузим через Backend
-        resources: {
-          [data.locale]: {
-            translation: data.translations
-          }
-        },
-        partialBundledLanguages: true,
-
-        backend: {
-          loadPath: '/locales/{{lng}}/{{ns}}.json'
-        },
-
-        react: {
-          useSuspense: false
-        },
-
-        interpolation: {
-          escapeValue: false
+      resources: {
+        [data.locale]: {
+          translation: data.translations
         }
-      })
-  } else {
-    // Client-only mode (fallback): load translations via HTTP
-    i18n
-      .use(Backend)
-      .use(LanguageDetector)
-      .use(initReactI18next)
-      .init({
-        fallbackLng: 'en',
-        debug: import.meta.env.DEV,
-        detection: detectionOptions,
+      },
+      partialBundledLanguages: true,
 
-        react: {
-          useSuspense: true
-        },
+      backend: {
+        loadPath: '/locales/{{lng}}/{{ns}}.json'
+      },
 
-        interpolation: {
-          escapeValue: false
-        },
+      react: {
+        useSuspense: false
+      },
 
-        backend: {
-          loadPath: '/locales/{{lng}}/{{ns}}.json'
-        }
-      })
-  }
+      interpolation: {
+        escapeValue: false
+      }
+    })
 
-  initialized = true
   return i18n
+}
+
+/**
+ * Change language - saves to cookie and does full page navigation
+ */
+export const changeLanguage = (lng: string) => {
+  document.cookie = `i18nextLng=${lng}; path=/; max-age=31536000; SameSite=Lax`
+  // Full navigation instead of reload to avoid HMR cache issues
+  window.location.href = window.location.href
 }
 
 export default i18n

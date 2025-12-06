@@ -35,6 +35,10 @@ const META_TRANSLATIONS = {
       title: 'Сброс пароля',
       description: 'Восстановите доступ к аккаунту'
     },
+    verifyEmail: {
+      title: 'Подтверждение email',
+      description: 'Подтвердите ваш адрес электронной почты'
+    },
     terms: {
       title: 'Условия использования',
       description:
@@ -92,7 +96,7 @@ const META_TRANSLATIONS = {
     },
     signIn: {
       title: 'Sign In',
-      description: 'Sign in to your account'
+      description: 'Sign in to an account'
     },
     signUp: {
       title: 'Sign Up',
@@ -101,6 +105,10 @@ const META_TRANSLATIONS = {
     resetPassword: {
       title: 'Reset Password',
       description: 'Restore access to your account'
+    },
+    verifyEmail: {
+      title: 'Verify Email',
+      description: 'Verify your email address'
     },
     terms: {
       title: 'Terms of Service',
@@ -140,16 +148,15 @@ const META_TRANSLATIONS = {
 type MetaKey = keyof typeof META_TRANSLATIONS.ru
 type Language = keyof typeof META_TRANSLATIONS
 
-const getCurrentLanguage = () => {
-  // Проверяем localStorage (где i18next хранит язык)
-  if (typeof window !== 'undefined') {
-    const savedLang = localStorage.getItem('i18nextLng')
-    if (savedLang === 'ru' || savedLang === 'en') {
-      return savedLang as Language
+const getCurrentLanguage = (): Language => {
+  // Read from document.documentElement.lang (set by SSR)
+  if (typeof document !== 'undefined') {
+    const lang = document.documentElement.lang
+    if (lang === 'ru' || lang === 'en') {
+      return lang
     }
   }
-  // Дефолт - русский
-  return 'ru'
+  return 'en'
 }
 
 export const getMeta = (key: MetaKey) => {

@@ -7,7 +7,7 @@ export const TermsPage = () => {
 
   return (
     <LegalLayout>
-      <Typography variant='h1'>{t('legal.terms.title')}</Typography>
+      <Typography className='mb-4' variant='h1'>{t('legal.terms.title')}</Typography>
       <Typography variant='lead' className='mb-8'>
         {t('legal.terms.description')}
       </Typography>
@@ -38,7 +38,7 @@ export const TermsPage = () => {
       <Typography variant='h2'>5. {t('legal.terms.sections.accuracy.title')}</Typography>
       <p>{t('legal.terms.sections.accuracy.content')}</p>
 
-      <Typography variant='h2'>6. {t('legal.terms.sections.link.title')}</Typography>
+      <Typography variant='h2'>6. {t('legal.terms.sections.links.title')}</Typography>
       <p>{t('legal.terms.sections.links.content')}</p>
 
       <Typography variant='h2'>7. {t('legal.terms.sections.modifications.title')}</Typography>

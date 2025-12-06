@@ -57,7 +57,7 @@ export const detectLanguage = (acceptLanguage: string | null) => {
  * Get i18n data for SSR - to be used in root loader
  */
 export const getI18nData = (request: Request) => {
-  // Check cookie first (user preference), then default to 'en'
+  // Check cookie first (user preference), then Accept-Language header
   const cookieHeader = request.headers.get('Cookie')
   const cookieLocale = cookieHeader
     ?.split(';')
@@ -65,14 +65,11 @@ export const getI18nData = (request: Request) => {
     ?.split('=')[1]
     ?.trim()
 
-  // Don't use Accept-Language - only cookie or default
   const locale = (
     supportedLanguages.includes(cookieLocale as SupportedLanguage)
       ? cookieLocale
-      : defaultLanguage
+      : detectLanguage(request.headers.get('Accept-Language'))
   ) as SupportedLanguage
-
-  console.log('[i18n.server] cookie:', cookieLocale, '-> locale:', locale)
 
   const translations = getTranslations(locale)
 

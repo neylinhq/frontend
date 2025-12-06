@@ -31,7 +31,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const sessionData = { token: accessToken, user, refreshToken }
     const cookie = await commitSession(sessionData)
 
-    return redirect('/dashboard/overview', {
+    // Redirect to verify-email page with email in query
+    const verifyUrl = `/auth/verify-email?email=${encodeURIComponent(user.email)}`
+
+    return redirect(verifyUrl, {
       headers: {
         'Set-Cookie': cookie
       }

@@ -1,36 +1,29 @@
 import { useMutation } from '@tanstack/react-query'
-import { useNavigate } from 'react-router'
 import { sessionApi } from './session.api'
-import { useSessionStore } from './session.store'
 
-export const useLoginMutation = () => {
-  const login = useSessionStore(s => s.login)
-  const navigate = useNavigate()
+// Note: Login and Register are handled via SSR actions (app/routes/auth/*)
+// These client-side mutations are only for API calls that don't require session updates
 
+export const useVerifyEmailMutation = () => {
   return useMutation({
-    mutationFn: sessionApi.login,
-    onSuccess: ({ user, token }) => {
-      login(user, token)
-      navigate('/dashboard/overview')
-    }
+    mutationFn: sessionApi.verifyEmail
   })
 }
 
-export const useRegisterMutation = () => {
-  const login = useSessionStore(s => s.login)
-  const navigate = useNavigate()
-
+export const useForgotPasswordMutation = () => {
   return useMutation({
-    mutationFn: sessionApi.register,
-    onSuccess: ({ user, token }) => {
-      login(user, token)
-      navigate('/dashboard/overview')
-    }
+    mutationFn: sessionApi.forgotPassword
   })
 }
 
 export const useResetPasswordMutation = () => {
   return useMutation({
     mutationFn: sessionApi.resetPassword
+  })
+}
+
+export const useResendVerificationMutation = () => {
+  return useMutation({
+    mutationFn: sessionApi.resendVerification
   })
 }

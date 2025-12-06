@@ -1,5 +1,6 @@
 import { Globe } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { changeLanguage } from '@/app/i18n'
 import { Button } from '@/shared/components/button'
 import {
   DropdownMenu,
@@ -12,8 +13,9 @@ import { LANGUAGES } from '../language-switcher.constants'
 export const LanguageSwitcher = () => {
   const { i18n } = useTranslation()
 
-  const changeLanguage = (lng: string) => {
-    i18n.changeLanguage(lng)
+  const handleChange = (lng: string) => {
+    if (lng === i18n.language) return
+    changeLanguage(lng)
   }
 
   return (
@@ -26,7 +28,7 @@ export const LanguageSwitcher = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end'>
         {LANGUAGES.map(lang => (
-          <DropdownMenuItem key={lang.id} onClick={() => changeLanguage(lang.id)}>
+          <DropdownMenuItem key={lang.id} onClick={() => handleChange(lang.id)}>
             {lang.label}
           </DropdownMenuItem>
         ))}

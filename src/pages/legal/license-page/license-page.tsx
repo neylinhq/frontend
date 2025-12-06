@@ -1,23 +1,26 @@
 import { useTranslation } from 'react-i18next'
 import { LegalLayout } from '@/shared/components/legal-layout'
+import { Typography } from '@/shared/components/typography'
 
 export const LicensePage = () => {
   const { t } = useTranslation()
 
   return (
     <LegalLayout>
-      <h1>{t('legal.license.title')}</h1>
-      <p className='lead'>{t('legal.license.description')}</p>
+      <Typography className='mb-4' variant='h1'>{t('legal.license.title')}</Typography>
+      <Typography variant='lead' className='mb-8'>
+        {t('legal.license.description')}
+      </Typography>
 
-      <p className='text-sm text-muted-foreground'>
+      <Typography variant='muted' className='mb-8'>
         {t('legal.lastUpdated')}: {new Date().toLocaleDateString()}
-      </p>
+      </Typography>
 
-      <h2>{t('legal.license.sections.mit.title')}</h2>
+      <Typography variant='h2'>{t('legal.license.sections.mit.title')}</Typography>
 
-      <p className='text-sm text-muted-foreground'>
+      <Typography variant='muted'>
         {t('legal.license.sections.mit.copyright', { year: new Date().getFullYear() })}
-      </p>
+      </Typography>
 
       <p>{t('legal.license.sections.mit.permission')}</p>
 
@@ -25,10 +28,10 @@ export const LicensePage = () => {
 
       <p className='font-semibold uppercase text-sm'>{t('legal.license.sections.mit.warranty')}</p>
 
-      <h2>{t('legal.license.sections.thirdParty.title')}</h2>
+      <Typography variant='h2'>{t('legal.license.sections.thirdParty.title')}</Typography>
       <p>{t('legal.license.sections.thirdParty.intro')}</p>
 
-      <h3>React</h3>
+      <Typography variant='h3'>React</Typography>
       <p>
         {t('legal.license.sections.thirdParty.react')}
         <br />
@@ -41,7 +44,7 @@ export const LicensePage = () => {
         </a>
       </p>
 
-      <h3>React Router</h3>
+      <Typography variant='h3'>React Router</Typography>
       <p>
         {t('legal.license.sections.thirdParty.reactRouter')}
         <br />
@@ -54,7 +57,7 @@ export const LicensePage = () => {
         </a>
       </p>
 
-      <h3>TanStack Query</h3>
+      <Typography variant='h3'>TanStack Query</Typography>
       <p>
         {t('legal.license.sections.thirdParty.tanstack')}
         <br />
@@ -67,7 +70,7 @@ export const LicensePage = () => {
         </a>
       </p>
 
-      <h3>ReactFlow</h3>
+      <Typography variant='h3'>ReactFlow</Typography>
       <p>
         {t('legal.license.sections.thirdParty.reactflow')}
         <br />
@@ -80,7 +83,7 @@ export const LicensePage = () => {
         </a>
       </p>
 
-      <h3>Tailwind CSS</h3>
+      <Typography variant='h3'>Tailwind CSS</Typography>
       <p>
         {t('legal.license.sections.thirdParty.tailwind')}
         <br />
@@ -93,7 +96,7 @@ export const LicensePage = () => {
         </a>
       </p>
 
-      <h3>Lucide Icons</h3>
+      <Typography variant='h3'>Lucide Icons</Typography>
       <p>
         {t('legal.license.sections.thirdParty.lucide')}
         <br />
@@ -106,10 +109,10 @@ export const LicensePage = () => {
         </a>
       </p>
 
-      <h2>{t('legal.license.sections.attribution.title')}</h2>
+      <Typography variant='h2'>{t('legal.license.sections.attribution.title')}</Typography>
       <p>{t('legal.license.sections.attribution.content')}</p>
 
-      <h2>{t('legal.license.sections.contact.title')}</h2>
+      <Typography variant='h2'>{t('legal.license.sections.contact.title')}</Typography>
       <p>
         {t('legal.license.sections.contact.content')}{' '}
         <a href='mailto:legal@neylin.com'>legal@neylin.com</a>.

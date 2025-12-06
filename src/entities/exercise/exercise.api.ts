@@ -31,9 +31,13 @@ export const exerciseApi = {
   },
 
   // Submit answer and get feedback
-  submitAnswer: async (exerciseId: string, answer: unknown): Promise<SubmitAnswerOutput> => {
+  submitAnswer: async (
+    mapId: string,
+    exerciseId: string,
+    answer: unknown
+  ): Promise<SubmitAnswerOutput> => {
     const response = await api.post<ApiResponse<SubmitAnswerOutput>>(
-      `/exercises/${exerciseId}/answer`,
+      `/maps/${mapId}/exercises/${exerciseId}/submit`,
       { answer }
     )
     return response.data

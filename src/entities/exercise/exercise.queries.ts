@@ -35,11 +35,20 @@ export const useSubmitAnswer = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ exerciseId, answer }: { exerciseId: string; answer: unknown }) =>
-      exerciseApi.submitAnswer(exerciseId, answer),
+    mutationFn: ({
+      mapId,
+      exerciseId,
+      answer
+    }: {
+      mapId: string
+      exerciseId: string
+      answer: unknown
+    }) => exerciseApi.submitAnswer(mapId, exerciseId, answer),
     onSuccess: data => {
       // Invalidate progress queries
       queryClient.invalidateQueries({ queryKey: exerciseKeys.progress(data.progress.map_id) })
+      // Also invalidate next exercise query to get a new one
+      queryClient.invalidateQueries({ queryKey: exerciseKeys.next(data.progress.map_id) })
     }
   })
 }

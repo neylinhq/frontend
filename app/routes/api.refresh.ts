@@ -41,7 +41,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const cookie = await commitSession(newSession)
 
     return Response.json(
-      { success: true, accessToken },
+      { success: true },
       {
         headers: {
           'Set-Cookie': cookie

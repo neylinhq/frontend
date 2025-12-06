@@ -17,10 +17,10 @@ export const PracticeSessionPage = () => {
   const generateExercisesMutation = useGenerateExercises()
 
   const handleSubmit = () => {
-    if (!exercise || !selectedAnswer) return
+    if (!exercise || !selectedAnswer || !mapId) return
 
     submitAnswerMutation.mutate(
-      { exerciseId: exercise.id, answer: selectedAnswer },
+      { mapId, exerciseId: exercise.id, answer: selectedAnswer },
       {
         onSuccess: () => {
           setShowFeedback(true)
@@ -56,7 +56,7 @@ export const PracticeSessionPage = () => {
 
   if (isLoading) {
     return (
-      <div className='flex h-screen items-center justify-center'>
+      <div className='flex min-h-screen items-center justify-center'>
         <Loader2 className='h-8 w-8 animate-spin text-muted-foreground' />
       </div>
     )
@@ -64,15 +64,22 @@ export const PracticeSessionPage = () => {
 
   if (error || !exercise) {
     return (
-      <div className='flex h-screen flex-col items-center justify-center gap-6'>
+      <div className='flex min-h-screen flex-col items-center justify-center gap-6 p-4'>
         <div className='text-center space-y-2'>
-          <h2 className='text-xl font-semibold'>{t('practice.noExercises')}</h2>
-          <p className='text-sm text-muted-foreground max-w-md'>
+          <h2 className='text-xl font-semibold text-balance'>{t('practice.noExercises')}</h2>
+          <p className='text-sm text-muted-foreground max-w-xs text-balance'>
             {t('practice.noExercisesDescription')}
           </p>
         </div>
 
         <div className='flex gap-3'>
+          <Button asChild variant='outline'>
+            <Link to={`/dashboard/maps/${mapId}/view`}>
+              <ArrowLeft className='mr-2 h-4 w-4' />
+              {t('common.back')}
+            </Link>
+          </Button>
+
           <Button
             onClick={handleGenerateExercises}
             disabled={generateExercisesMutation.isPending}
@@ -88,13 +95,6 @@ export const PracticeSessionPage = () => {
                 {t('practice.generateExercises')}
               </>
             )}
-          </Button>
-
-          <Button asChild variant='outline'>
-            <Link to={`/dashboard/maps/${mapId}/view`}>
-              <ArrowLeft className='mr-2 h-4 w-4' />
-              {t('common.back')}
-            </Link>
           </Button>
         </div>
       </div>

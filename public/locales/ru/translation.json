@@ -31,19 +31,44 @@
     },
     "resetPassword": {
       "title": "Сброс пароля",
-      "description": "Введите ваш email, и мы отправим вам ссылку для сброса пароля.",
+      "description": "Введите ваш email, и мы отправим вам код для сброса пароля.",
       "emailLabel": "Email",
-      "submitButton": "Сбросить",
+      "submitButton": "Отправить код",
       "rememberPassword": "Вспомнили пароль?",
       "signInLink": "Войти",
-      "checkEmailTitle": "Проверьте почту",
-      "backToSignIn": "Вернуться"
+      "codeTitle": "Введите код подтверждения",
+      "codeDescription": "Мы отправили 6-значный код на ваш email",
+      "newPasswordLabel": "Новый пароль",
+      "confirmPasswordLabel": "Подтвердите пароль",
+      "resetButton": "Сбросить пароль",
+      "noCode": "Не получили код?",
+      "resendButton": "Отправить повторно",
+      "resendIn": "{{seconds}} сек",
+      "invalidCode": "Введите корректный 6-значный код",
+      "successTitle": "Пароль сброшен",
+      "successDescription": "Ваш пароль успешно изменен. Теперь вы можете войти с новым паролем.",
+      "successMessage": "Пароль успешно сброшен",
+      "backToSignIn": "Войти",
+      "error": "Не удалось сбросить пароль"
+    },
+    "verifyEmail": {
+      "title": "Подтвердите email",
+      "description": "Введите 6-значный код, отправленный на ваш email",
+      "submitButton": "Подтвердить",
+      "noCode": "Не получили код?",
+      "resendButton": "Отправить повторно",
+      "resendIn": "{{seconds}} сек",
+      "resendSuccess": "Код подтверждения отправлен",
+      "wrongEmail": "Неверный email?",
+      "signUpAgain": "Зарегистрироваться заново",
+      "error": "Ошибка подтверждения"
     }
   },
   "validation": {
     "email": "Некорректный email адрес",
     "passwordMin": "Минимум {{min}} символов",
     "passwordMismatch": "Пароли не совпадают",
+    "passwordMatch": "Пароли не совпадают",
     "required": "Обязательное поле"
   },
   "nav": {
@@ -584,19 +609,19 @@
             "purpose": "Назначение",
             "duration": "Длительность",
             "language": {
-              "name": "i18nextLng",
+              "name": "neylin-lang",
               "purpose": "Сохраняет ваше языковое предпочтение",
               "duration": "Постоянный"
             },
             "theme": {
-              "name": "theme",
-              "purpose": "Сохраняет ваше предпочтение темы (светлая/темная)",
+              "name": "neylin-mode, neylin-palette",
+              "purpose": "Сохраняет ваше предпочтение темы (светлая/темная) и палитру",
               "duration": "Постоянный"
             },
             "auth": {
-              "name": "auth_token",
+              "name": "neylin-session",
               "purpose": "Токен сеанса аутентификации",
-              "duration": "Сеанс"
+              "duration": "30 дней"
             }
           }
         },
@@ -869,7 +894,7 @@
       },
       "more": {
         "copy": "Копировать",
-        "copyMarkdown": "Копировать как Markdown",
+        "copyMarkdown": "Копировать MD",
         "delete": "Удалить",
         "copied": "Скопировано в буфер обмена",
         "copiedMarkdown": "Скопировано как Markdown",
@@ -1029,11 +1054,37 @@
     "similarNodes": "Похожие узлы (RAG)",
     "noSimilarNodes": "Похожие узлы не найдены. Сгенерируйте эмбеддинги для поиска по схожести.",
     "view": "Открыть",
-    "startPractice": "Начать тренировку"
+    "generateExercises": "Сгенерировать задания",
+    "generatingExercises": "Генерация...",
+    "exercisesGenerated": "Задания созданы!",
+    "startPractice": "Начать тренировку",
+    "chat": {
+      "placeholder": "Спросите AI как помочь с этой нодой...",
+      "contextLabel": "Контекст",
+      "quickActions": "Быстрые действия",
+      "saveAll": "Сохранить все ({{count}})",
+      "saved": "Сохранено {{count}} элементов",
+      "streaming": "AI думает...",
+      "error": "Что-то пошло не так. Попробуйте снова.",
+      "noMessages": "Начните разговор с AI чтобы получить помощь с этой нодой"
+    },
+    "preview": {
+      "edit": "Редактировать",
+      "remove": "Удалить",
+      "apply": "Применить",
+      "regenerate": "Перегенерировать",
+      "exercise": "Упражнение {{n}}/{{total}}",
+      "enrichment": "Превью улучшения",
+      "currentValue": "Текущее",
+      "proposedValue": "Предлагаемое"
+    }
   },
   "practice": {
     "session": "Сессия тренировки",
-    "noExercises": "Нет доступных упражнений. Сначала сгенерируйте упражнения.",
+    "noExercises": "Нет доступных упражнений",
+    "noExercisesDescription": "Сгенерируйте задания с помощью AI чтобы начать изучение карты знаний",
+    "generateExercises": "Сгенерировать задания",
+    "generating": "Генерация...",
     "submit": "Отправить ответ",
     "next": "Следующее упражнение"
   },

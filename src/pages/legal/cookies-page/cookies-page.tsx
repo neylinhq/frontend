@@ -1,22 +1,25 @@
 import { useTranslation } from 'react-i18next'
 import { LegalLayout } from '@/shared/components/legal-layout'
+import { Typography } from '@/shared/components/typography'
 
 export const CookiesPage = () => {
   const { t } = useTranslation()
 
   return (
     <LegalLayout>
-      <h1>{t('legal.cookies.title')}</h1>
-      <p className='lead'>{t('legal.cookies.description')}</p>
+      <Typography className='mb-4' variant='h1'>{t('legal.cookies.title')}</Typography>
+      <Typography variant='lead' className='mb-8'>
+        {t('legal.cookies.description')}
+      </Typography>
 
-      <p className='text-sm text-muted-foreground'>
+      <Typography variant='muted' className='mb-8'>
         {t('legal.lastUpdated')}: {new Date().toLocaleDateString()}
-      </p>
+      </Typography>
 
-      <h2>1. {t('legal.cookies.sections.what.title')}</h2>
+      <Typography variant='h2'>1. {t('legal.cookies.sections.what.title')}</Typography>
       <p>{t('legal.cookies.sections.what.content')}</p>
 
-      <h2>2. {t('legal.cookies.sections.how.title')}</h2>
+      <Typography variant='h2'>2. {t('legal.cookies.sections.how.title')}</Typography>
       <p>{t('legal.cookies.sections.how.intro')}</p>
       <ul>
         <li>
@@ -37,7 +40,7 @@ export const CookiesPage = () => {
         </li>
       </ul>
 
-      <h2>3. {t('legal.cookies.sections.types.title')}</h2>
+      <Typography variant='h2'>3. {t('legal.cookies.sections.types.title')}</Typography>
       <div className='overflow-x-auto'>
         <table className='min-w-full'>
           <thead>
@@ -73,13 +76,13 @@ export const CookiesPage = () => {
         </table>
       </div>
 
-      <h2>4. {t('legal.cookies.sections.thirdParty.title')}</h2>
+      <Typography variant='h2'>4. {t('legal.cookies.sections.thirdParty.title')}</Typography>
       <p>{t('legal.cookies.sections.thirdParty.content')}</p>
 
-      <h2>5. {t('legal.cookies.sections.managing.title')}</h2>
+      <Typography variant='h2'>5. {t('legal.cookies.sections.managing.title')}</Typography>
       <p>{t('legal.cookies.sections.managing.intro')}</p>
 
-      <h3>{t('legal.cookies.sections.managing.subtitle')}</h3>
+      <Typography variant='h3'>{t('legal.cookies.sections.managing.subtitle')}</Typography>
       <ul>
         <li>
           <strong>Chrome:</strong> {t('legal.cookies.sections.managing.browsers.chrome')}
@@ -95,13 +98,13 @@ export const CookiesPage = () => {
         </li>
       </ul>
 
-      <h2>6. {t('legal.cookies.sections.dnt.title')}</h2>
+      <Typography variant='h2'>6. {t('legal.cookies.sections.dnt.title')}</Typography>
       <p>{t('legal.cookies.sections.dnt.content')}</p>
 
-      <h2>7. {t('legal.cookies.sections.updates.title')}</h2>
+      <Typography variant='h2'>7. {t('legal.cookies.sections.updates.title')}</Typography>
       <p>{t('legal.cookies.sections.updates.content')}</p>
 
-      <h2>8. {t('legal.cookies.sections.contact.title')}</h2>
+      <Typography variant='h2'>8. {t('legal.cookies.sections.contact.title')}</Typography>
       <p>
         {t('legal.cookies.sections.contact.content')}{' '}
         <a href='mailto:privacy@neylin.com'>privacy@neylin.com</a>.

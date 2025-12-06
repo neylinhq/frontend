@@ -1,6 +1,7 @@
 import { Check, Globe } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { changeLanguage } from '@/app/i18n'
 import { Button } from '@/shared/components/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/components/popover'
 import { cn } from '@/shared/lib/cn'
@@ -15,8 +16,11 @@ export const LanguageSelect = ({ compact }: LanguageSelectProps) => {
   const [open, setOpen] = useState(false)
 
   const handleSelect = (lng: string) => {
-    i18n.changeLanguage(lng)
-    setOpen(false)
+    if (lng === i18n.language) {
+      setOpen(false)
+      return
+    }
+    changeLanguage(lng)
   }
 
   return (

@@ -14,9 +14,9 @@ export const MENU = {
   /** Slash menu width */
   SLASH_WIDTH: 320,
   /** Bubble menu height */
-  BUBBLE_HEIGHT: 44,
+  BUBBLE_HEIGHT: 32,
   /** Bubble menu minimum width */
-  BUBBLE_MIN_WIDTH: 400,
+  BUBBLE_MIN_WIDTH: 320,
   /** Viewport padding for menu positioning */
   VIEWPORT_PADDING: 8,
   /** Gap between bubble menu and selection */

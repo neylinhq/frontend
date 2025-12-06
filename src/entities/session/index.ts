@@ -2,7 +2,12 @@
 export { sessionApi } from './session.api'
 
 // Queries
-export { useLoginMutation, useRegisterMutation, useResetPasswordMutation } from './session.queries'
+export {
+  useVerifyEmailMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
+  useResendVerificationMutation
+} from './session.queries'
 
 // Store
 export { useSessionStore } from './session.store'

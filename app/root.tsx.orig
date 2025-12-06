@@ -9,38 +9,35 @@ import {
   useNavigation,
   useRouteLoaderData
 } from 'react-router'
+import { Toaster } from 'sonner'
 import { QueryProvider } from '@/app/providers/query-provider'
 import { ThemeProvider } from '@/app/theme'
-import { Toaster } from '@/shared/components/toast'
-import { TooltipProvider } from '@/shared/components/tooltip'
 import '@/shared/styles/globals.css'
 import type React from 'react'
 import { useEffect, useRef } from 'react'
-import { initI18n } from '@/app/i18n'
-import { MODE_COOKIE_KEY, PALETTE_COOKIE_KEY } from '@/shared/lib/theme'
+import { type I18nInitData, initI18n } from '@/app/i18n'
+import { MODE_COOKIE_KEY, PALETTE_COOKIE_KEY } from '@/app/theme/theme.constants'
 import type { Route } from './+types/root'
 
 export const links: Route.LinksFunction = () => [
-  // Geist fonts loaded from npm package via CSS @font-face in globals.css
+  { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+  { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous' },
+  {
+    rel: 'stylesheet',
+    // IBM Plex Sans (UI) + JetBrains Mono (code blocks)
+    href: 'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap'
+  }
 ]
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   // Dynamic imports to avoid bundling Node.js modules for client
   const { getI18nData } = await import('@/app/i18n/i18n.server')
   const { getThemeData } = await import('@/app/theme/theme.server')
-  const { getSession } = await import('@/entities/session/session.server')
 
   const i18nData = getI18nData(request)
   const themeData = getThemeData(request)
-  const session = await getSession(request)
 
-  return {
-    i18n: i18nData,
-    theme: themeData,
-    // Pass tokens to client for API calls
-    authToken: session?.token ?? null,
-    refreshToken: session?.refreshToken ?? null
-  }
+  return { i18n: i18nData, theme: themeData }
 }
 
 export const Layout = ({ children }: { children: React.ReactNode }) => {
@@ -53,11 +50,9 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
   const ssrPalette =
     data?.theme?.palette && data.theme.palette !== 'classic' ? data.theme.palette : undefined
 
-  const ssrLang = data?.i18n?.locale || 'en'
-
   return (
     // suppressHydrationWarning нужен для html, так как клиентский скрипт может изменить классы
-    <html lang={ssrLang} className={ssrDarkClass} data-palette={ssrPalette} suppressHydrationWarning>
+    <html lang='en' className={ssrDarkClass} data-palette={ssrPalette} suppressHydrationWarning>
       <head>
         <meta charSet='utf-8' />
         <meta name='viewport' content='width=device-width, initial-scale=1' />
@@ -82,9 +77,6 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
               /* Vivid theme */
               html[data-palette="vivid"] { background-color: #f8fafc; color: #151921; }
               html[data-palette="vivid"].dark { background-color: #0f1318; color: #e6e9ec; }
-              /* Mono theme */
-              html[data-palette="mono"] { background-color: #fcfcfc; color: #0a0a0a; }
-              html[data-palette="mono"].dark { background-color: #0a0a0a; color: #f5f5f5; }
             `
           }}
         />
@@ -145,6 +137,17 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
                   if (localPalette && localPalette !== cookiePalette) {
                     document.cookie = PALETTE_KEY + '=' + localPalette + '; path=/; max-age=31536000; SameSite=Lax';
                   }
+
+                  // Locale (localStorage > cookie)
+                  var localLocale = localStorage.getItem('i18nextLng');
+                  var cookieLocale = getCookie('i18nextLng');
+                  var locale = localLocale || cookieLocale || 'en';
+                  document.documentElement.lang = locale;
+
+                  // Sync localStorage -> cookie для locale
+                  if (localLocale && localLocale !== cookieLocale) {
+                    document.cookie = 'i18nextLng=' + localLocale + '; path=/; max-age=31536000; SameSite=Lax';
+                  }
                 } catch (e) { /* localStorage unavailable - use defaults */ }
               })();
             `
@@ -161,29 +164,20 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
 }
 
 const App = () => {
-  const { i18n: i18nData, theme: themeData, authToken, refreshToken } = useLoaderData<typeof loader>()
+  const { i18n: i18nData, theme: themeData } = useLoaderData<typeof loader>()
   const initializedRef = useRef(false)
   const navigation = useNavigation()
 
   // Initialize i18n with SSR data on first render
   if (!initializedRef.current) {
-    initI18n(i18nData)
+    initI18n(i18nData as I18nInitData)
     initializedRef.current = true
   }
 
-  // Sync auth tokens to localStorage for client-side API calls
+  // Sync locale to html lang attribute
   useEffect(() => {
-    if (authToken) {
-      localStorage.setItem('auth_token', authToken)
-    } else {
-      localStorage.removeItem('auth_token')
-    }
-    if (refreshToken) {
-      localStorage.setItem('refresh_token', refreshToken)
-    } else {
-      localStorage.removeItem('refresh_token')
-    }
-  }, [authToken, refreshToken])
+    document.documentElement.lang = i18nData.locale
+  }, [i18nData.locale])
 
   // Disable transitions during navigation (prevents flash when lazy CSS loads)
   useEffect(() => {
@@ -201,10 +195,8 @@ const App = () => {
   return (
     <QueryProvider>
       <ThemeProvider defaultMode={themeData.mode} defaultPalette={themeData.palette}>
-        <TooltipProvider>
-          <Outlet />
-          <Toaster />
-        </TooltipProvider>
+        <Outlet />
+        <Toaster richColors position='top-right' />
       </ThemeProvider>
     </QueryProvider>
   )

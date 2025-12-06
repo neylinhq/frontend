@@ -880,10 +880,9 @@
     min-width: 390px;
   }
 
-  /* Selection color - accent instead of default blue */
+  /* Selection color - brand highlight, preserve original text color */
   ::selection {
-    background-color: hsl(var(--brand) / 0.3);
-    color: hsl(var(--foreground));
+    background-color: hsl(var(--brand) / 0.3) !important;
   }
 
   /* Inverted selection for buttons with dark backgrounds (light mode) */
@@ -1139,11 +1138,19 @@
   margin: 1.5rem 0;
 }
 
-/* Hide native selection completely - we use custom decorations */
-.tiptap-editor .ProseMirror::selection,
-.tiptap-editor .ProseMirror *::selection {
-  background: transparent !important;
-  background-color: transparent !important;
+/* Editor text selection - use brand highlight */
+.tiptap-editor ::selection,
+.tiptap-editor *::selection,
+.ProseMirror ::selection,
+.ProseMirror *::selection,
+.tiptap-editor.dark ::selection,
+.tiptap-editor.dark *::selection,
+.dark .tiptap-editor ::selection,
+.dark .tiptap-editor *::selection,
+.dark .ProseMirror ::selection,
+.dark .ProseMirror *::selection {
+  background: hsl(220 100% 50% / 0.35) !important;
+  background-color: hsl(220 100% 50% / 0.35) !important;
 }
 
 /* Selection styles - unified visual language */
@@ -1826,12 +1833,6 @@
   border: none !important;
 }
 
-/* Hide browser's native drag insertion caret */
-.tiptap-editor [contenteditable]::selection,
-.tiptap-editor .ProseMirror *::selection {
-  background: hsl(var(--primary) / 0.2);
-}
-
 .tiptap-editor.dragging .ProseMirror,
 .tiptap-editor.just-dropped .ProseMirror {
   caret-color: transparent !important;
@@ -1845,7 +1846,7 @@
 .editor-drop-indicator {
   position: absolute;
   height: 2px;
-  background: hsl(var(--brand) / 0.5);
+  background: hsl(var(--brand));
   border-radius: 1px;
   pointer-events: none;
   z-index: 100;

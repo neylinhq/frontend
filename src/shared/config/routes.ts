@@ -13,6 +13,7 @@ export const ROUTES = {
 export const AUTH_ROUTES = {
   signIn: '/auth/sign-in',
   signUp: '/auth/sign-up',
+  verifyEmail: '/auth/verify-email',
   resetPassword: '/auth/reset-password',
   logout: '/auth/logout'
 } as const

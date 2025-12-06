@@ -1,5 +1,5 @@
 import type { User } from '@/entities/user'
-import { api, setAuthToken, setRefreshToken, getRefreshToken } from '@/shared/api/api-client'
+import { api } from '@/shared/api/api-client'
 
 // Types
 interface LoginRequest {
@@ -20,6 +20,7 @@ interface AuthResponse {
     user: User
     accessToken: string
     refreshToken: string
+    message?: string
   }
 }
 
@@ -30,19 +31,19 @@ interface MessageResponse {
   }
 }
 
-interface RefreshResponse {
-  success: boolean
-  data: {
-    accessToken: string
-    refreshToken: string
-  }
+interface VerifyEmailRequest {
+  code: string
+}
+
+interface ResetPasswordRequest {
+  email: string
+  code: string
+  password: string
 }
 
 export const sessionApi = {
   login: async (data: LoginRequest) => {
     const response = await api.post<AuthResponse>('/auth/login', data, { skipAuth: true })
-    setAuthToken(response.data.accessToken)
-    setRefreshToken(response.data.refreshToken)
     return {
       user: response.data.user,
       accessToken: response.data.accessToken,
@@ -52,13 +53,22 @@ export const sessionApi = {
 
   register: async (data: RegisterRequest) => {
     const response = await api.post<AuthResponse>('/auth/register', data, { skipAuth: true })
-    setAuthToken(response.data.accessToken)
-    setRefreshToken(response.data.refreshToken)
     return {
       user: response.data.user,
       accessToken: response.data.accessToken,
-      refreshToken: response.data.refreshToken
+      refreshToken: response.data.refreshToken,
+      message: response.data.message
     }
+  },
+
+  verifyEmail: async (data: VerifyEmailRequest) => {
+    const response = await api.post<MessageResponse>('/auth/verify-email', data, { skipAuth: true })
+    return response.data
+  },
+
+  resendVerification: async () => {
+    const response = await api.post<MessageResponse>('/auth/resend-verification', {})
+    return response.data
   },
 
   forgotPassword: async (email: string) => {
@@ -70,37 +80,16 @@ export const sessionApi = {
     return response.data
   },
 
-  resetPassword: async (token: string, password: string) => {
+  resetPassword: async (data: ResetPasswordRequest) => {
     const response = await api.post<MessageResponse>(
       '/auth/reset-password',
-      { token, password },
+      data,
       { skipAuth: true }
     )
-    return response.data
-  },
-
-  refresh: async () => {
-    const refreshToken = getRefreshToken()
-    if (!refreshToken) {
-      throw new Error('No refresh token available')
-    }
-
-    const response = await api.post<RefreshResponse>(
-      '/auth/refresh',
-      { refreshToken },
-      { skipAuth: true }
-    )
-    setAuthToken(response.data.accessToken)
-    setRefreshToken(response.data.refreshToken)
     return response.data
   },
 
   logout: async () => {
-    try {
-      await api.post('/auth/logout', {})
-    } finally {
-      setAuthToken(null)
-      setRefreshToken(null)
-    }
+    await api.post('/auth/logout', {})
   }
 }

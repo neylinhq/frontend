@@ -74,7 +74,12 @@ export const createExtensions = (placeholder?: string) => [
   }),
   Typography,
   Underline,
-  TextAlign.configure({
+  TextAlign.extend({
+    // Disable default keyboard shortcuts (Ctrl+Shift+L/R/E/J conflict with browser/system shortcuts)
+    addKeyboardShortcuts() {
+      return {}
+    }
+  }).configure({
     types: ['heading', 'paragraph']
   }),
   Highlight.configure({

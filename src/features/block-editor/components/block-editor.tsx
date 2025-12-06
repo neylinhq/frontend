@@ -326,16 +326,13 @@ export const BlockEditor = ({
     <div
       ref={editorWrapperRef}
       className={cn(
-        'tiptap-editor-wrapper relative flex',
+        'tiptap-editor-wrapper relative md:pl-14',
         className
       )}
     >
-      {/* Invisible gutter zone for hover detection - only on md+ */}
-      <div className='hidden md:block w-16 flex-shrink-0 -ml-16' aria-hidden='true' />
-
       <div
         ref={editorRef}
-        className={cn('tiptap-editor group/editor relative flex-1', resolvedMode === 'dark' && 'dark')}
+        className={cn('tiptap-editor group/editor relative', resolvedMode === 'dark' && 'dark')}
       >
         <EditorBubbleMenu editor={editor} onOpenMathDialog={openMathDialog} />
 

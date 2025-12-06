@@ -1,6 +1,7 @@
-import { Brain, Lightbulb, Link2, Loader2, Sparkles } from 'lucide-react'
+import { Brain, Lightbulb, Link2, Loader2, Sparkles, Zap } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Link as RouterLink } from 'react-router'
 import type { EnrichType } from '@/entities/ai'
 import { useEnrichNode } from '@/entities/ai'
 import { Badge } from '@/shared/components/badge'
@@ -113,6 +114,17 @@ export const AISuggestionsPanel = ({ nodeId, mapId, onNodeClick }: AISuggestions
 
         <div className='mt-6'>
           <SimilarNodesPanel mapId={mapId} nodeId={nodeId} onNodeClick={onNodeClick} />
+        </div>
+
+        <Separator className='my-6' />
+
+        <div className='mt-6'>
+          <Button variant='default' size='sm' className='w-full' asChild>
+            <RouterLink to={`/dashboard/maps/${mapId}/practice`}>
+              <Zap className='w-4 h-4 mr-2' />
+              {t('ai.startPractice')}
+            </RouterLink>
+          </Button>
         </div>
 
         <div className='mt-6'>

@@ -205,10 +205,8 @@ export const NodeEditPage = ({
 
         {/* Editor Content */}
         <div ref={contentRef} className='mx-auto max-w-3xl px-4 md:px-8 py-6 md:py-8'>
-          {/* Gutter wrapper - provides space for floating menu buttons on desktop */}
-          <div className='md:pl-16'>
-            {/* Breadcrumb & Actions */}
-            <div className='mb-8 flex items-center justify-between'>
+            {/* Breadcrumb & Actions - with gutter matching editor */}
+            <div className='mb-8 flex items-center justify-between md:pl-14'>
               <div className='flex items-center gap-3'>
                 <Button variant='ghost' size='sm' asChild className='h-8 px-2'>
                   <Link to={`/dashboard/maps/${mapId}/view`}>
@@ -250,8 +248,8 @@ export const NodeEditPage = ({
                 </Button>
               )}
             </div>
-            {/* Editable Title */}
-            <div className='mb-4 md:mb-6'>
+            {/* Editable Title - with gutter matching editor */}
+            <div className='mb-4 md:mb-6 md:pl-14'>
               <textarea
                 ref={titleInputRef}
                 value={title}
@@ -270,7 +268,6 @@ export const NodeEditPage = ({
               placeholder={t('nodeEdit.editorPlaceholder')}
               className='min-h-[500px]'
             />
-          </div>
         </div>
       </main>
 

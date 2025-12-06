@@ -1001,7 +1001,14 @@
     "smartSuggestionsDescription": "AI will analyze surrounding nodes to provide contextual improvements",
     "similarNodes": "Similar Nodes (RAG)",
     "noSimilarNodes": "No similar nodes found. Generate embeddings to enable similarity search.",
-    "view": "View"
+    "view": "View",
+    "startPractice": "Start Practice Session"
+  },
+  "practice": {
+    "session": "Practice Session",
+    "noExercises": "No exercises available. Generate exercises first.",
+    "submit": "Submit Answer",
+    "next": "Next Exercise"
   },
   "settings": {
     "title": "Settings",

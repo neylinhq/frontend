@@ -338,19 +338,25 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
     const start = view.coordsAtPos(from)
     const end = view.coordsAtPos(to)
 
-    // Get editor container for relative positioning
-    const editorElement = view.dom.closest('.tiptap-editor') as HTMLElement
-    if (!editorElement) {
+    // Get the .tiptap-editor container (where BubbleMenu is positioned)
+    const tiptapEditor = view.dom.closest('.tiptap-editor') as HTMLElement
+    if (!tiptapEditor) {
       return
     }
-    const editorRect = editorElement.getBoundingClientRect()
+    const containerRect = tiptapEditor.getBoundingClientRect()
 
-    // Calculate position relative to editor container (for absolute positioning)
-    let left = (start.left + end.left) / 2 - editorRect.left
-    let top = start.top - editorRect.top - 10
+    // Always use the topmost coordinate for menu positioning (selection can go either direction)
+    const selectionTop = Math.min(start.top, end.top)
+    const selectionBottom = Math.max(start.bottom, end.bottom)
 
-    // Boundary checking relative to editor container
-    const editorWidth = editorRect.width
+    // Calculate position relative to .tiptap-editor container
+    // Center horizontally based on selection midpoint
+    let left = (start.left + end.left) / 2 - containerRect.left
+    // Position above selection (transform: translateY(-100%) will shift menu up by its height)
+    let top = selectionTop - containerRect.top
+
+    // Boundary checking relative to container
+    const editorWidth = containerRect.width
     const halfMenuWidth = MENU.BUBBLE_MIN_WIDTH / 2
 
     // Check if menu would go off the left edge of editor
@@ -362,10 +368,10 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
       left = editorWidth - halfMenuWidth - MENU.VIEWPORT_PADDING
     }
 
-    // Check if menu would go above editor - if so, position below selection
+    // Check if menu would go above container - if so, position below selection
+    // (transform: translateY(-100%) will shift menu up by MENU.BUBBLE_HEIGHT)
     if (top - MENU.BUBBLE_HEIGHT < MENU.VIEWPORT_PADDING) {
-      const bottomPosition = end.bottom - editorRect.top + 10
-      top = bottomPosition
+      top = selectionBottom - containerRect.top
       setMenuDirection('below')
     } else {
       setMenuDirection('above')
@@ -444,7 +450,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
     return (
       <div
         ref={menuRef}
-        className='absolute z-50 flex items-center gap-1 rounded-lg border border-border bg-popover p-1 shadow-lg animate-menu-in'
+        className='absolute z-50 flex items-center gap-1 rounded-lg border border-border bg-popover p-1 shadow-lg'
         style={{
           top: position.top,
           left: position.left,
@@ -478,7 +484,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
   return (
     <div
       ref={menuRef}
-      className='absolute z-50 flex items-center gap-0.5 rounded-lg border border-border bg-popover p-1 shadow-lg animate-menu-in'
+      className='absolute z-50 flex items-center gap-0.5 rounded-lg border border-border bg-popover p-1 shadow-lg'
       style={{
         top: position.top,
         left: position.left,

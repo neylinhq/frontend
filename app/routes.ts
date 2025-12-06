@@ -60,6 +60,7 @@ export default [
     route('dashboard/maps/new', 'routes/dashboard/maps/new.tsx'),
     route('dashboard/maps/:mapId/view', 'routes/dashboard/maps/$mapId/view.tsx'),
     route('dashboard/maps/:mapId/node/:nodeId', 'routes/dashboard/maps/$mapId/node.$nodeId.tsx'),
+    route('dashboard/maps/:mapId/practice', 'routes/dashboard/maps/$mapId/practice.tsx'),
 
     // Settings Routes
     layout('routes/dashboard/settings/layout.tsx', [

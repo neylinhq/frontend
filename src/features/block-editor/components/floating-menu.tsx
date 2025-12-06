@@ -178,13 +178,12 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
       return
     }
 
-    // Use container for hover detection (includes gutter zone)
+    // Use wrapper for hover detection (includes gutter area outside editor)
     const container = containerRef.current
     if (!container) {
       return
     }
 
-    // Find .tiptap-editor inside container for ProseMirror access
     const editorElement = container.querySelector('.tiptap-editor') as HTMLElement
     if (!editorElement) {
       return
@@ -200,9 +199,8 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
         return
       }
 
-      // Use container rect for coordinates (includes gutter)
-      const containerRect = container.getBoundingClientRect()
-      const mouseY = e.clientY - containerRect.top
+      const editorRect = editorElement.getBoundingClientRect()
+      const mouseY = e.clientY - editorRect.top
       const target = e.target as HTMLElement
 
       // Always find block by Y coordinate - this enables hover from anywhere
@@ -214,8 +212,8 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
       let block: HTMLElement | null = null
       for (const b of blocks) {
         const blockRect = b.getBoundingClientRect()
-        const blockTop = blockRect.top - containerRect.top
-        const blockBottom = blockRect.bottom - containerRect.top
+        const blockTop = blockRect.top - editorRect.top
+        const blockBottom = blockRect.bottom - editorRect.top
         if (
           mouseY >= blockTop - THRESHOLD.BLOCK_HOVER &&
           mouseY <= blockBottom + THRESHOLD.BLOCK_HOVER
@@ -227,8 +225,6 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
 
       if (block && block !== hoveredBlock) {
         const blockRect = block.getBoundingClientRect()
-        // Position relative to editorElement (where FloatingMenu is rendered)
-        const editorRect = editorElement.getBoundingClientRect()
         setPosition({
           top: blockRect.top - editorRect.top,
           height: blockRect.height
@@ -244,8 +240,8 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
 
         if (hoveredBlock) {
           const blockRect = hoveredBlock.getBoundingClientRect()
-          const blockTop = blockRect.top - containerRect.top
-          const blockBottom = blockRect.bottom - containerRect.top
+          const blockTop = blockRect.top - editorRect.top
+          const blockBottom = blockRect.bottom - editorRect.top
 
           if (
             mouseY >= blockTop - THRESHOLD.HOVER_GRACE &&
@@ -778,7 +774,7 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
     <div
       ref={menuRef}
       role='toolbar'
-      className='editor-floating-menu absolute -left-16 z-40 flex items-center gap-0.5 opacity-50 transition-opacity hover:opacity-100'
+      className='editor-floating-menu absolute -left-14 z-40 flex items-center gap-0.5 opacity-50 transition-opacity hover:opacity-100'
       style={{
         top: Math.max(0, menuTop)
       }}

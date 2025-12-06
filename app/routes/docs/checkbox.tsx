@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next'
-import { getMeta } from '@/shared/lib/get-meta'
 import { Badge } from '@/shared/components/badge'
 import { Checkbox } from '@/shared/components/checkbox'
 import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
@@ -8,6 +7,7 @@ import { DocsComponentPreview, DocsPreview } from '@/shared/components/docs-comp
 import { DocsToc, type TocItem } from '@/shared/components/docs-toc'
 import { Label } from '@/shared/components/label'
 import { Typography } from '@/shared/components/typography'
+import { getMeta } from '@/shared/lib/get-meta'
 import type { Route } from './+types/checkbox'
 
 export const handle = {

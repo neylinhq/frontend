@@ -1,9 +1,10 @@
 // Components
 export { GraphToolbar } from './components/graph-toolbar'
 export { GraphVisualization } from './components/graph-visualization'
-export { NodeSearch, NodeSearchTrigger } from './components/node-search'
 export { KnowledgeEdge } from './components/knowledge-edge'
 export { KnowledgeNode } from './components/knowledge-node'
+export { NodeContextMenu } from './components/node-context-menu'
+export { NodeSearch, NodeSearchTrigger } from './components/node-search'
 export { ViewControlsPanel } from './components/view-controls-panel'
 // Lib (pure utilities)
 export { calculateDensity, calculateGraphCenter } from './lib/calculate-metrics'
@@ -39,4 +40,3 @@ export type {
   ToolbarState
 } from './model/graph-visualization.types'
 export { useNodeSelection } from './model/node-selection.hooks'
-export { NodeContextMenu } from './components/node-context-menu'

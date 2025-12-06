@@ -1,10 +1,9 @@
 import { Home, LayoutDashboard, Search } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-
-import { DASHBOARD_ROUTES, ROUTES } from '@/shared/config'
 import { Button } from '@/shared/components/button'
 import { Typography } from '@/shared/components/typography'
+import { DASHBOARD_ROUTES, ROUTES } from '@/shared/config'
 
 export const NotFoundPage = () => {
   const { t } = useTranslation()

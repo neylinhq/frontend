@@ -8,14 +8,15 @@ import { toast } from 'sonner'
 import type { FullMap, Node } from '@/entities/map'
 import { useUpdateNode } from '@/entities/map'
 import type { NodeType } from '@/entities/node'
+import { AISuggestionsPanel } from '@/features/ai-assist/components/ai-suggestions-panel'
 import { BlockEditor, editorToHTML, htmlToEditor, htmlToPlainText } from '@/features/block-editor'
-import { useAutoSave } from '@/features/node-editor'
 import { NodeConnectionsPanel } from '@/features/node-connections-panel'
+import { useAutoSave } from '@/features/node-editor'
 import { NodeMetadataForm, type NodeMetadataFormValues } from '@/features/node-metadata-form'
-import { cn } from '@/shared/lib/cn'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/shared/components/sheet'
+import { cn } from '@/shared/lib/cn'
 
 const NODE_TYPE_CONFIG: Record<NodeType, { color: string; label: string }> = {
   concept: { color: 'bg-blue-500/10 text-blue-600 dark:text-blue-400', label: 'Concept' },
@@ -283,6 +284,14 @@ export const NodeEditPage = ({
 
             {/* Sidebar Content */}
             <div className='flex-1 overflow-y-auto [scrollbar-gutter:stable] min-h-0 flex flex-col'>
+              {/* AI Suggestions */}
+              <div className='border-b border-border/50 p-4 flex-shrink-0'>
+                <h3 className='mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground'>
+                  AI Suggestions
+                </h3>
+                <AISuggestionsPanel nodeId={nodeId} mapId={mapId} />
+              </div>
+
               {/* Node Metadata */}
               <div className='border-b border-border/50 p-4 flex-shrink-0'>
                 <NodeMetadataForm
@@ -316,6 +325,14 @@ export const NodeEditPage = ({
           </SheetHeader>
 
           <div className='flex-1 overflow-y-auto [scrollbar-gutter:stable] flex flex-col'>
+            {/* AI Suggestions */}
+            <div className='border-b border-border/50 p-4 flex-shrink-0'>
+              <h3 className='mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground'>
+                AI Suggestions
+              </h3>
+              <AISuggestionsPanel nodeId={nodeId} mapId={mapId} />
+            </div>
+
             {/* Node Metadata */}
             <div className='border-b border-border/50 p-4 flex-shrink-0'>
               <NodeMetadataForm

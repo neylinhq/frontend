@@ -1,12 +1,12 @@
 import fs from 'fs'
-import path from 'path'
 import { glob } from 'glob'
+import path from 'path'
 
 // Fix "export default const X = ..." -> "const X = ...\nexport default X"
 const pattern = /export default const (\w+) = /g
 
 const files = await glob('**/*.{ts,tsx}', {
-  ignore: ['node_modules/**', '.dev/transforms/fix-export-default.mjs'],
+  ignore: ['node_modules/**', '.dev/transforms/fix-export-default.mjs']
 })
 
 let fixedCount = 0

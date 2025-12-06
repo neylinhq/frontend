@@ -2,10 +2,14 @@
 
 import { Check, ChevronDown, ChevronUp, Copy } from 'lucide-react'
 import * as React from 'react'
+import { Button } from '@/shared/components/button'
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger
+} from '@/shared/components/collapsible'
 import { cn } from '@/shared/lib/cn'
 import styles from './docs-code-block.module.css'
-import { Button } from '@/shared/components/button'
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/shared/components/collapsible'
 
 interface DocsCodeBlockProps {
   code: string
@@ -86,8 +90,6 @@ export const DocsCodeBlock = ({
   }
 
   return (
-    <div className={cn(styles.block, embedded && styles.embedded, className)}>
-      {codeContent}
-    </div>
+    <div className={cn(styles.block, embedded && styles.embedded, className)}>{codeContent}</div>
   )
 }

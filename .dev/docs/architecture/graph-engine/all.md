@@ -533,7 +533,7 @@ export default defineConfig({
 {
   "scripts": {
     "build:wasm": "cd ../graph-engine && wasm-pack build --target web --out-dir ../frontend/src/features/graph-wasm/pkg",
-    "dev:wasm": "npm run build:wasm && npm run dev"
+    "dev:wasm": "bun run build:wasm && bun dev"
   }
 }
 ```

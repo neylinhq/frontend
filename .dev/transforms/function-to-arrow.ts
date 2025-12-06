@@ -8,7 +8,7 @@ const transformer = (file: FileInfo, api: API) => {
   // Transform: export function name() {} -> export const name = () => {}
   root
     .find(j.ExportNamedDeclaration, {
-      declaration: { type: 'FunctionDeclaration' },
+      declaration: { type: 'FunctionDeclaration' }
     })
     .forEach(path => {
       const funcDecl = path.node.declaration as any

@@ -1,15 +1,19 @@
 'use client'
 import { ChevronsUpDown } from 'lucide-react'
 import { useState } from 'react'
-import { getMeta } from '@/shared/lib/get-meta'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/shared/components/collapsible'
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger
+} from '@/shared/components/collapsible'
 import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
 import { DocsCodeBlock } from '@/shared/components/docs-code-block'
 import { DocsComponentPreview, DocsPreview } from '@/shared/components/docs-component-preview'
 import { DocsToc, type TocItem } from '@/shared/components/docs-toc'
 import { Typography } from '@/shared/components/typography'
+import { getMeta } from '@/shared/lib/get-meta'
 import type { Route } from './+types/collapsible'
 
 export const handle = {

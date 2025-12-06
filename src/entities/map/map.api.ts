@@ -1,333 +1,189 @@
-import { API_DELAYS, delay } from '@/shared/config/api-delays'
-import type { LightweightNode } from '../node'
-import {
-  ALL_EDGES,
-  GRAPH_THEORY_EDGES,
-  NEURAL_NETWORKS_EDGES,
-  PHILOSOPHY_EDGES
-} from './__mocks__/edges'
-// Import mock data
-import { GENERATED_GRAPH, MOCK_MAPS } from './__mocks__/maps.mock'
-import { MOCK_NODE_WITH_CONTENT } from './__mocks__/node-content.mock'
-import {
-  ALL_NODES,
-  GRAPH_THEORY_NODES,
-  NEURAL_NETWORKS_NODES,
-  PHILOSOPHY_NODES
-} from './__mocks__/nodes'
-import type { Edge, FullMap, MapEntity, Node } from './map.schema'
+import { api } from '@/shared/api/api-client'
+import type { Edge } from '../edge'
+import type { LightweightNode, Node } from '../node'
+import type { FullMap, MapEntity } from './map.schema'
+
+// Response types
+interface ApiResponse<T> {
+  success: boolean
+  data: T
+  meta?: {
+    total: number
+    limit: number
+    offset: number
+  }
+}
+
+interface CreateMapRequest {
+  title: string
+  description?: string
+}
+
+interface CreateNodeRequest {
+  label: string
+  description?: string
+  content?: string
+  type: Node['type']
+  position: { x: number; y: number }
+  metadata?: Node['metadata']
+}
+
+interface CreateEdgeRequest {
+  sourceNodeId: string
+  targetNodeId: string
+  relationType: Edge['relationType']
+  label?: string
+  strength?: number
+  bidirectional?: boolean
+  metadata?: Edge['metadata']
+}
+
+interface PositionUpdate {
+  id: string
+  x: number
+  y: number
+}
 
 export const mapApi = {
-  // ====== Работа с картами ======
-  getMaps: async (): Promise<MapEntity[]> => {
-    await delay(API_DELAYS.MAP_GET_MAPS)
-    return MOCK_MAPS
-  },
-
-  getMapById: async (id: string): Promise<MapEntity | null> => {
-    await delay(API_DELAYS.MAP_GET_BY_ID)
-    return MOCK_MAPS.find(m => m.id === id) || null
-  },
-
-  createMap: async (
-    data: Omit<MapEntity, 'id' | 'createdAt' | 'updatedAt' | 'nodesCount'>
-  ): Promise<MapEntity> => {
-    await delay(API_DELAYS.MAP_CREATE)
-    const newMap: MapEntity = {
-      ...data,
-      id: `map-${Date.now()}`,
-      nodesCount: 0,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+  // ====== Maps ======
+  getMaps: async (
+    limit = 20,
+    offset = 0,
+    options?: { token?: string }
+  ): Promise<{ maps: MapEntity[]; total: number }> => {
+    const response = await api.get<ApiResponse<MapEntity[]>>(
+      `/maps?limit=${limit}&offset=${offset}`,
+      { token: options?.token }
+    )
+    return {
+      maps: response.data,
+      total: response.meta?.total || response.data.length
     }
-    MOCK_MAPS.push(newMap)
-    return newMap
+  },
+
+  getMapById: async (id: string): Promise<MapEntity> => {
+    const response = await api.get<ApiResponse<MapEntity>>(`/maps/${id}`)
+    return response.data
+  },
+
+  createMap: async (data: CreateMapRequest): Promise<MapEntity> => {
+    const response = await api.post<ApiResponse<MapEntity>>('/maps', data)
+    return response.data
+  },
+
+  updateMap: async (id: string, data: Partial<CreateMapRequest>): Promise<MapEntity> => {
+    const response = await api.patch<ApiResponse<MapEntity>>(`/maps/${id}`, data)
+    return response.data
   },
 
   deleteMap: async (id: string): Promise<void> => {
-    await delay(API_DELAYS.MAP_DELETE)
-    const index = MOCK_MAPS.findIndex(m => m.id === id)
-    if (index !== -1) {
-      MOCK_MAPS.splice(index, 1)
-    }
-    // Also delete all nodes and edges for this map
-    const nodesToDelete = ALL_NODES.filter(n => n.mapId === id)
-    nodesToDelete.forEach(node => {
-      const nodeIndex = ALL_NODES.findIndex(n => n.id === node.id)
-      if (nodeIndex !== -1) {
-        ALL_NODES.splice(nodeIndex, 1)
-      }
-    })
-    const edgesToDelete = ALL_EDGES.filter(e => {
-      const sourceNode = ALL_NODES.find(n => n.id === e.sourceNodeId)
-      return sourceNode?.mapId === id
-    })
-    edgesToDelete.forEach(edge => {
-      const edgeIndex = ALL_EDGES.findIndex(e => e.id === edge.id)
-      if (edgeIndex !== -1) {
-        ALL_EDGES.splice(edgeIndex, 1)
-      }
-    })
+    await api.delete(`/maps/${id}`)
   },
 
-  // ====== Работа с узлами ======
-  getNodes: async (mapId: string): Promise<LightweightNode[]> => {
-    await delay(API_DELAYS.MAP_GET_NODES)
-    // Use generated graph for map '4'
-    if (mapId === '4') {
-      return GENERATED_GRAPH.nodes.map(
-        (n): LightweightNode => ({
-          id: n.id,
-          mapId: n.mapId,
-          label: n.label,
-          description: n.description,
-          type: n.type,
-          position: n.position,
-          metadata: n.metadata,
-          createdAt: n.createdAt,
-          updatedAt: n.updatedAt
-        })
-      )
-    }
-
-    const allMockNodes = [...NEURAL_NETWORKS_NODES, ...PHILOSOPHY_NODES, ...GRAPH_THEORY_NODES]
-
-    return allMockNodes
-      .filter(n => n.mapId === mapId)
-      .map(
-        (n): LightweightNode => ({
-          id: n.id,
-          mapId: n.mapId,
-          label: n.label,
-          description: n.description,
-          type: n.type,
-          position: n.position,
-          metadata: n.metadata,
-          createdAt: n.createdAt,
-          updatedAt: n.updatedAt
-        })
-      )
+  getFullMap: async (mapId: string): Promise<FullMap> => {
+    const response = await api.get<ApiResponse<FullMap>>(`/maps/${mapId}/full`)
+    return response.data
   },
 
-  getNodeWithContent: async (nodeId: string): Promise<Node | null> => {
-    await delay(API_DELAYS.MAP_GET_NODE_WITH_CONTENT)
-    // For editor demo
-    if (nodeId === 'mock-editor') {
-      return MOCK_NODE_WITH_CONTENT
-    }
-
-    // Check generated graph nodes (for map '4')
-    const generatedNode = GENERATED_GRAPH.nodes.find(n => n.id === nodeId)
-    if (generatedNode) {
-      return generatedNode
-    }
-
-    const allMockNodes = [...NEURAL_NETWORKS_NODES, ...PHILOSOPHY_NODES, ...GRAPH_THEORY_NODES]
-
-    return allMockNodes.find(n => n.id === nodeId) || null
+  analyzeGraph: async (
+    mapId: string,
+    model: string = 'gpt-4',
+    async = true
+  ): Promise<FullMap['aiAnalysis'] | { taskId: string; status: string }> => {
+    const response = await api.post<
+      ApiResponse<FullMap['aiAnalysis'] | { taskId: string; status: string }>
+    >(`/maps/${mapId}/analyze`, { model, async })
+    return response.data
   },
 
-  createNode: async (data: Omit<Node, 'id' | 'createdAt' | 'updatedAt'>): Promise<Node> => {
-    await delay(API_DELAYS.MAP_CREATE_NODE)
-    const newNode: Node = {
-      ...data,
-      id: `node-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    }
-    ALL_NODES.push(newNode)
+  // AI Operations
+  suggestEdges: async (mapId: string): Promise<any> => {
+    const response = await api.post<ApiResponse<any>>(`/maps/${mapId}/suggest-edges`)
+    return response.data
+  },
 
-    // Update map's nodesCount
-    const map = MOCK_MAPS.find(m => m.id === data.mapId)
-    if (map) {
-      map.nodesCount++
-    }
+  detectGaps: async (mapId: string): Promise<any> => {
+    const response = await api.post<ApiResponse<any>>(`/maps/${mapId}/detect-gaps`)
+    return response.data
+  },
 
-    return newNode
+  generateNodes: async (mapId: string, gaps: string[]): Promise<any> => {
+    const response = await api.post<ApiResponse<any>>(`/maps/${mapId}/generate-nodes`, { gaps })
+    return response.data
+  },
+
+  // ====== Nodes ======
+  getNodes: async (mapId: string, type?: string): Promise<LightweightNode[]> => {
+    const params = type ? `?type=${type}` : ''
+    const response = await api.get<ApiResponse<LightweightNode[]>>(`/maps/${mapId}/nodes${params}`)
+    return response.data
+  },
+
+  getNodeWithContent: async (mapId: string, nodeId: string): Promise<Node> => {
+    const response = await api.get<ApiResponse<Node>>(`/maps/${mapId}/nodes/${nodeId}`)
+    return response.data
+  },
+
+  createNode: async (mapId: string, data: CreateNodeRequest): Promise<Node> => {
+    const response = await api.post<ApiResponse<Node>>(`/maps/${mapId}/nodes`, data)
+    return response.data
   },
 
   updateNode: async (
-    id: string,
-    data: Partial<Omit<Node, 'id' | 'createdAt' | 'updatedAt'>>
+    mapId: string,
+    nodeId: string,
+    data: Partial<CreateNodeRequest>
   ): Promise<Node> => {
-    await delay(API_DELAYS.MAP_UPDATE_NODE)
-    const allMockNodes = [...NEURAL_NETWORKS_NODES, ...PHILOSOPHY_NODES, ...GRAPH_THEORY_NODES]
-
-    const node = allMockNodes.find(n => n.id === id)
-    if (!node) {
-      throw new Error(`Node with id ${id} not found`)
-    }
-    Object.assign(node, { ...data, updatedAt: new Date().toISOString() })
-    return node
+    const response = await api.patch<ApiResponse<Node>>(`/maps/${mapId}/nodes/${nodeId}`, data)
+    return response.data
   },
 
-  // Update only node position (optimized for drag operations)
+  deleteNode: async (mapId: string, nodeId: string): Promise<void> => {
+    await api.delete(`/maps/${mapId}/nodes/${nodeId}`)
+  },
+
   updateNodePosition: async (
-    id: string,
+    mapId: string,
+    nodeId: string,
     position: { x: number; y: number }
   ): Promise<void> => {
-    await delay(50) // Minimal delay for position updates
-    // Check generated graph nodes first
-    const generatedNode = GENERATED_GRAPH.nodes.find(n => n.id === id)
-    if (generatedNode) {
-      generatedNode.position = position
-      generatedNode.updatedAt = new Date().toISOString()
-      return
-    }
+    await api.patch(`/maps/${mapId}/nodes/${nodeId}`, { position })
+  },
 
-    const allMockNodes = [...NEURAL_NETWORKS_NODES, ...PHILOSOPHY_NODES, ...GRAPH_THEORY_NODES]
-    const node = allMockNodes.find(n => n.id === id)
-    if (node) {
-      node.position = position
-      node.updatedAt = new Date().toISOString()
+  updateNodePositions: async (mapId: string, positions: PositionUpdate[]): Promise<void> => {
+    await api.patch(`/maps/${mapId}/nodes/positions`, { positions })
+  },
+
+  // ====== Edges ======
+  getEdges: async (
+    mapId: string,
+    limit = 100,
+    offset = 0
+  ): Promise<{ edges: Edge[]; total: number }> => {
+    const response = await api.get<ApiResponse<Edge[]>>(
+      `/maps/${mapId}/edges?limit=${limit}&offset=${offset}`
+    )
+    return {
+      edges: response.data,
+      total: response.meta?.total || response.data.length
     }
   },
 
-  // Batch update positions (for re-layout)
-  updateNodePositions: async (
-    updates: Array<{ id: string; position: { x: number; y: number } }>
-  ): Promise<void> => {
-    await delay(100) // Slightly longer for batch
-    for (const { id, position } of updates) {
-      // Check generated graph nodes first
-      const generatedNode = GENERATED_GRAPH.nodes.find(n => n.id === id)
-      if (generatedNode) {
-        generatedNode.position = position
-        generatedNode.updatedAt = new Date().toISOString()
-        continue
-      }
-
-      const allMockNodes = [...NEURAL_NETWORKS_NODES, ...PHILOSOPHY_NODES, ...GRAPH_THEORY_NODES]
-      const node = allMockNodes.find(n => n.id === id)
-      if (node) {
-        node.position = position
-        node.updatedAt = new Date().toISOString()
-      }
-    }
-  },
-
-  deleteNode: async (id: string): Promise<void> => {
-    await delay(API_DELAYS.MAP_DELETE_NODE)
-    const allMockNodes = [...NEURAL_NETWORKS_NODES, ...PHILOSOPHY_NODES, ...GRAPH_THEORY_NODES]
-
-    const index = allMockNodes.findIndex(n => n.id === id)
-    if (index !== -1) {
-      const node = allMockNodes[index]
-      allMockNodes.splice(index, 1)
-
-      // Update map's nodesCount
-      const map = MOCK_MAPS.find(m => m.id === node.mapId)
-      if (map) {
-        map.nodesCount = Math.max(0, map.nodesCount - 1)
-      }
-
-      // Also delete all edges connected to this node
-      const edgesToDelete = ALL_EDGES.filter(e => e.sourceNodeId === id || e.targetNodeId === id)
-      edgesToDelete.forEach(edge => {
-        const edgeIndex = ALL_EDGES.findIndex(e => e.id === edge.id)
-        if (edgeIndex !== -1) {
-          ALL_EDGES.splice(edgeIndex, 1)
-        }
-      })
-    }
-  },
-
-  // ====== Работа со связями ======
-  getEdges: async (mapId: string): Promise<Edge[]> => {
-    await delay(API_DELAYS.MAP_GET_EDGES)
-    // Use generated graph for map '4'
-    if (mapId === '4') {
-      return GENERATED_GRAPH.edges
-    }
-
-    const allMockEdges = [...NEURAL_NETWORKS_EDGES, ...PHILOSOPHY_EDGES, ...GRAPH_THEORY_EDGES]
-
-    const allMockNodes = [...NEURAL_NETWORKS_NODES, ...PHILOSOPHY_NODES, ...GRAPH_THEORY_NODES]
-
-    return allMockEdges.filter(e => {
-      const sourceNode = allMockNodes.find(n => n.id === e.sourceNodeId)
-      return sourceNode?.mapId === mapId
-    })
-  },
-
-  createEdge: async (data: Omit<Edge, 'id' | 'createdAt' | 'updatedAt'>): Promise<Edge> => {
-    await delay(API_DELAYS.MAP_CREATE_EDGE)
-    const newEdge: Edge = {
-      ...data,
-      id: `edge-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    }
-    ALL_EDGES.push(newEdge)
-    return newEdge
+  createEdge: async (mapId: string, data: CreateEdgeRequest): Promise<Edge> => {
+    const response = await api.post<ApiResponse<Edge>>(`/maps/${mapId}/edges`, data)
+    return response.data
   },
 
   updateEdge: async (
-    id: string,
-    data: Partial<Omit<Edge, 'id' | 'createdAt' | 'updatedAt'>>
+    mapId: string,
+    edgeId: string,
+    data: Partial<CreateEdgeRequest>
   ): Promise<Edge> => {
-    await delay(API_DELAYS.MAP_UPDATE_EDGE)
-    const allMockEdges = [...NEURAL_NETWORKS_EDGES, ...PHILOSOPHY_EDGES, ...GRAPH_THEORY_EDGES]
-
-    const edge = allMockEdges.find(e => e.id === id)
-    if (!edge) {
-      throw new Error(`Edge with id ${id} not found`)
-    }
-    Object.assign(edge, { ...data, updatedAt: new Date().toISOString() })
-    return edge
+    const response = await api.patch<ApiResponse<Edge>>(`/maps/${mapId}/edges/${edgeId}`, data)
+    return response.data
   },
 
-  deleteEdge: async (id: string): Promise<void> => {
-    await delay(API_DELAYS.MAP_DELETE_EDGE)
-    const allMockEdges = [...NEURAL_NETWORKS_EDGES, ...PHILOSOPHY_EDGES, ...GRAPH_THEORY_EDGES]
-
-    const index = allMockEdges.findIndex(e => e.id === id)
-    if (index !== -1) {
-      allMockEdges.splice(index, 1)
-    }
-  },
-
-  // ====== Полный граф (карта + узлы + связи) ======
-  getFullMap: async (mapId: string, includeContent: boolean = false): Promise<FullMap | null> => {
-    await delay(API_DELAYS.MAP_GET_FULL_MAP)
-
-    const map = await mapApi.getMapById(mapId)
-    if (!map) {
-      return null
-    }
-
-    const nodes = includeContent
-      ? await Promise.all(
-          (await mapApi.getNodes(mapId)).map(ln => mapApi.getNodeWithContent(ln.id))
-        ).then(results => results.filter((n): n is Node => n !== null))
-      : ((await mapApi.getNodes(mapId)) as Node[])
-
-    const edges = await mapApi.getEdges(mapId)
-
-    return {
-      ...map,
-      nodes,
-      edges,
-      aiAnalysis: {
-        gaps: [],
-        suggestions: [],
-        complexityScore: 0,
-        completenessScore: 0,
-        structuralIssues: []
-      }
-    }
-  },
-
-  // ====== Анализ графа через AI ======
-  analyzeGraph: async (_mapId: string): Promise<FullMap['aiAnalysis']> => {
-    await delay(API_DELAYS.MAP_ANALYZE_GRAPH) // Имитация долгой обработки AI
-    return {
-      lastAnalyzed: new Date().toISOString(),
-      gaps: ['Отсутствует связь между GPT и практическими применениями'],
-      suggestions: ['Добавить связь между BERT и Attention Mechanism'],
-      complexityScore: 0.75,
-      completenessScore: 0.65,
-      structuralIssues: []
-    }
+  deleteEdge: async (mapId: string, edgeId: string): Promise<void> => {
+    await api.delete(`/maps/${mapId}/edges/${edgeId}`)
   }
 }

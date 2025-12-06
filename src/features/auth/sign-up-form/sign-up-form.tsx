@@ -1,21 +1,42 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { useNavigation, useSubmit } from 'react-router'
+import { useActionData, useNavigation, useSubmit } from 'react-router'
+import { toast } from 'sonner'
 import { z } from 'zod'
 import { Button } from '@/shared/components/button'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/components/form'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/shared/components/form'
 import { FormDivider } from '@/shared/components/form-divider'
 import { Input } from '@/shared/components/input'
 import { LegalLinks } from '@/shared/components/legal-links'
+
+type ActionData = { error?: string; code?: string } | undefined
 
 export const SignUpForm = () => {
   const { t } = useTranslation()
   const navigation = useNavigation()
   const submit = useSubmit()
+  const actionData = useActionData<ActionData>()
 
   const isLoading = navigation.state === 'submitting'
+
+  // Show toast on error from action
+  useEffect(() => {
+    if (actionData?.error) {
+      toast.error(t('auth.signUp.error'), {
+        description: actionData.error
+      })
+    }
+  }, [actionData, t])
 
   // Define schema inside component to use t()
   const signUpSchema = z

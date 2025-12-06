@@ -5,7 +5,14 @@ import { toast } from 'sonner'
 import { useChangePassword } from '@/entities/user'
 import { Button } from '@/shared/components/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/components/form'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/shared/components/form'
 import { Input } from '@/shared/components/input'
 import { type PasswordChangeValues, passwordChangeSchema } from '../lib/validation'
 

@@ -1,8 +1,8 @@
 import { Check } from 'lucide-react'
 import { useState } from 'react'
-import { cn } from '@/shared/lib/cn'
 import { Button } from '@/shared/components/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/components/popover'
+import { cn } from '@/shared/lib/cn'
 
 export type SelectPopoverItem<T extends string = string> = {
   value: T

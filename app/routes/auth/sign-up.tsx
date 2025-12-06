@@ -2,6 +2,7 @@ import { type ActionFunctionArgs, redirect } from 'react-router'
 import { sessionApi } from '@/entities/session/session.api'
 import { commitSession } from '@/entities/session/session.server'
 import { SignUpPage } from '@/pages/auth/sign-up-page'
+import { ApiError } from '@/shared/api/api-client'
 import { getMeta } from '@/shared/lib/get-meta'
 
 export const handle = {
@@ -18,13 +19,16 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData()
   const email = formData.get('email') as string
   const password = formData.get('password') as string
-  const name = formData.get('name') as string
+
+  console.log('[sign-up action] Starting registration for:', email)
 
   try {
     // Use session API for registration
-    const { user, token } = await sessionApi.register({ email, password, name })
+    const { user, accessToken } = await sessionApi.register({ email, password })
 
-    const sessionData = { token, user }
+    console.log('[sign-up action] Success! User:', user.id)
+
+    const sessionData = { token: accessToken, user }
     const cookie = await commitSession(sessionData)
 
     return redirect('/dashboard/overview', {
@@ -33,6 +37,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       }
     })
   } catch (error) {
+    console.error('[sign-up action] Error:', error)
+
+    // Extract error message from API response
+    if (error instanceof ApiError) {
+      const data = error.data as { error?: { message?: string; code?: string } } | null
+      const message = data?.error?.message || error.message
+      return { error: message, code: data?.error?.code }
+    }
+
     return {
       error: error instanceof Error ? error.message : 'Ошибка регистрации'
     }

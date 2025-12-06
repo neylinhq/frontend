@@ -5,21 +5,14 @@ import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import type { CryptoCurrency, CryptoNetwork } from '@/entities/subscription'
-import { cn } from '@/shared/lib/cn'
-import {
-  type CardBrand,
-  detectCardBrand,
-  formatCardNumber,
-  formatExpiry,
-  parseExpiry
-} from '@/shared/lib/card-utils'
 import {
   getCurrencyDisplayName,
   getNetworkDisplayName,
   isValidWalletAddress,
   shortenWalletAddress
-} from '@/shared/lib/crypto-utils'
+} from '@/entities/subscription'
 import { Button } from '@/shared/components/button'
+import { CardBrandIcon } from '@/shared/components/card-brand-icon'
 import {
   Dialog,
   DialogContent,
@@ -29,11 +22,31 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/shared/components/dialog'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/components/form'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/shared/components/form'
 import { cryptoIcons, Icon } from '@/shared/components/icon'
 import { Input } from '@/shared/components/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/select'
-import { CardBrandIcon } from '@/shared/components/card-brand-icon'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/shared/components/select'
+import {
+  type CardBrand,
+  detectCardBrand,
+  formatCardNumber,
+  formatExpiry,
+  parseExpiry
+} from '@/shared/lib/card-utils'
+import { cn } from '@/shared/lib/cn'
 import { CARD_VALIDATION, getCvcLength, getCvcPlaceholder } from './lib/card-validation'
 import {
   type AddPaymentMethodValues,

@@ -41,6 +41,10 @@ export const NodeSchema = z.object({
     y: z.number()
   }),
   metadata: NodeMetadataSchema,
+  aiGenerated: z.boolean().optional(), // Whether node was AI-generated
+  lastEnrichedAt: z.string().nullable().optional(), // Last AI enrichment timestamp
+  factCheckStatus: z.enum(['verified', 'unverified', 'disputed', 'false']).nullable().optional(),
+  factCheckResult: z.unknown().optional(), // Detailed fact-check results
   createdAt: z.string(),
   updatedAt: z.string()
 })

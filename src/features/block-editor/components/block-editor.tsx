@@ -3,9 +3,8 @@
 import { EditorContent, useEditor } from '@tiptap/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-
-import { useTheme } from '@/shared/lib/theme'
 import { cn } from '@/shared/lib/cn'
+import { useTheme } from '@/shared/lib/theme'
 
 import { createExtensions } from '../lib/extensions'
 import type { BlockEditorProps } from '../model/block-editor.types'

@@ -1,4 +1,3 @@
-import { getMeta } from '@/shared/lib/get-meta'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
@@ -18,6 +17,7 @@ import {
   SheetTrigger
 } from '@/shared/components/sheet'
 import { Typography } from '@/shared/components/typography'
+import { getMeta } from '@/shared/lib/get-meta'
 import type { Route } from './+types/sheet'
 
 export const handle = {

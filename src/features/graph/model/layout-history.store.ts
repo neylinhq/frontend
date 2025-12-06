@@ -33,9 +33,8 @@ export const useLayoutHistoryStore = create<LayoutHistoryState & LayoutHistoryAc
       const { snapshots, currentIndex } = get()
 
       // If we're not at the end, truncate forward history
-      const newSnapshots = currentIndex < snapshots.length - 1
-        ? snapshots.slice(0, currentIndex + 1)
-        : [...snapshots]
+      const newSnapshots =
+        currentIndex < snapshots.length - 1 ? snapshots.slice(0, currentIndex + 1) : [...snapshots]
 
       // Add new snapshot
       const newSnapshot: LayoutSnapshot = {

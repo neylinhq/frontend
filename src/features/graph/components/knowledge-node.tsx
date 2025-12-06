@@ -2,9 +2,9 @@ import { Handle, Position } from '@xyflow/react'
 import { memo } from 'react'
 import type { Node } from '@/entities/map'
 import { getComplexityColor, getNodeBorderColor, getNodeIcon } from '@/entities/node'
-import { cn } from '@/shared/lib/cn'
 import { Badge } from '@/shared/components/badge'
 import { Card } from '@/shared/components/card'
+import { cn } from '@/shared/lib/cn'
 
 interface KnowledgeNodeProps {
   data: Node & {

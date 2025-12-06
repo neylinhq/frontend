@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next'
-import { getMeta } from '@/shared/lib/get-meta'
 import { Badge } from '@/shared/components/badge'
 import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
 import { DocsCodeBlock } from '@/shared/components/docs-code-block'
@@ -8,6 +7,7 @@ import { DocsToc, type TocItem } from '@/shared/components/docs-toc'
 import { Input } from '@/shared/components/input'
 import { Label } from '@/shared/components/label'
 import { Typography } from '@/shared/components/typography'
+import { getMeta } from '@/shared/lib/get-meta'
 import type { Route } from './+types/input'
 
 export const handle = {

@@ -2,8 +2,6 @@ import { MoreVertical, Pencil, Star, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { PaymentMethod } from '@/entities/subscription'
-import { cn } from '@/shared/lib/cn'
-import type { CardBrand } from '@/shared/lib/card-utils'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,6 +13,7 @@ import {
   AlertDialogTitle
 } from '@/shared/components/alert-dialog'
 import { Button } from '@/shared/components/button'
+import { CardBrandIcon } from '@/shared/components/card-brand-icon'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,7 +22,8 @@ import {
   DropdownMenuTrigger
 } from '@/shared/components/dropdown-menu'
 import { cryptoIcons, Icon } from '@/shared/components/icon'
-import { CardBrandIcon } from '@/shared/components/card-brand-icon'
+import type { CardBrand } from '@/shared/lib/card-utils'
+import { cn } from '@/shared/lib/cn'
 
 interface PaymentMethodCardProps {
   method: PaymentMethod

@@ -3,13 +3,12 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import type { PaymentMethod, UpdatePaymentMethodInput } from '@/entities/subscription'
-import type { CardBrand } from '@/shared/lib/card-utils'
 import {
   copyToClipboard,
   getCurrencyDisplayName,
   getNetworkDisplayName,
   isValidWalletAddress
-} from '@/shared/lib/crypto-utils'
+} from '@/entities/subscription'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,11 +20,12 @@ import {
   AlertDialogTitle
 } from '@/shared/components/alert-dialog'
 import { Button } from '@/shared/components/button'
+import { CardBrandIcon } from '@/shared/components/card-brand-icon'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/components/dialog'
 import { cryptoIcons, Icon } from '@/shared/components/icon'
 import { Input } from '@/shared/components/input'
 import { Label } from '@/shared/components/label'
-import { CardBrandIcon } from '@/shared/components/card-brand-icon'
+import type { CardBrand } from '@/shared/lib/card-utils'
 
 interface PaymentMethodDetailsDialogProps {
   method: PaymentMethod | null

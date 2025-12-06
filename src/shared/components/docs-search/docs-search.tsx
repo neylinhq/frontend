@@ -3,10 +3,9 @@
 import { ArrowRight, BookOpen, FileText, Package, Palette, Search, Type } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
-
+import { CommandPalette, type CommandPaletteItem } from '@/shared/components/command-palette'
 import { cn } from '@/shared/lib/cn'
 import { isMac } from '@/shared/lib/platform'
-import { CommandPalette, type CommandPaletteItem } from '@/shared/components/command-palette'
 
 interface SearchItem extends CommandPaletteItem {
   title: string

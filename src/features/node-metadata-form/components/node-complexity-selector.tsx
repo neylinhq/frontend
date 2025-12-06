@@ -1,6 +1,12 @@
 import { useTranslation } from 'react-i18next'
 import { Label } from '@/shared/components/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/shared/components/select'
 import { COMPLEXITY_OPTIONS } from '../lib/complexity.constants'
 
 interface NodeComplexitySelectorProps {

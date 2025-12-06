@@ -2,6 +2,7 @@ import { type ActionFunctionArgs, redirect } from 'react-router'
 import { sessionApi } from '@/entities/session/session.api'
 import { commitSession } from '@/entities/session/session.server'
 import { SignInPage } from '@/pages/auth/sign-in-page'
+import { ApiError } from '@/shared/api/api-client'
 import { getMeta } from '@/shared/lib/get-meta'
 
 export const handle = {
@@ -20,10 +21,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const password = formData.get('password') as string
 
   try {
-    // Use session API instead of hardcoded logic
-    const { user, token } = await sessionApi.login({ email, password })
+    console.log('[sign-in action] Starting login for:', email)
 
-    const sessionData = { token, user }
+    // Use session API instead of hardcoded logic
+    const result = await sessionApi.login({ email, password })
+    console.log('[sign-in action] Login result:', result)
+
+    const { user, accessToken } = result
+
+    const sessionData = { token: accessToken, user }
     const cookie = await commitSession(sessionData)
 
     const url = new URL(request.url)
@@ -35,6 +41,13 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       }
     })
   } catch (error) {
+    // Extract error message from API response
+    if (error instanceof ApiError) {
+      const data = error.data as { error?: { message?: string; code?: string } } | null
+      const message = data?.error?.message || 'Неверный email или пароль'
+      return { error: message, code: data?.error?.code }
+    }
+
     return {
       error: error instanceof Error ? error.message : 'Неверный email или пароль'
     }

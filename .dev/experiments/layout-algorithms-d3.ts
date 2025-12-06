@@ -92,7 +92,7 @@ export const applyLayout = (nodes: Node[], edges: Edge[], options: LayoutOptions
     default:
       return forceDirectedLayout(nodes, edges, { spacingPercent, directionStrength })
   }
-};
+}
 
 interface InternalOptions {
   spacingPercent: number
@@ -141,7 +141,7 @@ const computeNodeMetrics = (nodes: D3Node[], links: D3Link[]) => {
   }
 
   return metrics
-};
+}
 
 const hashToSide = (str: string) => {
   let hash = 0
@@ -150,9 +150,12 @@ const hashToSide = (str: string) => {
     hash = hash & hash
   }
   return hash % 2 === 0 ? -1 : 1
-};
+}
 
-const forceEdgeDirection = (links: D3Link[], options: { strength: number; idealDistance: number }) => {
+const forceEdgeDirection = (
+  links: D3Link[],
+  options: { strength: number; idealDistance: number }
+) => {
   const { idealDistance } = options
   let strength = options.strength
 
@@ -190,17 +193,16 @@ const forceEdgeDirection = (links: D3Link[], options: { strength: number; idealD
         }
       }
     }
-  };
-
+  }
   // D3 force interface - strength getter/setter
   ;(force as any).strength = (s?: number) => {
-      if (s === undefined) return strength
-      strength = s
-      return force
-    }
+    if (s === undefined) return strength
+    strength = s
+    return force
+  }
 
   return force as Force<D3Node, D3Link>
-};
+}
 
 const segmentsIntersect = (
   x1: number,
@@ -219,7 +221,7 @@ const segmentsIntersect = (
   const u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / denom
 
   return t > 0.01 && t < 0.99 && u > 0.01 && u < 0.99
-};
+}
 
 const forceEdgeCrossing = (links: D3Link[], options: { strength: number }) => {
   let strength = options.strength
@@ -282,16 +284,16 @@ const forceEdgeCrossing = (links: D3Link[], options: { strength: number }) => {
         }
       }
     }
-  };
+  }
 
-  (force as any).strength = (s?: number) => {
-      if (s === undefined) return strength
-      strength = s
-      return force
-    }
+  ;(force as any).strength = (s?: number) => {
+    if (s === undefined) return strength
+    strength = s
+    return force
+  }
 
   return force as Force<D3Node, D3Link>
-};
+}
 
 const forceDirectedLayout = (nodes: Node[], edges: Edge[], options: InternalOptions) => {
   const { spacingPercent, directionStrength } = options
@@ -430,7 +432,7 @@ const forceDirectedLayout = (nodes: Node[], edges: Edge[], options: InternalOpti
   }))
 
   return { nodes: positionedNodes, edges }
-};
+}
 
 const pathLayout = (nodes: Node[], edges: Edge[], options: InternalOptions) => {
   const { spacingPercent } = options
@@ -521,7 +523,7 @@ const pathLayout = (nodes: Node[], edges: Edge[], options: InternalOptions) => {
   })
 
   return { nodes: positionedNodes, edges }
-};
+}
 
 /**
  * Get connected nodes within N levels from start node
@@ -557,11 +559,11 @@ export const getNodesWithinDepth = (startNodeId: string, edges: Edge[], depth: n
   }
 
   return connected
-};
+}
 
 /**
  * Get edges between a set of nodes
  */
 export const getEdgesBetweenNodes = (edges: Edge[], nodeIds: Set<string>) => {
   return edges.filter(e => nodeIds.has(e.source) && nodeIds.has(e.target))
-};
+}

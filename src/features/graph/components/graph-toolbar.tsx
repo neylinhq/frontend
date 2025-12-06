@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import type { RelationType } from '@/entities/edge'
 import type { NodeType } from '@/entities/node'
-import { cn } from '@/shared/lib/cn'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import { Card } from '@/shared/components/card'
@@ -16,6 +15,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/shared/components/dropdown-menu'
+import { cn } from '@/shared/lib/cn'
 import {
   ALL_EDGE_TYPES,
   ALL_NODE_TYPES,

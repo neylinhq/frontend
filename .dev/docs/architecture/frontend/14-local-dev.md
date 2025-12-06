@@ -4,8 +4,7 @@
 
 | Инструмент | Версия | Установка |
 |------------|--------|-----------|
-| Node.js | 20+ | [nodejs.org](https://nodejs.org) |
-| pnpm | 8+ | `npm install -g pnpm` |
+| Bun | 1.0+ | [bun.sh](https://bun.sh) |
 | Docker | Latest | [docker.com](https://docker.com) |
 | Git | Latest | [git-scm.com](https://git-scm.com) |
 
@@ -19,7 +18,7 @@ git clone https://github.com/your-org/neylin.git
 cd neylin/frontend
 
 # 2. Установить зависимости
-pnpm install
+bun install
 
 # 3. Скопировать env файл
 cp .env.example .env.local
@@ -28,7 +27,7 @@ cp .env.example .env.local
 docker-compose up -d
 
 # 5. Запустить dev server
-pnpm dev
+bun dev
 ```
 
 Открыть http://localhost:5173
@@ -129,35 +128,35 @@ volumes:
 
 | Команда | Описание |
 |---------|----------|
-| `pnpm dev` | Dev server с HMR |
-| `pnpm build` | Production build |
-| `pnpm preview` | Preview production build |
-| `pnpm typecheck` | TypeScript проверка |
+| `bun dev` | Dev server с HMR |
+| `bun run build` | Production build |
+| `bun run preview` | Preview production build |
+| `bun run typecheck` | TypeScript проверка |
 
 ### Linting & Formatting
 
 | Команда | Описание |
 |---------|----------|
-| `pnpm lint` | Biome lint |
-| `pnpm format` | Biome format |
-| `pnpm check` | Lint + format |
+| `bun run lint` | Biome lint |
+| `bun run format` | Biome format |
+| `bun run check` | Lint + format |
 
 ### Testing
 
 | Команда | Описание |
 |---------|----------|
-| `pnpm test` | Запустить тесты |
-| `pnpm test:watch` | Watch mode |
-| `pnpm test:coverage` | С coverage |
-| `pnpm test:e2e` | E2E тесты |
+| `bun test` | Запустить тесты |
+| `bun test --watch` | Watch mode |
+| `bun run test:coverage` | С coverage |
+| `bun run test:e2e` | E2E тесты |
 
 ### Database (если используется)
 
 | Команда | Описание |
 |---------|----------|
-| `pnpm db:migrate` | Применить миграции |
-| `pnpm db:seed` | Заполнить тестовыми данными |
-| `pnpm db:reset` | Сбросить и пересоздать |
+| `bun run db:migrate` | Применить миграции |
+| `bun run db:seed` | Заполнить тестовыми данными |
+| `bun run db:reset` | Сбросить и пересоздать |
 
 ---
 
@@ -215,15 +214,14 @@ netstat -ano | findstr :5173
 kill -9 <PID>
 ```
 
-### Node version mismatch
+### Bun version mismatch
 
 ```bash
 # Проверить версию
-node -v
+bun -v
 
-# Использовать nvm
-nvm install 20
-nvm use 20
+# Обновить bun
+bun upgrade
 ```
 
 ### Missing env variables
@@ -248,15 +246,15 @@ docker-compose up -d
 docker system prune -a
 ```
 
-### pnpm issues
+### Bun issues
 
 ```bash
 # Очистить кэш
-pnpm store prune
+bun pm cache rm
 
 # Переустановить зависимости
-rm -rf node_modules pnpm-lock.yaml
-pnpm install
+rm -rf node_modules bun.lockb
+bun install
 ```
 
 ### TypeScript errors
@@ -266,7 +264,7 @@ pnpm install
 Cmd/Ctrl + Shift + P → "TypeScript: Restart TS Server"
 
 # Или пересобрать типы
-pnpm typecheck
+bun run typecheck
 ```
 
 ---
@@ -277,8 +275,8 @@ pnpm typecheck
 
 ```bash
 # Установка
-pnpm add -D husky lint-staged
-pnpm exec husky init
+bun add -D husky lint-staged
+bunx husky init
 ```
 
 ```json
@@ -295,8 +293,8 @@ pnpm exec husky init
 
 ```bash
 # .husky/pre-commit
-pnpm lint-staged
-pnpm typecheck
+bunx lint-staged
+bun run typecheck
 ```
 
 ---

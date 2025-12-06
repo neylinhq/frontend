@@ -1,5 +1,4 @@
 import { Extension } from '@tiptap/core'
-import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight'
 import { Color } from '@tiptap/extension-color'
 import { Highlight } from '@tiptap/extension-highlight'
 import { Image } from '@tiptap/extension-image'
@@ -18,19 +17,17 @@ import { TextStyle } from '@tiptap/extension-text-style'
 import { Typography } from '@tiptap/extension-typography'
 import { Underline } from '@tiptap/extension-underline'
 import { StarterKit } from '@tiptap/starter-kit'
-import { common, createLowlight } from 'lowlight'
 
+import { BlockColor } from './block-color-extension'
 import { BlockSelection } from './block-selection-extension'
 import { Callout } from './callout-extension'
+import { CodeBlock } from './code-block-extension'
 import { Column, Columns } from './columns-extension'
 import { Details, DetailsContent, DetailsSummary } from './details-extension'
 import { ImageFigure } from './image-figure-extension'
 import { MathBlock, MathInline } from './math-extension'
 import { TableOfContents } from './toc-extension'
 import { VideoEmbed } from './video-embed-extension'
-
-// Create lowlight instance with common languages
-const lowlight = createLowlight(common)
 
 export const createExtensions = (placeholder?: string) => [
   StarterKit.configure({
@@ -103,14 +100,8 @@ export const createExtensions = (placeholder?: string) => [
   Color,
   Subscript,
   Superscript,
-  // Code block with syntax highlighting
-  CodeBlockLowlight.configure({
-    lowlight,
-    defaultLanguage: 'plaintext',
-    HTMLAttributes: {
-      class: 'editor-code-block'
-    }
-  }),
+  // Code block with syntax highlighting and language selector
+  CodeBlock,
   // Callout blocks (info, warning, success, error, tip)
   Callout,
   // Collapsible/Toggle blocks
@@ -131,6 +122,8 @@ export const createExtensions = (placeholder?: string) => [
   MathInline,
   // Block selection (triple-click highlight)
   BlockSelection,
+  // Block background colors
+  BlockColor,
   // Custom extension for keyboard shortcuts
   Extension.create({
     name: 'customKeymap',
@@ -139,6 +132,99 @@ export const createExtensions = (placeholder?: string) => [
         'Mod-Enter': () => {
           // Could be used for submitting or other actions
           return false
+        },
+        // Duplicate block (Cmd+D / Ctrl+D)
+        'Mod-d': ({ editor }) => {
+          const { state } = editor
+          const { selection } = state
+          const { $from } = selection
+
+          // Find the top-level block node
+          const depth = $from.depth
+          if (depth === 0) return false
+
+          const blockStart = $from.before(1)
+          const blockEnd = $from.after(1)
+          const blockNode = state.doc.nodeAt(blockStart)
+
+          if (!blockNode) return false
+
+          // Insert duplicate after the current block
+          editor.chain().focus().insertContentAt(blockEnd, blockNode.toJSON()).run()
+
+          return true
+        },
+        // Move block up (Alt+ArrowUp)
+        'Alt-ArrowUp': ({ editor }) => {
+          const { state } = editor
+          const { selection } = state
+          const { $from } = selection
+
+          if ($from.depth === 0) return false
+
+          const blockStart = $from.before(1)
+          if (blockStart === 0) return false // Already at top
+
+          const blockNode = state.doc.nodeAt(blockStart)
+          if (!blockNode) return false
+
+          const blockEnd = $from.after(1)
+
+          // Find previous block
+          const $prevPos = state.doc.resolve(blockStart - 1)
+          if ($prevPos.depth === 0) return false
+
+          const prevBlockStart = $prevPos.before(1)
+
+          // Delete current block and insert before previous
+          editor
+            .chain()
+            .focus()
+            .command(({ tr }) => {
+              tr.delete(blockStart, blockEnd)
+              const mappedPos = tr.mapping.map(prevBlockStart)
+              tr.insert(mappedPos, blockNode)
+              return true
+            })
+            .run()
+
+          return true
+        },
+        // Move block down (Alt+ArrowDown)
+        'Alt-ArrowDown': ({ editor }) => {
+          const { state } = editor
+          const { selection } = state
+          const { $from } = selection
+
+          if ($from.depth === 0) return false
+
+          const blockStart = $from.before(1)
+          const blockEnd = $from.after(1)
+          const blockNode = state.doc.nodeAt(blockStart)
+
+          if (!blockNode) return false
+
+          // Check if there's a next block
+          if (blockEnd >= state.doc.content.size) return false
+
+          const $nextPos = state.doc.resolve(blockEnd + 1)
+          if ($nextPos.depth === 0) return false
+
+          const nextBlockEnd = $nextPos.after(1)
+
+          // Delete current block and insert after next
+          editor
+            .chain()
+            .focus()
+            .command(({ tr }) => {
+              tr.delete(blockStart, blockEnd)
+              const mappedPos = tr.mapping.map(nextBlockEnd)
+              tr.insert(mappedPos, blockNode)
+              return true
+            })
+            .run()
+
+          return true
         }
       }
     }

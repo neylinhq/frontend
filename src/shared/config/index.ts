@@ -2,18 +2,18 @@
 export { APP_NAME, CURRENT_YEAR } from './app'
 
 // Env
-export { SESSION_SECRET, API_URL, IS_DEV, IS_PROD } from './env'
+export { API_URL, IS_DEV, IS_PROD, SESSION_SECRET } from './env'
 
 // Routes
 export {
-  ROUTES,
   AUTH_ROUTES,
   DASHBOARD_ROUTES,
-  MAPS_ROUTES,
+  DOCS_ROUTES,
   KNOWLEDGE_BASE_ROUTES,
-  SETTINGS_ROUTES,
   LEGAL_ROUTES,
-  DOCS_ROUTES
+  MAPS_ROUTES,
+  ROUTES,
+  SETTINGS_ROUTES
 } from './routes'
 
 // Settings navigation

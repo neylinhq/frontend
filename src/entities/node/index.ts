@@ -1,4 +1,6 @@
 export { getNodeIcon } from './lib/node-icon'
 export { getComplexityColor, getNodeBorderColor } from './lib/node-style'
+export type { NodeTypeConfig } from './node.constants'
+export { NODE_TYPE_CONFIGS } from './node.constants'
 export type { LightweightNode, Node, NodeMetadata, NodeType } from './node.schema'
 export { LightweightNodeSchema, NodeMetadataSchema, NodeSchema, NodeTypeEnum } from './node.schema'

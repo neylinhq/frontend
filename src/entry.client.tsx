@@ -1,13 +1,30 @@
 import { StrictMode, startTransition } from 'react'
 import { hydrateRoot } from 'react-dom/client'
-import { HydratedRouter } from 'react-router/dom' // Correct import for RR7 client entry
-import '@/app/i18n' // Init i18n
+import { HydratedRouter } from 'react-router/dom'
+import '@/app/i18n'
 
-startTransition(() => {
-  hydrateRoot(
-    document,
-    <StrictMode>
-      <HydratedRouter />
-    </StrictMode>
-  )
+const enableMocking = async () => {
+  if (import.meta.env.VITE_MOCK_API !== 'true') {
+    return
+  }
+
+  const { worker } = await import('@/shared/mocks/browser')
+
+  return worker.start({
+    onUnhandledRequest: 'bypass',
+    serviceWorker: {
+      url: '/mockServiceWorker.js'
+    }
+  })
+}
+
+enableMocking().then(() => {
+  startTransition(() => {
+    hydrateRoot(
+      document,
+      <StrictMode>
+        <HydratedRouter />
+      </StrictMode>
+    )
+  })
 })

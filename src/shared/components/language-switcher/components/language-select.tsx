@@ -1,10 +1,9 @@
 import { Check, Globe } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-
-import { cn } from '@/shared/lib/cn'
 import { Button } from '@/shared/components/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/components/popover'
+import { cn } from '@/shared/lib/cn'
 import { LANGUAGES } from '../language-switcher.constants'
 
 type LanguageSelectProps = {

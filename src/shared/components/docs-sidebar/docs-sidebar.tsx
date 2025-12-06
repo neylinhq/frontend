@@ -2,10 +2,14 @@ import { ChevronRight, type LucideIcon } from 'lucide-react'
 import * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import { NavLink } from 'react-router'
+import { Badge } from '@/shared/components/badge'
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger
+} from '@/shared/components/collapsible'
 import { cn } from '@/shared/lib/cn'
 import styles from './docs-sidebar.module.css'
-import { Badge } from '@/shared/components/badge'
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/shared/components/collapsible'
 
 export interface DocsSidebarItem {
   title: string
@@ -62,9 +66,7 @@ const DocsSidebarSectionComponent = ({ section }: { section: DocsSidebarSection 
               key={item.href}
               to={item.href}
               end={item.href === '/docs/ui'}
-              className={({ isActive }) =>
-                cn(styles.navItem, isActive && styles.navItemActive)
-              }
+              className={({ isActive }) => cn(styles.navItem, isActive && styles.navItemActive)}
             >
               <span className='flex-1 truncate'>{item.title}</span>
               {item.isNew && (

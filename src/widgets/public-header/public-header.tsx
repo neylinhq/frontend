@@ -4,13 +4,13 @@ import { useTranslation } from 'react-i18next'
 import { Link, NavLink } from 'react-router'
 import { ModeSelect } from '@/features/theme/mode-select'
 import { PaletteSelect } from '@/features/theme/palette-select'
-import { AUTH_ROUTES, ROUTES } from '@/shared/config'
-import { cn } from '@/shared/lib/cn'
 import { Button } from '@/shared/components/button'
 import { LanguageSelect } from '@/shared/components/language-switcher'
 import { Logo } from '@/shared/components/logo'
 import { Separator } from '@/shared/components/separator'
 import { Sheet, SheetContent, SheetTrigger } from '@/shared/components/sheet'
+import { AUTH_ROUTES, ROUTES } from '@/shared/config'
+import { cn } from '@/shared/lib/cn'
 
 interface PublicHeaderProps {
   hideAuthButtons?: boolean

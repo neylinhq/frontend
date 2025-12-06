@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next'
-import { getMeta } from '@/shared/lib/get-meta'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import { Checkbox } from '@/shared/components/checkbox'
@@ -10,6 +9,7 @@ import { DocsToc, type TocItem } from '@/shared/components/docs-toc'
 import { Input } from '@/shared/components/input'
 import { Label } from '@/shared/components/label'
 import { Typography } from '@/shared/components/typography'
+import { getMeta } from '@/shared/lib/get-meta'
 import type { Route } from './+types/form'
 
 export const handle = {

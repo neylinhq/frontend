@@ -1,4 +1,3 @@
-import { getMeta } from '@/shared/lib/get-meta'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
@@ -14,6 +13,7 @@ import {
   DropdownMenuTrigger
 } from '@/shared/components/dropdown-menu'
 import { Typography } from '@/shared/components/typography'
+import { getMeta } from '@/shared/lib/get-meta'
 import type { Route } from './+types/dropdown-menu'
 
 export const handle = {

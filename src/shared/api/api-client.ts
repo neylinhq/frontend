@@ -1,10 +1,26 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
-// Мы можем переиспользовать VITE_API_URL из shared/config, но пока что здесь старый код.
-// Рефакторинг api-client лучше делать отдельным шагом, чтобы не сломать типизацию ApiError.
-// Оставлю пока как есть, чтобы не трогать лишнего, но в будущем надо заменить на импорт из config.
+import { API_URL, IS_BROWSER } from '@/shared/config/env'
 
 type RequestOptions = RequestInit & {
   json?: unknown
+  skipAuth?: boolean
+  token?: string // For server-side requests
+}
+
+// Token storage key
+const TOKEN_KEY = 'auth_token'
+
+export const setAuthToken = (token: string | null) => {
+  if (!IS_BROWSER) return
+  if (token) {
+    localStorage.setItem(TOKEN_KEY, token)
+  } else {
+    localStorage.removeItem(TOKEN_KEY)
+  }
+}
+
+export const getAuthToken = (): string | null => {
+  if (!IS_BROWSER) return null
+  return localStorage.getItem(TOKEN_KEY)
 }
 
 export class ApiError extends Error {
@@ -18,13 +34,24 @@ export class ApiError extends Error {
 }
 
 const request = async <T>(endpoint: string, options: RequestOptions = {}): Promise<T> => {
-  const { json, headers, ...customOptions } = options
+  const { json, headers, skipAuth, token: serverToken, ...customOptions } = options
+
+  const requestHeaders: HeadersInit = {
+    'Content-Type': 'application/json',
+    ...headers
+  }
+
+  // Add Authorization header if token exists and skipAuth is not set
+  if (!skipAuth) {
+    // Use provided token (server-side) or get from localStorage (client-side)
+    const token = serverToken || getAuthToken()
+    if (token) {
+      ;(requestHeaders as Record<string, string>)['Authorization'] = `Bearer ${token}`
+    }
+  }
 
   const config: RequestInit = {
-    headers: {
-      'Content-Type': 'application/json',
-      ...headers
-    },
+    headers: requestHeaders,
     ...customOptions
   }
 

@@ -9,9 +9,9 @@ import {
   useNavigation,
   useRouteLoaderData
 } from 'react-router'
-import { Toaster } from 'sonner'
 import { QueryProvider } from '@/app/providers/query-provider'
 import { ThemeProvider } from '@/app/theme'
+import { Toaster } from '@/shared/components/sonner'
 import '@/shared/styles/globals.css'
 import type React from 'react'
 import { useEffect, useRef } from 'react'
@@ -193,7 +193,7 @@ const App = () => {
     <QueryProvider>
       <ThemeProvider defaultMode={themeData.mode} defaultPalette={themeData.palette}>
         <Outlet />
-        <Toaster richColors position='top-right' />
+        <Toaster />
       </ThemeProvider>
     </QueryProvider>
   )

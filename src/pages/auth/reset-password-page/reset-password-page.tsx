@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { ResetPasswordForm } from '@/features/auth/reset-password-form'
-import { AUTH_ROUTES } from '@/shared/config'
 import { Typography } from '@/shared/components/typography'
+import { AUTH_ROUTES } from '@/shared/config'
 
 export const ResetPasswordPage = () => {
   const { t } = useTranslation()

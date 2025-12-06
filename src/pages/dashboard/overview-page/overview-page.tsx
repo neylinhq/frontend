@@ -4,9 +4,9 @@ import { Link } from 'react-router'
 import type { MapEntity } from '@/entities/map'
 import { CreateMapCard } from '@/features/maps/create-map-button'
 import { MapCard } from '@/features/maps/map-card/map-card'
-import { MAPS_ROUTES } from '@/shared/config'
 import { Button } from '@/shared/components/button'
 import { Typography } from '@/shared/components/typography'
+import { MAPS_ROUTES } from '@/shared/config'
 
 interface OverviewPageProps {
   maps: MapEntity[]

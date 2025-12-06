@@ -4,10 +4,17 @@ import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useActionData, useNavigation, useSubmit } from 'react-router'
 import { z } from 'zod'
-import { AUTH_ROUTES } from '@/shared/config'
 import { Button } from '@/shared/components/button'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/components/form'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/shared/components/form'
 import { Input } from '@/shared/components/input'
+import { AUTH_ROUTES } from '@/shared/config'
 
 export const ResetPasswordForm = () => {
   const { t } = useTranslation()

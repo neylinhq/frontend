@@ -1,4 +1,5 @@
 import { useLayoutEffect, useState } from 'react'
+import type { Mode, Palette, ThemeContextState } from '@/shared/lib/theme'
 import {
   MODE_COOKIE_KEY,
   MODE_STORAGE_KEY,
@@ -6,7 +7,6 @@ import {
   PALETTE_STORAGE_KEY,
   ThemeContext
 } from '@/shared/lib/theme'
-import type { Mode, Palette, ThemeContextState } from '@/shared/lib/theme'
 
 const setCookie = (name: string, value: string) => {
   const maxAge = 60 * 60 * 24 * 365 // 1 year

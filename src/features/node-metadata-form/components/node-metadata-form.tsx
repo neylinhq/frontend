@@ -2,7 +2,14 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/shared/components/button'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/components/form'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/shared/components/form'
 import { Input } from '@/shared/components/input'
 import { Slider } from '@/shared/components/slider'
 import { type NodeMetadataFormValues, nodeMetadataFormSchema } from '../lib/validation'

@@ -2,8 +2,8 @@ import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Node } from '@/entities/map'
 import { getComplexityColor, getNodeBorderColor } from '@/entities/node'
-import { cn } from '@/shared/lib/cn'
 import { Badge } from '@/shared/components/badge'
+import { cn } from '@/shared/lib/cn'
 
 interface DrawerOverviewTabProps {
   node: Node

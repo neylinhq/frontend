@@ -15,7 +15,14 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/shared/components/dialog'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/components/form'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/shared/components/form'
 import { Input } from '@/shared/components/input'
 import { type DeleteAccountValues, deleteAccountSchema } from '../lib/validation'
 

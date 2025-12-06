@@ -2,9 +2,8 @@
 
 import { Hash, Search } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-
-import { cn } from '@/shared/lib/cn'
 import { Dialog, DialogContent, DialogTitle } from '@/shared/components/dialog'
+import { cn } from '@/shared/lib/cn'
 import type { CommandPaletteItem, CommandPaletteProps } from './command-palette.types'
 
 export const CommandPalette = <T extends CommandPaletteItem>({

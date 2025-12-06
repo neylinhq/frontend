@@ -6,10 +6,10 @@ import { useTranslation } from 'react-i18next'
 
 import type { LightweightNode } from '@/entities/node'
 import { getNodeIcon } from '@/entities/node/lib/node-icon'
-import { cn } from '@/shared/lib/cn'
-import { isMac } from '@/shared/lib/platform'
 import { Button } from '@/shared/components/button'
 import { CommandPalette, type CommandPaletteItem } from '@/shared/components/command-palette'
+import { cn } from '@/shared/lib/cn'
+import { isMac } from '@/shared/lib/platform'
 
 interface NodeSearchItem extends CommandPaletteItem {
   node: LightweightNode
@@ -41,7 +41,15 @@ const NODE_TYPE_LABELS: Record<string, string> = {
 }
 
 // Render function for node items
-const NodeSearchItemRenderer = ({ item, isSelected, t }: { item: NodeSearchItem; isSelected: boolean; t: (key: string) => string }) => {
+const NodeSearchItemRenderer = ({
+  item,
+  isSelected,
+  t
+}: {
+  item: NodeSearchItem
+  isSelected: boolean
+  t: (key: string) => string
+}) => {
   const Icon = getNodeIcon(item.node.type)
 
   return (
@@ -116,7 +124,12 @@ interface NodeSearchTriggerProps {
   variant?: 'default' | 'toolbar'
 }
 
-export const NodeSearchTrigger = ({ nodes, onSelect, className, variant = 'default' }: NodeSearchTriggerProps) => {
+export const NodeSearchTrigger = ({
+  nodes,
+  onSelect,
+  className,
+  variant = 'default'
+}: NodeSearchTriggerProps) => {
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
 

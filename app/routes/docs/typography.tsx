@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
-import { getMeta } from '@/shared/lib/get-meta'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
 import { Typography } from '@/shared/components/typography'
+import { getMeta } from '@/shared/lib/get-meta'
 import type { Route } from './+types/typography'
 
 export const meta = (_args: Route.MetaArgs) => {

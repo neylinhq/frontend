@@ -11,12 +11,16 @@ import {
 import { memo, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { LightweightNode } from '@/entities/node'
-import { cn } from '@/shared/lib/cn'
-import { isMac } from '@/shared/lib/platform'
 import { Button } from '@/shared/components/button'
 import { Card } from '@/shared/components/card'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/shared/components/dropdown-menu'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger
+} from '@/shared/components/dropdown-menu'
 import { Slider } from '@/shared/components/slider'
+import { cn } from '@/shared/lib/cn'
+import { isMac } from '@/shared/lib/platform'
 import { useGraphUI, useNodeSpacing } from '../model/graph.store'
 import { NodeSearch } from './node-search'
 

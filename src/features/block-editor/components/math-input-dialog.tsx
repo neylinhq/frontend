@@ -1,8 +1,6 @@
 import katex from 'katex'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-
-import { cn } from '@/shared/lib/cn'
 import { Button } from '@/shared/components/button'
 import {
   Dialog,
@@ -12,6 +10,8 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/shared/components/dialog'
+import { cn } from '@/shared/lib/cn'
+import { TIMING } from '../lib/constants'
 
 const escapeHtml = (text: string) => {
   return text
@@ -245,7 +245,10 @@ export const MathInputDialog = ({
       if (focusTimeoutRef.current) {
         clearTimeout(focusTimeoutRef.current)
       }
-      focusTimeoutRef.current = window.setTimeout(() => inputRef.current?.focus(), 100)
+      focusTimeoutRef.current = window.setTimeout(
+        () => inputRef.current?.focus(),
+        TIMING.FOCUS_DELAY
+      )
     }
     return () => {
       if (focusTimeoutRef.current) {

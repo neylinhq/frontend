@@ -3,88 +3,88 @@
  * @54>AB02;O5B type-safe 8=B5@D59A 4;O @01>BK A Rust WASM <>4C;5<
  */
 
-import type { Edge, Node } from '@/entities/map';
+import type { Edge, Node } from '@/entities/map'
 
 // WASM module types (1C4CB A35=5@8@>20=K wasm-pack)
 interface WasmGraphEngine {
-  initRenderer(canvas: HTMLCanvasElement): void;
-  loadGraph(jsonData: string): void;
-  exportGraph(): string;
-  runLayout(iterations?: number): void;
-  render(): void;
-  setView(panX: number, panY: number, zoom: number): void;
-  setResolution(width: number, height: number): void;
-  selectNodes(nodeIdsJson: string): void;
-  focusNode(nodeId: string | null): void;
-  getNodeCount(): number;
-  getEdgeCount(): number;
-  getStats(): string;
+  initRenderer(canvas: HTMLCanvasElement): void
+  loadGraph(jsonData: string): void
+  exportGraph(): string
+  runLayout(iterations?: number): void
+  render(): void
+  setView(panX: number, panY: number, zoom: number): void
+  setResolution(width: number, height: number): void
+  selectNodes(nodeIdsJson: string): void
+  focusNode(nodeId: string | null): void
+  getNodeCount(): number
+  getEdgeCount(): number
+  getStats(): string
 }
 
 interface WasmModule {
-  default(): Promise<any>;
-  GraphEngine: new() => WasmGraphEngine;
+  default(): Promise<any>
+  GraphEngine: new () => WasmGraphEngine
 }
 
 export interface GraphData {
-  nodes: GraphNode[];
-  edges: GraphEdge[];
+  nodes: GraphNode[]
+  edges: GraphEdge[]
 }
 
 export interface GraphNode {
-  id: string;
-  label: string;
-  description?: string;
-  node_type: string;
-  position: { x: number; y: number };
-  size?: { width: number; height: number };
+  id: string
+  label: string
+  description?: string
+  node_type: string
+  position: { x: number; y: number }
+  size?: { width: number; height: number }
 }
 
 export interface GraphEdge {
-  id: string;
-  source: string;
-  target: string;
-  relation_type: string;
-  label?: string;
-  strength: number;
-  bidirectional: boolean;
+  id: string
+  source: string
+  target: string
+  relation_type: string
+  label?: string
+  strength: number
+  bidirectional: boolean
 }
 
 export interface GraphStats {
-  nodes: number;
-  edges: number;
-  nodesRendered: number;
-  edgesRendered: number;
+  nodes: number
+  edges: number
+  nodesRendered: number
+  edgesRendered: number
 }
 
 /**
  * TypeScript wrapper 4;O WASM GraphEngine
  */
 export class GraphEngine {
-  private wasmEngine: WasmGraphEngine | null = null;
-  private wasmModule: WasmModule | null = null;
-  private canvas: HTMLCanvasElement | null = null;
+  private wasmEngine: WasmGraphEngine | null = null
+  private wasmModule: WasmModule | null = null
+  private canvas: HTMLCanvasElement | null = null
 
   async init(canvas: HTMLCanvasElement): Promise<void> {
-    this.canvas = canvas;
+    this.canvas = canvas
 
     try {
       // 8=0<8G5A:89 8<?>@B WASM <>4C;O
-      // @ts-ignore - WASM module path resolved via Vite alias
-      const wasm = await import('@/lib/wasm/graph_engine.js');
+      // @ts-expect-error - WASM module path resolved via Vite alias
+      const wasm = await import('@/lib/wasm/graph_engine.js')
 
       // =8F80;870F8O WASM
-      await wasm.default();
-      this.wasmModule = wasm;
+      await wasm.default()
+      this.wasmModule = wasm
 
       // !>740=85 M:75<?;O@0 4286:0
-      this.wasmEngine = new wasm.GraphEngine();
-      this.wasmEngine.initRenderer(canvas);
+      this.wasmEngine = new wasm.GraphEngine()
+      this.wasmEngine.initRenderer(canvas)
 
-      console.log('[GraphEngine] WASM engine initialized');
+      console.log('[GraphEngine] WASM engine initialized')
     } catch (error) {
-      console.error('[GraphEngine] Failed to initialize WASM:', error);
-      throw new Error(`Failed to initialize WASM engine: ${error}`);
+      console.error('[GraphEngine] Failed to initialize WASM:', error)
+      throw new Error(`Failed to initialize WASM engine: ${error}`)
     }
   }
 
@@ -93,15 +93,15 @@ export class GraphEngine {
    */
   loadGraph(nodes: Node[], edges: Edge[]): void {
     if (!this.wasmEngine) {
-      throw new Error('Engine not initialized');
+      throw new Error('Engine not initialized')
     }
 
     const graphData: GraphData = {
       nodes: nodes.map(node => this.transformNode(node)),
-      edges: edges.map(edge => this.transformEdge(edge)),
-    };
+      edges: edges.map(edge => this.transformEdge(edge))
+    }
 
-    this.wasmEngine.loadGraph(JSON.stringify(graphData));
+    this.wasmEngine.loadGraph(JSON.stringify(graphData))
   }
 
   /**
@@ -109,10 +109,10 @@ export class GraphEngine {
    */
   runLayout(iterations: number = 150): void {
     if (!this.wasmEngine) {
-      throw new Error('Engine not initialized');
+      throw new Error('Engine not initialized')
     }
 
-    this.wasmEngine.runLayout(iterations);
+    this.wasmEngine.runLayout(iterations)
   }
 
   /**
@@ -120,10 +120,10 @@ export class GraphEngine {
    */
   render(): void {
     if (!this.wasmEngine) {
-      throw new Error('Engine not initialized');
+      throw new Error('Engine not initialized')
     }
 
-    this.wasmEngine.render();
+    this.wasmEngine.render()
   }
 
   /**
@@ -131,10 +131,10 @@ export class GraphEngine {
    */
   setView(panX: number, panY: number, zoom: number): void {
     if (!this.wasmEngine) {
-      throw new Error('Engine not initialized');
+      throw new Error('Engine not initialized')
     }
 
-    this.wasmEngine.setView(panX, panY, zoom);
+    this.wasmEngine.setView(panX, panY, zoom)
   }
 
   /**
@@ -142,10 +142,10 @@ export class GraphEngine {
    */
   setResolution(width: number, height: number): void {
     if (!this.wasmEngine) {
-      throw new Error('Engine not initialized');
+      throw new Error('Engine not initialized')
     }
 
-    this.wasmEngine.setResolution(width, height);
+    this.wasmEngine.setResolution(width, height)
   }
 
   /**
@@ -153,10 +153,10 @@ export class GraphEngine {
    */
   selectNodes(nodeIds: string[]): void {
     if (!this.wasmEngine) {
-      throw new Error('Engine not initialized');
+      throw new Error('Engine not initialized')
     }
 
-    this.wasmEngine.selectNodes(JSON.stringify(nodeIds));
+    this.wasmEngine.selectNodes(JSON.stringify(nodeIds))
   }
 
   /**
@@ -164,10 +164,10 @@ export class GraphEngine {
    */
   focusNode(nodeId: string | null): void {
     if (!this.wasmEngine) {
-      throw new Error('Engine not initialized');
+      throw new Error('Engine not initialized')
     }
 
-    this.wasmEngine.focusNode(nodeId);
+    this.wasmEngine.focusNode(nodeId)
   }
 
   /**
@@ -175,11 +175,11 @@ export class GraphEngine {
    */
   getStats(): GraphStats {
     if (!this.wasmEngine) {
-      throw new Error('Engine not initialized');
+      throw new Error('Engine not initialized')
     }
 
-    const statsJson = this.wasmEngine.getStats();
-    return JSON.parse(statsJson);
+    const statsJson = this.wasmEngine.getStats()
+    return JSON.parse(statsJson)
   }
 
   /**
@@ -187,20 +187,20 @@ export class GraphEngine {
    */
   exportGraph(): GraphData {
     if (!this.wasmEngine) {
-      throw new Error('Engine not initialized');
+      throw new Error('Engine not initialized')
     }
 
-    const graphJson = this.wasmEngine.exportGraph();
-    return JSON.parse(graphJson);
+    const graphJson = this.wasmEngine.exportGraph()
+    return JSON.parse(graphJson)
   }
 
   /**
    * G8AB:0 @5AC@A>2
    */
   dispose(): void {
-    this.wasmEngine = null;
-    this.wasmModule = null;
-    this.canvas = null;
+    this.wasmEngine = null
+    this.wasmModule = null
+    this.canvas = null
   }
 
   // === Private helpers ===
@@ -212,8 +212,8 @@ export class GraphEngine {
       description: node.description,
       node_type: node.type, // Already in kebab-case format
       position: node.position,
-      size: { width: 180, height: 100 },
-    };
+      size: { width: 180, height: 100 }
+    }
   }
 
   private transformEdge(edge: Edge): GraphEdge {
@@ -224,39 +224,39 @@ export class GraphEngine {
       relation_type: edge.relationType,
       label: edge.label,
       strength: edge.strength || 0.5,
-      bidirectional: edge.bidirectional || false,
-    };
+      bidirectional: edge.bidirectional || false
+    }
   }
 
   private mapNodeType(type: string): string {
     // 0??8=3 TypeScript B8?>2 2 Rust enum (kebab-case)
     const typeMap: Record<string, string> = {
-      'Concept': 'concept',
-      'Fact': 'fact',
-      'Theory': 'theory',
-      'Example': 'example',
-      'Question': 'question',
-      'Hypothesis': 'hypothesis',
-      'Person': 'person',
-      'School': 'school',
-    };
-    return typeMap[type] || 'concept';
+      Concept: 'concept',
+      Fact: 'fact',
+      Theory: 'theory',
+      Example: 'example',
+      Question: 'question',
+      Hypothesis: 'hypothesis',
+      Person: 'person',
+      School: 'school'
+    }
+    return typeMap[type] || 'concept'
   }
 
   private mapRelationType(type: string): string {
     // 0??8=3 TypeScript B8?>2 2 Rust enum (kebab-case)
     const typeMap: Record<string, string> = {
-      'IsA': 'is-a',
-      'HasA': 'has-a',
-      'Causes': 'causes',
-      'Explains': 'explains',
-      'RelatedTo': 'related-to',
-      'Influences': 'influences',
-      'PartOf': 'part-of',
-      'Prerequisite': 'prerequisite',
-      'Contradicts': 'contradicts',
-      'SimilarTo': 'similar-to',
-    };
-    return typeMap[type] || 'related-to';
+      IsA: 'is-a',
+      HasA: 'has-a',
+      Causes: 'causes',
+      Explains: 'explains',
+      RelatedTo: 'related-to',
+      Influences: 'influences',
+      PartOf: 'part-of',
+      Prerequisite: 'prerequisite',
+      Contradicts: 'contradicts',
+      SimilarTo: 'similar-to'
+    }
+    return typeMap[type] || 'related-to'
   }
 }

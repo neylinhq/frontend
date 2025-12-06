@@ -1,5 +1,5 @@
-import { NodeViewContent, NodeViewWrapper, type NodeViewProps } from '@tiptap/react'
-import { Info, AlertTriangle, CheckCircle, XCircle, Lightbulb } from 'lucide-react'
+import { NodeViewContent, type NodeViewProps, NodeViewWrapper } from '@tiptap/react'
+import { AlertTriangle, CheckCircle, Info, Lightbulb, XCircle } from 'lucide-react'
 import type { CalloutType } from '../lib/callout-extension'
 
 const CALLOUT_ICONS: Record<CalloutType, React.ComponentType<{ className?: string }>> = {

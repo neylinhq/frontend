@@ -1,1 +1,1 @@
-export { FlagRU, FlagDE, FlagUS } from './icon'
+export { FlagDE, FlagRU, FlagUS } from './icon'

@@ -57,10 +57,10 @@ export default defineConfig({
 
 ```bash
 # Визуализация bundle
-pnpm build && npx vite-bundle-visualizer
+bun run build && bunx vite-bundle-visualizer
 
 # Или через rollup plugin
-pnpm add -D rollup-plugin-visualizer
+bun add -D rollup-plugin-visualizer
 ```
 
 ---

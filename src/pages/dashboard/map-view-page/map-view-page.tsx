@@ -1,4 +1,6 @@
 import type { FullMap } from '@/entities/map'
+import { QuickAddDialog, useNodeCreationStore } from '@/features/node-creation'
+import { useKeyboardShortcut } from '@/shared/hooks/use-keyboard-shortcut'
 import { GraphView } from '@/widgets/graph-view'
 
 interface MapViewPageProps {
@@ -7,9 +9,16 @@ interface MapViewPageProps {
 }
 
 export const MapViewPage = ({ map, mapId }: MapViewPageProps) => {
+  const { openQuickAdd } = useNodeCreationStore()
+
+  // Keyboard shortcut: Cmd+N (Mac) or Ctrl+N (Windows/Linux)
+  useKeyboardShortcut({ key: 'n', meta: true }, openQuickAdd)
+  useKeyboardShortcut({ key: 'n', ctrl: true }, openQuickAdd)
+
   return (
     <div className='h-[calc(100vh-3.5rem)]'>
       <GraphView mapId={mapId} initialData={map} className='h-full w-full' interactive={true} />
+      <QuickAddDialog />
     </div>
   )
 }

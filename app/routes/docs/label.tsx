@@ -1,4 +1,3 @@
-import { getMeta } from '@/shared/lib/get-meta'
 import { Badge } from '@/shared/components/badge'
 import { Checkbox } from '@/shared/components/checkbox'
 import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
@@ -8,6 +7,7 @@ import { DocsToc, type TocItem } from '@/shared/components/docs-toc'
 import { Input } from '@/shared/components/input'
 import { Label } from '@/shared/components/label'
 import { Typography } from '@/shared/components/typography'
+import { getMeta } from '@/shared/lib/get-meta'
 import type { Route } from './+types/label'
 
 export const handle = {

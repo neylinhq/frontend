@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
-import { useSessionStore } from './session.store'
 import { sessionApi } from './session.api'
+import { useSessionStore } from './session.store'
 
 export const useLoginMutation = () => {
   const login = useSessionStore(s => s.login)

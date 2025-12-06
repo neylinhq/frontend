@@ -1,4 +1,13 @@
 // Public API exports
+
+// Crypto utilities
+export {
+  copyToClipboard,
+  getCurrencyDisplayName,
+  getNetworkDisplayName,
+  isValidWalletAddress,
+  shortenWalletAddress
+} from './lib/crypto-utils'
 export { subscriptionApi } from './subscription.api'
 export {
   subscriptionKeys,

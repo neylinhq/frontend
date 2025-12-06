@@ -24,10 +24,9 @@ import {
   useUpdateNodePosition,
   useUpdateNodePositions
 } from '@/entities/map'
-import { cn } from '@/shared/lib/cn'
-import { NodeDrawer } from './node-drawer'
-import { useDarkMode } from '@/shared/hooks'
 import { Card } from '@/shared/components/card'
+import { useDarkMode } from '@/shared/hooks'
+import { cn } from '@/shared/lib/cn'
 import { applyLayout } from '../lib/layout-algorithms-optimized'
 import { transformEdgesToFlow, transformNodesToFlow } from '../lib/transform-data'
 import {
@@ -38,15 +37,16 @@ import {
   useNodeSpacing,
   useViewMode
 } from '../model/graph.store'
-import { useLayoutHistory } from '../model/layout-history.store'
 import { useGraphControls } from '../model/graph-controls.hooks'
 import { useFilteredGraphData } from '../model/graph-data.hooks'
 import { useGraphKeyboard } from '../model/graph-keyboard.hooks'
 import { easeOutCubic, useAnimatedLayout } from '../model/graph-layout.hooks'
+import { useLayoutHistory } from '../model/layout-history.store'
 import { useNodeSelection } from '../model/node-selection.hooks'
 import { GraphToolbar } from './graph-toolbar'
 import { KnowledgeEdge } from './knowledge-edge'
 import { KnowledgeNode } from './knowledge-node'
+import { NodeDrawer } from './node-drawer'
 import { ViewControlsPanel } from './view-controls-panel'
 
 const nodeTypes = {
@@ -295,7 +295,17 @@ const GraphVisualizationContent = ({
         }
       }
     },
-    [reactFlowNodes, reactFlowEdges, setNodes, fitView, setCenter, viewportZoom, animateToPositions, updatePositionsMutation, saveSnapshot]
+    [
+      reactFlowNodes,
+      reactFlowEdges,
+      setNodes,
+      fitView,
+      setCenter,
+      viewportZoom,
+      animateToPositions,
+      updatePositionsMutation,
+      saveSnapshot
+    ]
   )
 
   // Apply initial layout when nodes are first loaded
@@ -590,9 +600,7 @@ const GraphVisualizationContent = ({
     <div
       className={cn(
         'relative bg-background',
-        controls.isFullscreen
-          ? 'fixed inset-0 z-50 !w-screen !h-screen'
-          : 'h-full w-full',
+        controls.isFullscreen ? 'fixed inset-0 z-50 !w-screen !h-screen' : 'h-full w-full',
         className
       )}
     >
@@ -642,7 +650,10 @@ const GraphVisualizationContent = ({
             pannable
             zoomable
             onClick={(_event, position) =>
-              setCenter(position.x, position.y, { zoom: viewportZoom, duration: layoutParamsRef.current.animationDuration })
+              setCenter(position.x, position.y, {
+                zoom: viewportZoom,
+                duration: layoutParamsRef.current.animationDuration
+              })
             }
           />
         )}

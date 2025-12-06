@@ -11,7 +11,8 @@
       "orDivider": "или",
       "githubButton": "GitHub",
       "noAccount": "Нет аккаунта?",
-      "signUpLink": "Регистрация"
+      "signUpLink": "Регистрация",
+      "error": "Не удалось войти"
     },
     "signUp": {
       "title": "Создать аккаунт",
@@ -25,7 +26,8 @@
       "consent": "Регистрируясь, вы соглашаетесь с",
       "termsLink": "Условиями",
       "and": "и",
-      "privacyLink": "Политикой"
+      "privacyLink": "Политикой",
+      "error": "Не удалось создать аккаунт"
     },
     "resetPassword": {
       "title": "Сброс пароля",
@@ -623,6 +625,48 @@
     "person": "Персона",
     "school": "Школа"
   },
+  "colors": {
+    "default": "По умолчанию",
+    "gray": "Серый",
+    "brown": "Коричневый",
+    "orange": "Оранжевый",
+    "yellow": "Жёлтый",
+    "green": "Зелёный",
+    "blue": "Синий",
+    "purple": "Фиолетовый",
+    "pink": "Розовый",
+    "red": "Красный"
+  },
+  "languages": {
+    "plaintext": "Простой текст",
+    "javascript": "JavaScript",
+    "typescript": "TypeScript",
+    "python": "Python",
+    "java": "Java",
+    "csharp": "C#",
+    "cpp": "C++",
+    "c": "C",
+    "go": "Go",
+    "rust": "Rust",
+    "ruby": "Ruby",
+    "php": "PHP",
+    "swift": "Swift",
+    "kotlin": "Kotlin",
+    "scala": "Scala",
+    "html": "HTML",
+    "css": "CSS",
+    "scss": "SCSS",
+    "json": "JSON",
+    "yaml": "YAML",
+    "xml": "XML",
+    "markdown": "Markdown",
+    "sql": "SQL",
+    "graphql": "GraphQL",
+    "bash": "Bash",
+    "powershell": "PowerShell",
+    "dockerfile": "Dockerfile",
+    "latex": "LaTeX"
+  },
   "editor": {
     "floating": {
       "addBlock": "Добавить блок",
@@ -755,6 +799,11 @@
       "superscript": "Верхний индекс",
       "link": "Ссылка",
       "math": "Вставить формулу",
+      "undo": "Отменить",
+      "redo": "Повторить",
+      "turnInto": "Превратить в",
+      "moreOptions": "Дополнительные действия",
+      "blockBackground": "Фон блока",
       "blockTypes": {
         "text": "Текст",
         "heading1": "Заголовок 1",
@@ -767,7 +816,11 @@
       },
       "more": {
         "copy": "Копировать",
-        "delete": "Удалить"
+        "copyMarkdown": "Копировать как Markdown",
+        "delete": "Удалить",
+        "copied": "Скопировано в буфер обмена",
+        "copiedMarkdown": "Скопировано как Markdown",
+        "copyFailed": "Не удалось скопировать"
       }
     },
     "math": {
@@ -816,6 +869,37 @@
     },
     "announcements": {
       "blockInserted": "{{block}} вставлен"
+    },
+    "codeBlock": {
+      "copy": "Копировать",
+      "copied": "Код скопирован в буфер обмена",
+      "searchLanguage": "Поиск языка...",
+      "noResults": "Языки не найдены"
+    },
+    "shortcuts": {
+      "title": "Горячие клавиши",
+      "categories": {
+        "textFormatting": "Форматирование текста",
+        "paragraphs": "Абзацы",
+        "general": "Общие"
+      },
+      "bold": "Жирный",
+      "italic": "Курсив",
+      "underline": "Подчёркнутый",
+      "strikethrough": "Зачёркнутый",
+      "inlineCode": "Код в строке",
+      "highlight": "Выделение",
+      "heading1": "Заголовок 1",
+      "heading2": "Заголовок 2",
+      "heading3": "Заголовок 3",
+      "orderedList": "Нумерованный список",
+      "bulletList": "Маркированный список",
+      "taskList": "Список задач",
+      "openMenu": "Открыть меню блоков",
+      "undo": "Отменить",
+      "redo": "Повторить",
+      "selectAll": "Выделить всё",
+      "commands": "Команды"
     }
   },
   "form": {

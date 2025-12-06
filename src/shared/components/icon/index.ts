@@ -1,24 +1,20 @@
 export type { IconData, IconProps } from './icon'
 export { Icon } from './icon'
-
 // Payment brand icons
-export {
-  visaIcon,
-  mastercardIcon,
-  amexIcon,
-  discoverIcon,
-  dinersIcon,
-  jcbIcon,
-  unionpayIcon,
-  paymentBrandIcons
-} from './icon.constants'
-
 // Crypto icons
 export {
+  amexIcon,
   btcIcon,
+  cryptoIcons,
+  dinersIcon,
+  discoverIcon,
   ethIcon,
-  usdtIcon,
-  usdcIcon,
+  jcbIcon,
+  mastercardIcon,
+  paymentBrandIcons,
   solIcon,
-  cryptoIcons
+  unionpayIcon,
+  usdcIcon,
+  usdtIcon,
+  visaIcon
 } from './icon.constants'

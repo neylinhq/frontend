@@ -8,7 +8,13 @@ import {
 } from '@/entities/user'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
 import { Label } from '@/shared/components/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/shared/components/select'
 import { Switch } from '@/shared/components/switch'
 import { Typography } from '@/shared/components/typography'
 import {

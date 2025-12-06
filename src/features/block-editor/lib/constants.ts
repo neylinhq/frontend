@@ -1,0 +1,52 @@
+/**
+ * Block Editor Constants
+ *
+ * Centralized configuration for dimensions, timings, and thresholds.
+ * Follows Design Manifesto guidelines for consistent UX.
+ */
+
+/**
+ * Menu dimensions (in pixels)
+ */
+export const MENU = {
+  /** Slash menu height */
+  SLASH_HEIGHT: 400,
+  /** Slash menu width */
+  SLASH_WIDTH: 320,
+  /** Bubble menu height */
+  BUBBLE_HEIGHT: 44,
+  /** Bubble menu minimum width */
+  BUBBLE_MIN_WIDTH: 400,
+  /** Viewport padding for menu positioning */
+  VIEWPORT_PADDING: 8
+} as const
+
+/**
+ * Hover and interaction thresholds (in pixels)
+ */
+export const THRESHOLD = {
+  /** Pixels threshold for block hover detection */
+  BLOCK_HOVER: 5,
+  /** Extended hover grace area for keeping menu visible */
+  HOVER_GRACE: 10,
+  /** Left zone for triggering block nesting on drag */
+  NEST_ZONE: 40
+} as const
+
+/**
+ * Animation and timing constants (in milliseconds)
+ */
+export const TIMING = {
+  /** Delay before focusing input in dialogs (allows for animation) */
+  FOCUS_DELAY: 100,
+  /** Menu entrance/exit animation duration (Design Manifesto: 200-300ms) */
+  MENU_ANIMATION: 200
+} as const
+
+/**
+ * Table of Contents configuration
+ */
+export const TOC = {
+  /** Scroll offset when clicking TOC item (negative = above target) */
+  SCROLL_OFFSET: -100
+} as const

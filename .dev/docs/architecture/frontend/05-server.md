@@ -140,8 +140,8 @@ pages/dashboard/overview-page/
 
 Если не уверены, попадёт ли код в client bundle:
 
-1. **Build приложение**: `pnpm build`
-2. **Проверьте размер bundle**: `pnpm analyze` (если есть)
+1. **Build приложение**: `bun run build`
+2. **Проверьте размер bundle**: `bun run analyze` (если есть)
 3. **Поищите в output**: `grep -r "requireAuth" .output/client`
 
 Серверный код НЕ должен появиться в client output.

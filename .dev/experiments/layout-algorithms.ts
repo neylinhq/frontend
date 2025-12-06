@@ -64,7 +64,7 @@ export const applyLayout = (nodes: Node[], edges: Edge[], options: LayoutOptions
     default:
       return forceDirectedLayout(nodes, edges, internalOptions)
   }
-};
+}
 
 interface InternalLayoutOptions {
   nodeSpacing: number
@@ -195,7 +195,7 @@ const forceDirectedLayout = (nodes: Node[], edges: Edge[], options: InternalLayo
   })
 
   return { nodes: positionedNodes, edges }
-};
+}
 
 const pathLayout = (nodes: Node[], edges: Edge[], options: InternalLayoutOptions) => {
   const { nodeSpacing, levelSpacing } = options
@@ -283,7 +283,7 @@ const pathLayout = (nodes: Node[], edges: Edge[], options: InternalLayoutOptions
   })
 
   return { nodes: positionedNodes, edges }
-};
+}
 
 /**
  * Get connected nodes within N levels from start node
@@ -319,11 +319,11 @@ export const getNodesWithinDepth = (startNodeId: string, edges: Edge[], depth: n
   }
 
   return connected
-};
+}
 
 /**
  * Get edges between a set of nodes
  */
 export const getEdgesBetweenNodes = (edges: Edge[], nodeIds: Set<string>) => {
   return edges.filter(e => nodeIds.has(e.source) && nodeIds.has(e.target))
-};
+}

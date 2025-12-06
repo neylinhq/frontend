@@ -1,4 +1,3 @@
-import { getMeta } from '@/shared/lib/get-meta'
 import { Badge } from '@/shared/components/badge'
 import {
   ContextMenu,
@@ -13,6 +12,7 @@ import { DocsCodeBlock } from '@/shared/components/docs-code-block'
 import { DocsComponentPreview, DocsPreview } from '@/shared/components/docs-component-preview'
 import { DocsToc, type TocItem } from '@/shared/components/docs-toc'
 import { Typography } from '@/shared/components/typography'
+import { getMeta } from '@/shared/lib/get-meta'
 import type { Route } from './+types/context-menu'
 
 export const handle = {

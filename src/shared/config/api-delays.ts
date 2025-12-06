@@ -66,7 +66,8 @@ export const UI_DELAYS = {
   // Block Editor
   EDITOR_MENU_HIDE: 100,
   EDITOR_THROTTLE: 16, // ~60fps
-  EDITOR_GHOST_CLEANUP: 500
+  EDITOR_GHOST_CLEANUP: 500,
+  EDITOR_DROP_FEEDBACK: 500
 } as const
 
 /**

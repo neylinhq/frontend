@@ -59,13 +59,13 @@ function Component() { this.state = ... }  // если нужен this (очен
 
 ```bash
 # Форматирование
-pnpm biome format --write .
+bun biome format --write .
 
 # Линтинг
-pnpm biome lint .
+bun biome lint .
 
 # Всё вместе (format + lint)
-pnpm biome check --write .
+bun biome check --write .
 ```
 
 ---

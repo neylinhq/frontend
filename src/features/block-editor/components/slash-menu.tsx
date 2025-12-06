@@ -151,7 +151,7 @@ export const SlashMenu = forwardRef<SlashMenuRef, SlashMenuProps>(({ items, comm
   let globalIndex = 0
 
   return (
-    <div className='z-50 max-h-[400px] min-w-[320px] overflow-y-auto rounded-xl border border-border bg-popover p-2 shadow-xl'>
+    <div className='z-50 max-h-[400px] min-w-[320px] overflow-y-auto rounded-xl border border-border bg-popover p-2 shadow-xl animate-menu-in'>
       {sortedCategories.map((category, categoryIndex) => {
         const categoryItems = groupedItems[category]
         return (

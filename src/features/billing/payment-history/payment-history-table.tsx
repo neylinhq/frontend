@@ -4,7 +4,14 @@ import type { PaymentHistory } from '@/entities/subscription'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/components/table'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/shared/components/table'
 
 interface PaymentHistoryTableProps {
   payments: PaymentHistory[]

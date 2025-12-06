@@ -132,7 +132,13 @@ const ColorCard = ({ name, var: cssVar, desc }: ColorItem) => (
   </Card>
 )
 
-const ColorSection = ({ title, description, colors, columns = 3, isFirst = false }: ColorSectionData & { isFirst?: boolean }) => {
+const ColorSection = ({
+  title,
+  description,
+  colors,
+  columns = 3,
+  isFirst = false
+}: ColorSectionData & { isFirst?: boolean }) => {
   const gridCols = {
     2: 'lg:grid-cols-2',
     3: 'lg:grid-cols-3',
@@ -164,7 +170,9 @@ const UsageSection = () => (
       </CardHeader>
       <CardContent className='space-y-4'>
         <div>
-          <Typography variant='small' className='mb-2'>Tailwind CSS:</Typography>
+          <Typography variant='small' className='mb-2'>
+            Tailwind CSS:
+          </Typography>
           <pre className='rounded-lg bg-muted p-4 overflow-x-auto'>
             <code className='text-sm'>{`<div className="bg-primary text-primary-foreground">
   Primary content
@@ -172,7 +180,9 @@ const UsageSection = () => (
           </pre>
         </div>
         <div>
-          <Typography variant='small' className='mb-2'>Inline CSS:</Typography>
+          <Typography variant='small' className='mb-2'>
+            Inline CSS:
+          </Typography>
           <pre className='rounded-lg bg-muted p-4 overflow-x-auto'>
             <code className='text-sm'>{`<div style={{ color: 'hsl(var(--primary))' }}>
   Custom color

@@ -322,7 +322,7 @@ export default defineConfig({
 
 ```bash
 # Playwright для visual tests
-pnpm playwright test --project=visual
+bunx playwright test --project=visual
 ```
 
 ```ts
@@ -385,14 +385,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v2
-      - uses: actions/setup-node@v4
+      - uses: oven-sh/setup-bun@v2
         with:
-          node-version: 20
-          cache: 'pnpm'
+          bun-version: latest
 
-      - run: pnpm install
-      - run: pnpm test:coverage
+      - run: bun install
+      - run: bun run test:coverage
 
       - name: Upload coverage
         uses: codecov/codecov-action@v3

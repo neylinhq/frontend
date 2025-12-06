@@ -13,7 +13,10 @@ import {
 } from '@/entities/subscription'
 import { AddPaymentMethodDialog } from '@/features/billing/add-payment-method'
 import { PaymentHistoryTable } from '@/features/billing/payment-history'
-import { PaymentMethodCard, PaymentMethodDetailsDialog } from '@/features/billing/payment-method-card'
+import {
+  PaymentMethodCard,
+  PaymentMethodDetailsDialog
+} from '@/features/billing/payment-method-card'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
 import { Typography } from '@/shared/components/typography'
 

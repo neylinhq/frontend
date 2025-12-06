@@ -1,9 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import { Link, useFetcher } from 'react-router'
+import { useSessionStore } from '@/entities/session'
 import { ModeSelect } from '@/features/theme/mode-select'
 import { PaletteSelect } from '@/features/theme/palette-select'
-import { useSessionStore } from '@/entities/session'
-import { getShortcut } from '@/shared/lib/platform'
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/components/avatar'
 import { Button } from '@/shared/components/button'
 import {
@@ -17,6 +16,7 @@ import {
   DropdownMenuTrigger
 } from '@/shared/components/dropdown-menu'
 import { LanguageSelect } from '@/shared/components/language-switcher'
+import { getShortcut } from '@/shared/lib/platform'
 import { USER_NAV_LOGOUT_ITEM, USER_NAV_MAIN_SECTION } from './user-nav.constants'
 
 export const UserNav = () => {

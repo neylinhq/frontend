@@ -1,8 +1,8 @@
 import { BookOpen, Package } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Outlet } from 'react-router'
-import { DocsLayout } from '@/widgets/docs-layout'
 import { DocsSidebar, type DocsSidebarSection } from '@/shared/components/docs-sidebar'
+import { DocsLayout } from '@/widgets/docs-layout'
 
 // Bypass PublicLayout - DocsLayout handles its own header
 export const handle = {

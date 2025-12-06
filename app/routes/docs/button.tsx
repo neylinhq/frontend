@@ -1,6 +1,5 @@
 import { ChevronRight, Loader2, Mail } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { getMeta } from '@/shared/lib/get-meta'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
@@ -8,6 +7,7 @@ import { DocsCodeBlock } from '@/shared/components/docs-code-block'
 import { DocsComponentPreview, DocsPreview } from '@/shared/components/docs-component-preview'
 import { DocsToc, type TocItem } from '@/shared/components/docs-toc'
 import { Typography } from '@/shared/components/typography'
+import { getMeta } from '@/shared/lib/get-meta'
 import type { Route } from './+types/button'
 
 export const handle = {

@@ -11,7 +11,8 @@
       "orDivider": "or",
       "githubButton": "GitHub",
       "noAccount": "Don't have an account?",
-      "signUpLink": "Sign up"
+      "signUpLink": "Sign up",
+      "error": "Sign in failed"
     },
     "signUp": {
       "title": "Create an account",
@@ -25,7 +26,8 @@
       "consent": "By signing up, you agree to our",
       "termsLink": "Terms",
       "and": "and",
-      "privacyLink": "Privacy"
+      "privacyLink": "Privacy",
+      "error": "Could not create account"
     },
     "resetPassword": {
       "title": "Reset password",
@@ -74,6 +76,8 @@
     "saved": "Saved",
     "saving": "Saving...",
     "cancel": "Cancel",
+    "create": "Create",
+    "creating": "Creating...",
     "edit": "Edit",
     "enable": "On",
     "disable": "Off",
@@ -81,6 +85,17 @@
     "deleting": "Deleting...",
     "comingSoon": "Coming Soon",
     "remove": "Remove"
+  },
+  "nodeCreation": {
+    "quickAdd": {
+      "title": "Quick Add Node",
+      "description": "Type a name and optional /type to quickly create a node",
+      "placeholder": "Node name /type",
+      "typeSuggestions": "Type suggestions"
+    },
+    "success": "Node created",
+    "created": "Created \"{{label}}\"",
+    "error": "Failed to create node"
   },
   "home": {
     "tagline": "Visualize and structure your knowledge with interactive cognitive maps. Create, connect, and explore your ideas in an intuitive graph-based workspace.",
@@ -597,6 +612,48 @@
     "person": "Person",
     "school": "School"
   },
+  "colors": {
+    "default": "Default",
+    "gray": "Gray",
+    "brown": "Brown",
+    "orange": "Orange",
+    "yellow": "Yellow",
+    "green": "Green",
+    "blue": "Blue",
+    "purple": "Purple",
+    "pink": "Pink",
+    "red": "Red"
+  },
+  "languages": {
+    "plaintext": "Plain Text",
+    "javascript": "JavaScript",
+    "typescript": "TypeScript",
+    "python": "Python",
+    "java": "Java",
+    "csharp": "C#",
+    "cpp": "C++",
+    "c": "C",
+    "go": "Go",
+    "rust": "Rust",
+    "ruby": "Ruby",
+    "php": "PHP",
+    "swift": "Swift",
+    "kotlin": "Kotlin",
+    "scala": "Scala",
+    "html": "HTML",
+    "css": "CSS",
+    "scss": "SCSS",
+    "json": "JSON",
+    "yaml": "YAML",
+    "xml": "XML",
+    "markdown": "Markdown",
+    "sql": "SQL",
+    "graphql": "GraphQL",
+    "bash": "Bash",
+    "powershell": "PowerShell",
+    "dockerfile": "Dockerfile",
+    "latex": "LaTeX"
+  },
   "editor": {
     "floating": {
       "addBlock": "Add block",
@@ -729,6 +786,11 @@
       "superscript": "Superscript",
       "link": "Link",
       "math": "Insert math formula",
+      "undo": "Undo",
+      "redo": "Redo",
+      "turnInto": "Turn into",
+      "moreOptions": "More options",
+      "blockBackground": "Block background",
       "blockTypes": {
         "text": "Text",
         "heading1": "Heading 1",
@@ -741,7 +803,11 @@
       },
       "more": {
         "copy": "Copy",
-        "delete": "Delete"
+        "copyMarkdown": "Copy as Markdown",
+        "delete": "Delete",
+        "copied": "Copied to clipboard",
+        "copiedMarkdown": "Copied as Markdown",
+        "copyFailed": "Failed to copy"
       }
     },
     "math": {
@@ -790,6 +856,37 @@
     },
     "announcements": {
       "blockInserted": "{{block}} inserted"
+    },
+    "codeBlock": {
+      "copy": "Copy",
+      "copied": "Code copied to clipboard",
+      "searchLanguage": "Search language...",
+      "noResults": "No languages found"
+    },
+    "shortcuts": {
+      "title": "Keyboard Shortcuts",
+      "categories": {
+        "textFormatting": "Text Formatting",
+        "paragraphs": "Paragraphs",
+        "general": "General"
+      },
+      "bold": "Bold",
+      "italic": "Italic",
+      "underline": "Underline",
+      "strikethrough": "Strikethrough",
+      "inlineCode": "Inline code",
+      "highlight": "Highlight",
+      "heading1": "Heading 1",
+      "heading2": "Heading 2",
+      "heading3": "Heading 3",
+      "orderedList": "Ordered list",
+      "bulletList": "Bullet list",
+      "taskList": "Task list",
+      "openMenu": "Open block menu",
+      "undo": "Undo",
+      "redo": "Redo",
+      "selectAll": "Select all",
+      "commands": "Commands"
     }
   },
   "form": {

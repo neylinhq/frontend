@@ -20,108 +20,104 @@ interface NodeDrawerProps {
   className?: string
 }
 
-export const NodeDrawer = memo(
-  ({ node, onClose, connectionsTab, className }: NodeDrawerProps) => {
-    const { t } = useTranslation()
-    const [isMobile, setIsMobile] = useState(false)
-    const { activeTab, switchTab } = useDrawerTabs()
-    const { focusedNodeId, focusNode, clearFocus } = useFocusMode()
+export const NodeDrawer = memo(({ node, onClose, connectionsTab, className }: NodeDrawerProps) => {
+  const { t } = useTranslation()
+  const [isMobile, setIsMobile] = useState(false)
+  const { activeTab, switchTab } = useDrawerTabs()
+  const { focusedNodeId, focusNode, clearFocus } = useFocusMode()
 
-    // Keep track of the displayed node in state for smooth transitions
-    // This prevents drawer from closing/reopening when switching nodes
-    const [displayNode, setDisplayNode] = useState<Node | null>(null)
+  // Keep track of the displayed node in state for smooth transitions
+  // This prevents drawer from closing/reopening when switching nodes
+  const [displayNode, setDisplayNode] = useState<Node | null>(null)
 
-    // Update display node when prop changes (only when truthy)
-    useEffect(() => {
-      if (node) {
-        setDisplayNode(node)
-      }
-    }, [node])
+  // Update display node when prop changes (only when truthy)
+  useEffect(() => {
+    if (node) {
+      setDisplayNode(node)
+    }
+  }, [node])
 
-    // Handle explicit drawer close
-    const handleClose = useCallback(() => {
-      setDisplayNode(null)
-      onClose()
-    }, [onClose])
+  // Handle explicit drawer close
+  const handleClose = useCallback(() => {
+    setDisplayNode(null)
+    onClose()
+  }, [onClose])
 
-    // Check mobile via matchMedia
-    useEffect(() => {
-      const checkMobile = () => {
-        setIsMobile(window.innerWidth < 768) // md breakpoint
-      }
-
-      checkMobile()
-      window.addEventListener('resize', checkMobile)
-      return () => window.removeEventListener('resize', checkMobile)
-    }, [])
-
-    if (!displayNode) {
-      return null
+  // Check mobile via matchMedia
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768) // md breakpoint
     }
 
-    const Icon = getNodeIcon(displayNode.type)
-    const isFocused = focusedNodeId === displayNode.id
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
-    return (
-      <Drawer open={!!displayNode} onOpenChange={open => !open && handleClose()} modal={false}>
-        <DrawerContent
-          side={isMobile ? 'bottom' : 'right'}
-          size={isMobile ? '70vh' : '360px'}
-          showOverlay={isMobile}
-          className={cn('p-6', className)}
-          onInteractOutside={e => e.preventDefault()}
-          onPointerDownOutside={e => e.preventDefault()}
-        >
-          <DrawerHeader className='px-0 pt-0'>
-            <div className='flex items-center justify-between'>
-              <DrawerTitle className='flex items-center gap-2'>
-                <Icon className='w-5 h-5' />
-                {displayNode.label}
-              </DrawerTitle>
-              <div className='flex gap-2'>
-                <Button
-                  variant={isFocused ? 'default' : 'outline'}
-                  size='sm'
-                  onClick={() => (isFocused ? clearFocus() : focusNode(displayNode.id))}
-                  title={
-                    isFocused
-                      ? t('graph.nodeControls.clearFocus')
-                      : t('graph.nodeControls.focusMode')
-                  }
-                >
-                  <Focus className='h-4 w-4' />
-                </Button>
-                <Button variant='outline' size='sm' asChild title={t('nodeDrawer.edit')}>
-                  <Link to={`/dashboard/maps/${displayNode.mapId}/node/${displayNode.id}`}>
-                    <Pencil className='h-4 w-4' />
-                  </Link>
-                </Button>
-              </div>
-            </div>
-          </DrawerHeader>
-
-          <Tabs
-            value={activeTab === 'view' ? 'overview' : activeTab}
-            onValueChange={value => switchTab(value as 'overview' | 'connections')}
-            className='mt-4'
-          >
-            <TabsList className='w-full grid grid-cols-2'>
-              <TabsTrigger value='overview'>{t('nodeDrawer.tabs.overview')}</TabsTrigger>
-              <TabsTrigger value='connections'>{t('nodeDrawer.tabs.connections')}</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value='overview' className='mt-4'>
-              <DrawerOverviewTab node={displayNode} />
-            </TabsContent>
-
-            <TabsContent value='connections' className='mt-4'>
-              {connectionsTab}
-            </TabsContent>
-          </Tabs>
-        </DrawerContent>
-      </Drawer>
-    )
+  if (!displayNode) {
+    return null
   }
-)
+
+  const Icon = getNodeIcon(displayNode.type)
+  const isFocused = focusedNodeId === displayNode.id
+
+  return (
+    <Drawer open={!!displayNode} onOpenChange={open => !open && handleClose()} modal={false}>
+      <DrawerContent
+        side={isMobile ? 'bottom' : 'right'}
+        size={isMobile ? '70vh' : '360px'}
+        showOverlay={isMobile}
+        className={cn('p-6', className)}
+        onInteractOutside={e => e.preventDefault()}
+        onPointerDownOutside={e => e.preventDefault()}
+      >
+        <DrawerHeader className='px-0 pt-0'>
+          <div className='flex items-center justify-between'>
+            <DrawerTitle className='flex items-center gap-2'>
+              <Icon className='w-5 h-5' />
+              {displayNode.label}
+            </DrawerTitle>
+            <div className='flex gap-2'>
+              <Button
+                variant={isFocused ? 'default' : 'outline'}
+                size='sm'
+                onClick={() => (isFocused ? clearFocus() : focusNode(displayNode.id))}
+                title={
+                  isFocused ? t('graph.nodeControls.clearFocus') : t('graph.nodeControls.focusMode')
+                }
+              >
+                <Focus className='h-4 w-4' />
+              </Button>
+              <Button variant='outline' size='sm' asChild title={t('nodeDrawer.edit')}>
+                <Link to={`/dashboard/maps/${displayNode.mapId}/node/${displayNode.id}`}>
+                  <Pencil className='h-4 w-4' />
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </DrawerHeader>
+
+        <Tabs
+          value={activeTab === 'view' ? 'overview' : activeTab}
+          onValueChange={value => switchTab(value as 'overview' | 'connections')}
+          className='mt-4'
+        >
+          <TabsList className='w-full grid grid-cols-2'>
+            <TabsTrigger value='overview'>{t('nodeDrawer.tabs.overview')}</TabsTrigger>
+            <TabsTrigger value='connections'>{t('nodeDrawer.tabs.connections')}</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value='overview' className='mt-4'>
+            <DrawerOverviewTab node={displayNode} />
+          </TabsContent>
+
+          <TabsContent value='connections' className='mt-4'>
+            {connectionsTab}
+          </TabsContent>
+        </Tabs>
+      </DrawerContent>
+    </Drawer>
+  )
+})
 
 NodeDrawer.displayName = 'NodeDrawer'

@@ -1,7 +1,6 @@
 import { Outlet, useMatches } from 'react-router'
-
-import { cn } from '@/shared/lib/cn'
 import { PublicFooter } from '@/shared/components/public-footer'
+import { cn } from '@/shared/lib/cn'
 import { PublicHeader } from '@/widgets/public-header'
 
 interface RouteHandle {

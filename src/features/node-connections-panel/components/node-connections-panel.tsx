@@ -5,9 +5,9 @@ import type { Edge } from '@/entities/edge'
 import { useConnectionFilter } from '@/entities/edge'
 import type { Node } from '@/entities/node'
 import { getNodeIcon } from '@/entities/node'
-import { cn } from '@/shared/lib/cn'
 import { ConnectionItem } from '@/shared/components/connection-item'
 import { SegmentedControl } from '@/shared/components/segmented-control'
+import { cn } from '@/shared/lib/cn'
 
 interface NodeConnectionsPanelProps {
   node: Node
@@ -69,7 +69,11 @@ export const NodeConnectionsPanel = memo(
           onChange={changeFilter}
           options={[
             { value: 'all', label: t('nodeDrawer.connections.all'), count: totalCount },
-            { value: 'incoming', label: t('nodeDrawer.connections.incoming'), count: incomingCount },
+            {
+              value: 'incoming',
+              label: t('nodeDrawer.connections.incoming'),
+              count: incomingCount
+            },
             { value: 'outgoing', label: t('nodeDrawer.connections.outgoing'), count: outgoingCount }
           ]}
         />

@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { cn } from '@/shared/lib/cn'
 import { Label } from '@/shared/components/label'
+import { cn } from '@/shared/lib/cn'
 
 interface FieldProps {
   label: string

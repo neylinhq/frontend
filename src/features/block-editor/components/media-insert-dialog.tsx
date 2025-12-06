@@ -11,6 +11,7 @@ import {
   DialogTitle
 } from '@/shared/components/dialog'
 import { Label } from '@/shared/components/label'
+import { TIMING } from '../lib/constants'
 
 export type MediaType = 'image' | 'imageFigure' | 'video'
 
@@ -70,7 +71,7 @@ export const MediaInsertDialog = ({ isOpen, onClose, onSubmit, type }: MediaInse
     setUrl('')
     setError('')
     // Focus input after dialog animation (with cleanup)
-    const timeoutId = setTimeout(() => inputRef.current?.focus(), 100)
+    const timeoutId = setTimeout(() => inputRef.current?.focus(), TIMING.FOCUS_DELAY)
 
     return () => clearTimeout(timeoutId)
   }, [isOpen])

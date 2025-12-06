@@ -1,23 +1,43 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Link as RouterLink, useActionData, useNavigation, useSubmit } from 'react-router'
+import { toast } from 'sonner'
 import { z } from 'zod'
-import { AUTH_ROUTES } from '@/shared/config'
 import { Button } from '@/shared/components/button'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/components/form'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/shared/components/form'
 import { FormDivider } from '@/shared/components/form-divider'
 import { Input } from '@/shared/components/input'
 import { LegalLinks } from '@/shared/components/legal-links'
+import { AUTH_ROUTES } from '@/shared/config'
+
+type ActionData = { error?: string; code?: string } | undefined
 
 export const SignInForm = () => {
   const { t } = useTranslation()
   const navigation = useNavigation()
-  const actionData = useActionData<{ error?: string }>()
+  const actionData = useActionData<ActionData>()
   const submit = useSubmit()
 
   const isLoading = navigation.state === 'submitting'
+
+  // Show toast on error from action
+  useEffect(() => {
+    if (actionData?.error) {
+      toast.error(t('auth.signIn.error'), {
+        description: actionData.error
+      })
+    }
+  }, [actionData, t])
 
   // Define schema inside component to access t()
   const signInSchema = z.object({
@@ -42,12 +62,6 @@ export const SignInForm = () => {
             submit(data, { method: 'post' })
           })}
         >
-          {actionData?.error && (
-            <div className='text-sm font-medium text-destructive text-center'>
-              {actionData.error}
-            </div>
-          )}
-
           <FormField
             control={form.control}
             name='email'

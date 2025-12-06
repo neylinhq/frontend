@@ -1,4 +1,6 @@
-#!/usr/bin/env npx tsximport * as fs from 'node:fs'
+#!/usr/bin/env npx tsx
+
+import * as fs from 'node:fs'
 import * as path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -52,7 +54,7 @@ const getSortedEntries = (dirPath: string) => {
     if (!a.isDirectory() && b.isDirectory()) return 1
     return a.name.localeCompare(b.name)
   })
-};
+}
 
 const buildTree = (dirPath: string, prefix = '') => {
   const entries = getSortedEntries(dirPath)
@@ -70,7 +72,7 @@ const buildTree = (dirPath: string, prefix = '') => {
       buildTree(fullPath, newPrefix)
     }
   })
-};
+}
 
 const countItems = (dirPath: string) => {
   let files = 0
@@ -88,11 +90,11 @@ const countItems = (dirPath: string) => {
         files++
       }
     })
-  };
+  }
 
   walk(dirPath)
   return { files, dirs }
-};
+}
 
 const main = () => {
   const startPath = process.argv[2] || PROJECT_ROOT
@@ -104,7 +106,7 @@ const main = () => {
 
   const { files, dirs } = countItems(startPath)
   console.log(`\n${dirs} directories, ${files} files\n`)
-};
+}
 
 // Run
 main()

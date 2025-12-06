@@ -1,4 +1,6 @@
-#!/usr/bin/env npx tsximport * as fs from 'node:fs'
+#!/usr/bin/env npx tsx
+
+import * as fs from 'node:fs'
 import * as path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -63,7 +65,7 @@ const getFileCategory = (filePath: string) => {
   }
 
   return 'other'
-};
+}
 
 const removeComments = (content: string, category: FileCategory) => {
   if (category === 'json') {
@@ -71,11 +73,11 @@ const removeComments = (content: string, category: FileCategory) => {
   }
 
   if (category === 'css') {
-    return content.replace(/\/\*[\s\S]*?\*\//g, '');
+    return content.replace(/\/\*[\s\S]*?\*\//g, '')
   }
 
   if (category === 'html' || category === 'markdown') {
-    return content.replace(/<!--[\s\S]*?-->/g, '');
+    return content.replace(/<!--[\s\S]*?-->/g, '')
   }
 
   // For JS/TS remove multi-line and single-line comments
@@ -99,8 +101,8 @@ const removeComments = (content: string, category: FileCategory) => {
       }
       return line
     })
-    .join('\n');
-};
+    .join('\n')
+}
 
 const analyzeFile = (filePath: string) => {
   try {
@@ -118,7 +120,7 @@ const analyzeFile = (filePath: string) => {
     const message = error instanceof Error ? error.message : 'Unknown error'
     console.error(`Error analyzing ${filePath}: ${message}`)
   }
-};
+}
 
 const walkDirectory = (dirPath: string) => {
   const entries = fs.readdirSync(dirPath, { withFileTypes: true })
@@ -138,11 +140,11 @@ const walkDirectory = (dirPath: string) => {
       analyzeFile(fullPath)
     }
   }
-};
+}
 
 const formatNumber = (num: number) => {
-  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-};
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+}
 
 const printStats = () => {
   console.log('\nLines of Code Statistics\n')
@@ -186,7 +188,7 @@ const printStats = () => {
   console.log(`\nEmpty lines: ${formatNumber(emptyLines)} (${emptyPercent}%)`)
   console.log(`Code lines: ${formatNumber(totalNonEmpty)}`)
   console.log(`Total files: ${formatNumber(totalFiles)}`)
-};
+}
 
 const main = () => {
   const startPath = process.argv[2] || PROJECT_ROOT
@@ -204,7 +206,7 @@ const main = () => {
   printStats()
 
   console.log(`\nExecution time: ${duration}s\n`)
-};
+}
 
 // Run
 main()

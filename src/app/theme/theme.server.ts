@@ -1,5 +1,5 @@
-import { MODE_COOKIE_KEY, PALETTE_COOKIE_KEY } from '@/shared/lib/theme'
 import type { Mode, Palette } from '@/shared/lib/theme'
+import { MODE_COOKIE_KEY, PALETTE_COOKIE_KEY } from '@/shared/lib/theme'
 
 export type ThemeData = {
   mode: Mode

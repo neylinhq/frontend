@@ -5,7 +5,7 @@
  * -:A?>@B8@C5B :><?>=5=B ?>4 8<5=5< GraphVisualization 4;O ?@>AB>3> ?5@5:;NG5=8O
  */
 
-export { GraphWebGLVisualization as GraphVisualization } from './components/graph-webgl-visualization';
-export { useGraphEngine } from './hooks/use-graph-engine';
-export { GraphEngine } from './lib/wasm-adapter';
-export type { GraphData, GraphNode, GraphEdge, GraphStats } from './lib/wasm-adapter';
+export { GraphWebGLVisualization as GraphVisualization } from './components/graph-webgl-visualization'
+export { useGraphEngine } from './hooks/use-graph-engine'
+export type { GraphData, GraphEdge, GraphNode, GraphStats } from './lib/wasm-adapter'
+export { GraphEngine } from './lib/wasm-adapter'

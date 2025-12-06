@@ -4,9 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { UI_DELAYS } from '@/shared/config/api-delays'
 import { cn } from '@/shared/lib/cn'
-
-// Constants
-const BLOCK_HOVER_THRESHOLD = 5
+import { THRESHOLD } from '../lib/constants'
 
 interface FloatingMenuProps {
   editor: Editor
@@ -56,6 +54,7 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
   const dropIndicatorRef = useRef<HTMLElement | null>(null)
   const ghostCleanupTimeoutRef = useRef<number | null>(null)
   const menuHideTimeoutRef = useRef<number | null>(null)
+  const dropFeedbackTimeoutRef = useRef<number | null>(null)
 
   // Store ProseMirror position instead of DOM ref
   const dragStartPosRef = useRef<number | null>(null)
@@ -77,6 +76,9 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
       }
       if (menuHideTimeoutRef.current) {
         clearTimeout(menuHideTimeoutRef.current)
+      }
+      if (dropFeedbackTimeoutRef.current) {
+        clearTimeout(dropFeedbackTimeoutRef.current)
       }
     }
   }, [])
@@ -228,8 +230,8 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
           const blockTop = blockRect.top - containerRect.top
           const blockBottom = blockRect.bottom - containerRect.top
           if (
-            mouseY >= blockTop - BLOCK_HOVER_THRESHOLD &&
-            mouseY <= blockBottom + BLOCK_HOVER_THRESHOLD
+            mouseY >= blockTop - THRESHOLD.BLOCK_HOVER &&
+            mouseY <= blockBottom + THRESHOLD.BLOCK_HOVER
           ) {
             block = b
             break
@@ -257,7 +259,10 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
           const blockTop = blockRect.top - containerRect.top
           const blockBottom = blockRect.bottom - containerRect.top
 
-          if (mouseY >= blockTop - 10 && mouseY <= blockBottom + 10) {
+          if (
+            mouseY >= blockTop - THRESHOLD.HOVER_GRACE &&
+            mouseY <= blockBottom + THRESHOLD.HOVER_GRACE
+          ) {
             return
           }
         }
@@ -431,7 +436,7 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
           }
 
           // Determine zone: top 30% = before, middle 40% = nest, bottom 30% = after
-          const isInNestZone = relX < 40 // left 40px triggers nest more easily
+          const isInNestZone = relX < THRESHOLD.NEST_ZONE
 
           if (relY < 0.3) {
             // Top zone - insert before
@@ -606,11 +611,16 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
 
         view.dispatch(tr)
 
-        // Hide caret after drop
+        // Hide caret after drop (tracked timeout for cleanup)
         if (!editor.isDestroyed && view.dom) {
           const editorEl = view.dom.closest('.tiptap-editor')
           editorEl?.classList.add('just-dropped')
-          setTimeout(() => editorEl?.classList.remove('just-dropped'), 500)
+          if (dropFeedbackTimeoutRef.current) {
+            clearTimeout(dropFeedbackTimeoutRef.current)
+          }
+          dropFeedbackTimeoutRef.current = window.setTimeout(() => {
+            editorEl?.classList.remove('just-dropped')
+          }, UI_DELAYS.EDITOR_DROP_FEEDBACK)
         }
       } catch (err) {
         console.error('[Drop] Transaction error:', err)
@@ -780,7 +790,7 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
     <div
       ref={menuRef}
       role='toolbar'
-      className='editor-floating-menu absolute -left-10 flex items-center gap-0.5 opacity-50 transition-opacity hover:opacity-100'
+      className='editor-floating-menu absolute -left-10 flex items-center gap-0.5 opacity-50 transition-opacity hover:opacity-100 animate-menu-in'
       style={{
         top: Math.max(0, menuTop)
       }}

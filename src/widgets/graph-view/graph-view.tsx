@@ -16,30 +16,32 @@ interface GraphViewProps {
  * Widget that composes GraphVisualization with NodeConnectionsPanel
  * Avoids cross-feature imports by composing at widget layer
  */
-export const GraphView = memo(({ mapId, className, interactive, initialData }: GraphViewProps) => {
-  return (
-    <GraphVisualization
-      mapId={mapId}
-      className={className}
-      interactive={interactive}
-      initialData={initialData}
-      renderConnectionsPanel={(
-        node: Node,
-        edges: Edge[],
-        allNodes: Node[],
-        onOpenNode?: (id: string) => void,
-        onPanToNode?: (id: string) => void
-      ) => (
-        <NodeConnectionsPanel
-          node={node}
-          edges={edges}
-          allNodes={allNodes}
-          onOpenNode={onOpenNode}
-          onPanToNode={onPanToNode}
-        />
-      )}
-    />
-  )
-})
+export const GraphView = memo(
+  ({ mapId, className, interactive, initialData }: GraphViewProps) => {
+    return (
+      <GraphVisualization
+        mapId={mapId}
+        className={className}
+        interactive={interactive}
+        initialData={initialData}
+        renderConnectionsPanel={(
+          node: Node,
+          edges: Edge[],
+          allNodes: Node[],
+          onOpenNode?: (id: string) => void,
+          onPanToNode?: (id: string) => void
+        ) => (
+          <NodeConnectionsPanel
+            node={node}
+            edges={edges}
+            allNodes={allNodes}
+            onOpenNode={onOpenNode}
+            onPanToNode={onPanToNode}
+          />
+        )}
+      />
+    )
+  }
+)
 
 GraphView.displayName = 'GraphView'

@@ -1,5 +1,5 @@
 import { redirect } from 'react-router'
-import { sessionApi } from '@/entities/session/session.api'
+import { sessionApi } from '@/entities/session'
 import { destroySession } from '@/entities/session/session.server'
 
 export const action = async () => {

@@ -3,7 +3,7 @@ import { ArrowLeft, Loader2, PanelRightClose, PanelRightOpen } from 'lucide-reac
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-import { toast } from 'sonner'
+import { toast } from '@/shared/components/toast'
 
 import type { FullMap, Node } from '@/entities/map'
 import { useUpdateNode } from '@/entities/map'
@@ -16,6 +16,7 @@ import { NodeMetadataForm, type NodeMetadataFormValues } from '@/features/node-m
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/shared/components/sheet'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/components/tabs'
 import { cn } from '@/shared/lib/cn'
 
 const NODE_TYPE_CONFIG: Record<NodeType, { color: string; label: string }> = {
@@ -205,7 +206,7 @@ export const NodeEditPage = ({
         {/* Editor Content */}
         <div ref={contentRef} className='mx-auto max-w-3xl px-4 md:px-8 py-6 md:py-8'>
           {/* Gutter wrapper - provides space for floating menu buttons on desktop */}
-          <div className='md:pl-12'>
+          <div className='md:pl-16'>
             {/* Breadcrumb & Actions */}
             <div className='mb-8 flex items-center justify-between'>
               <div className='flex items-center gap-3'>
@@ -277,42 +278,48 @@ export const NodeEditPage = ({
       {sidebarOpen && (
         <aside className='hidden lg:flex w-80 flex-shrink-0 border-l border-border h-full'>
           <div className='flex flex-1 flex-col min-h-0'>
-            {/* Sidebar Header */}
-            <div className='flex items-center justify-between border-b border-border/50 px-4 py-3'>
-              <h2 className='text-sm font-semibold'>{t('nodeEdit.properties')}</h2>
-            </div>
-
-            {/* Sidebar Content */}
-            <div className='flex-1 overflow-y-auto [scrollbar-gutter:stable] min-h-0 flex flex-col'>
-              {/* AI Suggestions */}
-              <div className='border-b border-border/50 p-4 flex-shrink-0'>
-                <h3 className='mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground'>
-                  AI Suggestions
-                </h3>
-                <AISuggestionsPanel nodeId={nodeId} mapId={mapId} />
+            <Tabs defaultValue='properties' className='flex flex-1 flex-col min-h-0'>
+              {/* Tab Header */}
+              <div className='border-b border-border/50 px-4 py-3'>
+                <TabsList className='grid w-full grid-cols-2'>
+                  <TabsTrigger value='properties'>{t('nodeEdit.properties')}</TabsTrigger>
+                  <TabsTrigger value='ai'>AI</TabsTrigger>
+                </TabsList>
               </div>
 
-              {/* Node Metadata */}
-              <div className='border-b border-border/50 p-4 flex-shrink-0'>
-                <NodeMetadataForm
-                  node={currentNode}
-                  onSubmit={handleMetadataSubmit}
-                  isPending={updateNodeMutation.isPending}
-                />
-              </div>
+              {/* Properties Tab */}
+              <TabsContent value='properties' className='flex-1 overflow-y-auto [scrollbar-gutter:stable] min-h-0 mt-0'>
+                <div className='flex flex-col'>
+                  {/* Node Metadata */}
+                  <div className='border-b border-border/50 p-4'>
+                    <NodeMetadataForm
+                      node={currentNode}
+                      onSubmit={handleMetadataSubmit}
+                      isPending={updateNodeMutation.isPending}
+                    />
+                  </div>
 
-              {/* Connections - fills remaining space */}
-              <div className='p-4 flex-1'>
-                <h3 className='mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground'>
-                  {t('nodeEdit.connections')}
-                </h3>
-                <NodeConnectionsPanel
-                  node={currentNode}
-                  edges={lightweightMap.edges}
-                  allNodes={lightweightMap.nodes}
-                />
-              </div>
-            </div>
+                  {/* Connections */}
+                  <div className='p-4'>
+                    <h3 className='mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground'>
+                      {t('nodeEdit.connections')}
+                    </h3>
+                    <NodeConnectionsPanel
+                      node={currentNode}
+                      edges={lightweightMap.edges}
+                      allNodes={lightweightMap.nodes}
+                    />
+                  </div>
+                </div>
+              </TabsContent>
+
+              {/* AI Tab */}
+              <TabsContent value='ai' className='flex-1 overflow-y-auto [scrollbar-gutter:stable] min-h-0 mt-0'>
+                <div className='p-4'>
+                  <AISuggestionsPanel nodeId={nodeId} mapId={mapId} />
+                </div>
+              </TabsContent>
+            </Tabs>
           </div>
         </aside>
       )}
@@ -320,40 +327,48 @@ export const NodeEditPage = ({
       {/* Right Sidebar - Mobile Sheet */}
       <Sheet open={mobileSheetOpen} onOpenChange={setMobileSheetOpen}>
         <SheetContent side='right' className='w-80 p-0 flex flex-col'>
-          <SheetHeader className='border-b border-border/50 px-4 py-3'>
-            <SheetTitle className='text-sm font-semibold'>{t('nodeEdit.properties')}</SheetTitle>
-          </SheetHeader>
+          <Tabs defaultValue='properties' className='flex flex-1 flex-col min-h-0'>
+            {/* Tab Header */}
+            <SheetHeader className='border-b border-border/50 px-4 py-3'>
+              <TabsList className='grid w-full grid-cols-2'>
+                <TabsTrigger value='properties'>{t('nodeEdit.properties')}</TabsTrigger>
+                <TabsTrigger value='ai'>AI</TabsTrigger>
+              </TabsList>
+            </SheetHeader>
 
-          <div className='flex-1 overflow-y-auto [scrollbar-gutter:stable] flex flex-col'>
-            {/* AI Suggestions */}
-            <div className='border-b border-border/50 p-4 flex-shrink-0'>
-              <h3 className='mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground'>
-                AI Suggestions
-              </h3>
-              <AISuggestionsPanel nodeId={nodeId} mapId={mapId} />
-            </div>
+            {/* Properties Tab */}
+            <TabsContent value='properties' className='flex-1 overflow-y-auto [scrollbar-gutter:stable] min-h-0 mt-0'>
+              <div className='flex flex-col'>
+                {/* Node Metadata */}
+                <div className='border-b border-border/50 p-4'>
+                  <NodeMetadataForm
+                    node={currentNode}
+                    onSubmit={handleMetadataSubmit}
+                    isPending={updateNodeMutation.isPending}
+                  />
+                </div>
 
-            {/* Node Metadata */}
-            <div className='border-b border-border/50 p-4 flex-shrink-0'>
-              <NodeMetadataForm
-                node={currentNode}
-                onSubmit={handleMetadataSubmit}
-                isPending={updateNodeMutation.isPending}
-              />
-            </div>
+                {/* Connections */}
+                <div className='p-4'>
+                  <h3 className='mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground'>
+                    {t('nodeEdit.connections')}
+                  </h3>
+                  <NodeConnectionsPanel
+                    node={currentNode}
+                    edges={lightweightMap.edges}
+                    allNodes={lightweightMap.nodes}
+                  />
+                </div>
+              </div>
+            </TabsContent>
 
-            {/* Connections - fills remaining space */}
-            <div className='p-4 flex-1'>
-              <h3 className='mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground'>
-                {t('nodeEdit.connections')}
-              </h3>
-              <NodeConnectionsPanel
-                node={currentNode}
-                edges={lightweightMap.edges}
-                allNodes={lightweightMap.nodes}
-              />
-            </div>
-          </div>
+            {/* AI Tab */}
+            <TabsContent value='ai' className='flex-1 overflow-y-auto [scrollbar-gutter:stable] min-h-0 mt-0'>
+              <div className='p-4'>
+                <AISuggestionsPanel nodeId={nodeId} mapId={mapId} />
+              </div>
+            </TabsContent>
+          </Tabs>
         </SheetContent>
       </Sheet>
     </div>

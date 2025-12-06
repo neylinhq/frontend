@@ -37,11 +37,11 @@ import {
   useState
 } from 'react'
 import { useTranslation } from 'react-i18next'
-import { toast } from 'sonner'
+import { toast } from '@/shared/components/toast'
 import { Button } from '@/shared/components/button'
 import { cn } from '@/shared/lib/cn'
-import { MENU } from '../lib/constants'
 import { copyAsMarkdown } from '../lib/markdown-serializer'
+import { MENU } from '../model/block-editor.constants'
 
 // Menu state management with reducer (cleaner than 4 separate booleans)
 type MenuType = 'closed' | 'link' | 'color' | 'turnInto' | 'more'

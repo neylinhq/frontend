@@ -87,6 +87,7 @@
     "remove": "Remove"
   },
   "nodeCreation": {
+    "addNode": "Add Node",
     "quickAdd": {
       "title": "Quick Add Node",
       "description": "Type a name and optional /type to quickly create a node",
@@ -96,6 +97,44 @@
     "success": "Node created",
     "created": "Created \"{{label}}\"",
     "error": "Failed to create node"
+  },
+  "mapCreation": {
+    "page": {
+      "title": "Create New Map",
+      "description": "Create a new knowledge map to organize your ideas"
+    },
+    "dialog": {
+      "title": "Create New Map",
+      "description": "Enter details for your new knowledge map"
+    },
+    "card": {
+      "title": "Map Details",
+      "description": "Fill in the information below to create your map"
+    },
+    "form": {
+      "title": {
+        "label": "Title",
+        "placeholder": "My Knowledge Map"
+      },
+      "description": {
+        "label": "Description",
+        "placeholder": "What is this map about?"
+      }
+    },
+    "validation": {
+      "titleRequired": "Title is required",
+      "titleTooLong": "Title cannot exceed {{max}} characters"
+    },
+    "success": "Map created",
+    "created": "Created \"{{title}}\"",
+    "error": "Failed to create map",
+    "preview": "Preview",
+    "emptyPreview": "Start typing to see preview",
+    "tips": {
+      "title": "Tips",
+      "keyboard": "Press {{shortcut}} to create",
+      "description": "Good descriptions help organize your maps"
+    }
   },
   "home": {
     "tagline": "Visualize and structure your knowledge with interactive cognitive maps. Create, connect, and explore your ideas in an intuitive graph-based workspace.",
@@ -949,6 +988,20 @@
     "editorPlaceholder": "Start writing, or type '/' for commands...",
     "properties": "Properties",
     "connections": "Connections"
+  },
+  "ai": {
+    "assistant": "AI Assistant",
+    "beta": "Beta",
+    "improveDescription": "Improve Description",
+    "generateExamples": "Generate Examples",
+    "findSources": "Find Sources",
+    "enrichEverything": "Enrich Everything",
+    "quickTips": "Quick Tips",
+    "smartSuggestions": "Smart Suggestions",
+    "smartSuggestionsDescription": "AI will analyze surrounding nodes to provide contextual improvements",
+    "similarNodes": "Similar Nodes (RAG)",
+    "noSimilarNodes": "No similar nodes found. Generate embeddings to enable similarity search.",
+    "view": "View"
   },
   "settings": {
     "title": "Settings",

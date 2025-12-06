@@ -2,7 +2,7 @@ import { NodeViewContent, type NodeViewProps, NodeViewWrapper } from '@tiptap/re
 import { Check, ChevronDown, Copy } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { toast } from 'sonner'
+import { toast } from '@/shared/components/toast'
 
 import { cn } from '@/shared/lib/cn'
 

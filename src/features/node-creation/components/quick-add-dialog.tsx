@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
-import { toast } from 'sonner'
+import { toast } from '@/shared/components/toast'
 import { NODE_TYPE_CONFIGS, type NodeType } from '@/entities/node'
 import { Button } from '@/shared/components/button'
 import {
@@ -14,7 +14,7 @@ import {
 } from '@/shared/components/dialog'
 import { Input } from '@/shared/components/input'
 import { cn } from '@/shared/lib/cn'
-import { NODE_CREATION_CONFIG } from '../lib/node-creation.constants'
+import { NODE_CREATION_CONFIG } from '../model/node-creation.constants'
 import { getNodeConfig, getNodeIcon } from '../lib/node-type-utils'
 import {
   getPartialType,

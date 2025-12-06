@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Link as RouterLink, useActionData, useNavigation, useSubmit } from 'react-router'
-import { toast } from 'sonner'
+import { toast } from '@/shared/components/toast'
 import { z } from 'zod'
 import { Button } from '@/shared/components/button'
 import {

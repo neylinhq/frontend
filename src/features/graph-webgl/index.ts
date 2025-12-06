@@ -6,6 +6,6 @@
  */
 
 export { GraphWebGLVisualization as GraphVisualization } from './components/graph-webgl-visualization'
-export { useGraphEngine } from './hooks/use-graph-engine'
 export type { GraphData, GraphEdge, GraphNode, GraphStats } from './lib/wasm-adapter'
 export { GraphEngine } from './lib/wasm-adapter'
+export { useGraphEngine } from './model/use-graph-engine.hooks'

@@ -1,10 +1,11 @@
 import { Brain, Lightbulb, Link2, Loader2, Sparkles } from 'lucide-react'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { EnrichType } from '@/entities/ai'
 import { useEnrichNode } from '@/entities/ai'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/shared/components/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/card'
 import { Separator } from '@/shared/components/separator'
 import { SimilarNodesPanel } from './similar-nodes-panel'
 
@@ -15,6 +16,7 @@ interface AISuggestionsPanelProps {
 }
 
 export const AISuggestionsPanel = ({ nodeId, mapId, onNodeClick }: AISuggestionsPanelProps) => {
+  const { t } = useTranslation()
   const { mutate: enrichNode, isPending } = useEnrichNode()
   const [activeEnrichment, setActiveEnrichment] = useState<EnrichType | null>(null)
 
@@ -33,13 +35,13 @@ export const AISuggestionsPanel = ({ nodeId, mapId, onNodeClick }: AISuggestions
   const isLoading = (type: EnrichType) => isPending && activeEnrichment === type
 
   return (
-    <aside className='w-80 border-l border-border bg-background'>
-      <div className='sticky top-0 p-4'>
+    <div className='w-full'>
+      <div className='p-0'>
         <div className='flex items-center gap-2 mb-4'>
           <Brain className='w-5 h-5 text-primary' />
-          <h3 className='font-semibold text-lg'>AI Assistant</h3>
+          <h3 className='font-semibold text-lg'>{t('ai.assistant')}</h3>
           <Badge variant='secondary' className='ml-auto'>
-            Beta
+            {t('ai.beta')}
           </Badge>
         </div>
 
@@ -56,7 +58,7 @@ export const AISuggestionsPanel = ({ nodeId, mapId, onNodeClick }: AISuggestions
             ) : (
               <Sparkles className='w-4 h-4 mr-2' />
             )}
-            Improve Description
+            {t('ai.improveDescription')}
           </Button>
 
           <Button
@@ -71,7 +73,7 @@ export const AISuggestionsPanel = ({ nodeId, mapId, onNodeClick }: AISuggestions
             ) : (
               <Lightbulb className='w-4 h-4 mr-2' />
             )}
-            Generate Examples
+            {t('ai.generateExamples')}
           </Button>
 
           <Button
@@ -86,7 +88,7 @@ export const AISuggestionsPanel = ({ nodeId, mapId, onNodeClick }: AISuggestions
             ) : (
               <Link2 className='w-4 h-4 mr-2' />
             )}
-            Find Sources
+            {t('ai.findSources')}
           </Button>
 
           <Separator className='my-3' />
@@ -103,7 +105,7 @@ export const AISuggestionsPanel = ({ nodeId, mapId, onNodeClick }: AISuggestions
             ) : (
               <Brain className='w-4 h-4 mr-2' />
             )}
-            Enrich Everything
+            {t('ai.enrichEverything')}
           </Button>
         </div>
 
@@ -114,19 +116,19 @@ export const AISuggestionsPanel = ({ nodeId, mapId, onNodeClick }: AISuggestions
         </div>
 
         <div className='mt-6'>
-          <p className='text-xs text-muted-foreground mb-3'>Quick Tips</p>
+          <p className='text-xs text-muted-foreground mb-3'>{t('ai.quickTips')}</p>
           <Card>
             <CardHeader className='p-3'>
-              <CardTitle className='text-sm'>Smart Suggestions</CardTitle>
+              <CardTitle className='text-sm'>{t('ai.smartSuggestions')}</CardTitle>
             </CardHeader>
             <CardContent className='p-3 pt-0'>
               <p className='text-xs text-muted-foreground'>
-                AI will analyze surrounding nodes to provide contextual improvements
+                {t('ai.smartSuggestionsDescription')}
               </p>
             </CardContent>
           </Card>
         </div>
       </div>
-    </aside>
+    </div>
   )
 }

@@ -1,14 +1,19 @@
 import { useTranslation } from 'react-i18next'
 import { Link, Outlet, useLoaderData, useLocation } from 'react-router'
+import { requireAuth, withAuthRedirect } from '@/entities/session/server-api'
 import { type User, userApi } from '@/entities/user'
 import { SETTINGS_NAV_ITEMS } from '@/shared/config'
 import { cn } from '@/shared/lib/cn'
 import type { Route } from './+types/layout'
 
 // SSR loader - fetch user data on the server
-export const loader = async (_args: Route.LoaderArgs) => {
-  const user = await userApi.getCurrentUser()
-  return { user }
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const session = await requireAuth(request)
+
+  return withAuthRedirect(async () => {
+    const user = await userApi.getCurrentUser({ token: session.token })
+    return { user }
+  })
 }
 
 // Context type for child routes

@@ -1,6 +1,5 @@
 import type { User } from '@/entities/user'
-import { api, setAuthToken } from '@/shared/api/api-client'
-import { IS_BROWSER } from '@/shared/config/env'
+import { api, setAuthToken, setRefreshToken, getRefreshToken } from '@/shared/api/api-client'
 
 // Types
 interface LoginRequest {
@@ -37,23 +36,6 @@ interface RefreshResponse {
     accessToken: string
     refreshToken: string
   }
-}
-
-// Refresh token storage
-const REFRESH_TOKEN_KEY = 'refresh_token'
-
-const setRefreshToken = (token: string | null) => {
-  if (!IS_BROWSER) return
-  if (token) {
-    localStorage.setItem(REFRESH_TOKEN_KEY, token)
-  } else {
-    localStorage.removeItem(REFRESH_TOKEN_KEY)
-  }
-}
-
-const getRefreshToken = (): string | null => {
-  if (!IS_BROWSER) return null
-  return localStorage.getItem(REFRESH_TOKEN_KEY)
 }
 
 export const sessionApi = {

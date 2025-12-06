@@ -57,6 +57,7 @@ export default [
   // Dashboard Routes
   layout('routes/dashboard/layout.tsx', [
     route('dashboard/overview', 'routes/dashboard/overview.tsx'),
+    route('dashboard/maps/new', 'routes/dashboard/maps/new.tsx'),
     route('dashboard/maps/:mapId/view', 'routes/dashboard/maps/$mapId/view.tsx'),
     route('dashboard/maps/:mapId/node/:nodeId', 'routes/dashboard/maps/$mapId/node.$nodeId.tsx'),
 

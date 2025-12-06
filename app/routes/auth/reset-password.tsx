@@ -1,5 +1,5 @@
 import type { ActionFunctionArgs } from 'react-router'
-import { sessionApi } from '@/entities/session/session.api'
+import { sessionApi } from '@/entities/session'
 import { ResetPasswordPage } from '@/pages/auth/reset-password-page'
 import { getMeta } from '@/shared/lib/get-meta'
 

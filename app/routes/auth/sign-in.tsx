@@ -1,5 +1,5 @@
 import { type ActionFunctionArgs, redirect } from 'react-router'
-import { sessionApi } from '@/entities/session/session.api'
+import { sessionApi } from '@/entities/session'
 import { commitSession } from '@/entities/session/session.server'
 import { SignInPage } from '@/pages/auth/sign-in-page'
 import { ApiError } from '@/shared/api/api-client'
@@ -27,9 +27,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const result = await sessionApi.login({ email, password })
     console.log('[sign-in action] Login result:', result)
 
-    const { user, accessToken } = result
+    const { user, accessToken, refreshToken } = result
 
-    const sessionData = { token: accessToken, user }
+    const sessionData = { token: accessToken, user, refreshToken }
     const cookie = await commitSession(sessionData)
 
     const url = new URL(request.url)

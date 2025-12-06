@@ -326,14 +326,16 @@ export const BlockEditor = ({
     <div
       ref={editorWrapperRef}
       className={cn(
-        'tiptap-editor-wrapper relative',
-        'md:-ml-12 md:pl-12', // Extend left into gutter for hover detection
+        'tiptap-editor-wrapper relative flex',
         className
       )}
     >
+      {/* Invisible gutter zone for hover detection - only on md+ */}
+      <div className='hidden md:block w-16 flex-shrink-0 -ml-16' aria-hidden='true' />
+
       <div
         ref={editorRef}
-        className={cn('tiptap-editor group/editor relative', resolvedMode === 'dark' && 'dark')}
+        className={cn('tiptap-editor group/editor relative flex-1', resolvedMode === 'dark' && 'dark')}
       >
         <EditorBubbleMenu editor={editor} onOpenMathDialog={openMathDialog} />
 
@@ -367,14 +369,14 @@ export const BlockEditor = ({
             <SlashMenu ref={slashMenuRef} items={slashItems} command={handleSlashCommand} />
           </div>
         )}
-      </div>
 
-      {/* FloatingMenu positioned from wrapper (left:0 = gutter zone) */}
-      <EditorFloatingMenu
-        editor={editor}
-        onAddClick={handleAddBlock}
-        containerRef={editorWrapperRef}
-      />
+        {/* FloatingMenu positioned relative to tiptap-editor */}
+        <EditorFloatingMenu
+          editor={editor}
+          onAddClick={handleAddBlock}
+          containerRef={editorWrapperRef}
+        />
+      </div>
 
       {/* Live region for screen reader announcements */}
       <LiveRegion message={liveRegionMessage} />

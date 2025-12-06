@@ -1,5 +1,5 @@
 import { type ActionFunctionArgs, redirect } from 'react-router'
-import { sessionApi } from '@/entities/session/session.api'
+import { sessionApi } from '@/entities/session'
 import { commitSession } from '@/entities/session/session.server'
 import { SignUpPage } from '@/pages/auth/sign-up-page'
 import { ApiError } from '@/shared/api/api-client'
@@ -24,11 +24,11 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   try {
     // Use session API for registration
-    const { user, accessToken } = await sessionApi.register({ email, password })
+    const { user, accessToken, refreshToken } = await sessionApi.register({ email, password })
 
     console.log('[sign-up action] Success! User:', user.id)
 
-    const sessionData = { token: accessToken, user }
+    const sessionData = { token: accessToken, user, refreshToken }
     const cookie = await commitSession(sessionData)
 
     return redirect('/dashboard/overview', {

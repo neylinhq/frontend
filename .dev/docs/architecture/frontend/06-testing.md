@@ -91,7 +91,7 @@ app/
 // app/__tests__/auth.integration.test.ts
 import { renderWithProviders, screen, userEvent } from '@/shared/tests'
 import { SignInForm } from '@/features/auth/sign-in-form'
-import { server } from '@/shared/tests/mocks/server'
+import { server } from '@/shared/mocks/server'
 import { http, HttpResponse } from 'msw'
 
 describe('Auth Flow', () => {
@@ -136,10 +136,41 @@ app/
 
 ## API Mocking с MSW
 
+### Размещение моков
+
+**Централизованно в `shared/mocks/`** - все mock data и MSW handlers в одном месте:
+
+```
+shared/
+├── mocks/
+│   ├── data/                     # Mock data (типизированные объекты)
+│   │   ├── users.ts             # Mock users
+│   │   ├── maps.ts              # Mock maps
+│   │   └── subscriptions.ts     # Mock subscriptions
+│   ├── handlers/                # MSW request handlers
+│   │   ├── auth.ts              # Auth endpoints
+│   │   ├── user.ts              # User endpoints
+│   │   ├── map.ts               # Map endpoints
+│   │   └── subscription.ts      # Subscription endpoints
+│   ├── server.ts                # MSW server setup (Node.js)
+│   └── browser.ts               # MSW browser setup (dev mode)
+```
+
+**⚠️ FSD Исключение:**
+- `shared/mocks/` импортирует типы из `entities/*` - это **допустимо** для тестовых данных
+- Моки используются **только в тестах**, не попадают в production bundle
+- Моки **не экспортируются** через barrel exports `shared/index.ts`
+
+**Почему централизованно:**
+- Моки используются на разных уровнях (integration tests в `app/__tests__/`, unit tests в entities)
+- Один источник правды для всех тестовых данных
+- Легче поддерживать consistency между тестами
+- MSW handlers могут комбинировать данные из разных entities
+
 ### Setup
 
 ```tsx
-// shared/tests/mocks/server.ts
+// shared/mocks/server.ts
 import { setupServer } from 'msw/node'
 import { handlers } from './handlers'
 
@@ -147,30 +178,26 @@ export const server = setupServer(...handlers)
 ```
 
 ```tsx
-// shared/tests/mocks/handlers.ts
+// shared/mocks/handlers/index.ts
 import { http, HttpResponse } from 'msw'
+import { MOCK_USERS } from '../data/users'
+import { MOCK_MAPS } from '../data/maps'
 
 export const handlers = [
   http.get('/api/user/current', () => {
-    return HttpResponse.json({
-      id: '1',
-      email: 'test@test.com',
-      name: 'Test User'
-    })
+    return HttpResponse.json(MOCK_USERS[0])
   }),
 
   http.get('/api/maps', () => {
-    return HttpResponse.json([
-      { id: '1', title: 'Test Map' }
-    ])
+    return HttpResponse.json(MOCK_MAPS)
   })
 ]
 ```
 
 ```tsx
-// shared/tests/setup.ts
+// shared/mocks/setup.ts
 import { beforeAll, afterEach, afterAll } from 'vitest'
-import { server } from './mocks/server'
+import { server } from './server'
 
 beforeAll(() => server.listen({ onUnhandledRequest: 'error' }))
 afterEach(() => server.resetHandlers())
@@ -180,7 +207,7 @@ afterAll(() => server.close())
 ### Override в тесте
 
 ```tsx
-import { server } from '@/shared/tests/mocks/server'
+import { server } from '@/shared/mocks/server'
 import { http, HttpResponse } from 'msw'
 
 it('shows error on failed login', async () => {
@@ -253,10 +280,11 @@ export const createMockUser = (overrides?: Partial<User>): User => ({
 
 1. **Co-locate** unit тесты - `.test.ts` рядом с `.ts`
 2. **Integration/E2E** → `app/__tests__/`
-3. **Coverage** → фокус на критической логике (схемы, утилиты)
-4. **Не тестируем** → UI компоненты unit-тестами (слишком хрупко)
-5. **MSW** → для всех API моков (не jest.mock)
-6. **Isolated** → каждый тест независим
+3. **Моки централизованно** → `shared/mocks/` для MSW handlers и mock data
+4. **Coverage** → фокус на критической логике (схемы, утилиты)
+5. **Не тестируем** → UI компоненты unit-тестами (слишком хрупко)
+6. **MSW** → для всех API моков (не jest.mock)
+7. **Isolated** → каждый тест независим
 
 ---
 

@@ -1,5 +1,5 @@
-import { subscriptionApi } from '@/entities/subscription/subscription.api'
-import type { PlanDetails } from '@/entities/subscription/subscription.schema'
+import type { PlanDetails } from '@/entities/subscription'
+import { subscriptionApi } from '@/entities/subscription'
 import { PricingPage } from '@/pages/pricing-page'
 import { getMeta } from '@/shared/lib/get-meta'
 

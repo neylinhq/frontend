@@ -11,7 +11,7 @@ import {
   DialogTitle
 } from '@/shared/components/dialog'
 import { cn } from '@/shared/lib/cn'
-import { TIMING } from '../lib/constants'
+import { TIMING } from '../model/block-editor.constants'
 
 const escapeHtml = (text: string) => {
   return text

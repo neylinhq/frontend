@@ -18,8 +18,8 @@ interface MessageResponse {
 }
 
 export const userApi = {
-  getCurrentUser: async (): Promise<User> => {
-    const response = await api.get<ApiResponse<User>>('/users/me')
+  getCurrentUser: async (options?: { token?: string }): Promise<User> => {
+    const response = await api.get<ApiResponse<User>>('/users/me', { token: options?.token })
     return response.data
   },
 

@@ -5,7 +5,6 @@ import { useLoaderData } from 'react-router'
 import {
   type PaymentHistory,
   type PaymentMethod,
-  subscriptionApi,
   useAddPaymentMethod,
   useRemovePaymentMethod,
   useSetDefaultPaymentMethod,
@@ -20,12 +19,13 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
 import { Typography } from '@/shared/components/typography'
 
+// TODO: Implement payment methods API endpoints
 export const loader = async () => {
-  const [paymentMethods, paymentHistory] = await Promise.all([
-    subscriptionApi.getPaymentMethods(),
-    subscriptionApi.getPaymentHistory()
-  ])
-  return { paymentMethods, paymentHistory }
+  // Return empty data until payment endpoints are implemented
+  return {
+    paymentMethods: [] as PaymentMethod[],
+    paymentHistory: [] as PaymentHistory[]
+  }
 }
 
 interface LoaderData {

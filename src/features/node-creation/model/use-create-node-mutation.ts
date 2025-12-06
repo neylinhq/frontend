@@ -1,9 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useReactFlow } from '@xyflow/react'
-import { mapApi } from '@/entities/map/map.api'
-import { mapKeys } from '@/entities/map/map.queries'
+import { useReactFlow, useViewport } from '@xyflow/react'
+import { mapApi, mapKeys } from '@/entities/map'
 import type { NodeType } from '@/entities/node'
-import { NODE_CREATION_CONFIG } from '../lib/node-creation.constants'
+import { NODE_CREATION_CONFIG } from './node-creation.constants'
 
 interface CreateNodeInput {
   mapId: string
@@ -13,20 +12,28 @@ interface CreateNodeInput {
 }
 
 /**
- * Hook for creating a new node with automatic position calculation
+ * Hook for creating a new node with automatic position calculation.
+ * Must be used inside ReactFlowProvider.
  */
 export const useCreateNodeMutation = () => {
   const queryClient = useQueryClient()
   const reactFlow = useReactFlow()
+  const viewport = useViewport()
 
   return useMutation({
     mutationFn: async ({ mapId, label, type, description }: CreateNodeInput) => {
-      // Calculate position for new node
-      const viewport = reactFlow.getViewport()
-      const center = reactFlow.screenToFlowPosition({
-        x: window.innerWidth / 2,
-        y: window.innerHeight / 2
-      })
+      // Calculate viewport dimensions in flow coordinates
+      const viewportWidthInFlow = window.innerWidth / viewport.zoom
+      const viewportHeightInFlow = window.innerHeight / viewport.zoom
+
+      // Get top-left corner of viewport in flow coordinates
+      const viewportTopLeft = reactFlow.screenToFlowPosition({ x: 0, y: 0 })
+
+      // Calculate center of visible viewport
+      const center = {
+        x: viewportTopLeft.x + viewportWidthInFlow / 2,
+        y: viewportTopLeft.y + viewportHeightInFlow / 2
+      }
 
       // Add some random offset to avoid overlapping nodes
       const randomOffset = {

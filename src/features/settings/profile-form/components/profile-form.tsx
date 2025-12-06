@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { toast } from 'sonner'
+import { toast } from '@/shared/components/toast'
 import { type User, useUpdateProfile, useUploadAvatar } from '@/entities/user'
 import { Button } from '@/shared/components/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'

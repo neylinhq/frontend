@@ -80,8 +80,10 @@ export const mapApi = {
     await api.delete(`/maps/${id}`)
   },
 
-  getFullMap: async (mapId: string): Promise<FullMap> => {
-    const response = await api.get<ApiResponse<FullMap>>(`/maps/${mapId}/full`)
+  getFullMap: async (mapId: string, options?: { token?: string }): Promise<FullMap> => {
+    const response = await api.get<ApiResponse<FullMap>>(`/maps/${mapId}/full`, {
+      token: options?.token
+    })
     return response.data
   },
 
@@ -119,8 +121,14 @@ export const mapApi = {
     return response.data
   },
 
-  getNodeWithContent: async (mapId: string, nodeId: string): Promise<Node> => {
-    const response = await api.get<ApiResponse<Node>>(`/maps/${mapId}/nodes/${nodeId}`)
+  getNodeWithContent: async (
+    mapId: string,
+    nodeId: string,
+    options?: { token?: string }
+  ): Promise<Node> => {
+    const response = await api.get<ApiResponse<Node>>(`/maps/${mapId}/nodes/${nodeId}`, {
+      token: options?.token
+    })
     return response.data
   },
 

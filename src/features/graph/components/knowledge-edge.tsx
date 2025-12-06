@@ -17,7 +17,7 @@ interface KnowledgeEdgeProps {
   targetPosition: Position
   style?: React.CSSProperties
   markerEnd?: string
-  data: Edge & { selected?: boolean }
+  data?: Edge & { selected?: boolean }
 }
 
 export const KnowledgeEdge = memo(
@@ -44,7 +44,12 @@ export const KnowledgeEdge = memo(
       targetPosition
     })
 
-    const isSelected = data.selected
+    const isSelected = data?.selected ?? false
+
+    // Guard: если нет data, не рендерим edge
+    if (!data) {
+      return null
+    }
 
     return (
       <>

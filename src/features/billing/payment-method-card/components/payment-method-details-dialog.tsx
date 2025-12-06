@@ -1,7 +1,7 @@
 import { Copy, Pencil, Star, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { toast } from 'sonner'
+import { toast } from '@/shared/components/toast'
 import type { PaymentMethod, UpdatePaymentMethodInput } from '@/entities/subscription'
 import {
   copyToClipboard,

@@ -11,7 +11,7 @@ import {
   DialogTitle
 } from '@/shared/components/dialog'
 import { Label } from '@/shared/components/label'
-import { TIMING } from '../lib/constants'
+import { TIMING } from '../model/block-editor.constants'
 
 export type MediaType = 'image' | 'imageFigure' | 'video'
 

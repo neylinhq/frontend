@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { toast } from 'sonner'
+import { toast } from '@/shared/components/toast'
 import {
   defaultUserPreferences,
   type User,
@@ -21,7 +21,7 @@ import {
   DENSITY_OPTIONS,
   INTERFACE_SWITCH_SETTINGS,
   NOTIFICATION_SETTINGS
-} from '../preferences-form.constants'
+} from '../model/preferences-form.constants'
 
 interface PreferencesFormProps {
   user: User

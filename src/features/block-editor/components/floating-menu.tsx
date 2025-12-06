@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { UI_DELAYS } from '@/shared/config/api-delays'
 import { cn } from '@/shared/lib/cn'
-import { THRESHOLD } from '../lib/constants'
+import { THRESHOLD } from '../model/block-editor.constants'
 
 interface FloatingMenuProps {
   editor: Editor
@@ -203,46 +203,34 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
       // Use container rect for coordinates (includes gutter)
       const containerRect = container.getBoundingClientRect()
       const mouseY = e.clientY - containerRect.top
-
       const target = e.target as HTMLElement
+
+      // Always find block by Y coordinate - this enables hover from anywhere
+      // in the row (gutter, left margin, over text, right margin)
+      const blocks = Array.from(proseMirror.children).filter(
+        (el): el is HTMLElement => el instanceof HTMLElement
+      )
+
       let block: HTMLElement | null = null
-
-      // Check if we're over a direct child of ProseMirror
-      if (proseMirror.contains(target)) {
-        let current: HTMLElement | null = target
-        while (current && current !== proseMirror) {
-          if (current.parentElement === proseMirror) {
-            block = current
-            break
-          }
-          current = current.parentElement as HTMLElement
-        }
-      }
-
-      // If not directly over a block, find block by Y coordinate
-      // This enables hover from gutter or any area left of content
-      if (!block) {
-        const blocks = Array.from(proseMirror.children).filter(
-          (el): el is HTMLElement => el instanceof HTMLElement
-        )
-        for (const b of blocks) {
-          const blockRect = b.getBoundingClientRect()
-          const blockTop = blockRect.top - containerRect.top
-          const blockBottom = blockRect.bottom - containerRect.top
-          if (
-            mouseY >= blockTop - THRESHOLD.BLOCK_HOVER &&
-            mouseY <= blockBottom + THRESHOLD.BLOCK_HOVER
-          ) {
-            block = b
-            break
-          }
+      for (const b of blocks) {
+        const blockRect = b.getBoundingClientRect()
+        const blockTop = blockRect.top - containerRect.top
+        const blockBottom = blockRect.bottom - containerRect.top
+        if (
+          mouseY >= blockTop - THRESHOLD.BLOCK_HOVER &&
+          mouseY <= blockBottom + THRESHOLD.BLOCK_HOVER
+        ) {
+          block = b
+          break
         }
       }
 
       if (block && block !== hoveredBlock) {
         const blockRect = block.getBoundingClientRect()
+        // Position relative to editorElement (where FloatingMenu is rendered)
+        const editorRect = editorElement.getBoundingClientRect()
         setPosition({
-          top: blockRect.top - containerRect.top,
+          top: blockRect.top - editorRect.top,
           height: blockRect.height
         })
         setHoveredBlock(block)
@@ -790,7 +778,7 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
     <div
       ref={menuRef}
       role='toolbar'
-      className='editor-floating-menu absolute -left-10 flex items-center gap-0.5 opacity-50 transition-opacity hover:opacity-100 animate-menu-in'
+      className='editor-floating-menu absolute -left-16 z-40 flex items-center gap-0.5 opacity-50 transition-opacity hover:opacity-100'
       style={{
         top: Math.max(0, menuTop)
       }}

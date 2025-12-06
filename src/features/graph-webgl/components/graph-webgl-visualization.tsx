@@ -10,7 +10,7 @@ import type { Edge, FullMap, Node } from '@/entities/map'
 import { useFullMap } from '@/entities/map'
 import { Card } from '@/shared/components/card'
 import { cn } from '@/shared/lib/cn'
-import { useGraphEngine } from '../hooks/use-graph-engine'
+import { useGraphEngine } from '../model/use-graph-engine.hooks'
 
 interface GraphWebGLVisualizationProps {
   mapId: string

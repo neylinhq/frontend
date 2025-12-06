@@ -1,8 +1,8 @@
 import { ExternalLink, Sparkles } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-import { useSimilarNodes } from '@/entities/node/node.queries'
+import { useSimilarNodes } from '@/entities/node'
 import { Badge } from '@/shared/components/badge'
-import { Button } from '@/shared/components/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/card'
 
 interface SimilarNodesPanelProps {
@@ -12,6 +12,7 @@ interface SimilarNodesPanelProps {
 }
 
 export const SimilarNodesPanel = ({ mapId, nodeId, onNodeClick }: SimilarNodesPanelProps) => {
+  const { t } = useTranslation()
   const { data: similarResult, isLoading } = useSimilarNodes(mapId, nodeId, {
     limit: 5,
     threshold: 0.7
@@ -34,7 +35,7 @@ export const SimilarNodesPanel = ({ mapId, nodeId, onNodeClick }: SimilarNodesPa
     return (
       <Card>
         <CardContent className='p-4 text-sm text-muted-foreground'>
-          No similar nodes found. Generate embeddings to enable similarity search.
+          {t('ai.noSimilarNodes')}
         </CardContent>
       </Card>
     )
@@ -44,7 +45,7 @@ export const SimilarNodesPanel = ({ mapId, nodeId, onNodeClick }: SimilarNodesPa
     <div className='space-y-3'>
       <div className='flex items-center gap-2'>
         <Sparkles className='w-4 h-4 text-primary' />
-        <h4 className='text-sm font-medium'>Similar Nodes (RAG)</h4>
+        <h4 className='text-sm font-medium'>{t('ai.similarNodes')}</h4>
       </div>
 
       {nodes.map((node, idx) => {
@@ -83,7 +84,7 @@ export const SimilarNodesPanel = ({ mapId, nodeId, onNodeClick }: SimilarNodesPa
                   className='ml-auto text-xs text-primary hover:underline flex items-center gap-1'
                   onClick={e => e.stopPropagation()}
                 >
-                  View
+                  {t('ai.view')}
                   <ExternalLink className='w-3 h-3' />
                 </Link>
               </div>

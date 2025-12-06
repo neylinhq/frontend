@@ -22,7 +22,8 @@ import {
   type Node,
   useFullMap,
   useUpdateNodePosition,
-  useUpdateNodePositions
+  useUpdateNodePositions,
+  useCreateEdge
 } from '@/entities/map'
 import { Card } from '@/shared/components/card'
 import { useDarkMode } from '@/shared/hooks'
@@ -91,6 +92,7 @@ const GraphVisualizationContent = ({
   // Mutations for persisting positions to DB
   const updatePositionMutation = useUpdateNodePosition()
   const updatePositionsMutation = useUpdateNodePositions()
+  const createEdgeMutation = useCreateEdge(mapId)
 
   const { zoomIn, zoomOut, fitView, setCenter, getNode, screenToFlowPosition } = useReactFlow()
   const { zoom: viewportZoom } = useViewport()
@@ -424,12 +426,24 @@ const GraphVisualizationContent = ({
   // Handle new connections
   const onConnect = useCallback(
     (params: Connection) => {
-      if (!interactive) {
+      if (!interactive || !params.source || !params.target) {
         return
       }
+
+      // Optimistic update - сразу показываем edge
       setEdges(eds => addEdge({ ...params, type: 'knowledgeEdge' }, eds))
+
+      // Persist to server
+      createEdgeMutation.mutate({
+        sourceNodeId: params.source,
+        targetNodeId: params.target,
+        relationType: 'prerequisite', // Default relation type
+        label: params.sourceHandle || undefined,
+        strength: 1.0,
+        bidirectional: false
+      })
     },
-    [setEdges, interactive]
+    [setEdges, interactive, createEdgeMutation, mapId]
   )
 
   // Helper to get current positions as Map
@@ -643,10 +657,8 @@ const GraphVisualizationContent = ({
                   return '#64748b'
               }
             }}
-            style={{
-              backgroundColor: isDark ? '#171717' : '#f8fafc'
-            }}
-            maskColor={isDark ? 'rgba(0, 0, 0, 0.6)' : 'rgba(0, 0, 0, 0.1)'}
+            className='!bg-background border border-border'
+            maskColor={isDark ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.6)'}
             pannable
             zoomable
             onClick={(_event, position) =>
@@ -696,16 +708,15 @@ const GraphVisualizationContent = ({
           )
         }
       />
+
     </div>
   )
 }
 
 export const GraphVisualization = memo((props: GraphVisualizationProps) => {
-  return (
-    <ReactFlowProvider>
-      <GraphVisualizationContent {...props} />
-    </ReactFlowProvider>
-  )
+  // Note: ReactFlowProvider should be provided by parent (e.g., MapViewPage)
+  // to allow sibling components (like QuickAddDialog) to access ReactFlow context
+  return <GraphVisualizationContent {...props} />
 })
 
 GraphVisualization.displayName = 'GraphVisualization'

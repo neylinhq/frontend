@@ -11,6 +11,10 @@ const META_TRANSLATIONS = {
       title: 'Обзор',
       description: 'Ваши карты знаний'
     },
+    mapCreation: {
+      title: 'Создать карту',
+      description: 'Создайте новую карту знаний'
+    },
     mapView: {
       title: 'Карта знаний',
       description: 'Визуализация графа знаний'
@@ -73,6 +77,10 @@ const META_TRANSLATIONS = {
     overview: {
       title: 'Overview',
       description: 'Your knowledge maps'
+    },
+    mapCreation: {
+      title: 'Create Map',
+      description: 'Create a new knowledge map'
     },
     mapView: {
       title: 'Knowledge Map',

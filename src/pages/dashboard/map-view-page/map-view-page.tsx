@@ -1,5 +1,6 @@
+import { ReactFlowProvider } from '@xyflow/react'
 import type { FullMap } from '@/entities/map'
-import { QuickAddDialog, useNodeCreationStore } from '@/features/node-creation'
+import { QuickAddDialog, AddNodeFab, useNodeCreationStore } from '@/features/node-creation'
 import { useKeyboardShortcut } from '@/shared/hooks/use-keyboard-shortcut'
 import { GraphView } from '@/widgets/graph-view'
 
@@ -16,9 +17,12 @@ export const MapViewPage = ({ map, mapId }: MapViewPageProps) => {
   useKeyboardShortcut({ key: 'n', ctrl: true }, openQuickAdd)
 
   return (
-    <div className='h-[calc(100vh-3.5rem)]'>
-      <GraphView mapId={mapId} initialData={map} className='h-full w-full' interactive={true} />
-      <QuickAddDialog />
-    </div>
+    <ReactFlowProvider>
+      <div className='h-[calc(100vh-3.5rem)] relative'>
+        <GraphView mapId={mapId} initialData={map} className='h-full w-full' interactive={true} />
+        <QuickAddDialog />
+        <AddNodeFab />
+      </div>
+    </ReactFlowProvider>
   )
 }

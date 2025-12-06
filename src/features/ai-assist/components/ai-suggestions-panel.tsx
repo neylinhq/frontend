@@ -1,13 +1,15 @@
-import { Brain, Lightbulb, Link2, Loader2, Sparkles, Zap } from 'lucide-react'
+import { Brain, Lightbulb, Link2, Loader2, Sparkles, Zap, BookOpen } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link as RouterLink } from 'react-router'
 import type { EnrichType } from '@/entities/ai'
 import { useEnrichNode } from '@/entities/ai'
+import { useGenerateExercises } from '@/entities/exercise'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/card'
 import { Separator } from '@/shared/components/separator'
+import { useToast } from '@/shared/hooks/use-toast'
 import { SimilarNodesPanel } from './similar-nodes-panel'
 
 interface AISuggestionsPanelProps {

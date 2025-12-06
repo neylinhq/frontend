@@ -1,6 +1,6 @@
 import { type LoaderFunctionArgs, useLoaderData } from 'react-router'
 import { mapApi } from '@/entities/map'
-import { requireAuth, withAuthRedirect } from '@/entities/session/server-api'
+import { requireAuth, withAuthRedirect } from '@/app/api'
 import { OverviewPage } from '@/pages/dashboard/overview-page/overview-page'
 import { getMeta } from '@/shared/lib/get-meta'
 

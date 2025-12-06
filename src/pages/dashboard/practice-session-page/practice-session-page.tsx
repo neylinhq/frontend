@@ -1,8 +1,8 @@
-import { ArrowLeft, Loader2 } from 'lucide-react'
+import { ArrowLeft, Loader2, Sparkles } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams } from 'react-router'
-import { useNextExercise, useSubmitAnswer } from '@/entities/exercise'
+import { useGenerateExercises, useNextExercise, useSubmitAnswer } from '@/entities/exercise'
 import { Button } from '@/shared/components/button'
 import { cn } from '@/shared/lib/cn'
 
@@ -12,8 +12,9 @@ export const PracticeSessionPage = () => {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null)
   const [showFeedback, setShowFeedback] = useState(false)
 
-  const { data: exercise, isLoading, error } = useNextExercise(mapId!)
+  const { data: exercise, isLoading, error, refetch } = useNextExercise(mapId!)
   const submitAnswerMutation = useSubmitAnswer()
+  const generateExercisesMutation = useGenerateExercises()
 
   const handleSubmit = () => {
     if (!exercise || !selectedAnswer) return
@@ -33,6 +34,26 @@ export const PracticeSessionPage = () => {
     setShowFeedback(false)
   }
 
+  const handleGenerateExercises = () => {
+    if (!mapId) return
+
+    generateExercisesMutation.mutate(
+      {
+        mapId,
+        request: {
+          difficulty: 3, // Medium difficulty
+          count: 5 // Generate 5 exercises
+        }
+      },
+      {
+        onSuccess: () => {
+          // Refetch to get the first exercise
+          refetch()
+        }
+      }
+    )
+  }
+
   if (isLoading) {
     return (
       <div className='flex h-screen items-center justify-center'>
@@ -43,14 +64,39 @@ export const PracticeSessionPage = () => {
 
   if (error || !exercise) {
     return (
-      <div className='flex h-screen flex-col items-center justify-center gap-4'>
-        <p className='text-muted-foreground'>{t('practice.noExercises')}</p>
-        <Button asChild variant='outline'>
-          <Link to={`/dashboard/maps/${mapId}/view`}>
-            <ArrowLeft className='mr-2 h-4 w-4' />
-            {t('common.back')}
-          </Link>
-        </Button>
+      <div className='flex h-screen flex-col items-center justify-center gap-6'>
+        <div className='text-center space-y-2'>
+          <h2 className='text-xl font-semibold'>{t('practice.noExercises')}</h2>
+          <p className='text-sm text-muted-foreground max-w-md'>
+            {t('practice.noExercisesDescription')}
+          </p>
+        </div>
+
+        <div className='flex gap-3'>
+          <Button
+            onClick={handleGenerateExercises}
+            disabled={generateExercisesMutation.isPending}
+          >
+            {generateExercisesMutation.isPending ? (
+              <>
+                <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                {t('practice.generating')}
+              </>
+            ) : (
+              <>
+                <Sparkles className='mr-2 h-4 w-4' />
+                {t('practice.generateExercises')}
+              </>
+            )}
+          </Button>
+
+          <Button asChild variant='outline'>
+            <Link to={`/dashboard/maps/${mapId}/view`}>
+              <ArrowLeft className='mr-2 h-4 w-4' />
+              {t('common.back')}
+            </Link>
+          </Button>
+        </div>
       </div>
     )
   }

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Link, Outlet, useLoaderData, useLocation } from 'react-router'
-import { requireAuth, withAuthRedirect } from '@/entities/session/server-api'
+import { requireAuth, withAuthRedirect } from '@/app/api'
 import { type User, userApi } from '@/entities/user'
 import { SETTINGS_NAV_ITEMS } from '@/shared/config'
 import { cn } from '@/shared/lib/cn'

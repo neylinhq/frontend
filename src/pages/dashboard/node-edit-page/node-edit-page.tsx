@@ -9,7 +9,7 @@ import type { FullMap, Node } from '@/entities/map'
 import { useUpdateNode } from '@/entities/map'
 import type { NodeType } from '@/entities/node'
 import { AISuggestionsPanel } from '@/features/ai-assist/components/ai-suggestions-panel'
-import { BlockEditor, editorToHTML, htmlToEditor, htmlToPlainText } from '@/features/block-editor'
+import { BlockEditor, editorToHTML, GUTTER, htmlToEditor, htmlToPlainText } from '@/features/block-editor'
 import { NodeConnectionsPanel } from '@/features/node-connections-panel'
 import { useAutoSave } from '@/features/node-editor'
 import { NodeMetadataForm, type NodeMetadataFormValues } from '@/features/node-metadata-form'
@@ -206,7 +206,7 @@ export const NodeEditPage = ({
         {/* Editor Content */}
         <div ref={contentRef} className='mx-auto max-w-3xl px-4 md:px-8 py-6 md:py-8'>
             {/* Breadcrumb & Actions - with gutter matching editor */}
-            <div className='mb-8 flex items-center justify-between md:pl-14'>
+            <div className={cn('mb-8 flex items-center justify-between', GUTTER.PADDING_CLASS)}>
               <div className='flex items-center gap-3'>
                 <Button variant='ghost' size='sm' asChild className='h-8 px-2'>
                   <Link to={`/dashboard/maps/${mapId}/view`}>
@@ -249,7 +249,7 @@ export const NodeEditPage = ({
               )}
             </div>
             {/* Editable Title - with gutter matching editor */}
-            <div className='mb-4 md:mb-6 md:pl-14'>
+            <div className={cn('mb-2', GUTTER.PADDING_CLASS)}>
               <textarea
                 ref={titleInputRef}
                 value={title}

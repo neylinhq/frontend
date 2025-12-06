@@ -1,6 +1,6 @@
 import { redirect } from 'react-router'
 import { ApiError, api } from '@/shared/api/api-client'
-import { destroySession, getSession } from './session.server'
+import { destroySession, getSession } from '@/entities/session/session.server'
 
 /**
  * Wraps an async function and redirects to sign-in on 401 errors.

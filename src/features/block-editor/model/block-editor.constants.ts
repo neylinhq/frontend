@@ -18,7 +18,9 @@ export const MENU = {
   /** Bubble menu minimum width */
   BUBBLE_MIN_WIDTH: 400,
   /** Viewport padding for menu positioning */
-  VIEWPORT_PADDING: 8
+  VIEWPORT_PADDING: 8,
+  /** Gap between bubble menu and selection */
+  BUBBLE_GAP: 24
 } as const
 
 /**
@@ -49,4 +51,17 @@ export const TIMING = {
 export const TOC = {
   /** Scroll offset when clicking TOC item (negative = above target) */
   SCROLL_OFFSET: -100
+} as const
+
+/**
+ * Gutter configuration for floating menu positioning
+ * The gutter is the left margin where floating menu buttons appear
+ */
+export const GUTTER = {
+  /** Width of gutter in pixels (Tailwind: pl-16 = 64px) */
+  WIDTH: 64,
+  /** Tailwind class for gutter padding (apply to content containers) */
+  PADDING_CLASS: 'md:pl-16',
+  /** Tailwind class for floating menu position (negative of padding) */
+  MENU_POSITION_CLASS: '-left-16'
 } as const

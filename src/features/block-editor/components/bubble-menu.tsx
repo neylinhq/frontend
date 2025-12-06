@@ -231,8 +231,9 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
   const { t } = useTranslation()
   const [isVisible, setIsVisible] = useState(false)
   const [position, setPosition] = useState({ top: 0, left: 0 })
-  const [menuDirection, setMenuDirection] = useState<'above' | 'below'>('above')
   const [menuState, dispatch] = useReducer(menuReducer, initialMenuState)
+  // Counter to force re-render on every transaction (for reactive block type updates)
+  const [, forceUpdate] = useReducer(x => x + 1, 0)
   const menuRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const turnIntoRef = useRef<HTMLDivElement>(null)
@@ -335,8 +336,6 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
 
     // Get the selection coordinates (viewport-relative)
     const { view } = editor
-    const start = view.coordsAtPos(from)
-    const end = view.coordsAtPos(to)
 
     // Get the .tiptap-editor container (where BubbleMenu is positioned)
     const tiptapEditor = view.dom.closest('.tiptap-editor') as HTMLElement
@@ -345,15 +344,33 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
     }
     const containerRect = tiptapEditor.getBoundingClientRect()
 
-    // Always use the topmost coordinate for menu positioning (selection can go either direction)
-    const selectionTop = Math.min(start.top, end.top)
-    const selectionBottom = Math.max(start.bottom, end.bottom)
+    // Get selection bounding box using getBoundingClientRect on the range
+    // This gives us the true visual bounds of the entire selection
+    const domSelection = window.getSelection()
+    let selectionRect: DOMRect | null = null
+
+    if (domSelection && domSelection.rangeCount > 0) {
+      const range = domSelection.getRangeAt(0)
+      selectionRect = range.getBoundingClientRect()
+    }
+
+    // Fallback to coordsAtPos if no valid rect
+    if (!selectionRect || selectionRect.width === 0) {
+      const start = view.coordsAtPos(from)
+      const end = view.coordsAtPos(to)
+      selectionRect = new DOMRect(
+        Math.min(start.left, end.left),
+        Math.min(start.top, end.top),
+        Math.abs(end.left - start.left),
+        Math.abs(end.bottom - start.top)
+      )
+    }
 
     // Calculate position relative to .tiptap-editor container
-    // Center horizontally based on selection midpoint
-    let left = (start.left + end.left) / 2 - containerRect.left
-    // Position above selection (transform: translateY(-100%) will shift menu up by its height)
-    let top = selectionTop - containerRect.top
+    // Center horizontally based on selection
+    let left = selectionRect.left + selectionRect.width / 2 - containerRect.left
+    // Position above selection with small gap
+    let top = selectionRect.top - containerRect.top - MENU.VIEWPORT_PADDING
 
     // Boundary checking relative to container
     const editorWidth = containerRect.width
@@ -368,18 +385,16 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
       left = editorWidth - halfMenuWidth - MENU.VIEWPORT_PADDING
     }
 
-    // Check if menu would go above container - if so, position below selection
-    // (transform: translateY(-100%) will shift menu up by MENU.BUBBLE_HEIGHT)
+    // Ensure menu doesn't go above viewport - clamp to minimum padding
     if (top - MENU.BUBBLE_HEIGHT < MENU.VIEWPORT_PADDING) {
-      top = selectionBottom - containerRect.top
-      setMenuDirection('below')
-    } else {
-      setMenuDirection('above')
+      top = MENU.BUBBLE_HEIGHT + MENU.VIEWPORT_PADDING
     }
 
     setPosition({ top, left })
     setIsVisible(true)
-  }, [editor])
+    // Force re-render to update block type in Turn Into dropdown
+    forceUpdate()
+  }, [editor, forceUpdate])
 
   useEffect(() => {
     editor.on('selectionUpdate', updateMenu)
@@ -414,32 +429,18 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
     }
   }
 
-  // OPT-2: Memoize current block type to avoid redundant isActive() checks on every render
-  // Note: editor dependency causes recalc when editor state changes, which is needed for isActive()
-  const currentBlockType = useMemo(() => {
-    if (editor.isActive('heading', { level: 1 })) {
-      return BLOCK_TYPES[1] // heading1
-    }
-    if (editor.isActive('heading', { level: 2 })) {
-      return BLOCK_TYPES[2] // heading2
-    }
-    if (editor.isActive('heading', { level: 3 })) {
-      return BLOCK_TYPES[3] // heading3
-    }
-    if (editor.isActive('bulletList')) {
-      return BLOCK_TYPES[4] // bulletList
-    }
-    if (editor.isActive('orderedList')) {
-      return BLOCK_TYPES[5] // numberedList
-    }
-    if (editor.isActive('taskList')) {
-      return BLOCK_TYPES[6] // todoList
-    }
-    if (editor.isActive('blockquote')) {
-      return BLOCK_TYPES[7] // quote
-    }
-    return BLOCK_TYPES[0] // text
-  }, [editor])
+  // Determine current block type (recalculated on every render via forceUpdate)
+  const getCurrentBlockType = () => {
+    if (editor.isActive('heading', { level: 1 })) return BLOCK_TYPES[1]
+    if (editor.isActive('heading', { level: 2 })) return BLOCK_TYPES[2]
+    if (editor.isActive('heading', { level: 3 })) return BLOCK_TYPES[3]
+    if (editor.isActive('bulletList')) return BLOCK_TYPES[4]
+    if (editor.isActive('orderedList')) return BLOCK_TYPES[5]
+    if (editor.isActive('taskList')) return BLOCK_TYPES[6]
+    if (editor.isActive('blockquote')) return BLOCK_TYPES[7]
+    return BLOCK_TYPES[0]
+  }
+  const currentBlockType = getCurrentBlockType()
   const CurrentBlockIcon = currentBlockType?.icon || Type
 
   if (!isVisible) {
@@ -454,7 +455,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
         style={{
           top: position.top,
           left: position.left,
-          transform: menuDirection === 'above' ? 'translate(-50%, -100%)' : 'translate(-50%, 0%)'
+          transform: 'translate(-50%, -100%)'
         }}
       >
         <input
@@ -488,7 +489,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
       style={{
         top: position.top,
         left: position.left,
-        transform: menuDirection === 'above' ? 'translate(-50%, -100%)' : 'translate(-50%, 0%)'
+        transform: 'translate(-50%, -100%)'
       }}
     >
       {/* Undo/Redo */}
@@ -521,17 +522,17 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
           aria-expanded={isTurnIntoOpen}
           aria-label={t('editor.bubble.turnInto')}
           className={cn(
-            'flex h-8 items-center gap-1 rounded-md px-2 transition-colors',
+            'flex h-8 items-center gap-1 rounded-md px-2 whitespace-nowrap transition-colors',
             isTurnIntoOpen
               ? 'bg-accent text-accent-foreground'
               : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground'
           )}
         >
-          <CurrentBlockIcon className='h-4 w-4' />
+          <CurrentBlockIcon className='h-4 w-4 shrink-0' />
           <span className='text-xs'>
             {t(`editor.bubble.blockTypes.${currentBlockType?.name || 'text'}`)}
           </span>
-          <ChevronDown className='h-3 w-3' />
+          <ChevronDown className='h-3 w-3 shrink-0' />
         </button>
 
         {isTurnIntoOpen && (
@@ -557,7 +558,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
                     // Update selection on hover for consistent UX
                   }}
                   className={cn(
-                    'flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors',
+                    'flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-left transition-colors',
                     isSelected && 'bg-accent/70',
                     isActive && !isSelected && 'bg-accent text-accent-foreground',
                     !isActive && !isSelected && 'text-foreground hover:bg-accent/50'
@@ -803,7 +804,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
               data-selected={moreMenuSelectedIndex === 0}
               onClick={() => handleMoreMenuSelect(moreMenuItems[0])}
               className={cn(
-                'flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-foreground transition-colors',
+                'flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-left text-foreground transition-colors',
                 moreMenuSelectedIndex === 0 ? 'bg-accent/70' : 'hover:bg-accent/50'
               )}
             >
@@ -816,7 +817,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
               data-selected={moreMenuSelectedIndex === 1}
               onClick={() => handleMoreMenuSelect(moreMenuItems[1])}
               className={cn(
-                'flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-foreground transition-colors',
+                'flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-left text-foreground transition-colors',
                 moreMenuSelectedIndex === 1 ? 'bg-accent/70' : 'hover:bg-accent/50'
               )}
             >
@@ -829,7 +830,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
               data-selected={moreMenuSelectedIndex === 2}
               onClick={() => handleMoreMenuSelect(moreMenuItems[2])}
               className={cn(
-                'flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-destructive transition-colors',
+                'flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-left text-destructive transition-colors',
                 moreMenuSelectedIndex === 2 ? 'bg-destructive/20' : 'hover:bg-destructive/10'
               )}
             >

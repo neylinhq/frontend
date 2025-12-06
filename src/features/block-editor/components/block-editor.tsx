@@ -7,6 +7,7 @@ import { cn } from '@/shared/lib/cn'
 import { useTheme } from '@/shared/lib/theme'
 
 import { createExtensions } from '../lib/extensions'
+import { GUTTER } from '../model/block-editor.constants'
 import type { BlockEditorProps } from '../model/block-editor.types'
 
 import { EditorBubbleMenu } from './bubble-menu'
@@ -326,7 +327,8 @@ export const BlockEditor = ({
     <div
       ref={editorWrapperRef}
       className={cn(
-        'tiptap-editor-wrapper relative md:pl-14',
+        'tiptap-editor-wrapper relative',
+        GUTTER.PADDING_CLASS,
         className
       )}
     >

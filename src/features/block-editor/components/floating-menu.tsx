@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { UI_DELAYS } from '@/shared/config/api-delays'
 import { cn } from '@/shared/lib/cn'
-import { THRESHOLD } from '../model/block-editor.constants'
+import { GUTTER, THRESHOLD } from '../model/block-editor.constants'
 
 interface FloatingMenuProps {
   editor: Editor
@@ -774,7 +774,10 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
     <div
       ref={menuRef}
       role='toolbar'
-      className='editor-floating-menu absolute -left-14 z-40 flex items-center gap-0.5 opacity-50 transition-opacity hover:opacity-100'
+      className={cn(
+        'editor-floating-menu absolute z-40 flex items-center gap-0.5 opacity-50 transition-opacity hover:opacity-100',
+        GUTTER.MENU_POSITION_CLASS
+      )}
       style={{
         top: Math.max(0, menuTop)
       }}

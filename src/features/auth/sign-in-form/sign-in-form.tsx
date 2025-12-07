@@ -1,9 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
-import { useEffect } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { Link as RouterLink, useActionData, useNavigation, useSubmit } from 'react-router'
+import { Link as RouterLink, useNavigate, useSearchParams } from 'react-router'
+import { sessionApi } from '@/entities/session'
+import { ApiError } from '@/shared/api/api-client'
 import { toast } from '@/shared/components/toast'
 import { z } from 'zod'
 import { Button } from '@/shared/components/button'
@@ -20,24 +22,11 @@ import { Input } from '@/shared/components/input'
 import { LegalLinks } from '@/shared/components/legal-links'
 import { AUTH_ROUTES } from '@/shared/config'
 
-type ActionData = { error?: string; code?: string } | undefined
-
 export const SignInForm = () => {
   const { t } = useTranslation()
-  const navigation = useNavigation()
-  const actionData = useActionData<ActionData>()
-  const submit = useSubmit()
-
-  const isLoading = navigation.state === 'submitting'
-
-  // Show toast on error from action
-  useEffect(() => {
-    if (actionData?.error) {
-      toast.error(t('auth.signIn.error'), {
-        description: actionData.error
-      })
-    }
-  }, [actionData, t])
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const [isLoading, setIsLoading] = useState(false)
 
   // Define schema inside component to access t()
   const signInSchema = z.object({
@@ -58,8 +47,31 @@ export const SignInForm = () => {
       <Form {...form}>
         <form
           className='grid gap-4'
-          onSubmit={form.handleSubmit(data => {
-            submit(data, { method: 'post' })
+          onSubmit={form.handleSubmit(async data => {
+            setIsLoading(true)
+            try {
+              console.log('[SignIn] Calling login API...')
+              const result = await sessionApi.login(data)
+              console.log('[SignIn] Login success:', result)
+              const returnUrl = searchParams.get('from') || '/dashboard/overview'
+              console.log('[SignIn] Navigating to:', returnUrl)
+              navigate(returnUrl)
+              console.log('[SignIn] Navigate called')
+            } catch (error) {
+              console.error('[SignIn] Error:', error)
+              if (error instanceof ApiError) {
+                const errorData = error.data as { error?: { message?: string } } | null
+                toast.error(t('auth.signIn.error'), {
+                  description: errorData?.error?.message || t('auth.signIn.invalidCredentials')
+                })
+              } else {
+                toast.error(t('auth.signIn.error'), {
+                  description: t('auth.signIn.invalidCredentials')
+                })
+              }
+            } finally {
+              setIsLoading(false)
+            }
           })}
         >
           <FormField

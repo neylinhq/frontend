@@ -1,9 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
-import { useEffect } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { useActionData, useNavigation, useSubmit } from 'react-router'
+import { useNavigate } from 'react-router'
+import { sessionApi } from '@/entities/session'
+import { ApiError } from '@/shared/api/api-client'
 import { toast } from '@/shared/components/toast'
 import { z } from 'zod'
 import { Button } from '@/shared/components/button'
@@ -19,24 +21,10 @@ import { FormDivider } from '@/shared/components/form-divider'
 import { Input } from '@/shared/components/input'
 import { LegalLinks } from '@/shared/components/legal-links'
 
-type ActionData = { error?: string; code?: string } | undefined
-
 export const SignUpForm = () => {
   const { t } = useTranslation()
-  const navigation = useNavigation()
-  const submit = useSubmit()
-  const actionData = useActionData<ActionData>()
-
-  const isLoading = navigation.state === 'submitting'
-
-  // Show toast on error from action
-  useEffect(() => {
-    if (actionData?.error) {
-      toast.error(t('auth.signUp.error'), {
-        description: actionData.error
-      })
-    }
-  }, [actionData, t])
+  const navigate = useNavigate()
+  const [isLoading, setIsLoading] = useState(false)
 
   // Define schema inside component to use t()
   const signUpSchema = z
@@ -64,8 +52,29 @@ export const SignUpForm = () => {
       <Form {...form}>
         <form
           className='grid gap-4'
-          onSubmit={form.handleSubmit(data => {
-            submit(data, { method: 'post' })
+          onSubmit={form.handleSubmit(async data => {
+            setIsLoading(true)
+            try {
+              const user = await sessionApi.register({
+                email: data.email,
+                password: data.password
+              })
+              // Redirect to verify-email with email param
+              navigate(`/auth/verify-email?email=${encodeURIComponent(user.email)}`)
+            } catch (error) {
+              if (error instanceof ApiError) {
+                const errorData = error.data as { error?: { message?: string } } | null
+                toast.error(t('auth.signUp.error'), {
+                  description: errorData?.error?.message || t('auth.signUp.genericError')
+                })
+              } else {
+                toast.error(t('auth.signUp.error'), {
+                  description: t('auth.signUp.genericError')
+                })
+              }
+            } finally {
+              setIsLoading(false)
+            }
           })}
         >
           <FormField

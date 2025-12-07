@@ -3,26 +3,26 @@ import { useTranslation } from 'react-i18next'
 import { useEnrichNode, type EnrichType } from '@/entities/ai'
 import { useGenerateExercises } from '@/entities/exercise'
 import { useNode, useUpdateNode } from '@/entities/node'
+import { Separator } from '@/shared/components/separator'
 import { useToast } from '@/shared/components/toast'
-import type { ChatMessage, PreviewCard, EnrichmentPreviewData, ExercisePreviewData } from '../chat.types'
+import type { ChatMessage, PreviewCard, QuickActionType, EnrichmentPreviewData, ExercisePreviewData } from '../chat.types'
 import { ChatMessageList } from './chat-message-list'
 import { ChatInput } from './chat-input'
+import { QuickActionBar } from './quick-action-bar'
+import { ContextIndicator } from './context-indicator'
 
 interface AIChatPanelProps {
   nodeId: string
   mapId: string
+  quickActions?: QuickActionType[]
 }
 
-export const AIChatPanel = ({ nodeId, mapId }: AIChatPanelProps) => {
+export const AIChatPanel = ({ nodeId, mapId, quickActions = ['enrich', 'examples', 'sources', 'exercises'] }: AIChatPanelProps) => {
   const { t } = useTranslation()
   const { toast } = useToast()
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [inputValue, setInputValue] = useState('')
   const [isStreaming, setIsStreaming] = useState(false)
-  const [selectedModel, setSelectedModel] = useState('gpt-4')
-
-  // Available models - TODO: get from user plan
-  const availableModels = ['gpt-3.5-turbo', 'gpt-4', 'gpt-4-turbo', 'claude-3-sonnet', 'claude-3-opus']
 
   // Data hooks
   const { data: node } = useNode(mapId, nodeId)
@@ -30,25 +30,36 @@ export const AIChatPanel = ({ nodeId, mapId }: AIChatPanelProps) => {
   const generateExercisesMutation = useGenerateExercises()
   const updateNodeMutation = useUpdateNode(mapId, nodeId)
 
-  const detectIntent = (content: string): 'enrich' | 'examples' | 'sources' | 'exercises' | 'general' => {
-    const trimmed = content.trim()
-
-    // Slash commands
-    if (trimmed.startsWith('/')) {
-      const command = trimmed.split(' ')[0].toLowerCase()
-      if (command === '/enrich' || command === '/improve' || command === '/description') return 'enrich'
-      if (command === '/examples' || command === '/demos') return 'examples'
-      if (command === '/sources' || command === '/references') return 'sources'
-      if (command === '/exercises' || command === '/quiz') return 'exercises'
+  const handleQuickAction = (action: QuickActionType) => {
+    // Map quick actions to prompts
+    const promptMap: Record<QuickActionType, string> = {
+      enrich: t('ai.improveDescription'),
+      examples: t('ai.generateExamples'),
+      sources: t('ai.findSources'),
+      exercises: t('ai.generateExercises')
     }
 
-    // Keyword fallback
-    const lower = trimmed.toLowerCase()
-    if (lower.includes('description') || lower.includes('improve')) return 'enrich'
-    if (lower.includes('example')) return 'examples'
-    if (lower.includes('source') || lower.includes('reference')) return 'sources'
-    if (lower.includes('exercise') || lower.includes('quiz')) return 'exercises'
+    // Fill input with prompt and trigger send
+    const prompt = promptMap[action]
+    setInputValue(prompt)
+    // Auto-send after filling
+    setTimeout(() => handleSendMessage(prompt), 100)
+  }
 
+  const detectIntent = (content: string): QuickActionType | 'general' => {
+    const lower = content.toLowerCase()
+    if (lower.includes('description') || lower.includes('improve') || lower.includes('enhance')) {
+      return 'enrich'
+    }
+    if (lower.includes('example') || lower.includes('demo')) {
+      return 'examples'
+    }
+    if (lower.includes('source') || lower.includes('reference') || lower.includes('link')) {
+      return 'sources'
+    }
+    if (lower.includes('exercise') || lower.includes('quiz') || lower.includes('flashcard') || lower.includes('practice')) {
+      return 'exercises'
+    }
     return 'general'
   }
 
@@ -222,37 +233,53 @@ export const AIChatPanel = ({ nodeId, mapId }: AIChatPanelProps) => {
   }
 
   return (
-    <div className='flex flex-col h-full'>
-      {/* Chat Messages */}
-      <div className='flex-1 overflow-y-auto px-3 py-3'>
-        {messages.length === 0 ? (
-          <div className='flex items-center justify-center h-full'>
-            <p className='text-xs text-muted-foreground text-center max-w-xs text-balance'>
-              {t('ai.chat.noMessages')}
-            </p>
-          </div>
-        ) : (
-          <ChatMessageList
-            messages={messages}
-            isStreaming={isStreaming}
-            onRemovePreview={handleRemovePreview}
-            onSavePreview={handleSavePreview}
-          />
-        )}
-      </div>
+    <div className='flex flex-col h-full min-h-0'>
+      {/* Quick Actions */}
+      <QuickActionBar
+        actions={quickActions}
+        onActionClick={handleQuickAction}
+        disabled={isStreaming}
+      />
 
-      {/* Input - Fixed at bottom */}
-      <div className='border-t border-border p-3'>
-        <ChatInput
-          value={inputValue}
-          onChange={setInputValue}
-          onSend={handleSendMessage}
-          disabled={isStreaming}
-          placeholder={t('ai.chat.placeholder')}
-          model={selectedModel}
-          onModelChange={setSelectedModel}
-          availableModels={availableModels}
-        />
+      <Separator className='my-3' />
+
+      {/* Chat Messages */}
+      <div className='flex-1 min-h-0 flex flex-col'>
+        <div className='flex-1 overflow-y-auto px-4'>
+          {messages.length === 0 ? (
+            <div className='flex items-center justify-center h-full text-center p-8'>
+              <p className='text-sm text-muted-foreground max-w-xs'>
+                {t('ai.chat.noMessages')}
+              </p>
+            </div>
+          ) : (
+            <ChatMessageList
+              messages={messages}
+              isStreaming={isStreaming}
+              onRemovePreview={handleRemovePreview}
+              onSavePreview={handleSavePreview}
+            />
+          )}
+        </div>
+
+        {/* Context Indicator */}
+        <div className='px-4 pb-3'>
+          <ContextIndicator
+            nodeId={nodeId}
+            mapId={mapId}
+          />
+        </div>
+
+        {/* Input */}
+        <div className='px-4 pb-4'>
+          <ChatInput
+            value={inputValue}
+            onChange={setInputValue}
+            onSend={handleSendMessage}
+            disabled={isStreaming}
+            placeholder={t('ai.chat.placeholder')}
+          />
+        </div>
       </div>
     </div>
   )

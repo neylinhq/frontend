@@ -14,14 +14,9 @@ interface RegisterRequest {
   lastName?: string
 }
 
-interface AuthResponse {
+interface UserResponse {
   success: boolean
-  data: {
-    user: User
-    accessToken: string
-    refreshToken: string
-    message?: string
-  }
+  data: User
 }
 
 interface MessageResponse {
@@ -41,50 +36,51 @@ interface ResetPasswordRequest {
   password: string
 }
 
+// Options for server-side requests
+interface RequestOptions {
+  locale?: string
+}
+
 export const sessionApi = {
-  login: async (data: LoginRequest) => {
-    const response = await api.post<AuthResponse>('/auth/login', data, { skipAuth: true })
-    return {
-      user: response.data.user,
-      accessToken: response.data.accessToken,
-      refreshToken: response.data.refreshToken
-    }
-  },
-
-  register: async (data: RegisterRequest) => {
-    const response = await api.post<AuthResponse>('/auth/register', data, { skipAuth: true })
-    return {
-      user: response.data.user,
-      accessToken: response.data.accessToken,
-      refreshToken: response.data.refreshToken,
-      message: response.data.message
-    }
-  },
-
-  verifyEmail: async (data: VerifyEmailRequest) => {
-    const response = await api.post<MessageResponse>('/auth/verify-email', data, { skipAuth: true })
+  getMe: async () => {
+    const response = await api.get<UserResponse>('/users/me')
     return response.data
   },
 
-  resendVerification: async () => {
-    const response = await api.post<MessageResponse>('/auth/resend-verification', {})
+  login: async (data: LoginRequest, options?: RequestOptions) => {
+    const response = await api.post<UserResponse>('/auth/login', data, { skipAuth: true, locale: options?.locale })
+    return response.data // Returns User directly
+  },
+
+  register: async (data: RegisterRequest, options?: RequestOptions) => {
+    const response = await api.post<UserResponse>('/auth/register', data, { skipAuth: true, locale: options?.locale })
+    return response.data // Returns User directly
+  },
+
+  verifyEmail: async (data: VerifyEmailRequest, options?: RequestOptions) => {
+    const response = await api.post<MessageResponse>('/auth/verify-email', data, { skipAuth: true, locale: options?.locale })
     return response.data
   },
 
-  forgotPassword: async (email: string) => {
+  resendVerification: async (options?: RequestOptions) => {
+    const response = await api.post<MessageResponse>('/auth/resend-verification', {}, { locale: options?.locale })
+    return response.data
+  },
+
+  forgotPassword: async (email: string, options?: RequestOptions) => {
     const response = await api.post<MessageResponse>(
       '/auth/forgot-password',
       { email },
-      { skipAuth: true }
+      { skipAuth: true, locale: options?.locale }
     )
     return response.data
   },
 
-  resetPassword: async (data: ResetPasswordRequest) => {
+  resetPassword: async (data: ResetPasswordRequest, options?: RequestOptions) => {
     const response = await api.post<MessageResponse>(
       '/auth/reset-password',
       data,
-      { skipAuth: true }
+      { skipAuth: true, locale: options?.locale }
     )
     return response.data
   },

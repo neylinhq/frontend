@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { Link, useFetcher } from 'react-router'
-import { useSessionStore } from '@/entities/session'
+import { Link, useNavigate } from 'react-router'
+import { sessionApi, useSessionStore } from '@/entities/session'
 import { ModeSelect } from '@/features/theme/mode-select'
 import { PaletteSelect } from '@/features/theme/palette-select'
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/components/avatar'
@@ -20,16 +20,21 @@ import { getShortcut } from '@/shared/lib/platform'
 import { USER_NAV_LOGOUT_ITEM, USER_NAV_MAIN_SECTION } from './user-nav.constants'
 
 export const UserNav = () => {
-  const { user } = useSessionStore()
-  const fetcher = useFetcher()
+  const { user, logout } = useSessionStore()
+  const navigate = useNavigate()
   const { t } = useTranslation()
 
   if (!user) {
     return null
   }
 
-  const handleLogout = () => {
-    fetcher.submit(null, { method: 'post', action: '/auth/logout' })
+  const handleLogout = async () => {
+    try {
+      await sessionApi.logout()
+    } finally {
+      logout()
+      navigate('/auth/sign-in')
+    }
   }
 
   return (

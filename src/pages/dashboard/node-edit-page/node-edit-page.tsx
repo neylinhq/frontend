@@ -311,10 +311,8 @@ export const NodeEditPage = ({
               </TabsContent>
 
               {/* AI Tab */}
-              <TabsContent value='ai' className='flex-1 overflow-y-auto [scrollbar-gutter:stable] min-h-0 mt-0'>
-                <div className='p-4'>
-                  <AISuggestionsPanel nodeId={nodeId} mapId={mapId} />
-                </div>
+              <TabsContent value='ai' className='flex-1 flex flex-col min-h-0 mt-0'>
+                <AISuggestionsPanel nodeId={nodeId} mapId={mapId} />
               </TabsContent>
             </Tabs>
           </div>
@@ -360,10 +358,8 @@ export const NodeEditPage = ({
             </TabsContent>
 
             {/* AI Tab */}
-            <TabsContent value='ai' className='flex-1 overflow-y-auto [scrollbar-gutter:stable] min-h-0 mt-0'>
-              <div className='p-4'>
+            <TabsContent value='ai' className='flex-1 flex flex-col min-h-0 mt-0'>
                 <AISuggestionsPanel nodeId={nodeId} mapId={mapId} />
-              </div>
             </TabsContent>
           </Tabs>
         </SheetContent>

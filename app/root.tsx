@@ -28,18 +28,13 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   // Dynamic imports to avoid bundling Node.js modules for client
   const { getI18nData } = await import('@/app/i18n/i18n.server')
   const { getThemeData } = await import('@/app/theme/theme.server')
-  const { getSession } = await import('@/entities/session/session.server')
 
   const i18nData = getI18nData(request)
   const themeData = getThemeData(request)
-  const session = await getSession(request)
 
   return {
     i18n: i18nData,
-    theme: themeData,
-    // Pass tokens to client for API calls
-    authToken: session?.token ?? null,
-    refreshToken: session?.refreshToken ?? null
+    theme: themeData
   }
 }
 
@@ -161,7 +156,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
 }
 
 const App = () => {
-  const { i18n: i18nData, theme: themeData, authToken, refreshToken } = useLoaderData<typeof loader>()
+  const { i18n: i18nData, theme: themeData } = useLoaderData<typeof loader>()
   const initializedRef = useRef(false)
   const navigation = useNavigation()
 
@@ -170,20 +165,6 @@ const App = () => {
     initI18n(i18nData)
     initializedRef.current = true
   }
-
-  // Sync auth tokens to localStorage for client-side API calls
-  useEffect(() => {
-    if (authToken) {
-      localStorage.setItem('auth_token', authToken)
-    } else {
-      localStorage.removeItem('auth_token')
-    }
-    if (refreshToken) {
-      localStorage.setItem('refresh_token', refreshToken)
-    } else {
-      localStorage.removeItem('refresh_token')
-    }
-  }, [authToken, refreshToken])
 
   // Disable transitions during navigation (prevents flash when lazy CSS loads)
   useEffect(() => {

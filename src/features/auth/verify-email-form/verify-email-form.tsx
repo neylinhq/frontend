@@ -1,12 +1,12 @@
 import { Loader2, Mail, RefreshCw } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useActionData, useNavigation, useSubmit } from 'react-router'
+import { useNavigate } from 'react-router'
+import { sessionApi } from '@/entities/session'
+import { ApiError } from '@/shared/api/api-client'
 import { Button } from '@/shared/components/button'
 import { OtpInput } from '@/shared/components/otp-input'
 import { toast } from '@/shared/components/toast'
-
-type ActionData = { error?: string; success?: boolean } | undefined
 
 interface VerifyEmailFormProps {
   email?: string
@@ -23,14 +23,13 @@ const maskEmail = (email: string): string => {
 
 export const VerifyEmailForm = ({ email }: VerifyEmailFormProps) => {
   const { t } = useTranslation()
-  const navigation = useNavigation()
-  const actionData = useActionData<ActionData>()
-  const submit = useSubmit()
+  const navigate = useNavigate()
 
   const [code, setCode] = useState('')
   const [resendCooldown, setResendCooldown] = useState(0)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [hasError, setHasError] = useState(false)
 
-  const isSubmitting = navigation.state === 'submitting'
   const canResend = resendCooldown === 0
 
   // Handle resend cooldown timer
@@ -41,26 +40,46 @@ export const VerifyEmailForm = ({ email }: VerifyEmailFormProps) => {
     }
   }, [resendCooldown])
 
-  // Show toast on error/success from action
-  useEffect(() => {
-    if (actionData?.error) {
-      toast.error(t('auth.verifyEmail.error'), {
-        description: actionData.error
-      })
-    }
-  }, [actionData, t])
+  const handleSubmit = async () => {
+    if (code.length !== 6 || isSubmitting) return
 
-  const handleSubmit = () => {
-    if (code.length === 6) {
-      submit({ code, intent: 'verify' }, { method: 'post' })
+    setIsSubmitting(true)
+    setHasError(false)
+
+    try {
+      await sessionApi.verifyEmail({ code })
+      navigate('/dashboard/overview')
+    } catch (error) {
+      setHasError(true)
+      if (error instanceof ApiError) {
+        const errorData = error.data as { error?: { message?: string } } | null
+        toast.error(t('auth.verifyEmail.error'), {
+          description: errorData?.error?.message || t('auth.verifyEmail.invalidCode')
+        })
+      } else {
+        toast.error(t('auth.verifyEmail.error'), {
+          description: t('auth.verifyEmail.invalidCode')
+        })
+      }
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
-  const handleResend = () => {
-    if (canResend) {
-      submit({ intent: 'resend' }, { method: 'post' })
+  const handleResend = async () => {
+    if (!canResend || isSubmitting) return
+
+    try {
+      await sessionApi.resendVerification()
       setResendCooldown(RESEND_COOLDOWN)
       toast.success(t('auth.verifyEmail.resendSuccess'))
+    } catch (error) {
+      if (error instanceof ApiError) {
+        const errorData = error.data as { error?: { message?: string } } | null
+        toast.error(t('auth.verifyEmail.resendError'), {
+          description: errorData?.error?.message
+        })
+      }
     }
   }
 
@@ -99,7 +118,7 @@ export const VerifyEmailForm = ({ email }: VerifyEmailFormProps) => {
           onChange={setCode}
           length={6}
           disabled={isSubmitting}
-          error={!!actionData?.error}
+          error={hasError}
           autoFocus
         />
 

@@ -1,9 +1,11 @@
+import { i18n } from '@/app/i18n'
 import { API_URL, IS_BROWSER } from '@/shared/config/env'
 
 type RequestOptions = RequestInit & {
   json?: unknown
   skipAuth?: boolean
-  token?: string // For server-side requests
+  cookies?: string // For server-side requests (Cookie header from request)
+  locale?: string // For server-side requests (language)
   _isRetry?: boolean // Internal flag to prevent infinite retry loops
 }
 
@@ -41,22 +43,22 @@ const refreshTokens = async (): Promise<boolean> => {
 }
 
 const request = async <T>(endpoint: string, options: RequestOptions = {}): Promise<T> => {
-  const { json, headers, skipAuth, token: serverToken, _isRetry, ...customOptions } = options
+  const { json, headers, skipAuth, cookies: serverCookies, locale: serverLocale, _isRetry, ...customOptions } = options
+
+  // Determine locale: server-side uses passed locale, client-side uses i18n
+  const locale = IS_BROWSER ? i18n.language : serverLocale
 
   const requestHeaders: HeadersInit = {
     'Content-Type': 'application/json',
+    ...(locale && { 'Accept-Language': locale }),
+    // Server-side: forward cookies from original request
+    ...(serverCookies && { Cookie: serverCookies }),
     ...headers
-  }
-
-  // Server-side: use provided token
-  // Client-side: rely on httpOnly cookies (credentials: 'include')
-  if (!skipAuth && serverToken) {
-    ;(requestHeaders as Record<string, string>)['Authorization'] = `Bearer ${serverToken}`
   }
 
   const config: RequestInit = {
     headers: requestHeaders,
-    credentials: 'include', // Always include cookies
+    credentials: 'include', // Always include cookies (for browser requests)
     ...customOptions
   }
 

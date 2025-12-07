@@ -1,54 +1,65 @@
-import type { LoaderFunctionArgs } from 'react-router'
-import { data, useLoaderData } from 'react-router'
+import {
+  type ClientLoaderFunctionArgs,
+  type LoaderFunctionArgs,
+  redirect,
+  useLoaderData
+} from 'react-router'
 import { mapApi } from '@/entities/map'
-import { getSession } from '@/entities/session/session.server'
-import { refreshSession } from '@/entities/session/refresh-session.server'
 import { MapViewPage } from '@/pages/dashboard/map-view-page'
 import { getMeta } from '@/shared/lib/get-meta'
 import { ApiError } from '@/shared/api/api-client'
+import { getCookies } from '@/shared/api/api.server'
 
 export const meta = () => {
   return getMeta('mapView')
 }
 
+// Server-side loader
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const mapId = params.mapId
   if (!mapId) {
     throw new Response('Map ID is required', { status: 400 })
   }
 
-  const session = await getSession(request)
-
   try {
-    const map = await mapApi.getFullMap(mapId, { token: session?.token })
+    const map = await mapApi.getFullMap(mapId, { cookies: getCookies(request) })
 
     if (!map) {
       throw new Response('Map not found', { status: 404 })
     }
     return { map, mapId }
   } catch (error) {
-    // If 401/403, try to refresh token and retry
     if (error instanceof ApiError && (error.status === 401 || error.status === 403)) {
-      try {
-        const { session: newSession, cookie } = await refreshSession(request)
-        const map = await mapApi.getFullMap(mapId, { token: newSession.token })
-
-        if (!map) {
-          throw new Response('Map not found', { status: 404 })
-        }
-
-        // Return data with Set-Cookie header to update session
-        return data({ map, mapId }, { headers: { 'Set-Cookie': cookie } })
-      } catch (refreshError) {
-        // refreshSession throws redirect to sign-in on failure
-        throw refreshError
-      }
+      throw redirect(`/auth/sign-in?from=${encodeURIComponent(request.url)}`)
     }
 
     console.error('getFullMap error:', error)
     throw new Response('Map not found', { status: 404 })
   }
 }
+
+// Client-side loader
+export const clientLoader = async ({ params }: ClientLoaderFunctionArgs) => {
+  const mapId = params.mapId
+  if (!mapId) {
+    throw new Response('Map ID is required', { status: 400 })
+  }
+
+  try {
+    const map = await mapApi.getFullMap(mapId)
+    if (!map) {
+      throw new Response('Map not found', { status: 404 })
+    }
+    return { map, mapId }
+  } catch (error) {
+    if (error instanceof ApiError && (error.status === 401 || error.status === 403)) {
+      throw redirect('/auth/sign-in')
+    }
+    throw new Response('Map not found', { status: 404 })
+  }
+}
+
+clientLoader.hydrate = true
 
 const MapViewRoute = () => {
   const { map, mapId } = useLoaderData<typeof loader>()

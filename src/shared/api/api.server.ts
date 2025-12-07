@@ -1,0 +1,46 @@
+import { API_URL } from '@/shared/config/env'
+
+interface ServerFetchOptions extends RequestInit {
+  cookies?: string | null
+}
+
+/**
+ * Server-side fetch helper that forwards cookies to Go API
+ * Use in React Router loaders/actions
+ */
+export const serverFetch = async <T>(
+  endpoint: string,
+  request: Request,
+  options: ServerFetchOptions = {}
+): Promise<T> => {
+  const cookies = request.headers.get('Cookie')
+
+  const response = await fetch(`${API_URL}${endpoint}`, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(cookies && { Cookie: cookies }),
+      ...options.headers
+    }
+  })
+
+  if (!response.ok) {
+    const error = new Error(`API Error: ${response.status}`)
+    ;(error as any).status = response.status
+    ;(error as any).response = response
+    throw error
+  }
+
+  if (response.status === 204) {
+    return null as T
+  }
+
+  return response.json()
+}
+
+/**
+ * Get cookies from request for passing to API calls
+ */
+export const getCookies = (request: Request): string | undefined => {
+  return request.headers.get('Cookie') || undefined
+}

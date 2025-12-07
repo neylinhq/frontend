@@ -1,8 +1,9 @@
 import * as fs from 'node:fs'
 import * as path from 'node:path'
+import { getLocale, type SupportedLanguage } from '@/shared/lib/locale'
 
-export const supportedLanguages = ['en', 'ru'] as const
-export type SupportedLanguage = (typeof supportedLanguages)[number]
+export { getLocale, type SupportedLanguage }
+
 export const defaultLanguage: SupportedLanguage = 'en'
 
 /**
@@ -24,56 +25,10 @@ export const getTranslations = (locale: SupportedLanguage): Record<string, unkno
 }
 
 /**
- * Detect language from request headers (Accept-Language)
- */
-export const detectLanguage = (acceptLanguage: string | null) => {
-  if (!acceptLanguage) {
-    return defaultLanguage
-  }
-
-  // Parse Accept-Language header (e.g., "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7")
-  const languages = acceptLanguage
-    .split(',')
-    .map(lang => {
-      const [code, q = 'q=1'] = lang.trim().split(';')
-      return {
-        code: code.split('-')[0].toLowerCase(), // ru-RU -> ru
-        quality: parseFloat(q.replace('q=', '')) || 1
-      }
-    })
-    .sort((a, b) => b.quality - a.quality)
-
-  // Find first supported language
-  for (const { code } of languages) {
-    if (supportedLanguages.includes(code as SupportedLanguage)) {
-      return code as SupportedLanguage
-    }
-  }
-
-  return defaultLanguage
-}
-
-/**
  * Get i18n data for SSR - to be used in root loader
  */
 export const getI18nData = (request: Request) => {
-  // Check cookie first (user preference), then default to 'en'
-  const cookieHeader = request.headers.get('Cookie')
-  const cookieLocale = cookieHeader
-    ?.split(';')
-    .find(c => c.trim().startsWith('i18nextLng='))
-    ?.split('=')[1]
-    ?.trim()
-
-  // Don't use Accept-Language - only cookie or default
-  const locale = (
-    supportedLanguages.includes(cookieLocale as SupportedLanguage)
-      ? cookieLocale
-      : defaultLanguage
-  ) as SupportedLanguage
-
-  console.log('[i18n.server] cookie:', cookieLocale, '-> locale:', locale)
-
+  const locale = getLocale(request)
   const translations = getTranslations(locale)
 
   return {

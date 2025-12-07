@@ -18,8 +18,8 @@ interface MessageResponse {
 }
 
 export const userApi = {
-  getCurrentUser: async (options?: { token?: string }): Promise<User> => {
-    const response = await api.get<ApiResponse<User>>('/users/me', { token: options?.token })
+  getCurrentUser: async (options?: { cookies?: string }): Promise<User> => {
+    const response = await api.get<ApiResponse<User>>('/users/me', { cookies: options?.cookies })
     return response.data
   },
 
@@ -42,9 +42,7 @@ export const userApi = {
       {
         method: 'POST',
         body: formData,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('auth_token')}`
-        }
+        credentials: 'include'
       }
     )
 

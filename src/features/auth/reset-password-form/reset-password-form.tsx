@@ -3,8 +3,10 @@ import { Loader2, KeyRound, RefreshCw } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { useActionData, useNavigation, useSubmit } from 'react-router'
+import { useNavigate } from 'react-router'
 import { z } from 'zod'
+import { sessionApi } from '@/entities/session'
+import { ApiError } from '@/shared/api/api-client'
 import { Button } from '@/shared/components/button'
 import {
   Form,
@@ -18,13 +20,6 @@ import { Input } from '@/shared/components/input'
 import { OtpInput } from '@/shared/components/otp-input'
 import { toast } from '@/shared/components/toast'
 
-type ActionData = {
-  success?: boolean
-  error?: string
-  step?: 'code' | 'complete'
-  email?: string
-} | undefined
-
 const RESEND_COOLDOWN = 60 // seconds
 
 const maskEmail = (email: string): string => {
@@ -36,34 +31,16 @@ const maskEmail = (email: string): string => {
 
 export const ResetPasswordForm = () => {
   const { t } = useTranslation()
-  const navigation = useNavigation()
-  const actionData = useActionData<ActionData>()
-  const submit = useSubmit()
+  const navigate = useNavigate()
 
-  const [step, setStep] = useState<'email' | 'code'>('email')
+  const [step, setStep] = useState<'email' | 'code' | 'complete'>('email')
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
   const [resendCooldown, setResendCooldown] = useState(0)
+  const [isLoading, setIsLoading] = useState(false)
+  const [hasError, setHasError] = useState(false)
 
-  const isLoading = navigation.state === 'submitting'
   const canResend = resendCooldown === 0
-
-  // Handle step transitions from action data
-  useEffect(() => {
-    if (actionData?.step === 'code' && actionData?.email) {
-      setStep('code')
-      setEmail(actionData.email)
-      setResendCooldown(RESEND_COOLDOWN)
-    }
-    if (actionData?.step === 'complete') {
-      toast.success(t('auth.resetPassword.successMessage'))
-    }
-    if (actionData?.error) {
-      toast.error(t('auth.resetPassword.error'), {
-        description: actionData.error
-      })
-    }
-  }, [actionData, t])
 
   // Handle resend cooldown timer
   useEffect(() => {
@@ -97,30 +74,70 @@ export const ResetPasswordForm = () => {
     defaultValues: { password: '', confirmPassword: '' }
   })
 
-  const handleEmailSubmit = (data: z.infer<typeof emailSchema>) => {
-    submit({ intent: 'request', email: data.email }, { method: 'post' })
+  const handleEmailSubmit = async (data: z.infer<typeof emailSchema>) => {
+    setIsLoading(true)
+    try {
+      await sessionApi.forgotPassword(data.email)
+      setEmail(data.email)
+      setStep('code')
+      setResendCooldown(RESEND_COOLDOWN)
+    } catch (error) {
+      if (error instanceof ApiError) {
+        const errorData = error.data as { error?: { message?: string } } | null
+        toast.error(t('auth.resetPassword.error'), {
+          description: errorData?.error?.message
+        })
+      }
+    } finally {
+      setIsLoading(false)
+    }
   }
 
-  const handleCodeSubmit = (data: z.infer<typeof passwordSchema>) => {
+  const handleCodeSubmit = async (data: z.infer<typeof passwordSchema>) => {
     if (code.length !== 6) {
       toast.error(t('auth.resetPassword.invalidCode'))
       return
     }
-    submit(
-      { intent: 'reset', email, code, password: data.password },
-      { method: 'post' }
-    )
+
+    setIsLoading(true)
+    setHasError(false)
+
+    try {
+      await sessionApi.resetPassword({ email, code, password: data.password })
+      setStep('complete')
+      toast.success(t('auth.resetPassword.successMessage'))
+    } catch (error) {
+      setHasError(true)
+      if (error instanceof ApiError) {
+        const errorData = error.data as { error?: { message?: string } } | null
+        toast.error(t('auth.resetPassword.error'), {
+          description: errorData?.error?.message
+        })
+      }
+    } finally {
+      setIsLoading(false)
+    }
   }
 
-  const handleResend = () => {
-    if (canResend && email) {
-      submit({ intent: 'request', email }, { method: 'post' })
+  const handleResend = async () => {
+    if (!canResend || !email) return
+
+    try {
+      await sessionApi.forgotPassword(email)
       setResendCooldown(RESEND_COOLDOWN)
+      toast.success(t('auth.resetPassword.codeSent'))
+    } catch (error) {
+      if (error instanceof ApiError) {
+        const errorData = error.data as { error?: { message?: string } } | null
+        toast.error(t('auth.resetPassword.resendError'), {
+          description: errorData?.error?.message
+        })
+      }
     }
   }
 
   // Success screen
-  if (actionData?.step === 'complete') {
+  if (step === 'complete') {
     return (
       <div className="text-center space-y-4 flex flex-col items-center">
         <div className="h-16 w-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-4">
@@ -128,8 +145,8 @@ export const ResetPasswordForm = () => {
         </div>
         <h3 className="text-xl font-semibold">{t('auth.resetPassword.successTitle')}</h3>
         <p className="text-sm text-muted-foreground">{t('auth.resetPassword.successDescription')}</p>
-        <Button className="w-full" asChild>
-          <a href="/auth/sign-in">{t('auth.resetPassword.backToSignIn')}</a>
+        <Button className="w-full" onClick={() => navigate('/auth/sign-in')}>
+          {t('auth.resetPassword.backToSignIn')}
         </Button>
       </div>
     )
@@ -160,7 +177,7 @@ export const ResetPasswordForm = () => {
             onChange={setCode}
             length={6}
             disabled={isLoading}
-            error={!!actionData?.error}
+            error={hasError}
             autoFocus
           />
 

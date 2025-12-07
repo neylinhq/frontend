@@ -49,11 +49,11 @@ export const mapApi = {
   getMaps: async (
     limit = 20,
     offset = 0,
-    options?: { token?: string }
+    options?: { cookies?: string }
   ): Promise<{ maps: MapEntity[]; total: number }> => {
     const response = await api.get<ApiResponse<MapEntity[]>>(
       `/maps?limit=${limit}&offset=${offset}`,
-      { token: options?.token }
+      { cookies: options?.cookies }
     )
     return {
       maps: response.data,
@@ -80,9 +80,9 @@ export const mapApi = {
     await api.delete(`/maps/${id}`)
   },
 
-  getFullMap: async (mapId: string, options?: { token?: string }): Promise<FullMap> => {
+  getFullMap: async (mapId: string, options?: { cookies?: string }): Promise<FullMap> => {
     const response = await api.get<ApiResponse<FullMap>>(`/maps/${mapId}/full`, {
-      token: options?.token
+      cookies: options?.cookies
     })
     return response.data
   },
@@ -124,10 +124,10 @@ export const mapApi = {
   getNodeWithContent: async (
     mapId: string,
     nodeId: string,
-    options?: { token?: string }
+    options?: { cookies?: string }
   ): Promise<Node> => {
     const response = await api.get<ApiResponse<Node>>(`/maps/${mapId}/nodes/${nodeId}`, {
-      token: options?.token
+      cookies: options?.cookies
     })
     return response.data
   },

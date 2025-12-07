@@ -54,3 +54,10 @@ export type Node = z.infer<typeof NodeSchema>
 // Lightweight variant for graph views (excludes content field)
 export const LightweightNodeSchema = NodeSchema.omit({ content: true })
 export type LightweightNode = z.infer<typeof LightweightNodeSchema>
+
+// Request types for node operations
+export type CreateNodeRequest = Omit<Node, 'id' | 'createdAt' | 'updatedAt'>
+export type UpdateNodeRequest = Partial<Omit<Node, 'id' | 'mapId' | 'createdAt' | 'updatedAt'>>
+export type UpdatePositionsRequest = {
+  positions: Array<{ id: string; x: number; y: number }>
+}

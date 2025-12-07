@@ -1,20 +1,41 @@
 import { useTranslation } from 'react-i18next'
-import { Link, Outlet, useLoaderData, useLocation } from 'react-router'
-import { requireAuth, withAuthRedirect } from '@/app/api'
+import {
+  type ClientLoaderFunctionArgs,
+  type LoaderFunctionArgs,
+  Link,
+  Outlet,
+  redirect,
+  useLoaderData,
+  useLocation
+} from 'react-router'
 import { type User, userApi } from '@/entities/user'
 import { SETTINGS_NAV_ITEMS } from '@/shared/config'
 import { cn } from '@/shared/lib/cn'
-import type { Route } from './+types/layout'
+import { getCookies } from '@/shared/api/api.server'
 
-// SSR loader - fetch user data on the server
-export const loader = async ({ request }: Route.LoaderArgs) => {
-  const session = await requireAuth(request)
+// Server-side loader
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const cookies = getCookies(request)
 
-  return withAuthRedirect(async () => {
-    const user = await userApi.getCurrentUser({ token: session.token })
+  try {
+    const user = await userApi.getCurrentUser({ cookies })
     return { user }
-  })
+  } catch {
+    throw redirect('/auth/sign-in')
+  }
 }
+
+// Client-side loader
+export const clientLoader = async (_args: ClientLoaderFunctionArgs) => {
+  try {
+    const user = await userApi.getCurrentUser()
+    return { user }
+  } catch {
+    throw redirect('/auth/sign-in')
+  }
+}
+
+clientLoader.hydrate = true
 
 // Context type for child routes
 export type SettingsContext = {

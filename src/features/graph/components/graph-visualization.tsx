@@ -743,6 +743,9 @@ const GraphVisualizationContent = ({
         zoomOnScroll={interactive}
         snapToGrid={interactive}
         snapGrid={[15, 15]}
+        minZoom={0.01}
+        maxZoom={5}
+        defaultViewport={{ x: 0, y: 0, zoom: 2.5 }}
         proOptions={{ hideAttribution: true }}
       >
         <Background color={isDark ? '#2e2e2e' : '#e2e8f0'} size={1} />

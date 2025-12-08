@@ -99,8 +99,11 @@ export const TelegramLoginButton = ({ className }: TelegramLoginButtonProps) => 
     const left = window.screenX + (window.outerWidth - width) / 2
     const top = window.screenY + (window.outerHeight - height) / 2
 
+    // TODO: Remove hardcoded origin after testing
+    const origin = 'http://neylin.io:5173'
+
     const popup = window.open(
-      `https://oauth.telegram.org/auth?bot_id=${botId}&origin=${encodeURIComponent(window.location.origin)}&request_access=write`,
+      `https://oauth.telegram.org/auth?bot_id=${botId}&origin=${encodeURIComponent(origin)}&request_access=write`,
       'telegram_oauth',
       `width=${width},height=${height},left=${left},top=${top}`
     )

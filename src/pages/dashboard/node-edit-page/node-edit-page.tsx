@@ -32,8 +32,10 @@ import { Button } from '@/shared/components/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/card'
 import { Sheet, SheetContent, SheetHeader } from '@/shared/components/sheet'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/components/tabs'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/components/tooltip'
 import { cn } from '@/shared/lib/cn'
+
+/** Sidebar width in pixels - used for sidebar and FAB positioning */
+const SIDEBAR_WIDTH = 360
 
 const NODE_TYPE_CONFIG: Record<NodeType, { color: string; label: string }> = {
   concept: { color: 'bg-blue-500/10 text-blue-600 dark:text-blue-400', label: 'Concept' },
@@ -253,9 +255,9 @@ export const NodeEditPage = ({
               }
             }}
             className={cn(
-              'fixed bottom-4 z-20 h-12 w-12 rounded-full shadow-lg transition-all',
-              // Position adapts to sidebar on desktop
-              sidebarOpen ? 'right-4 lg:right-[21rem]' : 'right-4'
+              'fixed bottom-4 z-20 h-12 w-12 rounded-full shadow-lg transition-all right-4',
+              // On lg+ when sidebar open, position left of sidebar
+              sidebarOpen && 'lg:right-[calc(360px+1rem)]'
             )}
           >
             {sidebarOpen ? <PanelRightClose className='h-6 w-6 hidden lg:block' /> : null}
@@ -333,42 +335,30 @@ export const NodeEditPage = ({
 
       {/* Right Sidebar - Desktop (lg+) */}
       {sidebarOpen && (
-        <aside className='hidden lg:flex flex-col w-[360px] flex-shrink-0 border-l border-border h-full overflow-hidden'>
+        <aside className='hidden lg:flex flex-col flex-shrink-0 border-l border-border h-full overflow-hidden' style={{ width: SIDEBAR_WIDTH }}>
           <div className='flex flex-1 flex-col min-h-0 overflow-hidden'>
             <Tabs defaultValue='properties' className='flex flex-1 flex-col min-h-0'>
               {/* Tab Header */}
               <div className='border-b border-border/50 px-4 py-3'>
                 <TabsList className='grid w-full grid-cols-3'>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <TabsTrigger value='properties' className='px-0'>
-                        <SlidersHorizontal className='h-4 w-4' />
-                      </TabsTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent side='bottom'>{t('nodeEdit.tabs.properties')}</TooltipContent>
-                  </Tooltip>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <TabsTrigger value='practice' className='px-0'>
-                        <GraduationCap className='h-4 w-4' />
-                      </TabsTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent side='bottom'>{t('nodeEdit.tabs.practice')}</TooltipContent>
-                  </Tooltip>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <TabsTrigger value='ai' className='px-0'>
-                        <Sparkles className='h-4 w-4' />
-                      </TabsTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent side='bottom'>{t('nodeEdit.tabs.ai')}</TooltipContent>
-                  </Tooltip>
+                  <TabsTrigger value='properties' className='gap-1.5'>
+                    <SlidersHorizontal className='h-3.5 w-3.5' />
+                    <span className='text-xs hidden sm:inline'>{t('nodeEdit.tabs.properties')}</span>
+                  </TabsTrigger>
+                  <TabsTrigger value='practice' className='gap-1.5'>
+                    <GraduationCap className='h-3.5 w-3.5' />
+                    <span className='text-xs hidden sm:inline'>{t('nodeEdit.tabs.practice')}</span>
+                  </TabsTrigger>
+                  <TabsTrigger value='ai' className='gap-1.5'>
+                    <Sparkles className='h-3.5 w-3.5' />
+                    <span className='text-xs hidden sm:inline'>{t('nodeEdit.tabs.ai')}</span>
+                  </TabsTrigger>
                 </TabsList>
               </div>
 
               {/* Properties Tab */}
               <TabsContent value='properties' className='flex-1 overflow-y-auto [scrollbar-gutter:stable] min-h-0 mt-0'>
-                <div className='flex flex-col'>
+                <div className='flex flex-col min-h-full'>
                   {/* Node Metadata */}
                   <div className='border-b border-border/50 p-4'>
                     <NodeMetadataForm
@@ -392,8 +382,8 @@ export const NodeEditPage = ({
                     />
                   </div>
 
-                  {/* Danger Zone */}
-                  <div className='p-4'>
+                  {/* Danger Zone - mt-auto pushes to bottom when space available */}
+                  <div className='p-4 mt-auto'>
                     <Card className='border-destructive/30'>
                       <CardHeader className='pb-2 pt-3 px-3'>
                         <CardTitle className='text-xs font-medium text-destructive flex items-center gap-1.5'>
@@ -436,41 +426,29 @@ export const NodeEditPage = ({
 
       {/* Right Sidebar - Mobile Sheet */}
       <Sheet open={mobileSheetOpen} onOpenChange={setMobileSheetOpen}>
-        <SheetContent side='right' className='w-[360px] p-0 flex flex-col'>
+        <SheetContent side='right' className='p-0 flex flex-col' style={{ width: SIDEBAR_WIDTH }}>
           <Tabs defaultValue='properties' className='flex flex-1 flex-col min-h-0'>
             {/* Tab Header */}
             <SheetHeader className='border-b border-border/50 px-4 py-3'>
               <TabsList className='grid w-full grid-cols-3'>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <TabsTrigger value='properties' className='px-0'>
-                      <SlidersHorizontal className='h-4 w-4' />
-                    </TabsTrigger>
-                  </TooltipTrigger>
-                  <TooltipContent side='bottom'>{t('nodeEdit.tabs.properties')}</TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <TabsTrigger value='practice' className='px-0'>
-                      <GraduationCap className='h-4 w-4' />
-                    </TabsTrigger>
-                  </TooltipTrigger>
-                  <TooltipContent side='bottom'>{t('nodeEdit.tabs.practice')}</TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <TabsTrigger value='ai' className='px-0'>
-                      <Sparkles className='h-4 w-4' />
-                    </TabsTrigger>
-                  </TooltipTrigger>
-                  <TooltipContent side='bottom'>{t('nodeEdit.tabs.ai')}</TooltipContent>
-                </Tooltip>
+                <TabsTrigger value='properties' className='gap-1.5'>
+                  <SlidersHorizontal className='h-3.5 w-3.5' />
+                  <span className='text-xs'>{t('nodeEdit.tabs.properties')}</span>
+                </TabsTrigger>
+                <TabsTrigger value='practice' className='gap-1.5'>
+                  <GraduationCap className='h-3.5 w-3.5' />
+                  <span className='text-xs'>{t('nodeEdit.tabs.practice')}</span>
+                </TabsTrigger>
+                <TabsTrigger value='ai' className='gap-1.5'>
+                  <Sparkles className='h-3.5 w-3.5' />
+                  <span className='text-xs'>{t('nodeEdit.tabs.ai')}</span>
+                </TabsTrigger>
               </TabsList>
             </SheetHeader>
 
             {/* Properties Tab */}
             <TabsContent value='properties' className='flex-1 overflow-y-auto [scrollbar-gutter:stable] min-h-0 mt-0'>
-              <div className='flex flex-col'>
+              <div className='flex flex-col min-h-full'>
                 {/* Node Metadata */}
                 <div className='border-b border-border/50 p-4'>
                   <NodeMetadataForm
@@ -494,8 +472,8 @@ export const NodeEditPage = ({
                   />
                 </div>
 
-                {/* Danger Zone */}
-                <div className='p-4'>
+                {/* Danger Zone - mt-auto pushes to bottom when space available */}
+                <div className='p-4 mt-auto'>
                   <Card className='border-destructive/30'>
                     <CardHeader className='pb-2 pt-3 px-3'>
                       <CardTitle className='text-xs font-medium text-destructive flex items-center gap-1.5'>

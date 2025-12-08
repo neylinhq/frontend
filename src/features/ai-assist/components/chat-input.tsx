@@ -88,7 +88,7 @@ export const ChatInput = ({
 
       {/* Model selector - bottom left */}
       {onModelChange && availableModels.length > 1 && (
-        <div className='absolute left-2.5 bottom-1.5'>
+        <div className='absolute left-3 bottom-2.5'>
           <Select value={model} onValueChange={onModelChange} disabled={disabled}>
             <SelectTrigger className='w-28 h-6 text-[10px] border-none bg-muted hover:bg-muted'>
               <SelectValue />
@@ -109,7 +109,7 @@ export const ChatInput = ({
         size='icon'
         onClick={handleSend}
         disabled={!value.trim() || disabled}
-        className='absolute right-2.5 bottom-1.5 h-8 w-8 flex-shrink-0'
+        className='absolute right-3 bottom-2.5 h-8 w-8 flex-shrink-0'
       >
         <ArrowUp className='h-4 w-4' />
       </Button>

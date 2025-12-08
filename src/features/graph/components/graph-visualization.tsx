@@ -98,6 +98,9 @@ const GraphVisualizationContent = ({
   const { controls, toggleFullscreen } = useGraphControls()
   const layoutAppliedRef = useRef(false)
 
+  // Ref for stable callback to avoid re-renders
+  const handleNodeClickRef = useRef<(nodeId: string) => void>(() => {})
+
   // Mutations for persisting positions to DB
   const updatePositionMutation = useUpdateNodePosition(mapId)
   const updatePositionsMutation = useUpdateNodePositions(mapId)
@@ -208,15 +211,23 @@ const GraphVisualizationContent = ({
     [viewMode, focusedNodeId, focusNode, selectNode]
   )
 
-  // Transform nodes for XYFlow
+  // Keep ref updated for stable callback in useMemo
+  handleNodeClickRef.current = handleNodeClick
+
+  // Stable callback wrapper that doesn't change reference
+  const stableHandleNodeClick = useCallback((nodeId: string) => {
+    handleNodeClickRef.current(nodeId)
+  }, [])
+
+  // Transform nodes for XYFlow - use stable callback to avoid re-renders
   const initialNodes = useMemo(() => {
     return transformNodesToFlow(
       filteredData.nodes,
       selectedElements.nodes,
-      handleNodeClick,
+      stableHandleNodeClick,
       focusedNodeId
     )
-  }, [filteredData.nodes, selectedElements.nodes, handleNodeClick, focusedNodeId])
+  }, [filteredData.nodes, selectedElements.nodes, stableHandleNodeClick, focusedNodeId])
 
   // Transform edges for XYFlow
   const initialEdges = useMemo(() => {
@@ -225,6 +236,10 @@ const GraphVisualizationContent = ({
 
   const [reactFlowNodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [reactFlowEdges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
+
+  // Ref to access current nodes without causing re-renders
+  const reactFlowNodesRef = useRef(reactFlowNodes)
+  reactFlowNodesRef.current = reactFlowNodes
 
   // Cache ALL node positions (including hidden nodes) to preserve layout when depth changes
   const positionCacheRef = useRef<Map<string, { x: number; y: number }>>(new Map())
@@ -550,14 +565,14 @@ const GraphVisualizationContent = ({
     queryClient.invalidateQueries({ queryKey: mapKeys.fullMap(mapId) })
   }, [queryClient, mapId])
 
-  // Helper to get current positions as Map
+  // Helper to get current positions as Map - uses ref for stable callback
   const getCurrentPositionsMap = useCallback(() => {
     const positions = new Map<string, { x: number; y: number }>()
-    for (const node of reactFlowNodes) {
+    for (const node of reactFlowNodesRef.current) {
       positions.set(node.id, { x: node.position.x, y: node.position.y })
     }
     return positions
-  }, [reactFlowNodes])
+  }, [])
 
   // Save position to DB after drag ends
   const handleNodeDragStop = useCallback(

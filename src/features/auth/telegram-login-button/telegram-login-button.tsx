@@ -51,8 +51,10 @@ export const TelegramLoginButton = ({ className }: TelegramLoginButtonProps) => 
   // Handle Telegram auth callback
   const handleTelegramAuth = useCallback(
     async (user: TelegramUser) => {
+      console.log('[Telegram] handleTelegramAuth called with:', user)
       setIsLoading(true)
       try {
+        console.log('[Telegram] Sending login request...')
         await sessionApi.telegramLogin({
           id: user.id,
           first_name: user.first_name,
@@ -112,13 +114,17 @@ export const TelegramLoginButton = ({ className }: TelegramLoginButtonProps) => 
     const handleMessage = (event: MessageEvent) => {
       if (event.origin !== 'https://oauth.telegram.org') return
 
-      if (event.data?.event === 'auth_result' && event.data?.result) {
-        handleTelegramAuth(event.data.result)
+      // Parse JSON string if needed
+      const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data
+
+      if (data?.event === 'auth_result' && data?.result) {
+        handleTelegramAuth(data.result)
         popup?.close()
       }
     }
 
     window.addEventListener('message', handleMessage)
+    console.log('[Telegram] Listening for messages on:', window.location.origin)
 
     // Cleanup when popup closes
     const checkClosed = setInterval(() => {

@@ -398,6 +398,11 @@ const forceDirectedLayout = (nodes: Node[], edges: Edge[], options: InternalLayo
     temperature *= coolingFactor
   }
 
+  // ========================================
+  // POST-PROCESS: Reposition isolated components
+  // ========================================
+  repositionIsolatedComponents(positions, edges, nodeSpacing)
+
   const positionedNodes = nodes.map(node => {
     const pos = posMap.get(node.id)
     return {
@@ -407,6 +412,136 @@ const forceDirectedLayout = (nodes: Node[], edges: Edge[], options: InternalLayo
   })
 
   return { nodes: positionedNodes, edges }
+}
+
+/**
+ * Find connected components and reposition isolated ones near the main cluster
+ */
+const repositionIsolatedComponents = (
+  positions: Array<{ id: string; x: number; y: number }>,
+  edges: Edge[],
+  nodeSpacing: number
+) => {
+  if (positions.length === 0) return
+
+  // Build adjacency for component detection
+  const adjacency = new Map<string, Set<string>>()
+  positions.forEach(p => adjacency.set(p.id, new Set()))
+
+  edges.forEach(e => {
+    adjacency.get(e.source)?.add(e.target)
+    adjacency.get(e.target)?.add(e.source)
+  })
+
+  // Find all connected components using BFS
+  const visited = new Set<string>()
+  const components: string[][] = []
+
+  positions.forEach(p => {
+    if (visited.has(p.id)) return
+
+    const component: string[] = []
+    const queue = [p.id]
+
+    while (queue.length > 0) {
+      const nodeId = queue.shift()!
+      if (visited.has(nodeId)) continue
+
+      visited.add(nodeId)
+      component.push(nodeId)
+
+      adjacency.get(nodeId)?.forEach(neighborId => {
+        if (!visited.has(neighborId)) {
+          queue.push(neighborId)
+        }
+      })
+    }
+
+    components.push(component)
+  })
+
+  // If only one component, nothing to do
+  if (components.length <= 1) return
+
+  // Sort components by size (largest first = main cluster)
+  components.sort((a, b) => b.length - a.length)
+
+  const posMap = new Map(positions.map(p => [p.id, p]))
+
+  // Calculate bounding box of main component
+  const mainComponent = components[0]
+  let mainMinX = Infinity, mainMaxX = -Infinity
+  let mainMinY = Infinity, mainMaxY = -Infinity
+
+  mainComponent.forEach(id => {
+    const pos = posMap.get(id)!
+    mainMinX = Math.min(mainMinX, pos.x)
+    mainMaxX = Math.max(mainMaxX, pos.x)
+    mainMinY = Math.min(mainMinY, pos.y)
+    mainMaxY = Math.max(mainMaxY, pos.y)
+  })
+
+  const mainWidth = mainMaxX - mainMinX
+  const mainHeight = mainMaxY - mainMinY
+  const mainCenterX = (mainMinX + mainMaxX) / 2
+  const mainCenterY = (mainMinY + mainMaxY) / 2
+
+  // Gap between main cluster and isolated components
+  const gap = nodeSpacing * 1.5
+
+  // Place isolated components around the main cluster
+  // Use a spiral-like placement starting from the right side
+  let placementAngle = 0
+  // Dynamic angle step based on number of components
+  const numIsolated = components.length - 1
+  const angleStep = (2 * Math.PI) / Math.max(numIsolated, 6)
+
+  for (let i = 1; i < components.length; i++) {
+    const component = components[i]
+
+    // Calculate component's current bounding box
+    let compMinX = Infinity, compMaxX = -Infinity
+    let compMinY = Infinity, compMaxY = -Infinity
+
+    component.forEach(id => {
+      const pos = posMap.get(id)!
+      compMinX = Math.min(compMinX, pos.x)
+      compMaxX = Math.max(compMaxX, pos.x)
+      compMinY = Math.min(compMinY, pos.y)
+      compMaxY = Math.max(compMaxY, pos.y)
+    })
+
+    const compWidth = compMaxX - compMinX
+    const compHeight = compMaxY - compMinY
+    const compCenterX = (compMinX + compMaxX) / 2
+    const compCenterY = (compMinY + compMaxY) / 2
+
+    // Calculate target position based on angle around main cluster
+    // Distance from main center = half of main diagonal + gap + half of component size
+    const mainRadius = Math.sqrt(mainWidth * mainWidth + mainHeight * mainHeight) / 2
+    // Minimum radius for single nodes so they don't overlap
+    const compRadius = Math.max(
+      Math.sqrt(compWidth * compWidth + compHeight * compHeight) / 2,
+      nodeSpacing * 0.5 // Minimum radius for single nodes
+    )
+    const distance = mainRadius + gap + compRadius
+
+    const targetX = mainCenterX + Math.cos(placementAngle) * distance
+    const targetY = mainCenterY + Math.sin(placementAngle) * distance
+
+    // Calculate offset to move component
+    const offsetX = targetX - compCenterX
+    const offsetY = targetY - compCenterY
+
+    // Apply offset to all nodes in component
+    component.forEach(id => {
+      const pos = posMap.get(id)!
+      pos.x += offsetX
+      pos.y += offsetY
+    })
+
+    placementAngle += angleStep
+  }
 }
 
 // ============================================================================

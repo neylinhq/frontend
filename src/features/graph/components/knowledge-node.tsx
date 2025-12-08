@@ -1,7 +1,7 @@
-import { Handle, Position } from '@xyflow/react'
+import { Handle, Position, useViewport } from '@xyflow/react'
 import { memo } from 'react'
 import type { Node } from '@/entities/map'
-import { getComplexityColor, getNodeBorderColor, getNodeIcon } from '@/entities/node'
+import { getComplexityColor, getNodeBgColor, getNodeBorderColor, getNodeIcon } from '@/entities/node'
 import { Badge } from '@/shared/components/badge'
 import { Card } from '@/shared/components/card'
 import { cn } from '@/shared/lib/cn'
@@ -17,10 +17,28 @@ interface KnowledgeNodeProps {
 }
 
 export const KnowledgeNode = memo(({ data }: KnowledgeNodeProps) => {
+  const { zoom } = useViewport()
   const Icon = getNodeIcon(data.type)
   const isSelected = data.selected
   const isDimmed = data.isDimmed
   const isFocused = data.isFocused
+
+  // LOD: At low zoom, show filled rectangle with node type color
+  if (zoom < 0.05) {
+    return (
+      <div
+        className={cn(
+          'w-[220px] h-[80px] rounded-md',
+          getNodeBgColor(data.type),
+          isDimmed && 'opacity-40',
+          isSelected && 'ring-2 ring-primary'
+        )}
+      >
+        <Handle type='target' position={Position.Top} className='w-3 h-3 bg-border' />
+        <Handle type='source' position={Position.Bottom} className='w-3 h-3 bg-border' />
+      </div>
+    )
+  }
 
   return (
     <Card

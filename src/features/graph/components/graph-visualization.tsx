@@ -365,18 +365,51 @@ const GraphVisualizationContent = ({
     if (!layoutAppliedRef.current && initialNodes.length > 0 && fullMap) {
       layoutAppliedRef.current = true
 
-      // Always apply layout on first load (mock data doesn't have real saved positions)
-      const result = applyLayout(initialNodes, initialEdges, {
-        viewMode,
-        focusedNodeId,
-        spacingPercent: nodeSpacing,
-        directionStrength
-      })
-      // Populate position cache with initial layout
-      for (const node of result.nodes) {
-        positionCacheRef.current.set(node.id, { ...node.position })
+      // Check if nodes already have valid spread positions from backend
+      const hasValidPositions = initialNodes.some(n => n.position.x !== 0 || n.position.y !== 0) &&
+        (() => {
+          let minX = Infinity, maxX = -Infinity
+          let minY = Infinity, maxY = -Infinity
+          for (const n of initialNodes) {
+            minX = Math.min(minX, n.position.x)
+            maxX = Math.max(maxX, n.position.x)
+            minY = Math.min(minY, n.position.y)
+            maxY = Math.max(maxY, n.position.y)
+          }
+          const width = maxX - minX
+          const height = maxY - minY
+          // Valid if spread is reasonable and not too vertical (aspect ratio < 5)
+          return Math.max(width, height) > 100 && (width === 0 || height / width < 5)
+        })()
+
+      if (hasValidPositions) {
+        // Use saved positions from backend
+        for (const node of initialNodes) {
+          positionCacheRef.current.set(node.id, { ...node.position })
+        }
+        setNodes(initialNodes)
+      } else {
+        // Apply fresh layout and save to backend (ignore broken positions)
+        const result = applyLayout(initialNodes, initialEdges, {
+          viewMode,
+          focusedNodeId,
+          spacingPercent: nodeSpacing,
+          directionStrength,
+          ignoreExistingPositions: true
+        })
+        // Populate position cache with initial layout
+        for (const node of result.nodes) {
+          positionCacheRef.current.set(node.id, { ...node.position })
+        }
+        setNodes(result.nodes)
+
+        // Persist calculated positions to backend (bulk update)
+        const positionUpdates = result.nodes.map(n => ({
+          id: n.id,
+          position: { x: Math.round(n.position.x), y: Math.round(n.position.y) }
+        }))
+        updatePositionsMutation.mutate(positionUpdates)
       }
-      setNodes(result.nodes)
     }
   }, [
     initialNodes.length,
@@ -387,7 +420,8 @@ const GraphVisualizationContent = ({
     focusedNodeId,
     nodeSpacing,
     directionStrength,
-    setNodes
+    setNodes,
+    updatePositionsMutation
   ])
 
   // Listen for layout events from the store
@@ -761,6 +795,7 @@ const GraphVisualizationContent = ({
         minZoom={0.01}
         maxZoom={5}
         defaultViewport={{ x: 0, y: 0, zoom: 2.5 }}
+        onlyRenderVisibleElements={true}
         proOptions={{ hideAttribution: true }}
       >
         <Background color={isDark ? '#2e2e2e' : '#e2e8f0'} size={1} />

@@ -27,6 +27,28 @@ export const getNodeBorderColor = (type: NodeType): string => {
 }
 
 /**
+ * Background color for LOD view (zoomed out)
+ * Uses muted semantic colors for softer appearance
+ */
+export const getNodeBgColor = (type: NodeType): string => {
+  const colors: Record<NodeType, string> = {
+    // Knowledge group - Blue
+    concept: 'bg-semantic-knowledge-muted',
+    theory: 'bg-semantic-knowledge-muted',
+    // Fact group - Green
+    fact: 'bg-semantic-fact-muted',
+    // Question group - Purple
+    question: 'bg-semantic-question-muted',
+    hypothesis: 'bg-semantic-question-muted',
+    // Example group - Amber
+    example: 'bg-semantic-example-muted',
+    person: 'bg-semantic-example-muted',
+    school: 'bg-semantic-example-muted'
+  }
+  return colors[type] || 'bg-semantic-neutral-muted'
+}
+
+/**
  * Complexity colors using semantic system
  * - Basic: Neutral (gray)
  * - Intermediate: Knowledge (blue)

@@ -1,4 +1,4 @@
-import { BaseEdge, EdgeLabelRenderer, getBezierPath, type Position } from '@xyflow/react'
+import { BaseEdge, EdgeLabelRenderer, getBezierPath, type Position, useViewport } from '@xyflow/react'
 import { memo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { getEdgeTextClass } from '@/entities/edge'
@@ -34,6 +34,7 @@ export const KnowledgeEdge = memo(
     data
   }: KnowledgeEdgeProps) => {
     const { t } = useTranslation()
+    const { zoom } = useViewport()
     const { startEdgeEditing } = useEdgeManagementStore()
 
     const [edgePath, labelX, labelY] = getBezierPath({
@@ -75,6 +76,12 @@ export const KnowledgeEdge = memo(
     // HSL color for background with opacity
     const edgeColorHsl = `var(--edge-${data.relationType})`
 
+    // LOD: At low zoom, increase stroke width for visibility and hide label
+    const isLowZoom = zoom < 0.05
+    const baseWidth = getEdgeWidth(data.strength)
+    // Scale stroke width inversely with zoom (but cap it)
+    const strokeWidth = isLowZoom ? Math.min(baseWidth / zoom, 15) : baseWidth
+
     return (
       <>
         <BaseEdge
@@ -82,13 +89,13 @@ export const KnowledgeEdge = memo(
           markerEnd={markerEnd}
           style={{
             ...style,
-            strokeWidth: getEdgeWidth(data.strength),
+            strokeWidth,
             stroke: getEdgeStrokeByType(data.relationType),
-            strokeDasharray: getEdgeDashArray(data.metadata.confidence)
+            strokeDasharray: isLowZoom ? undefined : getEdgeDashArray(data.metadata.confidence)
           }}
         />
 
-        <EdgeLabelRenderer>
+        {!isLowZoom && <EdgeLabelRenderer>
           <button
             type='button'
             style={{
@@ -120,7 +127,7 @@ export const KnowledgeEdge = memo(
               </>
             )}
           </button>
-        </EdgeLabelRenderer>
+        </EdgeLabelRenderer>}
       </>
     )
   }

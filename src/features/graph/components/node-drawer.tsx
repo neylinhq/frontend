@@ -181,7 +181,7 @@ export const NodeDrawer = memo(({ node, onClose, connectionsCount = 0, connectio
             </div>
 
             <TabsContent value='properties' className='flex-1 overflow-y-auto mt-0'>
-              <div className='flex flex-col'>
+              <div className='flex flex-col min-h-full'>
                 {/* Node Metadata Form */}
                 <div className='p-4 border-b'>
                   <NodeMetadataForm
@@ -191,8 +191,8 @@ export const NodeDrawer = memo(({ node, onClose, connectionsCount = 0, connectio
                   />
                 </div>
 
-                {/* Danger Zone */}
-                <div className='p-4'>
+                {/* Danger Zone - mt-auto pushes to bottom when space available */}
+                <div className='p-4 mt-auto'>
                   <Card className='border-destructive/30'>
                     <CardHeader className='pb-2 pt-3 px-3'>
                       <CardTitle className='text-xs font-medium text-destructive flex items-center gap-1.5'>

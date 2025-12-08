@@ -15,6 +15,7 @@ interface LayoutOptions {
   focusedNodeId?: string | null
   spacingPercent?: number
   directionStrength?: number
+  ignoreExistingPositions?: boolean
 }
 
 interface LayoutResult {
@@ -212,6 +213,7 @@ const calculateRepulsionBarnesHut = (
   const cellSize = node.width
 
   if (node.body !== null || cellSize / dist < theta) {
+    // Standard repulsion
     const force = (idealDistanceSq / dist) * node.mass
     fx = -(dx / dist) * force
     fy = -(dy / dist) * force
@@ -236,10 +238,11 @@ interface InternalLayoutOptions {
   nodeSpacing: number
   levelSpacing: number
   directionStrength: number
+  ignoreExistingPositions: boolean
 }
 
 export const applyLayout = (nodes: Node[], edges: Edge[], options: LayoutOptions) => {
-  const { viewMode, spacingPercent = 100, directionStrength = 100 } = options
+  const { viewMode, spacingPercent = 100, directionStrength = 100, ignoreExistingPositions = false } = options
 
   if (nodes.length === 0) {
     return { nodes, edges }
@@ -253,7 +256,8 @@ export const applyLayout = (nodes: Node[], edges: Edge[], options: LayoutOptions
   const internalOptions: InternalLayoutOptions = {
     nodeSpacing,
     levelSpacing,
-    directionStrength: normalizedDirection
+    directionStrength: normalizedDirection,
+    ignoreExistingPositions
   }
 
   switch (viewMode) {
@@ -267,6 +271,14 @@ export const applyLayout = (nodes: Node[], edges: Edge[], options: LayoutOptions
 }
 
 const forceDirectedLayout = (nodes: Node[], edges: Edge[], options: InternalLayoutOptions) => {
+  return runForceDirectedCore(nodes, edges, options)
+}
+
+const runForceDirectedCore = (
+  nodes: Node[],
+  edges: Edge[],
+  options: InternalLayoutOptions
+) => {
   const { nodeSpacing } = options
   const iterations = 150
   const idealDistance = nodeSpacing * 1.5
@@ -274,17 +286,30 @@ const forceDirectedLayout = (nodes: Node[], edges: Edge[], options: InternalLayo
   const coolingFactor = 0.97
   const theta = 0.9
 
-  // FIX: Add Jitter to initialization
-  // Even if we have a valid position, we add small noise to x.
-  // This breaks vertical symmetries immediately upon re-layout.
+  // Initialize positions
   const positions = nodes.map((n, i) => {
-    const hasValidPosition = n.position && (n.position.x !== 0 || n.position.y !== 0)
+    const hasValidPosition = !options.ignoreExistingPositions &&
+      n.position && (n.position.x !== 0 || n.position.y !== 0)
+
+    if (hasValidPosition) {
+      // Use saved positions with small jitter to help break symmetry
+      return {
+        id: n.id,
+        x: n.position.x + (Math.random() - 0.5) * 10,
+        y: n.position.y,
+        vx: 0,
+        vy: 0
+      }
+    }
+
+    // Circle layout for initial positions (better than random)
+    const angle = (i / nodes.length) * 2 * Math.PI
+    const radius = Math.sqrt(nodes.length) * nodeSpacing * 0.5
+
     return {
       id: n.id,
-      x: hasValidPosition
-        ? n.position.x + (Math.random() - 0.5) * 10 // Small jitter is crucial for updates
-        : Math.cos(i * 2.4) * 200 + Math.random() * 50,
-      y: hasValidPosition ? n.position.y : Math.sin(i * 2.4) * 200 + Math.random() * 50,
+      x: Math.cos(angle) * radius + (Math.random() - 0.5) * 50,
+      y: Math.sin(angle) * radius + (Math.random() - 0.5) * 50,
       vx: 0,
       vy: 0
     }
@@ -333,15 +358,14 @@ const forceDirectedLayout = (nodes: Node[], edges: Edge[], options: InternalLayo
       target.vx -= fx
       target.vy -= fy
 
-      // Direction force
+      // Direction force when directionStrength > 0
       if (options.directionStrength > 0) {
+        const yDiff = Math.abs(target.y - source.y)
         const verticalForce = idealDistance * 1.2 * options.directionStrength * weight
         source.vy -= verticalForce
         target.vy += verticalForce
 
-        // Horizontal spread when nodes are close vertically
-        const yDiff = Math.abs(target.y - source.y)
-        // FIX: Increased threshold and force
+        // Horizontal spread for hierarchy
         if (yDiff < idealDistance * 0.8) {
           const spreadForce = idealDistance * 0.5 * options.directionStrength
           if (source.x <= target.x) {
@@ -366,15 +390,13 @@ const forceDirectedLayout = (nodes: Node[], edges: Edge[], options: InternalLayo
     })
 
     // ========================================
-    // HORIZONTAL SPREAD (FIXED - Kimi K2 analysis)
+    // HORIZONTAL SPREAD (only when direction is active)
     // ========================================
     if (options.directionStrength > 0) {
-      // spreadStrength must be strong enough to counter vertical direction force
-      // Was 0.08, increased to 0.3 (6x stronger)
-      const spreadStrength = 0.3 * options.directionStrength
+      const spreadStrength = 0.2 * options.directionStrength
+
       positions.forEach(p => {
         const bias = hashToSide(p.id)
-        // targetX is constant - removed * directionStrength to avoid instability
         const targetX = bias * idealDistance
         p.vx += (targetX - p.x) * spreadStrength
       })

@@ -16,10 +16,12 @@ interface NodeConnectionsPanelProps {
   className?: string
   onOpenNode?: (nodeId: string) => void
   onPanToNode?: (nodeId: string) => void
+  onEditEdge?: (edge: Edge) => void
+  onDeleteEdge?: (edgeId: string) => void
 }
 
 export const NodeConnectionsPanel = memo(
-  ({ node, edges, allNodes, className, onOpenNode, onPanToNode }: NodeConnectionsPanelProps) => {
+  ({ node, edges, allNodes, className, onOpenNode, onPanToNode, onEditEdge, onDeleteEdge }: NodeConnectionsPanelProps) => {
     const { t } = useTranslation()
     const { filter, changeFilter, filteredEdges, incomingCount, outgoingCount, totalCount } =
       useConnectionFilter(node.id, edges)
@@ -106,6 +108,10 @@ export const NodeConnectionsPanel = memo(
                     showDirectionHint={filter === 'all'}
                     onOpen={onOpenNode ? () => onOpenNode(connectedNode.id) : undefined}
                     onPanTo={onPanToNode ? () => onPanToNode(connectedNode.id) : undefined}
+                    onEdit={onEditEdge ? () => onEditEdge(edge) : undefined}
+                    onDelete={onDeleteEdge ? () => onDeleteEdge(edge.id) : undefined}
+                    editTitle={t('common.edit')}
+                    deleteTitle={t('common.remove')}
                   />
                 )
               })}
@@ -138,6 +144,10 @@ export const NodeConnectionsPanel = memo(
                     showDirectionHint={filter === 'all'}
                     onOpen={onOpenNode ? () => onOpenNode(connectedNode.id) : undefined}
                     onPanTo={onPanToNode ? () => onPanToNode(connectedNode.id) : undefined}
+                    onEdit={onEditEdge ? () => onEditEdge(edge) : undefined}
+                    onDelete={onDeleteEdge ? () => onDeleteEdge(edge.id) : undefined}
+                    editTitle={t('common.edit')}
+                    deleteTitle={t('common.remove')}
                   />
                 )
               })}

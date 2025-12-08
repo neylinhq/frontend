@@ -1,4 +1,4 @@
-import type { PreviewCard } from '../chat.types'
+import type { PreviewCard } from '../ai-assist.types'
 import { ExercisePreview } from './exercise-preview'
 import { EnrichmentPreview } from './enrichment-preview'
 

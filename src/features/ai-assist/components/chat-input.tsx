@@ -34,7 +34,7 @@ export const ChatInput = ({
   onModelChange,
   availableModels = ['gpt-4']
 }: ChatInputProps) => {
-  const textareaRef = useRef<HTMLTextareaElement>(null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const handleSend = () => {
     if (value.trim() && !disabled) {
@@ -46,7 +46,7 @@ export const ChatInput = ({
     }
   }
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLTextareaElement>) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     // Cmd/Ctrl + Enter to send
     if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
       e.preventDefault()
@@ -60,7 +60,7 @@ export const ChatInput = ({
     }
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLTextareaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     onChange(e.target.value)
 
     // Auto-resize textarea
@@ -70,13 +70,27 @@ export const ChatInput = ({
   }
 
   return (
-    <div className='space-y-2'>
-      {/* Model selector */}
+    <div className='relative'>
+      <Textarea
+        ref={textareaRef}
+        value={value}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+        placeholder={placeholder}
+        disabled={disabled}
+        className={cn(
+          'min-h-[80px] max-h-[200px] resize-none p-3 pb-8',
+          'border-none shadow-none bg-transparent',
+          'focus-visible:ring-0 focus-visible:ring-offset-0'
+        )}
+        rows={3}
+      />
+
+      {/* Model selector - bottom left */}
       {onModelChange && availableModels.length > 1 && (
-        <div className='flex items-center gap-2'>
-          <span className='text-xs text-muted-foreground'>Model:</span>
+        <div className='absolute left-2.5 bottom-1.5'>
           <Select value={model} onValueChange={onModelChange} disabled={disabled}>
-            <SelectTrigger className='w-40 h-7 text-xs'>
+            <SelectTrigger className='w-28 h-6 text-[10px] border-none bg-muted hover:bg-muted'>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -90,30 +104,15 @@ export const ChatInput = ({
         </div>
       )}
 
-      {/* Input area */}
-      <div className='relative flex items-end gap-2'>
-        <Textarea
-          ref={textareaRef}
-          value={value}
-          onChange={handleChange}
-          onKeyDown={handleKeyDown}
-          placeholder={placeholder}
-          disabled={disabled}
-          className={cn(
-            'min-h-[80px] max-h-[200px] resize-none pr-12',
-            'focus-visible:ring-1'
-          )}
-          rows={3}
-        />
-        <Button
-          size='icon'
-          onClick={handleSend}
-          disabled={!value.trim() || disabled}
-          className='absolute right-2 bottom-2 h-8 w-8 flex-shrink-0'
-        >
-          <ArrowUp className='h-4 w-4' />
-        </Button>
-      </div>
+      {/* Send button - bottom right */}
+      <Button
+        size='icon'
+        onClick={handleSend}
+        disabled={!value.trim() || disabled}
+        className='absolute right-2.5 bottom-1.5 h-8 w-8 flex-shrink-0'
+      >
+        <ArrowUp className='h-4 w-4' />
+      </Button>
     </div>
   )
 }

@@ -11,7 +11,7 @@ import {
 import { type User, userApi } from '@/entities/user'
 import { SETTINGS_NAV_ITEMS } from '@/shared/config'
 import { cn } from '@/shared/lib/cn'
-import { getCookies } from '@/shared/api/api.server'
+import { getCookies } from '@/shared/api/server'
 
 // Server-side loader
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -48,7 +48,7 @@ const SettingsLayout = () => {
   const { user } = useLoaderData<typeof loader>()
 
   return (
-    <div className='h-full overflow-y-auto [scrollbar-gutter:stable]'>
+    <div className='h-full overflow-y-auto'>
       <div className='container max-w-6xl mx-auto py-10 px-4 md:px-6 lg:px-8'>
         <div className='mb-10'>
           <h1 className='text-3xl font-bold tracking-tight'>{t('settings.title')}</h1>
@@ -56,8 +56,31 @@ const SettingsLayout = () => {
         </div>
 
         <div className='flex flex-col md:flex-row gap-6 lg:gap-10'>
-          {/* Sidebar Navigation */}
-          <aside className='md:w-56 flex-shrink-0'>
+          {/* Mobile: Horizontal tabs with icons only */}
+          <nav className='flex md:hidden gap-1 overflow-x-auto pb-2 -mx-4 px-4'>
+            {SETTINGS_NAV_ITEMS.map(item => {
+              const Icon = item.icon
+              const isActive = location.pathname === item.href
+
+              return (
+                <Link
+                  key={item.href}
+                  to={item.href}
+                  className={cn(
+                    'flex items-center justify-center p-2.5 rounded-md transition-colors flex-shrink-0',
+                    isActive
+                      ? 'bg-secondary text-secondary-foreground'
+                      : 'text-muted-foreground hover:bg-secondary/50 hover:text-foreground'
+                  )}
+                >
+                  <Icon className='h-5 w-5' />
+                </Link>
+              )
+            })}
+          </nav>
+
+          {/* Desktop: Sidebar Navigation */}
+          <aside className='hidden md:block md:w-56 flex-shrink-0'>
             <nav className='space-y-1 sticky top-6'>
               {SETTINGS_NAV_ITEMS.map(item => {
                 const Icon = item.icon

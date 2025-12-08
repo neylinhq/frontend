@@ -7,8 +7,8 @@ import {
 import { mapApi } from '@/entities/map'
 import { NodeEditPage } from '@/pages/dashboard/node-edit-page'
 import { getMeta } from '@/shared/lib/get-meta'
-import { ApiError } from '@/shared/api/api-client'
-import { getCookies } from '@/shared/api/api.server'
+import { ApiError } from '@/shared/api/client'
+import { getCookies } from '@/shared/api/server'
 
 // Tell parent layout to disable scroll
 export const handle = { disableScroll: true }

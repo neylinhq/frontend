@@ -1,22 +1,38 @@
 import type { Editor } from '@tiptap/react'
-import { ArrowLeft, Loader2, PanelRightClose, PanelRightOpen } from 'lucide-react'
+import { AlertCircle, ArrowLeft, GraduationCap, Loader2, PanelRightClose, PanelRightOpen, SlidersHorizontal, Sparkles, Trash2 } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { toast } from '@/shared/components/toast'
 
+import type { Edge } from '@/entities/edge'
 import type { FullMap, Node } from '@/entities/map'
-import { useUpdateNode } from '@/entities/map'
+import { useDeleteEdge, useDeleteNode, useFullMap, useUpdateNode } from '@/entities/map'
 import type { NodeType } from '@/entities/node'
+import { EdgeEditPopover } from '@/features/graph/components/edge-edit-popover'
+import { useEdgeManagementStore } from '@/features/graph/model/edge-management.store'
 import { AISuggestionsPanel } from '@/features/ai-assist/components/ai-suggestions-panel'
 import { BlockEditor, editorToHTML, GUTTER, htmlToEditor, htmlToPlainText } from '@/features/block-editor'
 import { NodeConnectionsPanel } from '@/features/node-connections-panel'
 import { useAutoSave } from '@/features/node-editor'
 import { NodeMetadataForm, type NodeMetadataFormValues } from '@/features/node-metadata-form'
+import { PracticePanel } from '@/features/practice-panel'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from '@/shared/components/alert-dialog'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/shared/components/sheet'
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/card'
+import { Sheet, SheetContent, SheetHeader } from '@/shared/components/sheet'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/components/tabs'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/components/tooltip'
 import { cn } from '@/shared/lib/cn'
 
 const NODE_TYPE_CONFIG: Record<NodeType, { color: string; label: string }> = {
@@ -39,15 +55,25 @@ interface NodeEditPageProps {
 
 export const NodeEditPage = ({
   node: currentNode,
-  map: lightweightMap,
+  map: initialMap,
   mapId,
   nodeId
 }: NodeEditPageProps) => {
   const { t } = useTranslation()
+  const navigate = useNavigate()
+
+  // Use React Query for map data to get automatic updates after mutations
+  const { data: mapData } = useFullMap(mapId)
+  const map = mapData ?? initialMap
+
   const updateNodeMutation = useUpdateNode(mapId)
+  const deleteNodeMutation = useDeleteNode(mapId)
+  const deleteEdgeMutation = useDeleteEdge(mapId)
+  const { startEdgeEditing } = useEdgeManagementStore()
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false)
   const [title, setTitle] = useState('')
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const titleInputRef = useRef<HTMLTextAreaElement>(null)
   const mainRef = useRef<HTMLElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
@@ -166,11 +192,46 @@ export const NodeEditPage = ({
         }
       },
       {
-        onSuccess: () => toast.success(t('common.saved')),
         onError: () => toast.error(t('errors.failedSave'))
       }
     )
   }
+
+  // Handle node deletion with cascade
+  const handleDeleteNode = useCallback(async () => {
+    try {
+      await deleteNodeMutation.mutateAsync(nodeId)
+      toast.success(t('nodeEdit.nodeDeleted', 'Node deleted'))
+      navigate(`/dashboard/maps/${mapId}/view`)
+    } catch {
+      toast.error(t('errors.failedDelete', 'Failed to delete node'))
+    }
+  }, [nodeId, mapId, deleteNodeMutation, navigate, t])
+
+  // Count connections for delete warning
+  const connectionsCount = map.edges.filter(
+    e => e.sourceNodeId === nodeId || e.targetNodeId === nodeId
+  ).length
+
+  // Handle edge edit - open popover with edge data
+  const handleEditEdge = useCallback((edge: Edge) => {
+    // Calculate a position in the center of the sidebar for the popover
+    const sidebarRect = document.querySelector('aside')?.getBoundingClientRect()
+    const position = sidebarRect
+      ? { x: sidebarRect.left + sidebarRect.width / 2, y: sidebarRect.top + 200 }
+      : { x: window.innerWidth / 2, y: 300 }
+    startEdgeEditing(edge, position)
+  }, [startEdgeEditing])
+
+  // Handle edge delete
+  const handleDeleteEdge = useCallback(async (edgeId: string) => {
+    try {
+      await deleteEdgeMutation.mutateAsync(edgeId)
+      toast.success(t('common.removed', 'Removed'))
+    } catch {
+      toast.error(t('errors.failedDelete', 'Failed to delete'))
+    }
+  }, [deleteEdgeMutation, t])
 
   return (
     <div className='flex h-full'>
@@ -278,9 +339,31 @@ export const NodeEditPage = ({
             <Tabs defaultValue='properties' className='flex flex-1 flex-col min-h-0'>
               {/* Tab Header */}
               <div className='border-b border-border/50 px-4 py-3'>
-                <TabsList className='grid w-full grid-cols-2'>
-                  <TabsTrigger value='properties'>{t('nodeEdit.properties')}</TabsTrigger>
-                  <TabsTrigger value='ai'>AI</TabsTrigger>
+                <TabsList className='grid w-full grid-cols-3'>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <TabsTrigger value='properties' className='px-0'>
+                        <SlidersHorizontal className='h-4 w-4' />
+                      </TabsTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent side='bottom'>{t('nodeEdit.tabs.properties')}</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <TabsTrigger value='practice' className='px-0'>
+                        <GraduationCap className='h-4 w-4' />
+                      </TabsTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent side='bottom'>{t('nodeEdit.tabs.practice')}</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <TabsTrigger value='ai' className='px-0'>
+                        <Sparkles className='h-4 w-4' />
+                      </TabsTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent side='bottom'>{t('nodeEdit.tabs.ai')}</TooltipContent>
+                  </Tooltip>
                 </TabsList>
               </div>
 
@@ -297,17 +380,50 @@ export const NodeEditPage = ({
                   </div>
 
                   {/* Connections */}
-                  <div className='p-4'>
+                  <div className='border-b border-border/50 p-4'>
                     <h3 className='mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground'>
                       {t('nodeEdit.connections')}
                     </h3>
                     <NodeConnectionsPanel
                       node={currentNode}
-                      edges={lightweightMap.edges}
-                      allNodes={lightweightMap.nodes}
+                      edges={map.edges}
+                      allNodes={map.nodes}
+                      onEditEdge={handleEditEdge}
+                      onDeleteEdge={handleDeleteEdge}
                     />
                   </div>
+
+                  {/* Danger Zone */}
+                  <div className='p-4'>
+                    <Card className='border-destructive/30'>
+                      <CardHeader className='pb-2 pt-3 px-3'>
+                        <CardTitle className='text-xs font-medium text-destructive flex items-center gap-1.5'>
+                          <AlertCircle className='h-3.5 w-3.5' />
+                          {t('nodeEdit.dangerZone', 'Danger zone')}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className='px-3 pb-3'>
+                        <p className='text-xs text-muted-foreground mb-3'>
+                          {t('nodeEdit.deleteWarning', 'Deleting this node will also remove all its connections.')}
+                        </p>
+                        <Button
+                          variant='ghost'
+                          size='sm'
+                          className='text-muted-foreground hover:text-destructive hover:bg-destructive/10'
+                          onClick={() => setDeleteDialogOpen(true)}
+                        >
+                          <Trash2 className='mr-1.5 h-3.5 w-3.5' />
+                          {t('nodeEdit.deleteNode', 'Delete node')}
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </div>
                 </div>
+              </TabsContent>
+
+              {/* Practice Tab */}
+              <TabsContent value='practice' className='flex-1 flex flex-col min-h-0 mt-0'>
+                <PracticePanel nodeId={nodeId} mapId={mapId} />
               </TabsContent>
 
               {/* AI Tab */}
@@ -325,9 +441,31 @@ export const NodeEditPage = ({
           <Tabs defaultValue='properties' className='flex flex-1 flex-col min-h-0'>
             {/* Tab Header */}
             <SheetHeader className='border-b border-border/50 px-4 py-3'>
-              <TabsList className='grid w-full grid-cols-2'>
-                <TabsTrigger value='properties'>{t('nodeEdit.properties')}</TabsTrigger>
-                <TabsTrigger value='ai'>AI</TabsTrigger>
+              <TabsList className='grid w-full grid-cols-3'>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <TabsTrigger value='properties' className='px-0'>
+                      <SlidersHorizontal className='h-4 w-4' />
+                    </TabsTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent side='bottom'>{t('nodeEdit.tabs.properties')}</TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <TabsTrigger value='practice' className='px-0'>
+                      <GraduationCap className='h-4 w-4' />
+                    </TabsTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent side='bottom'>{t('nodeEdit.tabs.practice')}</TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <TabsTrigger value='ai' className='px-0'>
+                      <Sparkles className='h-4 w-4' />
+                    </TabsTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent side='bottom'>{t('nodeEdit.tabs.ai')}</TooltipContent>
+                </Tooltip>
               </TabsList>
             </SheetHeader>
 
@@ -344,26 +482,95 @@ export const NodeEditPage = ({
                 </div>
 
                 {/* Connections */}
-                <div className='p-4'>
+                <div className='border-b border-border/50 p-4'>
                   <h3 className='mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground'>
                     {t('nodeEdit.connections')}
                   </h3>
                   <NodeConnectionsPanel
                     node={currentNode}
-                    edges={lightweightMap.edges}
-                    allNodes={lightweightMap.nodes}
+                    edges={map.edges}
+                    allNodes={map.nodes}
+                    onEditEdge={handleEditEdge}
+                    onDeleteEdge={handleDeleteEdge}
                   />
+                </div>
+
+                {/* Danger Zone */}
+                <div className='p-4'>
+                  <Card className='border-destructive/30'>
+                    <CardHeader className='pb-2 pt-3 px-3'>
+                      <CardTitle className='text-xs font-medium text-destructive flex items-center gap-1.5'>
+                        <AlertCircle className='h-3.5 w-3.5' />
+                        {t('nodeEdit.dangerZone', 'Danger zone')}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className='px-3 pb-3'>
+                      <p className='text-xs text-muted-foreground mb-3'>
+                        {t('nodeEdit.deleteWarning', 'Deleting this node will also remove all its connections.')}
+                      </p>
+                      <Button
+                        variant='ghost'
+                        size='sm'
+                        className='text-muted-foreground hover:text-destructive hover:bg-destructive/10'
+                        onClick={() => setDeleteDialogOpen(true)}
+                      >
+                        <Trash2 className='mr-1.5 h-3.5 w-3.5' />
+                        {t('nodeEdit.deleteNode', 'Delete node')}
+                      </Button>
+                    </CardContent>
+                  </Card>
                 </div>
               </div>
             </TabsContent>
 
+            {/* Practice Tab */}
+            <TabsContent value='practice' className='flex-1 flex flex-col min-h-0 mt-0'>
+              <PracticePanel nodeId={nodeId} mapId={mapId} />
+            </TabsContent>
+
             {/* AI Tab */}
             <TabsContent value='ai' className='flex-1 flex flex-col min-h-0 mt-0'>
-                <AISuggestionsPanel nodeId={nodeId} mapId={mapId} />
+              <AISuggestionsPanel nodeId={nodeId} mapId={mapId} />
             </TabsContent>
           </Tabs>
         </SheetContent>
       </Sheet>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {t('nodeEdit.deleteConfirmTitle', 'Delete node?')}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('nodeEdit.deleteConfirmDescription', {
+                defaultValue: '"{{label}}" and {{count}} connections will be permanently deleted.',
+                label: currentNode.label,
+                count: connectionsCount
+              })}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteNode}
+              disabled={deleteNodeMutation.isPending}
+              className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
+            >
+              {deleteNodeMutation.isPending ? (
+                <Loader2 className='mr-1.5 h-3.5 w-3.5 animate-spin' />
+              ) : (
+                <Trash2 className='mr-1.5 h-3.5 w-3.5' />
+              )}
+              {t('nodeEdit.deleteNode', 'Delete node')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Edge Edit Popover for editing connections */}
+      <EdgeEditPopover mapId={mapId} />
     </div>
   )
 }

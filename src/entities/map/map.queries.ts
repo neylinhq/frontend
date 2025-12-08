@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { mapApi } from './map.api'
-import type { Edge, Node } from './map.schema'
+import type { CreateEdgeRequest, Edge, Node } from './map.schema'
 
 export const mapKeys = {
   all: ['maps'] as const,
@@ -84,7 +84,7 @@ export const useUpdateNode = (mapId: string) => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Partial<Node> }) => mapApi.updateNode(id, data),
+    mutationFn: ({ id, data }: { id: string; data: Partial<Node> }) => mapApi.updateNode(mapId, id, data),
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: mapKeys.mapNodes(mapId) })
       queryClient.invalidateQueries({ queryKey: mapKeys.fullMap(mapId) })
@@ -121,7 +121,7 @@ export const useCreateEdge = (mapId: string) => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: mapApi.createEdge,
+    mutationFn: (data: CreateEdgeRequest) => mapApi.createEdge(mapId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: mapKeys.mapEdges(mapId) })
       queryClient.invalidateQueries({ queryKey: mapKeys.fullMap(mapId) })
@@ -133,10 +133,12 @@ export const useUpdateEdge = (mapId: string) => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Partial<Edge> }) => mapApi.updateEdge(id, data),
+    mutationFn: ({ id, data }: { id: string; data: Partial<Edge> }) =>
+      mapApi.updateEdge(mapId, id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: mapKeys.mapEdges(mapId) })
       queryClient.invalidateQueries({ queryKey: mapKeys.fullMap(mapId) })
+      queryClient.invalidateQueries({ queryKey: mapKeys.lightweightMap(mapId) })
     }
   })
 }
@@ -145,10 +147,11 @@ export const useDeleteEdge = (mapId: string) => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: mapApi.deleteEdge,
+    mutationFn: (edgeId: string) => mapApi.deleteEdge(mapId, edgeId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: mapKeys.mapEdges(mapId) })
       queryClient.invalidateQueries({ queryKey: mapKeys.fullMap(mapId) })
+      queryClient.invalidateQueries({ queryKey: mapKeys.lightweightMap(mapId) })
     }
   })
 }
@@ -207,16 +210,16 @@ export const useAnalyzeGraph = (mapId: string) => {
 }
 
 // ====== Position updates (optimistic, no cache invalidation) ======
-export const useUpdateNodePosition = () => {
+export const useUpdateNodePosition = (mapId: string) => {
   return useMutation({
     mutationFn: ({ id, position }: { id: string; position: { x: number; y: number } }) =>
-      mapApi.updateNodePosition(id, position)
+      mapApi.updateNodePosition(mapId, id, position)
   })
 }
 
-export const useUpdateNodePositions = () => {
+export const useUpdateNodePositions = (mapId: string) => {
   return useMutation({
     mutationFn: (updates: Array<{ id: string; position: { x: number; y: number } }>) =>
-      mapApi.updateNodePositions(updates)
+      mapApi.updateNodePositions(mapId, updates)
   })
 }

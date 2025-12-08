@@ -5,6 +5,7 @@ export { aiApi } from './ai.api'
 // Query exports
 export {
   aiKeys,
+  useAIModels,
   useAITask,
   useAnalyzeMap,
   useDetectGaps,
@@ -13,6 +14,7 @@ export {
   useSuggestEdges
 } from './ai.queries'
 export type {
+  AIModel,
   AITask,
   EdgeSuggestion,
   EnrichType,
@@ -20,6 +22,7 @@ export type {
   NodeEnrichmentResult
 } from './ai.schema'
 export {
+  AIModelSchema,
   AITaskSchema,
   EdgeSuggestionSchema,
   KnowledgeGapSchema,

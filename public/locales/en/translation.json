@@ -27,7 +27,8 @@
       "termsLink": "Terms",
       "and": "and",
       "privacyLink": "Privacy",
-      "error": "Could not create account"
+      "error": "Could not create account",
+      "genericError": "Something went wrong. Please try again."
     },
     "resetPassword": {
       "title": "Reset password",
@@ -83,7 +84,14 @@
     "overview": "Overview",
     "myMaps": "Maps",
     "aiLab": "AI Lab",
-    "knowledgeBase": "Knowledge"
+    "knowledgeBase": "Knowledge",
+    "support": "Support"
+  },
+  "support": {
+    "title": "Need Help?",
+    "description": "Choose your preferred way to contact us",
+    "telegram": "Telegram",
+    "email": "Email"
   },
   "theme": {
     "light": "Light",
@@ -110,19 +118,38 @@
     "uploading": "Uploading...",
     "deleting": "Deleting...",
     "comingSoon": "Coming Soon",
-    "remove": "Remove"
+    "remove": "Remove",
+    "processing": "Processing..."
+  },
+  "imageCrop": {
+    "title": "Crop image",
+    "description": "Select the area of the image"
   },
   "nodeCreation": {
     "addNode": "Add Node",
     "quickAdd": {
       "title": "Quick Add Node",
-      "description": "Type a name and optional /type to quickly create a node",
-      "placeholder": "Node name /type",
-      "typeSuggestions": "Type suggestions"
+      "description": "Enter name and / to select type (e.g. Quantum Physics /concept)",
+      "placeholder": "Name (/ for type)",
+      "typeSuggestions": "Select type"
+    },
+    "connections": {
+      "label": "Connect to",
+      "add": "Add",
+      "searchPlaceholder": "Search nodes...",
+      "noResults": "No nodes found"
     },
     "success": "Node created",
     "created": "Created \"{{label}}\"",
     "error": "Failed to create node"
+  },
+  "edgeEdit": {
+    "relationType": "Relation type",
+    "label": "Label",
+    "labelPlaceholder": "e.g. inspires, develops...",
+    "strength": "Strength",
+    "bidirectional": "Bidirectional",
+    "delete": "Delete connection"
   },
   "mapCreation": {
     "page": {
@@ -389,9 +416,11 @@
     }
   },
   "nodeDrawer": {
+    "openFullEditor": "Open full editor",
     "tabs": {
-      "overview": "Overview",
+      "properties": "Properties",
       "connections": "Connections",
+      "overview": "Overview",
       "view": "View"
     },
     "overview": {
@@ -1007,13 +1036,23 @@
     "failedSave": "Failed to save",
     "failedUpload": "Failed to upload",
     "failedDelete": "Failed to delete",
+    "failedGenerateExercises": "Failed to generate exercises",
     "saving": "Saving..."
   },
   "nodeEdit": {
     "untitledPlaceholder": "Untitled",
     "editorPlaceholder": "Start writing, or type '/' for commands...",
     "properties": "Properties",
-    "connections": "Connections"
+    "connections": "Connections",
+    "tabs": {
+      "properties": "Properties",
+      "practice": "Practice",
+      "ai": "AI"
+    },
+    "dangerZone": "Danger zone",
+    "deleteWarning": "Deleting this node will also remove all its connections.",
+    "deleteNode": "Delete node",
+    "deleteConfirmTitle": "Delete node?"
   },
   "ai": {
     "assistant": "AI Assistant",
@@ -1040,7 +1079,8 @@
       "saved": "{{count}} items saved",
       "streaming": "AI is thinking...",
       "error": "Something went wrong. Try again.",
-      "noMessages": "Start a conversation with AI to get help with this node"
+      "noMessages": "Start a conversation with AI to get help with this node",
+      "noMessagesMap": "Ask me about this map or try /analyze"
     },
     "preview": {
       "edit": "Edit",
@@ -1055,12 +1095,28 @@
   },
   "practice": {
     "session": "Practice Session",
+    "startPractice": "Practice",
     "noExercises": "No exercises available",
     "noExercisesDescription": "Generate exercises with AI to start practicing this knowledge map",
     "generateExercises": "Generate Exercises",
     "generating": "Generating...",
     "submit": "Submit Answer",
-    "next": "Next Exercise"
+    "next": "Next Exercise",
+    "panel": {
+      "noExercises": "No exercises yet",
+      "noExercisesDescription": "Generate exercises to practice this topic",
+      "startPractice": "Start Practice",
+      "generateMore": "Generate More"
+    },
+    "types": {
+      "quiz": "Quiz",
+      "flashcard": "Flashcard",
+      "fill_gaps": "Fill Gaps",
+      "match": "Match",
+      "sequence": "Sequence",
+      "true_false": "True/False",
+      "open_ended": "Open-Ended"
+    }
   },
   "settings": {
     "title": "Settings",
@@ -1080,8 +1136,14 @@
         "title": "Profile Picture",
         "description": "Update your profile picture",
         "upload": "Upload new photo",
-        "requirements": "JPG, PNG or WebP. Max 2MB.",
-        "uploaded": "Photo uploaded successfully"
+        "delete": "Remove",
+        "requirements": "JPG, PNG or WebP. Max 5MB.",
+        "uploaded": "Photo uploaded successfully",
+        "deleted": "Photo removed",
+        "crop": {
+          "title": "Crop photo",
+          "description": "Select the area for your avatar"
+        }
       },
       "personal": {
         "title": "Personal Information",

@@ -4,14 +4,14 @@ import type { GenerateExercisesRequest } from './exercise.schema'
 
 export const exerciseKeys = {
   all: ['exercises'] as const,
-  next: (mapId: string) => [...exerciseKeys.all, 'next', mapId] as const,
+  next: (mapId: string, nodeId?: string) => [...exerciseKeys.all, 'next', mapId, nodeId] as const,
   progress: (mapId: string) => [...exerciseKeys.all, 'progress', mapId] as const
 }
 
-export const useNextExercise = (mapId: string, enabled = true) => {
+export const useNextExercise = (mapId: string, nodeId?: string, enabled = true) => {
   return useQuery({
-    queryKey: exerciseKeys.next(mapId),
-    queryFn: () => exerciseApi.getNextExercise(mapId),
+    queryKey: exerciseKeys.next(mapId, nodeId),
+    queryFn: () => exerciseApi.getNextExercise(mapId, nodeId),
     enabled,
     staleTime: 0, // Always fetch fresh exercise
     retry: false

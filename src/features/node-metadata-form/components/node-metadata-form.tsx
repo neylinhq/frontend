@@ -1,25 +1,28 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { X } from 'lucide-react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { Button } from '@/shared/components/button'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from '@/shared/components/form'
+import { Badge } from '@/shared/components/badge'
 import { Input } from '@/shared/components/input'
+import { Label } from '@/shared/components/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/shared/components/select'
 import { Slider } from '@/shared/components/slider'
+import { COMPLEXITY_OPTIONS } from '../model/complexity.constants'
 import { type NodeMetadataFormValues, nodeMetadataFormSchema } from '../lib/validation'
 import type { NodeMetadataFormProps } from '../model/node-metadata-form.types'
-import { NodeComplexitySelector } from './node-complexity-selector'
-import { NodeTagsInput } from './node-tags-input'
-import { NodeTypeSelector } from './node-type-selector'
+import { NodeTypeSelect } from './node-type-select'
 
 export const NodeMetadataForm = ({ node, onSubmit, isPending }: NodeMetadataFormProps) => {
   const { t } = useTranslation()
+  const [tagInput, setTagInput] = useState('')
+
   const form = useForm<NodeMetadataFormValues>({
     resolver: zodResolver(nodeMetadataFormSchema),
     defaultValues: {
@@ -31,93 +34,116 @@ export const NodeMetadataForm = ({ node, onSubmit, isPending }: NodeMetadataForm
     }
   })
 
+  const tags = form.watch('tags') || []
+  const confidence = form.watch('confidence')
+
+  const handleAddTag = () => {
+    const trimmed = tagInput.trim()
+    if (trimmed && !tags.includes(trimmed)) {
+      form.setValue('tags', [...tags, trimmed])
+      setTagInput('')
+      form.handleSubmit(onSubmit)()
+    }
+  }
+
+  const handleRemoveTag = (tagToRemove: string) => {
+    form.setValue('tags', tags.filter(t => t !== tagToRemove))
+    form.handleSubmit(onSubmit)()
+  }
+
+  const handleTagKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      handleAddTag()
+    }
+  }
+
+  // Auto-save on field change
+  const handleFieldChange = <K extends keyof NodeMetadataFormValues>(
+    field: K,
+    value: NodeMetadataFormValues[K]
+  ) => {
+    form.setValue(field, value)
+    form.handleSubmit(onSubmit)()
+  }
+
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
-        <FormField
-          control={form.control}
-          name='label'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t('form.metadata.label')}</FormLabel>
-              <FormControl>
-                <Input placeholder={t('form.metadata.labelPlaceholder')} {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+    <div className="space-y-4" data-pending={isPending}>
+      {/* Type */}
+      <div className="space-y-1.5">
+        <Label className="text-xs text-muted-foreground">{t('form.nodeType.label')}</Label>
+        <NodeTypeSelect
+          value={form.watch('type') ?? 'concept'}
+          onChange={value => handleFieldChange('type', value)}
         />
+      </div>
 
-        <FormField
-          control={form.control}
-          name='type'
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <NodeTypeSelector value={field.value ?? 'concept'} onChange={field.onChange} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+      {/* Tags */}
+      <div className="space-y-1.5">
+        <Label className="text-xs text-muted-foreground">{t('form.tags.label')}</Label>
+        <div className="flex flex-wrap gap-1.5">
+          {tags.map(tag => (
+            <Badge key={tag} variant="secondary" className="gap-1 text-xs py-0.5 px-2">
+              {tag}
+              <button
+                type="button"
+                onClick={() => handleRemoveTag(tag)}
+                className="ml-0.5 rounded-full hover:bg-muted-foreground/20"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </Badge>
+          ))}
+          <Input
+            value={tagInput}
+            onChange={e => setTagInput(e.target.value)}
+            onKeyDown={handleTagKeyDown}
+            onBlur={handleAddTag}
+            placeholder={tags.length === 0 ? t('form.tags.placeholder') : '+'}
+            className="h-6 min-w-[60px] max-w-[120px] flex-1 border-dashed text-xs px-2"
+          />
+        </div>
+      </div>
+
+      {/* Complexity */}
+      <div className="space-y-1.5">
+        <Label className="text-xs text-muted-foreground">{t('form.complexity.label')}</Label>
+        <Select
+          value={form.watch('complexity') || ''}
+          onValueChange={value => handleFieldChange('complexity', value as NodeMetadataFormValues['complexity'])}
+        >
+          <SelectTrigger className="h-9">
+            <SelectValue placeholder={t('form.complexity.placeholder')} />
+          </SelectTrigger>
+          <SelectContent>
+            {COMPLEXITY_OPTIONS.map(option => (
+              <SelectItem key={option.value} value={option.value}>
+                {t(option.labelKey)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Confidence */}
+      <div className="space-y-1.5">
+        <div className="flex items-center justify-between">
+          <Label className="text-xs text-muted-foreground">
+            {t('form.confidence.label', 'Confidence')}
+          </Label>
+          <span className="text-xs tabular-nums text-muted-foreground">
+            {confidence ? Math.round(confidence * 100) : 0}%
+          </span>
+        </div>
+        <Slider
+          min={0}
+          max={1}
+          step={0.1}
+          value={[confidence || 0]}
+          onValueChange={values => handleFieldChange('confidence', values[0])}
+          className="py-1"
         />
-
-        <FormField
-          control={form.control}
-          name='tags'
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <NodeTagsInput value={field.value || []} onChange={field.onChange} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name='complexity'
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <NodeComplexitySelector value={field.value} onChange={field.onChange} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name='confidence'
-          render={({ field }) => (
-            <FormItem>
-              <div className='space-y-3'>
-                <div className='flex items-center justify-between'>
-                  <FormLabel>{t('form.confidence.label', 'Confidence')}</FormLabel>
-                  <span className='text-sm text-muted-foreground'>
-                    {field.value ? Math.round(field.value * 100) : 0}%
-                  </span>
-                </div>
-                <FormControl>
-                  <Slider
-                    min={0}
-                    max={1}
-                    step={0.1}
-                    value={[field.value || 0]}
-                    onValueChange={values => field.onChange(values[0])}
-                  />
-                </FormControl>
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <Button type='submit' disabled={isPending} className='w-full'>
-          {isPending ? t('form.metadata.saving') : t('form.metadata.save')}
-        </Button>
-      </form>
-    </Form>
+      </div>
+    </div>
   )
 }

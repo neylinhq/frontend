@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react'
 
-export type DrawerTab = 'overview' | 'connections' | 'view'
+export type DrawerTab = 'properties' | 'connections' | 'overview' | 'view'
 
-export const useDrawerTabs = (defaultTab: DrawerTab = 'overview') => {
+export const useDrawerTabs = (defaultTab: DrawerTab = 'properties') => {
   const [activeTab, setActiveTab] = useState<DrawerTab>(defaultTab)
 
   const switchTab = useCallback((tab: DrawerTab) => {

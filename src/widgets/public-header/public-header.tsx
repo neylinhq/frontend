@@ -61,10 +61,10 @@ export const PublicHeader = ({ hideAuthButtons }: PublicHeaderProps) => {
               {/* Navigation */}
               <div className='flex-1 py-4 px-3 space-y-1'>
                 <MobileNavItem to={ROUTES.home} icon={Home}>
-                  {t('nav.home', 'Home')}
+                  {t('home.nav.home')}
                 </MobileNavItem>
                 <MobileNavItem to={ROUTES.pricing} icon={Wallet}>
-                  {t('nav.pricing', 'Pricing')}
+                  {t('home.nav.pricing')}
                 </MobileNavItem>
 
                 {!hideAuthButtons && (

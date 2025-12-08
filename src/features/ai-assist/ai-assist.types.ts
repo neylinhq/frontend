@@ -50,9 +50,12 @@ export interface NodePreviewData {
 }
 
 // Context types
-export interface ChatContext {
-  nodeId: string
+export type ChatContextType = 'node' | 'map'
+
+export interface NodeChatContext {
+  type: 'node'
   mapId: string
+  nodeId: string
   nodeName: string
   nodeType: string
   description: string
@@ -62,6 +65,27 @@ export interface ChatContext {
     name: string
     relationship: string
   }>
+}
+
+export interface MapChatContext {
+  type: 'map'
+  mapId: string
+  mapName: string
+  nodeCount: number
+}
+
+export type ChatContext = NodeChatContext | MapChatContext
+
+// Intent handler interface
+export interface IntentResult {
+  content: string
+  preview?: PreviewCard[]
+}
+
+export interface IntentHandler {
+  name: string
+  detect: (content: string) => boolean
+  execute: (ctx: ChatContext, content: string, model: string) => Promise<IntentResult>
 }
 
 // Quick action types

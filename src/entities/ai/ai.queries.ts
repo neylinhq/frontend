@@ -4,8 +4,17 @@ import type { EnrichType } from './ai.schema'
 
 export const aiKeys = {
   all: ['ai'] as const,
+  models: () => [...aiKeys.all, 'models'] as const,
   tasks: () => [...aiKeys.all, 'tasks'] as const,
   task: (id: string) => [...aiKeys.tasks(), id] as const
+}
+
+export const useAIModels = () => {
+  return useQuery({
+    queryKey: aiKeys.models(),
+    queryFn: () => aiApi.listModels(),
+    staleTime: Infinity // Models rarely change
+  })
 }
 
 export const useAITask = (taskId: string | null) => {

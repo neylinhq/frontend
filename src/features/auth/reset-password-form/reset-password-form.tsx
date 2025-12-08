@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import { z } from 'zod'
 import { sessionApi } from '@/entities/session'
-import { ApiError } from '@/shared/api/api-client'
+import { ApiError } from '@/shared/api/client'
 import { Button } from '@/shared/components/button'
 import {
   Form,

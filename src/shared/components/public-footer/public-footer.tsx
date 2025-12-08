@@ -1,5 +1,6 @@
 import { APP_NAME, CURRENT_YEAR } from '@/shared/config/app'
 import { LegalLinks } from '../legal-links'
+import { SupportLinks } from '../support-links'
 
 export const PublicFooter = () => {
   return (
@@ -8,7 +9,10 @@ export const PublicFooter = () => {
         <span>
           © {CURRENT_YEAR} {APP_NAME}
         </span>
-        <LegalLinks variant='footer' className='flex-wrap gap-4 md:gap-6' />
+        <div className='flex flex-wrap items-center gap-6'>
+          <SupportLinks variant='links' />
+          <LegalLinks variant='footer' className='flex-wrap gap-4 md:gap-6' />
+        </div>
       </div>
     </footer>
   )

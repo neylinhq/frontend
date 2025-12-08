@@ -312,7 +312,7 @@ export const BlockEditor = ({
   // Loading state while editor initializes
   if (!editor) {
     return (
-      <div className={cn('tiptap-editor', className)}>
+      <div className={cn('tiptap-editor', GUTTER.PADDING_CLASS, className)}>
         <div className='animate-pulse space-y-4'>
           <div className='h-6 bg-muted rounded w-3/4' />
           <div className='h-4 bg-muted rounded w-full' />

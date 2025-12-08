@@ -19,3 +19,7 @@ export {
 // Settings navigation
 export type { SettingsNavItem } from './settings-nav'
 export { SETTINGS_NAV_ITEMS } from './settings-nav'
+
+// Support
+export type { SupportChannel } from './support'
+export { SUPPORT_CONTACTS } from './support'

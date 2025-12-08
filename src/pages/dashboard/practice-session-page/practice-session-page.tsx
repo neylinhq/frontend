@@ -1,7 +1,7 @@
 import { ArrowLeft, Loader2, Sparkles } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, useParams } from 'react-router'
+import { Link, useParams, useSearchParams } from 'react-router'
 import { useGenerateExercises, useNextExercise, useSubmitAnswer } from '@/entities/exercise'
 import { Button } from '@/shared/components/button'
 import { cn } from '@/shared/lib/cn'
@@ -9,10 +9,12 @@ import { cn } from '@/shared/lib/cn'
 export const PracticeSessionPage = () => {
   const { t } = useTranslation()
   const { mapId } = useParams<{ mapId: string }>()
+  const [searchParams] = useSearchParams()
+  const nodeId = searchParams.get('nodeId')
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null)
   const [showFeedback, setShowFeedback] = useState(false)
 
-  const { data: exercise, isLoading, error, refetch } = useNextExercise(mapId!)
+  const { data: exercise, isLoading, error, refetch } = useNextExercise(mapId!, nodeId ?? undefined)
   const submitAnswerMutation = useSubmitAnswer()
   const generateExercisesMutation = useGenerateExercises()
 
@@ -32,6 +34,7 @@ export const PracticeSessionPage = () => {
   const handleNext = () => {
     setSelectedAnswer(null)
     setShowFeedback(false)
+    refetch()
   }
 
   const handleGenerateExercises = () => {
@@ -41,6 +44,7 @@ export const PracticeSessionPage = () => {
       {
         mapId,
         request: {
+          nodeIds: nodeId ? [nodeId] : undefined,
           difficulty: 3, // Medium difficulty
           count: 5 // Generate 5 exercises
         }

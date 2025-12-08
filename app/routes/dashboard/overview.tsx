@@ -7,7 +7,7 @@ import {
 import { mapApi } from '@/entities/map'
 import { OverviewPage } from '@/pages/dashboard/overview-page/overview-page'
 import { getMeta } from '@/shared/lib/get-meta'
-import { getCookies } from '@/shared/api/api.server'
+import { getCookies } from '@/shared/api/server'
 
 export const meta = () => {
   return getMeta('overview')

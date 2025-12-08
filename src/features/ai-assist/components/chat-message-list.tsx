@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Bot, User, Loader2 } from 'lucide-react'
 import { cn } from '@/shared/lib/cn'
-import type { ChatMessage, PreviewCard } from '../chat.types'
+import type { ChatMessage, PreviewCard } from '../ai-assist.types'
 import { PreviewCardComponent } from './preview-card'
 
 interface ChatMessageListProps {
@@ -59,7 +59,7 @@ export const ChatMessageList = ({
                   : 'bg-muted'
               )}
             >
-              <p className='whitespace-pre-wrap break-words'>{message.content}</p>
+              <p className='whitespace-pre-wrap break-all'>{message.content}</p>
             </div>
 
             {/* Streaming Indicator */}

@@ -1,7 +1,18 @@
-import { api } from '@/shared/api/api-client'
-import type { EnrichType } from './ai.schema'
+import { api } from '@/shared/api/client'
+import type { AIModel, EnrichType } from './ai.schema'
+
+interface ApiResponse<T> {
+  success: boolean
+  data: T
+}
 
 export const aiApi = {
+  // Get available AI models
+  listModels: async (): Promise<AIModel[]> => {
+    const response = await api.get<ApiResponse<AIModel[]>>('/ai/models')
+    return response.data
+  },
+
   // Node operations
   enrichNode: async (nodeId: string, enrichType: EnrichType, async = true) =>
     api.post(`/nodes/${nodeId}/enrich`, { enrichType, async }),

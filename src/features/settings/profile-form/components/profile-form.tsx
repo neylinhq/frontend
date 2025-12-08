@@ -2,7 +2,14 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { toast } from '@/shared/components/toast'
-import { type User, useUpdateProfile, useUploadAvatar } from '@/entities/user'
+import {
+  type UpdateProfile,
+  type User,
+  useCurrentUser,
+  useDeleteAvatar,
+  useUpdateProfile,
+  useUploadAvatar
+} from '@/entities/user'
 import { Button } from '@/shared/components/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
 import {
@@ -24,22 +31,30 @@ interface ProfileFormProps {
   user: User
 }
 
-export const ProfileForm = ({ user }: ProfileFormProps) => {
+export const ProfileForm = ({ user: initialUser }: ProfileFormProps) => {
   const { t } = useTranslation()
+  const { data: user = initialUser } = useCurrentUser(initialUser)
   const updateProfile = useUpdateProfile()
   const uploadAvatar = useUploadAvatar()
+  const deleteAvatar = useDeleteAvatar()
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
-      displayName: user.displayName || '',
-      username: user.username || '',
-      bio: user.bio || ''
+      displayName: initialUser.displayName || '',
+      username: initialUser.username || '',
+      bio: initialUser.bio || ''
     }
   })
 
   const onSubmit = (values: ProfileFormValues) => {
-    updateProfile.mutate(values, {
+    // Filter out empty strings to avoid backend validation errors
+    const payload: UpdateProfile = {}
+    if (values.displayName?.trim()) payload.displayName = values.displayName.trim()
+    if (values.username?.trim()) payload.username = values.username.trim()
+    if (values.bio?.trim()) payload.bio = values.bio.trim()
+
+    updateProfile.mutate(payload, {
       onSuccess: () => {
         toast.success(t('common.saved'))
       },
@@ -56,6 +71,17 @@ export const ProfileForm = ({ user }: ProfileFormProps) => {
       },
       onError: () => {
         toast.error(t('errors.failedUpload'))
+      }
+    })
+  }
+
+  const handleAvatarDelete = () => {
+    deleteAvatar.mutate(undefined, {
+      onSuccess: () => {
+        toast.success(t('settings.profile.avatar.deleted'))
+      },
+      onError: () => {
+        toast.error(t('errors.failedDelete'))
       }
     })
   }
@@ -79,7 +105,9 @@ export const ProfileForm = ({ user }: ProfileFormProps) => {
               user.displayName?.slice(0, 2).toUpperCase() || user.email.slice(0, 2).toUpperCase()
             }
             onUpload={handleAvatarUpload}
+            onDelete={handleAvatarDelete}
             isPending={uploadAvatar.isPending}
+            isDeleting={deleteAvatar.isPending}
           />
         </CardContent>
       </Card>

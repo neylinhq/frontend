@@ -4,7 +4,7 @@ import { Sparkles, Lightbulb, Link2, BookOpen, ChevronDown } from 'lucide-react'
 import { Button } from '@/shared/components/button'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/shared/components/collapsible'
 import { cn } from '@/shared/lib/cn'
-import type { QuickActionType } from '../chat.types'
+import type { QuickActionType } from '../ai-assist.types'
 
 interface QuickActionBarProps {
   actions: QuickActionType[]

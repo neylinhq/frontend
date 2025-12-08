@@ -8,6 +8,9 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths(), wasm(), topLevelAwait()],
+  server: {
+    allowedHosts: ['.ngrok-free.app', '.ngrok.io']
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

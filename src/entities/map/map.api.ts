@@ -1,4 +1,4 @@
-import { api } from '@/shared/api/api-client'
+import { api } from '@/shared/api/client'
 import type { Edge } from '../edge'
 import type { LightweightNode, Node } from '../node'
 import type { FullMap, MapEntity } from './map.schema'

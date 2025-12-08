@@ -1,5 +1,5 @@
 import { redirect } from 'react-router'
-import { ApiError, api } from '@/shared/api/api-client'
+import { ApiError, api } from '@/shared/api/client'
 import { destroySession, getSession } from '@/entities/session/session.server'
 
 /**

@@ -1,5 +1,6 @@
 import { ReactFlowProvider } from '@xyflow/react'
 import type { FullMap } from '@/entities/map'
+import { MapChatDrawer } from '@/features/ai-assist'
 import { QuickAddDialog, AddNodeFab, useNodeCreationStore } from '@/features/node-creation'
 import { useKeyboardShortcut } from '@/shared/hooks/use-keyboard-shortcut'
 import { GraphView } from '@/widgets/graph-view'
@@ -22,6 +23,11 @@ export const MapViewPage = ({ map, mapId }: MapViewPageProps) => {
         <GraphView mapId={mapId} initialData={map} className='h-full w-full' interactive={true} />
         <QuickAddDialog />
         <AddNodeFab />
+
+        {/* AI Chat Drawer */}
+        <div className='absolute right-4 top-4 z-10'>
+          <MapChatDrawer mapId={mapId} />
+        </div>
       </div>
     </ReactFlowProvider>
   )

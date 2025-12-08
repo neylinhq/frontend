@@ -1,5 +1,5 @@
 import type { User } from '@/entities/user'
-import { api } from '@/shared/api/api-client'
+import { api } from '@/shared/api/client'
 
 // Types
 interface LoginRequest {

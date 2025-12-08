@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
-import { toast } from '@/shared/components/toast'
-import { NODE_TYPE_CONFIGS, type NodeType } from '@/entities/node'
+import { useCreateEdge } from '@/entities/map'
+import { type NodeType } from '@/entities/node'
 import { Button } from '@/shared/components/button'
 import {
   Dialog,
@@ -13,8 +13,8 @@ import {
   DialogTitle
 } from '@/shared/components/dialog'
 import { Input } from '@/shared/components/input'
+import { toast } from '@/shared/components/toast'
 import { cn } from '@/shared/lib/cn'
-import { NODE_CREATION_CONFIG } from '../model/node-creation.constants'
 import { getNodeConfig, getNodeIcon } from '../lib/node-type-utils'
 import {
   getPartialType,
@@ -22,21 +22,26 @@ import {
   hasTypePrefix,
   parseQuickInput
 } from '../lib/parse-quick-input'
+import { NODE_CREATION_CONFIG } from '../model/node-creation.constants'
 import { useNodeCreationStore } from '../model/node-creation.store'
 import { useCreateNodeMutation } from '../model/use-create-node-mutation'
+import { ConnectionSelector } from './connection-selector'
 
 export const QuickAddDialog = () => {
   const { t } = useTranslation()
   const { mapId } = useParams<{ mapId: string }>()
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const { isQuickAddOpen, draftLabel, draftType, closeQuickAdd, setDraft } = useNodeCreationStore()
+  const { isQuickAddOpen, draftLabel, draftType, pendingConnections, closeQuickAdd, setDraft } =
+    useNodeCreationStore()
   const createNode = useCreateNodeMutation()
+  const createEdge = useCreateEdge(mapId || '')
 
   const [input, setInput] = useState('')
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [suggestions, setSuggestions] = useState<NodeType[]>([])
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(0)
+  const [isCreating, setIsCreating] = useState(false)
 
   // Update draft when input changes
   useEffect(() => {
@@ -75,20 +80,40 @@ export const QuickAddDialog = () => {
       return
     }
 
+    setIsCreating(true)
+
     try {
-      await createNode.mutateAsync({
+      // 1. Create the node
+      const newNode = await createNode.mutateAsync({
         mapId,
         label: draftLabel,
         type: draftType
       })
+
+      // 2. Create edges for pending connections (in parallel)
+      if (pendingConnections.length > 0 && newNode?.id) {
+        await Promise.all(
+          pendingConnections.map(conn =>
+            createEdge.mutateAsync({
+              sourceNodeId: conn.direction === 'outgoing' ? newNode.id : conn.targetNodeId,
+              targetNodeId: conn.direction === 'outgoing' ? conn.targetNodeId : newNode.id,
+              relationType: conn.relationType,
+              strength: 1.0,
+              bidirectional: false
+            })
+          )
+        )
+      }
 
       toast.success(t('nodeCreation.success'), {
         description: t('nodeCreation.created', { label: draftLabel })
       })
 
       closeQuickAdd()
-    } catch (error) {
+    } catch {
       toast.error(t('nodeCreation.error'))
+    } finally {
+      setIsCreating(false)
     }
   }
 
@@ -185,6 +210,9 @@ export const QuickAddDialog = () => {
             </div>
           )}
 
+          {/* Connection Selector */}
+          <ConnectionSelector />
+
           {/* Preview */}
           {draftLabel && (
             <div className='rounded-md border bg-muted/50 p-3'>
@@ -203,8 +231,8 @@ export const QuickAddDialog = () => {
           <Button variant='outline' onClick={closeQuickAdd}>
             {t('common.cancel')}
           </Button>
-          <Button onClick={handleCreate} disabled={!draftLabel.trim() || createNode.isPending}>
-            {createNode.isPending ? t('common.creating') : t('common.create')}
+          <Button onClick={handleCreate} disabled={!draftLabel.trim() || isCreating}>
+            {isCreating ? t('common.creating') : t('common.create')}
           </Button>
         </DialogFooter>
       </DialogContent>

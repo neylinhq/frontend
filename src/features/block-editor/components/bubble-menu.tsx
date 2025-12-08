@@ -394,13 +394,17 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
 
   // Hide bubble menu when clicking outside the editor
   useEffect(() => {
+    // Ensure editor view is available
+    if (!editor.view) return
+
+    const editorDom = editor.view.dom
+
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node
-      const editorEl = editor.view.dom
       const menuEl = menuRef.current
 
       // Don't hide if clicking inside editor or menu
-      if (editorEl?.contains(target) || menuEl?.contains(target)) {
+      if (editorDom?.contains(target) || menuEl?.contains(target)) {
         return
       }
 
@@ -420,11 +424,11 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
     }
 
     document.addEventListener('mousedown', handleClickOutside)
-    editor.view.dom.addEventListener('blur', handleBlur)
+    editorDom.addEventListener('blur', handleBlur)
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
-      editor.view.dom.removeEventListener('blur', handleBlur)
+      editorDom.removeEventListener('blur', handleBlur)
     }
   }, [editor])
 

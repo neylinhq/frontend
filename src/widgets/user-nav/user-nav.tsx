@@ -1,3 +1,4 @@
+import { HelpCircle, Mail, Send } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router'
 import { sessionApi, useSessionStore } from '@/entities/session'
@@ -13,9 +14,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger
 } from '@/shared/components/dropdown-menu'
 import { LanguageSelect } from '@/shared/components/language-switcher'
+import { SUPPORT_CONTACTS } from '@/shared/config'
 import { getShortcut } from '@/shared/lib/platform'
 import { USER_NAV_LOGOUT_ITEM, USER_NAV_MAIN_SECTION } from './user-nav.constants'
 
@@ -83,6 +88,32 @@ export const UserNav = () => {
             )
           })}
         </DropdownMenuGroup>
+
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>
+            <HelpCircle className='mr-2 h-4 w-4' />
+            <span>{t('nav.support')}</span>
+          </DropdownMenuSubTrigger>
+          <DropdownMenuSubContent>
+            <DropdownMenuItem asChild>
+              <a
+                href={SUPPORT_CONTACTS.telegram.url}
+                target='_blank'
+                rel='noopener noreferrer'
+              >
+                <Send className='mr-2 h-4 w-4' />
+                <span>{t('support.telegram')}</span>
+              </a>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <a href={SUPPORT_CONTACTS.email.url}>
+                <Mail className='mr-2 h-4 w-4' />
+                <span>{t('support.email')}</span>
+              </a>
+            </DropdownMenuItem>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+
         <DropdownMenuSeparator />
 
         <div className='px-2 py-2 flex items-center justify-center gap-1'>

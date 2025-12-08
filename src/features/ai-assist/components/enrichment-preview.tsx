@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { Check, Edit2, X } from 'lucide-react'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/shared/components/card'
 import { Button } from '@/shared/components/button'
-import type { EnrichmentPreviewData } from '../chat.types'
+import type { EnrichmentPreviewData } from '../ai-assist.types'
 
 interface EnrichmentPreviewProps {
   data: unknown

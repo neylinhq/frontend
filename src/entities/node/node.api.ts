@@ -1,4 +1,4 @@
-import { api } from '@/shared/api/api-client'
+import { api } from '@/shared/api/client'
 import type { CreateNodeRequest, UpdateNodeRequest, UpdatePositionsRequest } from './node.schema'
 
 export const nodeApi = {

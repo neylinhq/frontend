@@ -7,8 +7,8 @@ import {
 import { mapApi } from '@/entities/map'
 import { MapViewPage } from '@/pages/dashboard/map-view-page'
 import { getMeta } from '@/shared/lib/get-meta'
-import { ApiError } from '@/shared/api/api-client'
-import { getCookies } from '@/shared/api/api.server'
+import { ApiError } from '@/shared/api/client'
+import { getCookies } from '@/shared/api/server'
 
 export const meta = () => {
   return getMeta('mapView')

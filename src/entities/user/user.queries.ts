@@ -13,10 +13,12 @@ export const userKeys = {
   current: () => [...userKeys.all, 'current'] as const
 }
 
-export const useCurrentUser = () => {
+export const useCurrentUser = (initialData?: User) => {
   return useQuery({
     queryKey: userKeys.current(),
-    queryFn: userApi.getCurrentUser
+    queryFn: userApi.getCurrentUser,
+    initialData,
+    staleTime: 1000 * 60 * 5 // 5 minutes - don't refetch immediately if we have initial data
   })
 }
 
@@ -55,16 +57,19 @@ export const useUploadAvatar = () => {
 
   return useMutation({
     mutationFn: (file: File) => userApi.uploadAvatar(file),
-    onSuccess: ({ avatarUrl }) => {
-      queryClient.setQueryData<User>(userKeys.current(), old => {
-        if (!old) {
-          return old
-        }
-        return {
-          ...old,
-          avatarUrl
-        }
-      })
+    onSuccess: updatedUser => {
+      queryClient.setQueryData<User>(userKeys.current(), updatedUser)
+    }
+  })
+}
+
+export const useDeleteAvatar = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: () => userApi.deleteAvatar(),
+    onSuccess: updatedUser => {
+      queryClient.setQueryData<User>(userKeys.current(), updatedUser)
     }
   })
 }

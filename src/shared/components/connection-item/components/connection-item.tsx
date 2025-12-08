@@ -1,4 +1,4 @@
-import { ExternalLink, Eye } from 'lucide-react'
+import { ExternalLink, Eye, Pencil, Trash2 } from 'lucide-react'
 import { memo } from 'react'
 import { cn } from '@/shared/lib/cn'
 
@@ -11,8 +11,12 @@ interface ConnectionItemProps {
   className?: string
   onOpen?: () => void
   onPanTo?: () => void
+  onEdit?: () => void
+  onDelete?: () => void
   openTitle?: string
   panToTitle?: string
+  editTitle?: string
+  deleteTitle?: string
 }
 
 export const ConnectionItem = memo(
@@ -25,8 +29,12 @@ export const ConnectionItem = memo(
     className,
     onOpen,
     onPanTo,
+    onEdit,
+    onDelete,
     openTitle,
-    panToTitle
+    panToTitle,
+    editTitle,
+    deleteTitle
   }: ConnectionItemProps) => {
     return (
       <button
@@ -70,38 +78,76 @@ export const ConnectionItem = memo(
           </div>
 
           {/* Actions */}
-          {(onPanTo || onOpen) && (
-            <div className='flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity'>
-              {onPanTo && (
+          {(onPanTo || onOpen || onEdit || onDelete) && (
+            <div className='flex items-center gap-0.5'>
+              {/* Navigation actions - show on hover */}
+              {(onPanTo || onOpen) && (
+                <div className='flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity'>
+                  {onPanTo && (
+                    <button
+                      type='button'
+                      onClick={e => {
+                        e.stopPropagation()
+                        onPanTo()
+                      }}
+                      className={cn(
+                        'p-1.5 rounded-md transition-colors',
+                        'text-muted-foreground hover:text-foreground hover:bg-background'
+                      )}
+                      title={panToTitle}
+                    >
+                      <Eye className='w-3.5 h-3.5' />
+                    </button>
+                  )}
+                  {onOpen && (
+                    <button
+                      type='button'
+                      onClick={e => {
+                        e.stopPropagation()
+                        onOpen()
+                      }}
+                      className={cn(
+                        'p-1.5 rounded-md transition-colors',
+                        'text-muted-foreground hover:text-foreground hover:bg-background'
+                      )}
+                      title={openTitle}
+                    >
+                      <ExternalLink className='w-3.5 h-3.5' />
+                    </button>
+                  )}
+                </div>
+              )}
+              {/* Edit/Delete actions - always visible */}
+              {onEdit && (
                 <button
                   type='button'
                   onClick={e => {
                     e.stopPropagation()
-                    onPanTo()
+                    onEdit()
                   }}
                   className={cn(
                     'p-1.5 rounded-md transition-colors',
                     'text-muted-foreground hover:text-foreground hover:bg-background'
                   )}
-                  title={panToTitle}
+                  title={editTitle}
                 >
-                  <Eye className='w-3.5 h-3.5' />
+                  <Pencil className='w-3.5 h-3.5' />
                 </button>
               )}
-              {onOpen && (
+              {onDelete && (
                 <button
                   type='button'
                   onClick={e => {
                     e.stopPropagation()
-                    onOpen()
+                    onDelete()
                   }}
                   className={cn(
                     'p-1.5 rounded-md transition-colors',
-                    'text-muted-foreground hover:text-foreground hover:bg-background'
+                    'text-muted-foreground hover:text-destructive hover:bg-destructive/10'
                   )}
-                  title={openTitle}
+                  title={deleteTitle}
                 >
-                  <ExternalLink className='w-3.5 h-3.5' />
+                  <Trash2 className='w-3.5 h-3.5' />
                 </button>
               )}
             </div>

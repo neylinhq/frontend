@@ -16,14 +16,17 @@ import {
 import { Loader2 } from 'lucide-react'
 import { memo, useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useQueryClient } from '@tanstack/react-query'
 import {
   type Edge,
   type FullMap,
+  mapKeys,
   type Node,
   useFullMap,
   useUpdateNodePosition,
   useUpdateNodePositions,
-  useCreateEdge
+  useCreateEdge,
+  useDeleteEdge
 } from '@/entities/map'
 import { Card } from '@/shared/components/card'
 import { useDarkMode } from '@/shared/hooks'
@@ -43,7 +46,10 @@ import { useFilteredGraphData } from '../model/graph-data.hooks'
 import { useGraphKeyboard } from '../model/graph-keyboard.hooks'
 import { easeOutCubic, useAnimatedLayout } from '../model/graph-layout.hooks'
 import { useLayoutHistory } from '../model/layout-history.store'
+import { useEdgeManagementStore } from '../model/edge-management.store'
 import { useNodeSelection } from '../model/node-selection.hooks'
+import { EdgeEditPopover } from './edge-edit-popover'
+import { EdgeTypeSelector } from './edge-type-selector'
 import { GraphToolbar } from './graph-toolbar'
 import { KnowledgeEdge } from './knowledge-edge'
 import { KnowledgeNode } from './knowledge-node'
@@ -69,7 +75,9 @@ interface GraphVisualizationProps {
     edges: Edge[],
     allNodes: Node[],
     onOpenNode?: (id: string) => void,
-    onPanToNode?: (id: string) => void
+    onPanToNode?: (id: string) => void,
+    onEditEdge?: (edge: Edge) => void,
+    onDeleteEdge?: (edgeId: string) => void
   ) => React.ReactNode
 }
 
@@ -81,18 +89,24 @@ const GraphVisualizationContent = ({
   renderConnectionsPanel
 }: GraphVisualizationProps) => {
   const { t } = useTranslation()
-  // Use initialData if provided (SSR), otherwise fetch client-side
-  const { data: fetchedMap, isLoading, isError } = useFullMap(mapId, { enabled: !initialData })
-  const fullMap = initialData ?? fetchedMap
+  const queryClient = useQueryClient()
+  // Always use React Query for reactivity - initialData is just for SSR hydration
+  const { data: fetchedMap, isLoading, isError } = useFullMap(mapId)
+  const fullMap = fetchedMap ?? initialData
   const { selectedElements, handleSelectionChange, clearSelection, selectedNodeId, selectNode } =
     useNodeSelection()
   const { controls, toggleFullscreen } = useGraphControls()
   const layoutAppliedRef = useRef(false)
 
   // Mutations for persisting positions to DB
-  const updatePositionMutation = useUpdateNodePosition()
-  const updatePositionsMutation = useUpdateNodePositions()
+  const updatePositionMutation = useUpdateNodePosition(mapId)
+  const updatePositionsMutation = useUpdateNodePositions(mapId)
   const createEdgeMutation = useCreateEdge(mapId)
+  const deleteEdgeMutation = useDeleteEdge(mapId)
+
+  // Edge management store (needed early for handleEditEdge)
+  const { pendingEdge, startEdgeCreation, cancelEdgeCreation, startEdgeEditing } =
+    useEdgeManagementStore()
 
   const { zoomIn, zoomOut, fitView, setCenter, getNode, screenToFlowPosition } = useReactFlow()
   const { zoom: viewportZoom } = useViewport()
@@ -125,6 +139,26 @@ const GraphVisualizationContent = ({
     },
     [focusNode, handlePanToNode]
   )
+
+  // Edit edge from connections panel - opens EdgeEditPopover
+  const handleEditEdge = useCallback(
+    (edge: Edge) => {
+      // Position popover at center of viewport
+      const centerX = window.innerWidth / 2
+      const centerY = window.innerHeight / 2
+      startEdgeEditing(edge, { x: centerX, y: centerY })
+    },
+    [startEdgeEditing]
+  )
+
+  // Delete edge from connections panel
+  const handleDeleteEdge = useCallback(
+    (edgeId: string) => {
+      deleteEdgeMutation.mutate(edgeId)
+    },
+    [deleteEdgeMutation]
+  )
+
   const { visibleNodeTypes, visibleEdgeTypes } = useFilters()
   const { showMinimap } = useGraphUI()
   const { nodeSpacing, directionStrength, animationDuration } = useNodeSpacing()
@@ -370,35 +404,37 @@ const GraphVisualizationContent = ({
       .sort()
       .join(',')
     if (prevNodeIdsRef.current !== nodeIds) {
-      if (prevNodeIdsRef.current !== '') {
-        // Always update cache with current visible node positions before any changes
-        for (const node of reactFlowNodes) {
-          positionCacheRef.current.set(node.id, { ...node.position })
-        }
-
-        // Always preserve positions from cache when nodes change (mode switch, filter change, etc.)
-        // Only apply fresh layout via explicit re-layout button
-        const mergedNodes = initialNodes.map(node => ({
-          ...node,
-          position: positionCacheRef.current.get(node.id) ?? node.position
-        }))
-        setNodes(mergedNodes)
+      // Always update cache with current visible node positions before any changes
+      for (const node of reactFlowNodes) {
+        positionCacheRef.current.set(node.id, { ...node.position })
       }
+
+      // Always preserve positions from cache when nodes change (mode switch, filter change, etc.)
+      // Only apply fresh layout via explicit re-layout button
+      const mergedNodes = initialNodes.map(node => ({
+        ...node,
+        position: positionCacheRef.current.get(node.id) ?? node.position
+      }))
+      setNodes(mergedNodes)
       prevNodeIdsRef.current = nodeIds
     }
   }, [initialNodes, reactFlowNodes, setNodes])
 
-  // Sync edges when data changes
-  const prevEdgeIdsRef = useRef<string>('')
+  // Sync edges when data changes (including edge properties like relationType, label, etc.)
+  const prevEdgeHashRef = useRef<string>('')
   useEffect(() => {
-    const edgeIds = initialEdges
-      .map(e => e.id)
+    // Create hash from edge IDs AND their data properties
+    const edgeHash = initialEdges
+      .map(e => {
+        const data = e.data || {}
+        return `${e.id}:${data.relationType}:${data.label}:${data.strength}:${data.bidirectional}`
+      })
       .sort()
-      .join(',')
-    if (prevEdgeIdsRef.current !== edgeIds) {
+      .join('|')
+    if (prevEdgeHashRef.current !== edgeHash) {
       setEdges(initialEdges)
     }
-    prevEdgeIdsRef.current = edgeIds
+    prevEdgeHashRef.current = edgeHash
   }, [initialEdges, setEdges])
 
   // Handle node changes
@@ -423,28 +459,96 @@ const GraphVisualizationContent = ({
     [onEdgesChange, interactive]
   )
 
-  // Handle new connections
+  // Handle new connections - show type selector instead of creating immediately
   const onConnect = useCallback(
     (params: Connection) => {
       if (!interactive || !params.source || !params.target) {
         return
       }
 
-      // Optimistic update - сразу показываем edge
-      setEdges(eds => addEdge({ ...params, type: 'knowledgeEdge' }, eds))
+      // Find nodes to get labels
+      const sourceNode = fullMap?.nodes.find(n => n.id === params.source)
+      const targetNode = fullMap?.nodes.find(n => n.id === params.target)
 
-      // Persist to server
-      createEdgeMutation.mutate({
-        sourceNodeId: params.source,
-        targetNodeId: params.target,
-        relationType: 'prerequisite', // Default relation type
-        label: params.sourceHandle || undefined,
-        strength: 1.0,
-        bidirectional: false
+      if (!sourceNode || !targetNode) return
+
+      // Find flow nodes to calculate position
+      const sourceFlowNode = reactFlowNodes.find(n => n.id === params.source)
+      const targetFlowNode = reactFlowNodes.find(n => n.id === params.target)
+
+      if (!sourceFlowNode || !targetFlowNode) return
+
+      // Optimistic update - show temporary edge with full data structure
+      const tempEdgeId = `temp-${Date.now()}`
+      setEdges(eds =>
+        addEdge(
+          {
+            ...params,
+            id: tempEdgeId,
+            type: 'knowledgeEdge',
+            data: {
+              selected: false,
+              id: tempEdgeId,
+              mapId,
+              sourceNodeId: params.source,
+              targetNodeId: params.target,
+              relationType: 'related-to' as const,
+              strength: 1,
+              bidirectional: false,
+              metadata: { confidence: 0.5, createdBy: 'user' as const },
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString()
+            }
+          },
+          eds
+        )
+      )
+
+      // Calculate midpoint for selector position (in flow coordinates)
+      const midX = (sourceFlowNode.position.x + targetFlowNode.position.x) / 2 + 110
+      const midY = (sourceFlowNode.position.y + targetFlowNode.position.y) / 2 + 40
+
+      // Convert flow coordinates to screen coordinates
+      const viewportTopLeft = screenToFlowPosition({ x: 0, y: 0 })
+      const screenPosition = {
+        x: (midX - viewportTopLeft.x) * viewportZoom,
+        y: (midY - viewportTopLeft.y) * viewportZoom
+      }
+
+      // Open type selector
+      startEdgeCreation({
+        sourceId: params.source,
+        targetId: params.target,
+        sourceLabel: sourceNode.label,
+        targetLabel: targetNode.label,
+        position: screenPosition
       })
     },
-    [setEdges, interactive, createEdgeMutation, mapId]
+    [
+      setEdges,
+      interactive,
+      fullMap,
+      reactFlowNodes,
+      screenToFlowPosition,
+      viewportZoom,
+      startEdgeCreation
+    ]
   )
+
+  // Handle edge creation cancel - remove optimistic edge
+  const handleEdgeCreationCancel = useCallback(() => {
+    if (pendingEdge) {
+      setEdges(eds =>
+        eds.filter(e => !(e.source === pendingEdge.sourceId && e.target === pendingEdge.targetId))
+      )
+    }
+  }, [pendingEdge, setEdges])
+
+  // Handle edge creation complete
+  const handleEdgeCreationComplete = useCallback(() => {
+    // Refetch to get the real edge data
+    queryClient.invalidateQueries({ queryKey: mapKeys.fullMap(mapId) })
+  }, [queryClient, mapId])
 
   // Helper to get current positions as Map
   const getCurrentPositionsMap = useCallback(() => {
@@ -697,6 +801,13 @@ const GraphVisualizationContent = ({
       <NodeDrawer
         node={selectedNode}
         onClose={clearSelection}
+        connectionsCount={
+          selectedNode
+            ? fullMap.edges.filter(
+                e => e.sourceNodeId === selectedNode.id || e.targetNodeId === selectedNode.id
+              ).length
+            : 0
+        }
         connectionsTab={
           selectedNode &&
           renderConnectionsPanel?.(
@@ -704,11 +815,22 @@ const GraphVisualizationContent = ({
             fullMap.edges,
             fullMap.nodes,
             selectNode,
-            handleFocusAndPanToNode // Focus on node and pan to it
+            handleFocusAndPanToNode, // Focus on node and pan to it
+            handleEditEdge,
+            handleDeleteEdge
           )
         }
       />
 
+      {/* Edge type selector - appears when creating new edge */}
+      <EdgeTypeSelector
+        mapId={mapId}
+        onCancel={handleEdgeCreationCancel}
+        onComplete={handleEdgeCreationComplete}
+      />
+
+      {/* Edge edit popover - appears when clicking on edge badge */}
+      <EdgeEditPopover mapId={mapId} />
     </div>
   )
 }

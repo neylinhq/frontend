@@ -27,7 +27,8 @@
       "termsLink": "Условиями",
       "and": "и",
       "privacyLink": "Политикой",
-      "error": "Не удалось создать аккаунт"
+      "error": "Не удалось создать аккаунт",
+      "genericError": "Что-то пошло не так. Попробуйте еще раз."
     },
     "resetPassword": {
       "title": "Сброс пароля",
@@ -83,7 +84,14 @@
     "overview": "Обзор",
     "myMaps": "Карты",
     "aiLab": "AI Лаб",
-    "knowledgeBase": "Знания"
+    "knowledgeBase": "Знания",
+    "support": "Поддержка"
+  },
+  "support": {
+    "title": "Нужна помощь?",
+    "description": "Выберите удобный способ связи",
+    "telegram": "Telegram",
+    "email": "Email"
   },
   "theme": {
     "light": "Светлая",
@@ -110,19 +118,38 @@
     "uploading": "Загрузка...",
     "deleting": "Удаление...",
     "comingSoon": "Скоро",
-    "remove": "Удалить"
+    "remove": "Удалить",
+    "processing": "Обработка..."
+  },
+  "imageCrop": {
+    "title": "Обрезка изображения",
+    "description": "Выберите область изображения"
   },
   "nodeCreation": {
     "addNode": "Добавить узел",
     "quickAdd": {
       "title": "Быстрое добавление узла",
-      "description": "Введите название и опциональный /тип для быстрого создания узла",
-      "placeholder": "Название узла /тип",
-      "typeSuggestions": "Подсказки типов"
+      "description": "Введите название и / для выбора типа (например: Квантовая физика /concept)",
+      "placeholder": "Название (/ для типа)",
+      "typeSuggestions": "Выберите тип"
+    },
+    "connections": {
+      "label": "Связать с",
+      "add": "Добавить",
+      "searchPlaceholder": "Поиск узлов...",
+      "noResults": "Узлы не найдены"
     },
     "success": "Узел создан",
     "created": "Создан «{{label}}»",
     "error": "Не удалось создать узел"
+  },
+  "edgeEdit": {
+    "relationType": "Тип связи",
+    "label": "Подпись",
+    "labelPlaceholder": "напр. вдохновляет, развивает...",
+    "strength": "Сила",
+    "bidirectional": "Двунаправленная",
+    "delete": "Удалить связь"
   },
   "mapCreation": {
     "page": {
@@ -389,9 +416,11 @@
     }
   },
   "nodeDrawer": {
+    "openFullEditor": "Открыть редактор",
     "tabs": {
-      "overview": "Обзор",
+      "properties": "Свойства",
       "connections": "Связи",
+      "overview": "Обзор",
       "view": "Вид"
     },
     "overview": {
@@ -1033,13 +1062,23 @@
     "failedSave": "Не удалось сохранить",
     "failedUpload": "Не удалось загрузить",
     "failedDelete": "Не удалось удалить",
+    "failedGenerateExercises": "Не удалось сгенерировать задания",
     "saving": "Сохранение..."
   },
   "nodeEdit": {
     "untitledPlaceholder": "Без названия",
     "editorPlaceholder": "Начните писать или введите '/' для команд...",
     "properties": "Свойства",
-    "connections": "Связи"
+    "connections": "Связи",
+    "tabs": {
+      "properties": "Свойства",
+      "practice": "Тренировка",
+      "ai": "AI"
+    },
+    "dangerZone": "Опасная зона",
+    "deleteWarning": "Удаление узла также удалит все его связи.",
+    "deleteNode": "Удалить узел",
+    "deleteConfirmTitle": "Удалить узел?"
   },
   "ai": {
     "assistant": "AI Ассистент",
@@ -1066,7 +1105,8 @@
       "saved": "Сохранено {{count}} элементов",
       "streaming": "AI думает...",
       "error": "Что-то пошло не так. Попробуйте снова.",
-      "noMessages": "Начните разговор с AI чтобы получить помощь с этой нодой"
+      "noMessages": "Начните разговор с AI чтобы получить помощь с этой нодой",
+      "noMessagesMap": "Спросите AI об этой карте или попробуйте /analyze"
     },
     "preview": {
       "edit": "Редактировать",
@@ -1081,12 +1121,28 @@
   },
   "practice": {
     "session": "Сессия тренировки",
+    "startPractice": "Тренировка",
     "noExercises": "Нет доступных упражнений",
     "noExercisesDescription": "Сгенерируйте задания с помощью AI чтобы начать изучение карты знаний",
     "generateExercises": "Сгенерировать задания",
     "generating": "Генерация...",
     "submit": "Отправить ответ",
-    "next": "Следующее упражнение"
+    "next": "Следующее упражнение",
+    "panel": {
+      "noExercises": "Упражнений пока нет",
+      "noExercisesDescription": "Сгенерируйте упражнения для изучения этой темы",
+      "startPractice": "Начать тренировку",
+      "generateMore": "Сгенерировать ещё"
+    },
+    "types": {
+      "quiz": "Тест",
+      "flashcard": "Карточка",
+      "fill_gaps": "Заполнить пропуски",
+      "match": "Соответствие",
+      "sequence": "Последовательность",
+      "true_false": "Верно/Неверно",
+      "open_ended": "Открытый вопрос"
+    }
   },
   "settings": {
     "title": "Настройки",
@@ -1106,8 +1162,14 @@
         "title": "Фото профиля",
         "description": "Обновите фото профиля",
         "upload": "Загрузить новое фото",
-        "requirements": "JPG, PNG или WebP. Максимум 2МБ.",
-        "uploaded": "Фото успешно загружено"
+        "delete": "Удалить",
+        "requirements": "JPG, PNG или WebP. Максимум 5МБ.",
+        "uploaded": "Фото успешно загружено",
+        "deleted": "Фото удалено",
+        "crop": {
+          "title": "Обрезка фото",
+          "description": "Выберите область для аватара"
+        }
       },
       "personal": {
         "title": "Личная информация",

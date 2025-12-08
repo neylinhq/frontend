@@ -179,10 +179,10 @@
 @layer base {
   :root {
     /* Theme preview colors (don't change with theme) */
-    --preview-classic: 220 100% 50%;
+    --preview-classic: 217 91% 55%;
     --preview-vanilla: 24 80% 50%;
     --preview-vivid: 160 84% 39%;
-    --preview-mono: 0 100% 50%;
+    --preview-mono: 340 100% 50%;
 
     --background: 0 0% 100%;           /* #FFFFFF - pure white */
     --foreground: 0 0% 9%;             /* #171717 - near black */
@@ -246,27 +246,27 @@
     --complexity-advanced: 0 84% 60%;
     --complexity-advanced-bg: 0 60% 94%;
 
-    /* Edge type colors - 10 unique semantic colors */
-    --edge-prerequisite: 24 95% 53%;         /* Orange - dependency */
-    --edge-prerequisite-muted: 24 70% 93%;
-    --edge-causes: 0 84% 60%;                /* Red - causation */
-    --edge-causes-muted: 0 60% 94%;
-    --edge-explains: 262 83% 58%;            /* Violet - explanation */
-    --edge-explains-muted: 262 50% 94%;
-    --edge-is-a: 239 84% 67%;                /* Indigo - taxonomy */
-    --edge-is-a-muted: 239 50% 94%;
-    --edge-has-a: 160 84% 39%;               /* Emerald - composition */
-    --edge-has-a-muted: 160 50% 92%;
-    --edge-part-of: 174 84% 40%;             /* Teal - aggregation */
-    --edge-part-of-muted: 174 50% 92%;
-    --edge-influences: 45 93% 47%;           /* Amber - influence */
-    --edge-influences-muted: 45 60% 93%;
-    --edge-related-to: 215 16% 47%;          /* Slate - weak relation */
-    --edge-related-to-muted: 215 16% 94%;
-    --edge-contradicts: 0 72% 51%;           /* Red-600 - conflict */
-    --edge-contradicts-muted: 0 50% 93%;
-    --edge-similar-to: 84 85% 43%;           /* Lime - similarity */
-    --edge-similar-to-muted: 84 50% 92%;
+    /* Edge type colors - 10 unique hues, darker for light theme */
+    --edge-contradicts: 0 85% 48%;
+    --edge-contradicts-muted: 0 70% 92%;
+    --edge-prerequisite: 35 85% 48%;
+    --edge-prerequisite-muted: 35 70% 92%;
+    --edge-influences: 16 90% 55%;
+    --edge-influences-muted: 16 75% 91%;
+    --edge-similar-to: 85 75% 35%;
+    --edge-similar-to-muted: 85 60% 90%;
+    --edge-has-a: 145 75% 35%;
+    --edge-has-a-muted: 145 60% 90%;
+    --edge-part-of: 175 75% 35%;
+    --edge-part-of-muted: 175 60% 90%;
+    --edge-related-to: 205 70% 45%;
+    --edge-related-to-muted: 205 50% 92%;
+    --edge-is-a: 235 80% 50%;
+    --edge-is-a-muted: 235 60% 92%;
+    --edge-explains: 265 80% 50%;
+    --edge-explains-muted: 265 60% 92%;
+    --edge-causes: 325 85% 48%;
+    --edge-causes-muted: 325 65% 91%;
   }
 
   .dark {
@@ -305,6 +305,7 @@
     --preview-classic: 217 91% 70%;
     --preview-vanilla: 24 85% 60%;
     --preview-vivid: 160 90% 50%;
+    --preview-mono: 340 100% 50%;
 
     /* Graph node colors (dark - more vibrant) */
     --graph-violet: 270 100% 75%;
@@ -336,27 +337,27 @@
     --complexity-advanced: 0 72% 55%;
     --complexity-advanced-bg: 0 40% 16%;
 
-    /* Edge type colors (dark mode - brighter) */
-    --edge-prerequisite: 24 95% 58%;
-    --edge-prerequisite-muted: 24 50% 16%;
-    --edge-causes: 0 80% 58%;
-    --edge-causes-muted: 0 45% 16%;
-    --edge-explains: 262 80% 65%;
-    --edge-explains-muted: 262 40% 17%;
-    --edge-is-a: 239 80% 72%;
-    --edge-is-a-muted: 239 40% 17%;
-    --edge-has-a: 160 80% 48%;
-    --edge-has-a-muted: 160 40% 15%;
-    --edge-part-of: 174 80% 48%;
-    --edge-part-of-muted: 174 40% 15%;
-    --edge-influences: 45 93% 55%;
-    --edge-influences-muted: 45 45% 16%;
-    --edge-related-to: 215 16% 60%;
-    --edge-related-to-muted: 215 16% 17%;
-    --edge-contradicts: 0 72% 58%;
-    --edge-contradicts-muted: 0 40% 16%;
-    --edge-similar-to: 84 80% 50%;
-    --edge-similar-to-muted: 84 40% 15%;
+    /* Edge type colors - 10 unique hues, lighter for dark theme */
+    --edge-contradicts: 0 90% 62%;
+    --edge-contradicts-muted: 0 55% 17%;
+    --edge-prerequisite: 35 90% 62%;
+    --edge-prerequisite-muted: 35 55% 17%;
+    --edge-influences: 16 90% 65%;
+    --edge-influences-muted: 16 60% 17%;
+    --edge-similar-to: 85 80% 52%;
+    --edge-similar-to-muted: 85 50% 15%;
+    --edge-has-a: 145 80% 52%;
+    --edge-has-a-muted: 145 50% 15%;
+    --edge-part-of: 175 80% 52%;
+    --edge-part-of-muted: 175 50% 15%;
+    --edge-related-to: 205 75% 62%;
+    --edge-related-to-muted: 205 45% 16%;
+    --edge-is-a: 235 85% 75%;
+    --edge-is-a-muted: 235 50% 17%;
+    --edge-explains: 265 85% 75%;
+    --edge-explains-muted: 265 50% 17%;
+    --edge-causes: 325 90% 65%;
+    --edge-causes-muted: 325 50% 16%;
   }
 
   /* ========================================
@@ -424,27 +425,27 @@
     --complexity-advanced: 5 75% 58%;
     --complexity-advanced-bg: 5 50% 93%;
 
-    /* Edge type colors - warm hue shift +5° */
-    --edge-prerequisite: 20 85% 51%;
-    --edge-prerequisite-muted: 20 60% 92%;
-    --edge-causes: 5 75% 58%;
-    --edge-causes-muted: 5 50% 93%;
-    --edge-explains: 268 75% 56%;
-    --edge-explains-muted: 268 45% 93%;
-    --edge-is-a: 245 75% 65%;
-    --edge-is-a-muted: 245 45% 93%;
-    --edge-has-a: 155 75% 38%;
-    --edge-has-a-muted: 155 45% 91%;
-    --edge-part-of: 168 75% 38%;
-    --edge-part-of-muted: 168 45% 91%;
-    --edge-influences: 40 85% 46%;
-    --edge-influences-muted: 40 55% 92%;
-    --edge-related-to: 30 10% 45%;
-    --edge-related-to-muted: 30 10% 93%;
-    --edge-contradicts: 5 65% 49%;
-    --edge-contradicts-muted: 5 45% 92%;
-    --edge-similar-to: 78 75% 42%;
-    --edge-similar-to-muted: 78 45% 91%;
+    /* Edge type colors - 10 unique hues, warm shift +3°, darker for light */
+    --edge-contradicts: 3 80% 45%;
+    --edge-contradicts-muted: 3 65% 91%;
+    --edge-prerequisite: 38 80% 45%;
+    --edge-prerequisite-muted: 38 65% 91%;
+    --edge-influences: 19 85% 52%;
+    --edge-influences-muted: 19 70% 90%;
+    --edge-similar-to: 88 70% 33%;
+    --edge-similar-to-muted: 88 55% 89%;
+    --edge-has-a: 148 70% 33%;
+    --edge-has-a-muted: 148 55% 89%;
+    --edge-part-of: 178 70% 33%;
+    --edge-part-of-muted: 178 55% 89%;
+    --edge-related-to: 208 65% 43%;
+    --edge-related-to-muted: 208 45% 91%;
+    --edge-is-a: 238 75% 48%;
+    --edge-is-a-muted: 238 55% 91%;
+    --edge-explains: 268 75% 48%;
+    --edge-explains-muted: 268 55% 91%;
+    --edge-causes: 328 80% 45%;
+    --edge-causes-muted: 328 60% 90%;
   }
   [data-palette="vanilla"].dark {
     --background: 24 10% 8%;           /* #161412 - warm dark */
@@ -506,27 +507,27 @@
     --complexity-advanced: 5 65% 53%;
     --complexity-advanced-bg: 5 35% 15%;
 
-    /* Edge type colors - warm hue shift +5° (dark) */
-    --edge-prerequisite: 20 85% 56%;
-    --edge-prerequisite-muted: 20 45% 15%;
-    --edge-causes: 5 70% 56%;
-    --edge-causes-muted: 5 40% 15%;
-    --edge-explains: 268 70% 63%;
-    --edge-explains-muted: 268 35% 16%;
-    --edge-is-a: 245 70% 70%;
-    --edge-is-a-muted: 245 35% 16%;
-    --edge-has-a: 155 70% 46%;
-    --edge-has-a-muted: 155 35% 14%;
-    --edge-part-of: 168 70% 46%;
-    --edge-part-of-muted: 168 35% 14%;
-    --edge-influences: 40 85% 53%;
-    --edge-influences-muted: 40 42% 15%;
-    --edge-related-to: 30 10% 58%;
-    --edge-related-to-muted: 30 10% 16%;
-    --edge-contradicts: 5 65% 56%;
-    --edge-contradicts-muted: 5 38% 15%;
-    --edge-similar-to: 78 70% 48%;
-    --edge-similar-to-muted: 78 35% 14%;
+    /* Edge type colors - 10 unique hues, warm shift +3°, brighter for dark theme */
+    --edge-contradicts: 3 85% 62%;
+    --edge-contradicts-muted: 3 55% 16%;
+    --edge-prerequisite: 38 85% 62%;
+    --edge-prerequisite-muted: 38 55% 16%;
+    --edge-influences: 19 85% 65%;
+    --edge-influences-muted: 19 60% 17%;
+    --edge-similar-to: 88 75% 52%;
+    --edge-similar-to-muted: 88 50% 15%;
+    --edge-has-a: 148 75% 52%;
+    --edge-has-a-muted: 148 50% 15%;
+    --edge-part-of: 178 75% 52%;
+    --edge-part-of-muted: 178 50% 15%;
+    --edge-related-to: 208 70% 62%;
+    --edge-related-to-muted: 208 45% 16%;
+    --edge-is-a: 238 80% 75%;
+    --edge-is-a-muted: 238 55% 17%;
+    --edge-explains: 268 80% 75%;
+    --edge-explains-muted: 268 55% 17%;
+    --edge-causes: 328 85% 65%;
+    --edge-causes-muted: 328 55% 16%;
   }
 
   /* Vivid Theme - cool, modern, energetic */
@@ -590,27 +591,27 @@
     --complexity-advanced: 355 95% 60%;
     --complexity-advanced-bg: 355 65% 93%;
 
-    /* Edge type colors - cool hue shift -5° */
-    --edge-prerequisite: 28 100% 53%;
-    --edge-prerequisite-muted: 28 75% 92%;
-    --edge-causes: 355 95% 60%;
-    --edge-causes-muted: 355 65% 93%;
-    --edge-explains: 256 100% 58%;
-    --edge-explains-muted: 256 60% 93%;
-    --edge-is-a: 234 100% 67%;
-    --edge-is-a-muted: 234 60% 93%;
-    --edge-has-a: 165 95% 39%;
-    --edge-has-a-muted: 165 60% 91%;
-    --edge-part-of: 178 95% 40%;
-    --edge-part-of-muted: 178 60% 91%;
-    --edge-influences: 50 100% 47%;
-    --edge-influences-muted: 50 70% 92%;
-    --edge-related-to: 210 20% 47%;
-    --edge-related-to-muted: 210 20% 93%;
-    --edge-contradicts: 355 85% 51%;
-    --edge-contradicts-muted: 355 55% 92%;
-    --edge-similar-to: 90 95% 43%;
-    --edge-similar-to-muted: 90 55% 91%;
+    /* Edge type colors - 10 unique hues, max saturation, darker for light theme */
+    --edge-contradicts: 0 95% 42%;
+    --edge-contradicts-muted: 0 80% 91%;
+    --edge-prerequisite: 35 95% 42%;
+    --edge-prerequisite-muted: 35 80% 91%;
+    --edge-influences: 16 95% 52%;
+    --edge-influences-muted: 16 80% 90%;
+    --edge-similar-to: 85 85% 28%;
+    --edge-similar-to-muted: 85 70% 89%;
+    --edge-has-a: 145 85% 28%;
+    --edge-has-a-muted: 145 70% 89%;
+    --edge-part-of: 175 85% 28%;
+    --edge-part-of-muted: 175 70% 89%;
+    --edge-related-to: 205 80% 40%;
+    --edge-related-to-muted: 205 60% 91%;
+    --edge-is-a: 235 90% 45%;
+    --edge-is-a-muted: 235 70% 91%;
+    --edge-explains: 265 90% 45%;
+    --edge-explains-muted: 265 70% 91%;
+    --edge-causes: 325 95% 42%;
+    --edge-causes-muted: 325 75% 90%;
   }
   [data-palette="vivid"].dark {
     --background: 215 20% 7%;          /* #0F1318 - cool dark blue */
@@ -672,27 +673,27 @@
     --complexity-advanced: 355 100% 58%;
     --complexity-advanced-bg: 355 50% 15%;
 
-    /* Edge type colors - cool hue shift -5° (dark) */
-    --edge-prerequisite: 28 100% 58%;
-    --edge-prerequisite-muted: 28 55% 15%;
-    --edge-causes: 355 100% 58%;
-    --edge-causes-muted: 355 55% 15%;
-    --edge-explains: 256 100% 65%;
-    --edge-explains-muted: 256 50% 16%;
-    --edge-is-a: 234 100% 72%;
-    --edge-is-a-muted: 234 50% 16%;
-    --edge-has-a: 165 100% 48%;
-    --edge-has-a-muted: 165 50% 14%;
-    --edge-part-of: 178 100% 48%;
-    --edge-part-of-muted: 178 50% 14%;
-    --edge-influences: 50 100% 55%;
-    --edge-influences-muted: 50 50% 15%;
-    --edge-related-to: 210 18% 58%;
-    --edge-related-to-muted: 210 18% 17%;
-    --edge-contradicts: 355 100% 58%;
-    --edge-contradicts-muted: 355 50% 15%;
-    --edge-similar-to: 90 100% 48%;
-    --edge-similar-to-muted: 90 50% 14%;
+    /* Edge type colors - 10 unique hues, max saturation, lighter for dark theme */
+    --edge-contradicts: 0 95% 65%;
+    --edge-contradicts-muted: 0 65% 17%;
+    --edge-prerequisite: 35 95% 65%;
+    --edge-prerequisite-muted: 35 65% 17%;
+    --edge-influences: 16 95% 68%;
+    --edge-influences-muted: 16 65% 18%;
+    --edge-similar-to: 85 85% 55%;
+    --edge-similar-to-muted: 85 55% 16%;
+    --edge-has-a: 145 85% 55%;
+    --edge-has-a-muted: 145 55% 16%;
+    --edge-part-of: 175 85% 55%;
+    --edge-part-of-muted: 175 55% 16%;
+    --edge-related-to: 205 80% 65%;
+    --edge-related-to-muted: 205 50% 17%;
+    --edge-is-a: 235 90% 78%;
+    --edge-is-a-muted: 235 60% 18%;
+    --edge-explains: 265 90% 78%;
+    --edge-explains-muted: 265 60% 18%;
+    --edge-causes: 325 95% 68%;
+    --edge-causes-muted: 325 60% 17%;
   }
 
   /* ========================================
@@ -720,14 +721,14 @@
     --success-foreground: 0 0% 100%;
     --warning: 60 100% 45%;            /* Pure yellow */
     --warning-foreground: 0 0% 0%;
-    --info: 220 100% 50%;              /* Pure blue */
+    --info: 190 100% 40%;              /* Pure Cyan - distinct from brand */
     --info-foreground: 0 0% 100%;
     --border: 0 0% 88%;                /* #E0E0E0 */
     --input: 0 0% 88%;
-    --ring: 0 100% 50%;
-    --brand: 0 100% 50%;               /* #FF0000 - Pure red */
+    --ring: 340 100% 50%;
+    --brand: 340 100% 50%;             /* Hot Pink #FF0055 */
     --brand-foreground: 0 0% 100%;
-    --brand-muted: 0 100% 95%;
+    --brand-muted: 340 100% 95%;
 
     /* Graph node colors - pure RGB (rounded to 30°) */
     --graph-violet: 270 100% 65%;
@@ -759,27 +760,27 @@
     --complexity-advanced: 0 100% 60%;
     --complexity-advanced-bg: 0 65% 93%;
 
-    /* Edge type colors - pure RGB (rounded to 30°) */
-    --edge-prerequisite: 30 100% 53%;
-    --edge-prerequisite-muted: 30 75% 92%;
-    --edge-causes: 0 100% 60%;
-    --edge-causes-muted: 0 65% 93%;
-    --edge-explains: 270 100% 58%;
-    --edge-explains-muted: 270 60% 93%;
-    --edge-is-a: 240 100% 67%;
-    --edge-is-a-muted: 240 60% 93%;
-    --edge-has-a: 150 100% 39%;
-    --edge-has-a-muted: 150 60% 91%;
-    --edge-part-of: 180 100% 40%;
-    --edge-part-of-muted: 180 60% 91%;
-    --edge-influences: 30 100% 47%;
-    --edge-influences-muted: 30 70% 92%;
-    --edge-related-to: 0 0% 47%;
-    --edge-related-to-muted: 0 0% 94%;
-    --edge-contradicts: 0 100% 51%;
-    --edge-contradicts-muted: 0 60% 92%;
-    --edge-similar-to: 90 100% 43%;
-    --edge-similar-to-muted: 90 60% 91%;
+    /* Edge type colors - 10 unique hues, darker for light theme */
+    --edge-contradicts: 0 90% 45%;
+    --edge-contradicts-muted: 0 75% 92%;
+    --edge-prerequisite: 35 90% 45%;
+    --edge-prerequisite-muted: 35 75% 92%;
+    --edge-influences: 16 90% 55%;
+    --edge-influences-muted: 16 75% 91%;
+    --edge-similar-to: 85 80% 32%;
+    --edge-similar-to-muted: 85 65% 90%;
+    --edge-has-a: 145 80% 32%;
+    --edge-has-a-muted: 145 65% 90%;
+    --edge-part-of: 175 80% 32%;
+    --edge-part-of-muted: 175 65% 90%;
+    --edge-related-to: 205 75% 42%;
+    --edge-related-to-muted: 205 55% 92%;
+    --edge-is-a: 235 85% 48%;
+    --edge-is-a-muted: 235 65% 92%;
+    --edge-explains: 265 85% 48%;
+    --edge-explains-muted: 265 65% 92%;
+    --edge-causes: 325 90% 45%;
+    --edge-causes-muted: 325 70% 91%;
   }
   [data-palette="mono"].dark {
     --background: 0 0% 4%;             /* #0A0A0A - near black */
@@ -802,14 +803,14 @@
     --success-foreground: 0 0% 0%;
     --warning: 60 100% 50%;            /* Brighter yellow */
     --warning-foreground: 0 0% 0%;
-    --info: 220 100% 50%;              /* Same pure blue */
-    --info-foreground: 0 0% 100%;
+    --info: 190 100% 50%;              /* Pure Cyan - brighter for dark */
+    --info-foreground: 0 0% 0%;
     --border: 0 0% 15%;                /* #262626 */
     --input: 0 0% 15%;
-    --ring: 0 100% 50%;
-    --brand: 0 100% 50%;               /* #FF0000 - SAME pure red */
+    --ring: 340 100% 50%;
+    --brand: 340 100% 50%;             /* Hot Pink #FF0055 */
     --brand-foreground: 0 0% 100%;
-    --brand-muted: 0 50% 10%;
+    --brand-muted: 340 50% 12%;
 
     /* Graph node colors - pure RGB (rounded to 30°), brighter for dark */
     --graph-violet: 270 100% 75%;
@@ -841,27 +842,27 @@
     --complexity-advanced: 0 100% 58%;
     --complexity-advanced-bg: 0 50% 15%;
 
-    /* Edge type colors - pure RGB (rounded to 30°), brighter for dark */
-    --edge-prerequisite: 30 100% 58%;
-    --edge-prerequisite-muted: 30 55% 15%;
-    --edge-causes: 0 100% 58%;
-    --edge-causes-muted: 0 55% 15%;
-    --edge-explains: 270 100% 65%;
-    --edge-explains-muted: 270 50% 16%;
-    --edge-is-a: 240 100% 72%;
-    --edge-is-a-muted: 240 50% 16%;
-    --edge-has-a: 150 100% 48%;
-    --edge-has-a-muted: 150 50% 14%;
-    --edge-part-of: 180 100% 48%;
-    --edge-part-of-muted: 180 50% 14%;
-    --edge-influences: 30 100% 55%;
-    --edge-influences-muted: 30 50% 15%;
-    --edge-related-to: 0 0% 60%;
-    --edge-related-to-muted: 0 0% 17%;
-    --edge-contradicts: 0 100% 58%;
-    --edge-contradicts-muted: 0 50% 15%;
-    --edge-similar-to: 90 100% 48%;
-    --edge-similar-to-muted: 90 50% 14%;
+    /* Edge type colors - 10 unique hues, lighter for dark theme */
+    --edge-contradicts: 0 95% 65%;
+    --edge-contradicts-muted: 0 60% 18%;
+    --edge-prerequisite: 35 95% 65%;
+    --edge-prerequisite-muted: 35 60% 18%;
+    --edge-influences: 16 95% 68%;
+    --edge-influences-muted: 16 65% 18%;
+    --edge-similar-to: 85 85% 55%;
+    --edge-similar-to-muted: 85 55% 16%;
+    --edge-has-a: 145 85% 55%;
+    --edge-has-a-muted: 145 55% 16%;
+    --edge-part-of: 175 85% 55%;
+    --edge-part-of-muted: 175 55% 16%;
+    --edge-related-to: 205 80% 65%;
+    --edge-related-to-muted: 205 50% 17%;
+    --edge-is-a: 235 90% 78%;
+    --edge-is-a-muted: 235 55% 18%;
+    --edge-explains: 265 90% 78%;
+    --edge-explains-muted: 265 55% 18%;
+    --edge-causes: 325 95% 68%;
+    --edge-causes-muted: 325 55% 17%;
   }
 
   * {
@@ -877,7 +878,7 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    min-width: 390px;
+    min-width: 370px;
   }
 
   /* Selection color - brand highlight, preserve original text color */
@@ -1129,6 +1130,12 @@
 
 .dark .tiptap-editor mark {
   background-color: hsl(50 100% 30%);
+}
+
+/* Disable browser selection on highlighted text to avoid double-highlighting */
+.tiptap-editor mark::selection,
+.tiptap-editor mark *::selection {
+  background: transparent !important;
 }
 
 /* Horizontal rule */
@@ -1920,16 +1927,48 @@
   background: hsl(var(--muted) / 0.5);
 }
 
-/* Focus node highlight (static, no animation per design manifesto) */
-/* Design note: Removed infinite animation - replaced with static ring per manifesto */
+/* Focus node highlight - ultra-soft diffused glow with subtle breathing
+   Design: Barely perceptible ethereal glow - whisper of light
+   - Dark theme: Very soft white ambient glow
+   - Light theme: Subtle brand color haze
+   Animation: 6s breathing - almost imperceptible, meditative */
+
+@keyframes focus-breathe {
+  0%, 100% {
+    box-shadow:
+      0 0 25px hsl(var(--brand) / 0.15),
+      0 0 50px hsl(var(--brand) / 0.08),
+      0 0 90px hsl(var(--brand) / 0.04);
+  }
+  50% {
+    box-shadow:
+      0 0 30px hsl(var(--brand) / 0.2),
+      0 0 60px hsl(var(--brand) / 0.1),
+      0 0 100px hsl(var(--brand) / 0.05);
+  }
+}
+
+@keyframes focus-breathe-dark {
+  0%, 100% {
+    box-shadow:
+      0 0 25px hsl(0 0% 100% / 0.1),
+      0 0 50px hsl(0 0% 100% / 0.06),
+      0 0 90px hsl(0 0% 100% / 0.03);
+  }
+  50% {
+    box-shadow:
+      0 0 30px hsl(0 0% 100% / 0.15),
+      0 0 60px hsl(0 0% 100% / 0.08),
+      0 0 100px hsl(0 0% 100% / 0.04);
+  }
+}
+
 .animate-glow-pulse {
-  box-shadow: 0 0 0 2px hsl(var(--primary)), 0 0 20px hsl(var(--primary) / 0.3);
-  transition: box-shadow 0.2s ease;
+  animation: focus-breathe 6s ease-in-out infinite;
 }
 
 .dark .animate-glow-pulse {
-  box-shadow: 0 0 0 2px hsl(var(--primary)), 0 0 20px hsl(var(--primary) / 0.5);
-  transition: box-shadow 0.2s ease;
+  animation: focus-breathe-dark 6s ease-in-out infinite;
 }
 
 /* Menu fade-in animation class (Design Manifesto compliant) */
@@ -2051,9 +2090,19 @@ html.theme-transition-disabled *::after {
     scroll-behavior: auto !important;
   }
 
-  /* Disable specific animations */
+  /* Focus glow - show static ultra-soft state instead of animation */
   .animate-glow-pulse {
     animation: none !important;
-    transition: none !important;
+    box-shadow:
+      0 0 28px hsl(var(--brand) / 0.17),
+      0 0 55px hsl(var(--brand) / 0.09),
+      0 0 95px hsl(var(--brand) / 0.045) !important;
+  }
+
+  .dark .animate-glow-pulse {
+    box-shadow:
+      0 0 28px hsl(0 0% 100% / 0.12),
+      0 0 55px hsl(0 0% 100% / 0.07),
+      0 0 95px hsl(0 0% 100% / 0.035) !important;
   }
 }

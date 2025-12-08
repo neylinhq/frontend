@@ -13,6 +13,7 @@ export default [
     // Auth Routes (centered, no footer, no auth buttons)
     route('auth/sign-in', 'routes/auth/sign-in.tsx'),
     route('auth/sign-up', 'routes/auth/sign-up.tsx'),
+    route('auth/verify-email', 'routes/auth/verify-email.tsx'),
     route('auth/reset-password', 'routes/auth/reset-password.tsx'),
 
     // 404 Route (centered, no footer)

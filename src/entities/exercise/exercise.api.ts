@@ -1,4 +1,4 @@
-import { api } from '@/shared/api/api-client'
+import { api } from '@/shared/api/client'
 import type { Exercise, GenerateExercisesRequest, SubmitAnswerOutput } from './exercise.schema'
 
 interface ApiResponse<T> {
@@ -25,8 +25,9 @@ export const exerciseApi = {
   },
 
   // Get next exercise for spaced repetition
-  getNextExercise: async (mapId: string): Promise<Exercise> => {
-    const response = await api.get<ApiResponse<Exercise>>(`/maps/${mapId}/exercises/next`)
+  getNextExercise: async (mapId: string, nodeId?: string): Promise<Exercise> => {
+    const params = nodeId ? `?nodeId=${nodeId}` : ''
+    const response = await api.get<ApiResponse<Exercise>>(`/maps/${mapId}/exercises/next${params}`)
     return response.data
   },
 

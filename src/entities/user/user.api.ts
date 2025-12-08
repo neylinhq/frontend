@@ -1,4 +1,4 @@
-import { api } from '@/shared/api/api-client'
+import { api } from '@/shared/api/client'
 import type {
   ChangeEmail,
   ChangePassword,
@@ -53,6 +53,11 @@ export const userApi = {
 
     const result = (await response.json()) as ApiResponse<User>
     return result.data
+  },
+
+  deleteAvatar: async (): Promise<User> => {
+    const response = await api.delete<ApiResponse<User>>('/users/me/avatar')
+    return response.data
   },
 
   changeEmail: async (data: ChangeEmail): Promise<User> => {

@@ -29,7 +29,9 @@ export const GraphView = memo(
           edges: Edge[],
           allNodes: Node[],
           onOpenNode?: (id: string) => void,
-          onPanToNode?: (id: string) => void
+          onPanToNode?: (id: string) => void,
+          onEditEdge?: (edge: Edge) => void,
+          onDeleteEdge?: (edgeId: string) => void
         ) => (
           <NodeConnectionsPanel
             node={node}
@@ -37,6 +39,8 @@ export const GraphView = memo(
             allNodes={allNodes}
             onOpenNode={onOpenNode}
             onPanToNode={onPanToNode}
+            onEditEdge={onEditEdge}
+            onDeleteEdge={onDeleteEdge}
           />
         )}
       />

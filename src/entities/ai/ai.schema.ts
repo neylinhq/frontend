@@ -53,3 +53,11 @@ export type EdgeSuggestion = z.infer<typeof EdgeSuggestionSchema>
 export type KnowledgeGap = z.infer<typeof KnowledgeGapSchema>
 
 export type EnrichType = 'description' | 'examples' | 'sources' | 'all'
+
+export const AIModelSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  provider: z.enum(['openai', 'anthropic'])
+})
+
+export type AIModel = z.infer<typeof AIModelSchema>

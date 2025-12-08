@@ -4,6 +4,7 @@ export {
   useChangePassword,
   useCurrentUser,
   useDeleteAccount,
+  useDeleteAvatar,
   userKeys,
   useUpdatePreferences,
   useUpdateProfile,

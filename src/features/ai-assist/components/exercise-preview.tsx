@@ -3,7 +3,7 @@ import { Edit2, X } from 'lucide-react'
 import { Card, CardContent, CardHeader } from '@/shared/components/card'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
-import type { ExercisePreviewData } from '../chat.types'
+import type { ExercisePreviewData } from '../ai-assist.types'
 
 interface ExercisePreviewProps {
   data: unknown

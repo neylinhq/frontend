@@ -28,6 +28,7 @@ export const DASHBOARD_ROUTES = {
 export const MAPS_ROUTES = {
   new: '/dashboard/maps/new',
   view: (mapId: string) => `/dashboard/maps/${mapId}/view`,
+  practice: (mapId: string) => `/dashboard/maps/${mapId}/practice`,
   node: (mapId: string, nodeId: string) => `/dashboard/maps/${mapId}/node/${nodeId}`
 } as const
 

@@ -333,8 +333,8 @@ export const NodeEditPage = ({
 
       {/* Right Sidebar - Desktop (lg+) */}
       {sidebarOpen && (
-        <aside className='hidden lg:flex w-80 flex-shrink-0 border-l border-border h-full'>
-          <div className='flex flex-1 flex-col min-h-0'>
+        <aside className='hidden lg:flex flex-col w-[360px] flex-shrink-0 border-l border-border h-full overflow-hidden'>
+          <div className='flex flex-1 flex-col min-h-0 overflow-hidden'>
             <Tabs defaultValue='properties' className='flex flex-1 flex-col min-h-0'>
               {/* Tab Header */}
               <div className='border-b border-border/50 px-4 py-3'>
@@ -436,7 +436,7 @@ export const NodeEditPage = ({
 
       {/* Right Sidebar - Mobile Sheet */}
       <Sheet open={mobileSheetOpen} onOpenChange={setMobileSheetOpen}>
-        <SheetContent side='right' className='w-80 p-0 flex flex-col'>
+        <SheetContent side='right' className='w-[360px] p-0 flex flex-col'>
           <Tabs defaultValue='properties' className='flex flex-1 flex-col min-h-0'>
             {/* Tab Header */}
             <SheetHeader className='border-b border-border/50 px-4 py-3'>

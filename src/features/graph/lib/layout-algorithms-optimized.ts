@@ -409,86 +409,421 @@ const forceDirectedLayout = (nodes: Node[], edges: Edge[], options: InternalLayo
   return { nodes: positionedNodes, edges }
 }
 
-const pathLayout = (nodes: Node[], edges: Edge[], options: InternalLayoutOptions) => {
-  const { nodeSpacing, levelSpacing } = options
+// ============================================================================
+// PATH LAYOUT HELPER FUNCTIONS
+// ============================================================================
 
-  const prereqEdges = edges.filter(e => (e.data?.relationType as RelationType) === 'prerequisite')
+interface WeightedAdjacency {
+  outgoing: Map<string, Array<{ target: string; weight: number }>>
+  incoming: Map<string, Array<{ source: string; weight: number }>>
+}
 
-  const outgoing = new Map<string, string[]>()
-  const incoming = new Map<string, string[]>()
+/**
+ * Build weighted adjacency graph from ALL edge types
+ */
+const buildWeightedGraph = (nodes: Node[], edges: Edge[]): WeightedAdjacency => {
+  const outgoing = new Map<string, Array<{ target: string; weight: number }>>()
+  const incoming = new Map<string, Array<{ source: string; weight: number }>>()
 
   nodes.forEach(n => {
     outgoing.set(n.id, [])
     incoming.set(n.id, [])
   })
 
-  prereqEdges.forEach(e => {
-    outgoing.get(e.source)?.push(e.target)
-    incoming.get(e.target)?.push(e.source)
+  edges.forEach(e => {
+    const relationType = (e.data?.relationType as RelationType) || 'related-to'
+    const weight = EDGE_WEIGHTS[relationType] || 0.3
+
+    outgoing.get(e.source)?.push({ target: e.target, weight })
+    incoming.get(e.target)?.push({ source: e.source, weight })
   })
 
-  const roots = nodes.filter(n => (incoming.get(n.id)?.length || 0) === 0)
+  return { outgoing, incoming }
+}
 
-  if (roots.length === 0) {
-    return forceDirectedLayout(nodes, edges, options)
+/**
+ * Find root nodes (nodes with no incoming edges or lowest incoming weight)
+ * Also handles cycles by picking nodes with highest out-degree
+ */
+const findRoots = (nodes: Node[], adjacency: WeightedAdjacency): string[] => {
+  const { incoming, outgoing } = adjacency
+
+  // First: nodes with no incoming edges
+  const pureRoots = nodes.filter(n => (incoming.get(n.id)?.length || 0) === 0)
+
+  if (pureRoots.length > 0) {
+    return pureRoots.map(n => n.id)
   }
 
+  // Cycle case: pick node with highest (out-degree - in-degree)
+  let bestNode = nodes[0]?.id
+  let bestScore = -Infinity
+
+  nodes.forEach(n => {
+    const outDegree = outgoing.get(n.id)?.length || 0
+    const inDegree = incoming.get(n.id)?.length || 0
+    const score = outDegree - inDegree
+    if (score > bestScore) {
+      bestScore = score
+      bestNode = n.id
+    }
+  })
+
+  return bestNode ? [bestNode] : []
+}
+
+/**
+ * Calculate levels using weighted BFS
+ * Higher weight edges have priority in determining level distance
+ */
+const calculateWeightedLevels = (
+  roots: string[],
+  adjacency: WeightedAdjacency,
+  nodeIds: string[]
+): Map<string, number> => {
+  const { outgoing } = adjacency
   const levels = new Map<string, number>()
   const visited = new Set<string>()
-  const queue = [...roots.map(r => r.id)]
-  roots.forEach(r => {
-    levels.set(r.id, 0)
-    visited.add(r.id)
+
+  // Priority queue: [nodeId, level, priority]
+  // Higher priority = process first
+  const queue: Array<{ nodeId: string; level: number; priority: number }> = []
+
+  roots.forEach(rootId => {
+    queue.push({ nodeId: rootId, level: 0, priority: 1 })
+    levels.set(rootId, 0)
+    visited.add(rootId)
   })
 
   while (queue.length > 0) {
-    const nodeId = queue.shift()
-    if (!nodeId) {
-      continue
-    }
-    const currentLevel = levels.get(nodeId) ?? 0
+    // Sort by priority descending (higher priority first)
+    queue.sort((a, b) => b.priority - a.priority)
+    const { nodeId, level } = queue.shift()!
 
-    outgoing.get(nodeId)?.forEach(targetId => {
-      if (!visited.has(targetId)) {
-        visited.add(targetId)
-        levels.set(targetId, currentLevel + 1)
-        queue.push(targetId)
+    const neighbors = outgoing.get(nodeId) || []
+    neighbors.forEach(({ target, weight }) => {
+      if (!visited.has(target)) {
+        visited.add(target)
+        levels.set(target, level + 1)
+        queue.push({ nodeId: target, level: level + 1, priority: weight })
       }
     })
   }
 
+  // Handle disconnected nodes
   let maxLevel = 0
   levels.forEach(l => {
-    if (l > maxLevel) {
-      maxLevel = l
-    }
+    if (l > maxLevel) maxLevel = l
   })
-  nodes.forEach(n => {
-    if (!levels.has(n.id)) {
-      levels.set(n.id, maxLevel + 1)
+
+  // Place disconnected nodes at the end
+  nodeIds.forEach(id => {
+    if (!levels.has(id)) {
+      levels.set(id, maxLevel + 1)
     }
   })
 
+  return levels
+}
+
+/**
+ * Barycenter method to minimize edge crossings
+ * Orders nodes within each level by average position of their neighbors
+ */
+const minimizeCrossings = (
+  levels: Map<string, number>,
+  adjacency: WeightedAdjacency,
+  iterations = 4
+): Map<number, string[]> => {
+  const { outgoing, incoming } = adjacency
+
+  // Group nodes by level
   const levelGroups = new Map<number, string[]>()
   levels.forEach((level, nodeId) => {
     if (!levelGroups.has(level)) {
       levelGroups.set(level, [])
     }
-    levelGroups.get(level)?.push(nodeId)
+    levelGroups.get(level)!.push(nodeId)
   })
 
-  const positionedNodes = nodes.map(node => {
-    const level = levels.get(node.id) || 0
-    const levelNodes = levelGroups.get(level) || []
-    const indexInLevel = levelNodes.indexOf(node.id)
-    const levelHeight = levelNodes.length * nodeSpacing
+  // Get all level numbers sorted
+  const levelNumbers = Array.from(levelGroups.keys()).sort((a, b) => a - b)
 
+  // Initial ordering: arbitrary (by insertion order)
+  const nodePositions = new Map<string, number>()
+  levelGroups.forEach(group => {
+    group.forEach((nodeId, idx) => {
+      nodePositions.set(nodeId, idx)
+    })
+  })
+
+  // Barycenter iterations
+  for (let iter = 0; iter < iterations; iter++) {
+    // Forward sweep (left to right)
+    for (let i = 1; i < levelNumbers.length; i++) {
+      const currentLevel = levelNumbers[i]
+      const nodesInLevel = levelGroups.get(currentLevel)!
+
+      // Calculate barycenter for each node
+      const barycenters = nodesInLevel.map(nodeId => {
+        const incomingEdges = incoming.get(nodeId) || []
+        if (incomingEdges.length === 0) {
+          return { nodeId, barycenter: nodePositions.get(nodeId) || 0 }
+        }
+
+        let sum = 0
+        let totalWeight = 0
+        incomingEdges.forEach(({ source, weight }) => {
+          sum += (nodePositions.get(source) || 0) * weight
+          totalWeight += weight
+        })
+
+        return {
+          nodeId,
+          barycenter: totalWeight > 0 ? sum / totalWeight : (nodePositions.get(nodeId) || 0)
+        }
+      })
+
+      // Sort by barycenter
+      barycenters.sort((a, b) => a.barycenter - b.barycenter)
+
+      // Update positions
+      barycenters.forEach(({ nodeId }, idx) => {
+        nodePositions.set(nodeId, idx)
+      })
+      levelGroups.set(
+        currentLevel,
+        barycenters.map(b => b.nodeId)
+      )
+    }
+
+    // Backward sweep (right to left)
+    for (let i = levelNumbers.length - 2; i >= 0; i--) {
+      const currentLevel = levelNumbers[i]
+      const nodesInLevel = levelGroups.get(currentLevel)!
+
+      const barycenters = nodesInLevel.map(nodeId => {
+        const outgoingEdges = outgoing.get(nodeId) || []
+        if (outgoingEdges.length === 0) {
+          return { nodeId, barycenter: nodePositions.get(nodeId) || 0 }
+        }
+
+        let sum = 0
+        let totalWeight = 0
+        outgoingEdges.forEach(({ target, weight }) => {
+          sum += (nodePositions.get(target) || 0) * weight
+          totalWeight += weight
+        })
+
+        return {
+          nodeId,
+          barycenter: totalWeight > 0 ? sum / totalWeight : (nodePositions.get(nodeId) || 0)
+        }
+      })
+
+      barycenters.sort((a, b) => a.barycenter - b.barycenter)
+      barycenters.forEach(({ nodeId }, idx) => {
+        nodePositions.set(nodeId, idx)
+      })
+      levelGroups.set(
+        currentLevel,
+        barycenters.map(b => b.nodeId)
+      )
+    }
+  }
+
+  return levelGroups
+}
+
+/**
+ * Apply soft force-directed refinement for organic feel
+ * Only applied when directionStrength < 1
+ */
+const refineWithForces = (
+  positions: Map<string, { x: number; y: number }>,
+  edges: Edge[],
+  strength: number,
+  nodeSpacing: number
+): void => {
+  // How much to allow deviation from strict layout
+  const flexibility = 1 - strength // 0 = strict, 1 = fully organic
+
+  if (flexibility <= 0) return
+
+  const iterations = 20
+  const idealDistance = nodeSpacing * 0.8
+
+  for (let iter = 0; iter < iterations; iter++) {
+    const forces = new Map<string, { fx: number; fy: number }>()
+    positions.forEach((_, id) => forces.set(id, { fx: 0, fy: 0 }))
+
+    // Repulsion between nodes on same level (Y-axis only)
+    const posArray = Array.from(positions.entries())
+    for (let i = 0; i < posArray.length; i++) {
+      for (let j = i + 1; j < posArray.length; j++) {
+        const [idA, posA] = posArray[i]
+        const [idB, posB] = posArray[j]
+
+        // Only repel if on similar X (same level)
+        if (Math.abs(posA.x - posB.x) < idealDistance * 0.5) {
+          const dy = posB.y - posA.y
+          const dist = Math.abs(dy) || 0.1
+          if (dist < idealDistance) {
+            const force = ((idealDistance - dist) / dist) * flexibility * 5
+            const forceA = forces.get(idA)!
+            const forceB = forces.get(idB)!
+            forceA.fy -= force
+            forceB.fy += force
+          }
+        }
+      }
+    }
+
+    // Attraction along edges (Y-axis only to keep hierarchy)
+    edges.forEach(e => {
+      const posS = positions.get(e.source)
+      const posT = positions.get(e.target)
+      if (!posS || !posT) return
+
+      const dy = posT.y - posS.y
+      const force = dy * 0.05 * flexibility
+
+      const forceS = forces.get(e.source)
+      const forceT = forces.get(e.target)
+      if (forceS) forceS.fy += force
+      if (forceT) forceT.fy -= force
+    })
+
+    // Apply forces
+    const damping = 1 - iter / iterations
+    forces.forEach((f, id) => {
+      const pos = positions.get(id)
+      if (pos) {
+        pos.y += f.fy * damping
+      }
+    })
+  }
+}
+
+// ============================================================================
+// MAIN PATH LAYOUT ALGORITHM
+// ============================================================================
+
+const pathLayout = (nodes: Node[], edges: Edge[], options: InternalLayoutOptions): LayoutResult => {
+  const { nodeSpacing, levelSpacing, directionStrength } = options
+
+  if (nodes.length === 0) {
+    return { nodes, edges }
+  }
+
+  // For very low direction strength, use force-directed layout
+  if (directionStrength <= 0.1) {
+    return forceDirectedLayout(nodes, edges, options)
+  }
+
+  // 1. Build weighted adjacency (ALL edge types)
+  const adjacency = buildWeightedGraph(nodes, edges)
+
+  // 2. Find roots (nodes with no incoming edges)
+  const roots = findRoots(nodes, adjacency)
+
+  if (roots.length === 0) {
+    return forceDirectedLayout(nodes, edges, options)
+  }
+
+  // 3. Calculate levels using weighted BFS
+  const nodeIds = nodes.map(n => n.id)
+  const levels = calculateWeightedLevels(roots, adjacency, nodeIds)
+
+  // 4. Order nodes within levels to minimize edge crossings
+  const orderedLevels = minimizeCrossings(levels, adjacency)
+
+  // 5. Calculate actual spacing based on directionStrength
+  // Higher strength = more spacing
+  const effectiveLevelSpacing = levelSpacing * (0.5 + directionStrength * 0.5)
+  const effectiveNodeSpacing = nodeSpacing * (0.5 + directionStrength * 0.5)
+
+  // 6. Position nodes
+  const positions = new Map<string, { x: number; y: number }>()
+
+  orderedLevels.forEach((nodesInLevel, level) => {
+    const levelHeight = nodesInLevel.length * effectiveNodeSpacing
+
+    nodesInLevel.forEach((nodeId, indexInLevel) => {
+      positions.set(nodeId, {
+        x: level * effectiveLevelSpacing,
+        y: indexInLevel * effectiveNodeSpacing - levelHeight / 2 + effectiveNodeSpacing / 2
+      })
+    })
+  })
+
+  // 7. If directionStrength < 1, apply soft force-directed refinement
+  if (directionStrength < 1) {
+    refineWithForces(positions, edges, directionStrength, nodeSpacing)
+  }
+
+  // 8. Handle disconnected components - spread them vertically
+  const componentOffsets = new Map<number, number>()
+  let componentOffset = 0
+  const visited = new Set<string>()
+
+  orderedLevels.forEach((nodesInLevel, level) => {
+    if (level === 0) {
+      // For each root, track its component
+      nodesInLevel.forEach((rootId, idx) => {
+        if (!visited.has(rootId)) {
+          // BFS to mark all nodes in this component
+          const queue = [rootId]
+          const componentNodes: string[] = []
+
+          while (queue.length > 0) {
+            const nodeId = queue.shift()!
+            if (visited.has(nodeId)) continue
+            visited.add(nodeId)
+            componentNodes.push(nodeId)
+
+            const outEdges = adjacency.outgoing.get(nodeId) || []
+            const inEdges = adjacency.incoming.get(nodeId) || []
+
+            outEdges.forEach(({ target }) => {
+              if (!visited.has(target)) queue.push(target)
+            })
+            inEdges.forEach(({ source }) => {
+              if (!visited.has(source)) queue.push(source)
+            })
+          }
+
+          // Calculate component height and offset
+          let minY = Infinity,
+            maxY = -Infinity
+          componentNodes.forEach(id => {
+            const pos = positions.get(id)
+            if (pos) {
+              minY = Math.min(minY, pos.y)
+              maxY = Math.max(maxY, pos.y)
+            }
+          })
+
+          const componentHeight = maxY - minY + effectiveNodeSpacing
+          componentNodes.forEach(id => {
+            const pos = positions.get(id)
+            if (pos) {
+              pos.y += componentOffset - minY
+            }
+          })
+
+          componentOffset += componentHeight + effectiveNodeSpacing
+        }
+      })
+    }
+  })
+
+  // 9. Apply positions to nodes
+  const positionedNodes = nodes.map(node => {
+    const pos = positions.get(node.id) || { x: 0, y: 0 }
     return {
       ...node,
-      position: {
-        x: level * levelSpacing,
-        y: indexInLevel * nodeSpacing - levelHeight / 2 + nodeSpacing / 2
-      }
+      position: { x: pos.x, y: pos.y }
     }
   })
 

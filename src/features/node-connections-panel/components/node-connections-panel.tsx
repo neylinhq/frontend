@@ -64,7 +64,7 @@ export const NodeConnectionsPanel = memo(
     }
 
     return (
-      <div className={cn('space-y-4', className)}>
+      <div className={cn('space-y-4 overflow-hidden', className)}>
         {/* Filter */}
         <SegmentedControl
           value={filter}
@@ -100,8 +100,8 @@ export const NodeConnectionsPanel = memo(
                     label={connectedNode.label}
                     subtitle={
                       <>
-                        <span>{t(`graph.edgeTypes.${edge.relationType}`)}</span>
-                        {edge.label && <span className='opacity-60'>· {edge.label}</span>}
+                        <span className='shrink-0'>{t(`graph.edgeTypes.${edge.relationType}`)}</span>
+                        {edge.label && <span className='opacity-60 truncate'>· {edge.label}</span>}
                       </>
                     }
                     direction='incoming'
@@ -136,8 +136,8 @@ export const NodeConnectionsPanel = memo(
                     label={connectedNode.label}
                     subtitle={
                       <>
-                        <span>{t(`graph.edgeTypes.${edge.relationType}`)}</span>
-                        {edge.label && <span className='opacity-60'>· {edge.label}</span>}
+                        <span className='shrink-0'>{t(`graph.edgeTypes.${edge.relationType}`)}</span>
+                        {edge.label && <span className='opacity-60 truncate'>· {edge.label}</span>}
                       </>
                     }
                     direction='outgoing'

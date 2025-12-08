@@ -9,7 +9,7 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 export default defineConfig({
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths(), wasm(), topLevelAwait()],
   server: {
-    allowedHosts: ['.ngrok-free.app', '.ngrok.io']
+    allowedHosts: ['.ngrok-free.app', '.ngrok.io', '.trycloudflare.com']
   },
   resolve: {
     alias: {

@@ -26,33 +26,27 @@ declare global {
 }
 
 type TelegramLoginButtonProps = {
-  botUsername?: string
   className?: string
 }
 
-export const TelegramLoginButton = ({ botUsername, className }: TelegramLoginButtonProps) => {
+export const TelegramLoginButton = ({ className }: TelegramLoginButtonProps) => {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const [isLoading, setIsLoading] = useState(false)
-  const [botName, setBotName] = useState(botUsername || '')
-
   const [botId, setBotId] = useState('')
 
-  // Fetch bot info from API if not provided
+  // Fetch bot info from API
   useEffect(() => {
-    if (!botUsername) {
-      sessionApi
-        .getTelegramBotInfo()
-        .then(info => {
-          setBotName(info.bot_username)
-          setBotId(info.bot_id)
-        })
-        .catch(() => {
-          // Silently fail - button will be disabled
-        })
-    }
-  }, [botUsername])
+    sessionApi
+      .getTelegramBotInfo()
+      .then(info => {
+        setBotId(info.bot_id)
+      })
+      .catch(() => {
+        // Silently fail - button will be disabled
+      })
+  }, [])
 
   // Handle Telegram auth callback
   const handleTelegramAuth = useCallback(

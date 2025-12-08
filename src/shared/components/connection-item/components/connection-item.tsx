@@ -61,11 +61,11 @@ export const ConnectionItem = memo(
           <div className='flex-1 min-w-0'>
             <p className='font-medium text-sm truncate'>{label}</p>
             {(subtitle || (showDirectionHint && direction)) && (
-              <p className='text-xs text-muted-foreground truncate mt-0.5 flex items-center gap-1'>
+              <p className='text-xs text-muted-foreground mt-0.5 flex items-center gap-1 min-w-0'>
                 {showDirectionHint && direction && (
                   <span
                     className={cn(
-                      'inline-block w-4 text-center',
+                      'shrink-0 w-4 text-center',
                       direction === 'incoming' ? 'text-blue-500' : 'text-emerald-500'
                     )}
                   >

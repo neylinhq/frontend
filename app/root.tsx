@@ -17,7 +17,7 @@ import '@/shared/styles/globals.css'
 import type React from 'react'
 import { useEffect, useRef } from 'react'
 import { initI18n } from '@/app/i18n'
-import { MODE_COOKIE_KEY, PALETTE_COOKIE_KEY } from '@/shared/lib/theme'
+import { MODE_COOKIE_KEY, PALETTE_COOKIE_KEY } from '@/shared/core/theme'
 import type { Route } from './+types/root'
 
 export const links: Route.LinksFunction = () => [

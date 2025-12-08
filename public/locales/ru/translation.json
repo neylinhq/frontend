@@ -63,6 +63,12 @@
       "wrongEmail": "Неверный email?",
       "signUpAgain": "Зарегистрироваться заново",
       "error": "Ошибка подтверждения"
+    },
+    "telegram": {
+      "button": "Telegram",
+      "loading": "Вход...",
+      "error": "Не удалось войти через Telegram",
+      "errorDescription": "Попробуйте еще раз."
     }
   },
   "validation": {
@@ -1078,7 +1084,9 @@
     "dangerZone": "Опасная зона",
     "deleteWarning": "Удаление узла также удалит все его связи.",
     "deleteNode": "Удалить узел",
-    "deleteConfirmTitle": "Удалить узел?"
+    "deleteConfirmTitle": "Удалить узел?",
+    "deleteConfirmDescription": "«{{label}}» и {{count}} связей будут удалены навсегда.",
+    "nodeDeleted": "Узел удалён"
   },
   "ai": {
     "assistant": "AI Ассистент",

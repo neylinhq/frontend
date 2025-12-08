@@ -63,6 +63,12 @@
       "wrongEmail": "Wrong email?",
       "signUpAgain": "Sign up again",
       "error": "Verification failed"
+    },
+    "telegram": {
+      "button": "Telegram",
+      "loading": "Signing in...",
+      "error": "Telegram sign in failed",
+      "errorDescription": "Could not sign in with Telegram. Please try again."
     }
   },
   "validation": {
@@ -1052,7 +1058,9 @@
     "dangerZone": "Danger zone",
     "deleteWarning": "Deleting this node will also remove all its connections.",
     "deleteNode": "Delete node",
-    "deleteConfirmTitle": "Delete node?"
+    "deleteConfirmTitle": "Delete node?",
+    "deleteConfirmDescription": "\"{{label}}\" and {{count}} connections will be permanently deleted.",
+    "nodeDeleted": "Node deleted"
   },
   "ai": {
     "assistant": "AI Assistant",

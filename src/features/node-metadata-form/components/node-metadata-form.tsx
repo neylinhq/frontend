@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { X } from 'lucide-react'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Badge } from '@/shared/components/badge'
@@ -14,6 +14,7 @@ import {
   SelectValue
 } from '@/shared/components/select'
 import { Slider } from '@/shared/components/slider'
+import { useDebouncedCallback } from '@/shared/hooks'
 import { COMPLEXITY_OPTIONS } from '../model/complexity.constants'
 import { type NodeMetadataFormValues, nodeMetadataFormSchema } from '../lib/validation'
 import type { NodeMetadataFormProps } from '../model/node-metadata-form.types'
@@ -37,18 +38,26 @@ export const NodeMetadataForm = ({ node, onSubmit, isPending }: NodeMetadataForm
   const tags = form.watch('tags') || []
   const confidence = form.watch('confidence')
 
+  // Submit form
+  const submitForm = useCallback(() => {
+    form.handleSubmit(onSubmit)()
+  }, [form, onSubmit])
+
+  // Debounced submit for slider (300ms delay)
+  const debouncedSubmit = useDebouncedCallback(submitForm, 300)
+
   const handleAddTag = () => {
     const trimmed = tagInput.trim()
     if (trimmed && !tags.includes(trimmed)) {
       form.setValue('tags', [...tags, trimmed])
       setTagInput('')
-      form.handleSubmit(onSubmit)()
+      submitForm()
     }
   }
 
   const handleRemoveTag = (tagToRemove: string) => {
     form.setValue('tags', tags.filter(t => t !== tagToRemove))
-    form.handleSubmit(onSubmit)()
+    submitForm()
   }
 
   const handleTagKeyDown = (e: React.KeyboardEvent) => {
@@ -58,13 +67,19 @@ export const NodeMetadataForm = ({ node, onSubmit, isPending }: NodeMetadataForm
     }
   }
 
-  // Auto-save on field change
+  // Instant save for discrete fields (type, complexity)
   const handleFieldChange = <K extends keyof NodeMetadataFormValues>(
     field: K,
     value: NodeMetadataFormValues[K]
   ) => {
     form.setValue(field, value)
-    form.handleSubmit(onSubmit)()
+    submitForm()
+  }
+
+  // Debounced save for continuous fields (slider)
+  const handleSliderChange = (value: number) => {
+    form.setValue('confidence', value)
+    debouncedSubmit()
   }
 
   return (
@@ -140,7 +155,7 @@ export const NodeMetadataForm = ({ node, onSubmit, isPending }: NodeMetadataForm
           max={1}
           step={0.1}
           value={[confidence || 0]}
-          onValueChange={values => handleFieldChange('confidence', values[0])}
+          onValueChange={values => handleSliderChange(values[0])}
           className="py-1"
         />
       </div>

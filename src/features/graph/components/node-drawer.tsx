@@ -129,7 +129,7 @@ export const NodeDrawer = memo(({ node, onClose, connectionsCount = 0, connectio
         >
           {/* Wrapper div like in node-edit-page sidebar */}
           <div className='flex flex-1 flex-col min-h-0 h-full'>
-            <DrawerHeader className='px-4 py-3 border-b shrink-0'>
+            <DrawerHeader className='px-4 py-3 shrink-0'>
               <div className='flex items-center justify-between gap-2'>
                 <DrawerTitle className='text-base font-medium truncate'>
                   {displayNode.label}
@@ -183,7 +183,7 @@ export const NodeDrawer = memo(({ node, onClose, connectionsCount = 0, connectio
               </div>
 
               <TabsContent value='properties' className='flex-1 overflow-y-auto min-h-0 mt-0'>
-                <div className='flex flex-col'>
+                <div className='flex flex-col min-h-full'>
                   {/* Node Metadata Form */}
                   <div className='p-4 border-b'>
                     <NodeMetadataForm
@@ -193,8 +193,11 @@ export const NodeDrawer = memo(({ node, onClose, connectionsCount = 0, connectio
                     />
                   </div>
 
-                  {/* Danger Zone */}
-                  <div className='p-4'>
+                  {/* Spacer to push danger zone to bottom */}
+                  <div className='flex-1' />
+
+                  {/* Danger Zone - pinned to bottom */}
+                  <div className='p-4 mt-auto'>
                     <Card className='border-destructive/30'>
                       <CardHeader className='pb-2 pt-3 px-3'>
                         <CardTitle className='text-xs font-medium text-destructive flex items-center gap-1.5'>

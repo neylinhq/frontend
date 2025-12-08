@@ -36,6 +36,32 @@ interface ResetPasswordRequest {
   password: string
 }
 
+interface TelegramAuthData {
+  id: number
+  first_name: string
+  last_name?: string
+  username?: string
+  photo_url?: string
+  auth_date: number
+  hash: string
+}
+
+interface TelegramLoginResponse {
+  success: boolean
+  data: {
+    user: User
+    is_new_user: boolean
+  }
+}
+
+interface TelegramBotInfoResponse {
+  success: boolean
+  data: {
+    bot_username: string
+    bot_id: string
+  }
+}
+
 // Options for server-side requests
 interface RequestOptions {
   locale?: string
@@ -87,5 +113,15 @@ export const sessionApi = {
 
   logout: async () => {
     await api.post('/auth/logout', {})
+  },
+
+  telegramLogin: async (data: TelegramAuthData) => {
+    const response = await api.post<TelegramLoginResponse>('/oauth/telegram/login', data, { skipAuth: true })
+    return response.data
+  },
+
+  getTelegramBotInfo: async () => {
+    const response = await api.get<TelegramBotInfoResponse>('/oauth/telegram/info', { skipAuth: true })
+    return response.data
   }
 }

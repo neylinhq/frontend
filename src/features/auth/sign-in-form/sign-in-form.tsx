@@ -18,9 +18,11 @@ import {
   FormMessage
 } from '@/shared/components/form'
 import { FormDivider } from '@/shared/components/form-divider'
+import { githubIcon, Icon } from '@/shared/components/icon'
 import { Input } from '@/shared/components/input'
 import { LegalLinks } from '@/shared/components/legal-links'
 import { AUTH_ROUTES } from '@/shared/config'
+import { TelegramLoginButton } from '../telegram-login-button'
 
 export const SignInForm = () => {
   const { t } = useTranslation()
@@ -118,9 +120,13 @@ export const SignInForm = () => {
 
           <FormDivider>{t('auth.signIn.orDivider')}</FormDivider>
 
-          <Button variant='outline' className='w-full' type='button'>
-            {t('auth.signIn.githubButton')}
-          </Button>
+          <div className='grid gap-2'>
+            <Button variant='outline' className='w-full' type='button'>
+              <Icon data={githubIcon} size={16} className='mr-2' />
+              {t('auth.signIn.githubButton')}
+            </Button>
+            <TelegramLoginButton className='w-full' />
+          </div>
         </form>
       </Form>
 

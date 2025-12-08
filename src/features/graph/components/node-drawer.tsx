@@ -127,102 +127,105 @@ export const NodeDrawer = memo(({ node, onClose, connectionsCount = 0, connectio
           onInteractOutside={e => e.preventDefault()}
           onPointerDownOutside={e => e.preventDefault()}
         >
-          <DrawerHeader className='px-4 py-3 border-b'>
-            <div className='flex items-center justify-between gap-2'>
-              <DrawerTitle className='text-base font-medium truncate'>
-                {displayNode.label}
-              </DrawerTitle>
-              <div className='flex items-center gap-1'>
-                <Button
-                  variant={isFocused ? 'default' : 'ghost'}
-                  size='icon'
-                  className='h-8 w-8'
-                  onClick={() => (isFocused ? clearFocus() : focusNode(displayNode.id))}
-                  title={
-                    isFocused ? t('graph.nodeControls.clearFocus') : t('graph.nodeControls.focusMode')
-                  }
-                >
-                  <Focus className='h-4 w-4' />
-                </Button>
-                <Button variant='ghost' size='icon' className='h-8 w-8' asChild title={t('nodeDrawer.openFullEditor')}>
-                  <Link to={`/dashboard/maps/${displayNode.mapId}/node/${displayNode.id}`}>
-                    <Maximize2 className='h-4 w-4' />
-                  </Link>
-                </Button>
-                <Button
-                  variant='ghost'
-                  size='icon'
-                  className='h-8 w-8'
-                  onClick={handleClose}
-                  title={t('common.close')}
-                >
-                  <X className='h-4 w-4' />
-                </Button>
-              </div>
-            </div>
-          </DrawerHeader>
-
-          <Tabs
-            value={activeTab === 'overview' ? 'properties' : activeTab}
-            onValueChange={value => switchTab(value as 'properties' | 'connections')}
-            className='flex flex-col flex-1 min-h-0'
-          >
-            <div className='px-4 py-2 border-b'>
-              <TabsList className='w-full grid grid-cols-2'>
-                <TabsTrigger value='properties' className='gap-1.5'>
-                  <SlidersHorizontal className='h-3.5 w-3.5' />
-                  <span className='text-xs'>{t('nodeDrawer.tabs.properties')}</span>
-                </TabsTrigger>
-                <TabsTrigger value='connections' className='gap-1.5'>
-                  <Network className='h-3.5 w-3.5' />
-                  <span className='text-xs'>{t('nodeDrawer.tabs.connections')}</span>
-                </TabsTrigger>
-              </TabsList>
-            </div>
-
-            <TabsContent value='properties' className='flex-1 overflow-y-auto mt-0'>
-              <div className='flex flex-col'>
-                {/* Node Metadata Form */}
-                <div className='p-4 border-b'>
-                  <NodeMetadataForm
-                    node={displayNode}
-                    onSubmit={handleMetadataSubmit}
-                    isPending={updateNodeMutation.isPending}
-                  />
-                </div>
-
-                {/* Danger Zone */}
-                <div className='p-4'>
-                  <Card className='border-destructive/30'>
-                    <CardHeader className='pb-2 pt-3 px-3'>
-                      <CardTitle className='text-xs font-medium text-destructive flex items-center gap-1.5'>
-                        <AlertCircle className='h-3.5 w-3.5' />
-                        {t('nodeEdit.dangerZone', 'Danger zone')}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className='px-3 pb-3'>
-                      <p className='text-xs text-muted-foreground mb-3'>
-                        {t('nodeEdit.deleteWarning', 'Deleting this node will also remove all its connections.')}
-                      </p>
-                      <Button
-                        variant='ghost'
-                        size='sm'
-                        className='text-muted-foreground hover:text-destructive hover:bg-destructive/10'
-                        onClick={() => setDeleteDialogOpen(true)}
-                      >
-                        <Trash2 className='mr-1.5 h-3.5 w-3.5' />
-                        {t('nodeEdit.deleteNode', 'Delete node')}
-                      </Button>
-                    </CardContent>
-                  </Card>
+          {/* Wrapper div like in node-edit-page sidebar */}
+          <div className='flex flex-1 flex-col min-h-0 h-full'>
+            <DrawerHeader className='px-4 py-3 border-b shrink-0'>
+              <div className='flex items-center justify-between gap-2'>
+                <DrawerTitle className='text-base font-medium truncate'>
+                  {displayNode.label}
+                </DrawerTitle>
+                <div className='flex items-center gap-1'>
+                  <Button
+                    variant={isFocused ? 'default' : 'ghost'}
+                    size='icon'
+                    className='h-8 w-8'
+                    onClick={() => (isFocused ? clearFocus() : focusNode(displayNode.id))}
+                    title={
+                      isFocused ? t('graph.nodeControls.clearFocus') : t('graph.nodeControls.focusMode')
+                    }
+                  >
+                    <Focus className='h-4 w-4' />
+                  </Button>
+                  <Button variant='ghost' size='icon' className='h-8 w-8' asChild title={t('nodeDrawer.openFullEditor')}>
+                    <Link to={`/dashboard/maps/${displayNode.mapId}/node/${displayNode.id}`}>
+                      <Maximize2 className='h-4 w-4' />
+                    </Link>
+                  </Button>
+                  <Button
+                    variant='ghost'
+                    size='icon'
+                    className='h-8 w-8'
+                    onClick={handleClose}
+                    title={t('common.close')}
+                  >
+                    <X className='h-4 w-4' />
+                  </Button>
                 </div>
               </div>
-            </TabsContent>
+            </DrawerHeader>
 
-            <TabsContent value='connections' className='flex-1 overflow-y-auto mt-0 p-4'>
-              {connectionsTab}
-            </TabsContent>
-          </Tabs>
+            <Tabs
+              value={activeTab === 'overview' ? 'properties' : activeTab}
+              onValueChange={value => switchTab(value as 'properties' | 'connections')}
+              className='flex flex-1 flex-col min-h-0'
+            >
+              <div className='px-4 py-2 border-b shrink-0'>
+                <TabsList className='w-full grid grid-cols-2'>
+                  <TabsTrigger value='properties' className='gap-1.5'>
+                    <SlidersHorizontal className='h-3.5 w-3.5' />
+                    <span className='text-xs'>{t('nodeDrawer.tabs.properties')}</span>
+                  </TabsTrigger>
+                  <TabsTrigger value='connections' className='gap-1.5'>
+                    <Network className='h-3.5 w-3.5' />
+                    <span className='text-xs'>{t('nodeDrawer.tabs.connections')}</span>
+                  </TabsTrigger>
+                </TabsList>
+              </div>
+
+              <TabsContent value='properties' className='flex-1 overflow-y-auto min-h-0 mt-0'>
+                <div className='flex flex-col'>
+                  {/* Node Metadata Form */}
+                  <div className='p-4 border-b'>
+                    <NodeMetadataForm
+                      node={displayNode}
+                      onSubmit={handleMetadataSubmit}
+                      isPending={updateNodeMutation.isPending}
+                    />
+                  </div>
+
+                  {/* Danger Zone */}
+                  <div className='p-4'>
+                    <Card className='border-destructive/30'>
+                      <CardHeader className='pb-2 pt-3 px-3'>
+                        <CardTitle className='text-xs font-medium text-destructive flex items-center gap-1.5'>
+                          <AlertCircle className='h-3.5 w-3.5' />
+                          {t('nodeEdit.dangerZone', 'Danger zone')}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className='px-3 pb-3'>
+                        <p className='text-xs text-muted-foreground mb-3'>
+                          {t('nodeEdit.deleteWarning', 'Deleting this node will also remove all its connections.')}
+                        </p>
+                        <Button
+                          variant='ghost'
+                          size='sm'
+                          className='text-muted-foreground hover:text-destructive hover:bg-destructive/10'
+                          onClick={() => setDeleteDialogOpen(true)}
+                        >
+                          <Trash2 className='mr-1.5 h-3.5 w-3.5' />
+                          {t('nodeEdit.deleteNode', 'Delete node')}
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+              </TabsContent>
+
+              <TabsContent value='connections' className='flex-1 overflow-y-auto min-h-0 mt-0 p-4'>
+                {connectionsTab}
+              </TabsContent>
+            </Tabs>
+          </div>
         </DrawerContent>
       </Drawer>
 

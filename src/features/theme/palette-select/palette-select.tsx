@@ -1,5 +1,5 @@
 import { SelectPopover } from '@/shared/components/select-popover'
-import { PALETTES, useTheme } from '@/shared/lib/theme'
+import { PALETTES, useTheme } from '@/shared/core/theme'
 
 type PaletteSelectProps = {
   compact?: boolean

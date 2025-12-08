@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/shared/components/dropdown-menu'
-import { PALETTES, useTheme } from '@/shared/lib/theme'
+import { PALETTES, useTheme } from '@/shared/core/theme'
 
 export const PaletteToggle = () => {
   const { setPalette } = useTheme()

@@ -71,7 +71,7 @@ export class GraphEngine {
     try {
       // 8=0<8G5A:89 8<?>@B WASM <>4C;O
       // @ts-expect-error - WASM module path resolved via Vite alias
-      const wasm = await import('@/shared/lib/wasm/graph_engine.js')
+      const wasm = await import('@/shared/core/wasm/graph_engine.js')
 
       // =8F80;870F8O WASM
       await wasm.default()

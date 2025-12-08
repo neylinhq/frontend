@@ -1,8 +1,8 @@
 import { Monitor, Moon, Sun } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { SelectPopover } from '@/shared/components/select-popover'
-import type { Mode } from '@/shared/lib/theme'
-import { useTheme } from '@/shared/lib/theme'
+import type { Mode } from '@/shared/core/theme'
+import { useTheme } from '@/shared/core/theme'
 
 const MODE_ICONS: Record<Mode, React.ReactNode> = {
   light: <Sun className='h-4 w-4' />,

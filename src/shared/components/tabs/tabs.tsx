@@ -3,7 +3,13 @@ import { forwardRef } from 'react'
 
 import { cn } from '@/shared/lib/cn'
 
-const Tabs = TabsPrimitive.Root
+const Tabs = forwardRef<
+  HTMLDivElement,
+  React.ComponentPropsWithoutRef<typeof TabsPrimitive.Root>
+>(({ className, ...props }, ref) => (
+  <TabsPrimitive.Root ref={ref} className={cn(className)} {...props} />
+))
+Tabs.displayName = 'Tabs'
 
 const TabsList = forwardRef<
   HTMLDivElement,

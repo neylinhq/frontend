@@ -1,4 +1,4 @@
-export type { Mode, Palette } from '@/shared/lib/theme'
+export type { Mode, Palette } from '@/shared/core/theme'
 export {
   MODE_COOKIE_KEY,
   MODE_STORAGE_KEY,
@@ -7,5 +7,5 @@ export {
   PALETTE_STORAGE_KEY,
   PALETTES,
   useTheme
-} from '@/shared/lib/theme'
+} from '@/shared/core/theme'
 export { ThemeProvider } from './components/theme-provider'

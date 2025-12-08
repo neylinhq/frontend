@@ -181,7 +181,6 @@ export const NodeEditPage = ({
       {
         id: nodeId,
         data: {
-          label: values.label,
           type: values.type,
           metadata: {
             ...currentNode.metadata,

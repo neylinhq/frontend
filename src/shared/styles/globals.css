@@ -1133,9 +1133,22 @@
 }
 
 /* Disable browser selection on highlighted text to avoid double-highlighting */
+.tiptap-editor mark,
+.tiptap-editor mark *,
+.tiptap-editor [style*="background"] {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
 .tiptap-editor mark::selection,
-.tiptap-editor mark *::selection {
+.tiptap-editor mark *::selection,
+.tiptap-editor [data-color]::selection,
+.tiptap-editor [data-color] *::selection,
+.tiptap-editor [style*="background"]::selection,
+.tiptap-editor [style*="background"] *::selection {
+  background-color: transparent !important;
   background: transparent !important;
+  -webkit-text-fill-color: inherit;
 }
 
 /* Horizontal rule */

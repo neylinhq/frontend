@@ -1,10 +1,9 @@
-import { AlertCircle, Focus, Maximize2, Network, SlidersHorizontal, Trash2 } from 'lucide-react'
+import { AlertCircle, Focus, Maximize2, Network, SlidersHorizontal, Trash2, X } from 'lucide-react'
 import { memo, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import type { Node } from '@/entities/map'
 import { useDeleteNode, useUpdateNode } from '@/entities/map'
-import { getNodeIcon } from '@/entities/node'
 import { NodeMetadataForm, type NodeMetadataFormValues } from '@/features/node-metadata-form'
 import {
   AlertDialog,
@@ -114,7 +113,6 @@ export const NodeDrawer = memo(({ node, onClose, connectionsCount = 0, connectio
     return null
   }
 
-  const Icon = getNodeIcon(displayNode.type)
   const isFocused = focusedNodeId === displayNode.id
 
   return (
@@ -130,12 +128,11 @@ export const NodeDrawer = memo(({ node, onClose, connectionsCount = 0, connectio
           onPointerDownOutside={e => e.preventDefault()}
         >
           <DrawerHeader className='px-4 py-3 border-b'>
-            <div className='flex items-center justify-between'>
-              <DrawerTitle className='flex items-center gap-2 text-base'>
-                <Icon className='w-4 h-4' />
+            <div className='flex items-center justify-between gap-2'>
+              <DrawerTitle className='text-base font-medium truncate'>
                 {displayNode.label}
               </DrawerTitle>
-              <div className='flex gap-1'>
+              <div className='flex items-center gap-1'>
                 <Button
                   variant={isFocused ? 'default' : 'ghost'}
                   size='icon'
@@ -147,10 +144,19 @@ export const NodeDrawer = memo(({ node, onClose, connectionsCount = 0, connectio
                 >
                   <Focus className='h-4 w-4' />
                 </Button>
-                <Button variant='ghost' size='icon' className='h-8 w-8' asChild title={t('nodeDrawer.openFullEditor', 'Open full editor')}>
+                <Button variant='ghost' size='icon' className='h-8 w-8' asChild title={t('nodeDrawer.openFullEditor')}>
                   <Link to={`/dashboard/maps/${displayNode.mapId}/node/${displayNode.id}`}>
                     <Maximize2 className='h-4 w-4' />
                   </Link>
+                </Button>
+                <Button
+                  variant='ghost'
+                  size='icon'
+                  className='h-8 w-8'
+                  onClick={handleClose}
+                  title={t('common.close')}
+                >
+                  <X className='h-4 w-4' />
                 </Button>
               </div>
             </div>

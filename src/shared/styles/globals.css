@@ -882,8 +882,16 @@
   }
 
   /* Selection color - brand highlight, preserve original text color */
-  ::selection {
-    background-color: hsl(var(--brand) / 0.3) !important;
+  /* Exclude editor - it uses custom decorations */
+  *:not(.tiptap-editor):not(.tiptap-editor *)::selection {
+    background-color: hsl(var(--brand) / 0.3);
+  }
+
+  /* Kill selection inside editor completely */
+  .tiptap-editor ::selection,
+  .tiptap-editor *::selection {
+    background: transparent !important;
+    background-color: transparent !important;
   }
 
   /* Inverted selection for buttons with dark backgrounds (light mode) */
@@ -1140,17 +1148,6 @@
   user-select: text;
 }
 
-.tiptap-editor mark::selection,
-.tiptap-editor mark *::selection,
-.tiptap-editor [data-color]::selection,
-.tiptap-editor [data-color] *::selection,
-.tiptap-editor [style*="background"]::selection,
-.tiptap-editor [style*="background"] *::selection {
-  background-color: transparent !important;
-  background: transparent !important;
-  -webkit-text-fill-color: inherit;
-}
-
 /* Horizontal rule */
 .tiptap-editor hr {
   border: none;
@@ -1158,38 +1155,17 @@
   margin: 1.5rem 0;
 }
 
-/* Editor text selection - use brand highlight */
-.tiptap-editor ::selection,
-.tiptap-editor *::selection,
-.ProseMirror ::selection,
-.ProseMirror *::selection,
-.tiptap-editor.dark ::selection,
-.tiptap-editor.dark *::selection,
-.dark .tiptap-editor ::selection,
-.dark .tiptap-editor *::selection,
-.dark .ProseMirror ::selection,
-.dark .ProseMirror *::selection {
-  background: hsl(220 100% 50% / 0.35) !important;
-  background-color: hsl(220 100% 50% / 0.35) !important;
-}
-
-/* Selection styles - unified visual language */
-.tiptap-editor .ProseMirror .text-selected,
-.tiptap-editor .ProseMirror .block-selected {
-  background: hsl(var(--brand) / 0.2);
-  border-radius: 2px;
-}
-
-/* Inline text selection - multi-line support */
+/* Custom selection styles */
 .tiptap-editor .ProseMirror .text-selected {
+  background: hsl(var(--brand) / 0.25);
+  border-radius: 2px;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
 }
 
-/* Block selection - slightly larger radius */
 .tiptap-editor .ProseMirror .block-selected {
-  border-radius: 0.25rem; /* 4px */
-  transition: background 0.15s ease;
+  background: hsl(var(--brand) / 0.15);
+  border-radius: 0.25rem;
 }
 
 /* Floating menu - hide on touch devices */

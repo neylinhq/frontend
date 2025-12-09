@@ -47,10 +47,40 @@ export const KnowledgeGapSchema = z.object({
   suggestedNodes: z.array(z.string())
 })
 
+// Response types for AI operations
+export const EdgeSuggestionResultSchema = z.object({
+  suggestions: z.array(EdgeSuggestionSchema),
+  tokensUsed: z.number()
+})
+
+export const GapDetectionResultSchema = z.object({
+  gaps: z.array(KnowledgeGapSchema),
+  missingConcepts: z.array(z.string()),
+  recommendations: z.array(z.string()),
+  tokensUsed: z.number()
+})
+
+export const GeneratedNodeSchema = z.object({
+  label: z.string(),
+  type: z.string(),
+  content: z.string(),
+  description: z.string(),
+  connections: z.array(EdgeSuggestionSchema)
+})
+
+export const MissingNodesResultSchema = z.object({
+  nodes: z.array(GeneratedNodeSchema),
+  tokensUsed: z.number()
+})
+
 export type AITask = z.infer<typeof AITaskSchema>
 export type NodeEnrichmentResult = z.infer<typeof NodeEnrichmentResultSchema>
 export type EdgeSuggestion = z.infer<typeof EdgeSuggestionSchema>
 export type KnowledgeGap = z.infer<typeof KnowledgeGapSchema>
+export type EdgeSuggestionResult = z.infer<typeof EdgeSuggestionResultSchema>
+export type GapDetectionResult = z.infer<typeof GapDetectionResultSchema>
+export type GeneratedNode = z.infer<typeof GeneratedNodeSchema>
+export type MissingNodesResult = z.infer<typeof MissingNodesResultSchema>
 
 export type EnrichType = 'description' | 'examples' | 'sources' | 'all'
 

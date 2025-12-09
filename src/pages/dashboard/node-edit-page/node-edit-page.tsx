@@ -341,17 +341,14 @@ export const NodeEditPage = ({
               {/* Tab Header */}
               <div className='border-b border-border/50 px-4 py-3'>
                 <TabsList className='grid w-full grid-cols-3'>
-                  <TabsTrigger value='properties' className='gap-1.5'>
-                    <SlidersHorizontal className='h-3.5 w-3.5' />
-                    <span className='text-xs hidden sm:inline'>{t('nodeEdit.tabs.properties')}</span>
+                  <TabsTrigger value='properties' title={t('nodeEdit.tabs.properties')}>
+                    <SlidersHorizontal className='h-4 w-4' />
                   </TabsTrigger>
-                  <TabsTrigger value='practice' className='gap-1.5'>
-                    <GraduationCap className='h-3.5 w-3.5' />
-                    <span className='text-xs hidden sm:inline'>{t('nodeEdit.tabs.practice')}</span>
+                  <TabsTrigger value='practice' title={t('nodeEdit.tabs.practice')}>
+                    <GraduationCap className='h-4 w-4' />
                   </TabsTrigger>
-                  <TabsTrigger value='ai' className='gap-1.5'>
-                    <Sparkles className='h-3.5 w-3.5' />
-                    <span className='text-xs hidden sm:inline'>{t('nodeEdit.tabs.ai')}</span>
+                  <TabsTrigger value='ai' title={t('nodeEdit.tabs.ai')}>
+                    <Sparkles className='h-4 w-4' />
                   </TabsTrigger>
                 </TabsList>
               </div>
@@ -431,17 +428,14 @@ export const NodeEditPage = ({
             {/* Tab Header */}
             <SheetHeader className='border-b border-border/50 px-4 py-3'>
               <TabsList className='grid w-full grid-cols-3'>
-                <TabsTrigger value='properties' className='gap-1.5'>
-                  <SlidersHorizontal className='h-3.5 w-3.5' />
-                  <span className='text-xs'>{t('nodeEdit.tabs.properties')}</span>
+                <TabsTrigger value='properties' title={t('nodeEdit.tabs.properties')}>
+                  <SlidersHorizontal className='h-4 w-4' />
                 </TabsTrigger>
-                <TabsTrigger value='practice' className='gap-1.5'>
-                  <GraduationCap className='h-3.5 w-3.5' />
-                  <span className='text-xs'>{t('nodeEdit.tabs.practice')}</span>
+                <TabsTrigger value='practice' title={t('nodeEdit.tabs.practice')}>
+                  <GraduationCap className='h-4 w-4' />
                 </TabsTrigger>
-                <TabsTrigger value='ai' className='gap-1.5'>
-                  <Sparkles className='h-3.5 w-3.5' />
-                  <span className='text-xs'>{t('nodeEdit.tabs.ai')}</span>
+                <TabsTrigger value='ai' title={t('nodeEdit.tabs.ai')}>
+                  <Sparkles className='h-4 w-4' />
                 </TabsTrigger>
               </TabsList>
             </SheetHeader>

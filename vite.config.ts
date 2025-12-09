@@ -8,6 +8,9 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths(), wasm(), topLevelAwait()],
+  build: {
+    cssCodeSplit: false // All CSS in one file - prevents FOUC on SPA navigation
+  },
   server: {
     host: '0.0.0.0',
     allowedHosts: ['.ngrok-free.app', '.ngrok.io', '.trycloudflare.com', 'neylin.io']

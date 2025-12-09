@@ -17,14 +17,22 @@ export type {
   AIModel,
   AITask,
   EdgeSuggestion,
+  EdgeSuggestionResult,
   EnrichType,
+  GapDetectionResult,
+  GeneratedNode,
   KnowledgeGap,
+  MissingNodesResult,
   NodeEnrichmentResult
 } from './ai.schema'
 export {
   AIModelSchema,
   AITaskSchema,
+  EdgeSuggestionResultSchema,
   EdgeSuggestionSchema,
+  GapDetectionResultSchema,
+  GeneratedNodeSchema,
   KnowledgeGapSchema,
+  MissingNodesResultSchema,
   NodeEnrichmentResultSchema
 } from './ai.schema'

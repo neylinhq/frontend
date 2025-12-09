@@ -3,12 +3,14 @@ export { mapApi } from './map.api'
 export {
   mapKeys,
   useAnalyzeGraph,
+  useCopyMap,
   useCreateEdge,
   useCreateMap,
   useCreateNode,
   useDeleteEdge,
   useDeleteMap,
   useDeleteNode,
+  useDiscoverMaps,
   useFullMap,
   useGraphAnalysis,
   useLightweightMap,
@@ -17,16 +19,34 @@ export {
   useMapNodes,
   useMaps,
   useNodeWithContent,
+  useSearchMaps,
+  useSetVisibility,
   useUpdateEdge,
   useUpdateNode,
   useUpdateNodePosition,
   useUpdateNodePositions
 } from './map.queries'
-export type { Edge, FullMap, MapEntity, Node, RelationType } from './map.schema'
+export type {
+  Edge,
+  FullMap,
+  MapDiscoverResponse,
+  MapEntity,
+  MapFilter,
+  MapSearchItem,
+  MapSearchMode,
+  MapSearchResponse,
+  MatchedNode,
+  Node,
+  RelationType
+} from './map.schema'
 export {
   EdgeSchema,
   FullMapSchema,
+  MapDiscoverResponseSchema,
   MapEntitySchema,
+  MapSearchItemSchema,
+  MapSearchResponseSchema,
+  MatchedNodeSchema,
   NodeSchema,
   RelationTypeEnum
 } from './map.schema'

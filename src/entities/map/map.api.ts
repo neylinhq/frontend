@@ -1,7 +1,15 @@
 import { api } from '@/shared/api/client'
+import type { EdgeSuggestionResult, GapDetectionResult, MissingNodesResult } from '../ai'
 import type { Edge } from '../edge'
 import type { LightweightNode, Node } from '../node'
-import type { FullMap, MapEntity } from './map.schema'
+import type {
+  FullMap,
+  MapEntity,
+  MapDiscoverResponse,
+  MapSearchResponse,
+  MapFilter,
+  MapSearchMode
+} from './map.schema'
 
 // Response types
 interface ApiResponse<T> {
@@ -80,6 +88,62 @@ export const mapApi = {
     await api.delete(`/maps/${id}`)
   },
 
+  // Public maps discovery
+  discoverMaps: async (params: {
+    filter?: MapFilter
+    sortBy?: string
+    sortOrder?: 'asc' | 'desc'
+    limit?: number
+    offset?: number
+  }): Promise<MapDiscoverResponse> => {
+    const searchParams = new URLSearchParams()
+    if (params.filter) searchParams.set('filter', params.filter)
+    if (params.sortBy) searchParams.set('sortBy', params.sortBy)
+    if (params.sortOrder) searchParams.set('sortOrder', params.sortOrder)
+    if (params.limit) searchParams.set('limit', String(params.limit))
+    if (params.offset) searchParams.set('offset', String(params.offset))
+
+    const response = await api.get<ApiResponse<MapDiscoverResponse>>(
+      `/maps/discover?${searchParams.toString()}`
+    )
+    return response.data
+  },
+
+  // Search maps by title and optionally by node labels
+  searchMaps: async (params: {
+    query: string
+    mode?: MapSearchMode
+    filter?: MapFilter
+    limit?: number
+    offset?: number
+  }): Promise<MapSearchResponse> => {
+    const searchParams = new URLSearchParams()
+    searchParams.set('q', params.query)
+    if (params.mode) searchParams.set('mode', params.mode)
+    if (params.filter) searchParams.set('filter', params.filter)
+    if (params.limit) searchParams.set('limit', String(params.limit))
+    if (params.offset) searchParams.set('offset', String(params.offset))
+
+    const response = await api.get<ApiResponse<MapSearchResponse>>(
+      `/maps/search?${searchParams.toString()}`
+    )
+    return response.data
+  },
+
+  // Copy a public map to own collection
+  copyMap: async (mapId: string): Promise<MapEntity> => {
+    const response = await api.post<ApiResponse<MapEntity>>(`/maps/${mapId}/copy`)
+    return response.data
+  },
+
+  // Set map visibility (public/private)
+  setVisibility: async (mapId: string, isPublic: boolean): Promise<MapEntity> => {
+    const response = await api.patch<ApiResponse<MapEntity>>(`/maps/${mapId}/visibility`, {
+      isPublic
+    })
+    return response.data
+  },
+
   getFullMap: async (mapId: string, options?: { cookies?: string }): Promise<FullMap> => {
     const response = await api.get<ApiResponse<FullMap>>(`/maps/${mapId}/full`, {
       cookies: options?.cookies
@@ -99,18 +163,23 @@ export const mapApi = {
   },
 
   // AI Operations
-  suggestEdges: async (mapId: string): Promise<any> => {
-    const response = await api.post<ApiResponse<any>>(`/maps/${mapId}/suggest-edges`)
+  suggestEdges: async (mapId: string): Promise<EdgeSuggestionResult> => {
+    const response = await api.post<ApiResponse<EdgeSuggestionResult>>(
+      `/maps/${mapId}/suggest-edges`
+    )
     return response.data
   },
 
-  detectGaps: async (mapId: string): Promise<any> => {
-    const response = await api.post<ApiResponse<any>>(`/maps/${mapId}/detect-gaps`)
+  detectGaps: async (mapId: string): Promise<GapDetectionResult> => {
+    const response = await api.post<ApiResponse<GapDetectionResult>>(`/maps/${mapId}/detect-gaps`)
     return response.data
   },
 
-  generateNodes: async (mapId: string, gaps: string[]): Promise<any> => {
-    const response = await api.post<ApiResponse<any>>(`/maps/${mapId}/generate-nodes`, { gaps })
+  generateNodes: async (mapId: string, gaps: string[]): Promise<MissingNodesResult> => {
+    const response = await api.post<ApiResponse<MissingNodesResult>>(
+      `/maps/${mapId}/generate-nodes`,
+      { gaps }
+    )
     return response.data
   },
 

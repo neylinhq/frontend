@@ -325,7 +325,12 @@
       "description": "Your cognitive map and recent activities.",
       "createMap": "Create",
       "loadingError": "Error",
-      "tryAgain": "Refresh"
+      "tryAgain": "Refresh",
+      "searchPlaceholder": "Search maps and nodes...",
+      "searchResults": "Found: {{count}} for \"{{query}}\"",
+      "noSearchResults": "Nothing found",
+      "noMaps": "You don't have any knowledge maps yet",
+      "createFirstMap": "Create first map"
     },
     "createMap": {
       "title": "New map",
@@ -334,10 +339,27 @@
     "mapCard": {
       "menu": "Menu",
       "edit": "Edit",
+      "view": "Open",
       "delete": "Delete",
       "noDescription": "—",
       "concepts": "items",
-      "updated": "Updated"
+      "updated": "Updated",
+      "public": "Public",
+      "makePublic": "Make public",
+      "makePrivate": "Make private",
+      "copyToMyMaps": "Copy to my maps",
+      "copySuccess": "Map copied",
+      "copyError": "Failed to copy map",
+      "madePublic": "Map is now public",
+      "madePrivate": "Map is now private",
+      "visibilityError": "Failed to change visibility",
+      "deleteSuccess": "Map deleted",
+      "deleteError": "Failed to delete map"
+    },
+    "mapFilters": {
+      "all": "All",
+      "myMaps": "My maps",
+      "public": "Public"
     }
   },
   "graph": {

@@ -4,7 +4,6 @@ import { EditorContent, useEditor } from '@tiptap/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/shared/lib/cn'
-import { useTheme } from '@/shared/core/theme'
 
 import { createExtensions } from '../lib/extensions'
 import { GUTTER } from '../model/block-editor.constants'
@@ -30,7 +29,6 @@ export const BlockEditor = ({
   className,
   placeholder
 }: BlockEditorProps) => {
-  const { resolvedMode } = useTheme()
   const { t } = useTranslation()
   const [showSlashMenu, setShowSlashMenu] = useState(false)
   const [slashMenuPosition, setSlashMenuPosition] = useState({ top: 0, left: 0 })
@@ -334,7 +332,7 @@ export const BlockEditor = ({
     >
       <div
         ref={editorRef}
-        className={cn('tiptap-editor group/editor relative', resolvedMode === 'dark' && 'dark')}
+        className='tiptap-editor group/editor relative'
       >
         <EditorBubbleMenu editor={editor} onOpenMathDialog={openMathDialog} />
 

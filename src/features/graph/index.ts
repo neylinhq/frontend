@@ -1,6 +1,14 @@
 // Components
 export { GraphToolbar } from './components/graph-toolbar'
-export { GraphVisualization } from './components/graph-visualization'
+
+// GraphVisualization - switches between xyflow and WebGL based on feature flag
+import { USE_WEBGL_RENDERER, GraphVisualization as GraphWebGL } from '@/features/graph-webgl'
+import { GraphVisualization as GraphXYFlow } from './components/graph-visualization'
+export const GraphVisualization = USE_WEBGL_RENDERER ? GraphWebGL : GraphXYFlow
+
+// Export xyflow version explicitly for fallback
+export { GraphVisualization as GraphXYFlowVisualization } from './components/graph-visualization'
+
 export { KnowledgeEdge } from './components/knowledge-edge'
 export { KnowledgeNode } from './components/knowledge-node'
 export { NodeContextMenu } from './components/node-context-menu'

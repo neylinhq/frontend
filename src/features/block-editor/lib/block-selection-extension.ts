@@ -80,20 +80,26 @@ export const BlockSelection = Extension.create({
             }
           },
 
-          apply(tr, _state, _oldEditorState, newEditorState): BlockSelectionState {
+          apply(tr, prevState, _oldEditorState, newEditorState): BlockSelectionState {
             // If document changed, clear decorations (user is typing)
             if (tr.docChanged) {
               return { decorations: DecorationSet.empty }
             }
 
             const { from, to } = newEditorState.selection
+            const oldSelection = _oldEditorState.selection
 
             // No selection = no decorations
             if (from === to) {
               return { decorations: DecorationSet.empty }
             }
 
-            // Check for fully selected blocks
+            // If selection hasn't changed, keep existing decorations
+            if (from === oldSelection.from && to === oldSelection.to) {
+              return prevState
+            }
+
+            // Selection changed - recreate decorations
             const selectedBlocks = findFullySelectedBlocks(newEditorState.doc, from, to)
 
             const decorations: Decoration[] = []
@@ -125,6 +131,10 @@ export const BlockSelection = Extension.create({
         props: {
           decorations(state) {
             return this.getState(state)?.decorations ?? DecorationSet.empty
+          },
+          // Disable browser's native selection highlight
+          attributes: {
+            class: 'custom-selection'
           }
         }
       })

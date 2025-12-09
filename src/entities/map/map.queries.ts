@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { mapApi } from './map.api'
-import type { CreateEdgeRequest, Edge, Node } from './map.schema'
+import type { CreateEdgeRequest, Edge, Node, MapFilter, MapSearchMode } from './map.schema'
 
 export const mapKeys = {
   all: ['maps'] as const,
@@ -17,7 +17,9 @@ export const mapKeys = {
   mapEdges: (mapId: string) => [...mapKeys.edges(), mapId] as const,
   fullMap: (mapId: string) => [...mapKeys.detail(mapId), 'full'] as const,
   lightweightMap: (mapId: string) => [...mapKeys.detail(mapId), 'lightweight'] as const,
-  analysis: (mapId: string) => [...mapKeys.detail(mapId), 'analysis'] as const
+  analysis: (mapId: string) => [...mapKeys.detail(mapId), 'analysis'] as const,
+  discover: (filter: MapFilter) => [...mapKeys.all, 'discover', filter] as const,
+  search: (query: string, mode: MapSearchMode) => [...mapKeys.all, 'search', query, mode] as const
 }
 
 // ====== Хуки для карт ======
@@ -169,11 +171,13 @@ export const useFullMap = (mapId: string, options?: UseFullMapOptions) => {
   })
 }
 
-// Lightweight map for graph visualization (NO content field)
+// Lightweight map for graph visualization
+// Note: Currently uses full map endpoint. For true lightweight mode,
+// backend would need a separate endpoint that excludes node content.
 export const useLightweightMap = (mapId: string) => {
   return useQuery({
     queryKey: mapKeys.lightweightMap(mapId),
-    queryFn: () => mapApi.getFullMap(mapId, false), // includeContent=false
+    queryFn: () => mapApi.getFullMap(mapId),
     enabled: !!mapId,
     staleTime: 5 * 60 * 1000 // 5 min - aggressive caching for graph views
   })
@@ -221,5 +225,77 @@ export const useUpdateNodePositions = (mapId: string) => {
   return useMutation({
     mutationFn: (updates: Array<{ id: string; position: { x: number; y: number } }>) =>
       mapApi.updateNodePositions(mapId, updates)
+  })
+}
+
+// ====== Хуки для публичных карт ======
+
+export interface UseDiscoverMapsOptions {
+  filter?: MapFilter
+  sortBy?: string
+  sortOrder?: 'asc' | 'desc'
+  limit?: number
+  offset?: number
+}
+
+export const useDiscoverMaps = (options: UseDiscoverMapsOptions = {}) => {
+  return useQuery({
+    queryKey: [
+      ...mapKeys.all,
+      'discover',
+      options.filter ?? 'all',
+      options.sortBy,
+      options.sortOrder,
+      options.limit,
+      options.offset
+    ],
+    queryFn: () => mapApi.discoverMaps(options)
+  })
+}
+
+export interface UseSearchMapsOptions {
+  query: string
+  mode?: MapSearchMode
+  filter?: MapFilter
+  limit?: number
+  offset?: number
+  enabled?: boolean
+}
+
+export const useSearchMaps = (options: UseSearchMapsOptions) => {
+  const mode = options.mode ?? 'all'
+  return useQuery({
+    queryKey: mapKeys.search(options.query, mode),
+    queryFn: () => mapApi.searchMaps(options),
+    enabled: (options.enabled ?? true) && options.query.length >= 1
+  })
+}
+
+export const useCopyMap = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: mapApi.copyMap,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: mapKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: mapKeys.discover('all') })
+      queryClient.invalidateQueries({ queryKey: mapKeys.discover('owned') })
+    }
+  })
+}
+
+export const useSetVisibility = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ mapId, isPublic }: { mapId: string; isPublic: boolean }) =>
+      mapApi.setVisibility(mapId, isPublic),
+    onSuccess: (_, { mapId }) => {
+      queryClient.invalidateQueries({ queryKey: mapKeys.detail(mapId) })
+      queryClient.invalidateQueries({ queryKey: mapKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: mapKeys.discover('all') })
+      queryClient.invalidateQueries({ queryKey: mapKeys.discover('owned') })
+      queryClient.invalidateQueries({ queryKey: mapKeys.discover('public') })
+    }
   })
 }

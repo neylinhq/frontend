@@ -166,12 +166,11 @@ const App = () => {
     initializedRef.current = true
   }
 
-  // Disable transitions during navigation (prevents flash when lazy CSS loads)
+  // Disable transitions during navigation to prevent flash
   useEffect(() => {
     if (navigation.state === 'loading') {
       document.documentElement.classList.add('theme-transition-disabled')
     } else if (navigation.state === 'idle') {
-      // Small delay to ensure lazy CSS is applied
       const timer = setTimeout(() => {
         document.documentElement.classList.remove('theme-transition-disabled')
       }, 50)

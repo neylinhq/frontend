@@ -325,7 +325,12 @@
       "description": "Ваша когнитивная карта и последние активности.",
       "createMap": "Создать",
       "loadingError": "Ошибка",
-      "tryAgain": "Обновить"
+      "tryAgain": "Обновить",
+      "searchPlaceholder": "Поиск по картам и узлам...",
+      "searchResults": "Найдено: {{count}} по запросу \"{{query}}\"",
+      "noSearchResults": "Ничего не найдено",
+      "noMaps": "У вас пока нет карт знаний",
+      "createFirstMap": "Создать первую карту"
     },
     "createMap": {
       "title": "Новая карта",
@@ -334,10 +339,27 @@
     "mapCard": {
       "menu": "Меню",
       "edit": "Изменить",
+      "view": "Открыть",
       "delete": "Удалить",
       "noDescription": "—",
       "concepts": "элементов",
-      "updated": "Изменено"
+      "updated": "Изменено",
+      "public": "Публичная",
+      "makePublic": "Сделать публичной",
+      "makePrivate": "Сделать приватной",
+      "copyToMyMaps": "Скопировать к себе",
+      "copySuccess": "Карта скопирована",
+      "copyError": "Не удалось скопировать карту",
+      "madePublic": "Карта стала публичной",
+      "madePrivate": "Карта стала приватной",
+      "visibilityError": "Не удалось изменить видимость",
+      "deleteSuccess": "Карта удалена",
+      "deleteError": "Не удалось удалить карту"
+    },
+    "mapFilters": {
+      "all": "Все",
+      "myMaps": "Мои карты",
+      "public": "Публичные"
     }
   },
   "graph": {

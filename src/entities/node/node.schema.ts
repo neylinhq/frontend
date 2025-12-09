@@ -14,17 +14,15 @@ export const NodeTypeEnum = z.enum([
 
 export type NodeType = z.infer<typeof NodeTypeEnum>
 
-// Метаданные узла
+// Метаданные узла (объективные данные контента)
+// Персональные данные (confidence, reviewCount) вынесены в user_node_progress
 export const NodeMetadataSchema = z
   .object({
-    confidence: z.number().min(0).max(1).optional(), // Уверенность в знании 0-1
     complexity: z.enum(['basic', 'intermediate', 'advanced']).optional(),
     sources: z.array(z.string()).optional(), // Источники информации
-    tags: z.array(z.string()).optional(),
-    lastReviewed: z.string().optional(),
-    reviewCount: z.number().optional()
+    tags: z.array(z.string()).optional()
   })
-  .default({ reviewCount: 0 })
+  .default({})
 
 export type NodeMetadata = z.infer<typeof NodeMetadataSchema>
 

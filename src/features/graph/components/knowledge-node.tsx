@@ -86,11 +86,6 @@ const KnowledgeNodeComponent = ({ data }: KnowledgeNodeProps) => {
           </div>
         )}
 
-        {/* Description - LOD: hidden at low zoom */}
-        {showDetails && data.description && (
-          <p className='text-sm text-muted-foreground line-clamp-2 mt-2'>{data.description}</p>
-        )}
-
         {/* Complexity badge - pinned to bottom, LOD: hidden at low zoom */}
         {showDetails && data.metadata.complexity && (
           <div className='mt-auto pt-3'>
@@ -137,7 +132,6 @@ export const KnowledgeNode = memo(KnowledgeNodeComponent, (prevProps, nextProps)
     prevProps.id === nextProps.id &&
     prevData.id === nextData.id &&
     prevData.label === nextData.label &&
-    prevData.description === nextData.description &&
     prevData.type === nextData.type &&
     prevData.selected === nextData.selected &&
     prevData.isDimmed === nextData.isDimmed &&

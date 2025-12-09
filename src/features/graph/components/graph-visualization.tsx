@@ -10,13 +10,13 @@ import {
   ReactFlowProvider,
   useEdgesState,
   useNodesState,
-  useReactFlow,
-  useViewport
+  useReactFlow
 } from '@xyflow/react'
 import { Loader2 } from 'lucide-react'
 import { memo, useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
+import { getEdgeTranslations, type EdgeTranslations } from '../lib/edge-translations'
 import {
   type Edge,
   type FullMap,
@@ -41,6 +41,7 @@ import {
   useNodeSpacing,
   useViewMode
 } from '../model/graph.store'
+import { useDebouncedZoom } from '../model/use-debounced-zoom'
 import { useGraphControls } from '../model/graph-controls.hooks'
 import { useFilteredGraphData } from '../model/graph-data.hooks'
 import { useGraphKeyboard } from '../model/graph-keyboard.hooks'
@@ -88,7 +89,7 @@ const GraphVisualizationContent = ({
   initialData,
   renderConnectionsPanel
 }: GraphVisualizationProps) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const queryClient = useQueryClient()
   // Always use React Query for reactivity - initialData is just for SSR hydration
   const { data: fetchedMap, isLoading, isError } = useFullMap(mapId)
@@ -97,6 +98,12 @@ const GraphVisualizationContent = ({
     useNodeSelection()
   const { controls, toggleFullscreen } = useGraphControls()
   const layoutAppliedRef = useRef(false)
+
+  // PERFORMANCE: Cache edge translations to avoid calling t() in each edge component
+  const edgeTranslations = useMemo<EdgeTranslations>(
+    () => getEdgeTranslations(t, i18n.language),
+    [t, i18n.language]
+  )
 
   // Ref for stable callback to avoid re-renders
   const handleNodeClickRef = useRef<(nodeId: string) => void>(() => {})
@@ -111,8 +118,14 @@ const GraphVisualizationContent = ({
   const { pendingEdge, startEdgeCreation, cancelEdgeCreation, startEdgeEditing } =
     useEdgeManagementStore()
 
-  const { zoomIn, zoomOut, fitView, setCenter, getNode, screenToFlowPosition } = useReactFlow()
-  const { zoom: viewportZoom } = useViewport()
+  const { zoomIn, zoomOut, fitView, setCenter, getNode, screenToFlowPosition, getViewport } = useReactFlow()
+
+  // PERFORMANCE: Debounced zoom for node/edge data updates
+  // Updates only after interaction stops, preventing cascade re-renders during pan/zoom
+  const { zoom: debouncedZoom, rawZoom: viewportZoom, isInteracting } = useDebouncedZoom({
+    debounceMs: 100,
+    skipDuringInteraction: true
+  })
 
   // Pan to a specific node
   const handlePanToNode = useCallback(
@@ -198,17 +211,16 @@ const GraphVisualizationContent = ({
   })
 
   // Handle node click:
-  // - In focus mode without focused node → focus on clicked node
-  // - In focus mode with focused node → just open drawer
+  // - In focus mode → focus on clicked node (change focus target)
   // - In overview mode → just open drawer
   const handleNodeClick = useCallback(
     (nodeId: string) => {
-      if (viewMode === 'focus' && !focusedNodeId) {
+      if (viewMode === 'focus') {
         focusNode(nodeId)
       }
       selectNode(nodeId)
     },
-    [viewMode, focusedNodeId, focusNode, selectNode]
+    [viewMode, focusNode, selectNode]
   )
 
   // Keep ref updated for stable callback in useMemo
@@ -219,20 +231,40 @@ const GraphVisualizationContent = ({
     handleNodeClickRef.current(nodeId)
   }, [])
 
+  // PERFORMANCE: Stable callback ref for edge editing to avoid re-renders
+  const handleEdgeStartEditingRef = useRef<(edge: Edge, position: { x: number; y: number }) => void>(
+    () => {}
+  )
+  handleEdgeStartEditingRef.current = startEdgeEditing
+
+  const stableHandleEdgeStartEditing = useCallback(
+    (edge: Edge, position: { x: number; y: number }) => {
+      handleEdgeStartEditingRef.current(edge, position)
+    },
+    []
+  )
+
   // Transform nodes for XYFlow - use stable callback to avoid re-renders
+  // PERFORMANCE: Pass debounced zoom via data prop to avoid useViewport() in each node
   const initialNodes = useMemo(() => {
-    return transformNodesToFlow(
-      filteredData.nodes,
-      selectedElements.nodes,
-      stableHandleNodeClick,
-      focusedNodeId
-    )
-  }, [filteredData.nodes, selectedElements.nodes, stableHandleNodeClick, focusedNodeId])
+    return transformNodesToFlow(filteredData.nodes, {
+      selectedNodeIds: selectedElements.nodes,
+      onSelect: stableHandleNodeClick,
+      focusedNodeId,
+      zoom: debouncedZoom
+    })
+  }, [filteredData.nodes, selectedElements.nodes, stableHandleNodeClick, focusedNodeId, debouncedZoom])
 
   // Transform edges for XYFlow
+  // PERFORMANCE: Pass debounced zoom, translations, and callback via data prop
   const initialEdges = useMemo(() => {
-    return transformEdgesToFlow(filteredData.edges, selectedElements.edges)
-  }, [filteredData.edges, selectedElements.edges])
+    return transformEdgesToFlow(filteredData.edges, {
+      selectedEdgeIds: selectedElements.edges,
+      zoom: debouncedZoom,
+      translations: edgeTranslations,
+      onStartEditing: stableHandleEdgeStartEditing
+    })
+  }, [filteredData.edges, selectedElements.edges, debouncedZoom, edgeTranslations, stableHandleEdgeStartEditing])
 
   const [reactFlowNodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [reactFlowEdges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
@@ -388,6 +420,8 @@ const GraphVisualizationContent = ({
           positionCacheRef.current.set(node.id, { ...node.position })
         }
         setNodes(initialNodes)
+        // Fit view on initial load only
+        setTimeout(() => fitView({ padding: 0.2, duration: 0 }), 0)
       } else {
         // Apply fresh layout and save to backend (ignore broken positions)
         const result = applyLayout(initialNodes, initialEdges, {
@@ -409,6 +443,9 @@ const GraphVisualizationContent = ({
           position: { x: Math.round(n.position.x), y: Math.round(n.position.y) }
         }))
         updatePositionsMutation.mutate(positionUpdates)
+
+        // Fit view on initial load only
+        setTimeout(() => fitView({ padding: 0.2, duration: 0 }), 0)
       }
     }
   }, [
@@ -421,7 +458,8 @@ const GraphVisualizationContent = ({
     nodeSpacing,
     directionStrength,
     setNodes,
-    updatePositionsMutation
+    updatePositionsMutation,
+    fitView
   ])
 
   // Listen for layout events from the store
@@ -445,14 +483,18 @@ const GraphVisualizationContent = ({
     return () => layoutEvent.removeEventListener('layout', handleLayoutEvent)
   }, [doApplyLayout, getAnchorNodeId])
 
-  // Sync nodes when filtered data changes
-  const prevNodeIdsRef = useRef<string>('')
+  // Sync nodes when filtered data changes (including node properties like label, type, etc.)
+  const prevNodeHashRef = useRef<string>('')
   useEffect(() => {
-    const nodeIds = initialNodes
-      .map(n => n.id)
+    // Create hash from node IDs AND their data properties
+    const nodeHash = initialNodes
+      .map(n => {
+        const data = n.data || {}
+        return `${n.id}:${data.label}:${data.type}:${data.description}:${JSON.stringify(data.metadata?.tags)}`
+      })
       .sort()
-      .join(',')
-    if (prevNodeIdsRef.current !== nodeIds) {
+      .join('|')
+    if (prevNodeHashRef.current !== nodeHash) {
       // Always update cache with current visible node positions before any changes
       for (const node of reactFlowNodes) {
         positionCacheRef.current.set(node.id, { ...node.position })
@@ -465,7 +507,7 @@ const GraphVisualizationContent = ({
         position: positionCacheRef.current.get(node.id) ?? node.position
       }))
       setNodes(mergedNodes)
-      prevNodeIdsRef.current = nodeIds
+      prevNodeHashRef.current = nodeHash
     }
   }, [initialNodes, reactFlowNodes, setNodes])
 
@@ -782,9 +824,8 @@ const GraphVisualizationContent = ({
         onNodeDragStop={handleNodeDragStop}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
-        fitView
         fitViewOptions={{ padding: 0.2 }}
-        className='bg-background'
+        className={cn('bg-background', isInteracting && 'interacting')}
         nodesDraggable={interactive}
         nodesConnectable={interactive}
         elementsSelectable={interactive}
@@ -848,6 +889,7 @@ const GraphVisualizationContent = ({
         mapId={mapId}
         nodeCountsByType={nodeCountsByType}
         edgeCountsByType={edgeCountsByType}
+        selectedNodeId={selectedNodeId}
       />
 
       {/* Node drawer */}

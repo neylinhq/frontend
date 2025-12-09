@@ -141,7 +141,7 @@ export const ViewControlsPanel = memo(
                     onValueChange={([value]) => setLocalSpacing(value)}
                     onValueCommit={([value]) => setNodeSpacing(value)}
                     min={50}
-                    max={200}
+                    max={300}
                     step={10}
                     className='w-full'
                   />

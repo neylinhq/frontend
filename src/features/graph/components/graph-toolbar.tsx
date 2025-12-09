@@ -34,14 +34,15 @@ interface GraphToolbarProps {
   mapId: string
   nodeCountsByType?: Record<NodeType, number>
   edgeCountsByType?: Record<RelationType, number>
+  selectedNodeId?: string | null
   className?: string
 }
 
 export const GraphToolbar = memo(
-  ({ mapId, nodeCountsByType, edgeCountsByType, className }: GraphToolbarProps) => {
+  ({ mapId, nodeCountsByType, edgeCountsByType, selectedNodeId, className }: GraphToolbarProps) => {
     const { t } = useTranslation()
     const { viewMode, setViewMode } = useViewMode()
-    const { focusedNodeId, focusDepth, setFocusDepth, clearFocus } = useFocusMode()
+    const { focusedNodeId, focusDepth, setFocusDepth, clearFocus, focusNode } = useFocusMode()
     const {
       visibleNodeTypes,
       visibleEdgeTypes,
@@ -84,12 +85,21 @@ export const GraphToolbar = memo(
               const Icon = config.icon
               const isActive = viewMode === mode
 
+              const handleClick = () => {
+                // If clicking Focus and there's a selected node, focus on it directly
+                if (mode === 'focus' && selectedNodeId) {
+                  focusNode(selectedNodeId)
+                } else {
+                  setViewMode(mode)
+                }
+              }
+
               return (
                 <Button
                   key={mode}
                   size='sm'
                   variant={isActive ? 'default' : 'ghost'}
-                  onClick={() => setViewMode(mode)}
+                  onClick={handleClick}
                   className='h-7 px-2.5 gap-1.5'
                   title={t(config.labelKey)}
                 >

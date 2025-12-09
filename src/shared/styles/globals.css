@@ -2076,6 +2076,38 @@
 }
 
 /* ========================================
+   Graph Performance Optimizations
+   CSS containment and GPU acceleration for nodes/edges
+   ======================================== */
+
+/* React Flow node containers - GPU compositing */
+.react-flow__node {
+  contain: layout style;
+  will-change: transform;
+}
+
+/* Knowledge node cards - full containment */
+.react-flow__node-knowledgeNode {
+  contain: layout style paint;
+}
+
+/* React Flow edges - optimize SVG rendering */
+.react-flow__edge {
+  contain: layout style;
+}
+
+/* During active interaction (pan/zoom), disable transitions for max FPS */
+.react-flow.interacting .react-flow__node,
+.react-flow.interacting .react-flow__edge {
+  transition: none !important;
+}
+
+/* Edge labels - contain layout recalculations */
+.react-flow__edge-text {
+  contain: layout style;
+}
+
+/* ========================================
    Theme Transition Override
    MUST be at the end to override Tailwind utilities
    NOTE: Also inlined in app/root.tsx as Critical CSS

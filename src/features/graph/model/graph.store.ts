@@ -153,7 +153,8 @@ export const useGraphViewStore = create<GraphViewState & GraphViewActions>()(
         }
         // Trigger layout recalculation when switching modes
         // Different modes use different layout algorithms
-        setTimeout(() => triggerLayout({ fitView: true, animated: true }), 0)
+        // Don't fitView - preserve current zoom level
+        setTimeout(() => triggerLayout({ fitView: false, useAnchor: true, animated: true }), 0)
       },
 
       // Focus actions - no auto layout, sync effect handles visual updates
@@ -223,7 +224,7 @@ export const useGraphViewStore = create<GraphViewState & GraphViewActions>()(
       // anchorToCenter: true to keep focus on the node closest to viewport center
       // animated: true for smooth transition when slider changes
       setNodeSpacing: spacing => {
-        set({ nodeSpacing: Math.max(50, Math.min(200, spacing)) })
+        set({ nodeSpacing: Math.max(50, Math.min(300, spacing)) })
         setTimeout(() => triggerLayout({ fitView: false, useAnchor: true, animated: true }), 0)
       },
 

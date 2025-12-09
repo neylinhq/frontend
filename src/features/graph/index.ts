@@ -11,6 +11,7 @@ export { calculateDensity, calculateGraphCenter } from './lib/calculate-metrics'
 export { getEdgeDashArray, getEdgeStroke, getEdgeWidth } from './lib/get-edge-style'
 export { applyLayout, getNodesWithinDepth } from './lib/layout-algorithms-optimized'
 export { transformEdgesToFlow, transformNodesToFlow } from './lib/transform-data'
+export { getEdgeTranslations, getEdgeTypeLabel, type EdgeTranslations } from './lib/edge-translations'
 // Model - Store
 export {
   ALL_EDGE_TYPES,
@@ -31,6 +32,8 @@ export { useGraphControls } from './model/graph-controls.hooks'
 export { useFilteredGraphData } from './model/graph-data.hooks'
 export { useGraphKeyboard } from './model/graph-keyboard.hooks'
 export { useAnimatedLayout } from './model/graph-layout.hooks'
+export { useDebouncedZoom } from './model/use-debounced-zoom'
+export { useDiscreteZoom, getSnappedZoom, getZoomLevel, ZOOM_THRESHOLDS, type ZoomLevel } from './model/use-discrete-zoom'
 // Model - Types
 export type {
   DisplayMode,

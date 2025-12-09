@@ -1,5 +1,5 @@
 import { Plus, Search } from 'lucide-react'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLoaderData } from 'react-router'
 
@@ -30,8 +30,8 @@ interface LoaderData {
 export const OverviewPage = () => {
   const { t } = useTranslation()
   const { toast } = useToast()
-  const { initialData } = useLoaderData<LoaderData>()
   const { data: user } = useCurrentUser()
+  const { initialData } = useLoaderData<LoaderData>()
   const [filter, setFilter] = useState<MapFilter>('all')
   const [searchInput, setSearchInput] = useState('')
   const [debouncedQuery, setDebouncedQuery] = useState('')
@@ -45,12 +45,12 @@ export const OverviewPage = () => {
     debouncedSetQuery(value)
   }
 
-  // Use SSR data as initialData for instant render, React Query handles revalidation
+  // SSR initial data only for default filter 'all'
   const { data: discoverData, isLoading } = useDiscoverMaps({
     filter,
     initialData: filter === 'all' ? initialData : undefined
   })
-  const { data: searchData, isLoading: isSearching } = useSearchMaps({
+  const { data: searchData, isLoading: isSearchLoading } = useSearchMaps({
     query: debouncedQuery,
     mode: 'all',
     filter,
@@ -111,13 +111,22 @@ export const OverviewPage = () => {
   // Use search results if searching, otherwise use discover results
   const isSearchActive = debouncedQuery.length >= 2
   const maps = isSearchActive ? searchData?.maps : discoverData?.maps
-  const counts = discoverData
-    ? {
-        all: discoverData.totalCount,
-        owned: discoverData.ownedCount,
-        public: discoverData.publicCount
-      }
-    : undefined
+
+  // Keep last known counts to prevent tab numbers from disappearing during loading
+  const lastCountsRef = useRef<{ all: number; owned: number; public: number } | undefined>()
+  if (discoverData) {
+    lastCountsRef.current = {
+      all: discoverData.totalCount,
+      owned: discoverData.ownedCount,
+      public: discoverData.publicCount
+    }
+  }
+  const counts = lastCountsRef.current
+
+  // Show skeleton only on true initial load (no data yet)
+  const showSkeleton = isSearchActive
+    ? isSearchLoading && !searchData
+    : isLoading && !discoverData
 
   return (
     <div className='container mx-auto py-8 px-4 md:px-8'>
@@ -162,8 +171,8 @@ export const OverviewPage = () => {
 
       {/* Maps grid - always rendered to avoid layout shifts */}
       <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
-        {/* Loading state - show skeleton cards */}
-        {(isLoading || isSearching) && (
+        {/* Loading state - show skeleton cards only on true initial load */}
+        {showSkeleton && (
           <>
             {Array.from({ length: 6 }).map((_, i) => (
               <MapCardSkeleton key={i} />
@@ -171,8 +180,8 @@ export const OverviewPage = () => {
           </>
         )}
 
-        {/* Loaded maps */}
-        {!isLoading && !isSearching && maps && maps.length > 0 && (
+        {/* Loaded maps - show even with placeholder data during filter switch */}
+        {!showSkeleton && maps && maps.length > 0 && (
           <>
             {maps.map(map => {
               const isOwned = map.authorId === user?.id
@@ -196,7 +205,7 @@ export const OverviewPage = () => {
         )}
 
         {/* Empty state - still inside grid for consistent layout */}
-        {!isLoading && !isSearching && (!maps || maps.length === 0) && (
+        {!showSkeleton && (!maps || maps.length === 0) && (
           <div className='col-span-full flex flex-col items-center justify-center py-12 text-center'>
             <p className='text-muted-foreground mb-4'>
               {isSearchActive

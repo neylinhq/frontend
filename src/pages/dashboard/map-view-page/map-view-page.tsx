@@ -1,6 +1,7 @@
 import { ReactFlowProvider } from '@xyflow/react'
 import type { FullMap } from '@/entities/map'
 import { MapChatDrawer } from '@/features/ai-assist'
+import { ReadOnlyBanner, useMapPermissions } from '@/features/map-permissions'
 import { QuickAddDialog, AddNodeFab, useNodeCreationStore } from '@/features/node-creation'
 import { useKeyboardShortcut } from '@/shared/hooks/use-keyboard-shortcut'
 import { GraphView } from '@/widgets/graph-view'
@@ -12,22 +13,31 @@ interface MapViewPageProps {
 
 export const MapViewPage = ({ map, mapId }: MapViewPageProps) => {
   const { openQuickAdd } = useNodeCreationStore()
+  const { canEdit, isReadOnly } = useMapPermissions(map)
 
-  // Keyboard shortcut: Cmd+N (Mac) or Ctrl+N (Windows/Linux)
-  useKeyboardShortcut({ key: 'n', meta: true }, openQuickAdd)
-  useKeyboardShortcut({ key: 'n', ctrl: true }, openQuickAdd)
+  // Keyboard shortcut: Cmd+N (Mac) or Ctrl+N (Windows/Linux) - only for owners
+  useKeyboardShortcut({ key: 'n', meta: true, enabled: canEdit }, openQuickAdd)
+  useKeyboardShortcut({ key: 'n', ctrl: true, enabled: canEdit }, openQuickAdd)
 
   return (
     <ReactFlowProvider>
       <div className='h-[calc(100vh-3.5rem)] relative'>
-        <GraphView mapId={mapId} initialData={map} className='h-full w-full' interactive={true} />
-        <QuickAddDialog />
-        <AddNodeFab />
+        <GraphView mapId={mapId} initialData={map} className='h-full w-full' interactive={canEdit} />
 
-        {/* AI Chat Drawer */}
-        <div className='absolute right-4 top-4 z-10'>
-          <MapChatDrawer mapId={mapId} />
-        </div>
+        {/* Owner-only components */}
+        {canEdit && (
+          <>
+            <QuickAddDialog />
+            <AddNodeFab />
+            {/* AI Chat Drawer */}
+            <div className='absolute right-4 top-4 z-10'>
+              <MapChatDrawer mapId={mapId} />
+            </div>
+          </>
+        )}
+
+        {/* Read-only banner with copy button */}
+        {isReadOnly && <ReadOnlyBanner mapId={mapId} />}
       </div>
     </ReactFlowProvider>
   )

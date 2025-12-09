@@ -44,3 +44,14 @@ export const serverFetch = async <T>(
 export const getCookies = (request: Request): string | undefined => {
   return request.headers.get('Cookie') || undefined
 }
+
+/**
+ * Get a specific cookie value from cookie header string
+ * Works both server-side (from request.headers) and client-side (from document.cookie)
+ */
+export const getCookie = (cookieHeader: string, name: string): string | undefined =>
+  cookieHeader
+    .split(';')
+    .find(c => c.trim().startsWith(`${name}=`))
+    ?.split('=')[1]
+    ?.trim()

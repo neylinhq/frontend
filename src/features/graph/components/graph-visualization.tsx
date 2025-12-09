@@ -828,9 +828,9 @@ const GraphVisualizationContent = ({
         className={cn('bg-background', isInteracting && 'interacting')}
         nodesDraggable={interactive}
         nodesConnectable={interactive}
-        elementsSelectable={interactive}
-        panOnDrag={interactive}
-        zoomOnScroll={interactive}
+        elementsSelectable={true}
+        panOnDrag={true}
+        zoomOnScroll={true}
         snapToGrid={interactive}
         snapGrid={[15, 15]}
         minZoom={0.01}
@@ -890,12 +890,14 @@ const GraphVisualizationContent = ({
         nodeCountsByType={nodeCountsByType}
         edgeCountsByType={edgeCountsByType}
         selectedNodeId={selectedNodeId}
+        canEdit={interactive}
       />
 
       {/* Node drawer */}
       <NodeDrawer
         node={selectedNode}
         onClose={clearSelection}
+        isReadOnly={!interactive}
         connectionsCount={
           selectedNode
             ? fullMap.edges.filter(
@@ -911,8 +913,8 @@ const GraphVisualizationContent = ({
             fullMap.nodes,
             selectNode,
             handleFocusAndPanToNode, // Focus on node and pan to it
-            handleEditEdge,
-            handleDeleteEdge
+            interactive ? handleEditEdge : undefined,
+            interactive ? handleDeleteEdge : undefined
           )
         }
       />
@@ -925,7 +927,7 @@ const GraphVisualizationContent = ({
       />
 
       {/* Edge edit popover - appears when clicking on edge badge */}
-      <EdgeEditPopover mapId={mapId} />
+      {interactive && <EdgeEditPopover mapId={mapId} />}
     </div>
   )
 }

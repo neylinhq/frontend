@@ -158,11 +158,11 @@ export const mapApi = {
   analyzeGraph: async (
     mapId: string,
     model: string = 'gpt-4',
-    async = true
+    runAsync: boolean = true
   ): Promise<FullMap['aiAnalysis'] | { taskId: string; status: string }> => {
     const response = await api.post<
       ApiResponse<FullMap['aiAnalysis'] | { taskId: string; status: string }>
-    >(`/maps/${mapId}/analyze`, { model, async })
+    >(`/maps/${mapId}/analyze`, { model, async: runAsync })
     return response.data
   },
 

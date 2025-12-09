@@ -18,6 +18,8 @@
 export { GraphCanvas } from './components/graph-canvas'
 export { DomOverlay } from './components/dom-overlay'
 export { NodeOverlay } from './components/node-overlay'
+export { EdgeOverlay } from './components/edge-overlay'
+export { MiniMapWebGL } from './components/minimap-webgl'
 
 // New hooks
 export { useGraphEngine } from './model/use-graph-engine'
@@ -52,4 +54,4 @@ export { useGraphEngine as useLegacyGraphEngine } from './model/use-graph-engine
  * Feature flag to switch between WebGL and xyflow renderers.
  * Set to true to enable the WebGL renderer.
  */
-export const USE_WEBGL_RENDERER = true
+export const USE_WEBGL_RENDERER = false

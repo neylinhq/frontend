@@ -476,7 +476,8 @@
     "loadingTitle": "Loading knowledge map",
     "loadingMessage": "Fetching nodes and connections...",
     "notFoundTitle": "Map not found",
-    "notFoundMessage": "The map may have been deleted or you don't have access to it"
+    "notFoundMessage": "The map may have been deleted or you don't have access to it",
+    "viewOnly": "View only"
   },
   "legal": {
     "backToHome": "Back to home",

@@ -5,10 +5,10 @@ import {
   useLoaderData
 } from 'react-router'
 import { mapApi } from '@/entities/map'
-import { NodeEditPage } from '@/pages/dashboard/node-edit-page'
+import { NodeEditPage, SIDEBAR_COOKIE_KEY } from '@/pages/dashboard/node-edit-page'
 import { getMeta } from '@/shared/lib/get-meta'
 import { ApiError } from '@/shared/api/client'
-import { getCookies } from '@/shared/api/server'
+import { getCookie, getCookies } from '@/shared/api/server'
 
 // Tell parent layout to disable scroll
 export const handle = { disableScroll: true }
@@ -26,6 +26,11 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
   const cookies = getCookies(request)
 
+  // Read sidebar state from cookie (default: true)
+  const cookieHeader = request.headers.get('Cookie') ?? ''
+  const sidebarCookie = getCookie(cookieHeader, SIDEBAR_COOKIE_KEY)
+  const sidebarOpen = sidebarCookie !== 'false' // Default to true
+
   try {
     const [node, map] = await Promise.all([
       mapApi.getNodeWithContent(mapId, nodeId, { cookies }),
@@ -36,7 +41,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
       throw new Response('Node or Map not found', { status: 404 })
     }
 
-    return { node, map, mapId, nodeId }
+    return { node, map, mapId, nodeId, sidebarOpen }
   } catch (error) {
     if (error instanceof ApiError && (error.status === 401 || error.status === 403)) {
       throw redirect(`/auth/sign-in?from=${encodeURIComponent(request.url)}`)
@@ -54,6 +59,10 @@ export const clientLoader = async ({ params }: ClientLoaderFunctionArgs) => {
     throw new Response('Map ID and Node ID are required', { status: 400 })
   }
 
+  // Read sidebar state from cookie on client
+  const sidebarCookie = getCookie(document.cookie, SIDEBAR_COOKIE_KEY)
+  const sidebarOpen = sidebarCookie !== 'false'
+
   try {
     const [node, map] = await Promise.all([
       mapApi.getNodeWithContent(mapId, nodeId),
@@ -64,7 +73,7 @@ export const clientLoader = async ({ params }: ClientLoaderFunctionArgs) => {
       throw new Response('Node or Map not found', { status: 404 })
     }
 
-    return { node, map, mapId, nodeId }
+    return { node, map, mapId, nodeId, sidebarOpen }
   } catch (error) {
     if (error instanceof ApiError && (error.status === 401 || error.status === 403)) {
       throw redirect('/auth/sign-in')
@@ -78,9 +87,9 @@ export const clientLoader = async ({ params }: ClientLoaderFunctionArgs) => {
 clientLoader.hydrate = false as const
 
 const NodeEditRoute = () => {
-  const { node, map, mapId, nodeId } = useLoaderData<typeof loader>()
+  const { node, map, mapId, nodeId, sidebarOpen } = useLoaderData<typeof loader>()
 
-  return <NodeEditPage node={node} map={map} mapId={mapId} nodeId={nodeId} />
+  return <NodeEditPage node={node} map={map} mapId={mapId} nodeId={nodeId} initialSidebarOpen={sidebarOpen} />
 }
 
 export default NodeEditRoute

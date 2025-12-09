@@ -37,7 +37,7 @@ export const SegmentedControl = <T extends string>({
           {option.count !== undefined && (
             <span
               className={cn(
-                'ml-1.5 tabular-nums',
+                'ml-1.5 tabular-nums inline-block min-w-[2ch] text-right',
                 value === option.value ? 'text-muted-foreground' : 'opacity-60'
               )}
             >

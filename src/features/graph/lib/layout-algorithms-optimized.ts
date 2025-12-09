@@ -473,7 +473,8 @@ const repositionIsolatedComponents = (
       component.push(nodeId)
 
       adjacency.get(nodeId)?.forEach(neighborId => {
-        if (!visited.has(neighborId)) {
+        // Only add neighbors that exist in positions (edges may reference filtered-out nodes)
+        if (!visited.has(neighborId) && adjacency.has(neighborId)) {
           queue.push(neighborId)
         }
       })
@@ -496,7 +497,8 @@ const repositionIsolatedComponents = (
   let mainMinY = Infinity, mainMaxY = -Infinity
 
   mainComponent.forEach(id => {
-    const pos = posMap.get(id)!
+    const pos = posMap.get(id)
+    if (!pos) return // Skip nodes not in positions
     mainMinX = Math.min(mainMinX, pos.x)
     mainMaxX = Math.max(mainMaxX, pos.x)
     mainMinY = Math.min(mainMinY, pos.y)
@@ -526,7 +528,8 @@ const repositionIsolatedComponents = (
     let compMinY = Infinity, compMaxY = -Infinity
 
     component.forEach(id => {
-      const pos = posMap.get(id)!
+      const pos = posMap.get(id)
+      if (!pos) return
       compMinX = Math.min(compMinX, pos.x)
       compMaxX = Math.max(compMaxX, pos.x)
       compMinY = Math.min(compMinY, pos.y)
@@ -557,7 +560,8 @@ const repositionIsolatedComponents = (
 
     // Apply offset to all nodes in component
     component.forEach(id => {
-      const pos = posMap.get(id)!
+      const pos = posMap.get(id)
+      if (!pos) return
       pos.x += offsetX
       pos.y += offsetY
     })

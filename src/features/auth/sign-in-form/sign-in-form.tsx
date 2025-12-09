@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
@@ -29,6 +30,7 @@ export const SignInForm = () => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const [isLoading, setIsLoading] = useState(false)
+  const queryClient = useQueryClient()
 
   // Define schema inside component to access t()
   const signInSchema = z.object({
@@ -55,6 +57,8 @@ export const SignInForm = () => {
               console.log('[SignIn] Calling login API...')
               const result = await sessionApi.login(data)
               console.log('[SignIn] Login success:', result)
+              // Clear cached data from previous user to prevent data leakage
+              queryClient.clear()
               const returnUrl = searchParams.get('from') || '/dashboard/overview'
               console.log('[SignIn] Navigating to:', returnUrl)
               navigate(returnUrl)

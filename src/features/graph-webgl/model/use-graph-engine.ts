@@ -42,9 +42,10 @@ interface WasmModule {
 // Singleton for WASM module
 let wasmModule: WasmModule | null = null
 let wasmLoadPromise: Promise<WasmModule> | null = null
+let wasmInitialized = false
 
 async function loadWasm(): Promise<WasmModule> {
-  if (wasmModule) return wasmModule
+  if (wasmModule && wasmInitialized) return wasmModule
 
   if (wasmLoadPromise) return wasmLoadPromise
 
@@ -53,10 +54,19 @@ async function loadWasm(): Promise<WasmModule> {
       // Dynamic import of WASM module
       // The path will be resolved by Vite's WASM plugin
       const module = await import('../pkg/graph_engine')
-      wasmModule = module as WasmModule
+
+      // Initialize WASM before using GraphEngine
+      // The default export is the init function that loads the .wasm file
+      if (!wasmInitialized && module.default) {
+        await module.default()
+        wasmInitialized = true
+      }
+
+      wasmModule = module as unknown as WasmModule
       return wasmModule
     } catch (error) {
       wasmLoadPromise = null
+      wasmInitialized = false
       throw error
     }
   })()

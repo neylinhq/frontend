@@ -1,165 +1,144 @@
 /**
- * NodeOverlay - Single node DOM content (text, icon, badges)
+ * NodeOverlay - Single node card (matching KnowledgeNode style)
  *
- * This component renders only the text content of a node.
- * The background, border, selection ring are rendered by WebGL.
+ * Uses CSS transform for scaling instead of manual size calculations.
+ * This keeps text crisp and styling consistent with React Flow version.
  */
 
 import { memo } from 'react'
 import type { Node } from '@/entities/map'
-import { getNodeIcon, getComplexityColor } from '@/entities/node'
+import { getNodeIcon, getComplexityColor, getNodeBorderColor } from '@/entities/node'
 import { Badge } from '@/shared/components/badge'
 import { cn } from '@/shared/lib/cn'
 
 interface NodeOverlayProps {
   node: Node
-  screenX: number       // Screen X position
-  screenY: number       // Screen Y position
-  width: number         // Scaled width
-  height: number        // Scaled height
+  screenX: number       // Screen X position (center)
+  screenY: number       // Screen Y position (center)
   zoom: number          // Current zoom level
-  showDetails: boolean  // LOD: show tags and complexity
   isSelected: boolean
   isFocused: boolean
+  isDimmed?: boolean
+  onClick?: () => void
 }
 
+/** Zoom threshold for showing details */
+const DETAIL_ZOOM_THRESHOLD = 0.3
+
+/** Fixed node dimensions (before zoom transform) */
+const NODE_WIDTH = 250
+const NODE_HEIGHT = 120
+
 /**
- * NodeOverlay renders the text content of a node.
- *
- * PERFORMANCE: Uses custom memo comparator.
- * Only re-renders when actual visual state changes.
+ * NodeOverlay renders a node card using CSS transform for scaling.
  */
 export const NodeOverlay = memo(
   function NodeOverlay({
     node,
     screenX,
     screenY,
-    width,
-    height,
     zoom,
-    showDetails,
     isSelected,
     isFocused,
+    isDimmed,
+    onClick,
   }: NodeOverlayProps) {
     const Icon = getNodeIcon(node.type)
+    const showDetails = zoom >= DETAIL_ZOOM_THRESHOLD
 
-    // Scale font size with zoom but clamp to readable range
-    const baseFontSize = 16
-    const scaledFontSize = Math.max(8, Math.min(24, baseFontSize * zoom))
-    const iconSize = Math.max(12, Math.min(20, 20 * zoom))
-    const padding = Math.max(8, 24 * zoom)
+    // Position at center, transform handles the rest
+    const left = screenX - (NODE_WIDTH * zoom) / 2
+    const top = screenY - (NODE_HEIGHT * zoom) / 2
 
     return (
       <div
-        className="absolute pointer-events-auto"
+        className="absolute origin-top-left"
         style={{
-          left: screenX,
-          top: screenY,
-          width,
-          height,
-          fontSize: scaledFontSize,
+          left,
+          top,
+          width: NODE_WIDTH,
+          height: NODE_HEIGHT,
+          transform: `scale(${zoom})`,
         }}
+        onClick={onClick}
       >
         <div
-          className="flex flex-col h-full"
-          style={{ padding }}
+          className={cn(
+            'w-full h-full cursor-grab active:cursor-grabbing pointer-events-auto',
+            'rounded-lg border shadow-sm overflow-hidden',
+            // Left border color by node type
+            'border-l-[3px]',
+            getNodeBorderColor(node.type),
+            'transition-shadow duration-200 hover:shadow-md',
+            // Dimmed state
+            isDimmed && 'opacity-40',
+            // Focused state - pulsing glow
+            isFocused && 'animate-glow-pulse',
+            // Selected state
+            isSelected && !isFocused && 'ring-2 ring-primary shadow-lg'
+          )}
+          style={{
+            backgroundColor: 'hsl(var(--card))',
+            color: 'hsl(var(--card-foreground))',
+            borderColor: 'hsl(var(--border))',
+          }}
         >
-          {/* Icon + Title (always visible) */}
-          <div className="flex items-start gap-2">
-            <Icon
-              className="flex-shrink-0 text-muted-foreground"
-              style={{ width: iconSize, height: iconSize }}
-            />
-            <h3
-              className="font-semibold leading-tight break-words"
-              style={{
-                fontSize: scaledFontSize,
-                lineHeight: 1.2,
-              }}
-            >
-              {node.label}
-            </h3>
-          </div>
+          <div className="p-4 flex flex-col h-full overflow-hidden">
+            {/* Icon + Title */}
+            <div className="flex items-start gap-2">
+              <Icon className="w-5 h-5 flex-shrink-0 text-muted-foreground mt-0.5" />
+              <h3 className="text-base font-semibold leading-tight break-words line-clamp-2">
+                {node.label}
+              </h3>
+            </div>
 
-          {/* Tags - under title, LOD: hidden at low zoom */}
-          {showDetails && node.metadata.tags?.length > 0 && (
-            <div
-              className="flex flex-wrap gap-1 mt-1"
-              style={{ marginTop: 4 * zoom }}
-            >
-              {node.metadata.tags.slice(0, 3).map((tag) => (
+            {/* Tags */}
+            {showDetails && node.metadata.tags?.length > 0 && (
+              <div className="flex flex-wrap gap-1 mt-2">
+                {node.metadata.tags.slice(0, 3).map((tag) => (
+                  <Badge
+                    key={tag}
+                    variant="outline"
+                    className="text-xs pointer-events-none"
+                  >
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
+            )}
+
+            {/* Complexity badge */}
+            {showDetails && node.metadata.complexity && (
+              <div className="mt-auto pt-2">
                 <Badge
-                  key={tag}
-                  variant="outline"
-                  className="pointer-events-none"
-                  style={{
-                    fontSize: Math.max(8, 12 * zoom),
-                    padding: `${2 * zoom}px ${4 * zoom}px`,
-                  }}
+                  variant="secondary"
+                  className={cn(
+                    'text-xs pointer-events-none',
+                    getComplexityColor(node.metadata.complexity)
+                  )}
                 >
-                  {tag}
+                  {node.metadata.complexity}
                 </Badge>
-              ))}
-            </div>
-          )}
-
-          {/* Complexity badge - pinned to bottom, LOD: hidden at low zoom */}
-          {showDetails && node.metadata.complexity && (
-            <div className="mt-auto" style={{ paddingTop: 8 * zoom }}>
-              <Badge
-                variant="secondary"
-                className={cn(
-                  'pointer-events-none',
-                  getComplexityColor(node.metadata.complexity)
-                )}
-                style={{
-                  fontSize: Math.max(8, 12 * zoom),
-                  padding: `${2 * zoom}px ${6 * zoom}px`,
-                }}
-              >
-                {node.metadata.complexity}
-              </Badge>
-            </div>
-          )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     )
   },
   // Custom memo comparator
   (prev, next) => {
-    // Quick reference check
-    if (prev.node === next.node && prev.screenX === next.screenX && prev.screenY === next.screenY) {
-      return (
-        prev.width === next.width &&
-        prev.height === next.height &&
-        prev.showDetails === next.showDetails &&
-        prev.isSelected === next.isSelected &&
-        prev.isFocused === next.isFocused
-      )
-    }
-
-    // Deep check
     return (
       prev.node.id === next.node.id &&
       prev.node.label === next.node.label &&
       prev.node.type === next.node.type &&
       prev.node.metadata?.complexity === next.node.metadata?.complexity &&
-      arraysEqual(prev.node.metadata?.tags, next.node.metadata?.tags) &&
-      Math.abs(prev.screenX - next.screenX) < 0.5 &&
-      Math.abs(prev.screenY - next.screenY) < 0.5 &&
-      Math.abs(prev.width - next.width) < 0.5 &&
-      Math.abs(prev.height - next.height) < 0.5 &&
-      prev.showDetails === next.showDetails &&
+      Math.abs(prev.screenX - next.screenX) < 1 &&
+      Math.abs(prev.screenY - next.screenY) < 1 &&
+      Math.abs(prev.zoom - next.zoom) < 0.01 &&
       prev.isSelected === next.isSelected &&
-      prev.isFocused === next.isFocused
+      prev.isFocused === next.isFocused &&
+      prev.isDimmed === next.isDimmed
     )
   }
 )
-
-// Helper for array comparison
-function arraysEqual(a?: string[], b?: string[]): boolean {
-  if (a === b) return true
-  if (!a || !b) return false
-  if (a.length !== b.length) return false
-  return a.every((v, i) => v === b[i])
-}

@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query'
 import { HelpCircle, Mail, Send } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router'
@@ -28,6 +29,7 @@ export const UserNav = () => {
   const { user, logout } = useSessionStore()
   const navigate = useNavigate()
   const { t } = useTranslation()
+  const queryClient = useQueryClient()
 
   if (!user) {
     return null
@@ -37,6 +39,8 @@ export const UserNav = () => {
     try {
       await sessionApi.logout()
     } finally {
+      // Clear all cached data to prevent data leakage between users
+      queryClient.clear()
       logout()
       navigate('/auth/sign-in')
     }

@@ -1,6 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { mapApi } from './map.api'
-import type { CreateEdgeRequest, Edge, Node, MapFilter, MapSearchMode } from './map.schema'
+import type {
+  CreateEdgeRequest,
+  Edge,
+  MapDiscoverResponse,
+  MapFilter,
+  MapSearchMode,
+  Node
+} from './map.schema'
 
 export const mapKeys = {
   all: ['maps'] as const,
@@ -11,7 +18,7 @@ export const mapKeys = {
   nodes: () => [...mapKeys.all, 'nodes'] as const,
   node: (mapId: string, nodeId: string) => [...mapKeys.nodes(), mapId, nodeId] as const,
   mapNodes: (mapId: string) => [...mapKeys.nodes(), mapId] as const,
-  nodeWithContent: (nodeId: string) => [...mapKeys.nodes(), nodeId, 'content'] as const,
+  nodeWithContent: (mapId: string, nodeId: string) => [...mapKeys.nodes(), mapId, nodeId, 'content'] as const,
   edges: () => [...mapKeys.all, 'edges'] as const,
   edge: (mapId: string, edgeId: string) => [...mapKeys.edges(), mapId, edgeId] as const,
   mapEdges: (mapId: string) => [...mapKeys.edges(), mapId] as const,
@@ -91,7 +98,7 @@ export const useUpdateNode = (mapId: string) => {
       queryClient.invalidateQueries({ queryKey: mapKeys.mapNodes(mapId) })
       queryClient.invalidateQueries({ queryKey: mapKeys.fullMap(mapId) })
       queryClient.invalidateQueries({ queryKey: mapKeys.lightweightMap(mapId) })
-      queryClient.invalidateQueries({ queryKey: mapKeys.nodeWithContent(variables.id) })
+      queryClient.invalidateQueries({ queryKey: mapKeys.nodeWithContent(mapId, variables.id) })
     }
   })
 }
@@ -184,11 +191,11 @@ export const useLightweightMap = (mapId: string) => {
 }
 
 // Single node with full content (for editor)
-export const useNodeWithContent = (nodeId: string) => {
+export const useNodeWithContent = (mapId: string, nodeId: string) => {
   return useQuery({
-    queryKey: mapKeys.nodeWithContent(nodeId),
-    queryFn: () => mapApi.getNodeWithContent(nodeId),
-    enabled: !!nodeId,
+    queryKey: mapKeys.nodeWithContent(mapId, nodeId),
+    queryFn: () => mapApi.getNodeWithContent(mapId, nodeId),
+    enabled: !!mapId && !!nodeId,
     staleTime: 2 * 60 * 1000 // 2 min cache
   })
 }
@@ -252,7 +259,9 @@ export const useDiscoverMaps = (options: UseDiscoverMapsOptions = {}) => {
       params.offset
     ],
     queryFn: () => mapApi.discoverMaps(params),
-    initialData
+    initialData,
+    staleTime: 30 * 1000, // 30 sec - don't refetch when switching tabs
+    gcTime: 5 * 60 * 1000 // 5 min - keep in memory
   })
 }
 

@@ -1,16 +1,35 @@
 /**
  * WebGL-based graph visualization (WASM + WebGL2)
- * Drop-in replacement 4;O GraphVisualization A B0:8< 65 API
+ * Drop-in replacement for GraphVisualization with same API
+ *
+ * Architecture:
+ * - GraphCanvas: WebGL canvas + DOM overlay for text/icons
+ * - UI components: Same as React Flow version (Toolbar, Drawer, ViewControls)
  */
 
 import { Loader2 } from 'lucide-react'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { memo, useCallback, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Edge, FullMap, Node } from '@/entities/map'
 import { useFullMap } from '@/entities/map'
 import { Card } from '@/shared/components/card'
+import { useDarkMode } from '@/shared/hooks'
 import { cn } from '@/shared/lib/cn'
-import { useGraphEngine } from '../model/use-graph-engine.hooks'
+import { GraphCanvas, type GraphCanvasHandle } from '@/features/graph-webgl/components/graph-canvas'
+import { MiniMapWebGL } from '@/features/graph-webgl/components/minimap-webgl'
+import {
+  useFilters,
+  useFocusMode,
+  useGraphUI,
+  useNodeSpacing,
+  useViewMode
+} from '@/features/graph/model/graph.store'
+import { useFilteredGraphData } from '@/features/graph/model/graph-data.hooks'
+import { useNodeSelection } from '@/features/graph/model/node-selection.hooks'
+import { useGraphControls } from '@/features/graph/model/graph-controls.hooks'
+import { GraphToolbar } from '@/features/graph/components/graph-toolbar'
+import { ViewControlsPanel } from '@/features/graph/components/view-controls-panel'
+import { NodeDrawer } from '@/features/graph/components/node-drawer'
 
 interface GraphWebGLVisualizationProps {
   mapId: string
@@ -22,218 +41,211 @@ interface GraphWebGLVisualizationProps {
     edges: Edge[],
     allNodes: Node[],
     onOpenNode?: (id: string) => void,
-    onPanToNode?: (id: string) => void
+    onPanToNode?: (id: string) => void,
+    onEditEdge?: (edge: Edge) => void,
+    onDeleteEdge?: (edgeId: string) => void
   ) => React.ReactNode
 }
 
-export const GraphWebGLVisualization = ({
+export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
   mapId,
   className,
   interactive = true,
   initialData,
   renderConnectionsPanel
-}: GraphWebGLVisualizationProps) => {
+}: GraphWebGLVisualizationProps) {
   const { t } = useTranslation()
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const containerRef = useRef<HTMLDivElement>(null)
-  const animationFrameRef = useRef<number>()
 
-  // Fetch data (8;8 8A?>;L7>20BL initialData 4;O SSR)
-  const { data: fetchedMap, isLoading, isError } = useFullMap(mapId, { enabled: !initialData })
-  const fullMap = initialData ?? fetchedMap
+  // Fetch data (use initialData for SSR)
+  const { data: fetchedMap, isLoading, isError } = useFullMap(mapId)
+  const fullMap = fetchedMap ?? initialData
 
-  // Initialize WASM engine
-  const { engine, ready, error, initEngine } = useGraphEngine({ autoInit: false })
+  // Selection state
+  const { selectedElements, clearSelection, selectedNodeId, selectNode } = useNodeSelection()
+  const { controls, toggleFullscreen } = useGraphControls()
 
-  // View state
-  const [panX, setPanX] = useState(0)
-  const [panY, setPanY] = useState(0)
+  // Store hooks for view settings
+  const { viewMode } = useViewMode()
+  const { focusedNodeId, focusDepth, focusNode } = useFocusMode()
+  const { visibleNodeTypes, visibleEdgeTypes } = useFilters()
+  const { showMinimap } = useGraphUI()
+  const { nodeSpacing, directionStrength } = useNodeSpacing()
+
+  // Track dark mode for theme-aware styling
+  const isDark = useDarkMode()
+
+  // Ref to GraphCanvas for imperative control
+  const canvasRef = useRef<GraphCanvasHandle>(null)
+
+  // Viewport state for WebGL
   const [zoom, setZoom] = useState(1)
-  const [isDragging, setIsDragging] = useState(false)
-  const dragStartRef = useRef<{ x: number; y: number } | null>(null)
 
-  // Initialize engine when canvas is ready
-  useEffect(() => {
-    if (canvasRef.current && !ready && !error) {
-      initEngine(canvasRef.current).catch(err => {
-        console.error('Failed to init engine:', err)
-      })
-    }
-  }, [ready, error, initEngine])
+  // Get filtered data using existing hook
+  const { filteredData, nodeCountsByType, edgeCountsByType } = useFilteredGraphData({
+    fullMap,
+    visibleNodeTypes,
+    visibleEdgeTypes,
+    viewMode,
+    focusedNodeId,
+    focusDepth
+  })
 
-  // Load graph data when ready
-  useEffect(() => {
-    if (engine && ready && fullMap) {
-      try {
-        console.log('[GraphWebGL] Loading graph:', {
-          nodes: fullMap.nodes.length,
-          edges: fullMap.edges.length
-        })
-
-        engine.loadGraph(fullMap.nodes, fullMap.edges)
-        engine.runLayout(150)
-
-        console.log('[GraphWebGL] Layout complete, stats:', engine.getStats())
-      } catch (err) {
-        console.error('Failed to load graph:', err)
+  // Handle node click
+  const handleNodeClick = useCallback(
+    (nodeId: string | null) => {
+      if (!nodeId) {
+        clearSelection()
+        return
       }
-    }
-  }, [engine, ready, fullMap])
-
-  // Handle canvas resize
-  useEffect(() => {
-    if (!canvasRef.current || !containerRef.current || !engine) return
-
-    const resizeObserver = new ResizeObserver(entries => {
-      for (const entry of entries) {
-        const { width, height } = entry.contentRect
-        const canvas = canvasRef.current
-        if (canvas) {
-          // Set canvas size with device pixel ratio
-          const dpr = window.devicePixelRatio || 1
-          canvas.width = width * dpr
-          canvas.height = height * dpr
-          canvas.style.width = `${width}px`
-          canvas.style.height = `${height}px`
-
-          engine.setResolution(width * dpr, height * dpr)
-        }
+      if (viewMode === 'focus') {
+        focusNode(nodeId)
       }
-    })
-
-    resizeObserver.observe(containerRef.current)
-
-    return () => {
-      resizeObserver.disconnect()
-    }
-  }, [engine])
-
-  // Render loop
-  useEffect(() => {
-    if (!engine || !ready) return
-
-    let frameCount = 0
-    const renderFrame = () => {
-      try {
-        engine.setView(panX, panY, zoom)
-        engine.render()
-
-        // Log first few frames
-        if (frameCount < 3) {
-          console.log('[GraphWebGL] Render frame', frameCount, 'view:', { panX, panY, zoom })
-          frameCount++
-        }
-      } catch (err) {
-        console.error('Render error:', err)
-      }
-
-      animationFrameRef.current = requestAnimationFrame(renderFrame)
-    }
-
-    renderFrame()
-
-    return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current)
-      }
-    }
-  }, [engine, ready, panX, panY, zoom])
-
-  // Mouse controls
-  const handleMouseDown = useCallback(
-    (e: React.MouseEvent<HTMLCanvasElement>) => {
-      if (!interactive) return
-
-      setIsDragging(true)
-      dragStartRef.current = { x: e.clientX, y: e.clientY }
+      selectNode(nodeId)
     },
-    [interactive]
+    [viewMode, focusNode, selectNode, clearSelection]
   )
 
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent<HTMLCanvasElement>) => {
-      if (!isDragging || !dragStartRef.current) return
-
-      const dx = e.clientX - dragStartRef.current.x
-      const dy = e.clientY - dragStartRef.current.y
-
-      setPanX(prev => prev + dx / zoom)
-      setPanY(prev => prev + dy / zoom)
-
-      dragStartRef.current = { x: e.clientX, y: e.clientY }
-    },
-    [isDragging, zoom]
-  )
-
-  const handleMouseUp = useCallback(() => {
-    setIsDragging(false)
-    dragStartRef.current = null
+  // Handle viewport change (zoom update)
+  const handleViewportChange = useCallback((newZoom: number) => {
+    setZoom(newZoom)
   }, [])
 
-  const handleWheel = useCallback(
-    (e: React.WheelEvent<HTMLCanvasElement>) => {
-      if (!interactive) return
+  // Zoom handlers - control WASM engine via ref
+  const handleZoomIn = useCallback(() => {
+    canvasRef.current?.zoomIn()
+  }, [])
 
-      e.preventDefault()
+  const handleZoomOut = useCallback(() => {
+    canvasRef.current?.zoomOut()
+  }, [])
 
-      const delta = -e.deltaY * 0.001
-      setZoom(prev => Math.max(0.1, Math.min(5, prev * (1 + delta))))
+  const handleCenter = useCallback(() => {
+    canvasRef.current?.fitView()
+  }, [])
+
+  // Focus on node and pan to it
+  const handleFocusAndPanToNode = useCallback(
+    (nodeId: string) => {
+      focusNode(nodeId)
+      // TODO: Pan to node in WebGL
     },
-    [interactive]
+    [focusNode]
   )
 
-  // Loading state
-  if (isLoading) {
+  // Show loading only when fetching client-side (no initialData)
+  if (!initialData && isLoading) {
     return (
-      <Card className={cn('flex items-center justify-center', className)}>
-        <Loader2 className='h-8 w-8 animate-spin text-muted-foreground' />
-        <span className='ml-2 text-muted-foreground'>{t('graph.loading')}</span>
-      </Card>
-    )
-  }
-
-  // Error state
-  if (isError || error) {
-    return (
-      <div className={cn('flex items-center justify-center', className)}>
-        <div className='text-center'>
-          <p className='text-destructive font-medium'>{t('graph.error')}</p>
-          <p className='text-sm text-muted-foreground mt-1'>
-            {error?.message || t('graph.error_loading')}
-          </p>
+      <div className={cn('flex items-center justify-center h-[600px]', className)}>
+        <div className='text-center space-y-3'>
+          <Loader2 className='h-8 w-8 animate-spin mx-auto text-primary' />
+          <p className='text-sm text-muted-foreground'>{t('graph.loading')}</p>
         </div>
       </div>
     )
   }
 
+  if (!initialData && (isError || !fullMap)) {
+    return (
+      <div className={cn('flex items-center justify-center h-[600px]', className)}>
+        <Card className='p-8 text-center'>
+          <p className='text-lg font-semibold text-destructive mb-2'>{t('graph.loadingError')}</p>
+          <p className='text-muted-foreground'>{t('graph.loadingErrorMessage')}</p>
+        </Card>
+      </div>
+    )
+  }
+
+  if (!fullMap) {
+    return null
+  }
+
+  const selectedNode = fullMap.nodes.find(n => n.id === selectedNodeId) || null
+
   return (
-    <div className={cn('relative w-full h-full', className)} ref={containerRef}>
-      <canvas
+    <div
+      className={cn(
+        'relative bg-background',
+        controls.isFullscreen ? 'fixed inset-0 z-50 !w-screen !h-screen' : 'h-full w-full',
+        className
+      )}
+    >
+      {/* WebGL Canvas with DOM Overlay */}
+      <GraphCanvas
         ref={canvasRef}
-        className='w-full h-full cursor-move'
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-        onWheel={handleWheel}
+        nodes={filteredData.nodes}
+        edges={filteredData.edges}
+        selectedNodeId={selectedNodeId}
+        focusedNodeId={focusedNodeId}
+        onNodeClick={handleNodeClick}
+        onViewportChange={handleViewportChange}
+        layoutOptions={{
+          viewMode,
+          spacingPercent: nodeSpacing,
+          directionStrength,
+          focusedNodeId: focusedNodeId ?? undefined
+        }}
+        className='h-full w-full'
       />
 
-      {/* Status overlay */}
-      {ready && engine && (
-        <div className='absolute top-2 right-2 bg-background border rounded px-2 py-1 text-xs font-mono shadow-sm'>
-          <div>Zoom: {zoom.toFixed(2)}x</div>
-          <div>Nodes: {engine.getStats().nodesRendered}</div>
-          <div className='text-green-500'>WebGL</div>
-        </div>
+      {/* MiniMap */}
+      {showMinimap && (
+        <MiniMapWebGL
+          nodes={filteredData.nodes}
+          isDark={isDark}
+        />
       )}
 
-      {/* Loading overlay while initializing */}
-      {!ready && !error && (
-        <div className='absolute inset-0 flex items-center justify-center bg-background/90'>
-          <Loader2 className='h-8 w-8 animate-spin' />
-          <span className='ml-2'>Initializing WebGL...</span>
-        </div>
-      )}
+      {/* View controls panel - top left */}
+      <ViewControlsPanel
+        zoom={Math.round(zoom * 100)}
+        isFullscreen={controls.isFullscreen}
+        onZoomIn={handleZoomIn}
+        onZoomOut={handleZoomOut}
+        onCenter={handleCenter}
+        onToggleFullscreen={toggleFullscreen}
+        nodes={fullMap?.nodes}
+        onNodeSelect={node => {
+          selectNode(node.id)
+          // TODO: Pan to node
+        }}
+      />
+
+      {/* Toolbar - view modes, focus controls, filters */}
+      <GraphToolbar
+        mapId={mapId}
+        nodeCountsByType={nodeCountsByType}
+        edgeCountsByType={edgeCountsByType}
+        selectedNodeId={selectedNodeId}
+      />
+
+      {/* Node drawer */}
+      <NodeDrawer
+        node={selectedNode}
+        onClose={clearSelection}
+        connectionsCount={
+          selectedNode
+            ? fullMap.edges.filter(
+                e => e.sourceNodeId === selectedNode.id || e.targetNodeId === selectedNode.id
+              ).length
+            : 0
+        }
+        connectionsTab={
+          selectedNode &&
+          renderConnectionsPanel?.(
+            selectedNode,
+            fullMap.edges,
+            fullMap.nodes,
+            selectNode,
+            handleFocusAndPanToNode
+          )
+        }
+      />
+
+      {/* WebGL indicator */}
+      <div className='absolute bottom-2 left-2 bg-background/80 border rounded px-2 py-1 text-xs font-mono'>
+        <span className='text-green-500'>WebGL</span>
+        <span className='text-muted-foreground ml-2'>{Math.round(zoom * 100)}%</span>
+      </div>
     </div>
   )
-}
+})

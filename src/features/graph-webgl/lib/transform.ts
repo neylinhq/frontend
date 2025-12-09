@@ -4,6 +4,25 @@
 
 import type { Node, Edge, GraphData } from './types'
 
+// Valid complexity values for WASM enum
+const VALID_COMPLEXITY = ['basic', 'intermediate', 'advanced'] as const
+
+/**
+ * Sanitize node metadata for WASM compatibility
+ * WASM/Rust uses strict enums that don't accept empty strings
+ */
+function sanitizeMetadata(metadata: Node['metadata']): Node['metadata'] {
+  if (!metadata) return metadata
+
+  return {
+    ...metadata,
+    // complexity must be a valid enum value or undefined
+    complexity: metadata.complexity && VALID_COMPLEXITY.includes(metadata.complexity as any)
+      ? metadata.complexity
+      : undefined,
+  }
+}
+
 /**
  * Transform frontend nodes/edges to WASM-compatible format
  */
@@ -15,11 +34,13 @@ export function transformToWasm(nodes: Node[], edges: Edge[]): string {
       position: node.position || { x: 0, y: 0 },
       width: node.width || 200,
       height: node.height || 100,
+      // Sanitize metadata to avoid WASM enum parse errors
+      metadata: sanitizeMetadata(node.metadata),
     })),
     edges: edges.map(edge => ({
       ...edge,
       // Ensure relation type is set
-      relationType: edge.data?.relationType || 'related-to',
+      relationType: edge.relationType || 'related-to',
     })),
   }
 

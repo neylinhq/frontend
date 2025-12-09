@@ -32,10 +32,54 @@ import { Button } from '@/shared/components/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/card'
 import { Sheet, SheetContent, SheetHeader } from '@/shared/components/sheet'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/components/tabs'
+import { Skeleton } from '@/shared/components/skeleton'
 import { cn } from '@/shared/lib/cn'
 
 /** Sidebar width in pixels - used for sidebar and FAB positioning */
 const SIDEBAR_WIDTH = 360
+
+/** Breakpoint for switching between mobile sheet and desktop sidebar (Tailwind lg) */
+const SIDEBAR_BREAKPOINT = 1024
+
+/** Cookie key for sidebar state (exported for server-side reading) */
+export const SIDEBAR_COOKIE_KEY = 'node-edit-sidebar'
+
+/** Skeleton placeholder for sidebar while hydrating */
+const SidebarSkeleton = () => (
+  <aside
+    className='hidden lg:flex flex-col flex-shrink-0 border-l border-border h-full overflow-hidden'
+    style={{ width: SIDEBAR_WIDTH }}
+  >
+    <div className='flex flex-1 flex-col min-h-0 overflow-hidden'>
+      {/* Tab Header Skeleton */}
+      <div className='border-b border-border/50 px-4 py-3'>
+        <div className='grid w-full grid-cols-3 gap-1 h-9 bg-muted rounded-lg p-1'>
+          <Skeleton className='h-full rounded-md' />
+          <Skeleton className='h-full rounded-md' />
+          <Skeleton className='h-full rounded-md' />
+        </div>
+      </div>
+
+      {/* Content Skeleton */}
+      <div className='flex-1 overflow-hidden p-4 space-y-6'>
+        <div className='space-y-3'>
+          <Skeleton className='h-4 w-20' />
+          <Skeleton className='h-9 w-full' />
+          <Skeleton className='h-9 w-full' />
+        </div>
+        <div className='space-y-3'>
+          <Skeleton className='h-4 w-24' />
+          <Skeleton className='h-8 w-full' />
+          <div className='space-y-2'>
+            <Skeleton className='h-12 w-full rounded-lg' />
+            <Skeleton className='h-12 w-full rounded-lg' />
+            <Skeleton className='h-12 w-full rounded-lg' />
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+)
 
 const NODE_TYPE_CONFIG: Record<NodeType, { color: string; label: string }> = {
   concept: { color: 'bg-blue-500/10 text-blue-600 dark:text-blue-400', label: 'Concept' },
@@ -53,13 +97,16 @@ interface NodeEditPageProps {
   map: FullMap
   mapId: string
   nodeId: string
+  /** Initial sidebar state from server (cookie) */
+  initialSidebarOpen?: boolean
 }
 
 export const NodeEditPage = ({
   node: currentNode,
   map: initialMap,
   mapId,
-  nodeId
+  nodeId,
+  initialSidebarOpen = true
 }: NodeEditPageProps) => {
   const { t } = useTranslation()
   const navigate = useNavigate()
@@ -72,14 +119,25 @@ export const NodeEditPage = ({
   const deleteNodeMutation = useDeleteNode(mapId)
   const deleteEdgeMutation = useDeleteEdge(mapId)
   const { startEdgeEditing } = useEdgeManagementStore()
-  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [sidebarOpen, setSidebarOpen] = useState(initialSidebarOpen)
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false)
+  const [isHydrated, setIsHydrated] = useState(false)
   const [title, setTitle] = useState('')
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const titleInputRef = useRef<HTMLTextAreaElement>(null)
   const mainRef = useRef<HTMLElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
   const [isScrollable, setIsScrollable] = useState(false)
+
+  // Mark as hydrated after mount (CSS is loaded by then)
+  useEffect(() => {
+    setIsHydrated(true)
+  }, [])
+
+  // Persist sidebar state to cookie
+  useEffect(() => {
+    document.cookie = `${SIDEBAR_COOKIE_KEY}=${sidebarOpen}; path=/; max-age=31536000; SameSite=Lax`
+  }, [sidebarOpen])
 
   // Detect if main content is scrollable
   useEffect(() => {
@@ -248,7 +306,7 @@ export const NodeEditPage = ({
             size='icon'
             onClick={() => {
               // On lg+ toggle inline sidebar, below lg open sheet
-              if (window.innerWidth >= 1024) {
+              if (window.innerWidth >= SIDEBAR_BREAKPOINT) {
                 setSidebarOpen(!sidebarOpen)
               } else {
                 setMobileSheetOpen(true)
@@ -297,7 +355,7 @@ export const NodeEditPage = ({
                   variant='ghost'
                   size='sm'
                   onClick={() => {
-                    if (window.innerWidth >= 1024) {
+                    if (window.innerWidth >= SIDEBAR_BREAKPOINT) {
                       setSidebarOpen(!sidebarOpen)
                     } else {
                       setMobileSheetOpen(true)
@@ -334,7 +392,9 @@ export const NodeEditPage = ({
       </main>
 
       {/* Right Sidebar - Desktop (lg+) */}
-      {sidebarOpen && (
+      {/* Show skeleton while hydrating to prevent layout shift */}
+      {!isHydrated && sidebarOpen && <SidebarSkeleton />}
+      {isHydrated && sidebarOpen && (
         <aside
           className='hidden lg:flex flex-col flex-shrink-0 border-l border-border h-full overflow-hidden'
           style={{ width: SIDEBAR_WIDTH }}

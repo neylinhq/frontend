@@ -1,10 +1,11 @@
-import { AlertCircle, Focus, Maximize2, Network, SlidersHorizontal, Trash2, X } from 'lucide-react'
+import { AlertCircle, Eye, Focus, Maximize2, Network, SlidersHorizontal, Trash2, X } from 'lucide-react'
 import { memo, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import type { Node } from '@/entities/map'
 import { useDeleteNode, useUpdateNode } from '@/entities/map'
 import { NodeMetadataForm, type NodeMetadataFormValues } from '@/features/node-metadata-form'
+import { DrawerOverviewTab } from './drawer-overview-tab'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,10 +32,12 @@ interface NodeDrawerProps {
   connectionsCount?: number
   /** Render prop for connections tab content - injected by parent to avoid cross-feature import */
   connectionsTab?: React.ReactNode
+  /** Read-only mode - show overview instead of edit form, hide danger zone */
+  isReadOnly?: boolean
   className?: string
 }
 
-export const NodeDrawer = memo(({ node, onClose, connectionsCount = 0, connectionsTab, className }: NodeDrawerProps) => {
+export const NodeDrawer = memo(({ node, onClose, connectionsCount = 0, connectionsTab, isReadOnly = false, className }: NodeDrawerProps) => {
   const { t } = useTranslation()
   const [isMobile, setIsMobile] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
@@ -163,16 +166,23 @@ export const NodeDrawer = memo(({ node, onClose, connectionsCount = 0, connectio
           </DrawerHeader>
 
           <Tabs
-            value={activeTab === 'overview' ? 'properties' : activeTab}
-            onValueChange={value => switchTab(value as 'properties' | 'connections')}
+            value={isReadOnly ? (activeTab === 'properties' ? 'overview' : activeTab) : (activeTab === 'overview' ? 'properties' : activeTab)}
+            onValueChange={value => switchTab(value as 'overview' | 'properties' | 'connections')}
             className='flex flex-col flex-1 min-h-0'
           >
             <div className='px-4 py-2'>
               <TabsList className='w-full grid grid-cols-2'>
-                <TabsTrigger value='properties' className='gap-1.5'>
-                  <SlidersHorizontal className='h-3.5 w-3.5' />
-                  <span className='text-xs'>{t('nodeDrawer.tabs.properties')}</span>
-                </TabsTrigger>
+                {isReadOnly ? (
+                  <TabsTrigger value='overview' className='gap-1.5'>
+                    <Eye className='h-3.5 w-3.5' />
+                    <span className='text-xs'>{t('nodeDrawer.tabs.overview')}</span>
+                  </TabsTrigger>
+                ) : (
+                  <TabsTrigger value='properties' className='gap-1.5'>
+                    <SlidersHorizontal className='h-3.5 w-3.5' />
+                    <span className='text-xs'>{t('nodeDrawer.tabs.properties')}</span>
+                  </TabsTrigger>
+                )}
                 <TabsTrigger value='connections' className='gap-1.5'>
                   <Network className='h-3.5 w-3.5' />
                   <span className='text-xs'>{t('nodeDrawer.tabs.connections')}</span>
@@ -180,44 +190,54 @@ export const NodeDrawer = memo(({ node, onClose, connectionsCount = 0, connectio
               </TabsList>
             </div>
 
-            <TabsContent value='properties' className='flex-1 overflow-y-auto mt-0'>
-              <div className='flex flex-col min-h-full'>
-                {/* Node Metadata Form */}
-                <div className='p-4 border-b'>
-                  <NodeMetadataForm
-                    node={displayNode}
-                    onSubmit={handleMetadataSubmit}
-                    isPending={updateNodeMutation.isPending}
-                  />
-                </div>
+            {/* Read-only: Overview tab */}
+            {isReadOnly && (
+              <TabsContent value='overview' className='flex-1 overflow-y-auto mt-0 p-4'>
+                <DrawerOverviewTab node={displayNode} />
+              </TabsContent>
+            )}
 
-                {/* Danger Zone - mt-auto pushes to bottom when space available */}
-                <div className='p-4 mt-auto'>
-                  <Card className='border-destructive/30'>
-                    <CardHeader className='pb-2 pt-3 px-3'>
-                      <CardTitle className='text-xs font-medium text-destructive flex items-center gap-1.5'>
-                        <AlertCircle className='h-3.5 w-3.5' />
-                        {t('nodeEdit.dangerZone', 'Danger zone')}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className='px-3 pb-3'>
-                      <p className='text-xs text-muted-foreground mb-3'>
-                        {t('nodeEdit.deleteWarning', 'Deleting this node will also remove all its connections.')}
-                      </p>
-                      <Button
-                        variant='ghost'
-                        size='sm'
-                        className='text-muted-foreground hover:text-destructive hover:bg-destructive/10'
-                        onClick={() => setDeleteDialogOpen(true)}
-                      >
-                        <Trash2 className='mr-1.5 h-3.5 w-3.5' />
-                        {t('nodeEdit.deleteNode', 'Delete node')}
-                      </Button>
-                    </CardContent>
-                  </Card>
+            {/* Editable: Properties tab with form and danger zone */}
+            {!isReadOnly && (
+              <TabsContent value='properties' className='flex-1 overflow-y-auto mt-0'>
+                <div className='flex flex-col min-h-full'>
+                  {/* Node Metadata Form */}
+                  <div className='p-4 border-b'>
+                    <NodeMetadataForm
+                      node={displayNode}
+                      onSubmit={handleMetadataSubmit}
+                      isPending={updateNodeMutation.isPending}
+                    />
+                  </div>
+
+                  {/* Danger Zone - mt-auto pushes to bottom when space available */}
+                  <div className='p-4 mt-auto'>
+                    <Card className='border-destructive/30'>
+                      <CardHeader className='pb-2 pt-3 px-3'>
+                        <CardTitle className='text-xs font-medium text-destructive flex items-center gap-1.5'>
+                          <AlertCircle className='h-3.5 w-3.5' />
+                          {t('nodeEdit.dangerZone', 'Danger zone')}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className='px-3 pb-3'>
+                        <p className='text-xs text-muted-foreground mb-3'>
+                          {t('nodeEdit.deleteWarning', 'Deleting this node will also remove all its connections.')}
+                        </p>
+                        <Button
+                          variant='ghost'
+                          size='sm'
+                          className='text-muted-foreground hover:text-destructive hover:bg-destructive/10'
+                          onClick={() => setDeleteDialogOpen(true)}
+                        >
+                          <Trash2 className='mr-1.5 h-3.5 w-3.5' />
+                          {t('nodeEdit.deleteNode', 'Delete node')}
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </div>
                 </div>
-              </div>
-            </TabsContent>
+              </TabsContent>
+            )}
 
             <TabsContent value='connections' className='flex-1 overflow-y-auto mt-0 p-4'>
               {connectionsTab}

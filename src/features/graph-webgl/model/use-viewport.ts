@@ -1,8 +1,11 @@
 /**
  * Hook for managing viewport state (pan/zoom)
+ *
+ * Smoothing is disabled by default to avoid infinite render loops.
+ * Enable it only when needed for specific animations.
  */
 
-import { useCallback, useState, useRef, useEffect } from 'react'
+import { useCallback, useState, useRef } from 'react'
 import type { ViewportState } from '../lib/types'
 import { DEFAULT_VIEWPORT } from '../lib/types'
 
@@ -80,14 +83,10 @@ export function useViewport(options: UseViewportOptions = {}) {
     })
   }, [minZoom, maxZoom, onViewportChange])
 
-  // Update canvas size
+  // Update canvas size (no callback - resize doesn't need to notify parent)
   const setSize = useCallback((width: number, height: number) => {
-    setViewport(v => {
-      const newViewport = { ...v, width, height }
-      onViewportChange?.(newViewport)
-      return newViewport
-    })
-  }, [onViewportChange])
+    setViewport(v => ({ ...v, width, height }))
+  }, [])
 
   // Fit viewport to bounds
   const fitToBounds = useCallback((

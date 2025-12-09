@@ -35,11 +35,13 @@ interface GraphToolbarProps {
   nodeCountsByType?: Record<NodeType, number>
   edgeCountsByType?: Record<RelationType, number>
   selectedNodeId?: string | null
+  /** Hide AI button for read-only maps */
+  canEdit?: boolean
   className?: string
 }
 
 export const GraphToolbar = memo(
-  ({ mapId, nodeCountsByType, edgeCountsByType, selectedNodeId, className }: GraphToolbarProps) => {
+  ({ mapId, nodeCountsByType, edgeCountsByType, selectedNodeId, canEdit = true, className }: GraphToolbarProps) => {
     const { t } = useTranslation()
     const { viewMode, setViewMode } = useViewMode()
     const { focusedNodeId, focusDepth, setFocusDepth, clearFocus, focusNode } = useFocusMode()
@@ -62,21 +64,25 @@ export const GraphToolbar = memo(
         )}
       >
         <Card className='flex items-center gap-1 p-1.5 shadow-xl border-2 pointer-events-auto'>
-          {/* AI Button */}
-          <Button
-            size='sm'
-            variant='ghost'
-            asChild
-            className='h-8 px-3 hidden sm:flex'
-            title={t('graph.toolbar.aiAnalysis')}
-          >
-            <Link to={`/dashboard/maps/${mapId}/ai`}>
-              <Sparkles className='w-4 h-4 sm:mr-1' />
-              <span className='hidden sm:inline'>AI</span>
-            </Link>
-          </Button>
+          {/* AI Button - only show for owners */}
+          {canEdit && (
+            <>
+              <Button
+                size='sm'
+                variant='ghost'
+                asChild
+                className='h-8 px-3 hidden sm:flex'
+                title={t('graph.toolbar.aiAnalysis')}
+              >
+                <Link to={`/dashboard/maps/${mapId}/ai`}>
+                  <Sparkles className='w-4 h-4 sm:mr-1' />
+                  <span className='hidden sm:inline'>AI</span>
+                </Link>
+              </Button>
 
-          <div className='h-4 w-px bg-border hidden sm:block' />
+              <div className='h-4 w-px bg-border hidden sm:block' />
+            </>
+          )}
 
           {/* View Mode Selector */}
           <div className='flex items-center gap-0.5 bg-muted rounded-md p-0.5'>

@@ -84,6 +84,9 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
   const [isReady, setIsReady] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  // Track dark mode for theme sync
+  const isDark = useDarkMode()
+
   // Interaction state
   const isPanningRef = useRef(false)
   const lastMouseRef = useRef({ x: 0, y: 0 })
@@ -194,6 +197,13 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
       }
     }
   }, [])
+
+  // Sync theme when dark mode changes
+  useEffect(() => {
+    if (!isReady || !engineRef.current) return
+    console.log('[GraphCanvas] Theme changed, updating WASM engine')
+    engineRef.current.set_theme(themeToJson())
+  }, [isDark, isReady])
 
   // Handle resize
   useEffect(() => {

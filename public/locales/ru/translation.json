@@ -12,7 +12,8 @@
       "githubButton": "GitHub",
       "noAccount": "Нет аккаунта?",
       "signUpLink": "Регистрация",
-      "error": "Не удалось войти"
+      "error": "Не удалось войти",
+      "invalidCredentials": "Неверный email или пароль"
     },
     "signUp": {
       "title": "Создать аккаунт",
@@ -125,7 +126,8 @@
     "deleting": "Удаление...",
     "comingSoon": "Скоро",
     "remove": "Удалить",
-    "processing": "Обработка..."
+    "processing": "Обработка...",
+    "serverError": "Ошибка сервера. Попробуйте позже"
   },
   "imageCrop": {
     "title": "Обрезка изображения",

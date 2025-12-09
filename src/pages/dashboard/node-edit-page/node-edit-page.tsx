@@ -335,7 +335,10 @@ export const NodeEditPage = ({
 
       {/* Right Sidebar - Desktop (lg+) */}
       {sidebarOpen && (
-        <aside className='hidden lg:flex flex-col flex-shrink-0 border-l border-border h-full overflow-hidden' style={{ width: SIDEBAR_WIDTH }}>
+        <aside
+          className='hidden lg:flex flex-col flex-shrink-0 border-l border-border h-full overflow-hidden'
+          style={{ width: SIDEBAR_WIDTH }}
+        >
           <div className='flex flex-1 flex-col min-h-0 overflow-hidden'>
             <Tabs defaultValue='properties' className='flex flex-1 flex-col min-h-0'>
               {/* Tab Header */}

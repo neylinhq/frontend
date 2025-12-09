@@ -12,7 +12,8 @@
       "githubButton": "GitHub",
       "noAccount": "Don't have an account?",
       "signUpLink": "Sign up",
-      "error": "Sign in failed"
+      "error": "Sign in failed",
+      "invalidCredentials": "Invalid email or password"
     },
     "signUp": {
       "title": "Create an account",
@@ -125,7 +126,8 @@
     "deleting": "Deleting...",
     "comingSoon": "Coming Soon",
     "remove": "Remove",
-    "processing": "Processing..."
+    "processing": "Processing...",
+    "serverError": "Server error. Please try again later"
   },
   "imageCrop": {
     "title": "Crop image",

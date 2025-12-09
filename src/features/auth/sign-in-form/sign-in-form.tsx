@@ -63,12 +63,20 @@ export const SignInForm = () => {
               console.error('[SignIn] Error:', error)
               if (error instanceof ApiError) {
                 const errorData = error.data as { error?: { message?: string } } | null
-                toast.error(t('auth.signIn.error'), {
-                  description: errorData?.error?.message || t('auth.signIn.invalidCredentials')
-                })
+                const message = errorData?.error?.message
+
+                if (error.status === 401) {
+                  toast.error(t('auth.signIn.error'), {
+                    description: message || t('auth.signIn.invalidCredentials')
+                  })
+                } else {
+                  toast.error(t('auth.signIn.error'), {
+                    description: message || t('common.serverError')
+                  })
+                }
               } else {
                 toast.error(t('auth.signIn.error'), {
-                  description: t('auth.signIn.invalidCredentials')
+                  description: t('common.serverError')
                 })
               }
             } finally {

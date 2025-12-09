@@ -236,20 +236,23 @@ export interface UseDiscoverMapsOptions {
   sortOrder?: 'asc' | 'desc'
   limit?: number
   offset?: number
+  initialData?: MapDiscoverResponse
 }
 
 export const useDiscoverMaps = (options: UseDiscoverMapsOptions = {}) => {
+  const { initialData, ...params } = options
   return useQuery({
     queryKey: [
       ...mapKeys.all,
       'discover',
-      options.filter ?? 'all',
-      options.sortBy,
-      options.sortOrder,
-      options.limit,
-      options.offset
+      params.filter ?? 'all',
+      params.sortBy,
+      params.sortOrder,
+      params.limit,
+      params.offset
     ],
-    queryFn: () => mapApi.discoverMaps(options)
+    queryFn: () => mapApi.discoverMaps(params),
+    initialData
   })
 }
 

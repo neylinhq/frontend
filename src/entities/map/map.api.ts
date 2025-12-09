@@ -89,13 +89,16 @@ export const mapApi = {
   },
 
   // Public maps discovery
-  discoverMaps: async (params: {
-    filter?: MapFilter
-    sortBy?: string
-    sortOrder?: 'asc' | 'desc'
-    limit?: number
-    offset?: number
-  }): Promise<MapDiscoverResponse> => {
+  discoverMaps: async (
+    params: {
+      filter?: MapFilter
+      sortBy?: string
+      sortOrder?: 'asc' | 'desc'
+      limit?: number
+      offset?: number
+    },
+    options?: { cookies?: string }
+  ): Promise<MapDiscoverResponse> => {
     const searchParams = new URLSearchParams()
     if (params.filter) searchParams.set('filter', params.filter)
     if (params.sortBy) searchParams.set('sortBy', params.sortBy)
@@ -104,7 +107,8 @@ export const mapApi = {
     if (params.offset) searchParams.set('offset', String(params.offset))
 
     const response = await api.get<ApiResponse<MapDiscoverResponse>>(
-      `/maps/discover?${searchParams.toString()}`
+      `/maps/discover?${searchParams.toString()}`,
+      { cookies: options?.cookies }
     )
     return response.data
   },

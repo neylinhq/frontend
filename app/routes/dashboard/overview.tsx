@@ -1,8 +1,18 @@
+import type { LoaderFunctionArgs } from 'react-router'
+
+import { mapApi } from '@/entities/map'
 import { OverviewPage } from '@/pages/dashboard/overview-page/overview-page'
+import { getCookies } from '@/shared/api/server'
 import { getMeta } from '@/shared/lib/get-meta'
 
 export const meta = () => {
   return getMeta('overview')
+}
+
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const cookies = getCookies(request)
+  const initialData = await mapApi.discoverMaps({ filter: 'all' }, { cookies })
+  return { initialData }
 }
 
 const DashboardOverviewRoute = () => {

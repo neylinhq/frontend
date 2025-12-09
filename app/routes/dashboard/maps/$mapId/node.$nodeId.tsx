@@ -73,7 +73,9 @@ export const clientLoader = async ({ params }: ClientLoaderFunctionArgs) => {
   }
 }
 
-clientLoader.hydrate = true
+// hydrate = false means clientLoader only runs on client-side navigation,
+// not during initial hydration (SSR data is already available)
+clientLoader.hydrate = false as const
 
 const NodeEditRoute = () => {
   const { node, map, mapId, nodeId } = useLoaderData<typeof loader>()

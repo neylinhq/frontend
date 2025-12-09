@@ -1,9 +1,10 @@
 import { Plus, Search } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router'
+import { Link, useLoaderData } from 'react-router'
 
 import {
+  type MapDiscoverResponse,
   type MapFilter,
   useCopyMap,
   useDeleteMap,
@@ -14,26 +15,46 @@ import {
 import { useCurrentUser } from '@/entities/user'
 import { CreateMapCard } from '@/features/maps/create-map-button'
 import { MapFilters } from '@/features/maps/map-filters'
-import { MapCard } from '@/features/maps/map-card/map-card'
+import { MapCard, MapCardSkeleton } from '@/features/maps/map-card'
 import { Button } from '@/shared/components/button'
 import { Input } from '@/shared/components/input'
 import { Typography } from '@/shared/components/typography'
 import { MAPS_ROUTES } from '@/shared/config'
 import { useToast } from '@/shared/components/toast'
+import { useDebouncedCallback } from '@/shared/hooks'
+
+interface LoaderData {
+  initialData: MapDiscoverResponse
+}
 
 export const OverviewPage = () => {
   const { t } = useTranslation()
   const { toast } = useToast()
+  const { initialData } = useLoaderData<LoaderData>()
   const { data: user } = useCurrentUser()
   const [filter, setFilter] = useState<MapFilter>('all')
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchInput, setSearchInput] = useState('')
+  const [debouncedQuery, setDebouncedQuery] = useState('')
 
-  const { data: discoverData, isLoading } = useDiscoverMaps({ filter })
+  const debouncedSetQuery = useDebouncedCallback((value: string) => {
+    setDebouncedQuery(value)
+  }, 300)
+
+  const handleSearchChange = (value: string) => {
+    setSearchInput(value)
+    debouncedSetQuery(value)
+  }
+
+  // Use SSR data as initialData for instant render, React Query handles revalidation
+  const { data: discoverData, isLoading } = useDiscoverMaps({
+    filter,
+    initialData: filter === 'all' ? initialData : undefined
+  })
   const { data: searchData, isLoading: isSearching } = useSearchMaps({
-    query: searchQuery,
+    query: debouncedQuery,
     mode: 'all',
     filter,
-    enabled: searchQuery.length >= 2
+    enabled: debouncedQuery.length >= 2
   })
 
   const copyMap = useCopyMap()
@@ -88,7 +109,7 @@ export const OverviewPage = () => {
   }
 
   // Use search results if searching, otherwise use discover results
-  const isSearchActive = searchQuery.length >= 2
+  const isSearchActive = debouncedQuery.length >= 2
   const maps = isSearchActive ? searchData?.maps : discoverData?.maps
   const counts = discoverData
     ? {
@@ -122,8 +143,8 @@ export const OverviewPage = () => {
           <Input
             type='search'
             placeholder={t('dashboard.overview.searchPlaceholder')}
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
+            value={searchInput}
+            onChange={e => handleSearchChange(e.target.value)}
             className='pl-9'
           />
         </div>
@@ -139,56 +160,60 @@ export const OverviewPage = () => {
         </p>
       )}
 
-      {/* Loading state */}
-      {(isLoading || isSearching) && (
-        <div className='flex items-center justify-center py-12'>
-          <div className='animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full' />
-        </div>
-      )}
+      {/* Maps grid - always rendered to avoid layout shifts */}
+      <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
+        {/* Loading state - show skeleton cards */}
+        {(isLoading || isSearching) && (
+          <>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <MapCardSkeleton key={i} />
+            ))}
+          </>
+        )}
 
-      {/* Maps grid */}
-      {!isLoading && !isSearching && maps && (
-        <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
-          {maps.map(map => {
-            const isOwned = map.authorId === user?.id
-            return (
-              <MapCard
-                key={map.id}
-                map={map}
-                isOwned={isOwned}
-                matchedNodes={'matchedNodes' in map ? map.matchedNodes : undefined}
-                onCopy={!isOwned ? () => handleCopy(map.id) : undefined}
-                onToggleVisibility={
-                  isOwned ? () => handleToggleVisibility(map.id, map.isPublic) : undefined
-                }
-                onDelete={isOwned ? () => handleDelete(map.id) : undefined}
-              />
-            )
-          })}
+        {/* Loaded maps */}
+        {!isLoading && !isSearching && maps && maps.length > 0 && (
+          <>
+            {maps.map(map => {
+              const isOwned = map.authorId === user?.id
+              return (
+                <MapCard
+                  key={map.id}
+                  map={map}
+                  isOwned={isOwned}
+                  matchedNodes={'matchedNodes' in map ? map.matchedNodes : undefined}
+                  onCopy={!isOwned ? () => handleCopy(map.id) : undefined}
+                  onToggleVisibility={
+                    isOwned ? () => handleToggleVisibility(map.id, map.isPublic) : undefined
+                  }
+                  onDelete={isOwned ? () => handleDelete(map.id) : undefined}
+                />
+              )
+            })}
+            {/* Create new map card - only show when viewing own maps */}
+            {filter !== 'public' && <CreateMapCard />}
+          </>
+        )}
 
-          {/* Create new map card - only show when viewing own maps */}
-          {filter !== 'public' && <CreateMapCard />}
-        </div>
-      )}
-
-      {/* Empty state */}
-      {!isLoading && !isSearching && (!maps || maps.length === 0) && (
-        <div className='flex flex-col items-center justify-center py-12 text-center'>
-          <p className='text-muted-foreground mb-4'>
-            {isSearchActive
-              ? t('dashboard.overview.noSearchResults')
-              : t('dashboard.overview.noMaps')}
-          </p>
-          {!isSearchActive && filter !== 'public' && (
-            <Button asChild>
-              <Link to={MAPS_ROUTES.new}>
-                <Plus className='mr-2 h-4 w-4' />
-                {t('dashboard.overview.createFirstMap')}
-              </Link>
-            </Button>
-          )}
-        </div>
-      )}
+        {/* Empty state - still inside grid for consistent layout */}
+        {!isLoading && !isSearching && (!maps || maps.length === 0) && (
+          <div className='col-span-full flex flex-col items-center justify-center py-12 text-center'>
+            <p className='text-muted-foreground mb-4'>
+              {isSearchActive
+                ? t('dashboard.overview.noSearchResults')
+                : t('dashboard.overview.noMaps')}
+            </p>
+            {!isSearchActive && filter !== 'public' && (
+              <Button asChild>
+                <Link to={MAPS_ROUTES.new}>
+                  <Plus className='mr-2 h-4 w-4' />
+                  {t('dashboard.overview.createFirstMap')}
+                </Link>
+              </Button>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   )
 }

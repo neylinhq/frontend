@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import Markdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import { Bot, User, Loader2, FileText } from 'lucide-react'
 import { Badge } from '@/shared/components/badge'
 import { cn } from '@/shared/lib/cn'
@@ -60,7 +62,15 @@ export const ChatMessageList = ({
                   : 'bg-muted'
               )}
             >
-              <p className='whitespace-pre-wrap break-all'>{message.content}</p>
+              {message.role === 'assistant' ? (
+                <div className='prose prose-sm dark:prose-invert max-w-none prose-p:my-1 prose-headings:my-2 prose-ul:my-1 prose-ol:my-1 prose-li:my-0.5 prose-pre:my-2 prose-code:text-xs prose-code:bg-background/50 prose-code:px-1 prose-code:py-0.5 prose-code:rounded'>
+                  <Markdown remarkPlugins={[remarkGfm]}>
+                    {message.content}
+                  </Markdown>
+                </div>
+              ) : (
+                <p className='whitespace-pre-wrap break-words'>{message.content}</p>
+              )}
 
               {/* Source Nodes (RAG references) */}
               {message.sourceNodes && message.sourceNodes.length > 0 && (

@@ -1,7 +1,7 @@
 import { useMatches } from 'react-router'
 import type { User } from './user.schema'
 
-interface DashboardLoaderData {
+interface LoaderDataWithUser {
   user: User
 }
 
@@ -18,10 +18,10 @@ interface DashboardLoaderData {
 export const useLoaderUser = (): User | null => {
   const matches = useMatches()
 
-  // Находим dashboard layout match (первый match с user в data)
-  const dashboardMatch = matches.find(
-    match => match.pathname.startsWith('/dashboard') && (match.data as DashboardLoaderData)?.user
+  // Находим любой match с user в data (dashboard layout загружает user)
+  const matchWithUser = matches.find(
+    match => (match.data as LoaderDataWithUser)?.user
   )
 
-  return (dashboardMatch?.data as DashboardLoaderData)?.user ?? null
+  return (matchWithUser?.data as LoaderDataWithUser)?.user ?? null
 }

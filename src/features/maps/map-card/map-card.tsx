@@ -39,7 +39,7 @@ export const MapCard = memo(
 
     return (
       <Card className='hover:shadow-md transition-shadow'>
-        <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+        <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2 gap-2'>
           <div className='flex items-center gap-2 min-w-0 flex-1'>
             <CardTitle className='text-sm font-medium truncate'>
               <Link to={`/dashboard/maps/${map.id}/view`} className='hover:underline'>

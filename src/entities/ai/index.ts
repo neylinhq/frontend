@@ -2,6 +2,7 @@
 
 // API exports
 export { aiApi } from './ai.api'
+export type { ChatWithMapResponse, ProposalData, NodeReference } from './ai.api'
 // Query exports
 export {
   aiKeys,

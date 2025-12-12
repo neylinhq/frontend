@@ -1131,6 +1131,25 @@
       "enrichment": "Enhancement Preview",
       "currentValue": "Current",
       "proposedValue": "Proposed"
+    },
+    "enrichment": {
+      "saved": "Changes applied",
+      "savedDescription": "The node has been updated with AI suggestions",
+      "descriptionEnriched": "I've enriched the description. Review the changes below.",
+      "examplesGenerated": "I've generated examples. Review them below.",
+      "sourcesFound": "I've found sources. Review them below.",
+      "nodeContextOnly": "This command is only available for nodes.",
+      "exercisesGenerated": "I've generated {{count}} exercises. Review and save the ones you like."
+    },
+    "exercises": {
+      "saved": "Exercises saved",
+      "savedDescription": "Your exercises have been saved"
+    },
+    "context": {
+      "node": "Node",
+      "map": "Map",
+      "nodeHint": "Current node only",
+      "mapHint": "Search across map ($)"
     }
   },
   "practice": {

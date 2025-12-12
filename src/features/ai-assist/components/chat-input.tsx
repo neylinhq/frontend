@@ -1,10 +1,15 @@
 import { useRef, type KeyboardEvent } from 'react'
-import { ArrowUp } from 'lucide-react'
+import { ArrowUp, Map } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import type { AIModel } from '@/entities/ai'
 import { Textarea } from '@/shared/components/textarea'
 import { Button } from '@/shared/components/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/select'
+import { Switch } from '@/shared/components/switch'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/components/tooltip'
 import { cn } from '@/shared/lib/cn'
+
+type ContextMode = 'node' | 'map'
 
 interface ChatInputProps {
   value: string
@@ -15,6 +20,9 @@ interface ChatInputProps {
   model?: string
   onModelChange?: (model: string) => void
   models?: AIModel[]
+  contextMode?: ContextMode
+  onContextModeChange?: (mode: ContextMode) => void
+  showContextSwitch?: boolean
 }
 
 export const ChatInput = ({
@@ -25,8 +33,12 @@ export const ChatInput = ({
   placeholder = 'Type a message...',
   model,
   onModelChange,
-  models = []
+  models = [],
+  contextMode = 'node',
+  onContextModeChange,
+  showContextSwitch = false
 }: ChatInputProps) => {
+  const { t } = useTranslation()
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   // Find current model name
@@ -76,16 +88,17 @@ export const ChatInput = ({
         placeholder={placeholder}
         disabled={disabled}
         className={cn(
-          'min-h-[80px] max-h-[200px] resize-none p-3 pb-8',
+          'min-h-[80px] max-h-[200px] resize-none p-3 pb-12',
           'border-none shadow-none bg-transparent',
           'focus-visible:ring-0 focus-visible:ring-offset-0'
         )}
         rows={3}
       />
 
-      {/* Model selector - bottom left */}
-      {onModelChange && models.length > 0 && (
-        <div className='absolute left-3 bottom-2.5'>
+      {/* Bottom controls - Model selector and context switch */}
+      <div className='absolute left-3 bottom-2.5 flex items-center gap-2'>
+        {/* Model selector */}
+        {onModelChange && models.length > 0 && (
           <Select value={model} onValueChange={onModelChange} disabled={disabled}>
             <SelectTrigger className='max-w-36 h-6 text-[10px] border-none bg-muted hover:bg-muted'>
               <span className='truncate'>{currentModelName}</span>
@@ -101,8 +114,33 @@ export const ChatInput = ({
               ))}
             </SelectContent>
           </Select>
-        </div>
-      )}
+        )}
+
+        {/* Context mode toggle */}
+        {showContextSwitch && onContextModeChange && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className='flex items-center gap-1.5'>
+                <Switch
+                  checked={contextMode === 'map'}
+                  onCheckedChange={checked => onContextModeChange(checked ? 'map' : 'node')}
+                  disabled={disabled}
+                  className='h-4 w-7 data-[state=checked]:bg-primary data-[state=unchecked]:bg-input [&>span]:h-3 [&>span]:w-3 [&>span]:data-[state=checked]:translate-x-3'
+                />
+                <span className='text-[10px] text-muted-foreground flex items-center gap-0.5'>
+                  <Map className='h-3 w-3' />
+                  {t('ai.context.map', 'Map')}
+                </span>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent side='top' className='text-xs'>
+              {contextMode === 'map'
+                ? t('ai.context.mapHint', 'Search across map ($)')
+                : t('ai.context.nodeHint', 'Current node only')}
+            </TooltipContent>
+          </Tooltip>
+        )}
+      </div>
 
       {/* Send button - bottom right */}
       <Button

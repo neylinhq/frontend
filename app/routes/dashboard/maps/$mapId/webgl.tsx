@@ -5,7 +5,7 @@ import {
   useLoaderData
 } from 'react-router'
 import { mapApi } from '@/entities/map'
-import { MapViewPage } from '@/pages/dashboard/map-view-page'
+import { MapWebGLPage } from '@/pages/dashboard/map-webgl-page'
 import { getMeta } from '@/shared/lib/get-meta'
 import { ApiError } from '@/shared/api/client'
 import { getCookies } from '@/shared/api/server'
@@ -68,9 +68,9 @@ export const clientLoader = async ({ params, serverLoader }: ClientLoaderFunctio
 
 clientLoader.hydrate = true
 
-const MapViewRoute = () => {
+const MapWebGLRoute = () => {
   const { map, mapId } = useLoaderData<typeof loader>()
-  return <MapViewPage map={map} mapId={mapId} />
+  return <MapWebGLPage map={map} mapId={mapId} />
 }
 
-export default MapViewRoute
+export default MapWebGLRoute

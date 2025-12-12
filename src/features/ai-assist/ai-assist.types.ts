@@ -37,7 +37,7 @@ export interface ExercisePreviewData {
 }
 
 export interface EnrichmentPreviewData {
-  field: 'description' | 'examples' | 'sources'
+  field: 'description' | 'content' | 'examples' | 'sources'
   current: string
   proposed: string
 }

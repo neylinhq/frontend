@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid'
 import { aiApi, type EnrichType } from '@/entities/ai'
 import { exerciseApi } from '@/entities/exercise'
 import type {
@@ -25,7 +26,7 @@ export const enrichHandler: IntentHandler = {
 
     const previews: PreviewCard[] = [
       {
-        id: crypto.randomUUID(),
+        id: uuidv4(),
         type: 'enrichment',
         data: {
           field: enrichType,
@@ -55,7 +56,7 @@ export const examplesHandler: IntentHandler = {
 
     const previews: PreviewCard[] = [
       {
-        id: crypto.randomUUID(),
+        id: uuidv4(),
         type: 'enrichment',
         data: {
           field: 'examples',
@@ -85,7 +86,7 @@ export const sourcesHandler: IntentHandler = {
 
     const previews: PreviewCard[] = [
       {
-        id: crypto.randomUUID(),
+        id: uuidv4(),
         type: 'enrichment',
         data: {
           field: 'sources',
@@ -118,7 +119,7 @@ export const exercisesHandler: IntentHandler = {
     })
 
     const previews: PreviewCard[] = exercises.map((exercise, index) => ({
-      id: crypto.randomUUID(),
+      id: uuidv4(),
       type: 'exercise' as const,
       data: {
         exercise,

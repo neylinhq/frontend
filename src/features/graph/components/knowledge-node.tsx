@@ -64,7 +64,7 @@ const KnowledgeNodeComponent = ({ data }: KnowledgeNodeProps) => {
         className='w-3 h-3 bg-border border-2 border-background'
       />
 
-      <div className='p-6 flex flex-col'>
+      <div className='py-4 px-6 flex flex-col'>
         {/* Icon + Title (always visible) */}
         <div className='flex items-start gap-3'>
           <Icon className='w-5 h-5 flex-shrink-0 text-muted-foreground' />
@@ -88,7 +88,7 @@ const KnowledgeNodeComponent = ({ data }: KnowledgeNodeProps) => {
 
         {/* Complexity badge - pinned to bottom, LOD: hidden at low zoom */}
         {showDetails && data.metadata.complexity && (
-          <div className='mt-auto pt-3'>
+          <div className='mt-auto pt-1.5'>
             <Badge
               variant='secondary'
               className={cn(

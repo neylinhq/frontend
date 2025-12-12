@@ -3,6 +3,7 @@ import { mapApi } from './map.api'
 import type {
   CreateEdgeRequest,
   Edge,
+  FullMap,
   MapDiscoverResponse,
   MapFilter,
   MapSearchMode,
@@ -168,13 +169,15 @@ export const useDeleteEdge = (mapId: string) => {
 // ====== Хуки для полных карт и анализа ======
 interface UseFullMapOptions {
   enabled?: boolean
+  initialData?: FullMap
 }
 
 export const useFullMap = (mapId: string, options?: UseFullMapOptions) => {
   return useQuery({
     queryKey: mapKeys.fullMap(mapId),
     queryFn: () => mapApi.getFullMap(mapId),
-    enabled: (options?.enabled ?? true) && !!mapId
+    enabled: (options?.enabled ?? true) && !!mapId,
+    initialData: options?.initialData
   })
 }
 

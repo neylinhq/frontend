@@ -12,8 +12,16 @@ export interface NodeReference {
   type: string
 }
 
+export interface ProposalData {
+  field: 'description' | 'content' | 'examples' | 'sources'
+  current: string
+  value: string
+}
+
 export interface ChatWithMapResponse {
-  answer: string
+  action: 'chat' | 'proposal'
+  message: string
+  proposal?: ProposalData
   sourceNodes: NodeReference[]
   tokensUsed: number
 }
@@ -58,11 +66,12 @@ export const aiApi = {
     mapId: string,
     question: string,
     model?: string,
-    topK?: number
+    topK?: number,
+    nodeId?: string // Optional: limit context to specific node
   ): Promise<ChatWithMapResponse> => {
     const response = await api.post<ApiResponse<ChatWithMapResponse>>(
       `/maps/${mapId}/chat`,
-      { question, model, topK }
+      { question, model, topK, nodeId }
     )
     return response.data
   },

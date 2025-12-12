@@ -1,6 +1,9 @@
 import { index, layout, type RouteConfig, route } from '@react-router/dev/routes'
 
 export default [
+  // API Routes (resource routes without UI)
+  route('api/refresh', 'routes/api.refresh.ts'),
+
   // Public Routes (with shared header/footer)
   layout('routes/public/layout.tsx', [
     index('routes/home.tsx'),

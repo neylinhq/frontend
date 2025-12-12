@@ -1,39 +1,36 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { v4 as uuidv4 } from 'uuid'
-import { aiApi, useAIModels } from '@/entities/ai'
+import { aiApi, type ProposalData } from '@/entities/ai'
+import { useAIModels } from '@/entities/ai'
 import { toast } from '@/shared/components/toast'
-import type { ChatContext, ChatMessage, IntentHandler, MapChatContext, PreviewCard } from '../ai-assist.types'
+import type { ChatContext, ChatMessage, MapChatContext, NodeChatContext, PreviewCard } from '../ai-assist.types'
 import { ChatInput } from './chat-input'
 import { ChatMessageList } from './chat-message-list'
 
+type ContextMode = 'node' | 'map'
+
 interface AIChatCoreProps {
-  context: ChatContext
-  intentHandlers: IntentHandler[]
+  nodeContext: NodeChatContext
+  mapContext: MapChatContext
   emptyStateMessage?: string
   onSavePreview?: (messageId: string, preview: PreviewCard) => Promise<void>
 }
 
 export const AIChatCore = ({
-  context,
-  intentHandlers,
+  nodeContext,
+  mapContext,
   emptyStateMessage,
   onSavePreview
 }: AIChatCoreProps) => {
   const { t } = useTranslation()
+  const [contextMode, setContextMode] = useState<ContextMode>('node')
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [inputValue, setInputValue] = useState('')
   const [isStreaming, setIsStreaming] = useState(false)
 
-  // Get available models from backend
   const { data: models = [] } = useAIModels()
-  const [selectedModel, setSelectedModel] = useState(() => models[0]?.id || 'meta-llama/llama-3.2-3b-instruct:free')
-
-  const detectIntent = (
-    content: string
-  ): IntentHandler | undefined => {
-    return intentHandlers.find(handler => handler.detect(content))
-  }
+  const [selectedModel, setSelectedModel] = useState(() => models[0]?.id || 'nex-agi/deepseek-v3.1-nex-n1:free')
 
   const handleSendMessage = async (content: string) => {
     if (!content.trim() || isStreaming) return
@@ -60,64 +57,33 @@ export const AIChatCore = ({
     setMessages(prev => [...prev, aiMessage])
 
     try {
-      const handler = detectIntent(content)
+      const result = await aiApi.chatWithMap(
+        nodeContext.mapId,
+        content,
+        selectedModel,
+        undefined,
+        contextMode === 'node' ? nodeContext.nodeId : undefined
+      )
 
-      throw new Error('Fuck')
-
-      if (handler) {
-        const result = await handler.execute(context, content, selectedModel)
-
-        setMessages(prev =>
-          prev.map(msg =>
-            msg.id === aiMessageId
-              ? {
-                  ...msg,
-                  content: result.content,
-                  preview: result.preview,
-                  isStreaming: false
-                }
-              : msg
-          )
-        )
-      } else {
-        // Free-form Q&A via RAG for map context
-        if (context.type === 'map') {
-          const mapContext = context as MapChatContext
-          const result = await aiApi.chatWithMap(
-            mapContext.mapId,
-            content,
-            selectedModel
-          )
-
-          setMessages(prev =>
-            prev.map(msg =>
-              msg.id === aiMessageId
-                ? {
-                    ...msg,
-                    content: result.answer,
-                    sourceNodes: result.sourceNodes,
-                    isStreaming: false
-                  }
-                : msg
-            )
-          )
-        } else {
-          // Fallback for node context - show available commands
-          const commands = '/enrich, /examples, /sources, /exercises'
-
-          setMessages(prev =>
-            prev.map(msg =>
-              msg.id === aiMessageId
-                ? {
-                    ...msg,
-                    content: `I can help you with:\n\nTry these commands: ${commands}`,
-                    isStreaming: false
-                  }
-                : msg
-            )
-          )
-        }
+      // Build preview if AI proposed changes
+      let preview: PreviewCard[] | undefined
+      if (result.action === 'proposal' && result.proposal) {
+        preview = [createProposalPreview(result.proposal)]
       }
+
+      setMessages(prev =>
+        prev.map(msg =>
+          msg.id === aiMessageId
+            ? {
+                ...msg,
+                content: result.message,
+                sourceNodes: result.sourceNodes,
+                preview,
+                isStreaming: false
+              }
+            : msg
+        )
+      )
     } catch (error) {
       setMessages(prev =>
         prev.map(msg =>
@@ -138,6 +104,17 @@ export const AIChatCore = ({
       setIsStreaming(false)
     }
   }
+
+  const createProposalPreview = (proposal: ProposalData): PreviewCard => ({
+    id: uuidv4(),
+    type: 'enrichment',
+    data: {
+      field: proposal.field,
+      current: proposal.current,
+      proposed: proposal.value
+    },
+    status: 'pending'
+  })
 
   const handleRemovePreview = (messageId: string, previewId: string) => {
     setMessages(prev =>
@@ -167,13 +144,12 @@ export const AIChatCore = ({
   }
 
   const defaultEmptyMessage =
-    context.type === 'node'
+    contextMode === 'node'
       ? t('ai.chat.noMessages')
       : t('ai.chat.noMessagesMap')
 
   return (
     <div className="flex h-full flex-col">
-      {/* Chat Messages */}
       <div className="flex-1 overflow-y-auto px-3 py-3">
         {messages.length === 0 ? (
           <div className="flex h-full items-center justify-center">
@@ -191,7 +167,6 @@ export const AIChatCore = ({
         )}
       </div>
 
-      {/* Input - Fixed at bottom */}
       <div className="border-t border-border">
         <ChatInput
           value={inputValue}
@@ -202,6 +177,9 @@ export const AIChatCore = ({
           model={selectedModel}
           onModelChange={setSelectedModel}
           models={models}
+          contextMode={contextMode}
+          onContextModeChange={setContextMode}
+          showContextSwitch
         />
       </div>
     </div>

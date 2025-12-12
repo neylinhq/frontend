@@ -91,9 +91,8 @@ const GraphVisualizationContent = ({
 }: GraphVisualizationProps) => {
   const { t, i18n } = useTranslation()
   const queryClient = useQueryClient()
-  // Always use React Query for reactivity - initialData is just for SSR hydration
-  const { data: fetchedMap, isLoading, isError } = useFullMap(mapId)
-  const fullMap = fetchedMap ?? initialData
+  // Always use React Query for reactivity - initialData is for SSR hydration
+  const { data: fullMap, isLoading, isError } = useFullMap(mapId, { initialData })
   const { selectedElements, handleSelectionChange, clearSelection, selectedNodeId, selectNode } =
     useNodeSelection()
   const { controls, toggleFullscreen } = useGraphControls()

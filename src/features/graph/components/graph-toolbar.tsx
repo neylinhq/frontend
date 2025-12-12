@@ -1,5 +1,5 @@
 import { Filter, Minus, Plus, Sparkles } from 'lucide-react'
-import { memo } from 'react'
+import { memo, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import type { RelationType } from '@/entities/edge'
@@ -67,17 +67,40 @@ export const GraphToolbar = memo(
     const activeFiltersCount = getActiveFiltersCount()
     const activePreset = getActiveConnectionPreset()
 
-    // Use actual max from graph, or fallback to 10
-    const maxConnections = connectionStats?.max ?? 10
+    // Connection filter slider state
+    const sliderMax = Math.max(connectionStats?.max || 0, 1)
+    const [localRange, setLocalRange] = useState<[number, number]>([0, sliderMax])
+    const [initialized, setInitialized] = useState(false)
+    const debounceRef = useRef<ReturnType<typeof setTimeout>>(null)
 
-    // For slider, cap the max value to actual graph max
-    const sliderMax = Math.max(maxConnections, 1)
+    // Initialize slider when graph data loads
+    useEffect(() => {
+      if (!initialized && connectionStats?.max > 0) {
+        setLocalRange([0, connectionStats.max])
+        setConnectionRange([0, Infinity])
+        setInitialized(true)
+      }
+    }, [initialized, connectionStats?.max, setConnectionRange])
 
-    // Convert Infinity to slider max for display
-    const displayRange: [number, number] = [
-      connectionRange[0],
-      connectionRange[1] === Infinity ? sliderMax : connectionRange[1]
-    ]
+    // Sync slider with store (for preset buttons)
+    useEffect(() => {
+      if (!initialized) return
+      setLocalRange([
+        connectionRange[0],
+        connectionRange[1] === Infinity ? sliderMax : connectionRange[1]
+      ])
+    }, [initialized, connectionRange, sliderMax])
+
+    // Cleanup debounce timer
+    useEffect(() => () => { if (debounceRef.current) clearTimeout(debounceRef.current) }, [])
+
+    const handleSliderChange = (value: number[]) => {
+      setLocalRange([value[0], value[1]])
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+      debounceRef.current = setTimeout(() => {
+        setConnectionRange([value[0], value[1] >= sliderMax ? Infinity : value[1]])
+      }, 150)
+    }
 
     return (
       <div
@@ -196,7 +219,7 @@ export const GraphToolbar = memo(
                 <Filter className='w-4 h-4' />
                 <span className='hidden sm:inline text-xs'>{t('graph.toolbar.filters')}</span>
                 {activeFiltersCount > 0 && (
-                  <Badge variant='destructive' className='h-4 px-1 text-[10px] ml-0.5'>
+                  <Badge variant='destructive' className='h-4 px-1 text-[10px] ml-0.5' suppressHydrationWarning>
                     {activeFiltersCount}
                   </Badge>
                 )}
@@ -270,21 +293,15 @@ export const GraphToolbar = memo(
               {/* Range slider */}
               <div className='px-2 py-2'>
                 <div className='flex items-center justify-between text-xs text-muted-foreground mb-2'>
-                  <span>{displayRange[0]}</span>
-                  <span>{displayRange[1] === sliderMax && connectionRange[1] === Infinity ? `${sliderMax}+` : displayRange[1]}</span>
+                  <span>{String(localRange[0])}</span>
+                  <span>{localRange[1] >= sliderMax ? `${sliderMax}+` : String(localRange[1])}</span>
                 </div>
                 <Slider
-                  value={displayRange}
+                  value={localRange}
                   min={0}
                   max={sliderMax}
                   step={1}
-                  onValueChange={(value: number[]) => {
-                    const newRange: [number, number] = [
-                      value[0],
-                      value[1] >= sliderMax ? Infinity : value[1]
-                    ]
-                    setConnectionRange(newRange)
-                  }}
+                  onValueChange={handleSliderChange}
                 />
               </div>
 

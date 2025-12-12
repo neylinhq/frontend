@@ -17,6 +17,12 @@ export {
   solIcon,
   usdcIcon,
   usdtIcon,
+  // Network icons (for crypto payments)
+  bscIcon,
+  networkIcons,
+  polygonIcon,
+  tonIcon,
+  tronIcon,
   // OAuth brand icons
   githubIcon,
   googleIcon,

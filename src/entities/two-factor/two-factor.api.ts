@@ -55,10 +55,15 @@ interface RegenerateResponse {
   data: RegenerateBackupCodesResponse
 }
 
+interface SendCodeResponse {
+  success: boolean
+  data: { sent: boolean }
+}
+
 export const twoFactorApi = {
   // Get 2FA status for current user
-  getStatus: async () => {
-    const response = await api.get<StatusResponse>('/2fa/status')
+  getStatus: async (options?: { cookies?: string }) => {
+    const response = await api.get<StatusResponse>('/2fa/status', { cookies: options?.cookies })
     return response.data
   },
 
@@ -89,6 +94,12 @@ export const twoFactorApi = {
   // Regenerate backup codes (requires valid TOTP code)
   regenerateBackupCodes: async (code: string) => {
     const response = await api.post<RegenerateResponse>('/2fa/backup-codes/regenerate', { code })
+    return response.data
+  },
+
+  // Send email code for 2FA verification (when Email OTP is enabled)
+  sendEmailCode: async () => {
+    const response = await api.post<SendCodeResponse>('/2fa/email/send-code', {})
     return response.data
   }
 }

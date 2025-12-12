@@ -3,12 +3,12 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   useTwoFactorStatus,
-  useEnableEmailOTP,
-  useDisableTwoFactor
+  useEnableEmailOTP
 } from '@/entities/two-factor'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
+import { Skeleton } from '@/shared/components/skeleton'
 import { toast } from '@/shared/components/toast'
 import { TotpSetupDialog } from './totp-setup-dialog'
 import { BackupCodesDialog } from './backup-codes-dialog'
@@ -25,6 +25,7 @@ export const TwoFactorSection = () => {
   const [showDisable, setShowDisable] = useState(false)
 
   const isEnabled = status?.totpEnabled || status?.emailOtpEnabled
+  const activeMethod = status?.totpEnabled ? 'totp' : status?.emailOtpEnabled ? 'email' : null
 
   const handleEnableEmailOTP = () => {
     enableEmailOTP.mutate(undefined, {
@@ -47,14 +48,17 @@ export const TwoFactorSection = () => {
     setShowBackupCodes(true)
   }
 
+  // Fallback skeleton if SSR data not available (rare edge case)
   if (isLoading) {
     return (
       <Card>
         <CardHeader>
           <CardTitle>{t('settings.security.twoFactor.title')}</CardTitle>
+          <Skeleton className="h-4 w-64 mt-2" />
         </CardHeader>
-        <CardContent className="flex justify-center py-8">
-          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        <CardContent className="space-y-4">
+          <Skeleton className="h-20 w-full" />
+          <Skeleton className="h-20 w-full" />
         </CardContent>
       </Card>
     )
@@ -82,6 +86,10 @@ export const TwoFactorSection = () => {
               <Badge variant="outline" className="text-green-600 border-green-600">
                 {t('settings.security.twoFactor.active')}
               </Badge>
+            ) : activeMethod === 'email' ? (
+              <span className="text-xs text-muted-foreground">
+                {t('settings.security.twoFactor.disableOtherFirst')}
+              </span>
             ) : (
               <Button
                 variant="ghost"
@@ -105,6 +113,10 @@ export const TwoFactorSection = () => {
               <Badge variant="outline" className="text-green-600 border-green-600">
                 {t('settings.security.twoFactor.active')}
               </Badge>
+            ) : activeMethod === 'totp' ? (
+              <span className="text-xs text-muted-foreground">
+                {t('settings.security.twoFactor.disableOtherFirst')}
+              </span>
             ) : (
               <Button
                 variant="ghost"
@@ -139,7 +151,7 @@ export const TwoFactorSection = () => {
 
           {/* Disable 2FA */}
           {isEnabled && (
-            <div className="flex justify-end pt-4 border-t">
+            <div className="flex justify-end">
               <Button
                 variant="ghost"
                 size="sm"

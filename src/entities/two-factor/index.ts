@@ -14,5 +14,6 @@ export {
   useEnableTOTP,
   useEnableEmailOTP,
   useDisableTwoFactor,
-  useRegenerateBackupCodes
+  useRegenerateBackupCodes,
+  useSendEmailCode
 } from './two-factor.queries'

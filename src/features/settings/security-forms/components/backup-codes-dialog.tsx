@@ -1,7 +1,7 @@
 import { Copy, Download, Loader2 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useRegenerateBackupCodes } from '@/entities/two-factor'
+import { useRegenerateBackupCodes, useSendEmailCode, useTwoFactorStatus } from '@/entities/two-factor'
 import { Button } from '@/shared/components/button'
 import {
   Dialog,
@@ -23,23 +23,43 @@ interface BackupCodesDialogProps {
 
 export const BackupCodesDialog = ({ open, onOpenChange, codes, isRegenerate = false }: BackupCodesDialogProps) => {
   const { t } = useTranslation()
+  const { data: status } = useTwoFactorStatus()
   const regenerate = useRegenerateBackupCodes()
+  const sendEmailCode = useSendEmailCode()
 
-  const [step, setStep] = useState<'verify' | 'codes'>('codes')
+  const [step, setStep] = useState<'sendCode' | 'verify' | 'codes'>('codes')
   const [verifyCode, setVerifyCode] = useState('')
   const [newCodes, setNewCodes] = useState<string[]>([])
   const [hasError, setHasError] = useState(false)
 
   const displayCodes = newCodes.length > 0 ? newCodes : codes
+  const isEmailMethod = status?.emailOtpEnabled && !status?.totpEnabled
 
   useEffect(() => {
     if (open) {
-      setStep(isRegenerate && codes.length === 0 ? 'verify' : 'codes')
+      if (isRegenerate && codes.length === 0) {
+        // For regeneration, determine starting step based on active method
+        setStep(isEmailMethod ? 'sendCode' : 'verify')
+      } else {
+        setStep('codes')
+      }
       setVerifyCode('')
       setNewCodes([])
       setHasError(false)
     }
-  }, [open, isRegenerate, codes])
+  }, [open, isRegenerate, codes, isEmailMethod])
+
+  const handleSendEmailCode = () => {
+    sendEmailCode.mutate(undefined, {
+      onSuccess: () => {
+        setStep('verify')
+        toast.success(t('settings.security.twoFactor.codeSent'))
+      },
+      onError: (error) => {
+        toast.error(error.message || t('settings.security.twoFactor.sendCodeError'))
+      }
+    })
+  }
 
   const handleRegenerate = () => {
     if (verifyCode.length !== 6) return
@@ -82,23 +102,43 @@ export const BackupCodesDialog = ({ open, onOpenChange, codes, isRegenerate = fa
     toast.success(t('settings.security.twoFactor.backup.downloaded'))
   }
 
+  const handleStartRegenerate = () => {
+    if (isEmailMethod) {
+      setStep('sendCode')
+    } else {
+      setStep('verify')
+    }
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>
-            {step === 'verify'
+            {step === 'sendCode' || step === 'verify'
               ? t('settings.security.twoFactor.backup.regenerateTitle')
               : t('settings.security.twoFactor.backup.title')}
           </DialogTitle>
           <DialogDescription>
-            {step === 'verify'
-              ? t('settings.security.twoFactor.backup.enterCodeToRegenerate')
-              : t('settings.security.twoFactor.backup.saveWarning')}
+            {step === 'sendCode'
+              ? t('settings.security.twoFactor.sendCodeToRegenerate')
+              : step === 'verify'
+                ? t('settings.security.twoFactor.backup.enterCodeToRegenerate')
+                : t('settings.security.twoFactor.backup.saveWarning')}
           </DialogDescription>
         </DialogHeader>
 
-        {step === 'verify' ? (
+        {step === 'sendCode' ? (
+          <div className="flex justify-center py-4">
+            <Button
+              onClick={handleSendEmailCode}
+              disabled={sendEmailCode.isPending}
+            >
+              {sendEmailCode.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {t('settings.security.twoFactor.sendCode')}
+            </Button>
+          </div>
+        ) : step === 'verify' ? (
           <div className="flex justify-center py-4">
             <OtpInput
               value={verifyCode}
@@ -141,22 +181,24 @@ export const BackupCodesDialog = ({ open, onOpenChange, codes, isRegenerate = fa
 
         <DialogFooter>
           {step === 'codes' && isRegenerate && newCodes.length === 0 && (
-            <Button variant="ghost" onClick={() => setStep('verify')} className="mr-auto">
+            <Button variant="ghost" onClick={handleStartRegenerate} className="mr-auto">
               {t('settings.security.twoFactor.backup.regenerate')}
             </Button>
           )}
-          {step === 'verify' ? (
+          {step === 'sendCode' || step === 'verify' ? (
             <>
               <Button variant="ghost" onClick={() => onOpenChange(false)}>
                 {t('common.cancel')}
               </Button>
-              <Button
-                onClick={handleRegenerate}
-                disabled={verifyCode.length !== 6 || regenerate.isPending}
-              >
-                {regenerate.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {t('settings.security.twoFactor.backup.regenerate')}
-              </Button>
+              {step === 'verify' && (
+                <Button
+                  onClick={handleRegenerate}
+                  disabled={verifyCode.length !== 6 || regenerate.isPending}
+                >
+                  {regenerate.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {t('settings.security.twoFactor.backup.regenerate')}
+                </Button>
+              )}
             </>
           ) : (
             <Button onClick={() => onOpenChange(false)}>

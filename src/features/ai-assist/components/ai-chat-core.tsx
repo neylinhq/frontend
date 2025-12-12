@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { v4 as uuidv4 } from 'uuid'
-import { aiApi, type ProposalData, useSelectedModel } from '@/entities/ai'
+import { aiApi, type ChatStreamChunk, type ProposalData, useSelectedModel } from '@/entities/ai'
 import { toast } from '@/shared/components/toast'
 import type { ChatMessage, MapChatContext, NodeChatContext, PreviewCard, ResolvedPreview } from '../ai-assist.types'
 import { useChatHistoryStore, getChatSessionId } from '../model/chat-history.store'
@@ -78,30 +78,63 @@ export const AIChatCore = ({
           content: msg.content
         }))
 
-      // In node mode: pass nodeId to limit RAG context to current node (cheaper)
-      // In map mode: use full RAG across map (richer context), but still pass currentNodeId for context
-      const result = await aiApi.chatWithMap(
+      let streamedContent = ''
+      let preview: PreviewCard[] | undefined
+
+      // Use streaming API
+      await aiApi.chatWithMapStream(
         nodeContext.mapId,
         content,
-        selectedModel,
-        undefined,
-        contextMode === 'node' ? nodeContext.nodeId : undefined, // nodeId limits RAG
-        nodeContext.nodeId, // currentNodeId always passed for context
-        history
+        (chunk: ChatStreamChunk) => {
+          switch (chunk.type) {
+            case 'text':
+              // Append text incrementally
+              streamedContent += chunk.content || ''
+              updateMessage(sessionId, aiMessageId, {
+                content: streamedContent,
+                isStreaming: true
+              })
+              break
+
+            case 'sources':
+              // Update source nodes
+              updateMessage(sessionId, aiMessageId, {
+                sourceNodes: chunk.sourceNodes
+              })
+              break
+
+            case 'proposal':
+              // Add proposal preview
+              if (chunk.proposal) {
+                preview = [createProposalPreview(chunk.proposal)]
+                updateMessage(sessionId, aiMessageId, { preview })
+              }
+              break
+
+            case 'done':
+              // Finalize message
+              updateMessage(sessionId, aiMessageId, {
+                content: streamedContent,
+                preview,
+                isStreaming: false
+              })
+              break
+
+            case 'error':
+              updateMessage(sessionId, aiMessageId, {
+                content: chunk.content || t('ai.chat.error'),
+                isStreaming: false
+              })
+              break
+          }
+        },
+        {
+          model: selectedModel,
+          nodeId: contextMode === 'node' ? nodeContext.nodeId : undefined,
+          currentNodeId: nodeContext.nodeId,
+          history
+        }
       )
-
-      // Build preview if AI proposed changes
-      let preview: PreviewCard[] | undefined
-      if (result.action === 'proposal' && result.proposal) {
-        preview = [createProposalPreview(result.proposal)]
-      }
-
-      updateMessage(sessionId, aiMessageId, {
-        content: result.message,
-        sourceNodes: result.sourceNodes,
-        preview,
-        isStreaming: false
-      })
     } catch (error) {
       updateMessage(sessionId, aiMessageId, {
         content: t('ai.chat.error'),

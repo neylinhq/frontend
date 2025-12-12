@@ -14,7 +14,7 @@ import { useEdgeManagementStore } from '@/features/graph/model/edge-management.s
 import { AISuggestionsPanel } from '@/features/ai-assist/components/ai-suggestions-panel'
 import { BlockEditor, editorToHTML, GUTTER, htmlToEditor, htmlToPlainText } from '@/features/block-editor'
 import { NodeConnectionsPanel } from '@/features/node-connections-panel'
-import { useAutoSave } from '@/shared/hooks'
+import { useAutoSave, useResizable } from '@/shared/hooks'
 import { NodeMetadataForm, type NodeMetadataFormValues } from '@/features/node-metadata-form'
 import { PracticePanel } from '@/features/practice-panel'
 import {
@@ -35,8 +35,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/components/ta
 import { Skeleton } from '@/shared/components/skeleton'
 import { cn } from '@/shared/lib/cn'
 
-/** Sidebar width in pixels - used for sidebar and FAB positioning */
-const SIDEBAR_WIDTH = 360
+/** Default sidebar width in pixels */
+const SIDEBAR_DEFAULT_WIDTH = 360
+/** Minimum sidebar width */
+const SIDEBAR_MIN_WIDTH = 280
+/** Maximum sidebar width */
+const SIDEBAR_MAX_WIDTH = 600
 
 /** Breakpoint for switching between mobile sheet and desktop sidebar (Tailwind lg) */
 const SIDEBAR_BREAKPOINT = 1024
@@ -45,10 +49,10 @@ const SIDEBAR_BREAKPOINT = 1024
 export const SIDEBAR_COOKIE_KEY = 'node-edit-sidebar'
 
 /** Skeleton placeholder for sidebar while hydrating */
-const SidebarSkeleton = () => (
+const SidebarSkeleton = ({ width }: { width: number }) => (
   <aside
     className='hidden lg:flex flex-col flex-shrink-0 border-l border-border h-full overflow-hidden'
-    style={{ width: SIDEBAR_WIDTH }}
+    style={{ width }}
   >
     <div className='flex flex-1 flex-col min-h-0 overflow-hidden'>
       {/* Tab Header Skeleton */}
@@ -121,6 +125,16 @@ export const NodeEditPage = ({
   const { startEdgeEditing } = useEdgeManagementStore()
   const [sidebarOpen, setSidebarOpen] = useState(initialSidebarOpen)
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false)
+
+  // Resizable sidebar
+  const { size: sidebarWidth, isResizing, handleMouseDown: handleResizeMouseDown } = useResizable({
+    minSize: SIDEBAR_MIN_WIDTH,
+    maxSize: SIDEBAR_MAX_WIDTH,
+    initialSize: SIDEBAR_DEFAULT_WIDTH,
+    direction: 'horizontal',
+    handleSide: 'left',
+    storageKey: 'node-edit-sidebar-width'
+  })
   const [isHydrated, setIsHydrated] = useState(false)
   const [title, setTitle] = useState('')
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
@@ -312,11 +326,8 @@ export const NodeEditPage = ({
                 setMobileSheetOpen(true)
               }
             }}
-            className={cn(
-              'fixed bottom-4 z-20 h-12 w-12 rounded-full shadow-lg transition-all right-4',
-              // On lg+ when sidebar open, position left of sidebar
-              sidebarOpen && 'lg:right-[calc(360px+1rem)]'
-            )}
+            className='fixed bottom-4 z-20 h-12 w-12 rounded-full shadow-lg transition-all right-4'
+            style={sidebarOpen ? { right: `calc(${sidebarWidth}px + 1rem)` } : undefined}
           >
             {sidebarOpen ? <PanelRightClose className='h-6 w-6 hidden lg:block' /> : null}
             <PanelRightOpen className={cn('h-6 w-6', sidebarOpen && 'lg:hidden')} />
@@ -393,12 +404,24 @@ export const NodeEditPage = ({
 
       {/* Right Sidebar - Desktop (lg+) */}
       {/* Show skeleton while hydrating to prevent layout shift */}
-      {!isHydrated && sidebarOpen && <SidebarSkeleton />}
+      {!isHydrated && sidebarOpen && <SidebarSkeleton width={sidebarWidth} />}
       {isHydrated && sidebarOpen && (
         <aside
-          className='hidden lg:flex flex-col flex-shrink-0 border-l border-border h-full overflow-hidden'
-          style={{ width: SIDEBAR_WIDTH }}
+          className={cn(
+            'hidden lg:flex flex-col flex-shrink-0 border-l border-border h-full overflow-hidden relative',
+            isResizing && 'select-none'
+          )}
+          style={{ width: sidebarWidth }}
         >
+          {/* Resize handle */}
+          <div
+            onMouseDown={handleResizeMouseDown}
+            className={cn(
+              'absolute left-0 top-0 bottom-0 w-1 cursor-col-resize z-10',
+              'hover:bg-primary/20 active:bg-primary/30 transition-colors',
+              isResizing && 'bg-primary/30'
+            )}
+          />
           <div className='flex flex-1 flex-col min-h-0 overflow-hidden'>
             <Tabs defaultValue='properties' className='flex flex-1 flex-col min-h-0'>
               {/* Tab Header */}
@@ -486,7 +509,7 @@ export const NodeEditPage = ({
 
       {/* Right Sidebar - Mobile Sheet */}
       <Sheet open={mobileSheetOpen} onOpenChange={setMobileSheetOpen}>
-        <SheetContent side='right' className='p-0 flex flex-col' style={{ width: SIDEBAR_WIDTH }}>
+        <SheetContent side='right' className='p-0 flex flex-col' style={{ width: SIDEBAR_DEFAULT_WIDTH }}>
           <Tabs defaultValue='properties' className='flex flex-1 flex-col min-h-0'>
             {/* Tab Header */}
             <SheetHeader className='border-b border-border/50 px-4 py-3'>

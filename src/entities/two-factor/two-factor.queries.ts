@@ -70,3 +70,10 @@ export function useRegenerateBackupCodes() {
     }
   })
 }
+
+// Mutation: Send email code for verification
+export function useSendEmailCode() {
+  return useMutation({
+    mutationFn: () => twoFactorApi.sendEmailCode()
+  })
+}

@@ -1,5 +1,5 @@
 import { useRef, useState, type KeyboardEvent } from 'react'
-import { ArrowUp, Map } from 'lucide-react'
+import { ArrowUp, GripHorizontal, Map } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import type { AIModel } from '@/entities/ai'
 import { Textarea } from '@/shared/components/textarea'
@@ -7,8 +7,13 @@ import { Button } from '@/shared/components/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/select'
 import { Switch } from '@/shared/components/switch'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/components/tooltip'
+import { useResizable } from '@/shared/hooks'
 import { cn } from '@/shared/lib/cn'
 import { CommandPalette, type SlashCommand } from './command-palette'
+
+const MIN_INPUT_HEIGHT = 80
+const MAX_INPUT_HEIGHT = 300
+const DEFAULT_INPUT_HEIGHT = 80
 
 type ContextMode = 'node' | 'map'
 
@@ -45,6 +50,16 @@ export const ChatInput = ({
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const [showCommands, setShowCommands] = useState(false)
 
+  // Resizable input height
+  const { size: inputHeight, isResizing, handleMouseDown: handleResizeMouseDown } = useResizable({
+    minSize: MIN_INPUT_HEIGHT,
+    maxSize: MAX_INPUT_HEIGHT,
+    initialSize: DEFAULT_INPUT_HEIGHT,
+    direction: 'vertical',
+    handleSide: 'top',
+    storageKey: 'chat-input-height'
+  })
+
   // Find current model name
   const currentModel = models.find(m => m.id === model)
   const currentModelName = currentModel?.name || model?.split('/').pop()?.replace(':free', '') || 'Select model'
@@ -55,10 +70,6 @@ export const ChatInput = ({
   const handleSend = () => {
     if (value.trim() && !disabled) {
       onSend(value)
-      // Reset textarea height
-      if (textareaRef.current) {
-        textareaRef.current.style.height = 'auto'
-      }
     }
   }
 
@@ -93,15 +104,24 @@ export const ChatInput = ({
 
     // Show/hide command palette
     setShowCommands(newValue.startsWith('/') && !newValue.includes(' '))
-
-    // Auto-resize textarea
-    const textarea = e.target
-    textarea.style.height = 'auto'
-    textarea.style.height = `${Math.min(textarea.scrollHeight, 200)}px`
   }
 
   return (
-    <div className='relative'>
+    <div className={cn('relative', isResizing && 'select-none')}>
+      {/* Resize handle */}
+      <div
+        onMouseDown={handleResizeMouseDown}
+        className={cn(
+          'absolute left-0 right-0 top-0 h-3 cursor-row-resize z-10 flex items-center justify-center',
+          'hover:bg-muted/50 transition-colors group'
+        )}
+      >
+        <GripHorizontal className={cn(
+          'h-3 w-6 text-muted-foreground/30 group-hover:text-muted-foreground/60 transition-colors',
+          isResizing && 'text-muted-foreground/60'
+        )} />
+      </div>
+
       {/* Command Palette */}
       <CommandPalette
         isOpen={shouldShowCommands && showCommands}
@@ -117,12 +137,12 @@ export const ChatInput = ({
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         disabled={disabled}
+        style={{ height: inputHeight }}
         className={cn(
-          'min-h-[80px] max-h-[200px] resize-none p-3 pb-12',
+          'resize-none p-3 pt-5 pb-12',
           'border-none shadow-none bg-transparent',
           'focus-visible:ring-0 focus-visible:ring-offset-0'
         )}
-        rows={3}
       />
 
       {/* Bottom controls - Model selector and context switch */}

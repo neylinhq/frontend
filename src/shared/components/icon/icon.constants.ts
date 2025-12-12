@@ -82,6 +82,34 @@ export const solIcon: IconData = {
 }
 
 /**
+ * Blockchain network icons for crypto payments
+ */
+
+export const tonIcon: IconData = {
+  viewBox: '0 0 24 24',
+  path: 'M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm4.896 7.047l-4.27 10.63c-.092.23-.363.34-.593.247a.458.458 0 01-.23-.247L7.104 7.047A.458.458 0 017.53 6.5h8.94c.253 0 .459.205.459.458a.46.46 0 01-.033.089zm-4.438 7.715V9.738l-2.92 5.024h2.92zm.084-5.024v5.024l2.92-5.024h-2.92z',
+  displayName: 'TON'
+}
+
+export const tronIcon: IconData = {
+  viewBox: '0 0 24 24',
+  path: 'M12.004 0L1.398 5.243l1.07 12.327L12.004 24l9.536-6.43 1.07-12.327L12.004 0zm-.158 3.223l7.043 4.012-.83 9.556-6.213 4.193-6.213-4.193-.83-9.556 7.043-4.012zm.158 2.223L7.63 7.89l.553 6.367 3.821 2.578 3.82-2.578.554-6.367-4.374-2.444zm0 2.666l1.87 1.046-.237 2.72-1.633 1.102-1.633-1.102-.237-2.72 1.87-1.046z',
+  displayName: 'Tron'
+}
+
+export const bscIcon: IconData = {
+  viewBox: '0 0 24 24',
+  path: 'M12 0L3.79 4.746v9.492L12 19l8.21-4.762V4.746L12 0zm0 2.237l5.684 3.293v6.586L12 15.409l-5.684-3.293V5.53L12 2.237zM6.316 6.948v4.75L12 14.991l5.684-3.293v-4.75L12 3.655 6.316 6.948zM12 5.893l3.158 1.83v3.658L12 13.21 8.842 11.38V7.723L12 5.893zm0 2.237l-.79.457v.914l.79.457.79-.457v-.914l-.79-.457z',
+  displayName: 'BSC'
+}
+
+export const polygonIcon: IconData = {
+  viewBox: '0 0 24 24',
+  path: 'M18.396 7.988l-4.244-2.452a2.312 2.312 0 00-2.312 0L7.596 7.988a2.316 2.316 0 00-1.156 2.004v4.904a2.316 2.316 0 001.156 2.004l4.244 2.452a2.312 2.312 0 002.312 0l4.244-2.452a2.316 2.316 0 001.156-2.004V9.992a2.316 2.316 0 00-1.156-2.004zm-6.4 9.06L8.5 15.096v-3.952l3.496 2.02v3.884zm.504-5.54L9.004 9.488l3.496-2.02 3.496 2.02-3.496 2.02zm7 3.488l-3.496 2.02v-3.952l3.496-2.02v3.952z',
+  displayName: 'Polygon'
+}
+
+/**
  * Social/OAuth brand icons - from Simple Icons
  * https://simpleicons.org/
  */
@@ -141,4 +169,17 @@ export const cryptoIcons: Record<string, IconData> = {
   usdc: usdcIcon,
   sol: solIcon,
   solana: solIcon
+}
+
+/**
+ * Map of blockchain network identifiers to icon data
+ * Used for crypto payment network selection
+ */
+export const networkIcons: Record<string, IconData> = {
+  ton: tonIcon,
+  tron: tronIcon,
+  bsc: bscIcon,
+  polygon: polygonIcon,
+  ethereum: ethIcon,
+  eth: ethIcon
 }

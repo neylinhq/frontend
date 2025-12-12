@@ -1,4 +1,4 @@
-import { Copy, Download, Loader2 } from 'lucide-react'
+import { Check, Copy, Download, Loader2 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useRegenerateBackupCodes, useSendEmailCode, useTwoFactorStatus } from '@/entities/two-factor'
@@ -13,6 +13,7 @@ import {
 } from '@/shared/components/dialog'
 import { OtpInput } from '@/shared/components/otp-input'
 import { toast } from '@/shared/components/toast'
+import { useCopyToClipboard } from '@/shared/lib/use-copy-to-clipboard'
 
 interface BackupCodesDialogProps {
   open: boolean
@@ -27,45 +28,51 @@ export const BackupCodesDialog = ({ open, onOpenChange, codes, isRegenerate = fa
   const regenerate = useRegenerateBackupCodes()
   const sendEmailCode = useSendEmailCode()
 
-  const [step, setStep] = useState<'sendCode' | 'verify' | 'codes'>('codes')
+  const [step, setStep] = useState<'verify' | 'codes'>('codes')
   const [verifyCode, setVerifyCode] = useState('')
   const [newCodes, setNewCodes] = useState<string[]>([])
   const [hasError, setHasError] = useState(false)
+  const { copied, copy } = useCopyToClipboard()
 
   const displayCodes = newCodes.length > 0 ? newCodes : codes
   const isEmailMethod = status?.emailOtpEnabled && !status?.totpEnabled
 
+  // Start regeneration - send email in background, show OTP immediately
+  const startRegeneration = () => {
+    setStep('verify')
+    if (isEmailMethod) {
+      sendEmailCode.mutate(undefined, {
+        onSuccess: () => {
+          toast.success(t('settings.security.twoFactor.codeSent'))
+        },
+        onError: (error) => {
+          toast.error(error.message || t('settings.security.twoFactor.sendCodeError'))
+        }
+      })
+    }
+  }
+
   useEffect(() => {
     if (open) {
-      if (isRegenerate && codes.length === 0) {
-        // For regeneration, determine starting step based on active method
-        setStep(isEmailMethod ? 'sendCode' : 'verify')
-      } else {
-        setStep('codes')
-      }
       setVerifyCode('')
       setNewCodes([])
       setHasError(false)
-    }
-  }, [open, isRegenerate, codes, isEmailMethod])
 
-  const handleSendEmailCode = () => {
-    sendEmailCode.mutate(undefined, {
-      onSuccess: () => {
-        setStep('verify')
-        toast.success(t('settings.security.twoFactor.codeSent'))
-      },
-      onError: (error) => {
-        toast.error(error.message || t('settings.security.twoFactor.sendCodeError'))
+      if (isRegenerate && codes.length === 0) {
+        // Auto-start regeneration flow
+        startRegeneration()
+      } else {
+        setStep('codes')
       }
-    })
-  }
+    }
+  }, [open])
 
-  const handleRegenerate = () => {
-    if (verifyCode.length !== 6) return
+  const handleRegenerate = (completedCode?: string) => {
+    const codeToUse = completedCode || verifyCode
+    if (codeToUse.length !== 6) return
 
     setHasError(false)
-    regenerate.mutate(verifyCode, {
+    regenerate.mutate(codeToUse, {
       onSuccess: (data) => {
         setNewCodes(data.backupCodes)
         setStep('codes')
@@ -79,15 +86,8 @@ export const BackupCodesDialog = ({ open, onOpenChange, codes, isRegenerate = fa
     })
   }
 
-  useEffect(() => {
-    if (verifyCode.length === 6 && step === 'verify' && !regenerate.isPending) {
-      handleRegenerate()
-    }
-  }, [verifyCode])
-
   const copyAllCodes = () => {
-    navigator.clipboard.writeText(displayCodes.join('\n'))
-    toast.success(t('settings.security.twoFactor.backup.copied'))
+    copy(displayCodes.join('\n'))
   }
 
   const downloadCodes = () => {
@@ -102,52 +102,40 @@ export const BackupCodesDialog = ({ open, onOpenChange, codes, isRegenerate = fa
     toast.success(t('settings.security.twoFactor.backup.downloaded'))
   }
 
-  const handleStartRegenerate = () => {
-    if (isEmailMethod) {
-      setStep('sendCode')
-    } else {
-      setStep('verify')
-    }
-  }
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>
-            {step === 'sendCode' || step === 'verify'
+            {step === 'verify'
               ? t('settings.security.twoFactor.backup.regenerateTitle')
               : t('settings.security.twoFactor.backup.title')}
           </DialogTitle>
-          <DialogDescription>
-            {step === 'sendCode'
-              ? t('settings.security.twoFactor.sendCodeToRegenerate')
-              : step === 'verify'
-                ? t('settings.security.twoFactor.backup.enterCodeToRegenerate')
-                : t('settings.security.twoFactor.backup.saveWarning')}
+          <DialogDescription className="text-balance">
+            {step === 'verify'
+              ? t('settings.security.twoFactor.backup.enterCodeToRegenerate')
+              : t('settings.security.twoFactor.backup.saveWarning')}
           </DialogDescription>
         </DialogHeader>
 
-        {step === 'sendCode' ? (
-          <div className="flex justify-center py-4">
-            <Button
-              onClick={handleSendEmailCode}
-              disabled={sendEmailCode.isPending}
-            >
-              {sendEmailCode.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {t('settings.security.twoFactor.sendCode')}
-            </Button>
-          </div>
-        ) : step === 'verify' ? (
-          <div className="flex justify-center py-4">
-            <OtpInput
-              value={verifyCode}
-              onChange={setVerifyCode}
-              length={6}
-              disabled={regenerate.isPending}
-              error={hasError}
-              autoFocus
-            />
+        {step === 'verify' ? (
+          <div className="space-y-4">
+            <div className="flex justify-center py-4">
+              <OtpInput
+                value={verifyCode}
+                onChange={setVerifyCode}
+                onComplete={handleRegenerate}
+                length={6}
+                disabled={regenerate.isPending}
+                error={hasError}
+                autoFocus
+              />
+            </div>
+            {regenerate.isPending && (
+              <div className="flex justify-center">
+                <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+              </div>
+            )}
           </div>
         ) : (
           <div className="space-y-4">
@@ -162,14 +150,14 @@ export const BackupCodesDialog = ({ open, onOpenChange, codes, isRegenerate = fa
               ))}
             </div>
 
-            <p className="text-xs text-muted-foreground text-center">
+            <p className="text-xs text-muted-foreground text-center text-balance">
               {t('settings.security.twoFactor.backup.oneTimeWarning')}
             </p>
 
             <div className="flex gap-2">
               <Button variant="outline" size="sm" className="flex-1" onClick={copyAllCodes}>
-                <Copy className="mr-2 h-4 w-4" />
-                {t('settings.security.twoFactor.backup.copy')}
+                {copied ? <Check className="mr-2 h-4 w-4 text-success" /> : <Copy className="mr-2 h-4 w-4" />}
+                {copied ? t('common.copied') : t('settings.security.twoFactor.backup.copy')}
               </Button>
               <Button variant="outline" size="sm" className="flex-1" onClick={downloadCodes}>
                 <Download className="mr-2 h-4 w-4" />
@@ -179,33 +167,18 @@ export const BackupCodesDialog = ({ open, onOpenChange, codes, isRegenerate = fa
           </div>
         )}
 
-        <DialogFooter>
-          {step === 'codes' && isRegenerate && newCodes.length === 0 && (
-            <Button variant="ghost" onClick={handleStartRegenerate} className="mr-auto">
-              {t('settings.security.twoFactor.backup.regenerate')}
-            </Button>
-          )}
-          {step === 'sendCode' || step === 'verify' ? (
-            <>
-              <Button variant="ghost" onClick={() => onOpenChange(false)}>
-                {t('common.cancel')}
+        {step === 'codes' && (
+          <DialogFooter>
+            {isRegenerate && newCodes.length === 0 && (
+              <Button variant="ghost" onClick={startRegeneration} className="mr-auto">
+                {t('settings.security.twoFactor.backup.regenerate')}
               </Button>
-              {step === 'verify' && (
-                <Button
-                  onClick={handleRegenerate}
-                  disabled={verifyCode.length !== 6 || regenerate.isPending}
-                >
-                  {regenerate.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  {t('settings.security.twoFactor.backup.regenerate')}
-                </Button>
-              )}
-            </>
-          ) : (
+            )}
             <Button onClick={() => onOpenChange(false)}>
               {t('settings.security.twoFactor.backup.done')}
             </Button>
-          )}
-        </DialogFooter>
+          </DialogFooter>
+        )}
       </DialogContent>
     </Dialog>
   )

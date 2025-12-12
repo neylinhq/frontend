@@ -6,8 +6,11 @@ import {
   type UserPreferences,
   useUpdatePreferences
 } from '@/entities/user'
+import { ModeToggle } from '@/features/theme/mode-toggle'
+import { PaletteToggle } from '@/features/theme/palette-toggle'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
 import { Label } from '@/shared/components/label'
+import { LanguageSwitcher } from '@/shared/components/language-switcher'
 import {
   Select,
   SelectContent,
@@ -90,6 +93,53 @@ export const PreferencesForm = ({ user }: PreferencesFormProps) => {
 
       <Card>
         <CardHeader>
+          <CardTitle>{t('settings.theme.appearance.title')}</CardTitle>
+          <CardDescription>{t('settings.theme.appearance.description')}</CardDescription>
+        </CardHeader>
+        <CardContent className='space-y-6'>
+          <div className='flex items-center justify-between'>
+            <div className='space-y-0.5'>
+              <Label>{t('settings.theme.appearance.mode')}</Label>
+              <p className='text-sm text-muted-foreground'>
+                {t('settings.theme.appearance.modeDescription')}
+              </p>
+            </div>
+            <ModeToggle />
+          </div>
+
+          <div className='flex items-center justify-between'>
+            <div className='space-y-0.5'>
+              <Label>{t('settings.theme.appearance.palette')}</Label>
+              <p className='text-sm text-muted-foreground'>
+                {t('settings.theme.appearance.paletteDescription')}
+              </p>
+            </div>
+            <PaletteToggle />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>{t('settings.theme.language.title')}</CardTitle>
+          <CardDescription>{t('settings.theme.language.description')}</CardDescription>
+        </CardHeader>
+        <CardContent className='space-y-6'>
+          <div className='flex items-center justify-between'>
+            <div className='space-y-0.5'>
+              <Label>{t('settings.theme.language.current')}</Label>
+              <p className='text-sm text-muted-foreground'>
+                {t('settings.theme.language.currentDescription')}
+              </p>
+            </div>
+            <LanguageSwitcher />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* TODO: Interface settings - not implemented yet
+      <Card>
+        <CardHeader>
           <CardTitle>{t('settings.preferences.interface.title')}</CardTitle>
           <CardDescription>{t('settings.preferences.interface.description')}</CardDescription>
         </CardHeader>
@@ -141,6 +191,7 @@ export const PreferencesForm = ({ user }: PreferencesFormProps) => {
           ))}
         </CardContent>
       </Card>
+      */}
     </div>
   )
 }

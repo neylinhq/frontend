@@ -1,14 +1,14 @@
-import { Copy, Pencil, Star, Trash2 } from 'lucide-react'
+import { Check, Copy, Pencil, Star, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from '@/shared/components/toast'
 import type { PaymentMethod, UpdatePaymentMethodInput } from '@/entities/subscription'
 import {
-  copyToClipboard,
   getCurrencyDisplayName,
   getNetworkDisplayName,
   isValidWalletAddress
 } from '@/entities/subscription'
+import { useCopyToClipboard } from '@/shared/lib/use-copy-to-clipboard'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -51,6 +51,7 @@ export const PaymentMethodDetailsDialog = ({
   const { t } = useTranslation()
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
+  const { copied, copy } = useCopyToClipboard()
 
   // Edit form state for crypto only (cards are view-only)
   const [editWalletAddress, setEditWalletAddress] = useState('')
@@ -102,14 +103,11 @@ export const PaymentMethodDetailsDialog = ({
     onSetDefault(method.id)
   }
 
-  const handleCopyAddress = async () => {
+  const handleCopyAddress = () => {
     if (method.type !== 'crypto') {
       return
     }
-    const success = await copyToClipboard(method.walletAddress)
-    if (success) {
-      toast.success(t('billing.addressCopied'))
-    }
+    copy(method.walletAddress)
   }
 
   const handleStartEdit = () => {
@@ -250,8 +248,8 @@ export const PaymentMethodDetailsDialog = ({
               {method.walletAddress}
             </span>
             <Button variant='ghost' size='sm' onClick={handleCopyAddress} className='h-8'>
-              <Copy className='h-4 w-4 mr-2' />
-              {t('billing.copyAddress')}
+              {copied ? <Check className='h-4 w-4 mr-2 text-success' /> : <Copy className='h-4 w-4 mr-2' />}
+              {copied ? t('common.copied') : t('billing.copyAddress')}
             </Button>
           </div>
         </div>

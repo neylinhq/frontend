@@ -41,7 +41,6 @@ export const KNOWLEDGE_BASE_ROUTES = {
 export const SETTINGS_ROUTES = {
   profile: '/dashboard/settings/profile',
   preferences: '/dashboard/settings/preferences',
-  theme: '/dashboard/settings/theme',
   integrations: '/dashboard/settings/integrations',
   security: '/dashboard/settings/security',
   billing: '/dashboard/settings/billing'

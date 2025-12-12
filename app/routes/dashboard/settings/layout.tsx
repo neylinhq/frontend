@@ -8,6 +8,7 @@ import {
   useLoaderData,
   useLocation
 } from 'react-router'
+import { type TwoFactorStatus, twoFactorApi } from '@/entities/two-factor'
 import { type User, userApi } from '@/entities/user'
 import { SETTINGS_NAV_ITEMS } from '@/shared/config'
 import { cn } from '@/shared/lib/cn'
@@ -18,8 +19,11 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const cookies = getCookies(request)
 
   try {
-    const user = await userApi.getCurrentUser({ cookies })
-    return { user }
+    const [user, twoFactorStatus] = await Promise.all([
+      userApi.getCurrentUser({ cookies }),
+      twoFactorApi.getStatus({ cookies }).catch(() => null)
+    ])
+    return { user, twoFactorStatus }
   } catch {
     throw redirect('/auth/sign-in')
   }
@@ -28,8 +32,11 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 // Client-side loader
 export const clientLoader = async (_args: ClientLoaderFunctionArgs) => {
   try {
-    const user = await userApi.getCurrentUser()
-    return { user }
+    const [user, twoFactorStatus] = await Promise.all([
+      userApi.getCurrentUser(),
+      twoFactorApi.getStatus().catch(() => null)
+    ])
+    return { user, twoFactorStatus }
   } catch {
     throw redirect('/auth/sign-in')
   }
@@ -40,15 +47,16 @@ clientLoader.hydrate = true
 // Context type for child routes
 export type SettingsContext = {
   user: User
+  twoFactorStatus: TwoFactorStatus | null
 }
 
 const SettingsLayout = () => {
   const { t } = useTranslation()
   const location = useLocation()
-  const { user } = useLoaderData<typeof loader>()
+  const { user, twoFactorStatus } = useLoaderData<typeof loader>()
 
   return (
-    <div className='h-full overflow-y-auto'>
+    <div className='min-h-full'>
       <div className='container max-w-6xl mx-auto py-10 px-4 md:px-6 lg:px-8'>
         <div className='mb-10'>
           <h1 className='text-3xl font-bold tracking-tight'>{t('settings.title')}</h1>
@@ -56,8 +64,8 @@ const SettingsLayout = () => {
         </div>
 
         <div className='flex flex-col md:flex-row gap-6 lg:gap-10'>
-          {/* Mobile: Horizontal tabs with icons only */}
-          <nav className='flex md:hidden gap-1 overflow-x-auto pb-2 -mx-4 px-4'>
+          {/* Mobile: Horizontal tabs with icons only - sticky */}
+          <nav className='flex md:hidden gap-1 overflow-x-auto py-3 -mx-4 px-4 sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 -mt-4 border-b border-border/50'>
             {SETTINGS_NAV_ITEMS.map(item => {
               const Icon = item.icon
               const isActive = location.pathname === item.href
@@ -80,8 +88,8 @@ const SettingsLayout = () => {
           </nav>
 
           {/* Desktop: Sidebar Navigation */}
-          <aside className='hidden md:block md:w-56 flex-shrink-0'>
-            <nav className='space-y-1 sticky top-6'>
+          <aside className='hidden md:block md:w-56 flex-shrink-0 self-start sticky top-10'>
+            <nav className='space-y-1'>
               {SETTINGS_NAV_ITEMS.map(item => {
                 const Icon = item.icon
                 const isActive = location.pathname === item.href
@@ -107,7 +115,7 @@ const SettingsLayout = () => {
 
           {/* Content Area */}
           <main className='flex-1 min-w-0 max-w-3xl'>
-            <Outlet context={{ user } satisfies SettingsContext} />
+            <Outlet context={{ user, twoFactorStatus } satisfies SettingsContext} />
           </main>
         </div>
       </div>

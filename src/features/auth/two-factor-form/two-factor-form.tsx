@@ -58,8 +58,8 @@ export const TwoFactorForm = ({ challengeData, returnUrl = '/dashboard/overview'
     setHasError(false)
   }, [method])
 
-  const handleSubmit = async () => {
-    const codeToSubmit = method === 'backup' ? backupCode : code
+  const handleSubmit = async (completedCode?: string) => {
+    const codeToSubmit = completedCode || (method === 'backup' ? backupCode : code)
 
     if (method === 'backup') {
       if (codeToSubmit.length < 8) return
@@ -116,14 +116,6 @@ export const TwoFactorForm = ({ challengeData, returnUrl = '/dashboard/overview'
       }
     }
   }
-
-  // Auto-submit for TOTP and Email when 6 digits entered
-  useEffect(() => {
-    if (method !== 'backup' && code.length === 6 && !isSubmitting) {
-      handleSubmit()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [code])
 
   const getIcon = () => {
     switch (method) {
@@ -195,6 +187,7 @@ export const TwoFactorForm = ({ challengeData, returnUrl = '/dashboard/overview'
           <OtpInput
             value={code}
             onChange={setCode}
+            onComplete={handleSubmit}
             length={6}
             disabled={isSubmitting}
             error={hasError}
@@ -202,18 +195,23 @@ export const TwoFactorForm = ({ challengeData, returnUrl = '/dashboard/overview'
           />
         )}
 
-        <Button
-          type="button"
-          className="w-full"
-          disabled={
-            (method === 'backup' ? backupCode.length < 8 : code.length !== 6) ||
-            isSubmitting
-          }
-          onClick={handleSubmit}
-        >
-          {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {t('auth.twoFactor.submitButton')}
-        </Button>
+        {method === 'backup' ? (
+          <Button
+            type="button"
+            className="w-full"
+            disabled={backupCode.length < 8 || isSubmitting}
+            onClick={() => handleSubmit()}
+          >
+            {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {t('auth.twoFactor.submitButton')}
+          </Button>
+        ) : (
+          isSubmitting && (
+            <div className="flex justify-center">
+              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+            </div>
+          )
+        )}
 
         {method === 'email' && twoFactorMethods.includes('email') && (
           <div className="flex items-center justify-center text-sm text-muted-foreground">

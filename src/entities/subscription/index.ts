@@ -5,6 +5,8 @@ export {
   copyToClipboard,
   getCurrencyDisplayName,
   getNetworkDisplayName,
+  getNetworkFeeEstimate,
+  getWalletType,
   isValidWalletAddress,
   shortenWalletAddress
 } from './lib/crypto-utils'

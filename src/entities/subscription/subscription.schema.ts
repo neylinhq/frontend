@@ -66,11 +66,17 @@ export const CardBrandEnum = z.enum([
 ])
 export type CardBrand = z.infer<typeof CardBrandEnum>
 
-// Crypto networks and currencies
-export const CryptoNetworkEnum = z.enum(['bitcoin', 'ethereum', 'solana', 'tron'])
+// Crypto networks for USDT payments (Connect Wallet)
+export const CryptoNetworkEnum = z.enum([
+  'ton',      // TON - TonKeeper
+  'tron',     // TRC-20 - TronLink
+  'bsc',      // BEP-20 - MetaMask
+  'polygon',  // Polygon - MetaMask
+  'ethereum'  // ERC-20 - MetaMask
+])
 export type CryptoNetwork = z.infer<typeof CryptoNetworkEnum>
 
-export const CryptoCurrencyEnum = z.enum(['BTC', 'ETH', 'USDT', 'USDC', 'SOL'])
+export const CryptoCurrencyEnum = z.enum(['USDT'])
 export type CryptoCurrency = z.infer<typeof CryptoCurrencyEnum>
 
 // Base payment method fields

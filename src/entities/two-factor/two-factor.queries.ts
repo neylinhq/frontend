@@ -7,11 +7,12 @@ export const twoFactorKeys = {
 }
 
 // Query: Get 2FA status
-export function useTwoFactorStatus() {
+export function useTwoFactorStatus(initialData?: TwoFactorStatus | null) {
   return useQuery({
     queryKey: twoFactorKeys.status(),
     queryFn: () => twoFactorApi.getStatus(),
-    staleTime: 1000 * 60 * 5 // 5 minutes
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    initialData: initialData ?? undefined
   })
 }
 

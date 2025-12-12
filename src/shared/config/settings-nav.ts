@@ -1,9 +1,7 @@
 import {
   CreditCard,
   type LucideIcon,
-  Palette,
   Settings2,
-  Shield,
   User as UserIcon
 } from 'lucide-react'
 import { SETTINGS_ROUTES } from './routes'
@@ -26,14 +24,9 @@ export const SETTINGS_NAV_ITEMS: SettingsNavItem[] = [
     icon: Settings2
   },
   {
-    title: 'settings.nav.theme',
-    href: SETTINGS_ROUTES.theme,
-    icon: Palette
-  },
-  {
-    title: 'settings.nav.security',
+    title: 'settings.nav.account',
     href: SETTINGS_ROUTES.security,
-    icon: Shield
+    icon: UserIcon
   },
   {
     title: 'settings.nav.billing',

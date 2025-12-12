@@ -150,7 +150,9 @@
     "apply": "Apply",
     "dismiss": "Dismiss",
     "undo": "Undo",
-    "undone": "Undone"
+    "undone": "Undone",
+    "copied": "Copied",
+    "copy": "Copy"
   },
   "imageCrop": {
     "title": "Crop image",
@@ -1237,9 +1239,8 @@
     "nav": {
       "profile": "Profile",
       "preferences": "Preferences",
-      "theme": "Theme",
       "integrations": "Integrations",
-      "security": "Security",
+      "account": "Account",
       "billing": "Billing"
     },
     "profile": {

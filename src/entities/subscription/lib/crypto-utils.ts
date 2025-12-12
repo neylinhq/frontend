@@ -18,12 +18,36 @@ export const shortenWalletAddress = (address: string, startChars = 6, endChars =
  */
 export const getNetworkDisplayName = (network: CryptoNetwork) => {
   const names: Record<CryptoNetwork, string> = {
-    bitcoin: 'Bitcoin',
-    ethereum: 'Ethereum',
-    solana: 'Solana',
-    tron: 'Tron'
+    ton: 'TON',
+    tron: 'Tron (TRC-20)',
+    bsc: 'BNB Smart Chain (BEP-20)',
+    polygon: 'Polygon',
+    ethereum: 'Ethereum (ERC-20)'
   }
   return names[network]
+}
+
+/**
+ * Get network fee estimate (approximate)
+ */
+export const getNetworkFeeEstimate = (network: CryptoNetwork): string => {
+  const fees: Record<CryptoNetwork, string> = {
+    ton: '~$0.01',
+    tron: '~$0.50',
+    bsc: '~$0.10',
+    polygon: '~$0.01',
+    ethereum: '~$2-10'
+  }
+  return fees[network]
+}
+
+/**
+ * Get the wallet type for network
+ */
+export const getWalletType = (network: CryptoNetwork): 'tonconnect' | 'evm' | 'tron' => {
+  if (network === 'ton') return 'tonconnect'
+  if (network === 'tron') return 'tron'
+  return 'evm' // bsc, polygon, ethereum
 }
 
 /**
@@ -31,11 +55,7 @@ export const getNetworkDisplayName = (network: CryptoNetwork) => {
  */
 export const getCurrencyDisplayName = (currency: CryptoCurrency) => {
   const names: Record<CryptoCurrency, string> = {
-    BTC: 'Bitcoin',
-    ETH: 'Ethereum',
-    USDT: 'Tether',
-    USDC: 'USD Coin',
-    SOL: 'Solana'
+    USDT: 'Tether USD'
   }
   return names[currency]
 }
@@ -45,20 +65,17 @@ export const getCurrencyDisplayName = (currency: CryptoCurrency) => {
  */
 export const isValidWalletAddress = (address: string, network: CryptoNetwork) => {
   switch (network) {
-    case 'ethereum':
+    case 'ton':
+      // TON: EQ... or UQ... followed by 46 characters (base64)
+      return /^[EU]Q[a-zA-Z0-9_-]{46}$/.test(address)
     case 'tron':
-      // Ethereum: 0x followed by 40 hex characters
       // Tron: T followed by 33 characters (base58)
-      if (network === 'ethereum') {
-        return /^0x[a-fA-F0-9]{40}$/.test(address)
-      }
       return /^T[a-zA-Z0-9]{33}$/.test(address)
-    case 'bitcoin':
-      // Bitcoin: Legacy (1...), SegWit (3...), Native SegWit (bc1...)
-      return /^(1|3)[a-zA-Z0-9]{25,34}$/.test(address) || /^bc1[a-zA-Z0-9]{39,59}$/.test(address)
-    case 'solana':
-      // Solana: Base58, 32-44 characters
-      return /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(address)
+    case 'bsc':
+    case 'polygon':
+    case 'ethereum':
+      // EVM: 0x followed by 40 hex characters
+      return /^0x[a-fA-F0-9]{40}$/.test(address)
     default:
       return false
   }

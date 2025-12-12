@@ -1,4 +1,4 @@
-import { Copy, Loader2 } from 'lucide-react'
+import { Check, Copy, Loader2 } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -15,6 +15,7 @@ import {
 import { Input } from '@/shared/components/input'
 import { OtpInput } from '@/shared/components/otp-input'
 import { toast } from '@/shared/components/toast'
+import { useCopyToClipboard } from '@/shared/lib/use-copy-to-clipboard'
 
 interface TotpSetupDialogProps {
   open: boolean
@@ -32,6 +33,7 @@ export const TotpSetupDialog = ({ open, onOpenChange, onSuccess }: TotpSetupDial
   const [step, setStep] = useState<Step>('qr')
   const [code, setCode] = useState('')
   const [hasError, setHasError] = useState(false)
+  const { copied, copy } = useCopyToClipboard()
 
   useEffect(() => {
     if (open) {
@@ -42,11 +44,12 @@ export const TotpSetupDialog = ({ open, onOpenChange, onSuccess }: TotpSetupDial
     }
   }, [open])
 
-  const handleVerify = () => {
-    if (code.length !== 6) return
+  const handleVerify = (completedCode?: string) => {
+    const codeToUse = completedCode || code
+    if (codeToUse.length !== 6) return
 
     setHasError(false)
-    enableTOTP.mutate(code, {
+    enableTOTP.mutate(codeToUse, {
       onSuccess: (data) => {
         toast.success(t('settings.security.twoFactor.totp.enabled'))
         onSuccess(data.backupCodes)
@@ -59,16 +62,9 @@ export const TotpSetupDialog = ({ open, onOpenChange, onSuccess }: TotpSetupDial
     })
   }
 
-  useEffect(() => {
-    if (code.length === 6 && step === 'verify' && !enableTOTP.isPending) {
-      handleVerify()
-    }
-  }, [code])
-
   const copySecret = () => {
     if (setupTOTP.data?.secret) {
-      navigator.clipboard.writeText(setupTOTP.data.secret)
-      toast.success(t('settings.security.twoFactor.totp.secretCopied'))
+      copy(setupTOTP.data.secret)
     }
   }
 
@@ -109,21 +105,29 @@ export const TotpSetupDialog = ({ open, onOpenChange, onSuccess }: TotpSetupDial
                   className="font-mono text-xs"
                 />
                 <Button variant="ghost" size="icon" onClick={copySecret}>
-                  <Copy className="h-4 w-4" />
+                  {copied ? <Check className="h-4 w-4 text-success" /> : <Copy className="h-4 w-4" />}
                 </Button>
               </div>
             </div>
           </div>
         ) : (
-          <div className="flex justify-center py-4">
-            <OtpInput
-              value={code}
-              onChange={setCode}
-              length={6}
-              disabled={enableTOTP.isPending}
-              error={hasError}
-              autoFocus
-            />
+          <div className="space-y-4">
+            <div className="flex justify-center py-4">
+              <OtpInput
+                value={code}
+                onChange={setCode}
+                onComplete={handleVerify}
+                length={6}
+                disabled={enableTOTP.isPending}
+                error={hasError}
+                autoFocus
+              />
+            </div>
+            {enableTOTP.isPending && (
+              <div className="flex justify-center">
+                <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+              </div>
+            )}
           </div>
         )}
 
@@ -144,17 +148,9 @@ export const TotpSetupDialog = ({ open, onOpenChange, onSuccess }: TotpSetupDial
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
             {t('common.cancel')}
           </Button>
-          {step === 'qr' ? (
+          {step === 'qr' && (
             <Button onClick={() => setStep('verify')}>
               {t('common.continue')}
-            </Button>
-          ) : (
-            <Button
-              onClick={handleVerify}
-              disabled={code.length !== 6 || enableTOTP.isPending}
-            >
-              {enableTOTP.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {t('settings.security.twoFactor.totp.verify')}
             </Button>
           )}
         </DialogFooter>

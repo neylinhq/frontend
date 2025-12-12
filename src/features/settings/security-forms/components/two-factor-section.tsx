@@ -2,6 +2,7 @@ import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
+  type TwoFactorStatus,
   useTwoFactorStatus,
   useEnableEmailOTP
 } from '@/entities/two-factor'
@@ -14,9 +15,13 @@ import { TotpSetupDialog } from './totp-setup-dialog'
 import { BackupCodesDialog } from './backup-codes-dialog'
 import { DisableTwoFactorDialog } from './disable-two-factor-dialog'
 
-export const TwoFactorSection = () => {
+interface TwoFactorSectionProps {
+  initialStatus?: TwoFactorStatus | null
+}
+
+export const TwoFactorSection = ({ initialStatus }: TwoFactorSectionProps) => {
   const { t } = useTranslation()
-  const { data: status, isLoading } = useTwoFactorStatus()
+  const { data: status, isLoading } = useTwoFactorStatus(initialStatus)
   const enableEmailOTP = useEnableEmailOTP()
 
   const [showTotpSetup, setShowTotpSetup] = useState(false)
@@ -49,7 +54,7 @@ export const TwoFactorSection = () => {
   }
 
   // Fallback skeleton if SSR data not available (rare edge case)
-  if (isLoading) {
+  if (isLoading && !initialStatus) {
     return (
       <Card>
         <CardHeader>

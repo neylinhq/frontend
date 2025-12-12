@@ -4,6 +4,7 @@ import { cn } from '@/shared/lib/cn'
 interface OtpInputProps {
   value: string
   onChange: (value: string) => void
+  onComplete?: (value: string) => void
   length?: number
   disabled?: boolean
   error?: boolean
@@ -14,6 +15,7 @@ interface OtpInputProps {
 export const OtpInput = ({
   value,
   onChange,
+  onComplete,
   length = 6,
   disabled = false,
   error = false,
@@ -36,6 +38,11 @@ export const OtpInput = ({
     // Move to next input if value entered
     if (inputValue && index < length - 1) {
       inputRefs.current[index + 1]?.focus()
+    }
+
+    // Auto-submit when all digits entered
+    if (result.length === length && onComplete) {
+      onComplete(result)
     }
   }
 
@@ -69,6 +76,11 @@ export const OtpInput = ({
       // Focus on the input after the last pasted character
       const nextIndex = Math.min(pastedData.length, length - 1)
       inputRefs.current[nextIndex]?.focus()
+
+      // Auto-submit when all digits pasted
+      if (pastedData.length === length && onComplete) {
+        onComplete(pastedData)
+      }
     }
   }
 

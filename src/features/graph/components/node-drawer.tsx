@@ -170,25 +170,23 @@ export const NodeDrawer = memo(({ node, onClose, connectionsCount = 0, connectio
             onValueChange={value => switchTab(value as 'overview' | 'properties' | 'connections')}
             className='flex flex-col flex-1 min-h-0'
           >
-            <div className='px-4 py-2'>
-              <TabsList className='w-full grid grid-cols-2'>
-                {isReadOnly ? (
-                  <TabsTrigger value='overview' className='gap-1.5'>
-                    <Eye className='h-3.5 w-3.5' />
-                    <span className='text-xs'>{t('nodeDrawer.tabs.overview')}</span>
-                  </TabsTrigger>
-                ) : (
-                  <TabsTrigger value='properties' className='gap-1.5'>
-                    <SlidersHorizontal className='h-3.5 w-3.5' />
-                    <span className='text-xs'>{t('nodeDrawer.tabs.properties')}</span>
-                  </TabsTrigger>
-                )}
-                <TabsTrigger value='connections' className='gap-1.5'>
-                  <Network className='h-3.5 w-3.5' />
-                  <span className='text-xs'>{t('nodeDrawer.tabs.connections')}</span>
+            <TabsList variant='underline' className='grid grid-cols-2'>
+              {isReadOnly ? (
+                <TabsTrigger variant='underline' value='overview' className='gap-1.5'>
+                  <Eye className='h-3.5 w-3.5' />
+                  <span className='text-xs'>{t('nodeDrawer.tabs.overview')}</span>
                 </TabsTrigger>
-              </TabsList>
-            </div>
+              ) : (
+                <TabsTrigger variant='underline' value='properties' className='gap-1.5'>
+                  <SlidersHorizontal className='h-3.5 w-3.5' />
+                  <span className='text-xs'>{t('nodeDrawer.tabs.properties')}</span>
+                </TabsTrigger>
+              )}
+              <TabsTrigger variant='underline' value='connections' className='gap-1.5'>
+                <Network className='h-3.5 w-3.5' />
+                <span className='text-xs'>{t('nodeDrawer.tabs.connections')}</span>
+              </TabsTrigger>
+            </TabsList>
 
             {/* Read-only: Overview tab */}
             {isReadOnly && (

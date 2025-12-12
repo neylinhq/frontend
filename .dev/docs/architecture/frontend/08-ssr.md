@@ -238,277 +238,56 @@ const dehydratedState = dehydrate(queryClient)
 
 ---
 
-## Эталонная реализация Anti-Flash (Neylin)
+## Anti-Flash: Предотвращение мигания темы
 
-Комплексное решение из 5 слоёв защиты:
+> **Reference implementation:** [`app/root.tsx`](../../../../app/root.tsx)
 
-### Слой 1: Critical CSS inline
+### 5 слоёв защиты
 
-```tsx
-// app/root.tsx — Layout component
-<head>
-  {/* ПЕРВЫМ в head для немедленного применения */}
-  <style dangerouslySetInnerHTML={{
-    __html: `
-      /* Отключение transitions при смене темы */
-      html.theme-transition-disabled,
-      html.theme-transition-disabled *,
-      html.theme-transition-disabled *::before,
-      html.theme-transition-disabled *::after {
-        transition: none !important;
-      }
+| Слой | Что делает | Где |
+|------|------------|-----|
+| **1. Critical CSS** | Инлайн стили для всех тем в `<head>` | `root.tsx` строки 61-85 |
+| **2. SSR Theme Injection** | Сервер читает cookie и рендерит `<html class="dark">` | `root.tsx` loader + Layout |
+| **3. Blocking Script** | Синхронизирует localStorage → DOM до paint | `root.tsx` строки 91-147 |
+| **4. ThemeProvider** | `useLayoutEffect` для синхронного применения | `theme-provider.tsx` |
+| **5. Navigation Flash** | Отключает transitions при навигации | `root.tsx` строки 170-179 |
 
-      /* Classic theme (default) */
-      html { background-color: #ffffff; color: #171717; }
-      html.dark { background-color: #121212; color: #ededed; }
-
-      /* Все палитры */
-      html[data-palette="vanilla"] { background-color: #faf9f7; color: #211d1a; }
-      html[data-palette="vanilla"].dark { background-color: #161412; color: #e8e4de; }
-      /* ... другие палитры */
-    `
-  }} />
-  <Meta />
-  <Links />
-</head>
-```
-
-### Слой 2: SSR Theme Injection
-
-```tsx
-// app/theme/theme.server.ts
-export const getThemeData = (request: Request) => {
-  const cookieHeader = request.headers.get('Cookie') ?? ''
-
-  const getCookie = (name: string): string | undefined =>
-    cookieHeader
-      .split(';')
-      .find(c => c.trim().startsWith(`${name}=`))
-      ?.split('=')[1]
-      ?.trim()
-
-  const mode = (getCookie(MODE_COOKIE_KEY) as Mode) || 'system'
-  const palette = (getCookie(PALETTE_COOKIE_KEY) as Palette) || 'classic'
-
-  return { mode, palette }
-}
-
-// app/root.tsx — Layout
-export const loader = async ({ request }: Route.LoaderArgs) => {
-  const { getThemeData } = await import('@/app/theme/theme.server')
-  return { theme: getThemeData(request) }
-}
-
-const Layout = ({ children }) => {
-  const data = useRouteLoaderData<typeof loader>('root')
-
-  // SSR: применяем класс если mode === 'dark'
-  const ssrDarkClass = data?.theme?.mode === 'dark' ? 'dark' : undefined
-  const ssrPalette = data?.theme?.palette !== 'classic' ? data.theme.palette : undefined
-
-  return (
-    <html className={ssrDarkClass} data-palette={ssrPalette} suppressHydrationWarning>
-      {/* ... */}
-    </html>
-  )
-}
-```
-
-### Слой 3: Blocking Script (синхронизация)
-
-```tsx
-// app/root.tsx — в <head> после Critical CSS
-<script dangerouslySetInnerHTML={{
-  __html: `
-    (function() {
-      try {
-        var MODE_KEY = 'theme-mode';
-        var PALETTE_KEY = 'theme-palette';
-
-        // Отключаем transitions до hydration
-        document.documentElement.classList.add('theme-transition-disabled');
-
-        function getCookie(n) {
-          var m = document.cookie.match('(^|;)\\\\s*' + n + '\\\\s*=\\\\s*([^;]+)');
-          return m ? m.pop() : null;
-        }
-
-        // Приоритет: localStorage > cookie > system
-        var localMode = localStorage.getItem(MODE_KEY);
-        var cookieMode = getCookie(MODE_KEY);
-        var mode = localMode || cookieMode;
-        var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        var shouldBeDark = mode === 'dark' || (mode === 'system' && systemDark) || (!mode && systemDark);
-
-        // Синхронизация с SSR
-        var hasDark = document.documentElement.classList.contains('dark');
-        if (shouldBeDark && !hasDark) {
-          document.documentElement.classList.add('dark');
-        } else if (!shouldBeDark && hasDark) {
-          document.documentElement.classList.remove('dark');
-        }
-
-        // Sync localStorage -> cookie (для будущих SSR)
-        if (localMode && localMode !== cookieMode) {
-          document.cookie = MODE_KEY + '=' + localMode + '; path=/; max-age=31536000; SameSite=Lax';
-        }
-
-        // Palette
-        var localPalette = localStorage.getItem(PALETTE_KEY);
-        var cookiePalette = getCookie(PALETTE_KEY);
-        var palette = localPalette || cookiePalette;
-
-        if (palette && palette !== 'classic') {
-          document.documentElement.dataset.palette = palette;
-        }
-
-        if (localPalette && localPalette !== cookiePalette) {
-          document.cookie = PALETTE_KEY + '=' + localPalette + '; path=/; max-age=31536000; SameSite=Lax';
-        }
-      } catch (e) { /* localStorage unavailable */ }
-    })();
-  `
-}} />
-```
-
-### Слой 4: ThemeProvider с useLayoutEffect
-
-```tsx
-// app/theme/components/theme-provider.tsx
-
-// Отключение transitions при программной смене темы
-const withoutTransitions = (callback: () => void) => {
-  const root = document.documentElement
-  root.classList.add('theme-transition-disabled')
-  callback()
-  // Re-enable after paint
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      root.classList.remove('theme-transition-disabled')
-    })
-  })
-}
-
-export const ThemeProvider = ({ children, defaultMode, defaultPalette }) => {
-  const [mode, setModeState] = useState<Mode>(() =>
-    typeof window !== 'undefined'
-      ? localStorage.getItem(MODE_STORAGE_KEY) || defaultMode
-      : defaultMode
-  )
-
-  // useLayoutEffect — синхронно ДО paint
-  useLayoutEffect(() => {
-    const root = document.documentElement
-    const resolved = resolveMode(mode)
-
-    // Обновляем только если класс отличается (предотвращает лишний repaint)
-    if (!root.classList.contains(resolved)) {
-      root.classList.remove('light', 'dark')
-      root.classList.add(resolved)
-    }
-  }, [mode])
-
-  // Слушаем изменения системной темы
-  useLayoutEffect(() => {
-    if (mode !== 'system') return
-
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-    const handleChange = () => {
-      const resolved = resolveMode('system')
-      document.documentElement.classList.remove('light', 'dark')
-      document.documentElement.classList.add(resolved)
-    }
-
-    mediaQuery.addEventListener('change', handleChange)
-    return () => mediaQuery.removeEventListener('change', handleChange)
-  }, [mode])
-
-  const setMode = (newMode: Mode) => {
-    withoutTransitions(() => {
-      localStorage.setItem(MODE_STORAGE_KEY, newMode)
-      setCookie(MODE_COOKIE_KEY, newMode)
-      setModeState(newMode)
-    })
-  }
-
-  // ...
-}
-```
-
-### Слой 5: Navigation Flash Prevention
-
-```tsx
-// app/root.tsx — App component
-const App = () => {
-  const navigation = useNavigation()
-
-  // Отключаем transitions при навигации (lazy CSS loading)
-  useEffect(() => {
-    if (navigation.state === 'loading') {
-      document.documentElement.classList.add('theme-transition-disabled')
-    } else if (navigation.state === 'idle') {
-      const timer = setTimeout(() => {
-        document.documentElement.classList.remove('theme-transition-disabled')
-      }, 50)
-      return () => clearTimeout(timer)
-    }
-  }, [navigation.state])
-
-  return (/* ... */)
-}
-```
-
-### Архитектура решения
+### Поток данных
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│ REQUEST                                                          │
-└─────────────────────────┬───────────────────────────────────────┘
-                          ▼
-┌─────────────────────────────────────────────────────────────────┐
-│ 1. SERVER: getThemeData(request)                                 │
-│    └─ Читаем mode/palette из Cookie                              │
-│    └─ Return { mode: 'dark', palette: 'vanilla' }                │
-└─────────────────────────┬───────────────────────────────────────┘
-                          ▼
-┌─────────────────────────────────────────────────────────────────┐
-│ 2. SERVER: Render HTML                                           │
-│    └─ <html class="dark" data-palette="vanilla">                 │
-│    └─ Critical CSS inline (background + colors)                  │
-│    └─ Blocking script (синхронизация localStorage → cookie)      │
-└─────────────────────────┬───────────────────────────────────────┘
-                          ▼
-┌─────────────────────────────────────────────────────────────────┐
-│ 3. BROWSER: Parse HTML                                           │
-│    └─ Critical CSS применяется немедленно                        │
-│    └─ Blocking script проверяет localStorage                     │
-│    └─ Если localStorage ≠ SSR → исправляет class                 │
-│    └─ theme-transition-disabled предотвращает анимацию           │
-└─────────────────────────┬───────────────────────────────────────┘
-                          ▼
-┌─────────────────────────────────────────────────────────────────┐
-│ 4. BROWSER: Hydration                                            │
-│    └─ ThemeProvider инициализируется с SSR данными               │
-│    └─ useLayoutEffect проверяет/применяет тему                   │
-│    └─ theme-transition-disabled снимается                        │
-└─────────────────────────────────────────────────────────────────┘
+REQUEST
+    ↓
+SERVER: loader() → getThemeData(request) → читает cookie
+    ↓
+SERVER: Layout → <html class="dark" data-palette="vanilla">
+    ↓
+BROWSER: Critical CSS применяется немедленно
+    ↓
+BROWSER: Blocking script проверяет localStorage, исправляет если нужно
+    ↓
+BROWSER: Hydration → ThemeProvider получает SSR данные
+    ↓
+BROWSER: useLayoutEffect → финальная синхронизация, снятие theme-transition-disabled
 ```
 
-### Known Limitations
+### Ключевые моменты
 
-| Проблема | Причина | Решение |
-|----------|---------|---------|
-| Микро-flash при `mode: system` | Сервер не знает системную тему | Blocking script исправляет до paint |
-| Client Hints не везде | `Sec-CH-Prefers-Color-Scheme` | Fallback на blocking script |
+**Приоритет источников:** `localStorage > cookie > system`
+
+**Почему cookie для SSR:** Сервер не имеет доступа к localStorage, только к headers.
+
+**Почему blocking script:** Если пользователь сменил тему на другом устройстве, localStorage актуальнее cookie. Скрипт исправляет до первого paint.
+
+**Класс `theme-transition-disabled`:** Отключает CSS transitions во время смены темы, предотвращая анимацию при загрузке.
 
 ### Файлы
 
-| Файл | Назначение |
-|------|------------|
-| `app/root.tsx` | Critical CSS, blocking script, Layout |
-| `app/theme/theme.server.ts` | SSR чтение cookie |
-| `app/theme/components/theme-provider.tsx` | Client-side state + useLayoutEffect |
-| `shared/lib/theme/theme.constants.ts` | Cookie/storage ключи |
+| Файл | Роль |
+|------|------|
+| `app/root.tsx` | Всё: Critical CSS, blocking script, Layout, navigation flash |
+| `src/app/theme/theme.server.ts` | Чтение cookie на сервере |
+| `src/app/theme/components/theme-provider.tsx` | React context + useLayoutEffect |
+| `src/shared/core/theme/theme.constants.ts` | Ключи для cookie/localStorage |
 
 ---
 

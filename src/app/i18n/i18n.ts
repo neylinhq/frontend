@@ -53,12 +53,17 @@ export const initI18n = (data: I18nInitData) => {
 }
 
 /**
- * Change language - saves to cookie and does full page navigation
+ * Change language without page reload
  */
-export const changeLanguage = (lng: string) => {
+export const changeLanguage = async (lng: string) => {
+  // 1. Change language in i18next (lazy loads translations if needed)
+  await i18n.changeLanguage(lng)
+
+  // 2. Save to localStorage for client-side persistence
+  localStorage.setItem('i18nextLng', lng)
+
+  // 3. Save to cookie for SSR
   document.cookie = `i18nextLng=${lng}; path=/; max-age=31536000; SameSite=Lax`
-  // Full navigation instead of reload to avoid HMR cache issues
-  window.location.href = window.location.href
 }
 
 export default i18n

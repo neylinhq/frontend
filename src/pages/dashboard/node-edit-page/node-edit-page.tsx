@@ -56,10 +56,10 @@ const SidebarSkeleton = ({ width }: { width: number }) => (
   >
     <div className='flex flex-1 flex-col min-h-0 overflow-hidden'>
       {/* Tab Header Skeleton */}
-      <div className='h-10 flex items-center gap-1 border-b border-border/50 px-2'>
-        <Skeleton className='h-9 w-10 rounded-md' />
-        <Skeleton className='h-9 w-10 rounded-md' />
-        <Skeleton className='h-9 w-10 rounded-md' />
+      <div className='h-10 grid grid-cols-3 border-b border-border/50'>
+        <Skeleton className='h-full rounded-none' />
+        <Skeleton className='h-full rounded-none' />
+        <Skeleton className='h-full rounded-none' />
       </div>
 
       {/* Content Skeleton */}
@@ -423,26 +423,14 @@ export const NodeEditPage = ({
           <div className='flex flex-1 flex-col min-h-0 overflow-hidden'>
             <Tabs defaultValue='properties' className='flex flex-1 flex-col min-h-0'>
               {/* Tab Header */}
-              <TabsList className='h-10 w-full justify-start gap-1 rounded-none border-b border-border/50 bg-transparent px-2'>
-                <TabsTrigger
-                  value='properties'
-                  title={t('nodeEdit.tabs.properties')}
-                  className='h-9 rounded-none border-b-2 border-transparent px-3 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none'
-                >
+              <TabsList variant='underline' className='grid grid-cols-3'>
+                <TabsTrigger variant='underline' value='properties' title={t('nodeEdit.tabs.properties')}>
                   <SlidersHorizontal className='h-4 w-4' />
                 </TabsTrigger>
-                <TabsTrigger
-                  value='practice'
-                  title={t('nodeEdit.tabs.practice')}
-                  className='h-9 rounded-none border-b-2 border-transparent px-3 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none'
-                >
+                <TabsTrigger variant='underline' value='practice' title={t('nodeEdit.tabs.practice')}>
                   <GraduationCap className='h-4 w-4' />
                 </TabsTrigger>
-                <TabsTrigger
-                  value='ai'
-                  title={t('nodeEdit.tabs.ai')}
-                  className='h-9 rounded-none border-b-2 border-transparent px-3 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none'
-                >
+                <TabsTrigger variant='underline' value='ai' title={t('nodeEdit.tabs.ai')}>
                   <Sparkles className='h-4 w-4' />
                 </TabsTrigger>
               </TabsList>
@@ -521,26 +509,14 @@ export const NodeEditPage = ({
           <Tabs defaultValue='properties' className='flex flex-1 flex-col min-h-0'>
             {/* Tab Header */}
             <SheetHeader className='p-0'>
-              <TabsList className='h-10 w-full justify-start gap-1 rounded-none border-b border-border/50 bg-transparent px-2'>
-                <TabsTrigger
-                  value='properties'
-                  title={t('nodeEdit.tabs.properties')}
-                  className='h-9 rounded-none border-b-2 border-transparent px-3 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none'
-                >
+              <TabsList variant='underline' className='grid grid-cols-3'>
+                <TabsTrigger variant='underline' value='properties' title={t('nodeEdit.tabs.properties')}>
                   <SlidersHorizontal className='h-4 w-4' />
                 </TabsTrigger>
-                <TabsTrigger
-                  value='practice'
-                  title={t('nodeEdit.tabs.practice')}
-                  className='h-9 rounded-none border-b-2 border-transparent px-3 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none'
-                >
+                <TabsTrigger variant='underline' value='practice' title={t('nodeEdit.tabs.practice')}>
                   <GraduationCap className='h-4 w-4' />
                 </TabsTrigger>
-                <TabsTrigger
-                  value='ai'
-                  title={t('nodeEdit.tabs.ai')}
-                  className='h-9 rounded-none border-b-2 border-transparent px-3 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none'
-                >
+                <TabsTrigger variant='underline' value='ai' title={t('nodeEdit.tabs.ai')}>
                   <Sparkles className='h-4 w-4' />
                 </TabsTrigger>
               </TabsList>

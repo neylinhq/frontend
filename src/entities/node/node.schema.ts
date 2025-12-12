@@ -14,11 +14,15 @@ export const NodeTypeEnum = z.enum([
 
 export type NodeType = z.infer<typeof NodeTypeEnum>
 
+// Уровни сложности - единый источник истины
+export const ComplexityEnum = z.enum(['basic', 'intermediate', 'advanced'])
+export type Complexity = z.infer<typeof ComplexityEnum>
+
 // Метаданные узла (объективные данные контента)
 // Персональные данные (confidence, reviewCount) вынесены в user_node_progress
 export const NodeMetadataSchema = z
   .object({
-    complexity: z.enum(['basic', 'intermediate', 'advanced']).optional(),
+    complexity: ComplexityEnum.optional(),
     sources: z.array(z.string()).optional(), // Источники информации
     tags: z.array(z.string()).optional()
   })

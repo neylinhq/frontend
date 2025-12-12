@@ -19,6 +19,25 @@ interface UserResponse {
   data: User
 }
 
+// Login response can be either:
+// 1. User data (no 2FA) - standard login
+// 2. 2FA challenge (2FA enabled) - need verification
+interface LoginResponse {
+  success: boolean
+  data: User | TwoFactorChallengeData
+}
+
+export interface TwoFactorChallengeData {
+  requiresTwoFactor: true
+  challengeToken: string
+  twoFactorMethods: ('totp' | 'email' | 'backup')[]
+}
+
+// Type guard to check if login response requires 2FA
+export function isTwoFactorRequired(data: User | TwoFactorChallengeData): data is TwoFactorChallengeData {
+  return 'requiresTwoFactor' in data && data.requiresTwoFactor === true
+}
+
 interface MessageResponse {
   success: boolean
   data: {
@@ -34,6 +53,17 @@ interface ResetPasswordRequest {
   email: string
   code: string
   password: string
+}
+
+// 2FA Types
+export interface VerifyTwoFactorRequest {
+  challengeToken: string
+  code: string
+  method: 'totp' | 'email' | 'backup'
+}
+
+interface ResendTwoFactorEmailRequest {
+  challengeToken: string
 }
 
 interface TelegramAuthData {
@@ -74,8 +104,18 @@ export const sessionApi = {
   },
 
   login: async (data: LoginRequest, options?: RequestOptions) => {
-    const response = await api.post<UserResponse>('/auth/login', data, { skipAuth: true, locale: options?.locale })
-    return response.data // Returns User directly
+    const response = await api.post<LoginResponse>('/auth/login', data, { skipAuth: true, locale: options?.locale })
+    return response.data // Returns User or TwoFactorChallengeData
+  },
+
+  verifyTwoFactor: async (data: VerifyTwoFactorRequest, options?: RequestOptions) => {
+    const response = await api.post<UserResponse>('/auth/verify-2fa', data, { skipAuth: true, locale: options?.locale })
+    return response.data // Returns User after successful 2FA
+  },
+
+  resendTwoFactorEmail: async (data: ResendTwoFactorEmailRequest, options?: RequestOptions) => {
+    const response = await api.post<MessageResponse>('/auth/resend-2fa-email', data, { skipAuth: true, locale: options?.locale })
+    return response.data
   },
 
   register: async (data: RegisterRequest, options?: RequestOptions) => {

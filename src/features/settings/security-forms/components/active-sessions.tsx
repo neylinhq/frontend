@@ -61,7 +61,11 @@ export const ActiveSessions = () => {
                 </div>
               </div>
               {!session.current && (
-                <Button variant='ghost' size='sm'>
+                <Button
+                  variant='ghost'
+                  size='sm'
+                  className='text-destructive hover:text-destructive hover:bg-destructive/10'
+                >
                   {t('settings.security.sessions.revoke')}
                 </Button>
               )}

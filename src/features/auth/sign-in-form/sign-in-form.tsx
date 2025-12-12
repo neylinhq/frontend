@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Link as RouterLink, useNavigate, useSearchParams } from 'react-router'
-import { sessionApi } from '@/entities/session'
+import { sessionApi, isTwoFactorRequired } from '@/entities/session'
 import { ApiError } from '@/shared/api/client'
 import { toast } from '@/shared/components/toast'
 import { z } from 'zod'
@@ -56,13 +56,30 @@ export const SignInForm = () => {
             try {
               console.log('[SignIn] Calling login API...')
               const result = await sessionApi.login(data)
-              console.log('[SignIn] Login success:', result)
-              // Clear cached data from previous user to prevent data leakage
+              console.log('[SignIn] Login result:', result)
+
+              // Check if 2FA is required
+              if (isTwoFactorRequired(result)) {
+                console.log('[SignIn] 2FA required, redirecting...')
+                const returnUrl = searchParams.get('from') || '/dashboard/overview'
+                // Navigate to 2FA page with challenge data
+                navigate('/auth/two-factor', {
+                  state: {
+                    challengeToken: result.challengeToken,
+                    twoFactorMethods: result.twoFactorMethods,
+                    returnUrl
+                  },
+                  replace: true
+                })
+                return
+              }
+
+              // Normal login - clear cache and redirect
+              console.log('[SignIn] Login success')
               queryClient.clear()
               const returnUrl = searchParams.get('from') || '/dashboard/overview'
               console.log('[SignIn] Navigating to:', returnUrl)
               navigate(returnUrl)
-              console.log('[SignIn] Navigate called')
             } catch (error) {
               console.error('[SignIn] Error:', error)
               if (error instanceof ApiError) {

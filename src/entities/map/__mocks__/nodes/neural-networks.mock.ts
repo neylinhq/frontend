@@ -9,11 +9,8 @@ export const NEURAL_NETWORKS_NODES: Node[] = [
     type: 'concept',
     position: { x: 100, y: 100 },
     metadata: {
-      confidence: 0.9,
       complexity: 'intermediate',
-      tags: ['AI', 'ML', 'нейросети'],
-      lastReviewed: '2024-03-20T10:00:00Z',
-      reviewCount: 5
+      tags: ['AI', 'ML', 'нейросети']
     },
     createdAt: '2024-03-10T10:00:00Z',
     updatedAt: '2024-03-20T10:00:00Z'
@@ -26,11 +23,8 @@ export const NEURAL_NETWORKS_NODES: Node[] = [
     type: 'theory',
     position: { x: 300, y: 150 },
     metadata: {
-      confidence: 0.85,
       complexity: 'advanced',
-      tags: ['transformer', 'attention', 'NLP'],
-      lastReviewed: '2024-03-18T14:30:00Z',
-      reviewCount: 3
+      tags: ['transformer', 'attention', 'NLP']
     },
     createdAt: '2024-03-12T10:00:00Z',
     updatedAt: '2024-03-18T14:30:00Z'
@@ -43,7 +37,6 @@ export const NEURAL_NETWORKS_NODES: Node[] = [
     type: 'concept',
     position: { x: 200, y: 250 },
     metadata: {
-      confidence: 0.7,
       complexity: 'intermediate',
       tags: ['attention', 'mechanism']
     },
@@ -58,7 +51,6 @@ export const NEURAL_NETWORKS_NODES: Node[] = [
     type: 'theory',
     position: { x: 450, y: 200 },
     metadata: {
-      confidence: 0.8,
       complexity: 'advanced',
       tags: ['BERT', 'NLP', 'pretraining']
     },
@@ -73,7 +65,6 @@ export const NEURAL_NETWORKS_NODES: Node[] = [
     type: 'theory',
     position: { x: 450, y: 300 },
     metadata: {
-      confidence: 0.75,
       complexity: 'advanced',
       tags: ['GPT', 'generation', 'LLM']
     },

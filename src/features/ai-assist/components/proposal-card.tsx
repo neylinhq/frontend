@@ -1,0 +1,138 @@
+import type { ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Check, X, Pencil } from 'lucide-react'
+import { Button } from '@/shared/components/button'
+import { cn } from '@/shared/lib/cn'
+
+interface ProposalCardProps {
+  /** Header title */
+  title: string
+  /** Content slot */
+  children: ReactNode
+  /** Called when user accepts the proposal */
+  onAccept: () => void
+  /** Called when user rejects/dismisses the proposal */
+  onReject: () => void
+  /** Called when user wants to edit (optional) */
+  onEdit?: () => void
+  /** Visual variant */
+  variant?: 'default' | 'compact'
+  /** Additional class names */
+  className?: string
+}
+
+export const ProposalCard = ({
+  title,
+  children,
+  onAccept,
+  onReject,
+  onEdit,
+  variant = 'default',
+  className
+}: ProposalCardProps) => {
+  const { t } = useTranslation()
+
+  return (
+    <div
+      className={cn(
+        'border border-border rounded-lg overflow-hidden bg-card',
+        className
+      )}
+    >
+      {/* Header */}
+      <div className='px-3 py-2 bg-muted/50 border-b border-border'>
+        <span className='text-xs font-medium text-muted-foreground'>
+          {title}
+        </span>
+      </div>
+
+      {/* Content */}
+      <div className={cn('text-sm', variant === 'compact' ? 'px-3 py-2' : 'px-3 py-3')}>
+        {children}
+      </div>
+
+      {/* Actions */}
+      <div className='px-3 py-2 border-t border-border flex justify-end gap-2'>
+        <Button
+          size='sm'
+          variant='ghost'
+          onClick={onReject}
+          className='text-muted-foreground'
+        >
+          <X className='h-3.5 w-3.5 mr-1' />
+          {t('common.dismiss', 'Dismiss')}
+        </Button>
+        {onEdit && (
+          <Button size='sm' variant='outline' onClick={onEdit}>
+            <Pencil className='h-3.5 w-3.5 mr-1' />
+            {t('common.edit', 'Edit')}
+          </Button>
+        )}
+        <Button size='sm' onClick={onAccept}>
+          <Check className='h-3.5 w-3.5 mr-1' />
+          {t('common.apply', 'Apply')}
+        </Button>
+      </div>
+    </div>
+  )
+}
+
+/** Diff line component for showing changes */
+interface DiffLineProps {
+  type: 'add' | 'remove'
+  children: ReactNode
+  className?: string
+}
+
+export const DiffLine = ({ type, children, className }: DiffLineProps) => (
+  <div className={cn('flex gap-2 items-start', className)}>
+    <span
+      className={cn(
+        'flex-shrink-0 w-4 text-center font-mono text-xs leading-5',
+        type === 'remove' ? 'text-red-500/70' : 'text-green-600'
+      )}
+    >
+      {type === 'remove' ? '−' : '+'}
+    </span>
+    <span
+      className={cn(
+        'flex-1 min-w-0',
+        type === 'remove' && 'line-through text-muted-foreground'
+      )}
+    >
+      {children}
+    </span>
+  </div>
+)
+
+/** Diff block for showing before/after changes */
+interface DiffBlockProps {
+  current?: string | null
+  proposed: string
+  className?: string
+  /** Render content as HTML/Markdown */
+  renderHtml?: boolean
+}
+
+export const DiffBlock = ({ current, proposed, className, renderHtml }: DiffBlockProps) => (
+  <div className={cn('space-y-1', className)}>
+    {current && (
+      <DiffLine type='remove'>
+        {renderHtml ? (
+          <div
+            className='prose prose-sm dark:prose-invert max-w-none prose-p:my-0.5 prose-headings:my-1 prose-ul:my-0.5 prose-li:my-0'
+            dangerouslySetInnerHTML={{ __html: current }}
+          />
+        ) : current}
+      </DiffLine>
+    )}
+    <DiffLine type='add'>
+      {renderHtml ? (
+        <div
+          className='prose prose-sm dark:prose-invert max-w-none prose-p:my-0.5 prose-headings:my-1 prose-ul:my-0.5 prose-li:my-0'
+          dangerouslySetInnerHTML={{ __html: proposed }}
+        />
+      ) : proposed}
+    </DiffLine>
+  </div>
+)

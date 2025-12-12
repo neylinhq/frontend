@@ -7,33 +7,12 @@ export type { ChatWithMapResponse, ProposalData, NodeReference } from './ai.api'
 export {
   aiKeys,
   useAIModels,
-  useAITask,
   useAnalyzeMap,
-  useDetectGaps,
   useEnrichNode,
-  useGenerateExercises,
-  useSuggestEdges
+  useSelectedModel
 } from './ai.queries'
 export type {
   AIModel,
-  AITask,
-  EdgeSuggestion,
-  EdgeSuggestionResult,
-  EnrichType,
-  GapDetectionResult,
-  GeneratedNode,
-  KnowledgeGap,
-  MissingNodesResult,
-  NodeEnrichmentResult
+  EnrichType
 } from './ai.schema'
-export {
-  AIModelSchema,
-  AITaskSchema,
-  EdgeSuggestionResultSchema,
-  EdgeSuggestionSchema,
-  GapDetectionResultSchema,
-  GeneratedNodeSchema,
-  KnowledgeGapSchema,
-  MissingNodesResultSchema,
-  NodeEnrichmentResultSchema
-} from './ai.schema'
+export { AIModelSchema } from './ai.schema'

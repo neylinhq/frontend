@@ -39,6 +39,10 @@ const META_TRANSLATIONS = {
       title: 'Подтверждение email',
       description: 'Подтвердите ваш адрес электронной почты'
     },
+    twoFactor: {
+      title: 'Двухфакторная аутентификация',
+      description: 'Введите код для подтверждения входа'
+    },
     terms: {
       title: 'Условия использования',
       description:
@@ -109,6 +113,10 @@ const META_TRANSLATIONS = {
     verifyEmail: {
       title: 'Verify Email',
       description: 'Verify your email address'
+    },
+    twoFactor: {
+      title: 'Two-Factor Authentication',
+      description: 'Enter code to verify your login'
     },
     terms: {
       title: 'Terms of Service',

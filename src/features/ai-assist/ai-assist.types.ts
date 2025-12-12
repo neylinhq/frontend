@@ -15,6 +15,7 @@ export interface ChatMessage {
   content: string
   timestamp: Date
   preview?: PreviewCard[]
+  resolvedPreviews?: ResolvedPreview[]
   sourceNodes?: SourceNode[]
   isStreaming?: boolean
 }
@@ -26,7 +27,20 @@ export interface PreviewCard {
   id: string
   type: PreviewType
   data: ExercisePreviewData | EnrichmentPreviewData | EdgePreviewData | NodePreviewData
-  status: 'pending' | 'editing' | 'approved' | 'rejected'
+  status: 'pending' | 'editing'
+}
+
+// Resolved preview (after Accept/Reject)
+export interface ResolvedPreview {
+  id: string
+  type: PreviewType
+  data: ExercisePreviewData | EnrichmentPreviewData | EdgePreviewData | NodePreviewData
+  status: 'approved' | 'rejected'
+  resolvedAt: Date
+  undoData?: {
+    previousState: Record<string, unknown>
+    actionId: string
+  }
 }
 
 // Preview data structures

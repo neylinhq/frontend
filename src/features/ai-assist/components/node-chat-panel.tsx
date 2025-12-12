@@ -1,8 +1,9 @@
 import { useTranslation } from 'react-i18next'
-import { useMap } from '@/entities/map'
-import { useNode, useUpdateNode } from '@/entities/node'
+import { useMap, useUpdateNode, useNodeWithContent } from '@/entities/map'
 import { toast } from '@/shared/components/toast'
-import type { EnrichmentPreviewData, MapChatContext, NodeChatContext, PreviewCard } from '../ai-assist.types'
+import type { EnrichmentPreviewData, MapChatContext, NodeChatContext, PreviewCard, ResolvedPreview } from '../ai-assist.types'
+import { useProposalHistoryStore } from '../model/proposal-history.store'
+import { getChatSessionId } from '../model/chat-history.store'
 import { AIChatCore } from './ai-chat-core'
 
 interface NodeChatPanelProps {
@@ -12,9 +13,11 @@ interface NodeChatPanelProps {
 
 export const NodeChatPanel = ({ nodeId, mapId }: NodeChatPanelProps) => {
   const { t } = useTranslation()
-  const { data: node } = useNode(mapId, nodeId)
+  const { data: node } = useNodeWithContent(mapId, nodeId)
   const { data: map } = useMap(mapId)
-  const updateNodeMutation = useUpdateNode(mapId, nodeId)
+  const updateNodeMutation = useUpdateNode(mapId)
+
+  const recordAction = useProposalHistoryStore(s => s.recordAction)
 
   const nodeContext: NodeChatContext = {
     type: 'node',
@@ -31,12 +34,30 @@ export const NodeChatPanel = ({ nodeId, mapId }: NodeChatPanelProps) => {
     type: 'map',
     mapId,
     mapName: map?.title || '',
-    nodeCount: map?.nodeCount || 0
+    nodeCount: map?.nodesCount || 0
   }
 
-  const handleSavePreview = async (_messageId: string, previewCard: PreviewCard) => {
+  const sessionId = getChatSessionId(mapId, nodeId)
+
+  const handleSavePreview = async (messageId: string, previewCard: PreviewCard) => {
     if (previewCard.type === 'enrichment') {
       const data = previewCard.data as EnrichmentPreviewData
+
+      // Capture previous state for undo
+      const previousState: Record<string, unknown> = {}
+      switch (data.field) {
+        case 'description':
+          previousState.description = node?.description || ''
+          break
+        case 'content':
+          previousState.content = node?.content || ''
+          break
+        case 'examples':
+        case 'sources':
+        default:
+          previousState.content = node?.content || ''
+          break
+      }
 
       // Map field to node property
       const updatePayload: Record<string, string> = {}
@@ -57,11 +78,23 @@ export const NodeChatPanel = ({ nodeId, mapId }: NodeChatPanelProps) => {
           break
       }
 
-      await updateNodeMutation.mutateAsync(updatePayload)
+      await updateNodeMutation.mutateAsync({ id: nodeId, data: updatePayload })
 
-      toast.success(t('ai.enrichment.saved'), {
-        description: t('ai.enrichment.savedDescription')
+      // Record action for undo
+      const actionId = recordAction({
+        type: 'apply',
+        previewId: previewCard.id,
+        messageId,
+        sessionId,
+        entityType: 'node',
+        entityId: nodeId,
+        previousState,
+        newState: updatePayload
       })
+
+      toast.success(t('ai.enrichment.saved', 'Changes saved'))
+
+      return { previousState, actionId }
     } else if (previewCard.type === 'exercise') {
       // Exercises are already saved during generation
       toast.success(t('ai.exercises.saved'), {
@@ -70,11 +103,24 @@ export const NodeChatPanel = ({ nodeId, mapId }: NodeChatPanelProps) => {
     }
   }
 
+  const handleUndoPreview = async (preview: ResolvedPreview) => {
+    if (!preview.undoData) return
+
+    const { previousState } = preview.undoData
+
+    // Revert the node to previous state
+    await updateNodeMutation.mutateAsync({
+      id: nodeId,
+      data: previousState as Record<string, string>
+    })
+  }
+
   return (
     <AIChatCore
       nodeContext={nodeContext}
       mapContext={mapContext}
       onSavePreview={handleSavePreview}
+      onUndoPreview={handleUndoPreview}
     />
   )
 }

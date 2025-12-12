@@ -70,6 +70,25 @@
       "loading": "Signing in...",
       "error": "Telegram sign in failed",
       "errorDescription": "Could not sign in with Telegram. Please try again."
+    },
+    "twoFactor": {
+      "title": "Two-Factor Authentication",
+      "totpDescription": "Enter the 6-digit code from your authenticator app",
+      "emailDescription": "Enter the 6-digit code sent to your email",
+      "backupDescription": "Enter one of your backup codes",
+      "totpTab": "Authenticator",
+      "emailTab": "Email",
+      "backupTab": "Backup Code",
+      "backupPlaceholder": "XXXXXXXX",
+      "submitButton": "Verify",
+      "resendButton": "Resend code",
+      "resendIn": "Resend in {{seconds}}s",
+      "resendSuccess": "Code sent to your email",
+      "resendError": "Failed to send code",
+      "error": "Verification failed",
+      "invalidCode": "Invalid code. Please try again.",
+      "backToSignIn": "Back to",
+      "signInLink": "Sign in"
     }
   },
   "validation": {
@@ -127,7 +146,11 @@
     "comingSoon": "Coming Soon",
     "remove": "Remove",
     "processing": "Processing...",
-    "serverError": "Server error. Please try again later"
+    "serverError": "Server error. Please try again later",
+    "apply": "Apply",
+    "dismiss": "Dismiss",
+    "undo": "Undo",
+    "undone": "Undone"
   },
   "imageCrop": {
     "title": "Crop image",
@@ -1150,6 +1173,37 @@
       "map": "Map",
       "nodeHint": "Current node only",
       "mapHint": "Search across map ($)"
+    },
+    "commands": {
+      "clear": "clear",
+      "clearDesc": "Clear chat history",
+      "clearSuccess": "Chat cleared",
+      "enrich": "enrich",
+      "enrichDesc": "Improve node description",
+      "examples": "examples",
+      "examplesDesc": "Generate examples",
+      "sources": "sources",
+      "sourcesDesc": "Find related sources",
+      "exercises": "exercises",
+      "exercisesDesc": "Generate practice exercises",
+      "navigate": "Navigate",
+      "select": "Select",
+      "close": "Close"
+    },
+    "saveFailed": "Failed to save changes",
+    "undoFailed": "Failed to undo",
+    "proposals": {
+      "applied": "Applied: {{summary}}",
+      "dismissed": "Dismissed: {{summary}}",
+      "newEdge": "New connection",
+      "newNode": "New node",
+      "change": "Change"
+    },
+    "fields": {
+      "description": "Description",
+      "content": "Content",
+      "examples": "Examples",
+      "sources": "Sources"
     }
   },
   "practice": {
@@ -1322,6 +1376,59 @@
         "current": "Current session",
         "lastActive": "Last active",
         "revoke": "Revoke"
+      },
+      "twoFactor": {
+        "title": "Two-Factor Authentication",
+        "description": "Add an extra layer of security to your account",
+        "enabled": "Enabled",
+        "active": "Active",
+        "setup": "Set up",
+        "enable": "Enable",
+        "disable": "Disable",
+        "disabled": "2FA has been disabled",
+        "disableTitle": "Disable Two-Factor Authentication",
+        "disableWarning": "This will make your account less secure. You will only need your password to sign in.",
+        "disableError": "Failed to disable 2FA",
+        "enterCodeToDisable": "Enter a code from your authenticator app to disable 2FA",
+        "emailEnabled": "Email OTP enabled",
+        "enableError": "Failed to enable 2FA",
+        "totp": {
+          "title": "Authenticator App",
+          "description": "Use apps like Google Authenticator, Authy, or 1Password",
+          "enabled": "Authenticator app enabled",
+          "setupTitle": "Set up Authenticator",
+          "setupStep1": "Scan this QR code with your authenticator app",
+          "setupStep2": "Enter the 6-digit code from your app to verify",
+          "manualEntry": "Can't scan? Enter this code manually:",
+          "secretCopied": "Secret copied to clipboard",
+          "enterCode": "Enter the verification code",
+          "next": "Continue",
+          "verify": "Verify",
+          "invalidCode": "Invalid code. Please try again."
+        },
+        "email": {
+          "title": "Email OTP",
+          "description": "Receive codes via email as an alternative method"
+        },
+        "backup": {
+          "title": "Backup Codes",
+          "remaining": "{{count}} codes remaining",
+          "remaining_one": "{{count}} code remaining",
+          "remaining_other": "{{count}} codes remaining",
+          "regenerate": "Regenerate",
+          "regenerateTitle": "Regenerate Backup Codes",
+          "enterCodeToRegenerate": "Enter a code from your authenticator app",
+          "verifyToRegenerate": "Verify your identity to generate new backup codes",
+          "regenerated": "Backup codes regenerated",
+          "invalidCode": "Invalid code. Please try again.",
+          "saveWarning": "Save these codes in a secure place. You won't be able to see them again.",
+          "oneTimeWarning": "Each code can only be used once. Store them safely.",
+          "copy": "Copy all",
+          "download": "Download",
+          "copied": "Codes copied to clipboard",
+          "downloaded": "Codes downloaded",
+          "done": "Done"
+        }
       },
       "danger": {
         "title": "Danger Zone",

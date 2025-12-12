@@ -9,7 +9,7 @@ export const GRAPH_THEORY_NODES: Node[] = [
     description: 'Математическая структура из вершин и рёбер',
     type: 'concept',
     position: { x: 0, y: 0 },
-    metadata: { confidence: 0.95, complexity: 'basic', tags: ['основы'] },
+    metadata: { complexity: 'basic', tags: ['основы'] },
     createdAt: '2024-03-21T08:00:00Z',
     updatedAt: '2024-03-21T08:00:00Z'
   },
@@ -20,7 +20,7 @@ export const GRAPH_THEORY_NODES: Node[] = [
     description: 'Узел графа',
     type: 'concept',
     position: { x: 0, y: 100 },
-    metadata: { confidence: 0.9, complexity: 'basic', tags: ['основы'] },
+    metadata: { complexity: 'basic', tags: ['основы'] },
     createdAt: '2024-03-21T08:01:00Z',
     updatedAt: '2024-03-21T08:01:00Z'
   },
@@ -31,7 +31,7 @@ export const GRAPH_THEORY_NODES: Node[] = [
     description: 'Связь между вершинами',
     type: 'concept',
     position: { x: 0, y: 200 },
-    metadata: { confidence: 0.9, complexity: 'basic', tags: ['основы'] },
+    metadata: { complexity: 'basic', tags: ['основы'] },
     createdAt: '2024-03-21T08:02:00Z',
     updatedAt: '2024-03-21T08:02:00Z'
   },
@@ -44,7 +44,7 @@ export const GRAPH_THEORY_NODES: Node[] = [
     description: 'Граф с направленными рёбрами',
     type: 'theory',
     position: { x: 150, y: 100 },
-    metadata: { confidence: 0.85, complexity: 'intermediate', tags: ['типы'] },
+    metadata: { complexity: 'intermediate', tags: ['типы'] },
     createdAt: '2024-03-21T08:03:00Z',
     updatedAt: '2024-03-21T08:03:00Z'
   },
@@ -55,7 +55,7 @@ export const GRAPH_THEORY_NODES: Node[] = [
     description: 'Граф без направления рёбер',
     type: 'theory',
     position: { x: 300, y: 100 },
-    metadata: { confidence: 0.85, complexity: 'intermediate', tags: ['типы'] },
+    metadata: { complexity: 'intermediate', tags: ['типы'] },
     createdAt: '2024-03-21T08:04:00Z',
     updatedAt: '2024-03-21T08:04:00Z'
   },
@@ -66,7 +66,7 @@ export const GRAPH_THEORY_NODES: Node[] = [
     description: 'Связный граф без циклов',
     type: 'theory',
     position: { x: 450, y: 100 },
-    metadata: { confidence: 0.9, complexity: 'intermediate', tags: ['типы'] },
+    metadata: { complexity: 'intermediate', tags: ['типы'] },
     createdAt: '2024-03-21T08:05:00Z',
     updatedAt: '2024-03-21T08:05:00Z'
   },
@@ -79,7 +79,7 @@ export const GRAPH_THEORY_NODES: Node[] = [
     description: 'Замкнутый путь в графе',
     type: 'concept',
     position: { x: -200, y: 150 },
-    metadata: { confidence: 0.85, complexity: 'intermediate', tags: ['структуры'] },
+    metadata: { complexity: 'intermediate', tags: ['структуры'] },
     createdAt: '2024-03-21T08:06:00Z',
     updatedAt: '2024-03-21T08:06:00Z'
   },
@@ -90,7 +90,7 @@ export const GRAPH_THEORY_NODES: Node[] = [
     description: 'Последовательность вершин и рёбер',
     type: 'concept',
     position: { x: -200, y: 250 },
-    metadata: { confidence: 0.85, complexity: 'basic', tags: ['структуры'] },
+    metadata: { complexity: 'basic', tags: ['структуры'] },
     createdAt: '2024-03-21T08:07:00Z',
     updatedAt: '2024-03-21T08:07:00Z'
   },
@@ -101,7 +101,7 @@ export const GRAPH_THEORY_NODES: Node[] = [
     description: 'Путь с возможными повторами',
     type: 'concept',
     position: { x: -300, y: 200 },
-    metadata: { confidence: 0.8, complexity: 'intermediate', tags: ['структуры'] },
+    metadata: { complexity: 'intermediate', tags: ['структуры'] },
     createdAt: '2024-03-21T08:08:00Z',
     updatedAt: '2024-03-21T08:08:00Z'
   },
@@ -114,7 +114,7 @@ export const GRAPH_THEORY_NODES: Node[] = [
     description: 'Посещение всех вершин',
     type: 'concept',
     position: { x: 200, y: 250 },
-    metadata: { confidence: 0.9, complexity: 'intermediate', tags: ['алгоритмы'] },
+    metadata: { complexity: 'intermediate', tags: ['алгоритмы'] },
     createdAt: '2024-03-21T08:09:00Z',
     updatedAt: '2024-03-21T08:09:00Z'
   },
@@ -125,7 +125,7 @@ export const GRAPH_THEORY_NODES: Node[] = [
     description: 'Поиск в ширину',
     type: 'example',
     position: { x: 150, y: 350 },
-    metadata: { confidence: 0.9, complexity: 'intermediate', tags: ['алгоритмы'] },
+    metadata: { complexity: 'intermediate', tags: ['алгоритмы'] },
     createdAt: '2024-03-21T08:10:00Z',
     updatedAt: '2024-03-21T08:10:00Z'
   },
@@ -136,7 +136,7 @@ export const GRAPH_THEORY_NODES: Node[] = [
     description: 'Поиск в глубину',
     type: 'example',
     position: { x: 250, y: 350 },
-    metadata: { confidence: 0.9, complexity: 'intermediate', tags: ['алгоритмы'] },
+    metadata: { complexity: 'intermediate', tags: ['алгоритмы'] },
     createdAt: '2024-03-21T08:11:00Z',
     updatedAt: '2024-03-21T08:11:00Z'
   },
@@ -149,7 +149,7 @@ export const GRAPH_THEORY_NODES: Node[] = [
     description: 'Представление графа матрицей',
     type: 'fact',
     position: { x: 400, y: 300 },
-    metadata: { confidence: 0.85, complexity: 'intermediate', tags: ['представление'] },
+    metadata: { complexity: 'intermediate', tags: ['представление'] },
     createdAt: '2024-03-21T08:12:00Z',
     updatedAt: '2024-03-21T08:12:00Z'
   },
@@ -160,7 +160,7 @@ export const GRAPH_THEORY_NODES: Node[] = [
     description: 'Представление графа списками',
     type: 'fact',
     position: { x: 400, y: 400 },
-    metadata: { confidence: 0.85, complexity: 'intermediate', tags: ['представление'] },
+    metadata: { complexity: 'intermediate', tags: ['представление'] },
     createdAt: '2024-03-21T08:13:00Z',
     updatedAt: '2024-03-21T08:13:00Z'
   },
@@ -173,7 +173,7 @@ export const GRAPH_THEORY_NODES: Node[] = [
     description: 'Обобщение графа с гиперрёбрами',
     type: 'hypothesis',
     position: { x: -100, y: 400 },
-    metadata: { confidence: 0.6, complexity: 'advanced', tags: ['расширения'] },
+    metadata: { complexity: 'advanced', tags: ['расширения'] },
     createdAt: '2024-03-21T08:14:00Z',
     updatedAt: '2024-03-21T08:14:00Z'
   }

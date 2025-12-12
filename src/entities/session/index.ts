@@ -1,5 +1,6 @@
 // API
-export { sessionApi } from './session.api'
+export { sessionApi, isTwoFactorRequired } from './session.api'
+export type { TwoFactorChallengeData, VerifyTwoFactorRequest } from './session.api'
 
 // Queries
 export {

@@ -1,5 +1,4 @@
 import { api } from '@/shared/api/client'
-import type { EdgeSuggestionResult, GapDetectionResult, MissingNodesResult } from '../ai'
 import type { Edge } from '../edge'
 import type { LightweightNode, Node } from '../node'
 import type {
@@ -163,27 +162,6 @@ export const mapApi = {
     const response = await api.post<
       ApiResponse<FullMap['aiAnalysis'] | { taskId: string; status: string }>
     >(`/maps/${mapId}/analyze`, { model, async: runAsync })
-    return response.data
-  },
-
-  // AI Operations
-  suggestEdges: async (mapId: string): Promise<EdgeSuggestionResult> => {
-    const response = await api.post<ApiResponse<EdgeSuggestionResult>>(
-      `/maps/${mapId}/suggest-edges`
-    )
-    return response.data
-  },
-
-  detectGaps: async (mapId: string): Promise<GapDetectionResult> => {
-    const response = await api.post<ApiResponse<GapDetectionResult>>(`/maps/${mapId}/detect-gaps`)
-    return response.data
-  },
-
-  generateNodes: async (mapId: string, gaps: string[]): Promise<MissingNodesResult> => {
-    const response = await api.post<ApiResponse<MissingNodesResult>>(
-      `/maps/${mapId}/generate-nodes`,
-      { gaps }
-    )
     return response.data
   },
 

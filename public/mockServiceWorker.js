@@ -12,15 +12,15 @@ const INTEGRITY_CHECKSUM = '4db4a41e972cec1b64cc569c66952d82'
 const IS_MOCKED_RESPONSE = Symbol('isMockedResponse')
 const activeClientIds = new Set()
 
-addEventListener('install', () => {
+addEventListener('install', function () {
   self.skipWaiting()
 })
 
-addEventListener('activate', event => {
+addEventListener('activate', function (event) {
   event.waitUntil(self.clients.claim())
 })
 
-addEventListener('message', async event => {
+addEventListener('message', async function (event) {
   const clientId = Reflect.get(event.source || {}, 'id')
 
   if (!clientId || !self.clients) {
@@ -34,13 +34,13 @@ addEventListener('message', async event => {
   }
 
   const allClients = await self.clients.matchAll({
-    type: 'window'
+    type: 'window',
   })
 
   switch (event.data) {
     case 'KEEPALIVE_REQUEST': {
       sendToClient(client, {
-        type: 'KEEPALIVE_RESPONSE'
+        type: 'KEEPALIVE_RESPONSE',
       })
       break
     }
@@ -50,8 +50,8 @@ addEventListener('message', async event => {
         type: 'INTEGRITY_CHECK_RESPONSE',
         payload: {
           packageVersion: PACKAGE_VERSION,
-          checksum: INTEGRITY_CHECKSUM
-        }
+          checksum: INTEGRITY_CHECKSUM,
+        },
       })
       break
     }
@@ -64,9 +64,9 @@ addEventListener('message', async event => {
         payload: {
           client: {
             id: client.id,
-            frameType: client.frameType
-          }
-        }
+            frameType: client.frameType,
+          },
+        },
       })
       break
     }
@@ -74,7 +74,7 @@ addEventListener('message', async event => {
     case 'CLIENT_CLOSED': {
       activeClientIds.delete(clientId)
 
-      const remainingClients = allClients.filter(client => {
+      const remainingClients = allClients.filter((client) => {
         return client.id !== clientId
       })
 
@@ -88,7 +88,7 @@ addEventListener('message', async event => {
   }
 })
 
-addEventListener('fetch', event => {
+addEventListener('fetch', function (event) {
   const requestInterceptedAt = Date.now()
 
   // Bypass navigation requests.
@@ -98,7 +98,10 @@ addEventListener('fetch', event => {
 
   // Opening the DevTools triggers the "only-if-cached" request
   // that cannot be handled by the worker. Bypass such requests.
-  if (event.request.cache === 'only-if-cached' && event.request.mode !== 'same-origin') {
+  if (
+    event.request.cache === 'only-if-cached' &&
+    event.request.mode !== 'same-origin'
+  ) {
     return
   }
 
@@ -121,7 +124,12 @@ addEventListener('fetch', event => {
 async function handleRequest(event, requestId, requestInterceptedAt) {
   const client = await resolveMainClient(event)
   const requestCloneForEvents = event.request.clone()
-  const response = await getResponse(event, client, requestId, requestInterceptedAt)
+  const response = await getResponse(
+    event,
+    client,
+    requestId,
+    requestInterceptedAt,
+  )
 
   // Send back the response clone for the "response:*" life-cycle events.
   // Ensure MSW is active and ready to handle the message, otherwise
@@ -140,18 +148,18 @@ async function handleRequest(event, requestId, requestInterceptedAt) {
           isMockedResponse: IS_MOCKED_RESPONSE in response,
           request: {
             id: requestId,
-            ...serializedRequest
+            ...serializedRequest,
           },
           response: {
             type: responseClone.type,
             status: responseClone.status,
             statusText: responseClone.statusText,
             headers: Object.fromEntries(responseClone.headers.entries()),
-            body: responseClone.body
-          }
-        }
+            body: responseClone.body,
+          },
+        },
       },
-      responseClone.body ? [serializedRequest.body, responseClone.body] : []
+      responseClone.body ? [serializedRequest.body, responseClone.body] : [],
     )
   }
 
@@ -178,15 +186,15 @@ async function resolveMainClient(event) {
   }
 
   const allClients = await self.clients.matchAll({
-    type: 'window'
+    type: 'window',
   })
 
   return allClients
-    .filter(client => {
+    .filter((client) => {
       // Get only those clients that are currently visible.
       return client.visibilityState === 'visible'
     })
-    .find(client => {
+    .find((client) => {
       // Find the client ID that's recorded in the
       // set of clients that have registered the worker.
       return activeClientIds.has(client.id)
@@ -215,8 +223,10 @@ async function getResponse(event, client, requestId, requestInterceptedAt) {
     // user-defined CORS policies.
     const acceptHeader = headers.get('accept')
     if (acceptHeader) {
-      const values = acceptHeader.split(',').map(value => value.trim())
-      const filteredValues = values.filter(value => value !== 'msw/passthrough')
+      const values = acceptHeader.split(',').map((value) => value.trim())
+      const filteredValues = values.filter(
+        (value) => value !== 'msw/passthrough',
+      )
 
       if (filteredValues.length > 0) {
         headers.set('accept', filteredValues.join(', '))
@@ -250,10 +260,10 @@ async function getResponse(event, client, requestId, requestInterceptedAt) {
       payload: {
         id: requestId,
         interceptedAt: requestInterceptedAt,
-        ...serializedRequest
-      }
+        ...serializedRequest,
+      },
     },
-    [serializedRequest.body]
+    [serializedRequest.body],
   )
 
   switch (clientMessage.type) {
@@ -279,7 +289,7 @@ function sendToClient(client, message, transferrables = []) {
   return new Promise((resolve, reject) => {
     const channel = new MessageChannel()
 
-    channel.port1.onmessage = event => {
+    channel.port1.onmessage = (event) => {
       if (event.data && event.data.error) {
         return reject(event.data.error)
       }
@@ -287,7 +297,10 @@ function sendToClient(client, message, transferrables = []) {
       resolve(event.data)
     }
 
-    client.postMessage(message, [channel.port2, ...transferrables.filter(Boolean)])
+    client.postMessage(message, [
+      channel.port2,
+      ...transferrables.filter(Boolean),
+    ])
   })
 }
 
@@ -308,7 +321,7 @@ function respondWithMock(response) {
 
   Reflect.defineProperty(mockedResponse, IS_MOCKED_RESPONSE, {
     value: true,
-    enumerable: true
+    enumerable: true,
   })
 
   return mockedResponse
@@ -331,6 +344,6 @@ async function serializeRequest(request) {
     referrer: request.referrer,
     referrerPolicy: request.referrerPolicy,
     body: await request.arrayBuffer(),
-    keepalive: request.keepalive
+    keepalive: request.keepalive,
   }
 }

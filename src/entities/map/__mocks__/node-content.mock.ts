@@ -38,10 +38,8 @@ export const MOCK_NODE_WITH_CONTENT: Node = {
   type: 'concept',
   position: { x: 0, y: 0 },
   metadata: {
-    confidence: 0.95,
     complexity: 'intermediate',
-    tags: ['demo', 'example', 'редактор'],
-    reviewCount: 0
+    tags: ['demo', 'example', 'редактор']
   },
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString()

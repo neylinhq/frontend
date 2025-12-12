@@ -1,12 +1,13 @@
+import { useCallback, useEffect, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { aiApi } from './ai.api'
 import type { EnrichType } from './ai.schema'
 
+const SELECTED_MODEL_KEY = 'neylin:selected-ai-model'
+
 export const aiKeys = {
   all: ['ai'] as const,
-  models: () => [...aiKeys.all, 'models'] as const,
-  tasks: () => [...aiKeys.all, 'tasks'] as const,
-  task: (id: string) => [...aiKeys.tasks(), id] as const
+  models: () => [...aiKeys.all, 'models'] as const
 }
 
 export const useAIModels = () => {
@@ -17,14 +18,44 @@ export const useAIModels = () => {
   })
 }
 
-export const useAITask = (taskId: string | null) => {
-  return useQuery({
-    queryKey: aiKeys.task(taskId!),
-    queryFn: () => aiApi.getTaskStatus(taskId!),
-    enabled: !!taskId,
-    refetchInterval: data =>
-      data?.status === 'pending' || data?.status === 'processing' ? 1000 : false
+/**
+ * Hook for managing selected AI model with localStorage persistence
+ * Single source of truth for model selection across the app
+ */
+export const useSelectedModel = () => {
+  const { data: models = [], isLoading } = useAIModels()
+  const [selectedModel, setSelectedModelState] = useState<string>(() => {
+    // Try to get from localStorage first
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem(SELECTED_MODEL_KEY) || ''
+    }
+    return ''
   })
+
+  // Once models are loaded, validate selection or default to first
+  useEffect(() => {
+    if (models.length > 0) {
+      const isValidSelection = models.some(m => m.id === selectedModel)
+      if (!isValidSelection) {
+        // Default to first model if no valid selection
+        const defaultModel = models[0].id
+        setSelectedModelState(defaultModel)
+        localStorage.setItem(SELECTED_MODEL_KEY, defaultModel)
+      }
+    }
+  }, [models, selectedModel])
+
+  const setSelectedModel = useCallback((modelId: string) => {
+    setSelectedModelState(modelId)
+    localStorage.setItem(SELECTED_MODEL_KEY, modelId)
+  }, [])
+
+  return {
+    models,
+    selectedModel,
+    setSelectedModel,
+    isLoading
+  }
 }
 
 export const useEnrichNode = () => {
@@ -48,39 +79,5 @@ export const useAnalyzeMap = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['maps'] })
     }
-  })
-}
-
-export const useSuggestEdges = () => {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: ({ mapId }: { mapId: string }) => aiApi.suggestEdges(mapId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['edges'] })
-    }
-  })
-}
-
-export const useDetectGaps = () => {
-  return useMutation({
-    mutationFn: ({ mapId }: { mapId: string }) => aiApi.detectGaps(mapId)
-  })
-}
-
-export const useGenerateExercises = () => {
-  return useMutation({
-    mutationFn: ({
-      mapId,
-      options
-    }: {
-      mapId: string
-      options: {
-        nodeIds?: string[]
-        types?: string[]
-        difficulty?: number
-        count?: number
-      }
-    }) => aiApi.generateExercises(mapId, options)
   })
 }

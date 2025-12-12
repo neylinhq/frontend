@@ -18,6 +18,7 @@ export default [
     route('auth/sign-up', 'routes/auth/sign-up.tsx'),
     route('auth/verify-email', 'routes/auth/verify-email.tsx'),
     route('auth/reset-password', 'routes/auth/reset-password.tsx'),
+    route('auth/two-factor', 'routes/auth/two-factor.tsx'),
 
     // 404 Route (centered, no footer)
     route('*', 'routes/404.tsx'),
@@ -63,6 +64,7 @@ export default [
     route('dashboard/overview', 'routes/dashboard/overview.tsx'),
     route('dashboard/maps/new', 'routes/dashboard/maps/new.tsx'),
     route('dashboard/maps/:mapId/view', 'routes/dashboard/maps/$mapId/view.tsx'),
+    route('dashboard/maps/:mapId/webgl', 'routes/dashboard/maps/$mapId/webgl.tsx'),
     route('dashboard/maps/:mapId/node/:nodeId', 'routes/dashboard/maps/$mapId/node.$nodeId.tsx'),
     route('dashboard/maps/:mapId/practice', 'routes/dashboard/maps/$mapId/practice.tsx'),
 

@@ -21,18 +21,6 @@ export const nodeApi = {
     api.patch(`/maps/${mapId}/nodes/positions`, data),
 
   // RAG operations
-  findSimilar: async (
-    mapId: string,
-    nodeId: string,
-    options?: { limit?: number; threshold?: number }
-  ) => {
-    const params = {
-      limit: options?.limit || 10,
-      threshold: options?.threshold || 0.7
-    }
-    return api.get(`/maps/${mapId}/nodes/${nodeId}/similar`, { params })
-  },
-
   generateEmbedding: async (mapId: string, nodeId: string) =>
     api.post(`/maps/${mapId}/nodes/${nodeId}/embedding`)
 }

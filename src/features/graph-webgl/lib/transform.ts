@@ -3,9 +3,10 @@
  */
 
 import type { Node, Edge } from './types'
+import { ComplexityEnum } from '@/entities/node'
 
-// Valid complexity values for WASM enum
-const VALID_COMPLEXITY = ['basic', 'intermediate', 'advanced'] as const
+// Valid complexity values from single source of truth
+const VALID_COMPLEXITY = ComplexityEnum.options
 
 /**
  * Sanitize node metadata for WASM compatibility
@@ -17,7 +18,7 @@ function sanitizeMetadata(metadata: Node['metadata']): Record<string, unknown> |
   const result: Record<string, unknown> = {}
 
   // Only include valid complexity
-  if (metadata.complexity && VALID_COMPLEXITY.includes(metadata.complexity as typeof VALID_COMPLEXITY[number])) {
+  if (metadata.complexity && VALID_COMPLEXITY.includes(metadata.complexity)) {
     result.complexity = metadata.complexity
   }
 

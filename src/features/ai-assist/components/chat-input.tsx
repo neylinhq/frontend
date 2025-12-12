@@ -1,4 +1,4 @@
-import { useRef, type KeyboardEvent } from 'react'
+import { useRef, useState, type KeyboardEvent } from 'react'
 import { ArrowUp, Map } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import type { AIModel } from '@/entities/ai'
@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/shared/components/switch'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/components/tooltip'
 import { cn } from '@/shared/lib/cn'
+import { CommandPalette, type SlashCommand } from './command-palette'
 
 type ContextMode = 'node' | 'map'
 
@@ -15,6 +16,7 @@ interface ChatInputProps {
   value: string
   onChange: (value: string) => void
   onSend: (value: string) => void
+  onCommand?: (commandId: string) => void
   disabled?: boolean
   placeholder?: string
   model?: string
@@ -29,6 +31,7 @@ export const ChatInput = ({
   value,
   onChange,
   onSend,
+  onCommand,
   disabled = false,
   placeholder = 'Type a message...',
   model,
@@ -40,10 +43,14 @@ export const ChatInput = ({
 }: ChatInputProps) => {
   const { t } = useTranslation()
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const [showCommands, setShowCommands] = useState(false)
 
   // Find current model name
   const currentModel = models.find(m => m.id === model)
   const currentModelName = currentModel?.name || model?.split('/').pop()?.replace(':free', '') || 'Select model'
+
+  // Check if we should show command palette
+  const shouldShowCommands = value.startsWith('/') && !value.includes(' ')
 
   const handleSend = () => {
     if (value.trim() && !disabled) {
@@ -55,7 +62,18 @@ export const ChatInput = ({
     }
   }
 
+  const handleCommandSelect = (command: SlashCommand) => {
+    setShowCommands(false)
+    onChange('')
+    onCommand?.(command.id)
+  }
+
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    // If command palette is open, let it handle arrow keys and enter
+    if (shouldShowCommands && ['ArrowUp', 'ArrowDown', 'Enter', 'Escape'].includes(e.key)) {
+      return // Let CommandPalette handle these
+    }
+
     // Cmd/Ctrl + Enter to send
     if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
       e.preventDefault()
@@ -70,7 +88,11 @@ export const ChatInput = ({
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    onChange(e.target.value)
+    const newValue = e.target.value
+    onChange(newValue)
+
+    // Show/hide command palette
+    setShowCommands(newValue.startsWith('/') && !newValue.includes(' '))
 
     // Auto-resize textarea
     const textarea = e.target
@@ -80,6 +102,14 @@ export const ChatInput = ({
 
   return (
     <div className='relative'>
+      {/* Command Palette */}
+      <CommandPalette
+        isOpen={shouldShowCommands && showCommands}
+        onClose={() => setShowCommands(false)}
+        onSelect={handleCommandSelect}
+        filter={value}
+      />
+
       <Textarea
         ref={textareaRef}
         value={value}

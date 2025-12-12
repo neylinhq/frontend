@@ -7,8 +7,7 @@ export const nodeKeys = {
   lists: () => [...nodeKeys.all, 'list'] as const,
   list: (mapId: string) => [...nodeKeys.lists(), mapId] as const,
   details: () => [...nodeKeys.all, 'detail'] as const,
-  detail: (mapId: string, nodeId: string) => [...nodeKeys.details(), mapId, nodeId] as const,
-  similar: (mapId: string, nodeId: string) => [...nodeKeys.all, 'similar', mapId, nodeId] as const
+  detail: (mapId: string, nodeId: string) => [...nodeKeys.details(), mapId, nodeId] as const
 }
 
 export const useNodes = (mapId: string, type?: string) => {
@@ -61,27 +60,24 @@ export const useDeleteNode = (mapId: string) => {
   })
 }
 
-// RAG queries
-export const useSimilarNodes = (
-  mapId: string,
-  nodeId: string,
-  options?: { limit?: number; threshold?: number; enabled?: boolean }
-) => {
-  return useQuery({
-    queryKey: [...nodeKeys.similar(mapId, nodeId), options?.limit, options?.threshold],
-    queryFn: () => nodeApi.findSimilar(mapId, nodeId, options),
-    enabled: options?.enabled !== false && !!mapId && !!nodeId
+export const useGenerateEmbedding = (mapId: string) => {
+  return useMutation({
+    mutationFn: (nodeId: string) => nodeApi.generateEmbedding(mapId, nodeId)
   })
 }
 
-export const useGenerateEmbedding = (mapId: string) => {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: (nodeId: string) => nodeApi.generateEmbedding(mapId, nodeId),
-    onSuccess: (_, nodeId) => {
-      // Invalidate similar queries for this node
-      queryClient.invalidateQueries({ queryKey: nodeKeys.similar(mapId, nodeId) })
-    }
+/**
+ * @deprecated Use chat API instead. This hook returns empty data.
+ * TODO: Remove after ai-assist refactor to chat-based similar nodes
+ */
+export const useSimilarNodes = (
+  _mapId: string,
+  _nodeId: string,
+  options?: { enabled?: boolean }
+) => {
+  return useQuery({
+    queryKey: ['similar-nodes-deprecated'],
+    queryFn: () => Promise.resolve({ nodes: [], similarity: [] }),
+    enabled: options?.enabled === true // disabled by default
   })
 }

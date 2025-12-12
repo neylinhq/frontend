@@ -9,7 +9,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Основатель западной философии, метод майевтики',
     type: 'person',
     position: { x: 100, y: 100 },
-    metadata: { confidence: 0.95, complexity: 'basic', tags: ['античность', 'этика'] },
+    metadata: { complexity: 'basic', tags: ['античность', 'этика'] },
     createdAt: '2024-02-15T09:00:00Z',
     updatedAt: '2024-02-15T09:00:00Z'
   },
@@ -20,7 +20,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Теория идей, основал Академию',
     type: 'person',
     position: { x: 250, y: 100 },
-    metadata: { confidence: 0.95, complexity: 'intermediate', tags: ['античность', 'идеализм'] },
+    metadata: { complexity: 'intermediate', tags: ['античность', 'идеализм'] },
     createdAt: '2024-02-15T09:01:00Z',
     updatedAt: '2024-02-15T09:01:00Z'
   },
@@ -31,7 +31,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Систематизатор знаний, основатель логики',
     type: 'person',
     position: { x: 400, y: 100 },
-    metadata: { confidence: 0.95, complexity: 'advanced', tags: ['античность', 'логика'] },
+    metadata: { complexity: 'advanced', tags: ['античность', 'логика'] },
     createdAt: '2024-02-15T09:02:00Z',
     updatedAt: '2024-02-15T09:02:00Z'
   },
@@ -57,7 +57,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Школа философии: добродетель, апатия, судьба',
     type: 'school',
     position: { x: 250, y: 250 },
-    metadata: { confidence: 0.9, complexity: 'intermediate', tags: ['античность', 'этика'] },
+    metadata: { complexity: 'intermediate', tags: ['античность', 'этика'] },
     createdAt: '2024-02-15T09:04:00Z',
     updatedAt: '2024-02-15T09:04:00Z'
   },
@@ -68,7 +68,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Римский стоик, нравственная философия',
     type: 'person',
     position: { x: 400, y: 250 },
-    metadata: { confidence: 0.8, complexity: 'intermediate', tags: ['античность', 'стоицизм'] },
+    metadata: { complexity: 'intermediate', tags: ['античность', 'стоицизм'] },
     createdAt: '2024-02-15T09:05:00Z',
     updatedAt: '2024-02-15T09:05:00Z'
   },
@@ -79,7 +79,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Римский император-философ, "Размышления"',
     type: 'person',
     position: { x: 550, y: 250 },
-    metadata: { confidence: 0.85, complexity: 'intermediate', tags: ['античность', 'стоицизм'] },
+    metadata: { complexity: 'intermediate', tags: ['античность', 'стоицизм'] },
     createdAt: '2024-02-15T09:06:00Z',
     updatedAt: '2024-02-15T09:06:00Z'
   },
@@ -92,7 +92,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Отец церковной доктрины, неоплатонизм',
     type: 'person',
     position: { x: 100, y: 400 },
-    metadata: { confidence: 0.9, complexity: 'advanced', tags: ['средневековье', 'теология'] },
+    metadata: { complexity: 'advanced', tags: ['средневековье', 'теология'] },
     createdAt: '2024-02-15T09:07:00Z',
     updatedAt: '2024-02-15T09:07:00Z'
   },
@@ -103,7 +103,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Схоластика, синтез Аристотеля и христианства',
     type: 'person',
     position: { x: 250, y: 400 },
-    metadata: { confidence: 0.9, complexity: 'advanced', tags: ['средневековье', 'схоластика'] },
+    metadata: { complexity: 'advanced', tags: ['средневековье', 'схоластика'] },
     createdAt: '2024-02-15T09:08:00Z',
     updatedAt: '2024-02-15T09:08:00Z'
   },
@@ -116,7 +116,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Рационализм, "Cogito ergo sum", дуализм',
     type: 'person',
     position: { x: 100, y: 550 },
-    metadata: { confidence: 0.95, complexity: 'advanced', tags: ['новое время', 'рационализм'] },
+    metadata: { complexity: 'advanced', tags: ['новое время', 'рационализм'] },
     createdAt: '2024-02-15T09:09:00Z',
     updatedAt: '2024-02-15T09:09:00Z'
   },
@@ -127,7 +127,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Пантеизм, монизм, этика',
     type: 'person',
     position: { x: 250, y: 550 },
-    metadata: { confidence: 0.9, complexity: 'advanced', tags: ['новое время', 'рационализм'] },
+    metadata: { complexity: 'advanced', tags: ['новое время', 'рационализм'] },
     createdAt: '2024-02-15T09:10:00Z',
     updatedAt: '2024-02-15T09:10:00Z'
   },
@@ -138,7 +138,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Монадология, предустановленная гармония',
     type: 'person',
     position: { x: 400, y: 550 },
-    metadata: { confidence: 0.85, complexity: 'advanced', tags: ['новое время', 'рационализм'] },
+    metadata: { complexity: 'advanced', tags: ['новое время', 'рационализм'] },
     createdAt: '2024-02-15T09:11:00Z',
     updatedAt: '2024-02-15T09:11:00Z'
   },
@@ -149,7 +149,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Эмпиризм, tabula rasa, либерализм',
     type: 'person',
     position: { x: 550, y: 550 },
-    metadata: { confidence: 0.9, complexity: 'intermediate', tags: ['новое время', 'эмпиризм'] },
+    metadata: { complexity: 'intermediate', tags: ['новое время', 'эмпиризм'] },
     createdAt: '2024-02-15T09:12:00Z',
     updatedAt: '2024-02-15T09:12:00Z'
   },
@@ -160,7 +160,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Скептицизм, критика причинности',
     type: 'person',
     position: { x: 700, y: 550 },
-    metadata: { confidence: 0.85, complexity: 'advanced', tags: ['новое время', 'эмпиризм'] },
+    metadata: { complexity: 'advanced', tags: ['новое время', 'эмпиризм'] },
     createdAt: '2024-02-15T09:13:00Z',
     updatedAt: '2024-02-15T09:13:00Z'
   },
@@ -171,7 +171,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Критическая философия, категорический императив',
     type: 'person',
     position: { x: 850, y: 550 },
-    metadata: { confidence: 0.95, complexity: 'advanced', tags: ['новое время', 'критицизм'] },
+    metadata: { complexity: 'advanced', tags: ['новое время', 'критицизм'] },
     createdAt: '2024-02-15T09:14:00Z',
     updatedAt: '2024-02-15T09:14:00Z'
   },
@@ -184,7 +184,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Диалектика, абсолютный идеализм',
     type: 'person',
     position: { x: 100, y: 700 },
-    metadata: { confidence: 0.9, complexity: 'advanced', tags: ['идеализм', 'диалектика'] },
+    metadata: { complexity: 'advanced', tags: ['идеализм', 'диалектика'] },
     createdAt: '2024-02-15T09:15:00Z',
     updatedAt: '2024-02-15T09:15:00Z'
   },
@@ -195,7 +195,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Субъективный идеализм, теория Я',
     type: 'person',
     position: { x: 250, y: 700 },
-    metadata: { confidence: 0.75, complexity: 'advanced', tags: ['идеализм'] },
+    metadata: { complexity: 'advanced', tags: ['идеализм'] },
     createdAt: '2024-02-15T09:16:00Z',
     updatedAt: '2024-02-15T09:16:00Z'
   },
@@ -206,7 +206,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Натурфилософия, философия тождества',
     type: 'person',
     position: { x: 400, y: 700 },
-    metadata: { confidence: 0.7, complexity: 'advanced', tags: ['идеализм'] },
+    metadata: { complexity: 'advanced', tags: ['идеализм'] },
     createdAt: '2024-02-15T09:17:00Z',
     updatedAt: '2024-02-15T09:17:00Z'
   },
@@ -219,7 +219,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Волюнтаризм, пессимизм, восточная философия',
     type: 'person',
     position: { x: 550, y: 700 },
-    metadata: { confidence: 0.85, complexity: 'advanced', tags: ['иррационализм'] },
+    metadata: { complexity: 'advanced', tags: ['иррационализм'] },
     createdAt: '2024-02-15T09:18:00Z',
     updatedAt: '2024-02-15T09:18:00Z'
   },
@@ -230,7 +230,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Экзистенциализм, вера и абсурд',
     type: 'person',
     position: { x: 700, y: 700 },
-    metadata: { confidence: 0.85, complexity: 'advanced', tags: ['экзистенциализм'] },
+    metadata: { complexity: 'advanced', tags: ['экзистенциализм'] },
     createdAt: '2024-02-15T09:19:00Z',
     updatedAt: '2024-02-15T09:19:00Z'
   },
@@ -256,7 +256,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Воля к власти, сверхчеловек, нигилизм',
     type: 'person',
     position: { x: 1000, y: 700 },
-    metadata: { confidence: 0.9, complexity: 'advanced', tags: ['иррационализм', 'нигилизм'] },
+    metadata: { complexity: 'advanced', tags: ['иррационализм', 'нигилизм'] },
     createdAt: '2024-02-15T09:21:00Z',
     updatedAt: '2024-02-15T09:21:00Z'
   },
@@ -284,7 +284,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Атеистический экзистенциализм, свобода',
     type: 'person',
     position: { x: 250, y: 850 },
-    metadata: { confidence: 0.9, complexity: 'advanced', tags: ['экзистенциализм'] },
+    metadata: { complexity: 'advanced', tags: ['экзистенциализм'] },
     createdAt: '2024-02-15T09:23:00Z',
     updatedAt: '2024-02-15T09:23:00Z'
   },
@@ -342,7 +342,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Критический рационализм, фальсификационизм',
     type: 'person',
     position: { x: 850, y: 850 },
-    metadata: { confidence: 0.85, complexity: 'advanced', tags: ['философия науки'] },
+    metadata: { complexity: 'advanced', tags: ['философия науки'] },
     createdAt: '2024-02-15T09:27:00Z',
     updatedAt: '2024-02-15T09:27:00Z'
   },
@@ -355,7 +355,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Приоритет разума как источника знания',
     type: 'school',
     position: { x: 1000, y: 400 },
-    metadata: { confidence: 0.9, complexity: 'intermediate', tags: ['эпистемология'] },
+    metadata: { complexity: 'intermediate', tags: ['эпистемология'] },
     createdAt: '2024-02-15T09:28:00Z',
     updatedAt: '2024-02-15T09:28:00Z'
   },
@@ -366,7 +366,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Опыт как основа познания',
     type: 'school',
     position: { x: 1150, y: 400 },
-    metadata: { confidence: 0.9, complexity: 'intermediate', tags: ['эпистемология'] },
+    metadata: { complexity: 'intermediate', tags: ['эпистемология'] },
     createdAt: '2024-02-15T09:29:00Z',
     updatedAt: '2024-02-15T09:29:00Z'
   },
@@ -377,7 +377,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Существование предшествует сущности',
     type: 'school',
     position: { x: 1000, y: 850 },
-    metadata: { confidence: 0.9, complexity: 'intermediate', tags: ['XX век'] },
+    metadata: { complexity: 'intermediate', tags: ['XX век'] },
     createdAt: '2024-02-15T09:30:00Z',
     updatedAt: '2024-02-15T09:30:00Z'
   },
@@ -388,7 +388,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Изучение структуры сознания и опыта',
     type: 'school',
     position: { x: 1150, y: 850 },
-    metadata: { confidence: 0.85, complexity: 'advanced', tags: ['XX век'] },
+    metadata: { complexity: 'advanced', tags: ['XX век'] },
     createdAt: '2024-02-15T09:31:00Z',
     updatedAt: '2024-02-15T09:31:00Z'
   },
@@ -399,7 +399,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Основатель феноменологии',
     type: 'person',
     position: { x: 1300, y: 850 },
-    metadata: { confidence: 0.8, complexity: 'advanced', tags: ['феноменология'] },
+    metadata: { complexity: 'advanced', tags: ['феноменология'] },
     createdAt: '2024-02-15T09:32:00Z',
     updatedAt: '2024-02-15T09:32:00Z'
   },
@@ -412,7 +412,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Археология знания, власть/знание',
     type: 'person',
     position: { x: 100, y: 1000 },
-    metadata: { confidence: 0.85, complexity: 'advanced', tags: ['постмодернизм', 'власть'] },
+    metadata: { complexity: 'advanced', tags: ['постмодернизм', 'власть'] },
     createdAt: '2024-02-15T09:33:00Z',
     updatedAt: '2024-02-15T09:33:00Z'
   },
@@ -423,7 +423,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Деконструкция, différance',
     type: 'person',
     position: { x: 250, y: 1000 },
-    metadata: { confidence: 0.8, complexity: 'advanced', tags: ['постмодернизм'] },
+    metadata: { complexity: 'advanced', tags: ['постмодернизм'] },
     createdAt: '2024-02-15T09:34:00Z',
     updatedAt: '2024-02-15T09:34:00Z'
   },
@@ -434,7 +434,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Философия различия, ризома',
     type: 'person',
     position: { x: 400, y: 1000 },
-    metadata: { confidence: 0.75, complexity: 'advanced', tags: ['постмодернизм'] },
+    metadata: { complexity: 'advanced', tags: ['постмодернизм'] },
     createdAt: '2024-02-15T09:35:00Z',
     updatedAt: '2024-02-15T09:35:00Z'
   },
@@ -445,7 +445,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Симулякры и симуляция, гиперреальность',
     type: 'person',
     position: { x: 550, y: 1000 },
-    metadata: { confidence: 0.75, complexity: 'advanced', tags: ['постмодернизм'] },
+    metadata: { complexity: 'advanced', tags: ['постмодернизм'] },
     createdAt: '2024-02-15T09:36:00Z',
     updatedAt: '2024-02-15T09:36:00Z'
   },
@@ -458,7 +458,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Прагматизм, поток сознания',
     type: 'person',
     position: { x: 700, y: 1000 },
-    metadata: { confidence: 0.8, complexity: 'intermediate', tags: ['прагматизм'] },
+    metadata: { complexity: 'intermediate', tags: ['прагматизм'] },
     createdAt: '2024-02-15T09:37:00Z',
     updatedAt: '2024-02-15T09:37:00Z'
   },
@@ -469,7 +469,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Инструментализм, прогрессивное образование',
     type: 'person',
     position: { x: 850, y: 1000 },
-    metadata: { confidence: 0.75, complexity: 'intermediate', tags: ['прагматизм'] },
+    metadata: { complexity: 'intermediate', tags: ['прагматизм'] },
     createdAt: '2024-02-15T09:38:00Z',
     updatedAt: '2024-02-15T09:38:00Z'
   },
@@ -482,7 +482,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Мир идей Платона как истинная реальность',
     type: 'concept',
     position: { x: 1000, y: 100 },
-    metadata: { confidence: 0.9, complexity: 'intermediate', tags: ['метафизика'] },
+    metadata: { complexity: 'intermediate', tags: ['метафизика'] },
     createdAt: '2024-02-15T09:39:00Z',
     updatedAt: '2024-02-15T09:39:00Z'
   },
@@ -493,7 +493,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Моральный закон Канта',
     type: 'concept',
     position: { x: 1000, y: 550 },
-    metadata: { confidence: 0.9, complexity: 'intermediate', tags: ['этика'] },
+    metadata: { complexity: 'intermediate', tags: ['этика'] },
     createdAt: '2024-02-15T09:40:00Z',
     updatedAt: '2024-02-15T09:40:00Z'
   },
@@ -504,7 +504,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Метод познания через противоречия',
     type: 'concept',
     position: { x: 1150, y: 700 },
-    metadata: { confidence: 0.85, complexity: 'advanced', tags: ['метод'] },
+    metadata: { complexity: 'advanced', tags: ['метод'] },
     createdAt: '2024-02-15T09:41:00Z',
     updatedAt: '2024-02-15T09:41:00Z'
   },
@@ -515,7 +515,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Центральная концепция Ницше',
     type: 'concept',
     position: { x: 1150, y: 700 },
-    metadata: { confidence: 0.85, complexity: 'intermediate', tags: ['психология'] },
+    metadata: { complexity: 'intermediate', tags: ['психология'] },
     createdAt: '2024-02-15T09:42:00Z',
     updatedAt: '2024-02-15T09:42:00Z'
   },
@@ -526,7 +526,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Столкновение человека с бессмысленностью мира',
     type: 'concept',
     position: { x: 550, y: 850 },
-    metadata: { confidence: 0.8, complexity: 'intermediate', tags: ['экзистенциализм'] },
+    metadata: { complexity: 'intermediate', tags: ['экзистенциализм'] },
     createdAt: '2024-02-15T09:43:00Z',
     updatedAt: '2024-02-15T09:43:00Z'
   },
@@ -539,7 +539,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Социальный контракт, Левиафан',
     type: 'person',
     position: { x: 1000, y: 250 },
-    metadata: { confidence: 0.8, complexity: 'intermediate', tags: ['политическая философия'] },
+    metadata: { complexity: 'intermediate', tags: ['политическая философия'] },
     createdAt: '2024-02-15T09:44:00Z',
     updatedAt: '2024-02-15T09:44:00Z'
   },
@@ -550,7 +550,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Общественный договор, естественное состояние',
     type: 'person',
     position: { x: 1150, y: 250 },
-    metadata: { confidence: 0.85, complexity: 'intermediate', tags: ['политическая философия'] },
+    metadata: { complexity: 'intermediate', tags: ['политическая философия'] },
     createdAt: '2024-02-15T09:45:00Z',
     updatedAt: '2024-02-15T09:45:00Z'
   },
@@ -561,7 +561,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Субъективный идеализм, esse est percipi',
     type: 'person',
     position: { x: 1300, y: 550 },
-    metadata: { confidence: 0.75, complexity: 'advanced', tags: ['идеализм'] },
+    metadata: { complexity: 'advanced', tags: ['идеализм'] },
     createdAt: '2024-02-15T09:46:00Z',
     updatedAt: '2024-02-15T09:46:00Z'
   },
@@ -572,7 +572,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Утилитаризм, принцип наибольшего счастья',
     type: 'person',
     position: { x: 1300, y: 400 },
-    metadata: { confidence: 0.8, complexity: 'intermediate', tags: ['этика'] },
+    metadata: { complexity: 'intermediate', tags: ['этика'] },
     createdAt: '2024-02-15T09:47:00Z',
     updatedAt: '2024-02-15T09:47:00Z'
   },
@@ -583,7 +583,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Утилитаризм, либерализм, феминизм',
     type: 'person',
     position: { x: 1300, y: 500 },
-    metadata: { confidence: 0.8, complexity: 'intermediate', tags: ['этика', 'политика'] },
+    metadata: { complexity: 'intermediate', tags: ['этика', 'политика'] },
     createdAt: '2024-02-15T09:48:00Z',
     updatedAt: '2024-02-15T09:48:00Z'
   },
@@ -609,7 +609,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Эмпирический метод, идолы познания',
     type: 'person',
     position: { x: 1300, y: 300 },
-    metadata: { confidence: 0.8, complexity: 'intermediate', tags: ['эмпиризм', 'метод'] },
+    metadata: { complexity: 'intermediate', tags: ['эмпиризм', 'метод'] },
     createdAt: '2024-02-15T09:50:00Z',
     updatedAt: '2024-02-15T09:50:00Z'
   },
@@ -620,7 +620,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Пари Паскаля, сердце и разум',
     type: 'person',
     position: { x: 1300, y: 200 },
-    metadata: { confidence: 0.75, complexity: 'intermediate', tags: ['теология', 'математика'] },
+    metadata: { complexity: 'intermediate', tags: ['теология', 'математика'] },
     createdAt: '2024-02-15T09:51:00Z',
     updatedAt: '2024-02-15T09:51:00Z'
   },
@@ -631,7 +631,7 @@ export const PHILOSOPHY_NODES: Node[] = [
     description: 'Философия жизни, élan vital, интуиция',
     type: 'person',
     position: { x: 1300, y: 700 },
-    metadata: { confidence: 0.75, complexity: 'advanced', tags: ['витализм'] },
+    metadata: { complexity: 'advanced', tags: ['витализм'] },
     createdAt: '2024-02-15T09:52:00Z',
     updatedAt: '2024-02-15T09:52:00Z'
   }

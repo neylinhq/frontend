@@ -44,34 +44,23 @@ export const aiApi = {
   enrichNode: async (mapId: string, nodeId: string, enrichType: EnrichType, async = true) =>
     api.post(`/maps/${mapId}/nodes/${nodeId}/enrich`, { enrichType, async }),
 
-  suggestContent: async (mapId: string, nodeId: string) =>
-    api.post(`/maps/${mapId}/nodes/${nodeId}/suggest`),
-
-  factCheck: async (mapId: string, nodeId: string) =>
-    api.post(`/maps/${mapId}/nodes/${nodeId}/fact-check`),
-
   // Map operations
   analyzeMap: async (mapId: string, model: string, async = true) =>
     api.post(`/maps/${mapId}/analyze`, { model, async }),
 
-  suggestEdges: async (mapId: string) => api.post(`/maps/${mapId}/suggest-edges`),
-
-  generateNodes: async (mapId: string, gaps: string[]) =>
-    api.post(`/maps/${mapId}/generate-nodes`, { gaps }),
-
-  detectGaps: async (mapId: string) => api.post(`/maps/${mapId}/detect-gaps`),
-
-  // RAG Chat
+  // RAG Chat - main AI interaction point
   chatWithMap: async (
     mapId: string,
     question: string,
     model?: string,
     topK?: number,
-    nodeId?: string // Optional: limit context to specific node
+    nodeId?: string,
+    currentNodeId?: string,
+    history?: Array<{ role: 'user' | 'assistant'; content: string }>
   ): Promise<ChatWithMapResponse> => {
     const response = await api.post<ApiResponse<ChatWithMapResponse>>(
       `/maps/${mapId}/chat`,
-      { question, model, topK, nodeId }
+      { question, model, topK, nodeId, currentNodeId, history }
     )
     return response.data
   },
@@ -79,29 +68,9 @@ export const aiApi = {
   // Generate embeddings for all nodes in a map
   generateEmbeddings: async (mapId: string): Promise<EmbeddingsResponse> => {
     const response = await api.post<ApiResponse<EmbeddingsResponse>>(
-      `/maps/${mapId}/embeddings`
+      `/maps/${mapId}/embeddings`,
+      {}
     )
     return response.data
-  },
-
-  // Exercise operations
-  generateExercises: async (
-    mapId: string,
-    options: {
-      nodeIds?: string[]
-      types?: string[]
-      difficulty?: number
-      count?: number
-    }
-  ) => api.post(`/maps/${mapId}/exercises/generate`, options),
-
-  getNextExercise: async (mapId: string) => api.get(`/maps/${mapId}/exercises/next`),
-
-  submitAnswer: async (exerciseId: string, answer: unknown) =>
-    api.post(`/exercises/${exerciseId}/answer`, { answer }),
-
-  // Task status
-  getTaskStatus: async (taskId: string) => api.get(`/ai/tasks/${taskId}`),
-
-  cancelTask: async (taskId: string) => api.delete(`/ai/tasks/${taskId}`)
+  }
 }

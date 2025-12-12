@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { v4 as uuidv4 } from 'uuid'
-import { aiApi, type ProposalData } from '@/entities/ai'
-import { useAIModels } from '@/entities/ai'
+import { aiApi, type ProposalData, useSelectedModel } from '@/entities/ai'
 import { toast } from '@/shared/components/toast'
-import type { ChatContext, ChatMessage, MapChatContext, NodeChatContext, PreviewCard } from '../ai-assist.types'
+import type { ChatMessage, MapChatContext, NodeChatContext, PreviewCard, ResolvedPreview } from '../ai-assist.types'
+import { useChatHistoryStore, getChatSessionId } from '../model/chat-history.store'
 import { ChatInput } from './chat-input'
 import { ChatMessageList } from './chat-message-list'
+
+const EMPTY_MESSAGES: ChatMessage[] = []
 
 type ContextMode = 'node' | 'map'
 
@@ -14,23 +16,34 @@ interface AIChatCoreProps {
   nodeContext: NodeChatContext
   mapContext: MapChatContext
   emptyStateMessage?: string
-  onSavePreview?: (messageId: string, preview: PreviewCard) => Promise<void>
+  onSavePreview?: (messageId: string, preview: PreviewCard) => Promise<{ previousState: Record<string, unknown>; actionId: string } | void>
+  onUndoPreview?: (preview: ResolvedPreview) => Promise<void>
 }
 
 export const AIChatCore = ({
   nodeContext,
-  mapContext,
   emptyStateMessage,
-  onSavePreview
+  onSavePreview,
+  onUndoPreview
 }: AIChatCoreProps) => {
   const { t } = useTranslation()
   const [contextMode, setContextMode] = useState<ContextMode>('node')
-  const [messages, setMessages] = useState<ChatMessage[]>([])
   const [inputValue, setInputValue] = useState('')
   const [isStreaming, setIsStreaming] = useState(false)
 
-  const { data: models = [] } = useAIModels()
-  const [selectedModel, setSelectedModel] = useState(() => models[0]?.id || 'nex-agi/deepseek-v3.1-nex-n1:free')
+  const { models, selectedModel, setSelectedModel } = useSelectedModel()
+
+  // Session ID always based on node (chat history persists regardless of context mode)
+  const sessionId = getChatSessionId(nodeContext.mapId, nodeContext.nodeId)
+
+  // Use persisted chat history - direct selector to avoid new array on each render
+  const messages = useChatHistoryStore(s => s.sessions[sessionId]?.messages) ?? EMPTY_MESSAGES
+  const addMessage = useChatHistoryStore(s => s.addMessage)
+  const updateMessage = useChatHistoryStore(s => s.updateMessage)
+  const removePreview = useChatHistoryStore(s => s.removePreview)
+  const moveToResolved = useChatHistoryStore(s => s.moveToResolved)
+  const undoResolved = useChatHistoryStore(s => s.undoResolved)
+  const clearSession = useChatHistoryStore(s => s.clearSession)
 
   const handleSendMessage = async (content: string) => {
     if (!content.trim() || isStreaming) return
@@ -42,7 +55,7 @@ export const AIChatCore = ({
       timestamp: new Date()
     }
 
-    setMessages(prev => [...prev, userMessage])
+    addMessage(sessionId, userMessage)
     setInputValue('')
     setIsStreaming(true)
 
@@ -54,15 +67,27 @@ export const AIChatCore = ({
       timestamp: new Date(),
       isStreaming: true
     }
-    setMessages(prev => [...prev, aiMessage])
+    addMessage(sessionId, aiMessage)
 
     try {
+      // Build history from previous messages (excluding current streaming one)
+      const history = messages
+        .filter(msg => !msg.isStreaming)
+        .map(msg => ({
+          role: msg.role as 'user' | 'assistant',
+          content: msg.content
+        }))
+
+      // In node mode: pass nodeId to limit RAG context to current node (cheaper)
+      // In map mode: use full RAG across map (richer context), but still pass currentNodeId for context
       const result = await aiApi.chatWithMap(
         nodeContext.mapId,
         content,
         selectedModel,
         undefined,
-        contextMode === 'node' ? nodeContext.nodeId : undefined
+        contextMode === 'node' ? nodeContext.nodeId : undefined, // nodeId limits RAG
+        nodeContext.nodeId, // currentNodeId always passed for context
+        history
       )
 
       // Build preview if AI proposed changes
@@ -71,31 +96,17 @@ export const AIChatCore = ({
         preview = [createProposalPreview(result.proposal)]
       }
 
-      setMessages(prev =>
-        prev.map(msg =>
-          msg.id === aiMessageId
-            ? {
-                ...msg,
-                content: result.message,
-                sourceNodes: result.sourceNodes,
-                preview,
-                isStreaming: false
-              }
-            : msg
-        )
-      )
+      updateMessage(sessionId, aiMessageId, {
+        content: result.message,
+        sourceNodes: result.sourceNodes,
+        preview,
+        isStreaming: false
+      })
     } catch (error) {
-      setMessages(prev =>
-        prev.map(msg =>
-          msg.id === aiMessageId
-            ? {
-                ...msg,
-                content: t('ai.chat.error'),
-                isStreaming: false
-              }
-            : msg
-        )
-      )
+      updateMessage(sessionId, aiMessageId, {
+        content: t('ai.chat.error'),
+        isStreaming: false
+      })
       toast({
         title: 'Error',
         description: error instanceof Error ? error.message : 'An error occurred',
@@ -117,36 +128,71 @@ export const AIChatCore = ({
   })
 
   const handleRemovePreview = (messageId: string, previewId: string) => {
-    setMessages(prev =>
-      prev.map(msg => {
-        if (msg.id !== messageId || !msg.preview) return msg
-        return {
-          ...msg,
-          preview: msg.preview.filter(p => p.id !== previewId)
-        }
-      })
-    )
+    removePreview(sessionId, messageId, previewId)
   }
 
   const handleSavePreview = async (messageId: string, previewCard: PreviewCard) => {
     if (onSavePreview) {
       try {
-        await onSavePreview(messageId, previewCard)
-        handleRemovePreview(messageId, previewCard.id)
-      } catch {
+        const result = await onSavePreview(messageId, previewCard)
+        // Move to resolved with undo data if available
+        moveToResolved(
+          sessionId,
+          messageId,
+          previewCard.id,
+          'approved',
+          result ? { previousState: result.previousState, actionId: result.actionId } : undefined
+        )
+      } catch (error) {
+        console.error('[AI Chat] Save preview failed:', error)
         toast.error(t('common.error'), {
           description: t('ai.saveFailed')
         })
       }
     } else {
-      handleRemovePreview(messageId, previewCard.id)
+      // No save handler, just mark as resolved
+      moveToResolved(sessionId, messageId, previewCard.id, 'approved')
     }
   }
 
-  const defaultEmptyMessage =
-    contextMode === 'node'
-      ? t('ai.chat.noMessages')
-      : t('ai.chat.noMessagesMap')
+  const handleRejectPreview = (messageId: string, previewId: string) => {
+    moveToResolved(sessionId, messageId, previewId, 'rejected')
+  }
+
+  const handleUndoResolved = async (messageId: string, preview: ResolvedPreview) => {
+    if (onUndoPreview && preview.undoData) {
+      try {
+        await onUndoPreview(preview)
+        undoResolved(sessionId, messageId, preview.id)
+        toast.success(t('common.undone', 'Undone'))
+      } catch {
+        toast.error(t('common.error'), {
+          description: t('ai.undoFailed', 'Failed to undo')
+        })
+      }
+    } else {
+      // No undo handler or no undo data, just move back to pending
+      undoResolved(sessionId, messageId, preview.id)
+    }
+  }
+
+  const handleCommand = async (commandId: string) => {
+    switch (commandId) {
+      case 'clear':
+        clearSession(sessionId)
+        toast.success(t('ai.commands.clearSuccess', 'Chat cleared'))
+        break
+      case 'enrich':
+      case 'examples':
+      case 'sources':
+      case 'exercises':
+        // These commands trigger AI actions - send as regular message
+        handleSendMessage(`/${commandId}`)
+        break
+    }
+  }
+
+  const defaultEmptyMessage = t('ai.chat.noMessages')
 
   return (
     <div className="flex h-full flex-col">
@@ -163,6 +209,8 @@ export const AIChatCore = ({
             isStreaming={isStreaming}
             onRemovePreview={handleRemovePreview}
             onSavePreview={handleSavePreview}
+            onRejectPreview={handleRejectPreview}
+            onUndoResolved={handleUndoResolved}
           />
         )}
       </div>
@@ -172,6 +220,7 @@ export const AIChatCore = ({
           value={inputValue}
           onChange={setInputValue}
           onSend={handleSendMessage}
+          onCommand={handleCommand}
           disabled={isStreaming}
           placeholder={t('ai.chat.placeholder')}
           model={selectedModel}

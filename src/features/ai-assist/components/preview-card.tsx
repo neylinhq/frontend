@@ -1,6 +1,8 @@
-import type { PreviewCard } from '../ai-assist.types'
+import { useTranslation } from 'react-i18next'
+import type { EdgePreviewData, NodePreviewData, PreviewCard } from '../ai-assist.types'
 import { ExercisePreview } from './exercise-preview'
 import { EnrichmentPreview } from './enrichment-preview'
+import { ProposalCard, DiffLine } from './proposal-card'
 
 interface PreviewCardComponentProps {
   preview: PreviewCard
@@ -15,6 +17,8 @@ export const PreviewCardComponent = ({
   onSave,
   onEdit
 }: PreviewCardComponentProps) => {
+  const { t } = useTranslation()
+
   switch (preview.type) {
     case 'exercise':
       return (
@@ -36,16 +40,39 @@ export const PreviewCardComponent = ({
         />
       )
 
-    case 'edge':
-    case 'node':
-      // TODO: Implement these preview types
+    case 'edge': {
+      const data = preview.data as EdgePreviewData
       return (
-        <div className='p-4 border border-border rounded-lg bg-muted/30'>
-          <p className='text-sm text-muted-foreground'>
-            Preview type "{preview.type}" not implemented yet
-          </p>
-        </div>
+        <ProposalCard
+          title={t('ai.preview.newEdge', 'New connection')}
+          onAccept={onSave}
+          onReject={onRemove}
+          variant='compact'
+        >
+          <DiffLine type='add'>
+            {data.sourceLabel || data.sourceNodeId} → {data.targetLabel || data.targetNodeId}
+            <span className='text-muted-foreground ml-2'>({data.relationType})</span>
+          </DiffLine>
+        </ProposalCard>
       )
+    }
+
+    case 'node': {
+      const data = preview.data as NodePreviewData
+      return (
+        <ProposalCard
+          title={t('ai.preview.newNode', 'New node')}
+          onAccept={onSave}
+          onReject={onRemove}
+          variant='compact'
+        >
+          <div className='space-y-1'>
+            <DiffLine type='add'>{data.label}</DiffLine>
+            <span className='text-xs text-muted-foreground ml-6'>{data.type}</span>
+          </div>
+        </ProposalCard>
+      )
+    }
 
     default:
       return null

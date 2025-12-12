@@ -4,7 +4,8 @@ import {
   ActiveSessions,
   DeleteAccountSection,
   EmailChangeForm,
-  PasswordChangeForm
+  PasswordChangeForm,
+  TwoFactorSection
 } from '@/features/settings/security-forms'
 import { Typography } from '@/shared/components/typography'
 import type { SettingsContext } from './layout'
@@ -20,6 +21,7 @@ const SecurityPage = () => {
         <p className='text-sm text-muted-foreground mt-1'>{t('settings.security.description')}</p>
       </div>
 
+      <TwoFactorSection />
       <EmailChangeForm currentEmail={user.email} />
       <PasswordChangeForm />
       <ActiveSessions />

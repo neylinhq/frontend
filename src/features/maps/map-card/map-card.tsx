@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
 import type { MapEntity, MatchedNode } from '@/entities/map'
+import { pluralizeItems } from '@/shared/lib/pluralize'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/shared/components/card'
@@ -141,9 +142,7 @@ export const MapCard = memo(
 
           <div className='mt-4 flex items-center gap-2 text-xs text-muted-foreground'>
             <GitBranch className='h-3 w-3' />
-            <span>
-              {map.nodesCount} {t('dashboard.mapCard.concepts')}
-            </span>
+            <span>{pluralizeItems(map.nodesCount, i18n.language)}</span>
           </div>
         </CardContent>
         <CardFooter className='text-xs text-muted-foreground'>

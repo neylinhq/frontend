@@ -8,6 +8,9 @@ export { MapChatPanel } from './components/map-chat-panel'
 export { MapChatDrawer } from './components/map-chat-drawer'
 export { AIChatCore } from './components/ai-chat-core'
 
+// Proposal UI components
+export { ProposalCard, DiffLine, DiffBlock } from './components/proposal-card'
+
 // Types
 export type {
   ChatContext,

@@ -1,6 +1,5 @@
 import { useMap } from '@/entities/map'
-import type { MapChatContext } from '../ai-assist.types'
-import { mapIntentHandlers } from '../lib/map-intent-handlers'
+import type { MapChatContext, NodeChatContext } from '../ai-assist.types'
 import { AIChatCore } from './ai-chat-core'
 
 interface MapChatPanelProps {
@@ -10,12 +9,30 @@ interface MapChatPanelProps {
 export const MapChatPanel = ({ mapId }: MapChatPanelProps) => {
   const { data: map } = useMap(mapId)
 
-  const context: MapChatContext = {
+  // For map-level chat, we create a minimal node context
+  // The actual context switching happens in AIChatCore
+  const nodeContext: NodeChatContext = {
+    type: 'node',
+    mapId,
+    nodeId: '',
+    nodeName: '',
+    nodeType: '',
+    description: '',
+    tags: [],
+    relatedNodes: []
+  }
+
+  const mapContext: MapChatContext = {
     type: 'map',
     mapId,
     mapName: map?.title || '',
     nodeCount: map?.nodesCount || 0
   }
 
-  return <AIChatCore context={context} intentHandlers={mapIntentHandlers} />
+  return (
+    <AIChatCore
+      nodeContext={nodeContext}
+      mapContext={mapContext}
+    />
+  )
 }

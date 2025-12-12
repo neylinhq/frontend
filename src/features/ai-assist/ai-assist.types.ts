@@ -3,12 +3,19 @@ import type { Exercise } from '@/entities/exercise'
 // Chat message types
 export type ChatRole = 'user' | 'assistant'
 
+export interface SourceNode {
+  id: string
+  label: string
+  type: string
+}
+
 export interface ChatMessage {
   id: string
   role: ChatRole
   content: string
   timestamp: Date
   preview?: PreviewCard[]
+  sourceNodes?: SourceNode[]
   isStreaming?: boolean
 }
 

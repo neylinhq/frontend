@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import { useCopyMap } from '@/entities/map'
 import { Button } from '@/shared/components/button'
-import { useToast } from '@/shared/components/toast'
+import { toast } from '@/shared/components/toast'
 
 interface ReadOnlyBannerProps {
   mapId: string
@@ -11,17 +11,16 @@ interface ReadOnlyBannerProps {
 
 export const ReadOnlyBanner = ({ mapId }: ReadOnlyBannerProps) => {
   const { t } = useTranslation()
-  const { toast } = useToast()
   const copyMap = useCopyMap()
   const navigate = useNavigate()
 
   const handleCopy = async () => {
     try {
       const newMap = await copyMap.mutateAsync(mapId)
-      toast({ title: t('dashboard.mapCard.copySuccess') })
+      toast.success(t('dashboard.mapCard.copySuccess'))
       navigate(`/dashboard/maps/${newMap.id}`)
     } catch {
-      toast({ title: t('dashboard.mapCard.copyError'), variant: 'error' })
+      toast.error(t('dashboard.mapCard.copyError'))
     }
   }
 

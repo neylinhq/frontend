@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useAIModels } from '@/entities/ai'
-import { useToast } from '@/shared/components/toast'
-import type { ChatContext, ChatMessage, IntentHandler, PreviewCard } from '../ai-assist.types'
+import { v4 as uuidv4 } from 'uuid'
+import { aiApi, useAIModels } from '@/entities/ai'
+import { toast } from '@/shared/components/toast'
+import type { ChatContext, ChatMessage, IntentHandler, MapChatContext, PreviewCard } from '../ai-assist.types'
 import { ChatInput } from './chat-input'
 import { ChatMessageList } from './chat-message-list'
 
@@ -20,16 +21,13 @@ export const AIChatCore = ({
   onSavePreview
 }: AIChatCoreProps) => {
   const { t } = useTranslation()
-  const { toast } = useToast()
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [inputValue, setInputValue] = useState('')
   const [isStreaming, setIsStreaming] = useState(false)
-  const [selectedModel, setSelectedModel] = useState('gpt-4')
 
   // Get available models from backend
   const { data: models = [] } = useAIModels()
-  const availableModels =
-    models.length > 0 ? models.map(m => m.id) : ['gpt-3.5-turbo', 'gpt-4', 'gpt-4-turbo']
+  const [selectedModel, setSelectedModel] = useState(() => models[0]?.id || 'meta-llama/llama-3.2-3b-instruct:free')
 
   const detectIntent = (
     content: string
@@ -41,7 +39,7 @@ export const AIChatCore = ({
     if (!content.trim() || isStreaming) return
 
     const userMessage: ChatMessage = {
-      id: crypto.randomUUID(),
+      id: uuidv4(),
       role: 'user',
       content: content.trim(),
       timestamp: new Date()
@@ -51,7 +49,7 @@ export const AIChatCore = ({
     setInputValue('')
     setIsStreaming(true)
 
-    const aiMessageId = crypto.randomUUID()
+    const aiMessageId = uuidv4()
     const aiMessage: ChatMessage = {
       id: aiMessageId,
       role: 'assistant',
@@ -63,6 +61,8 @@ export const AIChatCore = ({
 
     try {
       const handler = detectIntent(content)
+
+      throw new Error('Fuck')
 
       if (handler) {
         const result = await handler.execute(context, content, selectedModel)
@@ -80,23 +80,43 @@ export const AIChatCore = ({
           )
         )
       } else {
-        // Default response with available commands
-        const commands =
-          context.type === 'node'
-            ? '/enrich, /examples, /sources, /exercises'
-            : '/analyze, /suggest, /gaps, /summary'
-
-        setMessages(prev =>
-          prev.map(msg =>
-            msg.id === aiMessageId
-              ? {
-                  ...msg,
-                  content: `I can help you with:\n\nTry these commands: ${commands}`,
-                  isStreaming: false
-                }
-              : msg
+        // Free-form Q&A via RAG for map context
+        if (context.type === 'map') {
+          const mapContext = context as MapChatContext
+          const result = await aiApi.chatWithMap(
+            mapContext.mapId,
+            content,
+            selectedModel
           )
-        )
+
+          setMessages(prev =>
+            prev.map(msg =>
+              msg.id === aiMessageId
+                ? {
+                    ...msg,
+                    content: result.answer,
+                    sourceNodes: result.sourceNodes,
+                    isStreaming: false
+                  }
+                : msg
+            )
+          )
+        } else {
+          // Fallback for node context - show available commands
+          const commands = '/enrich, /examples, /sources, /exercises'
+
+          setMessages(prev =>
+            prev.map(msg =>
+              msg.id === aiMessageId
+                ? {
+                    ...msg,
+                    content: `I can help you with:\n\nTry these commands: ${commands}`,
+                    isStreaming: false
+                  }
+                : msg
+            )
+          )
+        }
       }
     } catch (error) {
       setMessages(prev =>
@@ -113,7 +133,6 @@ export const AIChatCore = ({
       toast({
         title: 'Error',
         description: error instanceof Error ? error.message : 'An error occurred',
-        variant: 'destructive'
       })
     } finally {
       setIsStreaming(false)
@@ -137,11 +156,9 @@ export const AIChatCore = ({
       try {
         await onSavePreview(messageId, previewCard)
         handleRemovePreview(messageId, previewCard.id)
-      } catch (error) {
-        toast({
-          title: t('common.error'),
-          description: t('ai.saveFailed'),
-          variant: 'destructive'
+      } catch {
+        toast.error(t('common.error'), {
+          description: t('ai.saveFailed')
         })
       }
     } else {
@@ -184,7 +201,7 @@ export const AIChatCore = ({
           placeholder={t('ai.chat.placeholder')}
           model={selectedModel}
           onModelChange={setSelectedModel}
-          availableModels={availableModels}
+          models={models}
         />
       </div>
     </div>

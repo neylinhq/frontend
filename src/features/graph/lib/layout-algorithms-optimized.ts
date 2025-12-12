@@ -571,20 +571,43 @@ const repositionIsolatedComponents = (
 }
 
 // ============================================================================
-// PATH LAYOUT HELPER FUNCTIONS
+// PATH LAYOUT - IDEAL LEARNING PATH VISUALIZATION
 // ============================================================================
+//
+// Creates a beautiful "spine + branches" layout optimized for learning:
+// - Finds the longest prerequisite chain as the main "spine" (learning path)
+// - Places spine nodes horizontally at Y=0
+// - Branches off the spine go up (generalizations) or down (details/examples)
+// - Minimizes edge crossings using barycenter heuristic
+// - Handles disconnected components gracefully
+//
+// Visual result:
+//                 [Generalization]
+//                       ↑ is-a
+//   [Start] → [Basic] → [Core] → [Advanced] → [Apply]  ← Main spine (Y=0)
+//               ↓          ↓
+//           [Example]  [Detail]
+//                         ↓
+//                    [Sub-detail]
+
+// Edge types that indicate "upward" relationships (generalizations, alternatives)
+const UPWARD_EDGE_TYPES: RelationType[] = ['is-a', 'similar-to', 'contradicts']
+
+// Edge types that indicate "downward" relationships (details, examples)
+const DOWNWARD_EDGE_TYPES: RelationType[] = ['explains', 'has-a', 'part-of', 'causes', 'influences']
 
 interface WeightedAdjacency {
-  outgoing: Map<string, Array<{ target: string; weight: number }>>
-  incoming: Map<string, Array<{ source: string; weight: number }>>
+  outgoing: Map<string, Array<{ target: string; weight: number; type: RelationType }>>
+  incoming: Map<string, Array<{ source: string; weight: number; type: RelationType }>>
 }
 
 /**
  * Build weighted adjacency graph from ALL edge types
+ * Now also tracks edge type for branch direction
  */
 const buildWeightedGraph = (nodes: Node[], edges: Edge[]): WeightedAdjacency => {
-  const outgoing = new Map<string, Array<{ target: string; weight: number }>>()
-  const incoming = new Map<string, Array<{ source: string; weight: number }>>()
+  const outgoing = new Map<string, Array<{ target: string; weight: number; type: RelationType }>>()
+  const incoming = new Map<string, Array<{ source: string; weight: number; type: RelationType }>>()
 
   nodes.forEach(n => {
     outgoing.set(n.id, [])
@@ -595,206 +618,248 @@ const buildWeightedGraph = (nodes: Node[], edges: Edge[]): WeightedAdjacency => 
     const relationType = (e.data?.relationType as RelationType) || 'related-to'
     const weight = EDGE_WEIGHTS[relationType] || 0.3
 
-    outgoing.get(e.source)?.push({ target: e.target, weight })
-    incoming.get(e.target)?.push({ source: e.source, weight })
+    outgoing.get(e.source)?.push({ target: e.target, weight, type: relationType })
+    incoming.get(e.target)?.push({ source: e.source, weight, type: relationType })
   })
 
   return { outgoing, incoming }
 }
 
 /**
- * Find root nodes (nodes with no incoming edges or lowest incoming weight)
- * Also handles cycles by picking nodes with highest out-degree
+ * Find the longest path through prerequisite edges (the "spine")
+ * Uses DFS with memoization for efficiency
  */
-const findRoots = (nodes: Node[], adjacency: WeightedAdjacency): string[] => {
-  const { incoming, outgoing } = adjacency
+const findLongestPrerequisitePath = (
+  nodes: Node[],
+  adjacency: WeightedAdjacency
+): string[] => {
+  const { outgoing, incoming } = adjacency
 
-  // First: nodes with no incoming edges
-  const pureRoots = nodes.filter(n => (incoming.get(n.id)?.length || 0) === 0)
+  // Find root nodes (no incoming prerequisite edges)
+  const roots = nodes.filter(n => {
+    const inEdges = incoming.get(n.id) || []
+    return !inEdges.some(e => e.type === 'prerequisite')
+  })
 
-  if (pureRoots.length > 0) {
-    return pureRoots.map(n => n.id)
+  if (roots.length === 0) {
+    // Cycle or no prerequisites - pick node with most outgoing prerequisites
+    let bestRoot = nodes[0]?.id
+    let maxOut = 0
+    nodes.forEach(n => {
+      const outPrereqs = (outgoing.get(n.id) || []).filter(e => e.type === 'prerequisite').length
+      if (outPrereqs > maxOut) {
+        maxOut = outPrereqs
+        bestRoot = n.id
+      }
+    })
+    if (bestRoot) roots.push(nodes.find(n => n.id === bestRoot)!)
   }
 
-  // Cycle case: pick node with highest (out-degree - in-degree)
-  let bestNode = nodes[0]?.id
-  let bestScore = -Infinity
+  // DFS to find longest path from each root
+  const memo = new Map<string, string[]>()
+  const visited = new Set<string>()
 
-  nodes.forEach(n => {
-    const outDegree = outgoing.get(n.id)?.length || 0
-    const inDegree = incoming.get(n.id)?.length || 0
-    const score = outDegree - inDegree
-    if (score > bestScore) {
-      bestScore = score
-      bestNode = n.id
+  const dfs = (nodeId: string): string[] => {
+    if (memo.has(nodeId)) return memo.get(nodeId)!
+    if (visited.has(nodeId)) return [nodeId] // Cycle detected
+
+    visited.add(nodeId)
+
+    const prereqTargets = (outgoing.get(nodeId) || [])
+      .filter(e => e.type === 'prerequisite')
+      .map(e => e.target)
+
+    if (prereqTargets.length === 0) {
+      const result = [nodeId]
+      memo.set(nodeId, result)
+      visited.delete(nodeId)
+      return result
+    }
+
+    let longestContinuation: string[] = []
+    prereqTargets.forEach(target => {
+      const continuation = dfs(target)
+      if (continuation.length > longestContinuation.length) {
+        longestContinuation = continuation
+      }
+    })
+
+    const result = [nodeId, ...longestContinuation]
+    memo.set(nodeId, result)
+    visited.delete(nodeId)
+    return result
+  }
+
+  let longestPath: string[] = []
+  roots.forEach(root => {
+    const path = dfs(root.id)
+    if (path.length > longestPath.length) {
+      longestPath = path
     }
   })
 
-  return bestNode ? [bestNode] : []
+  // If no prerequisites found, use weighted BFS to create a sensible ordering
+  if (longestPath.length <= 1 && nodes.length > 1) {
+    return createFallbackSpine(nodes, adjacency)
+  }
+
+  return longestPath
 }
 
 /**
- * Calculate levels using weighted BFS
- * Higher weight edges have priority in determining level distance
+ * Create fallback spine when no prerequisites exist
+ * Uses most connected nodes as spine
  */
-const calculateWeightedLevels = (
-  roots: string[],
-  adjacency: WeightedAdjacency,
-  nodeIds: string[]
-): Map<string, number> => {
-  const { outgoing } = adjacency
-  const levels = new Map<string, number>()
-  const visited = new Set<string>()
+const createFallbackSpine = (
+  nodes: Node[],
+  adjacency: WeightedAdjacency
+): string[] => {
+  const { outgoing, incoming } = adjacency
 
-  // Priority queue: [nodeId, level, priority]
-  // Higher priority = process first
-  const queue: Array<{ nodeId: string; level: number; priority: number }> = []
-
-  roots.forEach(rootId => {
-    queue.push({ nodeId: rootId, level: 0, priority: 1 })
-    levels.set(rootId, 0)
-    visited.add(rootId)
+  // Score nodes by connectivity
+  const scores = new Map<string, number>()
+  nodes.forEach(n => {
+    const outDegree = outgoing.get(n.id)?.length || 0
+    const inDegree = incoming.get(n.id)?.length || 0
+    scores.set(n.id, outDegree + inDegree)
   })
 
-  while (queue.length > 0) {
-    // Sort by priority descending (higher priority first)
-    queue.sort((a, b) => b.priority - a.priority)
-    const { nodeId, level } = queue.shift()!
+  // Find node with most connections as start
+  let startNode = nodes[0]?.id
+  let maxScore = 0
+  scores.forEach((score, id) => {
+    if (score > maxScore) {
+      maxScore = score
+      startNode = id
+    }
+  })
 
-    const neighbors = outgoing.get(nodeId) || []
+  if (!startNode) return []
+
+  // BFS from start, following highest-weight edges
+  const spine: string[] = [startNode]
+  const used = new Set([startNode])
+
+  while (spine.length < Math.min(nodes.length, 10)) {
+    const current = spine[spine.length - 1]
+    const neighbors = outgoing.get(current) || []
+
+    // Find best unused neighbor
+    let bestNeighbor: string | null = null
+    let bestWeight = -1
+
     neighbors.forEach(({ target, weight }) => {
-      if (!visited.has(target)) {
-        visited.add(target)
-        levels.set(target, level + 1)
-        queue.push({ nodeId: target, level: level + 1, priority: weight })
+      if (!used.has(target) && weight > bestWeight) {
+        bestWeight = weight
+        bestNeighbor = target
+      }
+    })
+
+    if (!bestNeighbor) break
+
+    spine.push(bestNeighbor)
+    used.add(bestNeighbor)
+  }
+
+  return spine
+}
+
+/**
+ * Determine branch direction for a node based on how it connects to spine
+ * Returns: -1 for up (generalizations), 1 for down (details), 0 for spine
+ */
+const getBranchDirection = (
+  nodeId: string,
+  spineSet: Set<string>,
+  adjacency: WeightedAdjacency
+): number => {
+  if (spineSet.has(nodeId)) return 0
+
+  const { incoming } = adjacency
+  const inEdges = incoming.get(nodeId) || []
+
+  // Check edge types from spine nodes
+  for (const edge of inEdges) {
+    if (spineSet.has(edge.source)) {
+      if (UPWARD_EDGE_TYPES.includes(edge.type)) return -1
+      if (DOWNWARD_EDGE_TYPES.includes(edge.type)) return 1
+    }
+  }
+
+  // Default: down
+  return 1
+}
+
+/**
+ * Calculate branch depth (how far from spine)
+ */
+const calculateBranchDepths = (
+  nodes: Node[],
+  spine: string[],
+  adjacency: WeightedAdjacency
+): Map<string, { level: number; depth: number; direction: number }> => {
+  const spineSet = new Set(spine)
+  const result = new Map<string, { level: number; depth: number; direction: number }>()
+
+  // Initialize spine nodes at depth 0
+  spine.forEach((id, idx) => {
+    result.set(id, { level: idx, depth: 0, direction: 0 })
+  })
+
+  // BFS from spine to assign depths to branches
+  const { outgoing, incoming } = adjacency
+  const queue: Array<{ id: string; level: number; depth: number; direction: number }> = []
+
+  // Start BFS from each spine node
+  spine.forEach((spineId, spineLevel) => {
+    const neighbors = [
+      ...(outgoing.get(spineId) || []).map(e => ({ id: e.target, type: e.type })),
+      ...(incoming.get(spineId) || []).map(e => ({ id: e.source, type: e.type }))
+    ]
+
+    neighbors.forEach(({ id, type }) => {
+      if (!result.has(id)) {
+        const direction = UPWARD_EDGE_TYPES.includes(type) ? -1 : 1
+        queue.push({ id, level: spineLevel, depth: 1, direction })
+      }
+    })
+  })
+
+  // Process queue
+  while (queue.length > 0) {
+    const { id, level, depth, direction } = queue.shift()!
+
+    if (result.has(id)) continue
+    result.set(id, { level, depth, direction })
+
+    // Add neighbors at depth + 1
+    const neighbors = [
+      ...(outgoing.get(id) || []).map(e => ({ id: e.target, type: e.type })),
+      ...(incoming.get(id) || []).map(e => ({ id: e.source, type: e.type }))
+    ]
+
+    neighbors.forEach(({ id: neighborId, type }) => {
+      if (!result.has(neighborId)) {
+        // Inherit direction from parent, or determine from edge type
+        let neighborDir = direction
+        if (UPWARD_EDGE_TYPES.includes(type)) neighborDir = -1
+        else if (DOWNWARD_EDGE_TYPES.includes(type)) neighborDir = 1
+
+        queue.push({ id: neighborId, level, depth: depth + 1, direction: neighborDir })
       }
     })
   }
 
-  // Handle disconnected nodes
-  let maxLevel = 0
-  levels.forEach(l => {
-    if (l > maxLevel) maxLevel = l
-  })
-
-  // Place disconnected nodes at the end
-  nodeIds.forEach(id => {
-    if (!levels.has(id)) {
-      levels.set(id, maxLevel + 1)
+  // Handle any disconnected nodes
+  nodes.forEach(n => {
+    if (!result.has(n.id)) {
+      result.set(n.id, { level: spine.length, depth: 1, direction: 1 })
     }
   })
 
-  return levels
+  return result
 }
 
-/**
- * Barycenter method to minimize edge crossings
- * Orders nodes within each level by average position of their neighbors
- */
-const minimizeCrossings = (
-  levels: Map<string, number>,
-  adjacency: WeightedAdjacency,
-  iterations = 4
-): Map<number, string[]> => {
-  const { outgoing, incoming } = adjacency
-
-  // Group nodes by level
-  const levelGroups = new Map<number, string[]>()
-  levels.forEach((level, nodeId) => {
-    if (!levelGroups.has(level)) {
-      levelGroups.set(level, [])
-    }
-    levelGroups.get(level)!.push(nodeId)
-  })
-
-  // Get all level numbers sorted
-  const levelNumbers = Array.from(levelGroups.keys()).sort((a, b) => a - b)
-
-  // Initial ordering: arbitrary (by insertion order)
-  const nodePositions = new Map<string, number>()
-  levelGroups.forEach(group => {
-    group.forEach((nodeId, idx) => {
-      nodePositions.set(nodeId, idx)
-    })
-  })
-
-  // Barycenter iterations
-  for (let iter = 0; iter < iterations; iter++) {
-    // Forward sweep (left to right)
-    for (let i = 1; i < levelNumbers.length; i++) {
-      const currentLevel = levelNumbers[i]
-      const nodesInLevel = levelGroups.get(currentLevel)!
-
-      // Calculate barycenter for each node
-      const barycenters = nodesInLevel.map(nodeId => {
-        const incomingEdges = incoming.get(nodeId) || []
-        if (incomingEdges.length === 0) {
-          return { nodeId, barycenter: nodePositions.get(nodeId) || 0 }
-        }
-
-        let sum = 0
-        let totalWeight = 0
-        incomingEdges.forEach(({ source, weight }) => {
-          sum += (nodePositions.get(source) || 0) * weight
-          totalWeight += weight
-        })
-
-        return {
-          nodeId,
-          barycenter: totalWeight > 0 ? sum / totalWeight : (nodePositions.get(nodeId) || 0)
-        }
-      })
-
-      // Sort by barycenter
-      barycenters.sort((a, b) => a.barycenter - b.barycenter)
-
-      // Update positions
-      barycenters.forEach(({ nodeId }, idx) => {
-        nodePositions.set(nodeId, idx)
-      })
-      levelGroups.set(
-        currentLevel,
-        barycenters.map(b => b.nodeId)
-      )
-    }
-
-    // Backward sweep (right to left)
-    for (let i = levelNumbers.length - 2; i >= 0; i--) {
-      const currentLevel = levelNumbers[i]
-      const nodesInLevel = levelGroups.get(currentLevel)!
-
-      const barycenters = nodesInLevel.map(nodeId => {
-        const outgoingEdges = outgoing.get(nodeId) || []
-        if (outgoingEdges.length === 0) {
-          return { nodeId, barycenter: nodePositions.get(nodeId) || 0 }
-        }
-
-        let sum = 0
-        let totalWeight = 0
-        outgoingEdges.forEach(({ target, weight }) => {
-          sum += (nodePositions.get(target) || 0) * weight
-          totalWeight += weight
-        })
-
-        return {
-          nodeId,
-          barycenter: totalWeight > 0 ? sum / totalWeight : (nodePositions.get(nodeId) || 0)
-        }
-      })
-
-      barycenters.sort((a, b) => a.barycenter - b.barycenter)
-      barycenters.forEach(({ nodeId }, idx) => {
-        nodePositions.set(nodeId, idx)
-      })
-      levelGroups.set(
-        currentLevel,
-        barycenters.map(b => b.nodeId)
-      )
-    }
-  }
-
-  return levelGroups
-}
 
 /**
  * Apply soft force-directed refinement for organic feel
@@ -867,7 +932,7 @@ const refineWithForces = (
 }
 
 // ============================================================================
-// MAIN PATH LAYOUT ALGORITHM
+// MAIN PATH LAYOUT ALGORITHM - IDEAL SPINE + BRANCHES
 // ============================================================================
 
 const pathLayout = (nodes: Node[], edges: Edge[], options: InternalLayoutOptions): LayoutResult => {
@@ -885,101 +950,184 @@ const pathLayout = (nodes: Node[], edges: Edge[], options: InternalLayoutOptions
   // 1. Build weighted adjacency (ALL edge types)
   const adjacency = buildWeightedGraph(nodes, edges)
 
-  // 2. Find roots (nodes with no incoming edges)
-  const roots = findRoots(nodes, adjacency)
+  // 2. Find the longest prerequisite chain as the "spine"
+  const spine = findLongestPrerequisitePath(nodes, adjacency)
 
-  if (roots.length === 0) {
+  if (spine.length === 0) {
     return forceDirectedLayout(nodes, edges, options)
   }
 
-  // 3. Calculate levels using weighted BFS
-  const nodeIds = nodes.map(n => n.id)
-  const levels = calculateWeightedLevels(roots, adjacency, nodeIds)
+  // 3. Calculate branch depths and directions for all nodes
+  const nodeInfo = calculateBranchDepths(nodes, spine, adjacency)
 
-  // 4. Order nodes within levels to minimize edge crossings
-  const orderedLevels = minimizeCrossings(levels, adjacency)
-
-  // 5. Calculate actual spacing based on directionStrength
-  // Higher strength = more spacing
+  // 4. Calculate effective spacing
   const effectiveLevelSpacing = levelSpacing * (0.5 + directionStrength * 0.5)
   const effectiveNodeSpacing = nodeSpacing * (0.5 + directionStrength * 0.5)
+  const branchSpacing = effectiveNodeSpacing * 0.8
 
-  // 6. Position nodes
-  const positions = new Map<string, { x: number; y: number }>()
+  // 5. Group nodes by (level, direction) for branch ordering
+  // Structure: Map<level, { up: string[], spine: string[], down: string[] }>
+  const levelBranches = new Map<number, { up: string[]; spine: string[]; down: string[] }>()
 
-  orderedLevels.forEach((nodesInLevel, level) => {
-    const levelHeight = nodesInLevel.length * effectiveNodeSpacing
-
-    nodesInLevel.forEach((nodeId, indexInLevel) => {
-      positions.set(nodeId, {
-        x: level * effectiveLevelSpacing,
-        y: indexInLevel * effectiveNodeSpacing - levelHeight / 2 + effectiveNodeSpacing / 2
-      })
-    })
+  nodeInfo.forEach(({ level, direction }, nodeId) => {
+    if (!levelBranches.has(level)) {
+      levelBranches.set(level, { up: [], spine: [], down: [] })
+    }
+    const branches = levelBranches.get(level)!
+    if (direction < 0) branches.up.push(nodeId)
+    else if (direction > 0) branches.down.push(nodeId)
+    else branches.spine.push(nodeId)
   })
 
-  // 7. If directionStrength < 1, apply soft force-directed refinement
+  // 6. Sort branches within each level by depth (closer to spine first)
+  levelBranches.forEach(branches => {
+    const sortByDepth = (a: string, b: string) => {
+      const depthA = nodeInfo.get(a)?.depth || 0
+      const depthB = nodeInfo.get(b)?.depth || 0
+      return depthA - depthB
+    }
+    branches.up.sort(sortByDepth)
+    branches.down.sort(sortByDepth)
+  })
+
+  // 7. Position nodes
+  const positions = new Map<string, { x: number; y: number }>()
+
+  // Group nodes by depth for proper stacking
+  const nodesByDepthAndLevel = new Map<string, string[]>() // key: `${level}-${direction}-${depth}`
+
+  nodeInfo.forEach(({ level, depth, direction }, nodeId) => {
+    const key = `${level}-${direction}-${depth}`
+    if (!nodesByDepthAndLevel.has(key)) {
+      nodesByDepthAndLevel.set(key, [])
+    }
+    nodesByDepthAndLevel.get(key)!.push(nodeId)
+  })
+
+  // Position each node
+  nodeInfo.forEach(({ level, depth, direction }, nodeId) => {
+    const x = level * effectiveLevelSpacing
+
+    // Y position based on direction and depth
+    // Spine at y=0, branches spread up/down
+    let y: number
+
+    if (direction === 0) {
+      // Spine node - centered
+      y = 0
+    } else {
+      // Branch node - offset based on depth and index within same depth
+      const key = `${level}-${direction}-${depth}`
+      const sameDepthNodes = nodesByDepthAndLevel.get(key) || [nodeId]
+      const indexInDepth = sameDepthNodes.indexOf(nodeId)
+      const countAtDepth = sameDepthNodes.length
+
+      // Base offset for this depth level
+      const baseY = depth * branchSpacing * direction
+
+      // Spread multiple nodes at same depth horizontally (via small Y offset)
+      const spreadOffset = (indexInDepth - (countAtDepth - 1) / 2) * (branchSpacing * 0.5)
+
+      y = baseY + spreadOffset
+    }
+
+    positions.set(nodeId, { x, y })
+  })
+
+  // 8. Apply barycenter refinement to reduce edge crossings
+  const iterations = 4
+
+  for (let iter = 0; iter < iterations; iter++) {
+    // Process each level
+    const levels = Array.from(levelBranches.keys()).sort((a, b) => a - b)
+
+    levels.forEach(level => {
+      const branches = levelBranches.get(level)!
+
+      // Refine upward branches
+      if (branches.up.length > 1) {
+        refineBranchPositions(branches.up, positions, adjacency, nodeInfo, branchSpacing, -1)
+      }
+
+      // Refine downward branches
+      if (branches.down.length > 1) {
+        refineBranchPositions(branches.down, positions, adjacency, nodeInfo, branchSpacing, 1)
+      }
+    })
+  }
+
+  // 9. Handle disconnected components
+  const visited = new Set<string>()
+  const components: string[][] = []
+
+  nodes.forEach(n => {
+    if (!visited.has(n.id)) {
+      const component: string[] = []
+      const queue = [n.id]
+
+      while (queue.length > 0) {
+        const id = queue.shift()!
+        if (visited.has(id)) continue
+        visited.add(id)
+        component.push(id)
+
+        const outEdges = adjacency.outgoing.get(id) || []
+        const inEdges = adjacency.incoming.get(id) || []
+        outEdges.forEach(({ target }) => {
+          if (!visited.has(target)) queue.push(target)
+        })
+        inEdges.forEach(({ source }) => {
+          if (!visited.has(source)) queue.push(source)
+        })
+      }
+
+      components.push(component)
+    }
+  })
+
+  // Offset disconnected components vertically
+  if (components.length > 1) {
+    let currentOffset = 0
+
+    components.forEach((component, idx) => {
+      if (idx === 0) {
+        // First component (main) - calculate its extent
+        let maxY = -Infinity
+        component.forEach(id => {
+          const pos = positions.get(id)
+          if (pos) maxY = Math.max(maxY, pos.y)
+        })
+        currentOffset = maxY + effectiveNodeSpacing * 2
+      } else {
+        // Move this component below previous
+        let minY = Infinity
+        component.forEach(id => {
+          const pos = positions.get(id)
+          if (pos) minY = Math.min(minY, pos.y)
+        })
+
+        const offsetNeeded = currentOffset - minY
+        let maxY = -Infinity
+
+        component.forEach(id => {
+          const pos = positions.get(id)
+          if (pos) {
+            pos.y += offsetNeeded
+            maxY = Math.max(maxY, pos.y)
+          }
+        })
+
+        currentOffset = maxY + effectiveNodeSpacing * 2
+      }
+    })
+  }
+
+  // 10. If directionStrength < 1, apply soft organic refinement
   if (directionStrength < 1) {
     refineWithForces(positions, edges, directionStrength, nodeSpacing)
   }
 
-  // 8. Handle disconnected components - spread them vertically
-  const componentOffsets = new Map<number, number>()
-  let componentOffset = 0
-  const visited = new Set<string>()
-
-  orderedLevels.forEach((nodesInLevel, level) => {
-    if (level === 0) {
-      // For each root, track its component
-      nodesInLevel.forEach((rootId, idx) => {
-        if (!visited.has(rootId)) {
-          // BFS to mark all nodes in this component
-          const queue = [rootId]
-          const componentNodes: string[] = []
-
-          while (queue.length > 0) {
-            const nodeId = queue.shift()!
-            if (visited.has(nodeId)) continue
-            visited.add(nodeId)
-            componentNodes.push(nodeId)
-
-            const outEdges = adjacency.outgoing.get(nodeId) || []
-            const inEdges = adjacency.incoming.get(nodeId) || []
-
-            outEdges.forEach(({ target }) => {
-              if (!visited.has(target)) queue.push(target)
-            })
-            inEdges.forEach(({ source }) => {
-              if (!visited.has(source)) queue.push(source)
-            })
-          }
-
-          // Calculate component height and offset
-          let minY = Infinity,
-            maxY = -Infinity
-          componentNodes.forEach(id => {
-            const pos = positions.get(id)
-            if (pos) {
-              minY = Math.min(minY, pos.y)
-              maxY = Math.max(maxY, pos.y)
-            }
-          })
-
-          const componentHeight = maxY - minY + effectiveNodeSpacing
-          componentNodes.forEach(id => {
-            const pos = positions.get(id)
-            if (pos) {
-              pos.y += componentOffset - minY
-            }
-          })
-
-          componentOffset += componentHeight + effectiveNodeSpacing
-        }
-      })
-    }
-  })
-
-  // 9. Apply positions to nodes
+  // 11. Apply positions to nodes
   const positionedNodes = nodes.map(node => {
     const pos = positions.get(node.id) || { x: 0, y: 0 }
     return {
@@ -989,6 +1137,67 @@ const pathLayout = (nodes: Node[], edges: Edge[], options: InternalLayoutOptions
   })
 
   return { nodes: positionedNodes, edges }
+}
+
+/**
+ * Refine branch positions using barycenter to reduce crossings
+ */
+const refineBranchPositions = (
+  branchNodes: string[],
+  positions: Map<string, { x: number; y: number }>,
+  adjacency: WeightedAdjacency,
+  nodeInfo: Map<string, { level: number; depth: number; direction: number }>,
+  spacing: number,
+  direction: number
+): void => {
+  const { incoming, outgoing } = adjacency
+
+  // Calculate barycenter for each node
+  const barycenters = branchNodes.map(nodeId => {
+    const neighbors = [
+      ...(incoming.get(nodeId) || []).map(e => e.source),
+      ...(outgoing.get(nodeId) || []).map(e => e.target)
+    ]
+
+    if (neighbors.length === 0) {
+      return { nodeId, barycenter: positions.get(nodeId)?.y || 0 }
+    }
+
+    let sum = 0
+    let count = 0
+    neighbors.forEach(nId => {
+      const pos = positions.get(nId)
+      if (pos) {
+        sum += pos.y
+        count++
+      }
+    })
+
+    return {
+      nodeId,
+      barycenter: count > 0 ? sum / count : positions.get(nodeId)?.y || 0
+    }
+  })
+
+  // Sort by barycenter
+  barycenters.sort((a, b) => a.barycenter - b.barycenter)
+
+  // Reposition while respecting depth constraints
+  barycenters.forEach(({ nodeId }, idx) => {
+    const info = nodeInfo.get(nodeId)
+    if (!info) return
+
+    const pos = positions.get(nodeId)
+    if (!pos) return
+
+    // Keep depth-based base position, adjust within depth group
+    const baseY = info.depth * spacing * direction
+
+    // Small adjustment based on barycenter order
+    const adjustment = (idx - (barycenters.length - 1) / 2) * (spacing * 0.3)
+
+    pos.y = baseY + adjustment
+  })
 }
 
 export const getNodesWithinDepth = (startNodeId: string, edges: Edge[], depth: number) => {

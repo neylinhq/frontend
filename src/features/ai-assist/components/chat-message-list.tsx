@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Bot, User, Loader2 } from 'lucide-react'
+import { Bot, User, Loader2, FileText } from 'lucide-react'
+import { Badge } from '@/shared/components/badge'
 import { cn } from '@/shared/lib/cn'
 import type { ChatMessage, PreviewCard } from '../ai-assist.types'
 import { PreviewCardComponent } from './preview-card'
@@ -60,6 +61,28 @@ export const ChatMessageList = ({
               )}
             >
               <p className='whitespace-pre-wrap break-all'>{message.content}</p>
+
+              {/* Source Nodes (RAG references) */}
+              {message.sourceNodes && message.sourceNodes.length > 0 && (
+                <div className='mt-3 pt-3 border-t border-border/50'>
+                  <div className='flex items-center gap-1.5 text-xs text-muted-foreground mb-2'>
+                    <FileText className='w-3 h-3' />
+                    <span>{t('ai.chat.sources', 'Sources')}</span>
+                  </div>
+                  <div className='flex flex-wrap gap-1.5'>
+                    {message.sourceNodes.map(node => (
+                      <Badge
+                        key={node.id}
+                        variant='secondary'
+                        className='text-xs font-normal cursor-default'
+                        title={`${node.label} (${node.type})`}
+                      >
+                        {node.label}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Streaming Indicator */}

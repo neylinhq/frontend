@@ -15,7 +15,7 @@
  */
 
 // New Hybrid WebGL + DOM components
-export { GraphCanvas } from './components/graph-canvas'
+export { GraphCanvas, type LayoutPosition } from './components/graph-canvas'
 export { DomOverlay } from './components/dom-overlay'
 export { NodeOverlay } from './components/node-overlay'
 export { EdgeOverlay } from './components/edge-overlay'

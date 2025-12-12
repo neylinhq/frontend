@@ -31,8 +31,8 @@ export const useEnrichNode = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ nodeId, enrichType }: { nodeId: string; enrichType: EnrichType }) =>
-      aiApi.enrichNode(nodeId, enrichType, true),
+    mutationFn: ({ mapId, nodeId, enrichType }: { mapId: string; nodeId: string; enrichType: EnrichType }) =>
+      aiApi.enrichNode(mapId, nodeId, enrichType, true),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['nodes'] })
     }

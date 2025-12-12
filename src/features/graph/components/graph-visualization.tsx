@@ -175,7 +175,7 @@ const GraphVisualizationContent = ({
     [deleteEdgeMutation]
   )
 
-  const { visibleNodeTypes, visibleEdgeTypes } = useFilters()
+  const { visibleNodeTypes, visibleEdgeTypes, connectionRange } = useFilters()
   const { showMinimap } = useGraphUI()
   const { nodeSpacing, directionStrength, animationDuration } = useNodeSpacing()
   const { animateToPositions } = useAnimatedLayout()
@@ -201,10 +201,11 @@ const GraphVisualizationContent = ({
   }
 
   // Get filtered data and counts using extracted hook
-  const { filteredData, nodeCountsByType, edgeCountsByType } = useFilteredGraphData({
+  const { filteredData, nodeCountsByType, edgeCountsByType, connectionStats } = useFilteredGraphData({
     fullMap,
     visibleNodeTypes,
     visibleEdgeTypes,
+    connectionRange,
     viewMode,
     focusedNodeId,
     focusDepth
@@ -889,6 +890,7 @@ const GraphVisualizationContent = ({
         mapId={mapId}
         nodeCountsByType={nodeCountsByType}
         edgeCountsByType={edgeCountsByType}
+        connectionStats={connectionStats}
         selectedNodeId={selectedNodeId}
         canEdit={interactive}
       />

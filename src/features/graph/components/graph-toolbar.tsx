@@ -15,25 +15,32 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/shared/components/dropdown-menu'
+import { Slider } from '@/shared/components/slider'
 import { cn } from '@/shared/lib/cn'
 import {
   ALL_EDGE_TYPES,
   ALL_NODE_TYPES,
+  CONNECTION_PRESETS,
   useFilters,
   useFocusMode,
   useViewMode,
+  type ConnectionPreset,
   type ViewMode
 } from '../model/graph.store'
+import type { ConnectionStats } from '../model/graph-data.hooks'
 import {
   EDGE_TYPE_LABELS,
   NODE_TYPE_LABELS,
   VIEW_MODE_CONFIG
 } from '../model/graph-toolbar.constants'
 
+const CONNECTION_PRESET_ORDER: ConnectionPreset[] = ['leaves', 'medium', 'hubs']
+
 interface GraphToolbarProps {
   mapId: string
   nodeCountsByType?: Record<NodeType, number>
   edgeCountsByType?: Record<RelationType, number>
+  connectionStats?: ConnectionStats
   selectedNodeId?: string | null
   /** Hide AI button for read-only maps */
   canEdit?: boolean
@@ -41,19 +48,36 @@ interface GraphToolbarProps {
 }
 
 export const GraphToolbar = memo(
-  ({ mapId, nodeCountsByType, edgeCountsByType, selectedNodeId, canEdit = true, className }: GraphToolbarProps) => {
+  ({ mapId, nodeCountsByType, edgeCountsByType, connectionStats, selectedNodeId, canEdit = true, className }: GraphToolbarProps) => {
     const { t } = useTranslation()
     const { viewMode, setViewMode } = useViewMode()
     const { focusedNodeId, focusDepth, setFocusDepth, clearFocus, focusNode } = useFocusMode()
     const {
       visibleNodeTypes,
       visibleEdgeTypes,
+      connectionRange,
       toggleNodeType,
       toggleEdgeType,
-      getActiveFiltersCount
+      setConnectionRange,
+      setConnectionPreset,
+      getActiveFiltersCount,
+      getActiveConnectionPreset
     } = useFilters()
 
     const activeFiltersCount = getActiveFiltersCount()
+    const activePreset = getActiveConnectionPreset()
+
+    // Use actual max from graph, or fallback to 10
+    const maxConnections = connectionStats?.max ?? 10
+
+    // For slider, cap the max value to actual graph max
+    const sliderMax = Math.max(maxConnections, 1)
+
+    // Convert Infinity to slider max for display
+    const displayRange: [number, number] = [
+      connectionRange[0],
+      connectionRange[1] === Infinity ? sliderMax : connectionRange[1]
+    ]
 
     return (
       <div
@@ -222,6 +246,61 @@ export const GraphToolbar = memo(
                   </DropdownMenuCheckboxItem>
                 )
               })}
+
+              <DropdownMenuSeparator />
+
+              {/* Connection count filter */}
+              <DropdownMenuLabel>{t('graph.filters.connections')}</DropdownMenuLabel>
+
+              {/* Presets */}
+              <div className='flex gap-1 px-2 py-1.5'>
+                {CONNECTION_PRESET_ORDER.map(preset => (
+                  <Button
+                    key={preset}
+                    size='sm'
+                    variant={activePreset === preset ? 'secondary' : 'ghost'}
+                    className='h-6 px-2 text-xs flex-1'
+                    onClick={() => setConnectionPreset(preset)}
+                  >
+                    {t(`graph.filters.preset.${preset}`)}
+                  </Button>
+                ))}
+              </div>
+
+              {/* Range slider */}
+              <div className='px-2 py-2'>
+                <div className='flex items-center justify-between text-xs text-muted-foreground mb-2'>
+                  <span>{displayRange[0]}</span>
+                  <span>{displayRange[1] === sliderMax && connectionRange[1] === Infinity ? `${sliderMax}+` : displayRange[1]}</span>
+                </div>
+                <Slider
+                  value={displayRange}
+                  min={0}
+                  max={sliderMax}
+                  step={1}
+                  onValueChange={(value: number[]) => {
+                    const newRange: [number, number] = [
+                      value[0],
+                      value[1] >= sliderMax ? Infinity : value[1]
+                    ]
+                    setConnectionRange(newRange)
+                  }}
+                />
+              </div>
+
+              {/* Reset to all */}
+              {activePreset !== 'all' && (
+                <div className='px-2 pb-1'>
+                  <Button
+                    size='sm'
+                    variant='ghost'
+                    className='h-6 px-2 text-xs w-full text-muted-foreground'
+                    onClick={() => setConnectionPreset('all')}
+                  >
+                    {t('graph.filters.resetConnections')}
+                  </Button>
+                </div>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </Card>

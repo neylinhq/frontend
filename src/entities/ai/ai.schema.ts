@@ -87,7 +87,8 @@ export type EnrichType = 'description' | 'examples' | 'sources' | 'all'
 export const AIModelSchema = z.object({
   id: z.string(),
   name: z.string(),
-  provider: z.enum(['openai', 'anthropic'])
+  provider: z.string(),
+  free: z.boolean().optional()
 })
 
 export type AIModel = z.infer<typeof AIModelSchema>

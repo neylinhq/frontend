@@ -31,6 +31,16 @@ export const ALL_EDGE_TYPES: RelationType[] = [
   'similar-to'
 ]
 
+// Connection filter presets
+export type ConnectionPreset = 'all' | 'leaves' | 'medium' | 'hubs'
+
+export const CONNECTION_PRESETS: Record<ConnectionPreset, [number, number]> = {
+  all: [0, Infinity],
+  leaves: [0, 2],
+  medium: [3, 4],
+  hubs: [5, Infinity]
+}
+
 export interface GraphViewState {
   // View mode
   viewMode: ViewMode
@@ -42,6 +52,7 @@ export interface GraphViewState {
   // Filters
   visibleNodeTypes: Set<NodeType>
   visibleEdgeTypes: Set<RelationType>
+  connectionRange: [number, number] // [min, max] connections filter
 
   // UI
   showMinimap: boolean
@@ -66,6 +77,8 @@ interface GraphViewActions {
   toggleEdgeType: (type: RelationType) => void
   setAllNodeTypesVisible: (visible: boolean) => void
   setAllEdgeTypesVisible: (visible: boolean) => void
+  setConnectionRange: (range: [number, number]) => void
+  setConnectionPreset: (preset: ConnectionPreset) => void
   resetFilters: () => void
 
   // UI
@@ -80,6 +93,7 @@ interface GraphViewActions {
   getActiveFiltersCount: () => number
   isNodeTypeVisible: (type: NodeType) => boolean
   isEdgeTypeVisible: (type: RelationType) => boolean
+  getActiveConnectionPreset: () => ConnectionPreset | null
 }
 
 const initialState: GraphViewState = {
@@ -88,6 +102,7 @@ const initialState: GraphViewState = {
   focusDepth: 2,
   visibleNodeTypes: new Set(ALL_NODE_TYPES),
   visibleEdgeTypes: new Set(ALL_EDGE_TYPES),
+  connectionRange: [0, Infinity],
   showMinimap: true,
   nodeSpacing: 100,
   directionStrength: 0, // 0 = no directional bias, 100 = full hierarchy
@@ -115,6 +130,7 @@ const setSerializer = {
         ? (stored.visibleEdgeTypes as RelationType[])
         : ALL_EDGE_TYPES
     ),
+    connectionRange: (stored.connectionRange as [number, number]) || [0, Infinity],
     showMinimap: stored.showMinimap !== false,
     nodeSpacing: (stored.nodeSpacing as number) || 100,
     directionStrength: (stored.directionStrength as number) ?? 0,
@@ -210,10 +226,19 @@ export const useGraphViewStore = create<GraphViewState & GraphViewActions>()(
         set({ visibleEdgeTypes: visible ? new Set(ALL_EDGE_TYPES) : new Set() })
       },
 
+      setConnectionRange: range => {
+        set({ connectionRange: range })
+      },
+
+      setConnectionPreset: preset => {
+        set({ connectionRange: CONNECTION_PRESETS[preset] })
+      },
+
       resetFilters: () => {
         set({
           visibleNodeTypes: new Set(ALL_NODE_TYPES),
-          visibleEdgeTypes: new Set(ALL_EDGE_TYPES)
+          visibleEdgeTypes: new Set(ALL_EDGE_TYPES),
+          connectionRange: [0, Infinity]
         })
       },
 
@@ -247,11 +272,28 @@ export const useGraphViewStore = create<GraphViewState & GraphViewActions>()(
         if (state.visibleEdgeTypes.size < ALL_EDGE_TYPES.length) {
           count++
         }
+        // Connection filter is active if not "all"
+        if (state.connectionRange[0] !== 0 || state.connectionRange[1] !== Infinity) {
+          count++
+        }
         return count
       },
 
       isNodeTypeVisible: type => get().visibleNodeTypes.has(type),
-      isEdgeTypeVisible: type => get().visibleEdgeTypes.has(type)
+      isEdgeTypeVisible: type => get().visibleEdgeTypes.has(type),
+
+      getActiveConnectionPreset: () => {
+        const { connectionRange } = get()
+        for (const [preset, range] of Object.entries(CONNECTION_PRESETS) as [
+          ConnectionPreset,
+          [number, number]
+        ][]) {
+          if (connectionRange[0] === range[0] && connectionRange[1] === range[1]) {
+            return preset
+          }
+        }
+        return null
+      }
     }),
     {
       name: 'graph-view-storage-v2', // New version to avoid conflicts with old storage
@@ -310,14 +352,18 @@ export const useFilters = () =>
     useShallow(s => ({
       visibleNodeTypes: s.visibleNodeTypes,
       visibleEdgeTypes: s.visibleEdgeTypes,
+      connectionRange: s.connectionRange,
       toggleNodeType: s.toggleNodeType,
       toggleEdgeType: s.toggleEdgeType,
       setAllNodeTypesVisible: s.setAllNodeTypesVisible,
       setAllEdgeTypesVisible: s.setAllEdgeTypesVisible,
+      setConnectionRange: s.setConnectionRange,
+      setConnectionPreset: s.setConnectionPreset,
       resetFilters: s.resetFilters,
       getActiveFiltersCount: s.getActiveFiltersCount,
       isNodeTypeVisible: s.isNodeTypeVisible,
-      isEdgeTypeVisible: s.isEdgeTypeVisible
+      isEdgeTypeVisible: s.isEdgeTypeVisible,
+      getActiveConnectionPreset: s.getActiveConnectionPreset
     }))
   )
 

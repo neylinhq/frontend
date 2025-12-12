@@ -70,6 +70,12 @@ export class GraphEngine {
    */
   is_layout_running(): boolean;
   /**
+   * Load SDF font atlas from tiny-sdf format for GPU text rendering
+   * This uses single-channel SDF from Mapbox's tiny-sdf library
+   * Called once at startup or when font changes
+   */
+  load_sdf_atlas_data(image_data: Uint8Array, width: number, height: number, metrics_json: string): void;
+  /**
    * Load MSDF font atlas for GPU text rendering
    * Called once at startup with atlas image data and JSON metrics
    */
@@ -120,6 +126,8 @@ export class GraphEngine {
   /**
    * Set theme colors from JSON
    * Called from JS when theme changes (light/dark mode toggle, etc.)
+   * Note: Does not call update_render_data() to avoid wasm-bindgen borrow conflicts.
+   * Theme is used directly in render() so it takes effect on next frame.
    */
   set_theme(json: string): void;
 }
@@ -133,6 +141,7 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
+  readonly init: () => void;
   readonly __wbg_graphengine_free: (a: number, b: number) => void;
   readonly graphengine_edge_count: (a: number) => number;
   readonly graphengine_fit_view: (a: number, b: number) => void;
@@ -148,6 +157,7 @@ export interface InitOutput {
   readonly graphengine_load_font_atlas_data: (a: number, b: number, c: number, d: number, e: number, f: number, g: number) => [number, number];
   readonly graphengine_load_graph: (a: number, b: number, c: number) => [number, number];
   readonly graphengine_load_icon_atlas_data: (a: number, b: number, c: number, d: number, e: number, f: number, g: number) => [number, number];
+  readonly graphengine_load_sdf_atlas_data: (a: number, b: number, c: number, d: number, e: number, f: number, g: number) => [number, number];
   readonly graphengine_new: () => number;
   readonly graphengine_node_count: (a: number) => number;
   readonly graphengine_pan: (a: number, b: number, c: number) => void;
@@ -162,7 +172,6 @@ export interface InitOutput {
   readonly graphengine_step_layout: (a: number, b: number) => [number, number];
   readonly graphengine_update_node_position: (a: number, b: number, c: number, d: number, e: number) => void;
   readonly graphengine_zoom_at: (a: number, b: number, c: number, d: number) => void;
-  readonly init: () => void;
   readonly __wbindgen_exn_store: (a: number) => void;
   readonly __externref_table_alloc: () => number;
   readonly __wbindgen_externrefs: WebAssembly.Table;

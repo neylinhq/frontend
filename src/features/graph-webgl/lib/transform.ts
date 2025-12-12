@@ -2,7 +2,7 @@
  * Data transformation utilities for WASM
  */
 
-import type { Node, Edge, GraphData } from './types'
+import type { Node, Edge } from './types'
 
 // Valid complexity values for WASM enum
 const VALID_COMPLEXITY = ['basic', 'intermediate', 'advanced'] as const
@@ -11,37 +11,108 @@ const VALID_COMPLEXITY = ['basic', 'intermediate', 'advanced'] as const
  * Sanitize node metadata for WASM compatibility
  * WASM/Rust uses strict enums that don't accept empty strings
  */
-function sanitizeMetadata(metadata: Node['metadata']): Node['metadata'] {
-  if (!metadata) return metadata
+function sanitizeMetadata(metadata: Node['metadata']): Record<string, unknown> | undefined {
+  if (!metadata) return undefined
 
-  return {
-    ...metadata,
-    // complexity must be a valid enum value or undefined
-    complexity: metadata.complexity && VALID_COMPLEXITY.includes(metadata.complexity as any)
-      ? metadata.complexity
-      : undefined,
+  const result: Record<string, unknown> = {}
+
+  // Only include valid complexity
+  if (metadata.complexity && VALID_COMPLEXITY.includes(metadata.complexity as typeof VALID_COMPLEXITY[number])) {
+    result.complexity = metadata.complexity
   }
+
+  // Copy other fields if they exist
+  if (metadata.sources && metadata.sources.length > 0) {
+    result.sources = metadata.sources
+  }
+  if (metadata.tags && metadata.tags.length > 0) {
+    result.tags = metadata.tags
+  }
+
+  return Object.keys(result).length > 0 ? result : undefined
+}
+
+/**
+ * WASM-compatible node format
+ * Must match Rust Node struct with serde(rename_all = "camelCase")
+ */
+interface WasmNode {
+  id: string
+  mapId: string
+  label: string
+  description?: string
+  type: string  // NodeType enum in Rust
+  position: { x: number; y: number }
+  metadata?: Record<string, unknown>
+}
+
+/**
+ * WASM-compatible edge format
+ * Must match Rust Edge struct with serde(rename_all = "camelCase")
+ */
+interface WasmEdge {
+  id: string
+  mapId: string
+  sourceNodeId: string
+  targetNodeId: string
+  relationType: string
+  label?: string
+  strength?: number
+  bidirectional?: boolean
 }
 
 /**
  * Transform frontend nodes/edges to WASM-compatible format
  */
 export function transformToWasm(nodes: Node[], edges: Edge[]): string {
-  const data: GraphData = {
-    nodes: nodes.map(node => ({
-      ...node,
-      // Ensure all required fields are present
+  const wasmNodes: WasmNode[] = nodes.map(node => {
+    const wasmNode: WasmNode = {
+      id: node.id,
+      mapId: node.mapId,
+      label: node.label,
+      type: node.type,
       position: node.position || { x: 0, y: 0 },
-      width: node.width || 200,
-      height: node.height || 100,
-      // Sanitize metadata to avoid WASM enum parse errors
-      metadata: sanitizeMetadata(node.metadata),
-    })),
-    edges: edges.map(edge => ({
-      ...edge,
-      // Ensure relation type is set
+    }
+
+    // Only add optional fields if they have values
+    if (node.description) {
+      wasmNode.description = node.description
+    }
+
+    const metadata = sanitizeMetadata(node.metadata)
+    if (metadata) {
+      wasmNode.metadata = metadata
+    }
+
+    return wasmNode
+  })
+
+  const wasmEdges: WasmEdge[] = edges.map(edge => {
+    const wasmEdge: WasmEdge = {
+      id: edge.id,
+      mapId: edge.mapId,
+      sourceNodeId: edge.sourceNodeId,
+      targetNodeId: edge.targetNodeId,
       relationType: edge.relationType || 'related-to',
-    })),
+    }
+
+    // Only add optional fields if they have values
+    if (edge.label) {
+      wasmEdge.label = edge.label
+    }
+    if (edge.strength !== undefined) {
+      wasmEdge.strength = edge.strength
+    }
+    if (edge.bidirectional !== undefined) {
+      wasmEdge.bidirectional = edge.bidirectional
+    }
+
+    return wasmEdge
+  })
+
+  const data = {
+    nodes: wasmNodes,
+    edges: wasmEdges,
   }
 
   return JSON.stringify(data)

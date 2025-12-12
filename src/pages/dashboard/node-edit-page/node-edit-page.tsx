@@ -14,7 +14,7 @@ import { useEdgeManagementStore } from '@/features/graph/model/edge-management.s
 import { AISuggestionsPanel } from '@/features/ai-assist/components/ai-suggestions-panel'
 import { BlockEditor, editorToHTML, GUTTER, htmlToEditor, htmlToPlainText } from '@/features/block-editor'
 import { NodeConnectionsPanel } from '@/features/node-connections-panel'
-import { useAutoSave } from '@/features/node-editor'
+import { useAutoSave } from '@/shared/hooks'
 import { NodeMetadataForm, type NodeMetadataFormValues } from '@/features/node-metadata-form'
 import { PracticePanel } from '@/features/practice-panel'
 import {

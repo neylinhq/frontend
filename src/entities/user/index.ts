@@ -1,4 +1,5 @@
 export { userApi } from './user.api'
+export { useLoaderUser } from './use-loader-user'
 export {
   useChangeEmail,
   useChangePassword,

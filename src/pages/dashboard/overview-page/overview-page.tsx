@@ -12,7 +12,7 @@ import {
   useSearchMaps,
   useSetVisibility
 } from '@/entities/map'
-import { useCurrentUser } from '@/entities/user'
+import { useLoaderUser } from '@/entities/user'
 import { CreateMapCard } from '@/features/maps/create-map-button'
 import { MapFilters } from '@/features/maps/map-filters'
 import { MapCard, MapCardSkeleton } from '@/features/maps/map-card'
@@ -20,7 +20,7 @@ import { Button } from '@/shared/components/button'
 import { Input } from '@/shared/components/input'
 import { Typography } from '@/shared/components/typography'
 import { MAPS_ROUTES } from '@/shared/config'
-import { useToast } from '@/shared/components/toast'
+import { toast } from '@/shared/components/toast'
 import { useDebouncedCallback } from '@/shared/hooks'
 
 interface LoaderData {
@@ -29,8 +29,7 @@ interface LoaderData {
 
 export const OverviewPage = () => {
   const { t } = useTranslation()
-  const { toast } = useToast()
-  const { data: user } = useCurrentUser()
+  const user = useLoaderUser()
   const { initialData } = useLoaderData<LoaderData>()
   const [filter, setFilter] = useState<MapFilter>('all')
   const [searchInput, setSearchInput] = useState('')
@@ -64,47 +63,31 @@ export const OverviewPage = () => {
   const handleCopy = async (mapId: string) => {
     try {
       await copyMap.mutateAsync(mapId)
-      toast({
-        title: t('dashboard.mapCard.copySuccess'),
-        variant: 'default'
-      })
+      toast.success(t('dashboard.mapCard.copySuccess'))
     } catch {
-      toast({
-        title: t('dashboard.mapCard.copyError'),
-        variant: 'destructive'
-      })
+      toast.error(t('dashboard.mapCard.copyError'))
     }
   }
 
   const handleToggleVisibility = async (mapId: string, currentlyPublic: boolean) => {
     try {
       await setVisibility.mutateAsync({ mapId, isPublic: !currentlyPublic })
-      toast({
-        title: currentlyPublic
+      toast.success(
+        currentlyPublic
           ? t('dashboard.mapCard.madePrivate')
-          : t('dashboard.mapCard.madePublic'),
-        variant: 'default'
-      })
+          : t('dashboard.mapCard.madePublic')
+      )
     } catch {
-      toast({
-        title: t('dashboard.mapCard.visibilityError'),
-        variant: 'destructive'
-      })
+      toast.error(t('dashboard.mapCard.visibilityError'))
     }
   }
 
   const handleDelete = async (mapId: string) => {
     try {
       await deleteMap.mutateAsync(mapId)
-      toast({
-        title: t('dashboard.mapCard.deleteSuccess'),
-        variant: 'default'
-      })
+      toast.success(t('dashboard.mapCard.deleteSuccess'))
     } catch {
-      toast({
-        title: t('dashboard.mapCard.deleteError'),
-        variant: 'destructive'
-      })
+      toast.error(t('dashboard.mapCard.deleteError'))
     }
   }
 

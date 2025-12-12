@@ -21,7 +21,7 @@ export const enrichHandler: IntentHandler = {
     }
 
     const enrichType: EnrichType = 'description'
-    const result = await aiApi.enrichNode(ctx.nodeId, enrichType)
+    const result = await aiApi.enrichNode(ctx.mapId, ctx.nodeId, enrichType)
 
     const previews: PreviewCard[] = [
       {
@@ -51,7 +51,7 @@ export const examplesHandler: IntentHandler = {
       return { content: 'This command is only available for nodes.' }
     }
 
-    const result = await aiApi.enrichNode(ctx.nodeId, 'examples')
+    const result = await aiApi.enrichNode(ctx.mapId, ctx.nodeId, 'examples')
 
     const previews: PreviewCard[] = [
       {
@@ -81,7 +81,7 @@ export const sourcesHandler: IntentHandler = {
       return { content: 'This command is only available for nodes.' }
     }
 
-    const result = await aiApi.enrichNode(ctx.nodeId, 'sources')
+    const result = await aiApi.enrichNode(ctx.mapId, ctx.nodeId, 'sources')
 
     const previews: PreviewCard[] = [
       {

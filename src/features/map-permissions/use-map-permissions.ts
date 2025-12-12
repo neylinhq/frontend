@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useCurrentUser } from '@/entities/user'
+import { useLoaderUser } from '@/entities/user'
 
 interface MapPermissionsInput {
   authorId?: string
@@ -7,7 +7,7 @@ interface MapPermissionsInput {
 }
 
 export const useMapPermissions = (map: MapPermissionsInput) => {
-  const { data: user } = useCurrentUser()
+  const user = useLoaderUser()
 
   return useMemo(() => {
     const isOwner = !!user?.id && user.id === map.authorId

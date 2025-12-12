@@ -5,11 +5,3 @@ export interface SessionData {
   user: User
   refreshToken?: string
 }
-
-export interface SessionState {
-  user: User | null
-  isAuthenticated: boolean
-  setUser: (user: User | null) => void
-  login: (user: User) => void
-  logout: () => void
-}

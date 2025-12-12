@@ -4,22 +4,28 @@
  * Loads atlas images and metadata for GPU text and icon rendering.
  */
 
+// Raw msdf-atlas-gen JSON format - passed directly to WASM
 export interface FontMetrics {
   atlas: {
+    type: string
+    distanceRange: number
+    size: number
     width: number
     height: number
-    pxRange: number
-    fontSize: number
-    lineHeight: number
+    yOrigin: string
   }
-  glyphs: Record<
-    number, // codepoint
-    {
-      advance: number
-      atlasBounds: { left: number; bottom: number; right: number; top: number }
-      planeBounds: { left: number; bottom: number; right: number; top: number }
-    }
-  >
+  metrics: {
+    emSize: number
+    lineHeight: number
+    ascender: number
+    descender: number
+  }
+  glyphs: Array<{
+    unicode: number
+    advance: number
+    planeBounds?: { left: number; bottom: number; right: number; top: number }
+    atlasBounds?: { left: number; bottom: number; right: number; top: number }
+  }>
 }
 
 export interface IconAtlas {
@@ -77,37 +83,6 @@ async function loadImageAsBytes(url: string): Promise<{ data: Uint8Array; width:
 }
 
 /**
- * Convert msdf-atlas-gen JSON format to our FontMetrics format
- */
-function convertMsdfMetrics(raw: any): FontMetrics {
-  const atlas = raw.atlas || {}
-  const metrics = raw.metrics || {}
-
-  const glyphs: FontMetrics['glyphs'] = {}
-
-  for (const glyph of raw.glyphs || []) {
-    const codepoint = glyph.unicode
-
-    glyphs[codepoint] = {
-      advance: glyph.advance || 0,
-      atlasBounds: glyph.atlasBounds || { left: 0, bottom: 0, right: 0, top: 0 },
-      planeBounds: glyph.planeBounds || { left: 0, bottom: 0, right: 0, top: 0 },
-    }
-  }
-
-  return {
-    atlas: {
-      width: atlas.width || 1024,
-      height: atlas.height || 1024,
-      pxRange: atlas.distanceRange || 4,
-      fontSize: metrics.emSize || 32,
-      lineHeight: metrics.lineHeight || 1.2,
-    },
-    glyphs,
-  }
-}
-
-/**
  * Load MSDF font atlas
  * @param basePath Base path to assets (e.g., '/assets')
  * @param fontName Font name (e.g., 'inter-msdf')
@@ -118,14 +93,14 @@ export async function loadFontAtlas(basePath = '/assets', fontName = 'inter-msdf
     fetch(`${basePath}/${fontName}.json`),
   ])
 
+  // Pass the raw JSON through - WASM expects msdf-atlas-gen format directly
   const rawMetrics = await metricsResponse.json()
-  const metrics = convertMsdfMetrics(rawMetrics)
 
   return {
     imageData: imageResult.data,
     width: imageResult.width,
     height: imageResult.height,
-    metrics,
+    metrics: rawMetrics, // Pass raw format, WASM parses it
   }
 }
 

@@ -398,7 +398,14 @@
     },
     "filters": {
       "nodeTypes": "Типы узлов",
-      "edgeTypes": "Типы связей"
+      "edgeTypes": "Типы связей",
+      "connections": "По связям",
+      "preset": {
+        "leaves": "Листья",
+        "medium": "Средние",
+        "hubs": "Хабы"
+      },
+      "resetConnections": "Показать все"
     },
     "nodeTypes": {
       "concept": "Концепция",

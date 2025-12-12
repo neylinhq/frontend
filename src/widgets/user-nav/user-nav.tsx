@@ -2,7 +2,8 @@ import { useQueryClient } from '@tanstack/react-query'
 import { HelpCircle, Mail, Send } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router'
-import { sessionApi, useSessionStore } from '@/entities/session'
+import { sessionApi } from '@/entities/session'
+import { useLoaderUser } from '@/entities/user'
 import { ModeSelect } from '@/features/theme/mode-select'
 import { PaletteSelect } from '@/features/theme/palette-select'
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/components/avatar'
@@ -26,7 +27,7 @@ import { getShortcut } from '@/shared/lib/platform'
 import { USER_NAV_LOGOUT_ITEM, USER_NAV_MAIN_SECTION } from './user-nav.constants'
 
 export const UserNav = () => {
-  const { user, logout } = useSessionStore()
+  const user = useLoaderUser()
   const navigate = useNavigate()
   const { t } = useTranslation()
   const queryClient = useQueryClient()
@@ -41,7 +42,6 @@ export const UserNav = () => {
     } finally {
       // Clear all cached data to prevent data leakage between users
       queryClient.clear()
-      logout()
       navigate('/auth/sign-in')
     }
   }

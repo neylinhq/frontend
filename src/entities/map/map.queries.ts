@@ -107,7 +107,7 @@ export const useDeleteNode = (mapId: string) => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: mapApi.deleteNode,
+    mutationFn: (nodeId: string) => mapApi.deleteNode(mapId, nodeId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: mapKeys.mapNodes(mapId) })
       queryClient.invalidateQueries({ queryKey: mapKeys.mapEdges(mapId) })

@@ -352,6 +352,25 @@ export class GraphEngine {
         return ret !== 0;
     }
     /**
+     * Load SDF font atlas from tiny-sdf format for GPU text rendering
+     * This uses single-channel SDF from Mapbox's tiny-sdf library
+     * Called once at startup or when font changes
+     * @param {Uint8Array} image_data
+     * @param {number} width
+     * @param {number} height
+     * @param {string} metrics_json
+     */
+    load_sdf_atlas_data(image_data, width, height, metrics_json) {
+        const ptr0 = passArray8ToWasm0(image_data, wasm.__wbindgen_malloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ptr1 = passStringToWasm0(metrics_json, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len1 = WASM_VECTOR_LEN;
+        const ret = wasm.graphengine_load_sdf_atlas_data(this.__wbg_ptr, ptr0, len0, width, height, ptr1, len1);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
+    }
+    /**
      * Load MSDF font atlas for GPU text rendering
      * Called once at startup with atlas image data and JSON metrics
      * @param {Uint8Array} image_data
@@ -475,6 +494,8 @@ export class GraphEngine {
     /**
      * Set theme colors from JSON
      * Called from JS when theme changes (light/dark mode toggle, etc.)
+     * Note: Does not call update_render_data() to avoid wasm-bindgen borrow conflicts.
+     * Theme is used directly in render() so it takes effect on next frame.
      * @param {string} json
      */
     set_theme(json) {
@@ -618,6 +639,9 @@ function __wbg_get_imports() {
         } finally {
             wasm.__wbindgen_free(deferred0_0, deferred0_1, 1);
         }
+    };
+    imports.wbg.__wbg_error_7bc7d576a6aaf855 = function(arg0) {
+        console.error(arg0);
     };
     imports.wbg.__wbg_getContext_01f42b234e833f0a = function() { return handleError(function (arg0, arg1, arg2) {
         const ret = arg0.getContext(getStringFromWasm0(arg1, arg2));

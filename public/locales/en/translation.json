@@ -398,7 +398,14 @@
     },
     "filters": {
       "nodeTypes": "Node types",
-      "edgeTypes": "Edge types"
+      "edgeTypes": "Edge types",
+      "connections": "By connections",
+      "preset": {
+        "leaves": "Leaves",
+        "medium": "Medium",
+        "hubs": "Hubs"
+      },
+      "resetConnections": "Show all"
     },
     "nodeTypes": {
       "concept": "Concept",

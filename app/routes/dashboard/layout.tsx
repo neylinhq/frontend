@@ -1,13 +1,10 @@
-import { useEffect } from 'react'
 import {
   type ClientLoaderFunctionArgs,
   type LoaderFunctionArgs,
   Outlet,
   redirect,
-  useLoaderData,
   useMatches
 } from 'react-router'
-import { useSessionStore } from '@/entities/session'
 import { API_URL } from '@/shared/config/env'
 import { DashboardLayout } from '@/widgets/dashboard-layout/ui/dashboard-layout'
 
@@ -70,8 +67,6 @@ export const clientLoader = async ({ request }: ClientLoaderFunctionArgs) => {
 clientLoader.hydrate = true
 
 const DashboardRoute = () => {
-  const { user } = useLoaderData<typeof loader>()
-  const setUser = useSessionStore(state => state.setUser)
   const matches = useMatches()
 
   // Check if any child route has disableScroll in handle
@@ -79,12 +74,8 @@ const DashboardRoute = () => {
     match => (match.handle as { disableScroll?: boolean })?.disableScroll
   )
 
-  // Гидратация стора данными с сервера
-  useEffect(() => {
-    if (user) {
-      setUser(user)
-    }
-  }, [user, setUser])
+  // User доступен через useLoaderUser() в любом дочернем компоненте
+  // благодаря useMatches() — данные из loader уже есть, гидрация не нужна
 
   return (
     <DashboardLayout disableScroll={disableScroll}>

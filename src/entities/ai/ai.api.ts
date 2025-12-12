@@ -6,6 +6,25 @@ interface ApiResponse<T> {
   data: T
 }
 
+export interface NodeReference {
+  id: string
+  label: string
+  type: string
+}
+
+export interface ChatWithMapResponse {
+  answer: string
+  sourceNodes: NodeReference[]
+  tokensUsed: number
+}
+
+export interface EmbeddingsResponse {
+  totalNodes: number
+  embeddedNodes: number
+  skippedNodes: number
+  failedNodes: number
+}
+
 export const aiApi = {
   // Get available AI models
   listModels: async (): Promise<AIModel[]> => {
@@ -14,12 +33,14 @@ export const aiApi = {
   },
 
   // Node operations
-  enrichNode: async (nodeId: string, enrichType: EnrichType, async = true) =>
-    api.post(`/nodes/${nodeId}/enrich`, { enrichType, async }),
+  enrichNode: async (mapId: string, nodeId: string, enrichType: EnrichType, async = true) =>
+    api.post(`/maps/${mapId}/nodes/${nodeId}/enrich`, { enrichType, async }),
 
-  suggestContent: async (nodeId: string) => api.post(`/nodes/${nodeId}/suggest`),
+  suggestContent: async (mapId: string, nodeId: string) =>
+    api.post(`/maps/${mapId}/nodes/${nodeId}/suggest`),
 
-  factCheck: async (nodeId: string) => api.post(`/nodes/${nodeId}/fact-check`),
+  factCheck: async (mapId: string, nodeId: string) =>
+    api.post(`/maps/${mapId}/nodes/${nodeId}/fact-check`),
 
   // Map operations
   analyzeMap: async (mapId: string, model: string, async = true) =>
@@ -31,6 +52,28 @@ export const aiApi = {
     api.post(`/maps/${mapId}/generate-nodes`, { gaps }),
 
   detectGaps: async (mapId: string) => api.post(`/maps/${mapId}/detect-gaps`),
+
+  // RAG Chat
+  chatWithMap: async (
+    mapId: string,
+    question: string,
+    model?: string,
+    topK?: number
+  ): Promise<ChatWithMapResponse> => {
+    const response = await api.post<ApiResponse<ChatWithMapResponse>>(
+      `/maps/${mapId}/chat`,
+      { question, model, topK }
+    )
+    return response.data
+  },
+
+  // Generate embeddings for all nodes in a map
+  generateEmbeddings: async (mapId: string): Promise<EmbeddingsResponse> => {
+    const response = await api.post<ApiResponse<EmbeddingsResponse>>(
+      `/maps/${mapId}/embeddings`
+    )
+    return response.data
+  },
 
   // Exercise operations
   generateExercises: async (

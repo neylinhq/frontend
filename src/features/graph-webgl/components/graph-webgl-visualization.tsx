@@ -15,7 +15,7 @@ import { useFullMap } from '@/entities/map'
 import { Card } from '@/shared/components/card'
 import { useDarkMode } from '@/shared/hooks'
 import { cn } from '@/shared/lib/cn'
-import { GraphCanvas, type GraphCanvasHandle } from '@/features/graph-webgl/components/graph-canvas'
+import { GraphCanvas, type GraphCanvasHandle, type ViewportState, type LayoutPosition } from '@/features/graph-webgl/components/graph-canvas'
 import { MiniMapWebGL } from '@/features/graph-webgl/components/minimap-webgl'
 import {
   useFilters,
@@ -78,7 +78,16 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
   const canvasRef = useRef<GraphCanvasHandle>(null)
 
   // Viewport state for WebGL
-  const [zoom, setZoom] = useState(1)
+  const [viewport, setViewport] = useState<ViewportState>({
+    x: 0,
+    y: 0,
+    zoom: 1,
+    width: 800,
+    height: 600
+  })
+
+  // Layout positions from WASM for minimap sync
+  const [layoutPositions, setLayoutPositions] = useState<LayoutPosition[]>([])
 
   // Get filtered data using existing hook
   const { filteredData, nodeCountsByType, edgeCountsByType } = useFilteredGraphData({
@@ -105,9 +114,19 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
     [viewMode, focusNode, selectNode, clearSelection]
   )
 
-  // Handle viewport change (zoom update)
-  const handleViewportChange = useCallback((newZoom: number) => {
-    setZoom(newZoom)
+  // Handle viewport change
+  const handleViewportChange = useCallback((newViewport: ViewportState) => {
+    setViewport(newViewport)
+  }, [])
+
+  // Handle layout complete - get positions from WASM for minimap
+  const handleLayoutComplete = useCallback((positions: LayoutPosition[]) => {
+    setLayoutPositions(positions)
+  }, [])
+
+  // Handle minimap navigation (click to pan)
+  const handleMinimapNavigate = useCallback((worldX: number, worldY: number) => {
+    canvasRef.current?.panTo(worldX, worldY)
   }, [])
 
   // Zoom handlers - control WASM engine via ref
@@ -178,6 +197,7 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
         focusedNodeId={focusedNodeId}
         onNodeClick={handleNodeClick}
         onViewportChange={handleViewportChange}
+        onLayoutComplete={handleLayoutComplete}
         layoutOptions={{
           viewMode,
           spacingPercent: nodeSpacing,
@@ -191,13 +211,16 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
       {showMinimap && (
         <MiniMapWebGL
           nodes={filteredData.nodes}
+          layoutPositions={layoutPositions}
+          viewport={viewport}
           isDark={isDark}
+          onNavigate={handleMinimapNavigate}
         />
       )}
 
       {/* View controls panel - top left */}
       <ViewControlsPanel
-        zoom={Math.round(zoom * 100)}
+        zoom={Math.round(viewport.zoom * 100)}
         isFullscreen={controls.isFullscreen}
         onZoomIn={handleZoomIn}
         onZoomOut={handleZoomOut}
@@ -244,7 +267,7 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
       {/* WebGL indicator */}
       <div className='absolute bottom-2 left-2 bg-background/80 border rounded px-2 py-1 text-xs font-mono'>
         <span className='text-green-500'>WebGL</span>
-        <span className='text-muted-foreground ml-2'>{Math.round(zoom * 100)}%</span>
+        <span className='text-muted-foreground ml-2'>{Math.round(viewport.zoom * 100)}%</span>
       </div>
     </div>
   )

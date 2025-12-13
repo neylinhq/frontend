@@ -1,4 +1,4 @@
-import { Typography } from '@/shared/components/typography'
+import { DocsSectionHeader } from '@/shared/components/docs-section-header'
 
 interface DocsSectionProps {
   id: string
@@ -16,10 +16,7 @@ export const DocsSection = ({
   children
 }: DocsSectionProps) => (
   <section id={id} className={`scroll-mt-20 space-y-4 ${bordered ? 'pt-6 border-t' : ''}`}>
-    <div>
-      <Typography variant='h2'>{title}</Typography>
-      {description && <Typography variant='muted'>{description}</Typography>}
-    </div>
+    <DocsSectionHeader title={title} description={description} />
     {children}
   </section>
 )

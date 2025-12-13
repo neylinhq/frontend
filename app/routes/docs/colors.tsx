@@ -1,4 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
+import { DocsSectionHeader } from '@/shared/components/docs-section-header'
 import { Typography } from '@/shared/components/typography'
 import { getMeta } from '@/shared/lib/get-meta'
 import type { Route } from './+types/colors'
@@ -135,7 +136,7 @@ const ColorSection = ({
 
   return (
     <section className={`space-y-4 ${isFirst ? '' : 'pt-4 border-t'}`}>
-      <div>
+      <div className='space-y-2'>
         <Typography variant='h2'>{title}</Typography>
         <Typography variant='muted'>{description}</Typography>
       </div>

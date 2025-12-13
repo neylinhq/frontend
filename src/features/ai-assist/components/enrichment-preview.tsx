@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import type { EnrichmentPreviewData } from '../ai-assist.types'
+import type { EnrichmentPreviewData } from '../model/ai-assist.types'
 import { DiffBlock, ProposalCard } from './proposal-card'
 
 interface EnrichmentPreviewProps {

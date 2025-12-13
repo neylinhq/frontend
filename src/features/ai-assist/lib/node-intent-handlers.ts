@@ -9,7 +9,7 @@ import type {
   IntentResult,
   NodeChatContext,
   PreviewCard
-} from '../ai-assist.types'
+} from '../model/ai-assist.types'
 
 const isNodeContext = (ctx: ChatContext): ctx is NodeChatContext => ctx.type === 'node'
 

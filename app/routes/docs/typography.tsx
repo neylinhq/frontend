@@ -89,7 +89,7 @@ const TypographyPage = () => {
 
       {/* Examples */}
       <section className='space-y-6'>
-        <div>
+        <div className='space-y-2'>
           <Typography variant='h2'>Typography Variants</Typography>
           <Typography variant='muted'>All available text styles</Typography>
         </div>

@@ -10,7 +10,7 @@ import type {
   NodeChatContext,
   PreviewCard,
   ResolvedPreview
-} from '../ai-assist.types'
+} from '../model/ai-assist.types'
 import { getChatSessionId, useChatHistoryStore } from '../model/ai-assist.chat.store'
 import { ChatInput } from './chat-input'
 import { ChatMessageList } from './chat-message-list'

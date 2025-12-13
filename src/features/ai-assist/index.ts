@@ -8,7 +8,7 @@ export type {
   MapChatContext,
   NodeChatContext,
   PreviewCard
-} from './ai-assist.types'
+} from './model/ai-assist.types'
 export { AIChatCore } from './components/ai-chat-core'
 
 // AI Chat components

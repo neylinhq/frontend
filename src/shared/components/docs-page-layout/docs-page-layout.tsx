@@ -1,8 +1,10 @@
+import { useEffect } from 'react'
 import { Badge } from '@/shared/components/badge'
 import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
 import type { TocItem } from '@/shared/components/docs-toc'
 import { DocsToc } from '@/shared/components/docs-toc'
 import { Typography } from '@/shared/components/typography'
+import { useTocContext } from '@/widgets/docs-layout'
 
 interface DocsPageLayoutProps {
   title: string
@@ -18,9 +20,24 @@ export const DocsPageLayout = ({
   badge = 'Component',
   tocItems,
   children
-}: DocsPageLayoutProps) => (
-  <div className='flex gap-10'>
-    <div className='flex-1 min-w-0 space-y-10'>
+}: DocsPageLayoutProps) => {
+  const { setToc } = useTocContext()
+
+  useEffect(() => {
+    if (tocItems.length > 0) {
+      setToc(
+        <aside className='hidden xl:flex w-[220px] flex-shrink-0 border-l flex-col py-6 px-4'>
+          <div className='sticky top-8'>
+            <DocsToc items={tocItems} />
+          </div>
+        </aside>
+      )
+    }
+    return () => setToc(null)
+  }, [tocItems, setToc])
+
+  return (
+    <div className='space-y-10'>
       <header className='space-y-4'>
         <DocsBreadcrumbs items={[{ label: 'Components', href: '/docs/ui' }, { label: title }]} />
         <div className='flex items-center gap-3'>
@@ -33,8 +50,5 @@ export const DocsPageLayout = ({
       </header>
       {children}
     </div>
-    <div className='hidden xl:block w-56 flex-shrink-0'>
-      <DocsToc items={tocItems} className='sticky top-10' />
-    </div>
-  </div>
-)
+  )
+}

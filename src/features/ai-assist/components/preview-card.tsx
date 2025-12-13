@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import type { EdgePreviewData, NodePreviewData, PreviewCard } from '../ai-assist.types'
+import type { EdgePreviewData, NodePreviewData, PreviewCard } from '../model/ai-assist.types'
 import { EnrichmentPreview } from './enrichment-preview'
 import { ExercisePreview } from './exercise-preview'
 import { DiffLine, ProposalCard } from './proposal-card'

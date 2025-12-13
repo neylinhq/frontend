@@ -16,10 +16,7 @@ interface DocsHeaderProps {
 export const DocsHeader = ({ mobileNav }: DocsHeaderProps) => {
   return (
     <header className='h-14 flex-shrink-0 border-b bg-background sticky top-0 z-50'>
-      <div
-        className='mx-auto px-4 md:px-6 h-full flex items-center gap-4'
-        style={{ maxWidth: '1400px' }}
-      >
+      <div className='px-4 md:px-6 h-full flex items-center gap-4'>
         {/* Mobile menu */}
         {mobileNav && (
           <Sheet>

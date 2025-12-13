@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Badge } from '@/shared/components/badge'
-import type { ExercisePreviewData } from '../ai-assist.types'
+import type { ExercisePreviewData } from '../model/ai-assist.types'
 import { ProposalCard } from './proposal-card'
 
 interface ExercisePreviewProps {

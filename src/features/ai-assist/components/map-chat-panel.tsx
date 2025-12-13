@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useMap } from '@/entities/map'
-import type { MapChatContext, NodeChatContext } from '../ai-assist.types'
+import type { MapChatContext, NodeChatContext } from '../model/ai-assist.types'
 import { AIChatCore } from './ai-chat-core'
 
 interface MapChatPanelProps {

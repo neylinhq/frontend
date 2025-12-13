@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { ChatMessage, ResolvedPreview } from '../ai-assist.types'
+import type { ChatMessage, ResolvedPreview } from './ai-assist.types'
 
 const MAX_MESSAGES_PER_SESSION = 100
 const MAX_SESSIONS = 50

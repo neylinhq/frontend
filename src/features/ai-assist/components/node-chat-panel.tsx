@@ -7,7 +7,7 @@ import type {
   NodeChatContext,
   PreviewCard,
   ResolvedPreview
-} from '../ai-assist.types'
+} from '../model/ai-assist.types'
 import { getChatSessionId } from '../model/ai-assist.chat.store'
 import { useProposalHistoryStore } from '../model/ai-assist.proposal.store'
 import { AIChatCore } from './ai-chat-core'

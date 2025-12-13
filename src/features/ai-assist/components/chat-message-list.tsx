@@ -12,7 +12,7 @@ import { Textarea } from '@/shared/components/textarea'
 import { toast } from '@/shared/components/toast'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/components/tooltip'
 import { cn } from '@/shared/lib/cn'
-import type { ChatMessage, PreviewCard, ResolvedPreview } from '../ai-assist.types'
+import type { ChatMessage, PreviewCard, ResolvedPreview } from '../model/ai-assist.types'
 import { CollapsibleProposal } from './collapsible-proposal'
 import { PreviewCardComponent } from './preview-card'
 
@@ -301,7 +301,7 @@ export const ChatMessageList = ({
                           className='h-7 w-7 text-muted-foreground hover:text-foreground'
                           onClick={() => handleStartEdit(message.id, message.content)}
                         >
-                          <Pencil className='h-3 w-3' />
+                          <Pencil className='h-2.5 w-2.5' />
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent side='bottom'>
@@ -317,7 +317,7 @@ export const ChatMessageList = ({
                         className='h-7 w-7 text-muted-foreground hover:text-foreground'
                         onClick={() => handleCopy(message.content)}
                       >
-                        <Copy className='h-3 w-3' />
+                        <Copy className='h-2.5 w-2.5' />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent side='bottom'>
@@ -342,7 +342,7 @@ export const ChatMessageList = ({
                         className='h-7 w-7 text-muted-foreground hover:text-foreground'
                         onClick={() => handleCopy(message.content)}
                       >
-                        <Copy className='h-3 w-3' />
+                        <Copy className='h-2.5 w-2.5' />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent side='bottom'>
@@ -358,7 +358,7 @@ export const ChatMessageList = ({
                           className='h-7 w-7 text-muted-foreground hover:text-foreground'
                           onClick={onRegenerate}
                         >
-                          <RefreshCw className='h-3 w-3' />
+                          <RefreshCw className='h-2.5 w-2.5' />
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent side='bottom'>

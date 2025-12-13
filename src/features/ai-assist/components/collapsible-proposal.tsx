@@ -7,7 +7,7 @@ import type {
   EnrichmentPreviewData,
   ExercisePreviewData,
   ResolvedPreview
-} from '../ai-assist.types'
+} from '../model/ai-assist.types'
 import { DiffBlock } from './proposal-card'
 
 interface CollapsibleProposalProps {

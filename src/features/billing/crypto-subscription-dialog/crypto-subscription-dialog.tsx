@@ -2,7 +2,6 @@ import { ChevronRight, Loader2 } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { CryptoNetwork, PlanType } from '@/entities/subscription'
-import { getWalletType } from '@/entities/subscription'
 import { Button } from '@/shared/components/button'
 import {
   Dialog,
@@ -26,6 +25,14 @@ interface CryptoSubscriptionDialogProps {
   planType: PlanType
   amount: number
   onSuccess: () => void
+}
+
+interface CryptoSubscriptionDialogContentProps {
+  planType: PlanType
+  amount: number
+  onSuccess: () => void
+  onBack?: () => void
+  embedded?: boolean
 }
 
 const STEPS: Step[] = ['network', 'wallet', 'confirm']
@@ -96,20 +103,35 @@ export const CryptoSubscriptionDialog = (props: CryptoSubscriptionDialogProps) =
     )
   }
 
-  return <CryptoSubscriptionDialogContent {...props} />
+  return (
+    <Dialog open={props.open} onOpenChange={props.onOpenChange}>
+      <DialogContent className='sm:max-w-[480px]'>
+        <DialogHeader>
+          <DialogTitle>{t('billing.crypto.title')}</DialogTitle>
+          <DialogDescription>{t('billing.crypto.description')}</DialogDescription>
+        </DialogHeader>
+        <CryptoSubscriptionDialogContent
+          planType={props.planType}
+          amount={props.amount}
+          onSuccess={props.onSuccess}
+        />
+      </DialogContent>
+    </Dialog>
+  )
 }
 
 /**
- * Inner component that uses wallet hooks - only rendered after hydration
+ * Inner component that uses wallet hooks - can be used standalone (embedded) or inside dialog
  */
-const CryptoSubscriptionDialogContent = ({
-  open,
-  onOpenChange,
+export const CryptoSubscriptionDialogContent = ({
   planType,
   amount,
-  onSuccess
-}: CryptoSubscriptionDialogProps) => {
+  onSuccess,
+  onBack: externalOnBack,
+  embedded = false
+}: CryptoSubscriptionDialogContentProps) => {
   const { t } = useTranslation()
+  const [mounted, setMounted] = useState(false)
 
   // State
   const [step, setStep] = useState<Step>('network')
@@ -119,33 +141,24 @@ const CryptoSubscriptionDialogContent = ({
   const wallet = useCryptoWallet(network)
 
   // Transaction state
-  const [isApproved, setIsApproved] = useState(false)
-  const [isApproving, setIsApproving] = useState(false)
   const [isSubscribing, setIsSubscribing] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Reset state
   const resetState = useCallback(() => {
     setStep('network')
     setNetwork(null)
-    setIsApproved(false)
-    setIsApproving(false)
     setIsSubscribing(false)
     setError(null)
   }, [])
 
-  const handleOpenChange = (newOpen: boolean) => {
-    if (!newOpen) {
-      resetState()
-    }
-    onOpenChange(newOpen)
-  }
-
   // Network selection
   const handleNetworkSelect = (selectedNetwork: CryptoNetwork) => {
     setNetwork(selectedNetwork)
-    // Reset approval state when network changes
-    setIsApproved(false)
     setError(null)
   }
 
@@ -163,32 +176,7 @@ const CryptoSubscriptionDialogContent = ({
 
   const handleDisconnect = () => {
     wallet.disconnect()
-    setIsApproved(false)
     setError(null)
-  }
-
-  // Approve USDT spending
-  const handleApprove = async () => {
-    if (!network || !wallet.approve) {
-      // TON doesn't need separate approve
-      setIsApproved(true)
-      return
-    }
-
-    setIsApproving(true)
-    setError(null)
-
-    try {
-      // Convert amount to USDT smallest unit (6 decimals)
-      // Approve max uint256 for convenience (standard practice)
-      const maxApproval = BigInt('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff')
-      await wallet.approve(maxApproval)
-      setIsApproved(true)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to approve')
-    } finally {
-      setIsApproving(false)
-    }
   }
 
   // Subscribe
@@ -207,16 +195,13 @@ const CryptoSubscriptionDialogContent = ({
 
       await wallet.subscribe(orderId, amountInSmallestUnit)
       onSuccess()
-      handleOpenChange(false)
+      resetState()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to subscribe')
     } finally {
       setIsSubscribing(false)
     }
   }
-
-  // Check if network requires approve step
-  const needsApprove = network ? getWalletType(network) !== 'tonconnect' : true
 
   // Navigation
   const canGoNext = () => {
@@ -241,84 +226,80 @@ const CryptoSubscriptionDialogContent = ({
     const currentIndex = STEPS.indexOf(step)
     if (currentIndex > 0) {
       setStep(STEPS[currentIndex - 1])
+    } else if (externalOnBack) {
+      // На первом шаге — вернуться к выбору способа оплаты
+      externalOnBack()
     }
   }
 
-  const isLoading = wallet.isConnecting || isApproving || isSubscribing
+  const isLoading = wallet.isConnecting || isSubscribing
 
   // Скрытый элемент-коннектор для управления кошельком
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const WalletConnector = (wallet as any)._connector
 
+  // Before mount, show loading
+  if (!mounted) {
+    return (
+      <div className='py-8 flex items-center justify-center'>
+        <Loader2 className='h-8 w-8 animate-spin text-muted-foreground' />
+      </div>
+    )
+  }
+
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className='sm:max-w-[480px]'>
-        {/* Скрытый коннектор кошелька */}
-        {WalletConnector}
+    <>
+      {/* Скрытый коннектор кошелька */}
+      {WalletConnector}
 
-        <DialogHeader>
-          <DialogTitle>{t('billing.crypto.title')}</DialogTitle>
-          <DialogDescription>{t('billing.crypto.description')}</DialogDescription>
-        </DialogHeader>
+      {/* Step indicator */}
+      <div className='py-2'>
+        <StepIndicator steps={STEPS} currentStep={step} />
+      </div>
 
-        {/* Step indicator */}
-        <div className='py-2'>
-          <StepIndicator steps={STEPS} currentStep={step} />
-        </div>
+      {/* Content */}
+      <div className='py-4'>
+        {step === 'network' && (
+          <NetworkSelector selected={network} onSelect={handleNetworkSelect} />
+        )}
 
-        {/* Content */}
-        <div className='py-4'>
-          {step === 'network' && (
-            <NetworkSelector selected={network} onSelect={handleNetworkSelect} />
-          )}
+        {step === 'wallet' && network && (
+          <WalletConnectStep
+            network={network}
+            isConnected={wallet.isConnected}
+            isConnecting={wallet.isConnecting}
+            address={wallet.address}
+            onConnect={handleConnect}
+            onDisconnect={handleDisconnect}
+          />
+        )}
 
-          {step === 'wallet' && network && (
-            <WalletConnectStep
-              network={network}
-              isConnected={wallet.isConnected}
-              isConnecting={wallet.isConnecting}
-              address={wallet.address}
-              onConnect={handleConnect}
-              onDisconnect={handleDisconnect}
-            />
-          )}
+        {step === 'confirm' && network && wallet.address && (
+          <ConfirmStep
+            network={network}
+            address={wallet.address}
+            planType={planType}
+            amount={amount}
+            isSubscribing={isSubscribing}
+            onSubscribe={handleSubscribe}
+            error={error}
+          />
+        )}
+      </div>
 
-          {step === 'confirm' && network && wallet.address && (
-            <ConfirmStep
-              network={network}
-              address={wallet.address}
-              planType={planType}
-              amount={amount}
-              isApproving={isApproving}
-              isSubscribing={isSubscribing}
-              isApproved={isApproved || !needsApprove}
-              onApprove={handleApprove}
-              onSubscribe={handleSubscribe}
-              needsApprove={needsApprove}
-              error={error}
-            />
-          )}
-        </div>
-
-        {/* Footer */}
-        <DialogFooter className='gap-2 sm:gap-0'>
-          {step !== 'network' && (
-            <Button variant='outline' onClick={handleBack} disabled={isLoading}>
-              {t('common.back')}
-            </Button>
-          )}
-          {step === 'network' && (
-            <Button variant='outline' onClick={() => handleOpenChange(false)}>
-              {t('common.cancel')}
-            </Button>
-          )}
-          {step !== 'confirm' && (
-            <Button onClick={handleNext} disabled={!canGoNext() || isLoading}>
-              {t('common.next')}
-            </Button>
-          )}
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+      {/* Footer */}
+      <DialogFooter className='gap-2 sm:gap-0'>
+        {(step !== 'network' || embedded) && (
+          <Button variant='outline' onClick={handleBack} disabled={isLoading}>
+            {t('common.back')}
+          </Button>
+        )}
+        {step !== 'confirm' && (
+          <Button onClick={handleNext} disabled={!canGoNext() || isLoading}>
+            {t('common.next')}
+          </Button>
+        )}
+      </DialogFooter>
+    </>
   )
 }

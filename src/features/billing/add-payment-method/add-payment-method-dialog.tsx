@@ -3,14 +3,6 @@ import { ChevronRight, CreditCard, Eye, EyeOff, Lock, Plus, Wallet } from 'lucid
 import { useCallback, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { z } from 'zod'
-import type { CryptoCurrency, CryptoNetwork } from '@/entities/subscription'
-import {
-  getCurrencyDisplayName,
-  getNetworkDisplayName,
-  isValidWalletAddress,
-  shortenWalletAddress
-} from '@/entities/subscription'
 import { Button } from '@/shared/components/button'
 import { CardBrandIcon } from '@/shared/components/card-brand-icon'
 import {
@@ -19,7 +11,6 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
   DialogTrigger
 } from '@/shared/components/dialog'
 import {
@@ -30,15 +21,7 @@ import {
   FormLabel,
   FormMessage
 } from '@/shared/components/form'
-import { cryptoIcons, Icon } from '@/shared/components/icon'
 import { Input } from '@/shared/components/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/shared/components/select'
 import {
   type CardBrand,
   detectCardBrand,
@@ -47,6 +30,7 @@ import {
   parseExpiry
 } from '@/shared/lib/card-utils'
 import { cn } from '@/shared/lib/cn'
+import { CryptoSubscriptionDialogContent } from '../crypto-subscription-dialog'
 import { CARD_VALIDATION, getCvcLength, getCvcPlaceholder } from './lib/card-validation'
 import {
   type AddPaymentMethodValues,
@@ -57,36 +41,12 @@ import {
 // Types
 type Step = 'select' | 'card' | 'crypto'
 
-export interface CryptoWalletInput {
-  currency: CryptoCurrency
-  network: CryptoNetwork
-  walletAddress: string
-  walletAddressShort: string
-}
-
 interface AddPaymentMethodDialogProps {
   onAddCard: (data: PaymentMethodInput) => void
-  onAddCrypto: (data: CryptoWalletInput) => void
+  onCryptoSuccess?: () => void
   loadingCard?: boolean
-  loadingCrypto?: boolean
   trigger?: React.ReactNode
 }
-
-// Crypto options
-const CRYPTO_OPTIONS: { currency: CryptoCurrency; network: CryptoNetwork }[] = [
-  { currency: 'BTC', network: 'bitcoin' },
-  { currency: 'ETH', network: 'ethereum' },
-  { currency: 'USDT', network: 'ethereum' },
-  { currency: 'USDC', network: 'ethereum' },
-  { currency: 'SOL', network: 'solana' }
-]
-
-const addCryptoWalletSchema = z.object({
-  currency: z.enum(['BTC', 'ETH', 'USDT', 'USDC', 'SOL']),
-  walletAddress: z.string().min(20, 'Invalid wallet address')
-})
-
-type AddCryptoWalletValues = z.infer<typeof addCryptoWalletSchema>
 
 const SelectionCard = ({
   icon,
@@ -161,9 +121,8 @@ const SecurityNotice = ({ children }: { children: React.ReactNode }) => {
 
 export const AddPaymentMethodDialog = ({
   onAddCard,
-  onAddCrypto,
+  onCryptoSuccess,
   loadingCard,
-  loadingCrypto,
   trigger
 }: AddPaymentMethodDialogProps) => {
   const { t } = useTranslation()
@@ -183,19 +142,6 @@ export const AddPaymentMethodDialog = ({
       cvc: ''
     }
   })
-
-  // Crypto form state
-  const cryptoForm = useForm<AddCryptoWalletValues>({
-    resolver: zodResolver(addCryptoWalletSchema),
-    defaultValues: {
-      currency: 'ETH',
-      walletAddress: ''
-    }
-  })
-
-  const selectedCurrency = cryptoForm.watch('currency')
-  const selectedOption = CRYPTO_OPTIONS.find(o => o.currency === selectedCurrency)
-  const selectedNetwork = selectedOption?.network || 'ethereum'
 
   // Handlers
   const handleCardNumberChange = useCallback(
@@ -240,24 +186,8 @@ export const AddPaymentMethodDialog = ({
     resetAndClose()
   }
 
-  const handleCryptoSubmit = (values: AddCryptoWalletValues) => {
-    const network = CRYPTO_OPTIONS.find(o => o.currency === values.currency)?.network || 'ethereum'
-
-    if (!isValidWalletAddress(values.walletAddress, network)) {
-      cryptoForm.setError('walletAddress', {
-        type: 'manual',
-        message: t('billing.addCryptoWallet.invalidAddress')
-      })
-      return
-    }
-
-    onAddCrypto({
-      currency: values.currency,
-      network,
-      walletAddress: values.walletAddress,
-      walletAddressShort: shortenWalletAddress(values.walletAddress)
-    })
-
+  const handleCryptoSuccess = () => {
+    onCryptoSuccess?.()
     resetAndClose()
   }
 
@@ -265,7 +195,6 @@ export const AddPaymentMethodDialog = ({
     setOpen(false)
     setStep('select')
     cardForm.reset()
-    cryptoForm.reset()
     setCardBrand('unknown')
     setShowCvc(false)
   }
@@ -280,13 +209,9 @@ export const AddPaymentMethodDialog = ({
 
   const handleBack = () => {
     setStep('select')
-    // Reset forms when going back
     cardForm.reset()
-    cryptoForm.reset()
     setCardBrand('unknown')
   }
-
-  const loading = loadingCard || loadingCrypto
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -304,7 +229,7 @@ export const AddPaymentMethodDialog = ({
         {step === 'select' && (
           <>
             <DialogHeader>
-              <DialogTitle>{t('billing.addPaymentMethod.selectTitle')}</DialogTitle>
+              <div className='text-lg font-semibold'>{t('billing.addPaymentMethod.selectTitle')}</div>
               <DialogDescription>
                 {t('billing.addPaymentMethod.selectDescription')}
               </DialogDescription>
@@ -320,7 +245,7 @@ export const AddPaymentMethodDialog = ({
               <SelectionCard
                 icon={<Wallet className='h-12 w-12' />}
                 title={t('billing.addPaymentMethod.cryptoOption.title')}
-                description={t('billing.addPaymentMethod.cryptoOption.description')}
+                description='TON (USDT)'
                 onClick={() => setStep('crypto')}
               />
             </div>
@@ -335,7 +260,7 @@ export const AddPaymentMethodDialog = ({
                 parentLabel={t('billing.addPaymentMethod.selectTitle')}
                 currentLabel={t('billing.addPaymentMethod.cardTitle')}
                 onBack={handleBack}
-                disabled={loading}
+                disabled={loadingCard}
               />
               <DialogDescription>{t('billing.addPaymentMethod.description')}</DialogDescription>
             </DialogHeader>
@@ -487,103 +412,25 @@ export const AddPaymentMethodDialog = ({
           </>
         )}
 
-        {/* Crypto Step */}
+        {/* Crypto Step - TON Connect */}
         {step === 'crypto' && (
           <>
             <DialogHeader>
               <DialogBreadcrumb
                 parentLabel={t('billing.addPaymentMethod.selectTitle')}
-                currentLabel={t('billing.addPaymentMethod.cryptoTitle')}
+                currentLabel={t('billing.crypto.title')}
                 onBack={handleBack}
-                disabled={loading}
               />
-              <DialogDescription>{t('billing.addCryptoWallet.description')}</DialogDescription>
+              <DialogDescription>{t('billing.crypto.description')}</DialogDescription>
             </DialogHeader>
 
-            <Form {...cryptoForm}>
-              <form onSubmit={cryptoForm.handleSubmit(handleCryptoSubmit)} className='space-y-4'>
-                <FormField
-                  control={cryptoForm.control}
-                  name='currency'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t('billing.currency')}</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue
-                              placeholder={t('billing.addCryptoWallet.selectCurrency')}
-                            />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {CRYPTO_OPTIONS.map(option => {
-                            const iconData = cryptoIcons[option.currency.toLowerCase()]
-                            return (
-                              <SelectItem key={option.currency} value={option.currency}>
-                                <div className='flex items-center gap-2'>
-                                  {iconData && (
-                                    <Icon data={iconData} size={16} className='text-foreground' />
-                                  )}
-                                  <span>{getCurrencyDisplayName(option.currency)}</span>
-                                  <span className='text-muted-foreground'>({option.currency})</span>
-                                </div>
-                              </SelectItem>
-                            )
-                          })}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <div className='text-sm text-muted-foreground'>
-                  {t('billing.network')}: {getNetworkDisplayName(selectedNetwork)}
-                </div>
-
-                <FormField
-                  control={cryptoForm.control}
-                  name='walletAddress'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t('billing.walletAddress')}</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder={t('billing.addCryptoWallet.addressPlaceholder')}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <DialogFooter className='gap-2 sm:gap-0'>
-                  <Button
-                    type='button'
-                    variant='outline'
-                    onClick={resetAndClose}
-                    disabled={loadingCrypto}
-                  >
-                    {t('common.cancel')}
-                  </Button>
-                  <Button type='submit' disabled={loadingCrypto}>
-                    {loadingCrypto ? (
-                      <>
-                        <span className='animate-spin mr-2'>⏳</span>
-                        {t('common.loading')}
-                      </>
-                    ) : (
-                      <>
-                        <Wallet className='h-4 w-4 mr-2' />
-                        {t('billing.addCryptoWallet.submit')}
-                      </>
-                    )}
-                  </Button>
-                </DialogFooter>
-              </form>
-            </Form>
+            <CryptoSubscriptionDialogContent
+              planType='pro'
+              amount={9.99}
+              onSuccess={handleCryptoSuccess}
+              onBack={handleBack}
+              embedded
+            />
           </>
         )}
       </DialogContent>

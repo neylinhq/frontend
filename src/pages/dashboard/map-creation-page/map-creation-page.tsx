@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
+import { ApiError } from '@/shared/api/client'
 import { toast } from '@/shared/components/toast'
 import { useCreateMapMutation } from '@/features/map-creation'
 import { MAP_CREATION_CONFIG } from '@/features/map-creation/model/map-creation.constants'
@@ -48,8 +49,15 @@ export const MapCreationPage = () => {
       })
 
       navigate(MAPS_ROUTES.view(newMap.id))
-    } catch {
-      toast.error(t('mapCreation.error'))
+    } catch (error) {
+      if (error instanceof ApiError) {
+        const errorData = error.data as { error?: { message?: string } } | null
+        toast.error(t('mapCreation.error'), {
+          description: errorData?.error?.message
+        })
+      } else {
+        toast.error(t('mapCreation.error'))
+      }
     }
   }
 

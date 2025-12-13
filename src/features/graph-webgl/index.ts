@@ -46,6 +46,7 @@ export { DEFAULT_LAYOUT_OPTIONS, DEFAULT_VIEWPORT } from './lib/types'
 
 // Legacy exports (for backward compatibility)
 export { GraphWebGLVisualization as GraphVisualization } from './components/graph-webgl-visualization'
+export { GraphWebGLVisualization } from './components/graph-webgl-visualization'
 export type { GraphEdge, GraphNode, GraphStats } from './lib/wasm-adapter'
 export { GraphEngine as LegacyGraphEngine } from './lib/wasm-adapter'
 export { useGraphEngine as useLegacyGraphEngine } from './model/use-graph-engine.hooks'

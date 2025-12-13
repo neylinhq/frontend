@@ -1,1 +1,1 @@
-export { CryptoSubscriptionDialog } from './crypto-subscription-dialog'
+export { CryptoSubscriptionDialog, CryptoSubscriptionDialogContent } from './crypto-subscription-dialog'

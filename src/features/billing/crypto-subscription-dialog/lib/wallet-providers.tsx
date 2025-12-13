@@ -1,19 +1,13 @@
 'use client'
 
 import { type ReactNode, useEffect, useState } from 'react'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { WagmiProvider } from 'wagmi'
-import { wagmiConfig } from './wagmi-config'
-
-// Query client for wagmi (shared)
-const queryClient = new QueryClient()
 
 interface WalletProvidersProps {
   children: ReactNode
 }
 
 /**
- * Провайдеры для wallet библиотек
+ * Провайдеры для TON Connect
  * Lazy-load чтобы избежать SSR проблем с window
  */
 export const WalletProviders = ({ children }: WalletProvidersProps) => {
@@ -28,54 +22,37 @@ export const WalletProviders = ({ children }: WalletProvidersProps) => {
     return <>{children}</>
   }
 
-  return (
-    <QueryClientProvider client={queryClient}>
-      <WagmiProvider config={wagmiConfig}>
-        <TonAndTronProviders>
-          {children}
-        </TonAndTronProviders>
-      </WagmiProvider>
-    </QueryClientProvider>
-  )
+  return <TonProvider>{children}</TonProvider>
 }
 
-// Отдельный компонент для TON и Tron чтобы lazy-load их
-const TonAndTronProviders = ({ children }: { children: ReactNode }) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [providers, setProviders] = useState<{
+// Отдельный компонент для TON Connect чтобы lazy-load его
+const TonProvider = ({ children }: { children: ReactNode }) => {
+  const [Provider, setProvider] = useState<{
     TonConnectUIProvider: React.ComponentType<{ children: ReactNode; manifestUrl: string }>
-    TronWalletProvider: React.ComponentType<any>
-    tronAdapters: unknown[]
   } | null>(null)
 
   useEffect(() => {
-    // Dynamic import для client-only библиотек
-    Promise.all([
-      import('@tonconnect/ui-react'),
-      import('@tronweb3/tronwallet-adapter-react-hooks'),
-      import('@tronweb3/tronwallet-adapter-tronlink')
-    ]).then(([tonModule, tronHooksModule, tronLinkModule]) => {
-      setProviders({
-        TonConnectUIProvider: tonModule.TonConnectUIProvider,
-        TronWalletProvider: tronHooksModule.WalletProvider,
-        tronAdapters: [new tronLinkModule.TronLinkAdapter()]
+    // Dynamic import для client-only библиотеки
+    import('@tonconnect/ui-react')
+      .then((tonModule) => {
+        setProvider({
+          TonConnectUIProvider: tonModule.TonConnectUIProvider
+        })
       })
-    }).catch(() => {
-      // Silently handle missing optional packages in dev
-    })
+      .catch(() => {
+        // Silently handle missing optional package in dev
+      })
   }, [])
 
-  if (!providers) {
+  if (!Provider) {
     return <>{children}</>
   }
 
-  const { TonConnectUIProvider, TronWalletProvider, tronAdapters } = providers
+  const { TonConnectUIProvider } = Provider
 
   return (
     <TonConnectUIProvider manifestUrl='/tonconnect-manifest.json'>
-      <TronWalletProvider adapters={tronAdapters}>
-        {children}
-      </TronWalletProvider>
+      {children}
     </TonConnectUIProvider>
   )
 }

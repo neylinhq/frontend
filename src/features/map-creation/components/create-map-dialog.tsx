@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
+import { ApiError } from '@/shared/api/client'
 import { toast } from '@/shared/components/toast'
 import { Button } from '@/shared/components/button'
 import {
@@ -81,7 +82,14 @@ export const CreateMapDialog = () => {
       // Navigate to the new map
       navigate(MAPS_ROUTES.view(newMap.id))
     } catch (error) {
-      toast.error(t('mapCreation.error'))
+      if (error instanceof ApiError) {
+        const errorData = error.data as { error?: { message?: string } } | null
+        toast.error(t('mapCreation.error'), {
+          description: errorData?.error?.message
+        })
+      } else {
+        toast.error(t('mapCreation.error'))
+      }
     }
   }
 

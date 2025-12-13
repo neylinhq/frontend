@@ -1,7 +1,7 @@
 import { Loader2, Wallet } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import type { CryptoNetwork } from '@/entities/subscription'
-import { getNetworkDisplayName, getWalletType, shortenWalletAddress } from '@/entities/subscription'
+import { getNetworkDisplayName, shortenWalletAddress } from '@/entities/subscription'
 import { Button } from '@/shared/components/button'
 import { cn } from '@/shared/lib/cn'
 
@@ -14,18 +14,6 @@ interface WalletConnectStepProps {
   onDisconnect: () => void
 }
 
-const getWalletName = (network: CryptoNetwork): string => {
-  const walletType = getWalletType(network)
-  switch (walletType) {
-    case 'tonconnect':
-      return 'TonKeeper'
-    case 'tron':
-      return 'TronLink'
-    case 'evm':
-      return 'MetaMask'
-  }
-}
-
 export const WalletConnectStep = ({
   network,
   isConnected,
@@ -35,7 +23,8 @@ export const WalletConnectStep = ({
   onDisconnect
 }: WalletConnectStepProps) => {
   const { t } = useTranslation()
-  const walletName = getWalletName(network)
+  // Только TON поддерживается
+  const walletName = 'TonKeeper'
 
   if (isConnected && address) {
     return (
@@ -46,18 +35,18 @@ export const WalletConnectStep = ({
               <Wallet className='h-5 w-5 text-green-500' />
             </div>
             <div>
-              <p className='text-sm font-medium'>{walletName}</p>
+              <p className='text-sm font-medium'>{t('billing.crypto.wallet.connected')}</p>
               <p className='text-xs text-muted-foreground font-mono'>
                 {shortenWalletAddress(address)}
               </p>
             </div>
           </div>
           <Button variant='ghost' size='sm' onClick={onDisconnect}>
-            {t('billing.crypto.disconnect')}
+            {t('billing.crypto.wallet.disconnect')}
           </Button>
         </div>
         <p className='text-sm text-muted-foreground'>
-          {t('billing.crypto.connectedTo', { network: getNetworkDisplayName(network) })}
+          {getNetworkDisplayName(network)}
         </p>
       </div>
     )
@@ -66,7 +55,7 @@ export const WalletConnectStep = ({
   return (
     <div className='space-y-4'>
       <p className='text-sm text-muted-foreground'>
-        {t('billing.crypto.connectWalletDescription', { wallet: walletName })}
+        {t('billing.crypto.wallet.connect')} {walletName}
       </p>
       <Button
         onClick={onConnect}
@@ -77,12 +66,12 @@ export const WalletConnectStep = ({
         {isConnecting ? (
           <>
             <Loader2 className='h-4 w-4 mr-2 animate-spin' />
-            {t('billing.crypto.connecting')}
+            {t('billing.crypto.wallet.connecting')}
           </>
         ) : (
           <>
             <Wallet className='h-4 w-4 mr-2' />
-            {t('billing.crypto.connectWallet', { wallet: walletName })}
+            {t('billing.crypto.wallet.connect')}
           </>
         )}
       </Button>

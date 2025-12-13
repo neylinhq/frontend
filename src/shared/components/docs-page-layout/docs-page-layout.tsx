@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
+import { useOutletContext } from 'react-router'
 import { Badge } from '@/shared/components/badge'
 import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
 import type { TocItem } from '@/shared/components/docs-toc'
 import { DocsToc } from '@/shared/components/docs-toc'
 import { Typography } from '@/shared/components/typography'
-import { useTocContext } from '@/widgets/docs-layout'
 
 interface DocsPageLayoutProps {
   title: string
@@ -14,6 +14,18 @@ interface DocsPageLayoutProps {
   children: React.ReactNode
 }
 
+export function getTocElement(tocItems: TocItem[]) {
+  if (tocItems.length === 0) return null
+
+  return (
+    <aside className='hidden xl:flex w-[220px] flex-shrink-0 border-l flex-col py-6 px-4'>
+      <div className='sticky top-8'>
+        <DocsToc items={tocItems} />
+      </div>
+    </aside>
+  )
+}
+
 export const DocsPageLayout = ({
   title,
   description,
@@ -21,18 +33,10 @@ export const DocsPageLayout = ({
   tocItems,
   children
 }: DocsPageLayoutProps) => {
-  const { setToc } = useTocContext()
+  const { setToc } = useOutletContext<{ setToc: (toc: React.ReactNode) => void }>()
 
   useEffect(() => {
-    if (tocItems.length > 0) {
-      setToc(
-        <aside className='hidden xl:flex w-[220px] flex-shrink-0 border-l flex-col py-6 px-4'>
-          <div className='sticky top-8'>
-            <DocsToc items={tocItems} />
-          </div>
-        </aside>
-      )
-    }
+    setToc(getTocElement(tocItems))
     return () => setToc(null)
   }, [tocItems, setToc])
 

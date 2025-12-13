@@ -961,10 +961,10 @@
       },
       "more": {
         "copy": "Copy",
-        "copyMarkdown": "Copy as Markdown",
+        "copyMarkdown": "Copy as MD",
         "delete": "Delete",
         "copied": "Copied to clipboard",
-        "copiedMarkdown": "Copied as Markdown",
+        "copiedMarkdown": "Copied as MD",
         "copyFailed": "Failed to copy"
       }
     },

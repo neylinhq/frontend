@@ -23,12 +23,12 @@ export interface ChatMessage {
 }
 
 // Preview card types
-export type PreviewType = 'exercise' | 'enrichment' | 'edge' | 'node'
+export type PreviewType = 'exercise' | 'enrichment' | 'edge' | 'node' | 'new_node' | 'connection'
 
 export interface PreviewCard {
   id: string
   type: PreviewType
-  data: ExercisePreviewData | EnrichmentPreviewData | EdgePreviewData | NodePreviewData
+  data: ExercisePreviewData | EnrichmentPreviewData | EdgePreviewData | NodePreviewData | NewNodePreviewData | ConnectionPreviewData
   status: 'pending' | 'editing'
 }
 
@@ -36,7 +36,7 @@ export interface PreviewCard {
 export interface ResolvedPreview {
   id: string
   type: PreviewType
-  data: ExercisePreviewData | EnrichmentPreviewData | EdgePreviewData | NodePreviewData
+  data: ExercisePreviewData | EnrichmentPreviewData | EdgePreviewData | NodePreviewData | NewNodePreviewData | ConnectionPreviewData
   status: 'approved' | 'rejected'
   resolvedAt: Date
   undoData?: {
@@ -70,6 +70,24 @@ export interface NodePreviewData {
   label: string
   type: string
   content?: string
+}
+
+export interface NewNodePreviewData {
+  label: string
+  nodeType: string
+  description: string
+  content?: string
+  connectTo?: Array<{
+    nodeLabel: string
+    relation: string
+  }>
+}
+
+export interface ConnectionPreviewData {
+  fromLabel: string
+  toLabel: string
+  relation: string
+  reasoning: string
 }
 
 // Context types

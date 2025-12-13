@@ -1,1 +1,1 @@
-export { DocsPageLayout } from './docs-page-layout'
+export { DocsPageLayout, getTocElement } from './docs-page-layout'

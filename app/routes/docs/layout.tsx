@@ -1,4 +1,5 @@
 import { BookOpen, Package } from 'lucide-react'
+import { useState } from 'react'
 import { Outlet } from 'react-router'
 import { DocsSidebar, type DocsSidebarSection } from '@/shared/components/docs-sidebar'
 import { DocsLayout } from '@/widgets/docs-layout'
@@ -56,12 +57,12 @@ const NAV_SECTIONS: DocsSidebarSection[] = [
 ]
 
 const UiLayout = () => {
-
+  const [toc, setToc] = useState<React.ReactNode>(null)
   const sidebar = <DocsSidebar sections={NAV_SECTIONS} />
 
   return (
-    <DocsLayout sidebar={sidebar}>
-      <Outlet />
+    <DocsLayout sidebar={sidebar} toc={toc}>
+      <Outlet context={{ setToc }} />
     </DocsLayout>
   )
 }

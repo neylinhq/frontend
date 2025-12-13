@@ -1,1 +1,1 @@
-export { DocsLayout, useTocContext } from './docs-layout'
+export { DocsLayout } from './docs-layout'

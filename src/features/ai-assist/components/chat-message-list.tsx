@@ -8,6 +8,7 @@ import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import { Icon } from '@/shared/components/icon'
 import { aiBrandIcons } from '@/shared/components/icon/icon.constants'
+import { LoadingDots } from '@/shared/components/loading-dots'
 import { Textarea } from '@/shared/components/textarea'
 import { toast } from '@/shared/components/toast'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/components/tooltip'
@@ -127,11 +128,7 @@ export const ChatMessageList = ({
             {/* Thinking Bubble - shown when AI is processing but no content yet */}
             {isThinking ? (
               <div className='rounded-lg px-4 py-3 bg-muted'>
-                <div className='flex items-center gap-1.5'>
-                  <span className='w-2 h-2 rounded-full bg-primary/60 animate-pulse' style={{ animationDelay: '0ms' }} />
-                  <span className='w-2 h-2 rounded-full bg-primary/60 animate-pulse' style={{ animationDelay: '150ms' }} />
-                  <span className='w-2 h-2 rounded-full bg-primary/60 animate-pulse' style={{ animationDelay: '300ms' }} />
-                </div>
+                <LoadingDots />
               </div>
             ) : message.role === 'user' && editingMessageId === message.id ? (
               // Inline edit mode for user message

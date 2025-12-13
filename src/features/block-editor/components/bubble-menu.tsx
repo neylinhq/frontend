@@ -309,48 +309,36 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
     }
   }, [isLinkInputOpen])
 
-  // FIX: Wrap updateMenu in useCallback to prevent memory leak from event listener accumulation
-  // Previously, updateMenu was created inside useEffect, causing cleanup to use stale references
-  // Ref to track hide timeout for debouncing
-  const hideTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  // Track last known selection to detect actual changes
+  const lastSelectionRef = useRef<{ from: number; to: number } | null>(null)
 
   const updateMenu = useCallback(() => {
     const { selection } = editor.state
-    const { empty, from, to } = selection
+    const { from, to } = selection
 
-    // DEBUG
-    console.log('[BubbleMenu] updateMenu called:', { empty, from, to, selectionType: selection.constructor.name })
+    // Only react to actual selection changes, not intermediate states
+    const hasSelection = from !== to
+    const lastSelection = lastSelectionRef.current
+    const selectionChanged = !lastSelection || lastSelection.from !== from || lastSelection.to !== to
 
-    // Clear any pending hide timeout
-    if (hideTimeoutRef.current) {
-      clearTimeout(hideTimeoutRef.current)
-      hideTimeoutRef.current = null
-    }
+    // Update last selection ref
+    lastSelectionRef.current = { from, to }
 
-    // Hide menu if selection is empty or is a node selection
-    // Use delay to handle triple-click (paragraph select) which briefly clears selection
-    // 150ms is enough for triple-click to complete on most systems
-    if (empty || from === to) {
-      console.log('[BubbleMenu] Selection empty, scheduling hide in 150ms')
-      hideTimeoutRef.current = setTimeout(() => {
-        const currentSelection = editor.state.selection
-        console.log('[BubbleMenu] Hide timeout fired, checking:', {
-          empty: currentSelection.empty,
-          from: currentSelection.from,
-          to: currentSelection.to
-        })
-        if (currentSelection.empty || currentSelection.from === currentSelection.to) {
-          console.log('[BubbleMenu] Hiding menu')
-          setIsVisible(false)
-          dispatch({ type: 'CLOSE_ALL' })
-        } else {
-          console.log('[BubbleMenu] Selection restored, NOT hiding')
-        }
-      }, 150)
+    // No selection = hide menu
+    if (!hasSelection) {
+      // Only hide if menu is currently visible (avoid unnecessary re-renders)
+      if (isVisible) {
+        setIsVisible(false)
+        dispatch({ type: 'CLOSE_ALL' })
+      }
       return
     }
 
-    console.log('[BubbleMenu] Selection valid, showing menu')
+    // Selection exists - show/update menu
+    if (!selectionChanged && isVisible) {
+      // Selection didn't change and menu is visible - skip update
+      return
+    }
 
     // Get the selection coordinates (viewport-relative)
     const { view } = editor
@@ -415,7 +403,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
     setIsVisible(true)
     // Force re-render to update block type in Turn Into dropdown
     forceUpdate()
-  }, [editor])
+  }, [editor, isVisible])
 
   useEffect(() => {
     editor.on('selectionUpdate', updateMenu)

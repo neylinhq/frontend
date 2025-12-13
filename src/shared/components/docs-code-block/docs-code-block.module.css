@@ -2,8 +2,8 @@
 
 .block {
   border-radius: 0.5rem;
-  border: 1px solid hsl(var(--border));
-  background: hsl(var(--muted) / 0.3);
+  border: 1px solid oklch(var(--border));
+  background: oklch(var(--muted) / 0.3);
   overflow: hidden;
 }
 
@@ -19,16 +19,16 @@
   justify-content: space-between;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  border-bottom: 1px solid hsl(var(--border));
-  background: hsl(var(--muted) / 0.5);
+  border-bottom: 1px solid oklch(var(--border));
+  background: oklch(var(--muted) / 0.5);
   font-size: 0.75rem;
-  color: hsl(var(--muted-foreground));
+  color: oklch(var(--muted-foreground));
 }
 
 .language {
   padding: 0.125rem 0.5rem;
   border-radius: 0.375rem;
-  background: hsl(var(--muted));
+  background: oklch(var(--muted));
   font-family: var(--font-mono);
   font-size: 0.625rem;
   text-transform: uppercase;
@@ -39,7 +39,7 @@
   margin-left: 0.5rem;
   padding: 0.375rem;
   border-radius: 0.375rem;
-  color: hsl(var(--muted-foreground));
+  color: oklch(var(--muted-foreground));
   opacity: 0;
   transition: all 0.15s ease;
   cursor: pointer;
@@ -50,8 +50,8 @@
 }
 
 .copy:hover {
-  background: hsl(var(--accent));
-  color: hsl(var(--accent-foreground));
+  background: oklch(var(--accent));
+  color: oklch(var(--accent-foreground));
 }
 
 .pre {

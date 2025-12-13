@@ -40,11 +40,12 @@ const LANGUAGE_KEYS = [
   'latex'
 ] as const
 
-export const CodeBlockNodeView = ({ node, updateAttributes, extension }: NodeViewProps) => {
+export const CodeBlockNodeView = ({ node, updateAttributes, extension: _extension }: NodeViewProps) => {
   const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const [search, setSearch] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(0)
+  const [copied, setCopied] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -80,7 +81,9 @@ export const CodeBlockNodeView = ({ node, updateAttributes, extension }: NodeVie
     const code = node.textContent
     try {
       await navigator.clipboard.writeText(code)
+      setCopied(true)
       toast.success(t('editor.codeBlock.copied'))
+      setTimeout(() => setCopied(false), 2000)
     } catch {
       toast.error(t('editor.bubble.more.copyFailed'))
     }
@@ -88,7 +91,9 @@ export const CodeBlockNodeView = ({ node, updateAttributes, extension }: NodeVie
 
   // Close dropdown on outside click
   useEffect(() => {
-    if (!isOpen) return
+    if (!isOpen) {
+      return
+    }
 
     const handleClickOutside = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -111,12 +116,14 @@ export const CodeBlockNodeView = ({ node, updateAttributes, extension }: NodeVie
   // Reset selection when search changes
   useEffect(() => {
     setSelectedIndex(0)
-  }, [search])
+  }, [])
 
   // Keyboard navigation
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (!isOpen) return
+      if (!isOpen) {
+        return
+      }
 
       switch (e.key) {
         case 'ArrowDown':
@@ -146,7 +153,7 @@ export const CodeBlockNodeView = ({ node, updateAttributes, extension }: NodeVie
   return (
     <NodeViewWrapper className='relative my-2'>
       {/* Header with language selector and copy button */}
-      <div className='flex items-center justify-between rounded-t-lg border border-b-0 border-border bg-muted/50 px-3 py-1.5'>
+      <div className='flex items-center justify-between rounded-t-lg border border-b-0 border-border bg-muted/70 px-3 py-1.5'>
         {/* Language selector */}
         <div ref={dropdownRef} className='relative'>
           <button
@@ -204,15 +211,20 @@ export const CodeBlockNodeView = ({ node, updateAttributes, extension }: NodeVie
           )}
         </div>
 
-        {/* Copy button */}
+        {/* Copy button with success feedback */}
         <button
           type='button'
           onClick={handleCopy}
-          className='flex items-center gap-1 rounded px-2 py-1 text-xs text-muted-foreground hover:bg-accent hover:text-foreground transition-colors'
+          className={cn(
+            'flex items-center gap-1 rounded px-2 py-1 text-xs transition-all duration-200',
+            copied
+              ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400'
+              : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+          )}
           aria-label={t('editor.codeBlock.copy')}
         >
-          <Copy className='h-3 w-3' />
-          <span>{t('editor.codeBlock.copy')}</span>
+          {copied ? <Check className='h-3 w-3' /> : <Copy className='h-3 w-3' />}
+          <span>{copied ? t('editor.codeBlock.copied') : t('editor.codeBlock.copy')}</span>
         </button>
       </div>
 

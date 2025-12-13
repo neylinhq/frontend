@@ -1,0 +1,2132 @@
+@import "tailwindcss";
+@import "katex/dist/katex.min.css";
+
+/* Geist Font - Vercel's modern typeface (loaded from CDN) */
+@font-face {
+  font-family: "Geist";
+  src: url("https://cdn.jsdelivr.net/npm/geist@1.5.1/dist/fonts/geist-sans/Geist-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist Mono";
+  src: url("https://cdn.jsdelivr.net/npm/geist@1.5.1/dist/fonts/geist-mono/GeistMono-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  /* Main font: Geist - Vercel's modern geometric typeface */
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+
+  /* Code font: Geist Mono - matching monospace from Vercel */
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+  /* Colors Mapping */
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-success: hsl(var(--success));
+  --color-success-foreground: hsl(var(--success-foreground));
+
+  --color-warning: hsl(var(--warning));
+  --color-warning-foreground: hsl(var(--warning-foreground));
+
+  --color-info: hsl(var(--info));
+  --color-info-foreground: hsl(var(--info-foreground));
+
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --color-brand: hsl(var(--brand));
+  --color-brand-foreground: hsl(var(--brand-foreground));
+  --color-brand-muted: hsl(var(--brand-muted));
+
+  /* Theme preview colors */
+  --color-preview-classic: hsl(var(--preview-classic));
+  --color-preview-vanilla: hsl(var(--preview-vanilla));
+  --color-preview-vivid: hsl(var(--preview-vivid));
+  --color-preview-mono: hsl(var(--preview-mono));
+
+  /* Semantic colors - S+ Elite */
+  --color-semantic-knowledge: hsl(var(--semantic-knowledge));
+  --color-semantic-knowledge-muted: hsl(var(--semantic-knowledge-muted));
+  --color-semantic-fact: hsl(var(--semantic-fact));
+  --color-semantic-fact-muted: hsl(var(--semantic-fact-muted));
+  --color-semantic-question: hsl(var(--semantic-question));
+  --color-semantic-question-muted: hsl(var(--semantic-question-muted));
+  --color-semantic-example: hsl(var(--semantic-example));
+  --color-semantic-example-muted: hsl(var(--semantic-example-muted));
+  --color-semantic-conflict: hsl(var(--semantic-conflict));
+  --color-semantic-conflict-muted: hsl(var(--semantic-conflict-muted));
+  --color-semantic-neutral: hsl(var(--semantic-neutral));
+  --color-semantic-neutral-muted: hsl(var(--semantic-neutral-muted));
+
+  /* Complexity colors */
+  --color-complexity-basic: hsl(var(--complexity-basic));
+  --color-complexity-basic-bg: hsl(var(--complexity-basic-bg));
+  --color-complexity-intermediate: hsl(var(--complexity-intermediate));
+  --color-complexity-intermediate-bg: hsl(var(--complexity-intermediate-bg));
+  --color-complexity-advanced: hsl(var(--complexity-advanced));
+  --color-complexity-advanced-bg: hsl(var(--complexity-advanced-bg));
+
+  /* Edge colors - 10 unique types */
+  --color-edge-prerequisite: hsl(var(--edge-prerequisite));
+  --color-edge-prerequisite-muted: hsl(var(--edge-prerequisite-muted));
+  --color-edge-causes: hsl(var(--edge-causes));
+  --color-edge-causes-muted: hsl(var(--edge-causes-muted));
+  --color-edge-explains: hsl(var(--edge-explains));
+  --color-edge-explains-muted: hsl(var(--edge-explains-muted));
+  --color-edge-is-a: hsl(var(--edge-is-a));
+  --color-edge-is-a-muted: hsl(var(--edge-is-a-muted));
+  --color-edge-has-a: hsl(var(--edge-has-a));
+  --color-edge-has-a-muted: hsl(var(--edge-has-a-muted));
+  --color-edge-part-of: hsl(var(--edge-part-of));
+  --color-edge-part-of-muted: hsl(var(--edge-part-of-muted));
+  --color-edge-influences: hsl(var(--edge-influences));
+  --color-edge-influences-muted: hsl(var(--edge-influences-muted));
+  --color-edge-related-to: hsl(var(--edge-related-to));
+  --color-edge-related-to-muted: hsl(var(--edge-related-to-muted));
+  --color-edge-contradicts: hsl(var(--edge-contradicts));
+  --color-edge-contradicts-muted: hsl(var(--edge-contradicts-muted));
+  --color-edge-similar-to: hsl(var(--edge-similar-to));
+  --color-edge-similar-to-muted: hsl(var(--edge-similar-to-muted));
+
+  /* Radii */
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  /* Animations */
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+  --animate-pulse-subtle: pulse-subtle 3s ease-in-out infinite;
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+  @keyframes pulse-subtle {
+    0%, 100% {
+      transform: scale(1);
+      box-shadow:
+        0 0 0 0 hsl(var(--primary) / 0.4),
+        0 4px 12px -2px hsl(var(--primary) / 0.2);
+    }
+    50% {
+      transform: scale(1.02);
+      box-shadow:
+        0 0 20px 4px hsl(var(--primary) / 0.25),
+        0 8px 24px -4px hsl(var(--primary) / 0.3);
+    }
+  }
+
+  /* Menu fade-in animation (Design Manifesto: 200-300ms ease-out) */
+  --animate-menu-in: menu-fade-in 0.2s ease-out;
+
+  @keyframes menu-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+}
+
+/* Classic Theme (Default) - Pure neutral, no color tint */
+@layer base {
+  :root {
+    /* Selection opacity - used globally and in editor */
+    --selection-opacity: 0.3;
+
+    /* Theme preview colors (don't change with theme) */
+    --preview-classic: 217 91% 55%;
+    --preview-vanilla: 24 80% 50%;
+    --preview-vivid: 160 84% 39%;
+    --preview-mono: 340 100% 50%;
+
+    --background: 0 0% 100%;           /* #FFFFFF - pure white */
+    --foreground: 0 0% 9%;             /* #171717 - near black */
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 9%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 96%;             /* #F5F5F5 */
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 40%;      /* #666666 - improved contrast */
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --success: 142 76% 30%;            /* Darker green for better contrast */
+    --success-foreground: 0 0% 98%;
+    --warning: 45 93% 47%;             /* Tailwind amber-500 */
+    --warning-foreground: 0 0% 9%;     /* Dark text for yellow */
+    --info: 199 89% 48%;               /* Tailwind sky-500 */
+    --info-foreground: 0 0% 98%;
+    --border: 0 0% 90%;                /* #E5E5E5 */
+    --input: 0 0% 90%;
+    --ring: 220 100% 50%;
+    --radius: 0.5rem;
+
+    /* Brand: Pure Blue */
+    --brand: 220 100% 50%;             /* #0055FF */
+    --brand-foreground: 0 0% 100%;
+    --brand-muted: 220 100% 95%;
+
+    /* Graph node colors */
+    --graph-violet: 250 100% 65%;
+    --graph-blue: 210 100% 60%;
+    --graph-cyan: 185 100% 50%;
+    --graph-emerald: 160 85% 45%;
+    --graph-amber: 40 95% 55%;
+    --graph-rose: 350 90% 60%;
+
+    /* Semantic colors - Node types */
+    --semantic-knowledge: 217 91% 60%;       /* Blue - concept, theory */
+    --semantic-knowledge-muted: 217 60% 94%;
+    --semantic-fact: 142 76% 36%;            /* Green - fact */
+    --semantic-fact-muted: 142 50% 92%;
+    --semantic-question: 262 83% 58%;        /* Purple - question, hypothesis */
+    --semantic-question-muted: 262 50% 94%;
+    --semantic-example: 32 95% 44%;          /* Amber - example, person, school */
+    --semantic-example-muted: 32 70% 93%;
+    --semantic-conflict: 0 84% 60%;          /* Red - contradiction */
+    --semantic-conflict-muted: 0 60% 94%;
+    --semantic-neutral: 220 9% 46%;          /* Gray - neutral */
+    --semantic-neutral-muted: 220 9% 94%;
+
+    /* Complexity colors */
+    --complexity-basic: 220 9% 46%;
+    --complexity-basic-bg: 220 9% 94%;
+    --complexity-intermediate: 217 91% 60%;
+    --complexity-intermediate-bg: 217 60% 94%;
+    --complexity-advanced: 0 84% 60%;
+    --complexity-advanced-bg: 0 60% 94%;
+
+    /* Edge type colors - 10 unique hues, darker for light theme */
+    --edge-contradicts: 0 85% 48%;
+    --edge-contradicts-muted: 0 70% 92%;
+    --edge-prerequisite: 35 85% 48%;
+    --edge-prerequisite-muted: 35 70% 92%;
+    --edge-influences: 16 90% 55%;
+    --edge-influences-muted: 16 75% 91%;
+    --edge-similar-to: 85 75% 35%;
+    --edge-similar-to-muted: 85 60% 90%;
+    --edge-has-a: 145 75% 35%;
+    --edge-has-a-muted: 145 60% 90%;
+    --edge-part-of: 175 75% 35%;
+    --edge-part-of-muted: 175 60% 90%;
+    --edge-related-to: 205 70% 45%;
+    --edge-related-to-muted: 205 50% 92%;
+    --edge-is-a: 235 80% 50%;
+    --edge-is-a-muted: 235 60% 92%;
+    --edge-explains: 265 80% 50%;
+    --edge-explains-muted: 265 60% 92%;
+    --edge-causes: 325 85% 48%;
+    --edge-causes-muted: 325 65% 91%;
+  }
+
+  .dark {
+    --background: 0 0% 7%;             /* #121212 - Material dark */
+    --foreground: 0 0% 93%;            /* #EDEDED */
+    --card: 0 0% 7%;
+    --card-foreground: 0 0% 93%;
+    --popover: 0 0% 10%;               /* #1A1A1A */
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 13%;             /* #212121 */
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 13%;
+    --muted-foreground: 0 0% 60%;      /* improved contrast */
+    --accent: 0 0% 15%;
+    --accent-foreground: 0 0% 93%;
+    --destructive: 0 72% 50%;
+    --destructive-foreground: 0 0% 98%;
+    --success: 142 70% 42%;
+    --success-foreground: 0 0% 98%;
+    --warning: 45 93% 52%;
+    --warning-foreground: 0 0% 9%;
+    --info: 199 89% 55%;
+    --info-foreground: 0 0% 98%;
+    --border: 0 0% 20%;                /* #333333 */
+    --input: 0 0% 20%;
+    --ring: 217 91% 60%;
+
+    /* Brand: Blue-600 for dark mode */
+    --brand: 217 91% 60%;              /* #2563EB - Blue-600 */
+    --brand-foreground: 0 0% 100%;
+    --brand-muted: 217 50% 15%;
+
+    /* Theme preview colors (brighter for dark mode) */
+    --preview-classic: 217 91% 70%;
+    --preview-vanilla: 24 85% 60%;
+    --preview-vivid: 160 90% 50%;
+    --preview-mono: 340 100% 50%;
+
+    /* Graph node colors (dark - more vibrant) */
+    --graph-violet: 270 100% 75%;
+    --graph-blue: 210 100% 70%;
+    --graph-cyan: 175 100% 50%;
+    --graph-emerald: 150 100% 50%;
+    --graph-amber: 45 100% 60%;
+    --graph-rose: 340 90% 65%;
+
+    /* Semantic colors - Node types (dark mode) */
+    --semantic-knowledge: 217 91% 65%;
+    --semantic-knowledge-muted: 217 40% 18%;
+    --semantic-fact: 142 70% 45%;
+    --semantic-fact-muted: 142 35% 16%;
+    --semantic-question: 262 80% 65%;
+    --semantic-question-muted: 262 40% 18%;
+    --semantic-example: 32 90% 52%;
+    --semantic-example-muted: 32 50% 16%;
+    --semantic-conflict: 0 72% 55%;
+    --semantic-conflict-muted: 0 40% 16%;
+    --semantic-neutral: 220 9% 60%;
+    --semantic-neutral-muted: 220 9% 18%;
+
+    /* Complexity colors (dark mode) */
+    --complexity-basic: 220 9% 60%;
+    --complexity-basic-bg: 220 9% 18%;
+    --complexity-intermediate: 217 91% 65%;
+    --complexity-intermediate-bg: 217 40% 18%;
+    --complexity-advanced: 0 72% 55%;
+    --complexity-advanced-bg: 0 40% 16%;
+
+    /* Edge type colors - 10 unique hues, lighter for dark theme */
+    --edge-contradicts: 0 90% 62%;
+    --edge-contradicts-muted: 0 55% 17%;
+    --edge-prerequisite: 35 90% 62%;
+    --edge-prerequisite-muted: 35 55% 17%;
+    --edge-influences: 16 90% 65%;
+    --edge-influences-muted: 16 60% 17%;
+    --edge-similar-to: 85 80% 52%;
+    --edge-similar-to-muted: 85 50% 15%;
+    --edge-has-a: 145 80% 52%;
+    --edge-has-a-muted: 145 50% 15%;
+    --edge-part-of: 175 80% 52%;
+    --edge-part-of-muted: 175 50% 15%;
+    --edge-related-to: 205 75% 62%;
+    --edge-related-to-muted: 205 45% 16%;
+    --edge-is-a: 235 85% 75%;
+    --edge-is-a-muted: 235 50% 17%;
+    --edge-explains: 265 85% 75%;
+    --edge-explains-muted: 265 50% 17%;
+    --edge-causes: 325 90% 65%;
+    --edge-causes-muted: 325 50% 16%;
+  }
+
+  /* ========================================
+     Color Themes
+     ======================================== */
+
+  /* Vanilla Theme - warm, cozy, noticeable but not heavy */
+  [data-palette="vanilla"] {
+    --background: 38 28% 98%;          /* Warm cream - balanced */
+    --foreground: 24 10% 12%;          /* Warm black */
+    --card: 38 25% 97%;
+    --card-foreground: 24 10% 12%;
+    --popover: 38 28% 99%;
+    --popover-foreground: 24 10% 12%;
+    --primary: 24 10% 12%;
+    --primary-foreground: 38 25% 97%;
+    --secondary: 36 18% 94%;           /* Warm gray */
+    --secondary-foreground: 24 10% 15%;
+    --muted: 36 14% 93%;
+    --muted-foreground: 24 6% 40%;     /* improved contrast */
+    --accent: 36 20% 92%;
+    --accent-foreground: 24 10% 12%;
+    --destructive: 8 80% 58%;           /* Warm coral red */
+    --destructive-foreground: 0 0% 98%;
+    --success: 150 70% 32%;            /* Warmer green → lime, darker */
+    --success-foreground: 0 0% 98%;
+    --warning: 38 90% 50%;             /* Warmer → orange */
+    --warning-foreground: 0 0% 9%;
+    --info: 210 75% 52%;               /* Warmer blue */
+    --info-foreground: 0 0% 98%;
+    --border: 36 12% 89%;              /* Warm border */
+    --input: 36 12% 89%;
+    --ring: 24 80% 50%;
+    --brand: 24 80% 50%;               /* #E36B2B - Terracotta */
+    --brand-foreground: 0 0% 100%;
+    --brand-muted: 24 55% 94%;
+
+    /* Graph node colors - warm hue shift +5° */
+    --graph-violet: 256 85% 62%;
+    --graph-blue: 216 85% 58%;
+    --graph-cyan: 190 85% 48%;
+    --graph-emerald: 155 75% 42%;
+    --graph-amber: 35 85% 52%;
+    --graph-rose: 345 80% 58%;
+
+    /* Semantic colors - warm hue shift +5° */
+    --semantic-knowledge: 222 80% 58%;
+    --semantic-knowledge-muted: 222 50% 93%;
+    --semantic-fact: 148 65% 34%;
+    --semantic-fact-muted: 148 45% 92%;
+    --semantic-question: 268 75% 56%;
+    --semantic-question-muted: 268 45% 93%;
+    --semantic-example: 28 85% 44%;
+    --semantic-example-muted: 28 60% 92%;
+    --semantic-conflict: 5 75% 58%;
+    --semantic-conflict-muted: 5 50% 93%;
+    --semantic-neutral: 30 6% 45%;
+    --semantic-neutral-muted: 30 6% 93%;
+
+    /* Complexity colors - warm hue shift */
+    --complexity-basic: 30 6% 45%;
+    --complexity-basic-bg: 30 6% 93%;
+    --complexity-intermediate: 222 80% 58%;
+    --complexity-intermediate-bg: 222 50% 93%;
+    --complexity-advanced: 5 75% 58%;
+    --complexity-advanced-bg: 5 50% 93%;
+
+    /* Edge type colors - 10 unique hues, warm shift +3°, darker for light */
+    --edge-contradicts: 3 80% 45%;
+    --edge-contradicts-muted: 3 65% 91%;
+    --edge-prerequisite: 38 80% 45%;
+    --edge-prerequisite-muted: 38 65% 91%;
+    --edge-influences: 19 85% 52%;
+    --edge-influences-muted: 19 70% 90%;
+    --edge-similar-to: 88 70% 33%;
+    --edge-similar-to-muted: 88 55% 89%;
+    --edge-has-a: 148 70% 33%;
+    --edge-has-a-muted: 148 55% 89%;
+    --edge-part-of: 178 70% 33%;
+    --edge-part-of-muted: 178 55% 89%;
+    --edge-related-to: 208 65% 43%;
+    --edge-related-to-muted: 208 45% 91%;
+    --edge-is-a: 238 75% 48%;
+    --edge-is-a-muted: 238 55% 91%;
+    --edge-explains: 268 75% 48%;
+    --edge-explains-muted: 268 55% 91%;
+    --edge-causes: 328 80% 45%;
+    --edge-causes-muted: 328 60% 90%;
+  }
+  [data-palette="vanilla"].dark {
+    --background: 24 10% 8%;           /* #161412 - warm dark */
+    --foreground: 36 15% 90%;          /* #E8E4DE */
+    --card: 24 10% 8%;
+    --card-foreground: 36 15% 90%;
+    --popover: 24 8% 11%;              /* #1D1A17 */
+    --popover-foreground: 36 15% 95%;
+    --primary: 36 15% 95%;
+    --primary-foreground: 24 10% 10%;
+    --secondary: 24 8% 13%;            /* #231F1B */
+    --secondary-foreground: 36 15% 92%;
+    --muted: 24 8% 13%;
+    --muted-foreground: 36 8% 55%;     /* improved contrast */
+    --accent: 24 10% 15%;
+    --accent-foreground: 36 15% 90%;
+    --destructive: 8 75% 52%;
+    --destructive-foreground: 0 0% 98%;
+    --success: 150 65% 45%;
+    --success-foreground: 0 0% 98%;
+    --warning: 38 90% 55%;
+    --warning-foreground: 0 0% 9%;
+    --info: 210 75% 58%;
+    --info-foreground: 0 0% 98%;
+    --border: 24 8% 20%;               /* #352F29 */
+    --input: 24 8% 20%;
+    --ring: 24 75% 55%;
+    --brand: 24 75% 55%;               /* #D97941 - Terracotta */
+    --brand-foreground: 0 0% 100%;
+    --brand-muted: 24 40% 15%;
+
+    /* Graph node colors - warm hue shift +5° (dark) */
+    --graph-violet: 256 90% 72%;
+    --graph-blue: 216 90% 68%;
+    --graph-cyan: 190 90% 52%;
+    --graph-emerald: 155 85% 48%;
+    --graph-amber: 35 95% 58%;
+    --graph-rose: 345 85% 62%;
+
+    /* Semantic colors - warm hue shift +5° (dark) */
+    --semantic-knowledge: 222 80% 63%;
+    --semantic-knowledge-muted: 222 35% 17%;
+    --semantic-fact: 148 60% 43%;
+    --semantic-fact-muted: 148 30% 15%;
+    --semantic-question: 268 70% 63%;
+    --semantic-question-muted: 268 35% 17%;
+    --semantic-example: 28 80% 52%;
+    --semantic-example-muted: 28 45% 15%;
+    --semantic-conflict: 5 65% 53%;
+    --semantic-conflict-muted: 5 35% 15%;
+    --semantic-neutral: 30 6% 58%;
+    --semantic-neutral-muted: 30 6% 17%;
+
+    /* Complexity colors - warm hue shift (dark) */
+    --complexity-basic: 30 6% 58%;
+    --complexity-basic-bg: 30 6% 17%;
+    --complexity-intermediate: 222 80% 63%;
+    --complexity-intermediate-bg: 222 35% 17%;
+    --complexity-advanced: 5 65% 53%;
+    --complexity-advanced-bg: 5 35% 15%;
+
+    /* Edge type colors - 10 unique hues, warm shift +3°, brighter for dark theme */
+    --edge-contradicts: 3 85% 62%;
+    --edge-contradicts-muted: 3 55% 16%;
+    --edge-prerequisite: 38 85% 62%;
+    --edge-prerequisite-muted: 38 55% 16%;
+    --edge-influences: 19 85% 65%;
+    --edge-influences-muted: 19 60% 17%;
+    --edge-similar-to: 88 75% 52%;
+    --edge-similar-to-muted: 88 50% 15%;
+    --edge-has-a: 148 75% 52%;
+    --edge-has-a-muted: 148 50% 15%;
+    --edge-part-of: 178 75% 52%;
+    --edge-part-of-muted: 178 50% 15%;
+    --edge-related-to: 208 70% 62%;
+    --edge-related-to-muted: 208 45% 16%;
+    --edge-is-a: 238 80% 75%;
+    --edge-is-a-muted: 238 55% 17%;
+    --edge-explains: 268 80% 75%;
+    --edge-explains-muted: 268 55% 17%;
+    --edge-causes: 328 85% 65%;
+    --edge-causes-muted: 328 55% 16%;
+  }
+
+  /* Vivid Theme - cool, modern, energetic */
+  [data-palette="vivid"] {
+    --background: 210 28% 98%;         /* Cool white - more noticeable */
+    --foreground: 210 18% 10%;         /* Cool black */
+    --card: 210 22% 97%;
+    --card-foreground: 210 18% 10%;
+    --popover: 210 28% 99%;
+    --popover-foreground: 210 18% 10%;
+    --primary: 210 18% 10%;
+    --primary-foreground: 210 22% 98%;
+    --secondary: 210 20% 94%;          /* Cool gray */
+    --secondary-foreground: 210 18% 12%;
+    --muted: 210 16% 93%;
+    --muted-foreground: 210 10% 40%;   /* improved contrast */
+    --accent: 210 24% 92%;
+    --accent-foreground: 210 18% 10%;
+    --destructive: 355 90% 55%;         /* Cool pink-red */
+    --destructive-foreground: 0 0% 98%;
+    --success: 160 85% 32%;            /* Mint/cyan green, darker */
+    --success-foreground: 0 0% 98%;
+    --warning: 50 95% 50%;             /* Lemon yellow */
+    --warning-foreground: 0 0% 9%;
+    --info: 195 95% 50%;               /* Cyan */
+    --info-foreground: 0 0% 98%;
+    --border: 210 15% 88%;             /* Cool border */
+    --input: 210 15% 88%;
+    --ring: 160 84% 39%;
+    --brand: 160 84% 39%;              /* #34D399 - Emerald-400 */
+    --brand-foreground: 0 0% 100%;
+    --brand-muted: 160 60% 94%;
+
+    /* Graph node colors - cool hue shift -5° */
+    --graph-violet: 244 100% 65%;
+    --graph-blue: 204 100% 60%;
+    --graph-cyan: 180 100% 50%;
+    --graph-emerald: 165 95% 45%;
+    --graph-amber: 45 100% 55%;
+    --graph-rose: 345 100% 60%;
+
+    /* Semantic colors - cool hue shift -5° */
+    --semantic-knowledge: 212 100% 60%;
+    --semantic-knowledge-muted: 212 70% 93%;
+    --semantic-fact: 138 90% 36%;
+    --semantic-fact-muted: 138 60% 91%;
+    --semantic-question: 256 100% 58%;
+    --semantic-question-muted: 256 60% 93%;
+    --semantic-example: 36 100% 46%;
+    --semantic-example-muted: 36 75% 92%;
+    --semantic-conflict: 355 95% 60%;
+    --semantic-conflict-muted: 355 65% 93%;
+    --semantic-neutral: 215 14% 45%;
+    --semantic-neutral-muted: 215 14% 93%;
+
+    /* Complexity colors - cool hue shift -5° */
+    --complexity-basic: 215 14% 45%;
+    --complexity-basic-bg: 215 14% 93%;
+    --complexity-intermediate: 212 100% 60%;
+    --complexity-intermediate-bg: 212 70% 93%;
+    --complexity-advanced: 355 95% 60%;
+    --complexity-advanced-bg: 355 65% 93%;
+
+    /* Edge type colors - 10 unique hues, max saturation, darker for light theme */
+    --edge-contradicts: 0 95% 42%;
+    --edge-contradicts-muted: 0 80% 91%;
+    --edge-prerequisite: 35 95% 42%;
+    --edge-prerequisite-muted: 35 80% 91%;
+    --edge-influences: 16 95% 52%;
+    --edge-influences-muted: 16 80% 90%;
+    --edge-similar-to: 85 85% 28%;
+    --edge-similar-to-muted: 85 70% 89%;
+    --edge-has-a: 145 85% 28%;
+    --edge-has-a-muted: 145 70% 89%;
+    --edge-part-of: 175 85% 28%;
+    --edge-part-of-muted: 175 70% 89%;
+    --edge-related-to: 205 80% 40%;
+    --edge-related-to-muted: 205 60% 91%;
+    --edge-is-a: 235 90% 45%;
+    --edge-is-a-muted: 235 70% 91%;
+    --edge-explains: 265 90% 45%;
+    --edge-explains-muted: 265 70% 91%;
+    --edge-causes: 325 95% 42%;
+    --edge-causes-muted: 325 75% 90%;
+  }
+  [data-palette="vivid"].dark {
+    --background: 215 20% 7%;          /* #0F1318 - cool dark blue */
+    --foreground: 210 15% 92%;         /* #E6E9EC */
+    --card: 215 20% 7%;
+    --card-foreground: 210 15% 92%;
+    --popover: 215 18% 10%;            /* #151A21 */
+    --popover-foreground: 210 15% 96%;
+    --primary: 210 15% 96%;
+    --primary-foreground: 215 20% 9%;
+    --secondary: 215 15% 13%;          /* #1C2128 */
+    --secondary-foreground: 210 15% 94%;
+    --muted: 215 15% 13%;
+    --muted-foreground: 210 10% 57%;   /* improved contrast */
+    --accent: 215 18% 15%;
+    --accent-foreground: 210 15% 92%;
+    --destructive: 355 100% 60%;       /* Neon pink-red */
+    --destructive-foreground: 0 0% 98%;
+    --success: 160 100% 50%;           /* Neon mint */
+    --success-foreground: 0 0% 0%;     /* Black text for neon */
+    --warning: 50 100% 55%;            /* Neon yellow */
+    --warning-foreground: 0 0% 0%;
+    --info: 195 100% 55%;              /* Neon cyan */
+    --info-foreground: 0 0% 0%;
+    --border: 215 12% 20%;             /* #2D333B */
+    --input: 215 12% 20%;
+    --ring: 150 100% 50%;
+    --brand: 150 100% 50%;             /* #00FF7F - Spring Green */
+    --brand-foreground: 0 0% 0%;       /* Black text for neon */
+    --brand-muted: 150 50% 15%;
+
+    /* Graph node colors - cool hue shift -5° (dark) */
+    --graph-violet: 244 100% 75%;
+    --graph-blue: 204 100% 70%;
+    --graph-cyan: 180 100% 55%;
+    --graph-emerald: 165 100% 50%;
+    --graph-amber: 45 100% 60%;
+    --graph-rose: 345 100% 65%;
+
+    /* Semantic colors - cool hue shift -5° (dark) */
+    --semantic-knowledge: 212 100% 65%;
+    --semantic-knowledge-muted: 212 50% 17%;
+    --semantic-fact: 138 100% 48%;
+    --semantic-fact-muted: 138 50% 15%;
+    --semantic-question: 256 100% 65%;
+    --semantic-question-muted: 256 50% 17%;
+    --semantic-example: 36 100% 54%;
+    --semantic-example-muted: 36 55% 15%;
+    --semantic-conflict: 355 100% 58%;
+    --semantic-conflict-muted: 355 50% 15%;
+    --semantic-neutral: 215 14% 58%;
+    --semantic-neutral-muted: 215 14% 17%;
+
+    /* Complexity colors - cool hue shift -5° (dark) */
+    --complexity-basic: 215 14% 58%;
+    --complexity-basic-bg: 215 14% 17%;
+    --complexity-intermediate: 212 100% 65%;
+    --complexity-intermediate-bg: 212 50% 17%;
+    --complexity-advanced: 355 100% 58%;
+    --complexity-advanced-bg: 355 50% 15%;
+
+    /* Edge type colors - 10 unique hues, max saturation, lighter for dark theme */
+    --edge-contradicts: 0 95% 65%;
+    --edge-contradicts-muted: 0 65% 17%;
+    --edge-prerequisite: 35 95% 65%;
+    --edge-prerequisite-muted: 35 65% 17%;
+    --edge-influences: 16 95% 68%;
+    --edge-influences-muted: 16 65% 18%;
+    --edge-similar-to: 85 85% 55%;
+    --edge-similar-to-muted: 85 55% 16%;
+    --edge-has-a: 145 85% 55%;
+    --edge-has-a-muted: 145 55% 16%;
+    --edge-part-of: 175 85% 55%;
+    --edge-part-of-muted: 175 55% 16%;
+    --edge-related-to: 205 80% 65%;
+    --edge-related-to-muted: 205 50% 17%;
+    --edge-is-a: 235 90% 78%;
+    --edge-is-a-muted: 235 60% 18%;
+    --edge-explains: 265 90% 78%;
+    --edge-explains-muted: 265 60% 18%;
+    --edge-causes: 325 95% 68%;
+    --edge-causes-muted: 325 60% 17%;
+  }
+
+  /* ========================================
+     Mono Theme - Terminal/Brutalist aesthetic
+     Near black & white with pure blue accent
+     ======================================== */
+  [data-palette="mono"] {
+    --background: 0 0% 99%;            /* #FCFCFC - near white */
+    --foreground: 0 0% 4%;             /* #0A0A0A - near black */
+    --card: 0 0% 99%;
+    --card-foreground: 0 0% 4%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 4%;
+    --primary: 0 0% 4%;
+    --primary-foreground: 0 0% 99%;
+    --secondary: 0 0% 96%;             /* #F5F5F5 */
+    --secondary-foreground: 0 0% 4%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 35%;      /* #595959 - good contrast */
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 4%;
+    --destructive: 0 100% 50%;         /* Pure red */
+    --destructive-foreground: 0 0% 100%;
+    --success: 120 100% 28%;           /* Pure green, darker */
+    --success-foreground: 0 0% 100%;
+    --warning: 60 100% 45%;            /* Pure yellow */
+    --warning-foreground: 0 0% 0%;
+    --info: 190 100% 40%;              /* Pure Cyan - distinct from brand */
+    --info-foreground: 0 0% 100%;
+    --border: 0 0% 88%;                /* #E0E0E0 */
+    --input: 0 0% 88%;
+    --ring: 340 100% 50%;
+    --brand: 340 100% 50%;             /* Hot Pink #FF0055 */
+    --brand-foreground: 0 0% 100%;
+    --brand-muted: 340 100% 95%;
+
+    /* Graph node colors - pure RGB (rounded to 30°) */
+    --graph-violet: 270 100% 65%;
+    --graph-blue: 210 100% 60%;
+    --graph-cyan: 180 100% 50%;
+    --graph-emerald: 150 100% 45%;
+    --graph-amber: 30 100% 55%;
+    --graph-rose: 330 100% 60%;
+
+    /* Semantic colors - pure RGB (rounded to 30°) */
+    --semantic-knowledge: 210 100% 60%;
+    --semantic-knowledge-muted: 210 70% 93%;
+    --semantic-fact: 150 100% 36%;
+    --semantic-fact-muted: 150 60% 91%;
+    --semantic-question: 270 100% 58%;
+    --semantic-question-muted: 270 60% 93%;
+    --semantic-example: 30 100% 46%;
+    --semantic-example-muted: 30 75% 92%;
+    --semantic-conflict: 0 100% 60%;
+    --semantic-conflict-muted: 0 65% 93%;
+    --semantic-neutral: 0 0% 46%;
+    --semantic-neutral-muted: 0 0% 94%;
+
+    /* Complexity colors - pure RGB */
+    --complexity-basic: 0 0% 46%;
+    --complexity-basic-bg: 0 0% 94%;
+    --complexity-intermediate: 210 100% 60%;
+    --complexity-intermediate-bg: 210 70% 93%;
+    --complexity-advanced: 0 100% 60%;
+    --complexity-advanced-bg: 0 65% 93%;
+
+    /* Edge type colors - 10 unique hues, darker for light theme */
+    --edge-contradicts: 0 90% 45%;
+    --edge-contradicts-muted: 0 75% 92%;
+    --edge-prerequisite: 35 90% 45%;
+    --edge-prerequisite-muted: 35 75% 92%;
+    --edge-influences: 16 90% 55%;
+    --edge-influences-muted: 16 75% 91%;
+    --edge-similar-to: 85 80% 32%;
+    --edge-similar-to-muted: 85 65% 90%;
+    --edge-has-a: 145 80% 32%;
+    --edge-has-a-muted: 145 65% 90%;
+    --edge-part-of: 175 80% 32%;
+    --edge-part-of-muted: 175 65% 90%;
+    --edge-related-to: 205 75% 42%;
+    --edge-related-to-muted: 205 55% 92%;
+    --edge-is-a: 235 85% 48%;
+    --edge-is-a-muted: 235 65% 92%;
+    --edge-explains: 265 85% 48%;
+    --edge-explains-muted: 265 65% 92%;
+    --edge-causes: 325 90% 45%;
+    --edge-causes-muted: 325 70% 91%;
+  }
+  [data-palette="mono"].dark {
+    --background: 0 0% 4%;             /* #0A0A0A - near black */
+    --foreground: 0 0% 96%;            /* #F5F5F5 - near white */
+    --card: 0 0% 4%;
+    --card-foreground: 0 0% 96%;
+    --popover: 0 0% 6%;                /* #0F0F0F */
+    --popover-foreground: 0 0% 96%;
+    --primary: 0 0% 96%;
+    --primary-foreground: 0 0% 4%;
+    --secondary: 0 0% 8%;              /* #141414 */
+    --secondary-foreground: 0 0% 96%;
+    --muted: 0 0% 8%;
+    --muted-foreground: 0 0% 65%;      /* #A6A6A6 - good contrast */
+    --accent: 0 0% 10%;
+    --accent-foreground: 0 0% 96%;
+    --destructive: 0 100% 55%;         /* Slightly brighter red */
+    --destructive-foreground: 0 0% 100%;
+    --success: 120 100% 42%;           /* Brighter green */
+    --success-foreground: 0 0% 0%;
+    --warning: 60 100% 50%;            /* Brighter yellow */
+    --warning-foreground: 0 0% 0%;
+    --info: 190 100% 50%;              /* Pure Cyan - brighter for dark */
+    --info-foreground: 0 0% 0%;
+    --border: 0 0% 15%;                /* #262626 */
+    --input: 0 0% 15%;
+    --ring: 340 100% 50%;
+    --brand: 340 100% 50%;             /* Hot Pink #FF0055 */
+    --brand-foreground: 0 0% 100%;
+    --brand-muted: 340 50% 12%;
+
+    /* Graph node colors - pure RGB (rounded to 30°), brighter for dark */
+    --graph-violet: 270 100% 75%;
+    --graph-blue: 210 100% 70%;
+    --graph-cyan: 180 100% 55%;
+    --graph-emerald: 150 100% 50%;
+    --graph-amber: 30 100% 60%;
+    --graph-rose: 330 100% 65%;
+
+    /* Semantic colors - pure RGB (rounded to 30°), brighter for dark */
+    --semantic-knowledge: 210 100% 65%;
+    --semantic-knowledge-muted: 210 50% 17%;
+    --semantic-fact: 150 100% 48%;
+    --semantic-fact-muted: 150 50% 15%;
+    --semantic-question: 270 100% 65%;
+    --semantic-question-muted: 270 50% 17%;
+    --semantic-example: 30 100% 54%;
+    --semantic-example-muted: 30 55% 15%;
+    --semantic-conflict: 0 100% 58%;
+    --semantic-conflict-muted: 0 50% 15%;
+    --semantic-neutral: 0 0% 60%;
+    --semantic-neutral-muted: 0 0% 18%;
+
+    /* Complexity colors - pure RGB, brighter for dark */
+    --complexity-basic: 0 0% 60%;
+    --complexity-basic-bg: 0 0% 18%;
+    --complexity-intermediate: 210 100% 65%;
+    --complexity-intermediate-bg: 210 50% 17%;
+    --complexity-advanced: 0 100% 58%;
+    --complexity-advanced-bg: 0 50% 15%;
+
+    /* Edge type colors - 10 unique hues, lighter for dark theme */
+    --edge-contradicts: 0 95% 65%;
+    --edge-contradicts-muted: 0 60% 18%;
+    --edge-prerequisite: 35 95% 65%;
+    --edge-prerequisite-muted: 35 60% 18%;
+    --edge-influences: 16 95% 68%;
+    --edge-influences-muted: 16 65% 18%;
+    --edge-similar-to: 85 85% 55%;
+    --edge-similar-to-muted: 85 55% 16%;
+    --edge-has-a: 145 85% 55%;
+    --edge-has-a-muted: 145 55% 16%;
+    --edge-part-of: 175 85% 55%;
+    --edge-part-of-muted: 175 55% 16%;
+    --edge-related-to: 205 80% 65%;
+    --edge-related-to-muted: 205 50% 17%;
+    --edge-is-a: 235 90% 78%;
+    --edge-is-a-muted: 235 55% 18%;
+    --edge-explains: 265 90% 78%;
+    --edge-explains-muted: 265 55% 18%;
+    --edge-causes: 325 95% 68%;
+    --edge-causes-muted: 325 55% 17%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  /* Prevent body scroll - all scrolling happens within app containers */
+  html,
+  body {
+    overflow: hidden;
+    height: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    min-width: 370px;
+  }
+
+  /* Selection color - brand highlight, preserve original text color */
+  /* Exclude editor - it uses custom decorations */
+  *:not(.tiptap-editor):not(.tiptap-editor *)::selection {
+    background-color: hsl(var(--brand) / var(--selection-opacity));
+  }
+
+  /* Kill selection inside editor completely */
+  .tiptap-editor ::selection,
+  .tiptap-editor *::selection {
+    background: transparent;
+    background-color: transparent;
+  }
+
+  /* Inverted selection for buttons with dark backgrounds (light mode) */
+  button.bg-primary ::selection,
+  button.bg-primary::selection,
+  button.bg-brand ::selection,
+  button.bg-brand::selection,
+  button.bg-destructive ::selection,
+  button.bg-destructive::selection,
+  a.bg-primary ::selection,
+  a.bg-primary::selection,
+  a.bg-brand ::selection,
+  a.bg-brand::selection {
+    background-color: hsl(0 0% 100% / 0.7);
+    color: hsl(var(--primary));
+  }
+
+  /* In dark mode, primary buttons have light bg - use normal selection */
+  .dark button.bg-primary ::selection,
+  .dark button.bg-primary::selection,
+  .dark a.bg-primary ::selection,
+  .dark a.bg-primary::selection {
+    background-color: hsl(var(--brand) / 0.3);
+    color: hsl(var(--foreground));
+  }
+
+  /* Brand/destructive stay colored in dark mode - inverted selection */
+  .dark button.bg-brand ::selection,
+  .dark button.bg-brand::selection,
+  .dark button.bg-destructive ::selection,
+  .dark button.bg-destructive::selection,
+  .dark a.bg-brand ::selection,
+  .dark a.bg-brand::selection {
+    background-color: hsl(0 0% 0% / 0.5);
+    color: hsl(0 0% 100%);
+  }
+
+  /* Fix Chrome autocomplete blue highlight */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px hsl(var(--background)) inset;
+    -webkit-text-fill-color: hsl(var(--foreground));
+    caret-color: hsl(var(--foreground));
+  }
+
+  /* Custom Scrollbar - base (no border by default) */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted-foreground) / 0.3);
+    background-clip: content-box;
+    border-radius: 9999px;
+    border: 3px solid transparent;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--muted-foreground) / 0.5);
+  }
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+}
+
+/* Tiptap Editor Customization */
+.tiptap-editor {
+  width: 100%;
+}
+
+.tiptap-editor .ProseMirror {
+  color: hsl(var(--foreground));
+  font-size: 1rem;
+  line-height: 1.75;
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+
+.tiptap-editor .ProseMirror > * + * {
+  margin-top: 0.75em;
+}
+
+/* Headings */
+.tiptap-editor h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.tiptap-editor h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+  margin-top: 1.25em;
+  margin-bottom: 0.5em;
+}
+
+.tiptap-editor h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
+
+/* Paragraphs */
+.tiptap-editor p {
+  margin: 0;
+}
+
+/* Lists */
+.tiptap-editor ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+}
+
+.tiptap-editor ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+}
+
+.tiptap-editor li {
+  margin: 0.25em 0;
+}
+
+.tiptap-editor li p {
+  margin: 0;
+}
+
+/* Blockquote */
+.tiptap-editor blockquote {
+  border-left: 3px solid hsl(var(--border));
+  padding-left: 1rem;
+  margin-left: 0;
+  margin-right: 0;
+  font-style: italic;
+  color: hsl(var(--muted-foreground));
+}
+
+/* Placeholder styling */
+.tiptap-editor .is-editor-empty:first-child::before {
+  color: hsl(var(--muted-foreground));
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.tiptap-editor .is-empty::before {
+  color: hsl(var(--muted-foreground));
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Task list styling */
+.tiptap-editor .task-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.tiptap-editor .task-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.tiptap-editor .task-item > label {
+  margin-top: 0.25rem;
+}
+
+.tiptap-editor .task-item > label input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.25rem;
+  border: 1px solid hsl(var(--border));
+  cursor: pointer;
+  accent-color: hsl(var(--primary));
+}
+
+.tiptap-editor .task-item > div {
+  flex: 1;
+}
+
+.tiptap-editor .task-item[data-checked="true"] > div {
+  text-decoration: line-through;
+  color: hsl(var(--muted-foreground));
+}
+
+/* Link styling */
+.tiptap-editor .editor-link {
+  color: hsl(var(--primary));
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.tiptap-editor .editor-link:hover {
+  opacity: 0.8;
+}
+
+/* Code block styling */
+.tiptap-editor pre {
+  background-color: hsl(var(--muted));
+  border-radius: 0.5rem;
+  border: 1px solid hsl(var(--border));
+  padding: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  overflow-x: auto;
+}
+
+.tiptap-editor pre code {
+  background: none;
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+}
+
+/* Inline code */
+.tiptap-editor code {
+  background-color: hsl(var(--muted));
+  border-radius: 0.25rem;
+  padding: 0.125rem 0.375rem;
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+}
+
+/* Highlight */
+.tiptap-editor mark {
+  background-color: hsl(50 100% 70%);
+  border-radius: 0.125rem;
+  padding: 0.125rem 0;
+}
+
+.dark .tiptap-editor mark {
+  background-color: hsl(50 100% 30%);
+}
+
+/* Disable browser selection on highlighted text to avoid double-highlighting */
+.tiptap-editor mark,
+.tiptap-editor mark *,
+.tiptap-editor [style*="background"] {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* Horizontal rule */
+.tiptap-editor hr {
+  border: none;
+  border-top: 1px solid hsl(var(--border));
+  margin: 1.5rem 0;
+}
+
+/* Custom selection styles */
+.tiptap-editor .ProseMirror .text-selected {
+  background: hsl(var(--brand) / var(--selection-opacity, 0.3));
+  border-radius: 2px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.tiptap-editor .ProseMirror .block-selected {
+  background: hsl(var(--brand) / calc(var(--selection-opacity, 0.3) * 0.5));
+  border-radius: 0.25rem;
+}
+
+/* Floating menu - hide on touch devices */
+.editor-floating-menu {
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .editor-floating-menu {
+    display: flex;
+  }
+}
+
+/* Focus styling */
+.tiptap-editor .ProseMirror:focus {
+  outline: none;
+}
+
+/* Tippy tooltip (bubble menu) styling */
+.tippy-box[data-theme~='custom'] {
+  background-color: transparent;
+  padding: 0;
+}
+
+.tippy-box[data-theme~='custom'] .tippy-content {
+  padding: 0;
+}
+
+/* Image styling */
+.tiptap-editor .editor-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+}
+
+.tiptap-editor .editor-image.ProseMirror-selectednode {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+/* Table styling */
+.tiptap-editor .editor-table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1rem 0;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  border: 1px solid hsl(var(--border));
+}
+
+.tiptap-editor table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.tiptap-editor th,
+.tiptap-editor td {
+  border: 1px solid hsl(var(--border));
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+  position: relative;
+  min-width: 100px;
+}
+
+.tiptap-editor th {
+  background-color: hsl(var(--muted));
+  font-weight: 600;
+}
+
+.tiptap-editor td {
+  background-color: transparent;
+}
+
+.tiptap-editor .selectedCell {
+  background-color: hsl(var(--primary) / 0.1);
+}
+
+.tiptap-editor th p,
+.tiptap-editor td p {
+  margin: 0;
+}
+
+/* Table resize handle */
+.tiptap-editor .column-resize-handle {
+  position: absolute;
+  right: -2px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: hsl(var(--primary));
+  cursor: col-resize;
+  z-index: 10;
+}
+
+.tiptap-editor .tableWrapper {
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+/* Subscript and Superscript */
+.tiptap-editor sub {
+  font-size: 0.75em;
+  vertical-align: sub;
+}
+
+.tiptap-editor sup {
+  font-size: 0.75em;
+  vertical-align: super;
+}
+
+/* ========================================
+   Callout Blocks (Notion-style)
+   ======================================== */
+.tiptap-editor .callout {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin: 0.75rem 0;
+  border: 1px solid transparent;
+}
+
+.tiptap-editor .callout-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.tiptap-editor .callout-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.tiptap-editor .callout-content > * {
+  margin: 0;
+}
+
+/* Info Callout */
+.tiptap-editor .callout-info {
+  background-color: hsl(210 100% 96%);
+  border-color: hsl(210 100% 85%);
+}
+
+.tiptap-editor .callout-info .callout-icon {
+  color: hsl(210 100% 50%);
+}
+
+.dark .tiptap-editor .callout-info {
+  background-color: hsl(210 100% 15% / 0.3);
+  border-color: hsl(210 100% 30%);
+}
+
+.dark .tiptap-editor .callout-info .callout-icon {
+  color: hsl(210 100% 70%);
+}
+
+/* Warning Callout */
+.tiptap-editor .callout-warning {
+  background-color: hsl(45 100% 94%);
+  border-color: hsl(45 100% 70%);
+}
+
+.tiptap-editor .callout-warning .callout-icon {
+  color: hsl(45 100% 40%);
+}
+
+.dark .tiptap-editor .callout-warning {
+  background-color: hsl(45 100% 15% / 0.3);
+  border-color: hsl(45 100% 30%);
+}
+
+.dark .tiptap-editor .callout-warning .callout-icon {
+  color: hsl(45 100% 60%);
+}
+
+/* Success Callout */
+.tiptap-editor .callout-success {
+  background-color: hsl(142 70% 94%);
+  border-color: hsl(142 70% 70%);
+}
+
+.tiptap-editor .callout-success .callout-icon {
+  color: hsl(142 70% 45%);
+}
+
+.dark .tiptap-editor .callout-success {
+  background-color: hsl(142 70% 15% / 0.3);
+  border-color: hsl(142 70% 30%);
+}
+
+.dark .tiptap-editor .callout-success .callout-icon {
+  color: hsl(142 70% 60%);
+}
+
+/* Error Callout */
+.tiptap-editor .callout-error {
+  background-color: hsl(0 100% 96%);
+  border-color: hsl(0 100% 80%);
+}
+
+.tiptap-editor .callout-error .callout-icon {
+  color: hsl(0 100% 50%);
+}
+
+.dark .tiptap-editor .callout-error {
+  background-color: hsl(0 100% 15% / 0.3);
+  border-color: hsl(0 100% 30%);
+}
+
+.dark .tiptap-editor .callout-error .callout-icon {
+  color: hsl(0 100% 70%);
+}
+
+/* Tip Callout */
+.tiptap-editor .callout-tip {
+  background-color: hsl(270 100% 96%);
+  border-color: hsl(270 100% 80%);
+}
+
+.tiptap-editor .callout-tip .callout-icon {
+  color: hsl(270 100% 50%);
+}
+
+.dark .tiptap-editor .callout-tip {
+  background-color: hsl(270 100% 15% / 0.3);
+  border-color: hsl(270 100% 30%);
+}
+
+.dark .tiptap-editor .callout-tip .callout-icon {
+  color: hsl(270 100% 70%);
+}
+
+/* ========================================
+   Toggle/Details Blocks
+   ======================================== */
+.tiptap-editor details.editor-details {
+  margin: 0.75rem 0;
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.tiptap-editor details.editor-details summary.editor-details-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  font-weight: 500;
+  background-color: hsl(var(--muted) / 0.5);
+  user-select: none;
+  list-style: none;
+}
+
+.tiptap-editor details.editor-details summary.editor-details-summary::-webkit-details-marker {
+  display: none;
+}
+
+.tiptap-editor details.editor-details summary.editor-details-summary::before {
+  content: "▶";
+  font-size: 0.75rem;
+  transition: transform 0.2s ease;
+  color: hsl(var(--muted-foreground));
+}
+
+.tiptap-editor details.editor-details[open] summary.editor-details-summary::before {
+  transform: rotate(90deg);
+}
+
+.tiptap-editor details.editor-details summary.editor-details-summary:hover {
+  background-color: hsl(var(--muted));
+}
+
+.tiptap-editor details.editor-details .editor-details-content {
+  padding: 0.75rem 1rem;
+  border-top: 1px solid hsl(var(--border));
+}
+
+.tiptap-editor details.editor-details .editor-details-content > *:first-child {
+  margin-top: 0;
+}
+
+.tiptap-editor details.editor-details .editor-details-content > *:last-child {
+  margin-bottom: 0;
+}
+
+/* ========================================
+   Code Block with Syntax Highlighting
+   ======================================== */
+.tiptap-editor .editor-code-block {
+  position: relative;
+  background-color: hsl(var(--muted));
+  border-radius: 0.5rem;
+  border: 1px solid hsl(var(--border));
+  margin: 0.75rem 0;
+  overflow: hidden;
+}
+
+.tiptap-editor .editor-code-block pre {
+  margin: 0;
+  padding: 1rem;
+  overflow-x: auto;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+}
+
+.tiptap-editor .editor-code-block code {
+  background: none;
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+/* Syntax highlighting colors */
+.tiptap-editor .hljs-comment,
+.tiptap-editor .hljs-quote {
+  color: hsl(var(--muted-foreground));
+  font-style: italic;
+}
+
+.tiptap-editor .hljs-keyword,
+.tiptap-editor .hljs-selector-tag,
+.tiptap-editor .hljs-addition {
+  color: hsl(280 80% 50%);
+}
+
+.dark .tiptap-editor .hljs-keyword,
+.dark .tiptap-editor .hljs-selector-tag,
+.dark .tiptap-editor .hljs-addition {
+  color: hsl(280 80% 70%);
+}
+
+.tiptap-editor .hljs-number,
+.tiptap-editor .hljs-string,
+.tiptap-editor .hljs-meta .hljs-meta-string,
+.tiptap-editor .hljs-literal,
+.tiptap-editor .hljs-doctag,
+.tiptap-editor .hljs-regexp {
+  color: hsl(142 70% 35%);
+}
+
+.dark .tiptap-editor .hljs-number,
+.dark .tiptap-editor .hljs-string,
+.dark .tiptap-editor .hljs-meta .hljs-meta-string,
+.dark .tiptap-editor .hljs-literal,
+.dark .tiptap-editor .hljs-doctag,
+.dark .tiptap-editor .hljs-regexp {
+  color: hsl(142 70% 60%);
+}
+
+.tiptap-editor .hljs-title,
+.tiptap-editor .hljs-section,
+.tiptap-editor .hljs-name,
+.tiptap-editor .hljs-selector-id,
+.tiptap-editor .hljs-selector-class {
+  color: hsl(210 100% 45%);
+}
+
+.dark .tiptap-editor .hljs-title,
+.dark .tiptap-editor .hljs-section,
+.dark .tiptap-editor .hljs-name,
+.dark .tiptap-editor .hljs-selector-id,
+.dark .tiptap-editor .hljs-selector-class {
+  color: hsl(210 100% 70%);
+}
+
+.tiptap-editor .hljs-attribute,
+.tiptap-editor .hljs-attr,
+.tiptap-editor .hljs-variable,
+.tiptap-editor .hljs-template-variable,
+.tiptap-editor .hljs-class .hljs-title,
+.tiptap-editor .hljs-type {
+  color: hsl(30 100% 45%);
+}
+
+.dark .tiptap-editor .hljs-attribute,
+.dark .tiptap-editor .hljs-attr,
+.dark .tiptap-editor .hljs-variable,
+.dark .tiptap-editor .hljs-template-variable,
+.dark .tiptap-editor .hljs-class .hljs-title,
+.dark .tiptap-editor .hljs-type {
+  color: hsl(30 100% 65%);
+}
+
+.tiptap-editor .hljs-symbol,
+.tiptap-editor .hljs-bullet,
+.tiptap-editor .hljs-subst,
+.tiptap-editor .hljs-meta,
+.tiptap-editor .hljs-meta .hljs-keyword,
+.tiptap-editor .hljs-selector-attr,
+.tiptap-editor .hljs-selector-pseudo,
+.tiptap-editor .hljs-link {
+  color: hsl(0 80% 50%);
+}
+
+.dark .tiptap-editor .hljs-symbol,
+.dark .tiptap-editor .hljs-bullet,
+.dark .tiptap-editor .hljs-subst,
+.dark .tiptap-editor .hljs-meta,
+.dark .tiptap-editor .hljs-meta .hljs-keyword,
+.dark .tiptap-editor .hljs-selector-attr,
+.dark .tiptap-editor .hljs-selector-pseudo,
+.dark .tiptap-editor .hljs-link {
+  color: hsl(0 80% 65%);
+}
+
+.tiptap-editor .hljs-built_in,
+.tiptap-editor .hljs-deletion {
+  color: hsl(350 80% 50%);
+}
+
+.dark .tiptap-editor .hljs-built_in,
+.dark .tiptap-editor .hljs-deletion {
+  color: hsl(350 80% 65%);
+}
+
+.tiptap-editor .hljs-emphasis {
+  font-style: italic;
+}
+
+.tiptap-editor .hljs-strong {
+  font-weight: bold;
+}
+
+/* ========================================
+   Multi-Column Layout
+   ======================================== */
+.tiptap-editor .editor-columns {
+  display: grid;
+  gap: 1rem;
+  margin: 0.75rem 0;
+}
+
+.tiptap-editor .editor-columns-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.tiptap-editor .editor-columns-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.tiptap-editor .editor-column {
+  min-width: 0;
+  padding: 0.5rem;
+  border: 1px dashed hsl(var(--border));
+  border-radius: 0.375rem;
+  background-color: hsl(var(--muted) / 0.2);
+}
+
+.tiptap-editor .editor-column:focus-within {
+  border-color: hsl(var(--primary));
+  border-style: solid;
+}
+
+.tiptap-editor .editor-column > *:first-child {
+  margin-top: 0;
+}
+
+.tiptap-editor .editor-column > *:last-child {
+  margin-bottom: 0;
+}
+
+/* Responsive columns */
+@media (max-width: 768px) {
+  .tiptap-editor .editor-columns-2,
+  .tiptap-editor .editor-columns-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========================================
+   Video Embed (YouTube, Vimeo, Loom)
+   ======================================== */
+.tiptap-editor .editor-video-embed {
+  margin: 0.75rem 0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background-color: hsl(var(--muted));
+}
+
+.tiptap-editor .editor-video-embed-wrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+}
+
+.tiptap-editor .editor-video-embed-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.tiptap-editor .editor-video-embed.ProseMirror-selectednode {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+/* ========================================
+   Table of Contents
+   ======================================== */
+.tiptap-editor .editor-toc {
+  margin: 1rem 0;
+  padding: 1rem;
+  background-color: hsl(var(--muted) / 0.5);
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.5rem;
+}
+
+.tiptap-editor .editor-toc-title {
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: hsl(var(--muted-foreground));
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.tiptap-editor .editor-toc-nav {
+  font-size: 0.875rem;
+}
+
+.tiptap-editor .editor-toc-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tiptap-editor .editor-toc-item {
+  margin: 0.25rem 0;
+}
+
+.tiptap-editor .editor-toc-item a {
+  color: hsl(var(--foreground));
+  text-decoration: none;
+  display: block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.15s ease;
+}
+
+.tiptap-editor .editor-toc-item a:hover {
+  background-color: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+}
+
+.tiptap-editor .editor-toc-item-1 {
+  font-weight: 600;
+}
+
+.tiptap-editor .editor-toc-item-2 {
+  padding-left: 1rem;
+}
+
+.tiptap-editor .editor-toc-item-3 {
+  padding-left: 2rem;
+  font-size: 0.8125rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.tiptap-editor .editor-toc.ProseMirror-selectednode {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+/* ========================================
+   Image Figure with Caption
+   ======================================== */
+.tiptap-editor .editor-image-figure {
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.tiptap-editor .editor-image-figure img {
+  border-radius: 0.5rem;
+  max-width: 100%;
+  height: auto;
+}
+
+.tiptap-editor .editor-image-figure-left {
+  align-items: flex-start;
+}
+
+.tiptap-editor .editor-image-figure-center {
+  align-items: center;
+}
+
+.tiptap-editor .editor-image-figure-right {
+  align-items: flex-end;
+}
+
+.tiptap-editor .editor-image-figure-full img {
+  width: 100%;
+}
+
+/* Image sizes */
+.tiptap-editor .editor-image-figure-small img {
+  max-width: 300px;
+}
+
+.tiptap-editor .editor-image-figure-medium img {
+  max-width: 500px;
+}
+
+.tiptap-editor .editor-image-figure-large img {
+  max-width: 700px;
+}
+
+.tiptap-editor .editor-image-caption {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: hsl(var(--muted-foreground));
+  text-align: center;
+  font-style: italic;
+  min-height: 1.5em;
+}
+
+.tiptap-editor .editor-image-caption:empty::before {
+  content: attr(data-placeholder);
+  color: hsl(var(--muted-foreground) / 0.5);
+}
+
+.tiptap-editor .editor-image-figure.ProseMirror-selectednode {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 4px;
+  border-radius: 0.5rem;
+}
+
+/* Dragging State */
+.tiptap-editor .ProseMirror > * {
+  position: relative;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.tiptap-editor .ProseMirror > *.is-dragging {
+  opacity: 0.4;
+  background: hsl(var(--muted) / 0.5);
+  border-radius: 0.5rem;
+}
+
+/* Hide ProseMirror's built-in cursors during drag */
+.tiptap-editor .ProseMirror-dropcursor,
+.ProseMirror-dropcursor,
+.tiptap-editor .ProseMirror-gapcursor,
+.ProseMirror-gapcursor {
+  display: none;
+  opacity: 0;
+  visibility: hidden;
+  background: transparent;
+  border: none;
+}
+
+.tiptap-editor.dragging .ProseMirror,
+.tiptap-editor.just-dropped .ProseMirror {
+  caret-color: transparent;
+}
+
+.tiptap-editor.just-dropped .ProseMirror * {
+  caret-color: transparent;
+}
+
+/* Drop Indicator */
+.editor-drop-indicator {
+  position: absolute;
+  height: 2px;
+  background: hsl(var(--brand));
+  border-radius: 1px;
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* ========================================
+   Math/KaTeX Styling
+   ======================================== */
+.editor-math-block {
+  margin: 1.5rem 0;
+  padding: 1.5rem;
+  background: hsl(var(--muted) / 0.3);
+  border-radius: 0.75rem;
+  border: 1px solid hsl(var(--border) / 0.5);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.editor-math-block:hover {
+  background: hsl(var(--muted) / 0.5);
+  border-color: hsl(var(--border));
+}
+
+.editor-math-block .katex-display {
+  margin: 0;
+}
+
+.editor-math-block .katex {
+  font-size: 1.3em;
+}
+
+.editor-math-inline {
+  display: inline-block;
+  padding: 0.125rem 0.25rem;
+  margin: 0 0.125rem;
+  background: hsl(var(--muted) / 0.4);
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.editor-math-inline:hover {
+  background: hsl(var(--muted) / 0.7);
+}
+
+.editor-math-inline .katex {
+  font-size: 1em;
+}
+
+/* Math Error Styling */
+.math-error {
+  color: hsl(var(--destructive));
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  padding: 0.25rem 0.5rem;
+  background: hsl(var(--destructive) / 0.1);
+  border-radius: 0.25rem;
+}
+
+/* Dark mode adjustments for math */
+.dark .editor-math-block {
+  background: hsl(var(--muted) / 0.2);
+}
+
+.dark .editor-math-inline {
+  background: hsl(var(--muted) / 0.3);
+}
+
+.dark .editor-math-inline:hover {
+  background: hsl(var(--muted) / 0.5);
+}
+
+/* Focus node highlight - ultra-soft diffused glow with subtle breathing
+   Design: Barely perceptible ethereal glow - whisper of light
+   - Dark theme: Very soft white ambient glow
+   - Light theme: Subtle brand color haze
+   Animation: 6s breathing - almost imperceptible, meditative */
+
+@keyframes focus-breathe {
+  0%, 100% {
+    box-shadow:
+      0 0 25px hsl(var(--brand) / 0.15),
+      0 0 50px hsl(var(--brand) / 0.08),
+      0 0 90px hsl(var(--brand) / 0.04);
+  }
+  50% {
+    box-shadow:
+      0 0 30px hsl(var(--brand) / 0.2),
+      0 0 60px hsl(var(--brand) / 0.1),
+      0 0 100px hsl(var(--brand) / 0.05);
+  }
+}
+
+@keyframes focus-breathe-dark {
+  0%, 100% {
+    box-shadow:
+      0 0 25px hsl(0 0% 100% / 0.1),
+      0 0 50px hsl(0 0% 100% / 0.06),
+      0 0 90px hsl(0 0% 100% / 0.03);
+  }
+  50% {
+    box-shadow:
+      0 0 30px hsl(0 0% 100% / 0.15),
+      0 0 60px hsl(0 0% 100% / 0.08),
+      0 0 100px hsl(0 0% 100% / 0.04);
+  }
+}
+
+.animate-glow-pulse {
+  animation: focus-breathe 6s ease-in-out infinite;
+}
+
+.dark .animate-glow-pulse {
+  animation: focus-breathe-dark 6s ease-in-out infinite;
+}
+
+/* Menu fade-in animation class (Design Manifesto compliant) */
+.animate-menu-in {
+  animation: var(--animate-menu-in);
+}
+
+/* ========================================
+   Toast Styles (Sonner)
+   Two-layer effect: background base + semantic color overlay
+   ======================================== */
+.toast-error,
+.toast-success,
+.toast-warning,
+.toast-info {
+  position: relative;
+  overflow: hidden;
+}
+
+.toast-error::before,
+.toast-success::before,
+.toast-warning::before,
+.toast-info::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.08;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Ensure content stays above overlay */
+.toast-error > *,
+.toast-success > *,
+.toast-warning > *,
+.toast-info > * {
+  position: relative;
+  z-index: 1;
+  color: hsl(var(--foreground));
+}
+
+/* Error toast */
+.toast-error::before {
+  background: hsl(var(--destructive));
+}
+
+.toast-error {
+  border-color: hsl(var(--destructive) / 0.4);
+}
+
+.toast-error [data-icon] {
+  color: hsl(var(--destructive));
+}
+
+/* Success toast */
+.toast-success::before {
+  background: hsl(var(--success));
+}
+
+.toast-success {
+  border-color: hsl(var(--success) / 0.4);
+}
+
+.toast-success [data-icon] {
+  color: hsl(var(--success));
+}
+
+/* Warning toast */
+.toast-warning::before {
+  background: hsl(var(--warning));
+}
+
+.toast-warning {
+  border-color: hsl(var(--warning) / 0.4);
+}
+
+.toast-warning [data-icon] {
+  color: hsl(var(--warning));
+}
+
+/* Info toast */
+.toast-info::before {
+  background: hsl(var(--info));
+}
+
+.toast-info {
+  border-color: hsl(var(--info) / 0.4);
+}
+
+.toast-info [data-icon] {
+  color: hsl(var(--info));
+}
+
+/* ========================================
+   Graph Performance Optimizations
+   CSS containment and GPU acceleration for nodes/edges
+   ======================================== */
+
+/* React Flow node containers - GPU compositing */
+.react-flow__node {
+  contain: layout style;
+  will-change: transform;
+}
+
+/* Knowledge node cards - full containment */
+.react-flow__node-knowledgeNode {
+  contain: layout style paint;
+}
+
+/* React Flow edges - optimize SVG rendering */
+.react-flow__edge {
+  contain: layout style;
+}
+
+/* During active interaction (pan/zoom), disable transitions for max FPS */
+.react-flow.interacting .react-flow__node,
+.react-flow.interacting .react-flow__edge {
+  transition: none;
+}
+
+/* Edge labels - contain layout recalculations */
+.react-flow__edge-text {
+  contain: layout style;
+}
+
+/* ========================================
+   Theme Transition Override
+   MUST be at the end to override Tailwind utilities
+   NOTE: Also inlined in app/root.tsx as Critical CSS
+         for immediate availability before CSS loads
+   ======================================== */
+html.theme-transition-disabled,
+html.theme-transition-disabled *,
+html.theme-transition-disabled *::before,
+html.theme-transition-disabled *::after {
+  transition: none;
+  transition-duration: 0s;
+}
+
+/* ========================================
+   Reduced Motion Support (WCAG 2.3.3)
+   CRITICAL: Respect user's motion preferences
+   ======================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+    transition-duration: 0.01ms;
+    scroll-behavior: auto;
+  }
+
+  /* Focus glow - show static ultra-soft state instead of animation */
+  .animate-glow-pulse {
+    animation: none;
+    box-shadow:
+      0 0 28px hsl(var(--brand) / 0.17),
+      0 0 55px hsl(var(--brand) / 0.09),
+      0 0 95px hsl(var(--brand) / 0.045);
+  }
+
+  .dark .animate-glow-pulse {
+    box-shadow:
+      0 0 28px hsl(0 0% 100% / 0.12),
+      0 0 55px hsl(0 0% 100% / 0.07),
+      0 0 95px hsl(0 0% 100% / 0.035);
+  }
+}

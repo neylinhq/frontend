@@ -20,8 +20,8 @@ export const mapHandlers = [
     }
 
     const url = new URL(request.url)
-    const limit = parseInt(url.searchParams.get('limit') || '20')
-    const offset = parseInt(url.searchParams.get('offset') || '0')
+    const limit = parseInt(url.searchParams.get('limit') || '20', 10)
+    const offset = parseInt(url.searchParams.get('offset') || '0', 10)
 
     const paginatedMaps = maps.slice(offset, offset + limit)
 

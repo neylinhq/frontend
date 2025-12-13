@@ -1,5 +1,5 @@
-import { useCallback, useEffect } from 'react'
 import { useTonConnectUI, useTonWallet } from '@tonconnect/ui-react'
+import { useCallback, useEffect } from 'react'
 import type { CryptoNetwork } from '@/entities/subscription'
 import type { CryptoWallet } from './use-crypto-wallet'
 
@@ -27,30 +27,31 @@ export const TonWalletConnector = ({ onWalletChange }: TonWalletConnectorProps) 
   }, [tonConnectUI])
 
   // Approve + Subscribe в TON делается одной транзакцией через jetton transfer
-  const subscribe = useCallback(async (orderId: string, amount: bigint) => {
-    if (!wallet) throw new Error('Wallet not connected')
+  const subscribe = useCallback(
+    async (orderId: string, amount: bigint) => {
+      if (!wallet) {
+        throw new Error('Wallet not connected')
+      }
 
-    const amountNano = amount.toString()
-    const forwardPayload = Buffer.from(orderId.replace(/-/g, ''), 'hex').toString('base64')
+      const amountNano = amount.toString()
+      const forwardPayload = Buffer.from(orderId.replace(/-/g, ''), 'hex').toString('base64')
 
-    const transaction = {
-      validUntil: Math.floor(Date.now() / 1000) + 600,
-      messages: [
-        {
-          address: JUSDT_MASTER,
-          amount: '50000000', // 0.05 TON для комиссии
-          payload: buildJettonTransferPayload(
-            SUBSCRIPTION_CONTRACT,
-            amountNano,
-            forwardPayload
-          )
-        }
-      ]
-    }
+      const transaction = {
+        validUntil: Math.floor(Date.now() / 1000) + 600,
+        messages: [
+          {
+            address: JUSDT_MASTER,
+            amount: '50000000', // 0.05 TON для комиссии
+            payload: buildJettonTransferPayload(SUBSCRIPTION_CONTRACT, amountNano, forwardPayload)
+          }
+        ]
+      }
 
-    const result = await tonConnectUI.sendTransaction(transaction)
-    return result.boc
-  }, [wallet, tonConnectUI])
+      const result = await tonConnectUI.sendTransaction(transaction)
+      return result.boc
+    },
+    [wallet, tonConnectUI]
+  )
 
   // Обновляем родительский компонент при изменении состояния
   useEffect(() => {

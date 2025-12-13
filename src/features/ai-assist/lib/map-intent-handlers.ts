@@ -1,10 +1,5 @@
 import { aiApi } from '@/entities/ai'
-import type {
-  ChatContext,
-  IntentHandler,
-  IntentResult,
-  MapChatContext
-} from '../ai-assist.types'
+import type { ChatContext, IntentHandler, IntentResult, MapChatContext } from '../ai-assist.types'
 
 const isMapContext = (ctx: ChatContext): ctx is MapChatContext => ctx.type === 'map'
 

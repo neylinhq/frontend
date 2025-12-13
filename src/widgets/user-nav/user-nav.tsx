@@ -100,11 +100,7 @@ export const UserNav = () => {
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
             <DropdownMenuItem asChild>
-              <a
-                href={SUPPORT_CONTACTS.telegram.url}
-                target='_blank'
-                rel='noopener noreferrer'
-              >
+              <a href={SUPPORT_CONTACTS.telegram.url} target='_blank' rel='noopener noreferrer'>
                 <Send className='mr-2 h-4 w-4' />
                 <span>{t('support.telegram')}</span>
               </a>

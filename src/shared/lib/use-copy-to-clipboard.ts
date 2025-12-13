@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useCallback, useState } from 'react'
 
 interface UseCopyToClipboardOptions {
   /** Duration to show "copied" state in ms (default: 2000) */

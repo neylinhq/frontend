@@ -73,7 +73,7 @@ export default [
       route('dashboard/settings/profile', 'routes/dashboard/settings/profile.tsx'),
       route('dashboard/settings/preferences', 'routes/dashboard/settings/preferences.tsx'),
       route('dashboard/settings/integrations', 'routes/dashboard/settings/integrations.tsx'),
-      route('dashboard/settings/security', 'routes/dashboard/settings/security.tsx'),
+      route('dashboard/settings/account', 'routes/dashboard/settings/account.tsx'),
       route('dashboard/settings/billing', 'routes/dashboard/settings/billing.tsx')
     ])
   ])

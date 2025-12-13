@@ -43,7 +43,15 @@ const refreshTokens = async (): Promise<boolean> => {
 }
 
 const request = async <T>(endpoint: string, options: RequestOptions = {}): Promise<T> => {
-  const { json, headers, skipAuth, cookies: serverCookies, locale: serverLocale, _isRetry, ...customOptions } = options
+  const {
+    json,
+    headers,
+    skipAuth,
+    cookies: serverCookies,
+    locale: serverLocale,
+    _isRetry,
+    ...customOptions
+  } = options
 
   // Determine locale: server-side uses passed locale, client-side uses i18n
   const locale = IS_BROWSER ? i18n.language : serverLocale

@@ -14,40 +14,42 @@
  * - ~95% visual identity with current xyflow implementation
  */
 
+export { DomOverlay } from './components/dom-overlay'
+export { EdgeOverlay } from './components/edge-overlay'
 // New Hybrid WebGL + DOM components
 export { GraphCanvas, type LayoutPosition } from './components/graph-canvas'
-export { DomOverlay } from './components/dom-overlay'
-export { NodeOverlay } from './components/node-overlay'
-export { EdgeOverlay } from './components/edge-overlay'
+// Legacy exports (for backward compatibility)
+export {
+  GraphWebGLVisualization as GraphVisualization,
+  GraphWebGLVisualization
+} from './components/graph-webgl-visualization'
 export { MiniMapWebGL } from './components/minimap-webgl'
+export { NodeOverlay } from './components/node-overlay'
 
-// Hooks
-export { useGraphEngine, useViewport, useInteraction } from './model/graph-webgl.hooks'
-
+// Transform utilities
+export { applyPositions, transformPositions, transformToWasm } from './lib/transform'
 // Types
 export type {
+  GraphData,
   GraphEngineState,
-  ViewportState,
+  InteractionState,
   LayoutOptions,
   LayoutResult,
   NodePosition,
-  VisibleNode,
-  InteractionState,
-  GraphData,
+  ViewportState,
+  VisibleNode
 } from './lib/types'
-
-// Transform utilities
-export { transformToWasm, transformPositions, applyPositions } from './lib/transform'
-
 // Constants
 export { DEFAULT_LAYOUT_OPTIONS, DEFAULT_VIEWPORT } from './lib/types'
-
-// Legacy exports (for backward compatibility)
-export { GraphWebGLVisualization as GraphVisualization } from './components/graph-webgl-visualization'
-export { GraphWebGLVisualization } from './components/graph-webgl-visualization'
 export type { GraphEdge, GraphNode, GraphStats } from './lib/wasm-adapter'
 export { GraphEngine as LegacyGraphEngine } from './lib/wasm-adapter'
-export { useLegacyGraphEngine } from './model/graph-webgl.hooks'
+// Hooks
+export {
+  useGraphEngine,
+  useInteraction,
+  useLegacyGraphEngine,
+  useViewport
+} from './model/graph-webgl.hooks'
 
 /**
  * Feature flag to switch between WebGL and xyflow renderers.

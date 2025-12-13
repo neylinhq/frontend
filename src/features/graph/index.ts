@@ -2,7 +2,7 @@
 export { GraphToolbar } from './components/graph-toolbar'
 
 // GraphVisualization - switches between xyflow and WebGL based on feature flag
-import { USE_WEBGL_RENDERER, GraphVisualization as GraphWebGL } from '@/features/graph-webgl'
+import { GraphVisualization as GraphWebGL, USE_WEBGL_RENDERER } from '@/features/graph-webgl'
 import { GraphVisualization as GraphXYFlow } from './components/graph-visualization'
 export const GraphVisualization = USE_WEBGL_RENDERER ? GraphWebGL : GraphXYFlow
 
@@ -16,10 +16,20 @@ export { NodeSearch, NodeSearchTrigger } from './components/node-search'
 export { ViewControlsPanel } from './components/view-controls-panel'
 // Lib (pure utilities)
 export { calculateDensity, calculateGraphCenter } from './lib/calculate-metrics'
+export {
+  type EdgeTranslations,
+  getEdgeTranslations,
+  getEdgeTypeLabel
+} from './lib/edge-translations'
 export { getEdgeDashArray, getEdgeStroke, getEdgeWidth } from './lib/get-edge-style'
 export { applyLayout, getNodesWithinDepth } from './lib/layout-algorithms-optimized'
 export { transformEdgesToFlow, transformNodesToFlow } from './lib/transform-data'
-export { getEdgeTranslations, getEdgeTypeLabel, type EdgeTranslations } from './lib/edge-translations'
+// Model - Hooks
+export { useGraphControls } from './model/graph.controls.hooks'
+export { useFilteredGraphData } from './model/graph.data.hooks'
+export { useGraphKeyboard } from './model/graph.keyboard.hooks'
+export { useAnimatedLayout } from './model/graph.layout.hooks'
+export { useNodeSelection } from './model/graph.selection.hooks'
 // Model - Store
 export {
   ALL_EDGE_TYPES,
@@ -35,16 +45,11 @@ export {
   useViewMode,
   type ViewMode
 } from './model/graph.store'
-// Model - Hooks
-export { useGraphControls } from './model/graph.controls.hooks'
-export { useFilteredGraphData } from './model/graph.data.hooks'
-export { useGraphKeyboard } from './model/graph.keyboard.hooks'
-export { useAnimatedLayout } from './model/graph.layout.hooks'
 export {
-  useDebouncedZoom,
-  useDiscreteZoom,
   getSnappedZoom,
   getZoomLevel,
+  useDebouncedZoom,
+  useDiscreteZoom,
   ZOOM_THRESHOLDS,
   type ZoomLevel
 } from './model/graph.zoom.hooks'
@@ -56,4 +61,3 @@ export type {
   SelectedElements,
   ToolbarState
 } from './model/graph-visualization.types'
-export { useNodeSelection } from './model/graph.selection.hooks'

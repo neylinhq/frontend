@@ -59,7 +59,7 @@ const DEFAULT_CONFIG: SDFAtlasConfig = {
   buffer: 3,
   radius: 8,
   cutoff: 0.25,
-  atlasSize: 1024,
+  atlasSize: 1024
 }
 
 /**
@@ -87,7 +87,7 @@ export class SDFAtlas {
       fontWeight: this.config.fontWeight,
       buffer: this.config.buffer,
       radius: this.config.radius,
-      cutoff: this.config.cutoff,
+      cutoff: this.config.cutoff
     })
 
     this.atlasWidth = this.config.atlasSize
@@ -101,11 +101,15 @@ export class SDFAtlas {
    */
   getGlyph(char: string): CachedGlyph | null {
     const codepoint = char.codePointAt(0)
-    if (codepoint === undefined) return null
+    if (codepoint === undefined) {
+      return null
+    }
 
     // Check cache
     let cached = this.glyphs.get(codepoint)
-    if (cached) return cached
+    if (cached) {
+      return cached
+    }
 
     // Generate new glyph
     const glyphData = this.sdf.draw(char) as GlyphData
@@ -128,7 +132,7 @@ export class SDFAtlas {
         u: 0,
         v: 0,
         uWidth: 0,
-        vHeight: 0,
+        vHeight: 0
       }
       this.glyphs.set(codepoint, cached)
       return cached
@@ -161,7 +165,7 @@ export class SDFAtlas {
       u: x / this.atlasWidth,
       v: y / this.atlasHeight,
       uWidth: glyphData.width / this.atlasWidth,
-      vHeight: glyphData.height / this.atlasHeight,
+      vHeight: glyphData.height / this.atlasHeight
     }
     this.glyphs.set(codepoint, cached)
 
@@ -186,7 +190,7 @@ export class SDFAtlas {
       data: this.atlasData,
       width: this.atlasWidth,
       height: this.atlasHeight,
-      dirty: this.dirty,
+      dirty: this.dirty
     }
     this.dirty = false
     return result
@@ -223,7 +227,7 @@ export class SDFAtlas {
         glyphHeight: glyph.glyphHeight,
         glyphTop: glyph.glyphTop,
         glyphLeft: glyph.glyphLeft,
-        glyphAdvance: glyph.glyphAdvance,
+        glyphAdvance: glyph.glyphAdvance
       })
     }
 
@@ -234,9 +238,9 @@ export class SDFAtlas {
         fontSize: this.config.fontSize,
         buffer: this.config.buffer,
         radius: this.config.radius,
-        lineHeight: this.config.fontSize * 1.3, // Standard line height
+        lineHeight: this.config.fontSize * 1.3 // Standard line height
       },
-      glyphs: glyphsArray,
+      glyphs: glyphsArray
     })
   }
 
@@ -246,7 +250,7 @@ export class SDFAtlas {
   getShaderParams(): { pxRange: number; fontSize: number } {
     return {
       pxRange: this.config.radius * 2, // SDF range in pixels
-      fontSize: this.config.fontSize,
+      fontSize: this.config.fontSize
     }
   }
 
@@ -296,10 +300,9 @@ export class SDFAtlas {
 export const CHARSET_BASIC =
   ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'
 
-export const CHARSET_CYRILLIC =
-  'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя'
+export const CHARSET_CYRILLIC = 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя'
 
-export const CHARSET_EXTENDED = CHARSET_BASIC + CHARSET_CYRILLIC + '—–…«»„"'
+export const CHARSET_EXTENDED = `${CHARSET_BASIC + CHARSET_CYRILLIC}—–…«»„"`
 
 /**
  * Create a pre-populated SDF atlas with common characters

@@ -34,7 +34,9 @@ export const CommandPalette = <T extends CommandPaletteItem>({
 
   // Group by section if groupBy provided
   const groupedResults = useMemo(() => {
-    if (!groupBy) return null
+    if (!groupBy) {
+      return null
+    }
 
     const groups: Record<string, T[]> = {}
     for (const item of results) {
@@ -82,7 +84,9 @@ export const CommandPalette = <T extends CommandPaletteItem>({
 
   // Global hotkey (Cmd+K / Ctrl+K)
   useEffect(() => {
-    if (!enableHotkey) return
+    if (!enableHotkey) {
+      return
+    }
 
     const down = (e: KeyboardEvent) => {
       if (e.key === hotkey && (e.metaKey || e.ctrlKey)) {
@@ -98,7 +102,7 @@ export const CommandPalette = <T extends CommandPaletteItem>({
   // Reset selection on query change
   useEffect(() => {
     setSelectedIndex(0)
-  }, [query])
+  }, [])
 
   // Reset query when closed
   useEffect(() => {
@@ -148,6 +152,7 @@ export const CommandPalette = <T extends CommandPaletteItem>({
 
                   return (
                     <button
+                      type='button'
                       key={item.id}
                       onClick={() => handleSelect(item)}
                       onMouseEnter={() => setSelectedIndex(globalIndex)}
@@ -169,6 +174,7 @@ export const CommandPalette = <T extends CommandPaletteItem>({
 
               return (
                 <button
+                  type='button'
                   key={item.id}
                   onClick={() => handleSelect(item)}
                   onMouseEnter={() => setSelectedIndex(index)}

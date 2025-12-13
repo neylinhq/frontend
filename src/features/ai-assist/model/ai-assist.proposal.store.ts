@@ -40,15 +40,13 @@ export const useProposalHistoryStore = create<ProposalHistoryState & ProposalHis
       actions: [],
       currentIndex: -1,
 
-      recordAction: (actionData) => {
+      recordAction: actionData => {
         const { actions, currentIndex } = get()
         const actionId = crypto.randomUUID()
 
         // Truncate forward history if not at end
         const newActions =
-          currentIndex < actions.length - 1
-            ? actions.slice(0, currentIndex + 1)
-            : [...actions]
+          currentIndex < actions.length - 1 ? actions.slice(0, currentIndex + 1) : [...actions]
 
         const newAction: ProposalAction = {
           ...actionData,
@@ -72,7 +70,9 @@ export const useProposalHistoryStore = create<ProposalHistoryState & ProposalHis
 
       undo: () => {
         const { actions, currentIndex } = get()
-        if (currentIndex < 0) return null
+        if (currentIndex < 0) {
+          return null
+        }
 
         const action = actions[currentIndex]
         set({ currentIndex: currentIndex - 1 })
@@ -81,7 +81,9 @@ export const useProposalHistoryStore = create<ProposalHistoryState & ProposalHis
 
       redo: () => {
         const { actions, currentIndex } = get()
-        if (currentIndex >= actions.length - 1) return null
+        if (currentIndex >= actions.length - 1) {
+          return null
+        }
 
         const newIndex = currentIndex + 1
         set({ currentIndex: newIndex })

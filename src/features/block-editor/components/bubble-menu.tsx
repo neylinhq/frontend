@@ -32,11 +32,12 @@ import {
   useState
 } from 'react'
 import { useTranslation } from 'react-i18next'
-import { toast } from '@/shared/components/toast'
 import { Button } from '@/shared/components/button'
+import { toast } from '@/shared/components/toast'
 import { cn } from '@/shared/lib/cn'
 import { copyAsMarkdown } from '../lib/markdown-serializer'
 import { MENU } from '../model/block-editor.constants'
+import styles from '../styles/bubble-menu.module.css'
 
 // Menu state management with reducer (cleaner than 4 separate booleans)
 type MenuType = 'closed' | 'link' | 'color' | 'turnInto' | 'more'
@@ -93,18 +94,22 @@ const useDropdownKeyboard = <T,>(
     if (isOpen) {
       setSelectedIndex(0)
     }
-  }, [isOpen, items.length])
+  }, [isOpen])
 
   // Scroll selected item into view
   useEffect(() => {
-    if (!isOpen || !containerRef.current) return
+    if (!isOpen || !containerRef.current) {
+      return
+    }
     const selectedEl = containerRef.current.querySelector('[data-selected="true"]')
     selectedEl?.scrollIntoView({ block: 'nearest' })
-  }, [isOpen, selectedIndex, containerRef])
+  }, [isOpen, containerRef])
 
   // Handle keyboard events
   useEffect(() => {
-    if (!isOpen) return
+    if (!isOpen) {
+      return
+    }
 
     const handleKeyDown = (e: KeyboardEvent) => {
       switch (e.key) {
@@ -311,9 +316,16 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
     const { empty, from, to } = selection
 
     // Hide menu if selection is empty or is a node selection
+    // But don't hide immediately - wait a tick to handle triple-click (paragraph select)
     if (empty || from === to) {
-      setIsVisible(false)
-      dispatch({ type: 'CLOSE_ALL' })
+      // Use requestAnimationFrame to avoid hiding during triple-click transition
+      requestAnimationFrame(() => {
+        const currentSelection = editor.state.selection
+        if (currentSelection.empty || currentSelection.from === currentSelection.to) {
+          setIsVisible(false)
+          dispatch({ type: 'CLOSE_ALL' })
+        }
+      })
       return
     }
 
@@ -368,11 +380,11 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
       left = editorWidth - halfMenuWidth - MENU.VIEWPORT_PADDING
     }
 
-    // Check if menu fits above selection (accounting for menu height due to transform: translateY(-100%))
-    // If not enough space above, position below selection instead
-    const spaceAbove = selectionRect.top - containerRect.top
-    if (spaceAbove < MENU.BUBBLE_HEIGHT + MENU.VIEWPORT_PADDING) {
-      // Not enough space above - position below selection
+    // Check if menu fits above selection relative to VIEWPORT (not container)
+    // This ensures the menu doesn't go off the top of the screen
+    const spaceAboveViewport = selectionRect.top // viewport-relative
+    if (spaceAboveViewport < MENU.BUBBLE_HEIGHT + MENU.VIEWPORT_PADDING) {
+      // Not enough space above in viewport - position below selection
       top = selectionRect.bottom - containerRect.top + MENU.VIEWPORT_PADDING + MENU.BUBBLE_HEIGHT
     }
 
@@ -380,7 +392,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
     setIsVisible(true)
     // Force re-render to update block type in Turn Into dropdown
     forceUpdate()
-  }, [editor, forceUpdate])
+  }, [editor])
 
   useEffect(() => {
     editor.on('selectionUpdate', updateMenu)
@@ -395,7 +407,9 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
   // Hide bubble menu when clicking outside the editor
   useEffect(() => {
     // Ensure editor view is available
-    if (!editor.view) return
+    if (!editor.view) {
+      return
+    }
 
     const editorDom = editor.view.dom
 
@@ -457,13 +471,27 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
 
   // Determine current block type (recalculated on every render via forceUpdate)
   const getCurrentBlockType = () => {
-    if (editor.isActive('heading', { level: 1 })) return BLOCK_TYPES[1]
-    if (editor.isActive('heading', { level: 2 })) return BLOCK_TYPES[2]
-    if (editor.isActive('heading', { level: 3 })) return BLOCK_TYPES[3]
-    if (editor.isActive('bulletList')) return BLOCK_TYPES[4]
-    if (editor.isActive('orderedList')) return BLOCK_TYPES[5]
-    if (editor.isActive('taskList')) return BLOCK_TYPES[6]
-    if (editor.isActive('blockquote')) return BLOCK_TYPES[7]
+    if (editor.isActive('heading', { level: 1 })) {
+      return BLOCK_TYPES[1]
+    }
+    if (editor.isActive('heading', { level: 2 })) {
+      return BLOCK_TYPES[2]
+    }
+    if (editor.isActive('heading', { level: 3 })) {
+      return BLOCK_TYPES[3]
+    }
+    if (editor.isActive('bulletList')) {
+      return BLOCK_TYPES[4]
+    }
+    if (editor.isActive('orderedList')) {
+      return BLOCK_TYPES[5]
+    }
+    if (editor.isActive('taskList')) {
+      return BLOCK_TYPES[6]
+    }
+    if (editor.isActive('blockquote')) {
+      return BLOCK_TYPES[7]
+    }
     return BLOCK_TYPES[0]
   }
   const currentBlockType = getCurrentBlockType()
@@ -511,11 +539,10 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
   return (
     <div
       ref={menuRef}
-      className='absolute z-50 flex items-center gap-0.5 rounded-lg border border-border bg-popover p-1 shadow-lg'
+      className={styles.container}
       style={{
         top: position.top,
-        left: position.left,
-        transform: 'translate(-50%, -100%)'
+        left: position.left
       }}
     >
       {/* Turn Into Dropdown */}
@@ -526,12 +553,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
           aria-haspopup='listbox'
           aria-expanded={isTurnIntoOpen}
           aria-label={t('editor.bubble.turnInto')}
-          className={cn(
-            'flex h-7 items-center gap-1 rounded-md px-1.5 whitespace-nowrap transition-colors',
-            isTurnIntoOpen
-              ? 'bg-accent text-accent-foreground'
-              : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground'
-          )}
+          className={cn(styles.turnIntoTrigger, isTurnIntoOpen && styles.turnIntoTriggerActive)}
         >
           <CurrentBlockIcon className='h-3.5 w-3.5 shrink-0' />
           <span className='text-[11px]'>
@@ -543,7 +565,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
         {isTurnIntoOpen && (
           <div
             ref={turnIntoRef}
-            className='absolute left-0 top-full mt-1 z-50 w-[180px] overflow-y-auto rounded-md border border-border bg-popover py-1 shadow-md'
+            className={cn(styles.dropdown, 'left-0 w-[180px] overflow-y-auto')}
             role='listbox'
             aria-label={t('editor.bubble.turnInto')}
           >
@@ -559,10 +581,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
                   aria-selected={isSelected}
                   data-selected={isSelected}
                   onClick={() => handleTurnIntoSelect(blockType)}
-                  className={cn(
-                    'flex w-full items-center justify-between px-2 py-1.5 text-[13px] text-left transition-colors',
-                    isSelected ? 'bg-accent/60' : 'hover:bg-accent/40'
-                  )}
+                  className={cn(styles.dropdownItem, isSelected && styles.dropdownItemSelected)}
                 >
                   <div className='flex items-center gap-2'>
                     <Icon className='h-4 w-4 text-muted-foreground' />
@@ -576,7 +595,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
         )}
       </div>
 
-      <div className='mx-0.5 h-5 w-px bg-border' />
+      <div className={styles.separator} />
 
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleBold().run()}
@@ -623,7 +642,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
         <Code className='h-3.5 w-3.5' />
       </ToolbarButton>
 
-      <div className='mx-0.5 h-5 w-px bg-border' />
+      <div className={styles.separator} />
 
       {/* Color Picker */}
       <div className='relative'>
@@ -634,12 +653,14 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
           aria-expanded={isColorPickerOpen}
           aria-label={t('editor.bubble.textColor')}
         >
-          <span className='flex items-center justify-center w-4 h-4 rounded text-[10px] font-bold border border-current'>A</span>
+          <span className='flex items-center justify-center w-4 h-4 rounded text-[10px] font-bold border border-current'>
+            A
+          </span>
         </ToolbarButton>
 
         {isColorPickerOpen && (
           <div
-            className='absolute left-0 top-full mt-1 z-50 w-[200px] rounded-md border border-border bg-popover py-1.5 shadow-md'
+            className={cn(styles.dropdown, 'left-0 w-[200px] py-1.5')}
             role='dialog'
             aria-label={t('editor.bubble.textColor')}
           >
@@ -663,7 +684,10 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
                     preview={
                       <span
                         className='flex items-center justify-center w-5 h-5 rounded text-[11px] font-semibold border'
-                        style={{ color: item.color || 'currentColor', borderColor: item.color || 'currentColor' }}
+                        style={{
+                          color: item.color || 'currentColor',
+                          borderColor: item.color || 'currentColor'
+                        }}
                       >
                         A
                       </span>
@@ -695,7 +719,10 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
                     preview={
                       <span
                         className='flex items-center justify-center w-5 h-5 rounded text-[11px] font-semibold'
-                        style={{ backgroundColor: item.color || 'transparent', border: item.color ? 'none' : '1px dashed currentColor' }}
+                        style={{
+                          backgroundColor: item.color || 'transparent',
+                          border: item.color ? 'none' : '1px dashed currentColor'
+                        }}
                       >
                         A
                       </span>
@@ -708,7 +735,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
         )}
       </div>
 
-      <div className='mx-0.5 h-5 w-px bg-border' />
+      <div className={styles.separator} />
 
       <ToolbarButton
         onClick={() => {
@@ -730,7 +757,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
         <Sigma className='h-3.5 w-3.5' />
       </ToolbarButton>
 
-      <div className='mx-0.5 h-5 w-px bg-border' />
+      <div className={styles.separator} />
 
       {/* More Menu */}
       <div className='relative'>
@@ -747,7 +774,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
         {isMoreMenuOpen && (
           <div
             ref={moreMenuRef}
-            className='absolute right-0 top-full mt-1 z-50 w-[160px] rounded-md border border-border bg-popover py-1 shadow-md'
+            className={cn(styles.dropdown, 'right-0 w-[160px]')}
             role='menu'
             aria-label={t('editor.bubble.moreOptions')}
           >
@@ -757,12 +784,12 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
               data-selected={moreMenuSelectedIndex === 0}
               onClick={() => handleMoreMenuSelect(moreMenuItems[0])}
               className={cn(
-                'flex w-full items-center gap-2 px-2 py-1.5 text-[13px] text-left transition-colors',
-                moreMenuSelectedIndex === 0 ? 'bg-accent/60' : 'hover:bg-accent/40'
+                styles.dropdownItem,
+                moreMenuSelectedIndex === 0 && styles.dropdownItemSelected
               )}
             >
-              <Copy className='h-4 w-4 text-muted-foreground' />
               <span>{t('editor.bubble.more.copy')}</span>
+              <Copy className='h-4 w-4 text-muted-foreground' />
             </button>
             <button
               type='button'
@@ -770,26 +797,27 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
               data-selected={moreMenuSelectedIndex === 1}
               onClick={() => handleMoreMenuSelect(moreMenuItems[1])}
               className={cn(
-                'flex w-full items-center gap-2 px-2 py-1.5 text-[13px] text-left transition-colors',
-                moreMenuSelectedIndex === 1 ? 'bg-accent/60' : 'hover:bg-accent/40'
+                styles.dropdownItem,
+                moreMenuSelectedIndex === 1 && styles.dropdownItemSelected
               )}
             >
-              <FileText className='h-4 w-4 text-muted-foreground' />
               <span>{t('editor.bubble.more.copyMarkdown')}</span>
+              <FileText className='h-4 w-4 text-muted-foreground' />
             </button>
-            <div className='h-px bg-border my-1' />
+            <div className='h-px bg-border/60 my-1' />
             <button
               type='button'
               role='menuitem'
               data-selected={moreMenuSelectedIndex === 2}
               onClick={() => handleMoreMenuSelect(moreMenuItems[2])}
               className={cn(
-                'flex w-full items-center gap-2 px-2 py-1.5 text-[13px] text-left text-destructive transition-colors',
-                moreMenuSelectedIndex === 2 ? 'bg-destructive/10' : 'hover:bg-destructive/5'
+                styles.dropdownItem,
+                styles.deleteButton,
+                moreMenuSelectedIndex === 2 && 'bg-destructive/10'
               )}
             >
-              <Trash2 className='h-4 w-4' />
               <span>{t('editor.bubble.more.delete')}</span>
+              <Trash2 className='h-4 w-4' />
             </button>
           </div>
         )}
@@ -830,12 +858,7 @@ const ToolbarButton = ({
       aria-pressed={isToggle ? isActive : undefined}
       aria-haspopup={ariaHaspopup}
       aria-expanded={ariaExpanded}
-      className={cn(
-        'flex h-7 w-7 items-center justify-center rounded-md transition-colors',
-        disabled && 'opacity-40 cursor-not-allowed',
-        !disabled && isActive && 'bg-accent text-accent-foreground',
-        !disabled && !isActive && 'text-muted-foreground hover:bg-accent/50 hover:text-foreground'
-      )}
+      className={cn(styles.toolbarButton, isActive && styles.toolbarButtonActive)}
     >
       {children}
     </button>

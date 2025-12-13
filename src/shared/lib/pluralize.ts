@@ -48,7 +48,9 @@ const rulesCache = new Map<string, Intl.PluralRules>()
 
 function getPluralRules(locale: string): Intl.PluralRules {
   const cached = rulesCache.get(locale)
-  if (cached) return cached
+  if (cached) {
+    return cached
+  }
 
   const rules = new Intl.PluralRules(locale)
   rulesCache.set(locale, rules)
@@ -97,7 +99,6 @@ export function pluralize(
     case 'many':
       word = forms.many ?? forms.other ?? forms.one
       break
-    case 'other':
     default:
       word = forms.other ?? forms.many ?? forms.one
       break

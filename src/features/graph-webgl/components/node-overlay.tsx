@@ -7,15 +7,15 @@
 
 import { memo } from 'react'
 import type { Node } from '@/entities/map'
-import { getNodeIcon, getComplexityColor, getNodeBorderColor } from '@/entities/node'
+import { getComplexityColor, getNodeBorderColor, getNodeIcon } from '@/entities/node'
 import { Badge } from '@/shared/components/badge'
 import { cn } from '@/shared/lib/cn'
 
 interface NodeOverlayProps {
   node: Node
-  screenX: number       // Screen X position (center)
-  screenY: number       // Screen Y position (center)
-  zoom: number          // Current zoom level
+  screenX: number // Screen X position (center)
+  screenY: number // Screen Y position (center)
+  zoom: number // Current zoom level
   isSelected: boolean
   isFocused: boolean
   isDimmed?: boolean
@@ -41,7 +41,7 @@ export const NodeOverlay = memo(
     isSelected,
     isFocused,
     isDimmed,
-    onClick,
+    onClick
   }: NodeOverlayProps) {
     const Icon = getNodeIcon(node.type)
     const showDetails = zoom >= DETAIL_ZOOM_THRESHOLD
@@ -52,13 +52,13 @@ export const NodeOverlay = memo(
 
     return (
       <div
-        className="absolute origin-top-left"
+        className='absolute origin-top-left'
         style={{
           left,
           top,
           width: NODE_WIDTH,
           height: NODE_HEIGHT,
-          transform: `scale(${zoom})`,
+          transform: `scale(${zoom})`
         }}
         onClick={onClick}
       >
@@ -78,29 +78,25 @@ export const NodeOverlay = memo(
             isSelected && !isFocused && 'ring-2 ring-primary shadow-lg'
           )}
           style={{
-            backgroundColor: 'hsl(var(--card))',
-            color: 'hsl(var(--card-foreground))',
-            borderColor: 'hsl(var(--border))',
+            backgroundColor: 'oklch(var(--card))',
+            color: 'oklch(var(--card-foreground))',
+            borderColor: 'oklch(var(--border))'
           }}
         >
-          <div className="p-4 flex flex-col h-full overflow-hidden">
+          <div className='p-4 flex flex-col h-full overflow-hidden'>
             {/* Icon + Title */}
-            <div className="flex items-start gap-2">
-              <Icon className="w-5 h-5 flex-shrink-0 text-muted-foreground mt-0.5" />
-              <h3 className="text-base font-semibold leading-tight break-words line-clamp-2">
+            <div className='flex items-start gap-2'>
+              <Icon className='w-5 h-5 flex-shrink-0 text-muted-foreground mt-0.5' />
+              <h3 className='text-base font-semibold leading-tight break-words line-clamp-2'>
                 {node.label}
               </h3>
             </div>
 
             {/* Tags */}
             {showDetails && node.metadata.tags && node.metadata.tags.length > 0 && (
-              <div className="flex flex-wrap gap-1 mt-2">
-                {node.metadata.tags.slice(0, 3).map((tag) => (
-                  <Badge
-                    key={tag}
-                    variant="outline"
-                    className="text-xs pointer-events-none"
-                  >
+              <div className='flex flex-wrap gap-1 mt-2'>
+                {node.metadata.tags.slice(0, 3).map(tag => (
+                  <Badge key={tag} variant='outline' className='text-xs pointer-events-none'>
                     {tag}
                   </Badge>
                 ))}
@@ -109,9 +105,9 @@ export const NodeOverlay = memo(
 
             {/* Complexity badge */}
             {showDetails && node.metadata.complexity && (
-              <div className="mt-auto pt-2">
+              <div className='mt-auto pt-2'>
                 <Badge
-                  variant="secondary"
+                  variant='secondary'
                   className={cn(
                     'text-xs pointer-events-none',
                     getComplexityColor(node.metadata.complexity)

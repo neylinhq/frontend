@@ -1270,7 +1270,7 @@
       "profile": "Профиль",
       "preferences": "Предпочтения",
       "integrations": "Интеграции",
-      "security": "Безопасность",
+      "account": "Аккаунт",
       "billing": "Подписка"
     },
     "profile": {
@@ -1512,7 +1512,9 @@
     "cancelSubscription": "Отменить подписку",
     "unlimited": "Неограниченно",
     "defaultPaymentMethod": "По умолчанию",
+    "default": "Основной",
     "expires": "Истекает",
+    "expiresAt": "Действует до {{month}}/{{year}}",
     "setAsDefault": "Сделать основным",
     "paymentMethod": "Способ оплаты",
     "type": "Тип",
@@ -1520,6 +1522,15 @@
     "interval": {
       "month": "месяц",
       "year": "год"
+    },
+    "subscribe": {
+      "addMethodTitle": "Добавить способ оплаты",
+      "addMethodDescription": "Добавьте способ оплаты для покупки подписки",
+      "confirmTitle": "Подтверждение подписки",
+      "confirmDescription": "Вы подписываетесь на тариф {{planName}}",
+      "paymentMethod": "Способ оплаты",
+      "addNewMethod": "Добавить новый способ оплаты",
+      "confirm": "Оплатить {{price}}"
     },
     "usage": {
       "title": "Текущее использование",

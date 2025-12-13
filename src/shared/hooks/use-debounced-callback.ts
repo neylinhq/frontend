@@ -7,10 +7,7 @@ import { useCallback, useEffect, useRef } from 'react'
  * @param callback - Function to debounce
  * @param delay - Delay in milliseconds (default: 300ms)
  */
-export const useDebouncedCallback = <T>(
-  callback: (value: T) => void,
-  delay = 300
-) => {
+export const useDebouncedCallback = <T>(callback: (value: T) => void, delay = 300) => {
   const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
   const callbackRef = useRef(callback)
 

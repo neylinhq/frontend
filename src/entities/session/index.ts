@@ -1,13 +1,14 @@
 // API
-export { sessionApi, isTwoFactorRequired } from './session.api'
+
 export type { TwoFactorChallengeData, VerifyTwoFactorRequest } from './session.api'
+export { isTwoFactorRequired, sessionApi } from './session.api'
 
 // Queries
 export {
-  useVerifyEmailMutation,
   useForgotPasswordMutation,
+  useResendVerificationMutation,
   useResetPasswordMutation,
-  useResendVerificationMutation
+  useVerifyEmailMutation
 } from './session.queries'
 
 // Types

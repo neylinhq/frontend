@@ -6,22 +6,22 @@
  */
 
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
-import type { Node, Edge } from '@/entities/map'
-import { cn } from '@/shared/lib/cn'
+import type { Edge, Node } from '@/entities/map'
 import { useDarkMode } from '@/shared/hooks'
-import type { LayoutOptions } from '../lib/types'
-import { DEFAULT_LAYOUT_OPTIONS } from '../lib/types'
-import { transformToWasm, layoutOptionsToWasm } from '../lib/transform'
-import { themeToJson } from '../lib/theme-bridge'
+import { cn } from '@/shared/lib/cn'
 import { loadIconAtlas } from '../lib/atlas-loader'
 import { createSDFAtlas } from '../lib/sdf-atlas'
+import { themeToJson } from '../lib/theme-bridge'
+import { layoutOptionsToWasm, transformToWasm } from '../lib/transform'
+import type { LayoutOptions } from '../lib/types'
+import { DEFAULT_LAYOUT_OPTIONS } from '../lib/types'
 
 /** Viewport state returned by WASM engine */
 export interface ViewportState {
-  x: number      // Camera center X in world coords
-  y: number      // Camera center Y in world coords
-  zoom: number   // Zoom level
-  width: number  // Canvas width in pixels
+  x: number // Camera center X in world coords
+  y: number // Camera center Y in world coords
+  zoom: number // Zoom level
+  width: number // Canvas width in pixels
   height: number // Canvas height in pixels
 }
 
@@ -60,9 +60,24 @@ interface WasmGraphEngine {
   get_all_positions(): string
   // Figma S+ level: theme and atlases
   set_theme(json: string): void
-  load_font_atlas_data(image_data: Uint8Array, width: number, height: number, metrics_json: string): void
-  load_sdf_atlas_data(image_data: Uint8Array, width: number, height: number, metrics_json: string): void
-  load_icon_atlas_data(image_data: Uint8Array, width: number, height: number, icons_json: string): void
+  load_font_atlas_data(
+    image_data: Uint8Array,
+    width: number,
+    height: number,
+    metrics_json: string
+  ): void
+  load_sdf_atlas_data(
+    image_data: Uint8Array,
+    width: number,
+    height: number,
+    metrics_json: string
+  ): void
+  load_icon_atlas_data(
+    image_data: Uint8Array,
+    width: number,
+    height: number,
+    icons_json: string
+  ): void
 }
 
 /** Position data returned after layout completes */
@@ -86,23 +101,22 @@ interface GraphCanvasProps {
   className?: string
 }
 
-export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
-  function GraphCanvas(
-    {
-      nodes,
-      edges,
-      layoutOptions,
-      selectedNodeId,
-      focusedNodeId,
-      dimmedNodeIds = [],
-      onNodeClick,
-      onNodeDoubleClick,
-      onViewportChange,
-      onLayoutComplete,
-      className,
-    },
-    ref
-  ) {
+export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(function GraphCanvas(
+  {
+    nodes,
+    edges,
+    layoutOptions,
+    selectedNodeId,
+    focusedNodeId,
+    dimmedNodeIds = [],
+    onNodeClick,
+    onNodeDoubleClick,
+    onViewportChange,
+    onLayoutComplete,
+    className
+  },
+  ref
+) {
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const engineRef = useRef<WasmGraphEngine | null>(null)
@@ -112,7 +126,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
   const [error, setError] = useState<string | null>(null)
 
   // Track dark mode for theme sync
-  const isDark = useDarkMode()
+  const _isDark = useDarkMode()
 
   // Interaction state
   const isPanningRef = useRef(false)
@@ -125,7 +139,9 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
   const getViewportFromEngine = useCallback((): ViewportState | null => {
     const engine = engineRef.current
     const canvas = canvasRef.current
-    if (!engine || !canvas) return null
+    if (!engine || !canvas) {
+      return null
+    }
     try {
       const json = engine.get_viewport()
       const viewport = JSON.parse(json) as ViewportState
@@ -152,7 +168,9 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
   // Get positions from WASM and notify parent
   const notifyLayoutComplete = useCallback(() => {
     const engine = engineRef.current
-    if (!engine || !onLayoutComplete) return
+    if (!engine || !onLayoutComplete) {
+      return
+    }
     try {
       const positionsJson = engine.get_all_positions()
       const positions = JSON.parse(positionsJson) as LayoutPosition[]
@@ -163,53 +181,67 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
   }, [onLayoutComplete])
 
   // Expose imperative handle for parent control
-  useImperativeHandle(ref, () => ({
-    zoomIn() {
-      const engine = engineRef.current
-      const canvas = canvasRef.current
-      if (!engine || !canvas) return
-      // Zoom at center
-      const rect = canvas.getBoundingClientRect()
-      engine.zoom_at(rect.width / 2, rect.height / 2, 1.2)
-      notifyViewportChange()
-    },
-    zoomOut() {
-      const engine = engineRef.current
-      const canvas = canvasRef.current
-      if (!engine || !canvas) return
-      const rect = canvas.getBoundingClientRect()
-      engine.zoom_at(rect.width / 2, rect.height / 2, 1 / 1.2)
-      notifyViewportChange()
-    },
-    fitView() {
-      const engine = engineRef.current
-      if (!engine) return
-      engine.fit_view(0.1)
-      notifyViewportChange()
-    },
-    panTo(worldX: number, worldY: number) {
-      const engine = engineRef.current
-      if (!engine) return
-      // Set viewport position directly
-      const viewport = getViewportFromEngine()
-      if (viewport) {
-        const newViewport = { ...viewport, x: worldX, y: worldY }
-        engine.set_viewport(JSON.stringify(newViewport))
+  useImperativeHandle(
+    ref,
+    () => ({
+      zoomIn() {
+        const engine = engineRef.current
+        const canvas = canvasRef.current
+        if (!engine || !canvas) {
+          return
+        }
+        // Zoom at center
+        const rect = canvas.getBoundingClientRect()
+        engine.zoom_at(rect.width / 2, rect.height / 2, 1.2)
         notifyViewportChange()
+      },
+      zoomOut() {
+        const engine = engineRef.current
+        const canvas = canvasRef.current
+        if (!engine || !canvas) {
+          return
+        }
+        const rect = canvas.getBoundingClientRect()
+        engine.zoom_at(rect.width / 2, rect.height / 2, 1 / 1.2)
+        notifyViewportChange()
+      },
+      fitView() {
+        const engine = engineRef.current
+        if (!engine) {
+          return
+        }
+        engine.fit_view(0.1)
+        notifyViewportChange()
+      },
+      panTo(worldX: number, worldY: number) {
+        const engine = engineRef.current
+        if (!engine) {
+          return
+        }
+        // Set viewport position directly
+        const viewport = getViewportFromEngine()
+        if (viewport) {
+          const newViewport = { ...viewport, x: worldX, y: worldY }
+          engine.set_viewport(JSON.stringify(newViewport))
+          notifyViewportChange()
+        }
+      },
+      getZoom() {
+        return engineRef.current?.get_zoom() ?? 1
+      },
+      getViewport() {
+        return getViewportFromEngine()
       }
-    },
-    getZoom() {
-      return engineRef.current?.get_zoom() ?? 1
-    },
-    getViewport() {
-      return getViewportFromEngine()
-    }
-  }), [getViewportFromEngine, notifyViewportChange])
+    }),
+    [getViewportFromEngine, notifyViewportChange]
+  )
 
   // Initialize WASM engine
   useEffect(() => {
     const canvas = canvasRef.current
-    if (!canvas) return
+    if (!canvas) {
+      return
+    }
 
     let mounted = true
 
@@ -218,7 +250,9 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
         const wasm = await import('../wasm/graph_engine')
         await wasm.default()
 
-        if (!mounted) return
+        if (!mounted) {
+          return
+        }
 
         const engine = new wasm.GraphEngine()
         engine.init_renderer(canvas)
@@ -241,7 +275,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
           const sdfAtlas = createSDFAtlas({
             fontSize: 48,
             fontFamily: 'Inter, system-ui, sans-serif',
-            fontWeight: '400',
+            fontWeight: '400'
           })
           const atlasData = sdfAtlas.getAtlasData()
           const metricsJson = sdfAtlas.getGlyphMetricsJson()
@@ -249,7 +283,12 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
 
           // Load icon atlas (static, from PNG)
           const icons = await loadIconAtlas('/assets')
-          engine.load_icon_atlas_data(icons.imageData, icons.width, icons.height, JSON.stringify(icons.coords))
+          engine.load_icon_atlas_data(
+            icons.imageData,
+            icons.width,
+            icons.height,
+            JSON.stringify(icons.coords)
+          )
         } catch {
           // Atlas loading failed - text/icons will use fallback
         }
@@ -274,7 +313,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
       if (engineRef.current) {
         try {
           engineRef.current.free()
-        } catch (e) {
+        } catch (_e) {
           // ignore
         }
         engineRef.current = null
@@ -284,17 +323,21 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
 
   // Sync theme when dark mode changes
   useEffect(() => {
-    if (!isReady || !engineRef.current) return
+    if (!isReady || !engineRef.current) {
+      return
+    }
     engineRef.current.set_theme(themeToJson())
-  }, [isDark, isReady])
+  }, [isReady])
 
   // Handle resize
   useEffect(() => {
     const container = containerRef.current
     const canvas = canvasRef.current
-    if (!container || !canvas || !isReady) return
+    if (!container || !canvas || !isReady) {
+      return
+    }
 
-    const observer = new ResizeObserver((entries) => {
+    const observer = new ResizeObserver(entries => {
       const entry = entries[0]
       if (entry && engineRef.current) {
         const { width, height } = entry.contentRect
@@ -318,13 +361,17 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
 
   useEffect(() => {
     const engine = engineRef.current
-    if (!engine || !isReady || nodes.length === 0) return
+    if (!engine || !isReady || nodes.length === 0) {
+      return
+    }
 
     // Check if nodes/edges actually changed (by reference)
     const nodesChanged = nodes !== lastNodesRef.current
     const edgesChanged = edges !== lastEdgesRef.current
 
-    if (graphLoadedRef.current && !nodesChanged && !edgesChanged) return
+    if (graphLoadedRef.current && !nodesChanged && !edgesChanged) {
+      return
+    }
 
     graphLoadedRef.current = true
     lastNodesRef.current = nodes
@@ -337,7 +384,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
       // Run layout
       const options: LayoutOptions = {
         ...DEFAULT_LAYOUT_OPTIONS,
-        ...layoutOptions,
+        ...layoutOptions
       }
       engine.run_layout(layoutOptionsToWasm(options))
 
@@ -350,49 +397,69 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load graph')
     }
-  }, [isReady, nodes, edges, notifyLayoutComplete, notifyViewportChange])
+  }, [isReady, nodes, edges, notifyLayoutComplete, notifyViewportChange, layoutOptions])
 
   // Re-run layout when layout options change
   useEffect(() => {
     const engine = engineRef.current
-    if (!engine || !isReady || !graphLoadedRef.current) return
+    if (!engine || !isReady || !graphLoadedRef.current) {
+      return
+    }
 
     const options: LayoutOptions = {
       ...DEFAULT_LAYOUT_OPTIONS,
-      ...layoutOptions,
+      ...layoutOptions
     }
     engine.run_layout(layoutOptionsToWasm(options))
 
     // Notify about new positions
     notifyLayoutComplete()
-  }, [isReady, layoutOptions?.viewMode, layoutOptions?.spacingPercent, layoutOptions?.directionStrength, layoutOptions?.focusedNodeId, notifyLayoutComplete])
+  }, [
+    isReady,
+    layoutOptions?.viewMode,
+    layoutOptions?.spacingPercent,
+    layoutOptions?.directionStrength,
+    layoutOptions?.focusedNodeId,
+    notifyLayoutComplete,
+    layoutOptions
+  ])
 
   // Sync selection
   useEffect(() => {
     const engine = engineRef.current
-    if (!engine || !isReady) return
+    if (!engine || !isReady) {
+      return
+    }
     engine.set_selected(selectedNodeId ?? null)
   }, [isReady, selectedNodeId])
 
   useEffect(() => {
     const engine = engineRef.current
-    if (!engine || !isReady) return
+    if (!engine || !isReady) {
+      return
+    }
     engine.set_focused(focusedNodeId ?? null)
   }, [isReady, focusedNodeId])
 
   useEffect(() => {
     const engine = engineRef.current
-    if (!engine || !isReady) return
+    if (!engine || !isReady) {
+      return
+    }
     engine.set_dimmed(JSON.stringify(dimmedNodeIds))
   }, [isReady, dimmedNodeIds])
 
   // Render loop
   useEffect(() => {
-    if (!isReady) return
+    if (!isReady) {
+      return
+    }
 
     let running = true
     const render = () => {
-      if (!running) return
+      if (!running) {
+        return
+      }
       const engine = engineRef.current
       if (engine) {
         engine.render()
@@ -413,11 +480,15 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
   // Mouse handlers
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     // Only handle left mouse button
-    if (e.button !== 0) return
+    if (e.button !== 0) {
+      return
+    }
 
     const engine = engineRef.current
     const canvas = canvasRef.current
-    if (!engine || !canvas) return
+    if (!engine || !canvas) {
+      return
+    }
 
     // Start potential drag/pan
     isPanningRef.current = true
@@ -426,88 +497,106 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
     dragStartRef.current = { x: e.clientX, y: e.clientY }
   }, [])
 
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    const engine = engineRef.current
-    if (!engine || !isPanningRef.current) return
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      const engine = engineRef.current
+      if (!engine || !isPanningRef.current) {
+        return
+      }
 
-    const dx = e.clientX - lastMouseRef.current.x
-    const dy = e.clientY - lastMouseRef.current.y
-    lastMouseRef.current = { x: e.clientX, y: e.clientY }
+      const dx = e.clientX - lastMouseRef.current.x
+      const dy = e.clientY - lastMouseRef.current.y
+      lastMouseRef.current = { x: e.clientX, y: e.clientY }
 
-    // Check if we've moved beyond threshold (to distinguish click from drag)
-    const totalDx = e.clientX - dragStartRef.current.x
-    const totalDy = e.clientY - dragStartRef.current.y
-    if (Math.abs(totalDx) > DRAG_THRESHOLD || Math.abs(totalDy) > DRAG_THRESHOLD) {
-      hasDraggedRef.current = true
-    }
+      // Check if we've moved beyond threshold (to distinguish click from drag)
+      const totalDx = e.clientX - dragStartRef.current.x
+      const totalDy = e.clientY - dragStartRef.current.y
+      if (Math.abs(totalDx) > DRAG_THRESHOLD || Math.abs(totalDy) > DRAG_THRESHOLD) {
+        hasDraggedRef.current = true
+      }
 
-    // Only pan if we've actually dragged
-    if (hasDraggedRef.current) {
-      // Natural drag: content follows mouse direction
-      engine.pan(-dx, -dy)
-      notifyViewportChange()
-    }
-  }, [notifyViewportChange])
+      // Only pan if we've actually dragged
+      if (hasDraggedRef.current) {
+        // Natural drag: content follows mouse direction
+        engine.pan(-dx, -dy)
+        notifyViewportChange()
+      }
+    },
+    [notifyViewportChange]
+  )
 
-  const handleMouseUp = useCallback((e: React.MouseEvent) => {
-    const engine = engineRef.current
-    const canvas = canvasRef.current
+  const handleMouseUp = useCallback(
+    (e: React.MouseEvent) => {
+      const engine = engineRef.current
+      const canvas = canvasRef.current
 
-    // If we didn't drag, treat as click
-    if (!hasDraggedRef.current && engine && canvas) {
+      // If we didn't drag, treat as click
+      if (!hasDraggedRef.current && engine && canvas) {
+        const rect = canvas.getBoundingClientRect()
+        const dpr = window.devicePixelRatio || 1
+        const x = (e.clientX - rect.left) * dpr
+        const y = (e.clientY - rect.top) * dpr
+
+        const nodeId = engine.hit_test(x, y)
+        onNodeClick?.(nodeId ?? null)
+      }
+
+      isPanningRef.current = false
+      hasDraggedRef.current = false
+    },
+    [onNodeClick]
+  )
+
+  const handleWheel = useCallback(
+    (e: React.WheelEvent) => {
+      e.preventDefault()
+      const engine = engineRef.current
+      const canvas = canvasRef.current
+      if (!engine || !canvas) {
+        return
+      }
+
       const rect = canvas.getBoundingClientRect()
-      const dpr = window.devicePixelRatio || 1
-      const x = (e.clientX - rect.left) * dpr
-      const y = (e.clientY - rect.top) * dpr
+      const x = e.clientX - rect.left
+      const y = e.clientY - rect.top
+      // Reduced zoom sensitivity: 1.05 instead of 1.1
+      const factor = e.deltaY < 0 ? 1.05 : 1 / 1.05
+
+      engine.zoom_at(x, y, factor)
+      notifyViewportChange()
+    },
+    [notifyViewportChange]
+  )
+
+  const handleDoubleClick = useCallback(
+    (e: React.MouseEvent) => {
+      const engine = engineRef.current
+      const canvas = canvasRef.current
+      if (!engine || !canvas || !onNodeDoubleClick) {
+        return
+      }
+
+      const rect = canvas.getBoundingClientRect()
+      const x = e.clientX - rect.left
+      const y = e.clientY - rect.top
 
       const nodeId = engine.hit_test(x, y)
-      onNodeClick?.(nodeId ?? null)
-    }
-
-    isPanningRef.current = false
-    hasDraggedRef.current = false
-  }, [onNodeClick])
-
-  const handleWheel = useCallback((e: React.WheelEvent) => {
-    e.preventDefault()
-    const engine = engineRef.current
-    const canvas = canvasRef.current
-    if (!engine || !canvas) return
-
-    const rect = canvas.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
-    // Reduced zoom sensitivity: 1.05 instead of 1.1
-    const factor = e.deltaY < 0 ? 1.05 : 1 / 1.05
-
-    engine.zoom_at(x, y, factor)
-    notifyViewportChange()
-  }, [notifyViewportChange])
-
-  const handleDoubleClick = useCallback((e: React.MouseEvent) => {
-    const engine = engineRef.current
-    const canvas = canvasRef.current
-    if (!engine || !canvas || !onNodeDoubleClick) return
-
-    const rect = canvas.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
-
-    const nodeId = engine.hit_test(x, y)
-    if (nodeId) {
-      onNodeDoubleClick(nodeId)
-    }
-  }, [onNodeDoubleClick])
+      if (nodeId) {
+        onNodeDoubleClick(nodeId)
+      }
+    },
+    [onNodeDoubleClick]
+  )
 
   return (
     <div
       ref={containerRef}
       className={cn('relative w-full h-full overflow-hidden', className)}
-      style={{ background: 'hsl(var(--background))' }}
+      style={{ background: 'oklch(var(--background))' }}
     >
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 cursor-grab active:cursor-grabbing"
+        className='absolute inset-0 cursor-grab active:cursor-grabbing'
         style={{ touchAction: 'none' }}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
@@ -518,16 +607,16 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
       />
 
       {!isReady && !error && (
-        <div className="absolute inset-0 flex items-center justify-center bg-background/80">
-          <div className="text-muted-foreground">Loading WASM...</div>
+        <div className='absolute inset-0 flex items-center justify-center bg-background/80'>
+          <div className='text-muted-foreground'>Loading WASM...</div>
         </div>
       )}
 
       {error && (
-        <div className="absolute inset-0 flex items-center justify-center bg-background/80">
-          <div className="text-destructive text-center p-4">
-            <div className="font-semibold">WASM Error</div>
-            <div className="text-sm mt-1">{error}</div>
+        <div className='absolute inset-0 flex items-center justify-center bg-background/80'>
+          <div className='text-destructive text-center p-4'>
+            <div className='font-semibold'>WASM Error</div>
+            <div className='text-sm mt-1'>{error}</div>
           </div>
         </div>
       )}

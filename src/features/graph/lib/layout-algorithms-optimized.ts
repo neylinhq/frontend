@@ -242,7 +242,12 @@ interface InternalLayoutOptions {
 }
 
 export const applyLayout = (nodes: Node[], edges: Edge[], options: LayoutOptions) => {
-  const { viewMode, spacingPercent = 100, directionStrength = 100, ignoreExistingPositions = false } = options
+  const {
+    viewMode,
+    spacingPercent = 100,
+    directionStrength = 100,
+    ignoreExistingPositions = false
+  } = options
 
   if (nodes.length === 0) {
     return { nodes, edges }
@@ -274,11 +279,7 @@ const forceDirectedLayout = (nodes: Node[], edges: Edge[], options: InternalLayo
   return runForceDirectedCore(nodes, edges, options)
 }
 
-const runForceDirectedCore = (
-  nodes: Node[],
-  edges: Edge[],
-  options: InternalLayoutOptions
-) => {
+const runForceDirectedCore = (nodes: Node[], edges: Edge[], options: InternalLayoutOptions) => {
   const { nodeSpacing } = options
   const iterations = 150
   const idealDistance = nodeSpacing * 1.5
@@ -288,8 +289,8 @@ const runForceDirectedCore = (
 
   // Initialize positions
   const positions = nodes.map((n, i) => {
-    const hasValidPosition = !options.ignoreExistingPositions &&
-      n.position && (n.position.x !== 0 || n.position.y !== 0)
+    const hasValidPosition =
+      !options.ignoreExistingPositions && n.position && (n.position.x !== 0 || n.position.y !== 0)
 
     if (hasValidPosition) {
       // Use saved positions with small jitter to help break symmetry
@@ -444,7 +445,9 @@ const repositionIsolatedComponents = (
   edges: Edge[],
   nodeSpacing: number
 ) => {
-  if (positions.length === 0) return
+  if (positions.length === 0) {
+    return
+  }
 
   // Build adjacency for component detection
   const adjacency = new Map<string, Set<string>>()
@@ -460,14 +463,18 @@ const repositionIsolatedComponents = (
   const components: string[][] = []
 
   positions.forEach(p => {
-    if (visited.has(p.id)) return
+    if (visited.has(p.id)) {
+      return
+    }
 
     const component: string[] = []
     const queue = [p.id]
 
     while (queue.length > 0) {
       const nodeId = queue.shift()!
-      if (visited.has(nodeId)) continue
+      if (visited.has(nodeId)) {
+        continue
+      }
 
       visited.add(nodeId)
       component.push(nodeId)
@@ -484,7 +491,9 @@ const repositionIsolatedComponents = (
   })
 
   // If only one component, nothing to do
-  if (components.length <= 1) return
+  if (components.length <= 1) {
+    return
+  }
 
   // Sort components by size (largest first = main cluster)
   components.sort((a, b) => b.length - a.length)
@@ -493,12 +502,16 @@ const repositionIsolatedComponents = (
 
   // Calculate bounding box of main component
   const mainComponent = components[0]
-  let mainMinX = Infinity, mainMaxX = -Infinity
-  let mainMinY = Infinity, mainMaxY = -Infinity
+  let mainMinX = Infinity,
+    mainMaxX = -Infinity
+  let mainMinY = Infinity,
+    mainMaxY = -Infinity
 
   mainComponent.forEach(id => {
     const pos = posMap.get(id)
-    if (!pos) return // Skip nodes not in positions
+    if (!pos) {
+      return // Skip nodes not in positions
+    }
     mainMinX = Math.min(mainMinX, pos.x)
     mainMaxX = Math.max(mainMaxX, pos.x)
     mainMinY = Math.min(mainMinY, pos.y)
@@ -524,12 +537,16 @@ const repositionIsolatedComponents = (
     const component = components[i]
 
     // Calculate component's current bounding box
-    let compMinX = Infinity, compMaxX = -Infinity
-    let compMinY = Infinity, compMaxY = -Infinity
+    let compMinX = Infinity,
+      compMaxX = -Infinity
+    let compMinY = Infinity,
+      compMaxY = -Infinity
 
     component.forEach(id => {
       const pos = posMap.get(id)
-      if (!pos) return
+      if (!pos) {
+        return
+      }
       compMinX = Math.min(compMinX, pos.x)
       compMaxX = Math.max(compMaxX, pos.x)
       compMinY = Math.min(compMinY, pos.y)
@@ -561,7 +578,9 @@ const repositionIsolatedComponents = (
     // Apply offset to all nodes in component
     component.forEach(id => {
       const pos = posMap.get(id)
-      if (!pos) return
+      if (!pos) {
+        return
+      }
       pos.x += offsetX
       pos.y += offsetY
     })
@@ -629,10 +648,7 @@ const buildWeightedGraph = (nodes: Node[], edges: Edge[]): WeightedAdjacency => 
  * Find the longest path through prerequisite edges (the "spine")
  * Uses DFS with memoization for efficiency
  */
-const findLongestPrerequisitePath = (
-  nodes: Node[],
-  adjacency: WeightedAdjacency
-): string[] => {
+const findLongestPrerequisitePath = (nodes: Node[], adjacency: WeightedAdjacency): string[] => {
   const { outgoing, incoming } = adjacency
 
   // Find root nodes (no incoming prerequisite edges)
@@ -652,7 +668,9 @@ const findLongestPrerequisitePath = (
         bestRoot = n.id
       }
     })
-    if (bestRoot) roots.push(nodes.find(n => n.id === bestRoot)!)
+    if (bestRoot) {
+      roots.push(nodes.find(n => n.id === bestRoot)!)
+    }
   }
 
   // DFS to find longest path from each root
@@ -660,8 +678,12 @@ const findLongestPrerequisitePath = (
   const visited = new Set<string>()
 
   const dfs = (nodeId: string): string[] => {
-    if (memo.has(nodeId)) return memo.get(nodeId)!
-    if (visited.has(nodeId)) return [nodeId] // Cycle detected
+    if (memo.has(nodeId)) {
+      return memo.get(nodeId)!
+    }
+    if (visited.has(nodeId)) {
+      return [nodeId] // Cycle detected
+    }
 
     visited.add(nodeId)
 
@@ -710,10 +732,7 @@ const findLongestPrerequisitePath = (
  * Create fallback spine when no prerequisites exist
  * Uses most connected nodes as spine
  */
-const createFallbackSpine = (
-  nodes: Node[],
-  adjacency: WeightedAdjacency
-): string[] => {
+const createFallbackSpine = (nodes: Node[], adjacency: WeightedAdjacency): string[] => {
   const { outgoing, incoming } = adjacency
 
   // Score nodes by connectivity
@@ -734,7 +753,9 @@ const createFallbackSpine = (
     }
   })
 
-  if (!startNode) return []
+  if (!startNode) {
+    return []
+  }
 
   // BFS from start, following highest-weight edges
   const spine: string[] = [startNode]
@@ -755,7 +776,9 @@ const createFallbackSpine = (
       }
     })
 
-    if (!bestNeighbor) break
+    if (!bestNeighbor) {
+      break
+    }
 
     spine.push(bestNeighbor)
     used.add(bestNeighbor)
@@ -768,12 +791,14 @@ const createFallbackSpine = (
  * Determine branch direction for a node based on how it connects to spine
  * Returns: -1 for up (generalizations), 1 for down (details), 0 for spine
  */
-const getBranchDirection = (
+const _getBranchDirection = (
   nodeId: string,
   spineSet: Set<string>,
   adjacency: WeightedAdjacency
 ): number => {
-  if (spineSet.has(nodeId)) return 0
+  if (spineSet.has(nodeId)) {
+    return 0
+  }
 
   const { incoming } = adjacency
   const inEdges = incoming.get(nodeId) || []
@@ -781,8 +806,12 @@ const getBranchDirection = (
   // Check edge types from spine nodes
   for (const edge of inEdges) {
     if (spineSet.has(edge.source)) {
-      if (UPWARD_EDGE_TYPES.includes(edge.type)) return -1
-      if (DOWNWARD_EDGE_TYPES.includes(edge.type)) return 1
+      if (UPWARD_EDGE_TYPES.includes(edge.type)) {
+        return -1
+      }
+      if (DOWNWARD_EDGE_TYPES.includes(edge.type)) {
+        return 1
+      }
     }
   }
 
@@ -798,7 +827,7 @@ const calculateBranchDepths = (
   spine: string[],
   adjacency: WeightedAdjacency
 ): Map<string, { level: number; depth: number; direction: number }> => {
-  const spineSet = new Set(spine)
+  const _spineSet = new Set(spine)
   const result = new Map<string, { level: number; depth: number; direction: number }>()
 
   // Initialize spine nodes at depth 0
@@ -829,7 +858,9 @@ const calculateBranchDepths = (
   while (queue.length > 0) {
     const { id, level, depth, direction } = queue.shift()!
 
-    if (result.has(id)) continue
+    if (result.has(id)) {
+      continue
+    }
     result.set(id, { level, depth, direction })
 
     // Add neighbors at depth + 1
@@ -842,8 +873,11 @@ const calculateBranchDepths = (
       if (!result.has(neighborId)) {
         // Inherit direction from parent, or determine from edge type
         let neighborDir = direction
-        if (UPWARD_EDGE_TYPES.includes(type)) neighborDir = -1
-        else if (DOWNWARD_EDGE_TYPES.includes(type)) neighborDir = 1
+        if (UPWARD_EDGE_TYPES.includes(type)) {
+          neighborDir = -1
+        } else if (DOWNWARD_EDGE_TYPES.includes(type)) {
+          neighborDir = 1
+        }
 
         queue.push({ id: neighborId, level, depth: depth + 1, direction: neighborDir })
       }
@@ -860,7 +894,6 @@ const calculateBranchDepths = (
   return result
 }
 
-
 /**
  * Apply soft force-directed refinement for organic feel
  * Only applied when directionStrength < 1
@@ -874,7 +907,9 @@ const refineWithForces = (
   // How much to allow deviation from strict layout
   const flexibility = 1 - strength // 0 = strict, 1 = fully organic
 
-  if (flexibility <= 0) return
+  if (flexibility <= 0) {
+    return
+  }
 
   const iterations = 20
   const idealDistance = nodeSpacing * 0.8
@@ -909,15 +944,21 @@ const refineWithForces = (
     edges.forEach(e => {
       const posS = positions.get(e.source)
       const posT = positions.get(e.target)
-      if (!posS || !posT) return
+      if (!posS || !posT) {
+        return
+      }
 
       const dy = posT.y - posS.y
       const force = dy * 0.05 * flexibility
 
       const forceS = forces.get(e.source)
       const forceT = forces.get(e.target)
-      if (forceS) forceS.fy += force
-      if (forceT) forceT.fy -= force
+      if (forceS) {
+        forceS.fy += force
+      }
+      if (forceT) {
+        forceT.fy -= force
+      }
     })
 
     // Apply forces
@@ -974,9 +1015,13 @@ const pathLayout = (nodes: Node[], edges: Edge[], options: InternalLayoutOptions
       levelBranches.set(level, { up: [], spine: [], down: [] })
     }
     const branches = levelBranches.get(level)!
-    if (direction < 0) branches.up.push(nodeId)
-    else if (direction > 0) branches.down.push(nodeId)
-    else branches.spine.push(nodeId)
+    if (direction < 0) {
+      branches.up.push(nodeId)
+    } else if (direction > 0) {
+      branches.down.push(nodeId)
+    } else {
+      branches.spine.push(nodeId)
+    }
   })
 
   // 6. Sort branches within each level by depth (closer to spine first)
@@ -1001,7 +1046,7 @@ const pathLayout = (nodes: Node[], edges: Edge[], options: InternalLayoutOptions
     if (!nodesByDepthAndLevel.has(key)) {
       nodesByDepthAndLevel.set(key, [])
     }
-    nodesByDepthAndLevel.get(key)!.push(nodeId)
+    nodesByDepthAndLevel.get(key)?.push(nodeId)
   })
 
   // Position each node
@@ -1067,17 +1112,23 @@ const pathLayout = (nodes: Node[], edges: Edge[], options: InternalLayoutOptions
 
       while (queue.length > 0) {
         const id = queue.shift()!
-        if (visited.has(id)) continue
+        if (visited.has(id)) {
+          continue
+        }
         visited.add(id)
         component.push(id)
 
         const outEdges = adjacency.outgoing.get(id) || []
         const inEdges = adjacency.incoming.get(id) || []
         outEdges.forEach(({ target }) => {
-          if (!visited.has(target)) queue.push(target)
+          if (!visited.has(target)) {
+            queue.push(target)
+          }
         })
         inEdges.forEach(({ source }) => {
-          if (!visited.has(source)) queue.push(source)
+          if (!visited.has(source)) {
+            queue.push(source)
+          }
         })
       }
 
@@ -1095,7 +1146,9 @@ const pathLayout = (nodes: Node[], edges: Edge[], options: InternalLayoutOptions
         let maxY = -Infinity
         component.forEach(id => {
           const pos = positions.get(id)
-          if (pos) maxY = Math.max(maxY, pos.y)
+          if (pos) {
+            maxY = Math.max(maxY, pos.y)
+          }
         })
         currentOffset = maxY + effectiveNodeSpacing * 2
       } else {
@@ -1103,7 +1156,9 @@ const pathLayout = (nodes: Node[], edges: Edge[], options: InternalLayoutOptions
         let minY = Infinity
         component.forEach(id => {
           const pos = positions.get(id)
-          if (pos) minY = Math.min(minY, pos.y)
+          if (pos) {
+            minY = Math.min(minY, pos.y)
+          }
         })
 
         const offsetNeeded = currentOffset - minY
@@ -1185,10 +1240,14 @@ const refineBranchPositions = (
   // Reposition while respecting depth constraints
   barycenters.forEach(({ nodeId }, idx) => {
     const info = nodeInfo.get(nodeId)
-    if (!info) return
+    if (!info) {
+      return
+    }
 
     const pos = positions.get(nodeId)
-    if (!pos) return
+    if (!pos) {
+      return
+    }
 
     // Keep depth-based base position, adjust within depth group
     const baseY = info.depth * spacing * direction

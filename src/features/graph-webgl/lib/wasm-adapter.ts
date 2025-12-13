@@ -28,8 +28,18 @@ interface WasmGraphEngine {
   edge_count(): number
   // Theme & Atlases
   set_theme(json: string): void
-  load_font_atlas_data(image_data: Uint8Array, width: number, height: number, metrics_json: string): void
-  load_icon_atlas_data(image_data: Uint8Array, width: number, height: number, icons_json: string): void
+  load_font_atlas_data(
+    image_data: Uint8Array,
+    width: number,
+    height: number,
+    metrics_json: string
+  ): void
+  load_icon_atlas_data(
+    image_data: Uint8Array,
+    width: number,
+    height: number,
+    icons_json: string
+  ): void
 }
 
 interface WasmModule {
@@ -73,8 +83,6 @@ export interface GraphStats {
  */
 export class GraphEngine {
   private wasmEngine: WasmGraphEngine | null = null
-  private wasmModule: WasmModule | null = null
-  private canvas: HTMLCanvasElement | null = null
 
   async init(canvas: HTMLCanvasElement): Promise<void> {
     this.canvas = canvas
@@ -268,7 +276,12 @@ export class GraphEngine {
   /**
    * Load font atlas
    */
-  loadFontAtlasData(imageData: Uint8Array, width: number, height: number, metricsJson: string): void {
+  loadFontAtlasData(
+    imageData: Uint8Array,
+    width: number,
+    height: number,
+    metricsJson: string
+  ): void {
     if (!this.wasmEngine) {
       throw new Error('Engine not initialized')
     }

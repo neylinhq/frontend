@@ -3,11 +3,11 @@ import type { Edge } from '../edge'
 import type { LightweightNode, Node } from '../node'
 import type {
   FullMap,
-  MapEntity,
   MapDiscoverResponse,
-  MapSearchResponse,
+  MapEntity,
   MapFilter,
-  MapSearchMode
+  MapSearchMode,
+  MapSearchResponse
 } from './map.schema'
 
 // Response types
@@ -99,11 +99,21 @@ export const mapApi = {
     options?: { cookies?: string }
   ): Promise<MapDiscoverResponse> => {
     const searchParams = new URLSearchParams()
-    if (params.filter) searchParams.set('filter', params.filter)
-    if (params.sortBy) searchParams.set('sortBy', params.sortBy)
-    if (params.sortOrder) searchParams.set('sortOrder', params.sortOrder)
-    if (params.limit) searchParams.set('limit', String(params.limit))
-    if (params.offset) searchParams.set('offset', String(params.offset))
+    if (params.filter) {
+      searchParams.set('filter', params.filter)
+    }
+    if (params.sortBy) {
+      searchParams.set('sortBy', params.sortBy)
+    }
+    if (params.sortOrder) {
+      searchParams.set('sortOrder', params.sortOrder)
+    }
+    if (params.limit) {
+      searchParams.set('limit', String(params.limit))
+    }
+    if (params.offset) {
+      searchParams.set('offset', String(params.offset))
+    }
 
     const response = await api.get<ApiResponse<MapDiscoverResponse>>(
       `/maps/discover?${searchParams.toString()}`,
@@ -122,10 +132,18 @@ export const mapApi = {
   }): Promise<MapSearchResponse> => {
     const searchParams = new URLSearchParams()
     searchParams.set('q', params.query)
-    if (params.mode) searchParams.set('mode', params.mode)
-    if (params.filter) searchParams.set('filter', params.filter)
-    if (params.limit) searchParams.set('limit', String(params.limit))
-    if (params.offset) searchParams.set('offset', String(params.offset))
+    if (params.mode) {
+      searchParams.set('mode', params.mode)
+    }
+    if (params.filter) {
+      searchParams.set('filter', params.filter)
+    }
+    if (params.limit) {
+      searchParams.set('limit', String(params.limit))
+    }
+    if (params.offset) {
+      searchParams.set('offset', String(params.offset))
+    }
 
     const response = await api.get<ApiResponse<MapSearchResponse>>(
       `/maps/search?${searchParams.toString()}`

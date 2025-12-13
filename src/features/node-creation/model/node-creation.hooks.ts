@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useReactFlow, useViewport } from '@xyflow/react'
-import { mapApi, mapKeys, type FullMap, type Node } from '@/entities/map'
+import { type FullMap, mapApi, mapKeys, type Node } from '@/entities/map'
 import type { NodeType } from '@/entities/node'
 import { calculatePositionNearConnections, calculateSmartPosition } from '../lib/smart-positioning'
 import { useNodeCreationStore } from './node-creation.store'
@@ -42,12 +42,17 @@ export const useCreateNodeMutation = () => {
 
       // Calculate position - prefer near connections if any
       const connectedNodeIds = pendingConnections.map(c => c.targetNodeId)
-      const positionNearConnections = calculatePositionNearConnections(connectedNodeIds, currentNodes)
+      const positionNearConnections = calculatePositionNearConnections(
+        connectedNodeIds,
+        currentNodes
+      )
 
-      const position = positionNearConnections ?? calculateSmartPosition({
-        center: viewportCenter,
-        existingNodes: currentNodes
-      })
+      const position =
+        positionNearConnections ??
+        calculateSmartPosition({
+          center: viewportCenter,
+          existingNodes: currentNodes
+        })
 
       return mapApi.createNode(mapId, {
         label,
@@ -78,11 +83,16 @@ export const useCreateNodeMutation = () => {
       }
 
       const connectedNodeIds = pendingConnections.map(c => c.targetNodeId)
-      const positionNearConnections = calculatePositionNearConnections(connectedNodeIds, currentNodes)
-      const position = positionNearConnections ?? calculateSmartPosition({
-        center: viewportCenter,
-        existingNodes: currentNodes
-      })
+      const positionNearConnections = calculatePositionNearConnections(
+        connectedNodeIds,
+        currentNodes
+      )
+      const position =
+        positionNearConnections ??
+        calculateSmartPosition({
+          center: viewportCenter,
+          existingNodes: currentNodes
+        })
 
       // Create optimistic node
       const optimisticNode: Node = {
@@ -102,7 +112,9 @@ export const useCreateNodeMutation = () => {
 
       // Update cache optimistically
       queryClient.setQueryData<FullMap>(mapKeys.fullMap(mapId), old => {
-        if (!old) return old
+        if (!old) {
+          return old
+        }
         return {
           ...old,
           nodes: [...old.nodes, optimisticNode]
@@ -122,7 +134,9 @@ export const useCreateNodeMutation = () => {
     onSuccess: (newNode, variables, context) => {
       // Replace temp node with real one
       queryClient.setQueryData<FullMap>(mapKeys.fullMap(variables.mapId), old => {
-        if (!old) return old
+        if (!old) {
+          return old
+        }
         return {
           ...old,
           nodes: old.nodes.map(n => (n.id === context?.optimisticNode.id ? newNode : n))

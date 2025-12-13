@@ -1,0 +1,91 @@
+@reference "../../../shared/styles/globals.css";
+
+/* Floating Menu Styles
+ * S+ tier polish: shadows, smooth transitions, premium hover states
+ */
+
+/* Hide on touch devices */
+@media not all and (hover: hover) and (pointer: fine) {
+  .container {
+    display: none;
+  }
+}
+
+.container {
+  /* Base styling — ghost buttons like Notion */
+  @apply absolute z-40 flex items-center gap-0.5;
+
+  /* Smooth transitions */
+  transition: opacity 200ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Initial hidden state */
+  opacity: 0;
+}
+
+.containerVisible {
+  opacity: 1;
+}
+
+/* Button base styles */
+.button {
+  @apply flex items-center justify-center rounded;
+  @apply h-7 w-7; /* Increased from h-6 w-6 */
+  @apply text-muted-foreground;
+
+  transition: all 100ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.button:hover {
+  @apply bg-accent text-foreground;
+  transform: scale(1.05);
+}
+
+.button:active {
+  transform: scale(0.95);
+}
+
+.button:focus-visible {
+  @apply outline-none;
+  @apply ring-2 ring-primary/50 ring-offset-1 ring-offset-background;
+}
+
+/* Drag button specific */
+.dragButton {
+  composes: button;
+  cursor: grab;
+}
+
+.dragButton:active,
+.dragButtonDragging {
+  cursor: grabbing;
+}
+
+/* Add button specific */
+.addButton {
+  composes: button;
+}
+
+/* Drop indicator styles */
+.dropIndicator {
+  position: absolute;
+  height: 2px;
+  border-radius: 1px;
+  background: oklch(var(--brand));
+  pointer-events: none;
+  z-index: 50;
+
+  animation: dropPulse 1s ease-in-out infinite;
+}
+
+.dropIndicatorNested {
+  composes: dropIndicator;
+}
+
+@keyframes dropPulse {
+  0%, 100% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+  }
+}

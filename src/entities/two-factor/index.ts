@@ -1,19 +1,19 @@
-export { twoFactorApi } from './two-factor.api'
 export type {
-  TwoFactorStatus,
-  SetupTOTPResponse,
-  EnableTOTPResponse,
   EnableEmailOTPResponse,
-  RegenerateBackupCodesResponse
+  EnableTOTPResponse,
+  RegenerateBackupCodesResponse,
+  SetupTOTPResponse,
+  TwoFactorStatus
 } from './two-factor.api'
+export { twoFactorApi } from './two-factor.api'
 
 export {
   twoFactorKeys,
-  useTwoFactorStatus,
-  useSetupTOTP,
-  useEnableTOTP,
-  useEnableEmailOTP,
   useDisableTwoFactor,
+  useEnableEmailOTP,
+  useEnableTOTP,
   useRegenerateBackupCodes,
-  useSendEmailCode
+  useSendEmailCode,
+  useSetupTOTP,
+  useTwoFactorStatus
 } from './two-factor.queries'

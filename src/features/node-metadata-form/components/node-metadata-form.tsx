@@ -15,8 +15,8 @@ import {
 } from '@/shared/components/select'
 import { Slider } from '@/shared/components/slider'
 import { useDebouncedCallback } from '@/shared/hooks'
-import { COMPLEXITY_OPTIONS } from '../model/node-metadata-form.constants'
 import { type NodeMetadataFormValues, nodeMetadataFormSchema } from '../lib/validation'
+import { COMPLEXITY_OPTIONS } from '../model/node-metadata-form.constants'
 import type { NodeMetadataFormProps } from '../model/node-metadata-form.types'
 import { NodeTypeSelect } from './node-type-select'
 
@@ -56,7 +56,10 @@ export const NodeMetadataForm = ({ node, onSubmit, isPending }: NodeMetadataForm
   }
 
   const handleRemoveTag = (tagToRemove: string) => {
-    form.setValue('tags', tags.filter(t => t !== tagToRemove))
+    form.setValue(
+      'tags',
+      tags.filter(t => t !== tagToRemove)
+    )
     submitForm()
   }
 
@@ -83,10 +86,10 @@ export const NodeMetadataForm = ({ node, onSubmit, isPending }: NodeMetadataForm
   }
 
   return (
-    <div className="space-y-4" data-pending={isPending}>
+    <div className='space-y-4' data-pending={isPending}>
       {/* Type */}
-      <div className="space-y-1.5">
-        <Label className="text-xs text-muted-foreground">{t('form.nodeType.label')}</Label>
+      <div className='space-y-1.5'>
+        <Label className='text-xs text-muted-foreground'>{t('form.nodeType.label')}</Label>
         <NodeTypeSelect
           value={form.watch('type') ?? 'concept'}
           onChange={value => handleFieldChange('type', value)}
@@ -94,18 +97,18 @@ export const NodeMetadataForm = ({ node, onSubmit, isPending }: NodeMetadataForm
       </div>
 
       {/* Tags */}
-      <div className="space-y-1.5">
-        <Label className="text-xs text-muted-foreground">{t('form.tags.label')}</Label>
-        <div className="flex flex-wrap gap-1.5">
+      <div className='space-y-1.5'>
+        <Label className='text-xs text-muted-foreground'>{t('form.tags.label')}</Label>
+        <div className='flex flex-wrap gap-1.5'>
           {tags.map(tag => (
-            <Badge key={tag} variant="secondary" className="gap-1 text-xs py-0.5 px-2">
+            <Badge key={tag} variant='secondary' className='gap-1 text-xs py-0.5 px-2'>
               {tag}
               <button
-                type="button"
+                type='button'
                 onClick={() => handleRemoveTag(tag)}
-                className="ml-0.5 rounded-full hover:bg-muted-foreground/20"
+                className='ml-0.5 rounded-full hover:bg-muted-foreground/20'
               >
-                <X className="h-3 w-3" />
+                <X className='h-3 w-3' />
               </button>
             </Badge>
           ))}
@@ -115,19 +118,21 @@ export const NodeMetadataForm = ({ node, onSubmit, isPending }: NodeMetadataForm
             onKeyDown={handleTagKeyDown}
             onBlur={handleAddTag}
             placeholder={tags.length === 0 ? t('form.tags.placeholder') : '+'}
-            className="h-6 min-w-[60px] max-w-[120px] flex-1 border-dashed text-xs px-2"
+            className='h-6 min-w-[60px] max-w-[120px] flex-1 border-dashed text-xs px-2'
           />
         </div>
       </div>
 
       {/* Complexity */}
-      <div className="space-y-1.5">
-        <Label className="text-xs text-muted-foreground">{t('form.complexity.label')}</Label>
+      <div className='space-y-1.5'>
+        <Label className='text-xs text-muted-foreground'>{t('form.complexity.label')}</Label>
         <Select
           value={form.watch('complexity') || ''}
-          onValueChange={value => handleFieldChange('complexity', value as NodeMetadataFormValues['complexity'])}
+          onValueChange={value =>
+            handleFieldChange('complexity', value as NodeMetadataFormValues['complexity'])
+          }
         >
-          <SelectTrigger className="h-9">
+          <SelectTrigger className='h-9'>
             <SelectValue placeholder={t('form.complexity.placeholder')} />
           </SelectTrigger>
           <SelectContent>
@@ -141,12 +146,12 @@ export const NodeMetadataForm = ({ node, onSubmit, isPending }: NodeMetadataForm
       </div>
 
       {/* Confidence */}
-      <div className="space-y-1.5">
-        <div className="flex items-center justify-between">
-          <Label className="text-xs text-muted-foreground">
+      <div className='space-y-1.5'>
+        <div className='flex items-center justify-between'>
+          <Label className='text-xs text-muted-foreground'>
             {t('form.confidence.label', 'Confidence')}
           </Label>
-          <span className="text-xs tabular-nums text-muted-foreground">
+          <span className='text-xs tabular-nums text-muted-foreground'>
             {confidence ? Math.round(confidence * 100) : 0}%
           </span>
         </div>
@@ -156,7 +161,7 @@ export const NodeMetadataForm = ({ node, onSubmit, isPending }: NodeMetadataForm
           step={0.1}
           value={[confidence || 0]}
           onValueChange={values => handleSliderChange(values[0])}
-          className="py-1"
+          className='py-1'
         />
       </div>
     </div>

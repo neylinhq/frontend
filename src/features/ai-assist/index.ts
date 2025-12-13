@@ -1,27 +1,25 @@
-export { AISuggestionsPanel } from './components/ai-suggestions-panel'
-export { SimilarNodesPanel } from './components/similar-nodes-panel'
-
-// AI Chat components
-export { AIChatPanel } from './components/ai-chat-panel'
-export { NodeChatPanel } from './components/node-chat-panel'
-export { MapChatPanel } from './components/map-chat-panel'
-export { MapChatDrawer } from './components/map-chat-drawer'
-export { AIChatCore } from './components/ai-chat-core'
-
-// Proposal UI components
-export { ProposalCard, DiffLine, DiffBlock } from './components/proposal-card'
-
-// Store
-export { useAIPanelStore } from './model'
-
 // Types
 export type {
   ChatContext,
   ChatContextType,
-  NodeChatContext,
-  MapChatContext,
   ChatMessage,
-  PreviewCard,
   IntentHandler,
-  IntentResult
+  IntentResult,
+  MapChatContext,
+  NodeChatContext,
+  PreviewCard
 } from './ai-assist.types'
+export { AIChatCore } from './components/ai-chat-core'
+
+// AI Chat components
+export { AIChatPanel } from './components/ai-chat-panel'
+export { AISuggestionsPanel } from './components/ai-suggestions-panel'
+export { MapChatDrawer } from './components/map-chat-drawer'
+export { MapChatPanel } from './components/map-chat-panel'
+export { NodeChatPanel } from './components/node-chat-panel'
+
+// Proposal UI components
+export { DiffBlock, DiffLine, ProposalCard } from './components/proposal-card'
+export { SimilarNodesPanel } from './components/similar-nodes-panel'
+// Store
+export { useAIPanelStore } from './model'

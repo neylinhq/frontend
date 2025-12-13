@@ -17,7 +17,9 @@ export const getEdgeWidth = (strength: number) => {
 export const getEdgeDashArray = (confidence?: number) => {
   // Пунктир только при явно низкой уверенности (< 0.5)
   // Если confidence не указан - сплошная линия (дефолт = высокая уверенность)
-  if (confidence === undefined || confidence === null) return undefined
+  if (confidence === undefined || confidence === null) {
+    return undefined
+  }
   return confidence < 0.5 ? '5,5' : undefined
 }
 

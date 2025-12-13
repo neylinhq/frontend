@@ -112,7 +112,9 @@ export const AvatarUpload = ({
               </Button>
             )}
           </div>
-          <p className='text-xs text-muted-foreground'>{t('settings.profile.avatar.requirements')}</p>
+          <p className='text-xs text-muted-foreground'>
+            {t('settings.profile.avatar.requirements')}
+          </p>
         </div>
       </div>
 

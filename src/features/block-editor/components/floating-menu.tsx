@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { UI_DELAYS } from '@/shared/config/api-delays'
 import { cn } from '@/shared/lib/cn'
 import { GUTTER, THRESHOLD } from '../model/block-editor.constants'
+import styles from '../styles/floating-menu.module.css'
 
 interface FloatingMenuProps {
   editor: Editor
@@ -139,26 +140,23 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
 
       if (!dropIndicatorRef.current) {
         const indicator = document.createElement('div')
-        indicator.className = 'editor-drop-indicator'
+        indicator.className = isNested ? styles.dropIndicatorNested : styles.dropIndicator
         dropIndicatorRef.current = indicator
         container.appendChild(indicator)
+      } else {
+        // Update class if nesting changed
+        dropIndicatorRef.current.className = isNested
+          ? styles.dropIndicatorNested
+          : styles.dropIndicator
       }
 
-      // Brighter accent when nesting
-      const opacity = isNested ? 1 : 0.7
-
+      // Position styles (dynamic, must be inline)
       dropIndicatorRef.current.style.cssText = `
         position: absolute;
         top: ${y}px;
         left: ${left + indent}px;
         width: ${width - indent}px;
-        height: 2px;
-        background: hsl(var(--brand) / ${opacity});
-        border-radius: 1px;
-        pointer-events: none;
-        z-index: 100;
-        transition: left 0.1s ease, width 0.1s ease, opacity 0.1s ease;
-        ${isNested ? 'box-shadow: 0 0 8px hsl(var(--brand) / 0.4);' : ''}
+        transition: left 0.1s ease, width 0.1s ease;
       `
     },
     []
@@ -207,7 +205,9 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
       // This handles nested structures like lists where we want to target individual <li> elements
       const findBlockAtY = (element: Element): HTMLElement | null => {
         for (const child of element.children) {
-          if (!(child instanceof HTMLElement)) continue
+          if (!(child instanceof HTMLElement)) {
+            continue
+          }
 
           const childRect = child.getBoundingClientRect()
           const childTop = childRect.top - editorRect.top
@@ -224,7 +224,9 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
             // If this is a list container, search inside for specific list item
             if (child.tagName === 'UL' || child.tagName === 'OL') {
               const nested = findBlockAtY(child)
-              if (nested) return nested
+              if (nested) {
+                return nested
+              }
               // Fallback to the list itself if no specific item found
               return child
             }
@@ -338,7 +340,9 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
         const mouseY = e.clientY
 
         // Recursively find target block/list item by Y coordinate
-        const findTargetAtY = (element: Element): { block: HTMLElement; insertAfter: boolean } | null => {
+        const findTargetAtY = (
+          element: Element
+        ): { block: HTMLElement; insertAfter: boolean } | null => {
           const children = Array.from(element.children).filter(
             (el): el is HTMLElement => el instanceof HTMLElement
           )
@@ -357,7 +361,9 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
               // If it's a list, search inside
               if (child.tagName === 'UL' || child.tagName === 'OL') {
                 const nested = findTargetAtY(child)
-                if (nested) return nested
+                if (nested) {
+                  return nested
+                }
               }
               // Regular block
               return { block: child, insertAfter: mouseY > blockCenter }
@@ -377,7 +383,9 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
         }
 
         const result = findTargetAtY(proseMirror)
-        if (!result) return
+        if (!result) {
+          return
+        }
 
         const { block: targetBlock, insertAfter } = result
         const targetRect = targetBlock.getBoundingClientRect()
@@ -410,7 +418,8 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
           }
 
           // Use listItemDepth for list items, otherwise use block depth
-          const effectiveDepth = listItemDepth > 0 ? listItemDepth : ($pos.depth >= 1 ? $pos.depth : 0)
+          const effectiveDepth =
+            listItemDepth > 0 ? listItemDepth : $pos.depth >= 1 ? $pos.depth : 0
           const blockPos = effectiveDepth > 0 ? $pos.before(effectiveDepth) : pos
 
           dropTargetRef.current = {
@@ -639,7 +648,8 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
           let nodeToInsert = sourceNode
 
           // If source is a listItem being dropped at top-level, wrap in list
-          const isSourceListItem = sourceNode.type.name === 'listItem' || sourceNode.type.name === 'taskItem'
+          const isSourceListItem =
+            sourceNode.type.name === 'listItem' || sourceNode.type.name === 'taskItem'
           const isTargetTopLevel = $targetPos.depth <= 1
 
           if (isSourceListItem && isTargetTopLevel) {
@@ -647,7 +657,11 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
             let parentListType: string | null = null
             for (let d = $sourcePos.depth - 1; d >= 0; d--) {
               const node = $sourcePos.node(d)
-              if (node.type.name === 'bulletList' || node.type.name === 'orderedList' || node.type.name === 'taskList') {
+              if (
+                node.type.name === 'bulletList' ||
+                node.type.name === 'orderedList' ||
+                node.type.name === 'taskList'
+              ) {
                 parentListType = node.type.name
                 break
               }
@@ -786,12 +800,12 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
       top: -1000px;
       left: -1000px;
       opacity: 0.8;
-      background: hsl(var(--background));
-      border: 1px solid hsl(var(--border));
+      background: oklch(var(--background));
+      border: 1px solid oklch(var(--border));
       border-radius: 8px;
       padding: 8px;
       max-width: 300px;
-      box-shadow: 0 4px 12px hsl(var(--foreground) / 0.15);
+      box-shadow: 0 4px 12px oklch(var(--foreground) / 0.15);
     `
 
     // FIX: Use try-finally to guarantee ghost cleanup even if setDragImage throws
@@ -853,10 +867,7 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
     <div
       ref={menuRef}
       role='toolbar'
-      className={cn(
-        'editor-floating-menu absolute z-40 flex items-center gap-0.5 opacity-50 transition-opacity hover:opacity-100',
-        GUTTER.MENU_POSITION_CLASS
-      )}
+      className={cn(styles.container, styles.containerVisible, GUTTER.MENU_POSITION_CLASS)}
       style={{
         top: Math.max(0, menuTop)
       }}
@@ -868,10 +879,7 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
         onMouseDown={handleMouseDownAdd}
         onClick={handleAddClick}
         aria-label={t('editor.floating.addBlock')}
-        className={cn(
-          'flex h-6 w-6 items-center justify-center rounded transition-colors',
-          'text-muted-foreground hover:bg-accent hover:text-foreground'
-        )}
+        className={styles.addButton}
         title={t('editor.floating.addBlock')}
       >
         <Plus className='h-4 w-4' />
@@ -882,11 +890,7 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
         aria-label={t('editor.floating.dragToMove')}
-        className={cn(
-          'flex h-6 w-6 items-center justify-center rounded transition-colors',
-          'text-muted-foreground hover:bg-accent hover:text-foreground',
-          isDragging ? 'cursor-grabbing' : 'cursor-grab'
-        )}
+        className={cn(styles.dragButton, isDragging && styles.dragButtonDragging)}
         title={t('editor.floating.dragToMove')}
       >
         <GripVertical className='h-4 w-4' />

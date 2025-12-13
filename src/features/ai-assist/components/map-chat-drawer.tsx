@@ -1,9 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Drawer as VaulDrawer } from 'vaul'
-import {
-  Drawer,
-  DrawerContent
-} from '@/shared/components/drawer'
+import { Drawer, DrawerContent } from '@/shared/components/drawer'
 import { cn } from '@/shared/lib/cn'
 import { useAIPanelStore } from '../model'
 import { MapChatPanel } from './map-chat-panel'
@@ -21,7 +18,9 @@ export const MapChatDrawer = ({ mapId }: MapChatDrawerProps) => {
   const { isOpen, close } = useAIPanelStore()
   const [isMobile, setIsMobile] = useState(false)
   const [width, setWidth] = useState(() => {
-    if (typeof window === 'undefined') return DEFAULT_WIDTH
+    if (typeof window === 'undefined') {
+      return DEFAULT_WIDTH
+    }
     const saved = localStorage.getItem(STORAGE_KEY)
     return saved ? Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, parseInt(saved, 10))) : DEFAULT_WIDTH
   })
@@ -43,15 +42,20 @@ export const MapChatDrawer = ({ mapId }: MapChatDrawerProps) => {
     }
   }, [width, isResizing])
 
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    e.preventDefault()
-    setIsResizing(true)
-    startXRef.current = e.clientX
-    startWidthRef.current = width
-  }, [width])
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault()
+      setIsResizing(true)
+      startXRef.current = e.clientX
+      startWidthRef.current = width
+    },
+    [width]
+  )
 
   useEffect(() => {
-    if (!isResizing) return
+    if (!isResizing) {
+      return
+    }
 
     const handleMouseMove = (e: MouseEvent) => {
       // Resize from left edge: moving left increases width
@@ -75,13 +79,13 @@ export const MapChatDrawer = ({ mapId }: MapChatDrawerProps) => {
 
   if (isMobile) {
     return (
-      <VaulDrawer.Root open={isOpen} onOpenChange={(open) => !open && close()}>
+      <VaulDrawer.Root open={isOpen} onOpenChange={open => !open && close()}>
         <VaulDrawer.Portal>
-          <VaulDrawer.Overlay className="fixed inset-0 z-40 bg-black/40" />
-          <VaulDrawer.Content className="fixed inset-x-0 bottom-0 z-50 flex h-[85vh] flex-col rounded-t-xl bg-background">
+          <VaulDrawer.Overlay className='fixed inset-0 z-40 bg-black/40' />
+          <VaulDrawer.Content className='fixed inset-x-0 bottom-0 z-50 flex h-[85vh] flex-col rounded-t-xl bg-background'>
             {/* Drag handle for swipe-to-close */}
-            <div className="mx-auto mt-3 h-1 w-12 shrink-0 rounded-full bg-muted-foreground/30" />
-            <div className="flex-1 overflow-hidden">
+            <div className='mx-auto mt-3 h-1 w-12 shrink-0 rounded-full bg-muted-foreground/30' />
+            <div className='flex-1 overflow-hidden'>
               <MapChatPanel mapId={mapId} />
             </div>
           </VaulDrawer.Content>
@@ -91,14 +95,14 @@ export const MapChatDrawer = ({ mapId }: MapChatDrawerProps) => {
   }
 
   return (
-    <Drawer open={isOpen} onOpenChange={(open) => !open && close()} modal={false}>
+    <Drawer open={isOpen} onOpenChange={open => !open && close()} modal={false}>
       <DrawerContent
-        side="right"
+        side='right'
         size={`${width}px`}
         showOverlay={false}
         showClose={true}
-        onInteractOutside={(e) => e.preventDefault()}
-        onPointerDownOutside={(e) => e.preventDefault()}
+        onInteractOutside={e => e.preventDefault()}
+        onPointerDownOutside={e => e.preventDefault()}
       >
         {/* Resize handle */}
         <div
@@ -110,7 +114,7 @@ export const MapChatDrawer = ({ mapId }: MapChatDrawerProps) => {
           )}
           onMouseDown={handleMouseDown}
         />
-        <div className="flex h-full flex-col pt-2 pl-1">
+        <div className='flex h-full flex-col pt-2 pl-1'>
           <MapChatPanel mapId={mapId} />
         </div>
       </DrawerContent>

@@ -6,10 +6,10 @@
  */
 
 import { memo, useMemo } from 'react'
-import type { Node, Edge } from '@/entities/map'
-import type { ViewportState } from '../lib/types'
-import { NodeOverlay } from '@/features/graph-webgl/components/node-overlay'
+import type { Edge, Node } from '@/entities/map'
 import { EdgeOverlay } from '@/features/graph-webgl/components/edge-overlay'
+import { NodeOverlay } from '@/features/graph-webgl/components/node-overlay'
+import type { ViewportState } from '../lib/types'
 
 /** Fixed node dimensions for culling calculations */
 const NODE_WIDTH = 250
@@ -37,7 +37,7 @@ export const DomOverlay = memo(function DomOverlay({
   focusedNodeId,
   dimmedNodeIds = [],
   worldToScreen,
-  onNodeClick,
+  onNodeClick
 }: DomOverlayProps) {
   // Calculate visible bounds with padding (in world coordinates)
   const visibleBounds = useMemo(() => {
@@ -48,7 +48,7 @@ export const DomOverlay = memo(function DomOverlay({
       minX: viewport.x - halfW,
       maxX: viewport.x + halfW,
       minY: viewport.y - halfH,
-      maxY: viewport.y + halfH,
+      maxY: viewport.y + halfH
     }
   }, [viewport.x, viewport.y, viewport.width, viewport.height, viewport.zoom])
 
@@ -89,10 +89,10 @@ export const DomOverlay = memo(function DomOverlay({
   const dimmedSet = useMemo(() => new Set(dimmedNodeIds), [dimmedNodeIds])
 
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+    <div className='absolute inset-0 pointer-events-none overflow-hidden'>
       {/* SVG layer for edges */}
       <svg
-        className="absolute inset-0"
+        className='absolute inset-0'
         style={{ zIndex: 0 }}
         width={viewport.width}
         height={viewport.height}
@@ -100,7 +100,9 @@ export const DomOverlay = memo(function DomOverlay({
         {visibleEdges.map(edge => {
           const source = nodePositions.get(edge.sourceNodeId)
           const target = nodePositions.get(edge.targetNodeId)
-          if (!source || !target) return null
+          if (!source || !target) {
+            return null
+          }
 
           const sourceScreen = worldToScreen(source.x, source.y)
           const targetScreen = worldToScreen(target.x, target.y)
@@ -120,8 +122,8 @@ export const DomOverlay = memo(function DomOverlay({
       </svg>
 
       {/* DOM layer for nodes */}
-      <div className="absolute inset-0" style={{ zIndex: 1 }}>
-        {visibleNodes.map((node) => {
+      <div className='absolute inset-0' style={{ zIndex: 1 }}>
+        {visibleNodes.map(node => {
           const screen = worldToScreen(node.position.x, node.position.y)
 
           return (

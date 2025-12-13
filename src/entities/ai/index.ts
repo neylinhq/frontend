@@ -1,8 +1,8 @@
 // Schema exports
 
+export type { ChatStreamChunk, ChatWithMapResponse, NodeReference, ProposalData } from './ai.api'
 // API exports
 export { aiApi } from './ai.api'
-export type { ChatWithMapResponse, ChatStreamChunk, ProposalData, NodeReference } from './ai.api'
 // Query exports
 export {
   aiKeys,

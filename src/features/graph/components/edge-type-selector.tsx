@@ -49,20 +49,10 @@ export const EdgeTypeSelector = memo(({ mapId, onComplete, onCancel }: EdgeTypeS
     }
   }, [cancelEdgeCreation, onCancel])
 
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        cancelEdgeCreation()
-        onCancel?.()
-      } else if (e.key === 'Enter') {
-        handleConfirm()
-      }
-    },
-    [cancelEdgeCreation, onCancel]
-  )
-
   const handleConfirm = useCallback(async () => {
-    if (!pendingEdge || !mapId) return
+    if (!pendingEdge || !mapId) {
+      return
+    }
 
     try {
       await createEdge.mutateAsync({
@@ -74,7 +64,7 @@ export const EdgeTypeSelector = memo(({ mapId, onComplete, onCancel }: EdgeTypeS
       })
       cancelEdgeCreation()
       onComplete?.()
-    } catch (error) {
+    } catch (_error) {
       // Error handled by mutation
     }
   }, [pendingEdge, mapId, selectedRelationType, createEdge, cancelEdgeCreation, onComplete])
@@ -84,12 +74,25 @@ export const EdgeTypeSelector = memo(({ mapId, onComplete, onCancel }: EdgeTypeS
     onCancel?.()
   }, [cancelEdgeCreation, onCancel])
 
-  if (!pendingEdge) return null
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        cancelEdgeCreation()
+        onCancel?.()
+      } else if (e.key === 'Enter') {
+        handleConfirm()
+      }
+    },
+    [cancelEdgeCreation, onCancel, handleConfirm]
+  )
+
+  if (!pendingEdge) {
+    return null
+  }
 
   return (
     <div
       ref={containerRef}
-      tabIndex={0}
       onKeyDown={handleKeyDown}
       className='fixed z-50 w-[280px] rounded-lg border bg-popover p-3 shadow-lg'
       style={{

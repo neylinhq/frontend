@@ -6,7 +6,9 @@ export const useWebSocket = (mapId: string) => {
   const queryClient = useQueryClient()
 
   useEffect(() => {
-    if (!mapId) return
+    if (!mapId) {
+      return
+    }
 
     wsClient.joinRoom(mapId)
 

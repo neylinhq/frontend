@@ -21,7 +21,16 @@ interface NodeConnectionsPanelProps {
 }
 
 export const NodeConnectionsPanel = memo(
-  ({ node, edges, allNodes, className, onOpenNode, onPanToNode, onEditEdge, onDeleteEdge }: NodeConnectionsPanelProps) => {
+  ({
+    node,
+    edges,
+    allNodes,
+    className,
+    onOpenNode,
+    onPanToNode,
+    onEditEdge,
+    onDeleteEdge
+  }: NodeConnectionsPanelProps) => {
     const { t } = useTranslation()
     const { filter, changeFilter, filteredEdges, incomingCount, outgoingCount, totalCount } =
       useConnectionFilter(node.id, edges)
@@ -100,7 +109,9 @@ export const NodeConnectionsPanel = memo(
                     label={connectedNode.label}
                     subtitle={
                       <>
-                        <span className='shrink-0'>{t(`graph.edgeTypes.${edge.relationType}`)}</span>
+                        <span className='shrink-0'>
+                          {t(`graph.edgeTypes.${edge.relationType}`)}
+                        </span>
                         {edge.label && <span className='opacity-60 truncate'>· {edge.label}</span>}
                       </>
                     }
@@ -136,7 +147,9 @@ export const NodeConnectionsPanel = memo(
                     label={connectedNode.label}
                     subtitle={
                       <>
-                        <span className='shrink-0'>{t(`graph.edgeTypes.${edge.relationType}`)}</span>
+                        <span className='shrink-0'>
+                          {t(`graph.edgeTypes.${edge.relationType}`)}
+                        </span>
                         {edge.label && <span className='opacity-60 truncate'>· {edge.label}</span>}
                       </>
                     }

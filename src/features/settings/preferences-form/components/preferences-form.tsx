@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next'
-import { toast } from '@/shared/components/toast'
 import {
   defaultUserPreferences,
   type User,
@@ -11,20 +10,10 @@ import { PaletteToggle } from '@/features/theme/palette-toggle'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
 import { Label } from '@/shared/components/label'
 import { LanguageSwitcher } from '@/shared/components/language-switcher'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/shared/components/select'
 import { Switch } from '@/shared/components/switch'
+import { toast } from '@/shared/components/toast'
 import { Typography } from '@/shared/components/typography'
-import {
-  DENSITY_OPTIONS,
-  INTERFACE_SWITCH_SETTINGS,
-  NOTIFICATION_SETTINGS
-} from '../model/preferences-form.constants'
+import { NOTIFICATION_SETTINGS } from '../model/preferences-form.constants'
 
 interface PreferencesFormProps {
   user: User

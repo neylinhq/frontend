@@ -18,6 +18,8 @@ export interface ChatMessage {
   resolvedPreviews?: ResolvedPreview[]
   sourceNodes?: SourceNode[]
   isStreaming?: boolean
+  /** AI brand identifier for assistant messages (e.g., 'openai', 'anthropic', 'deepseek') */
+  brand?: string
 }
 
 // Preview card types

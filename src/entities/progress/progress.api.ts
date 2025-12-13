@@ -1,8 +1,8 @@
 import { api } from '@/shared/api/client'
 import type {
-  UpdateNodeProgressRequest,
+  ReviewNodeRequest,
   UpdateMapProgressRequest,
-  ReviewNodeRequest
+  UpdateNodeProgressRequest
 } from './progress.schema'
 
 export const progressApi = {
@@ -10,8 +10,7 @@ export const progressApi = {
   getNodeProgress: async (mapId: string, nodeId: string) =>
     api.get(`/maps/${mapId}/nodes/${nodeId}/progress`),
 
-  getAllNodeProgress: async (mapId: string) =>
-    api.get(`/maps/${mapId}/progress/nodes`),
+  getAllNodeProgress: async (mapId: string) => api.get(`/maps/${mapId}/progress/nodes`),
 
   updateNodeProgress: async (mapId: string, nodeId: string, data: UpdateNodeProgressRequest) =>
     api.patch(`/maps/${mapId}/nodes/${nodeId}/progress`, data),
@@ -23,8 +22,7 @@ export const progressApi = {
     api.post(`/maps/${mapId}/nodes/${nodeId}/bookmark`),
 
   // Map progress operations
-  getMapProgress: async (mapId: string) =>
-    api.get(`/maps/${mapId}/progress`),
+  getMapProgress: async (mapId: string) => api.get(`/maps/${mapId}/progress`),
 
   updateViewport: async (mapId: string, data: UpdateMapProgressRequest) =>
     api.patch(`/maps/${mapId}/progress/viewport`, data),
@@ -33,6 +31,5 @@ export const progressApi = {
     api.patch(`/maps/${mapId}/progress/favorite`, { isFavorite }),
 
   // Stats
-  getMapStats: async (mapId: string) =>
-    api.get(`/maps/${mapId}/progress/stats`)
+  getMapStats: async (mapId: string) => api.get(`/maps/${mapId}/progress/stats`)
 }

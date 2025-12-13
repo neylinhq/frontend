@@ -3,7 +3,7 @@
 /* Sidebar scrollbar */
 .sidebar {
   scrollbar-width: thin;
-  scrollbar-color: hsl(var(--muted-foreground) / 0.2) transparent;
+  scrollbar-color: oklch(var(--muted-foreground) / 0.2) transparent;
 }
 
 .sidebar::-webkit-scrollbar {
@@ -15,12 +15,12 @@
 }
 
 .sidebar::-webkit-scrollbar-thumb {
-  background-color: hsl(var(--muted-foreground) / 0.2);
+  background-color: oklch(var(--muted-foreground) / 0.2);
   border-radius: 9999px;
 }
 
 .sidebar::-webkit-scrollbar-thumb:hover {
-  background-color: hsl(var(--muted-foreground) / 0.3);
+  background-color: oklch(var(--muted-foreground) / 0.3);
 }
 
 /* Navigation section header */
@@ -33,13 +33,13 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: hsl(var(--muted-foreground));
+  color: oklch(var(--muted-foreground));
   border-radius: 0.375rem;
   cursor: pointer;
 }
 
 .sectionHeader:hover {
-  background: hsl(var(--accent) / 0.3);
+  background: oklch(var(--accent) / 0.3);
 }
 
 /* Navigation item */
@@ -50,18 +50,18 @@
   padding: 0.5rem 0.75rem;
   border-radius: 0.375rem;
   font-size: 0.875rem;
-  color: hsl(var(--muted-foreground));
+  color: oklch(var(--muted-foreground));
   cursor: pointer;
 }
 
 .navItem:hover {
-  background: hsl(var(--accent) / 0.5);
-  color: hsl(var(--accent-foreground));
+  background: oklch(var(--accent) / 0.5);
+  color: oklch(var(--accent-foreground));
 }
 
 .navItemActive {
-  background: hsl(var(--accent));
-  color: hsl(var(--foreground));
+  background: oklch(var(--accent));
+  color: oklch(var(--foreground));
   font-weight: 500;
 }
 
@@ -73,6 +73,6 @@
   transform: translateY(-50%);
   width: 2px;
   height: 1.25rem;
-  background: hsl(var(--brand));
+  background: oklch(var(--brand));
   border-radius: 9999px;
 }

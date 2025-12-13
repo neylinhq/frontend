@@ -1,4 +1,4 @@
-import { Loader2, Wallet } from 'lucide-react'
+import { AlertCircle, Loader2, Wallet } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import type { CryptoNetwork } from '@/entities/subscription'
 import { getNetworkDisplayName, shortenWalletAddress } from '@/entities/subscription'
@@ -12,6 +12,7 @@ interface WalletConnectStepProps {
   address: string | null
   onConnect: () => void
   onDisconnect: () => void
+  error?: string | null
 }
 
 export const WalletConnectStep = ({
@@ -20,7 +21,8 @@ export const WalletConnectStep = ({
   isConnecting,
   address,
   onConnect,
-  onDisconnect
+  onDisconnect,
+  error
 }: WalletConnectStepProps) => {
   const { t } = useTranslation()
   // Только TON поддерживается
@@ -45,9 +47,7 @@ export const WalletConnectStep = ({
             {t('billing.crypto.wallet.disconnect')}
           </Button>
         </div>
-        <p className='text-sm text-muted-foreground'>
-          {getNetworkDisplayName(network)}
-        </p>
+        <p className='text-sm text-muted-foreground'>{getNetworkDisplayName(network)}</p>
       </div>
     )
   }
@@ -75,6 +75,12 @@ export const WalletConnectStep = ({
           </>
         )}
       </Button>
+      {error && (
+        <div className='flex items-center gap-2 text-sm text-destructive'>
+          <AlertCircle className='h-4 w-4' />
+          <span>{error}</span>
+        </div>
+      )}
     </div>
   )
 }

@@ -1,7 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { toast } from '@/shared/components/toast'
 import {
   type UpdateProfile,
   type User,
@@ -23,6 +22,7 @@ import {
 } from '@/shared/components/form'
 import { Input } from '@/shared/components/input'
 import { Textarea } from '@/shared/components/textarea'
+import { toast } from '@/shared/components/toast'
 import { Typography } from '@/shared/components/typography'
 import { type ProfileFormValues, profileFormSchema } from '../lib/validation'
 import { AvatarUpload } from './avatar-upload'
@@ -50,9 +50,15 @@ export const ProfileForm = ({ user: initialUser }: ProfileFormProps) => {
   const onSubmit = (values: ProfileFormValues) => {
     // Filter out empty strings to avoid backend validation errors
     const payload: UpdateProfile = {}
-    if (values.displayName?.trim()) payload.displayName = values.displayName.trim()
-    if (values.username?.trim()) payload.username = values.username.trim()
-    if (values.bio?.trim()) payload.bio = values.bio.trim()
+    if (values.displayName?.trim()) {
+      payload.displayName = values.displayName.trim()
+    }
+    if (values.username?.trim()) {
+      payload.username = values.username.trim()
+    }
+    if (values.bio?.trim()) {
+      payload.bio = values.bio.trim()
+    }
 
     updateProfile.mutate(payload, {
       onSuccess: () => {

@@ -14,7 +14,9 @@ export const LanguageSwitcher = () => {
   const { i18n } = useTranslation()
 
   const handleChange = (lng: string) => {
-    if (lng === i18n.language) return
+    if (lng === i18n.language) {
+      return
+    }
     changeLanguage(lng)
   }
 

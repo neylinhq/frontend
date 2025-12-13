@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import { ApiError } from '@/shared/api/client'
-import { toast } from '@/shared/components/toast'
 import { Button } from '@/shared/components/button'
 import {
   Dialog,
@@ -15,18 +14,18 @@ import {
 import { Input } from '@/shared/components/input'
 import { Label } from '@/shared/components/label'
 import { Textarea } from '@/shared/components/textarea'
+import { toast } from '@/shared/components/toast'
 import { MAPS_ROUTES } from '@/shared/config'
 import { MAP_CREATION_CONFIG } from '../model/map-creation.constants'
-import { useMapCreationStore } from '../model/map-creation.store'
 import { useCreateMapMutation } from '../model/map-creation.hooks'
+import { useMapCreationStore } from '../model/map-creation.store'
 
 export const CreateMapDialog = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const titleInputRef = useRef<HTMLInputElement>(null)
 
-  const { isDialogOpen, draftTitle, draftDescription, closeDialog, setDraft } =
-    useMapCreationStore()
+  const { isDialogOpen, closeDialog, setDraft } = useMapCreationStore()
   const createMap = useCreateMapMutation()
 
   const [title, setTitle] = useState('')

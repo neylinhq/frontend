@@ -58,10 +58,10 @@ export const TOC = {
  * The gutter is the left margin where floating menu buttons appear
  */
 export const GUTTER = {
-  /** Width of gutter in pixels (Tailwind: pl-16 = 64px) */
-  WIDTH: 64,
+  /** Width of gutter in pixels (Tailwind: pl-20 = 80px) */
+  WIDTH: 80,
   /** Tailwind class for gutter padding (apply to content containers) */
-  PADDING_CLASS: 'md:pl-16',
+  PADDING_CLASS: 'md:pl-20',
   /** Tailwind class for floating menu position (negative of padding) */
-  MENU_POSITION_CLASS: '-left-16'
+  MENU_POSITION_CLASS: '-left-20'
 } as const

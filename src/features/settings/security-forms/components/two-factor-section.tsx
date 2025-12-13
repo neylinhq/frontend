@@ -1,19 +1,15 @@
 import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-  type TwoFactorStatus,
-  useTwoFactorStatus,
-  useEnableEmailOTP
-} from '@/entities/two-factor'
+import { type TwoFactorStatus, useEnableEmailOTP, useTwoFactorStatus } from '@/entities/two-factor'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
 import { Skeleton } from '@/shared/components/skeleton'
 import { toast } from '@/shared/components/toast'
-import { TotpSetupDialog } from './totp-setup-dialog'
 import { BackupCodesDialog } from './backup-codes-dialog'
 import { DisableTwoFactorDialog } from './disable-two-factor-dialog'
+import { TotpSetupDialog } from './totp-setup-dialog'
 
 interface TwoFactorSectionProps {
   initialStatus?: TwoFactorStatus | null
@@ -34,14 +30,14 @@ export const TwoFactorSection = ({ initialStatus }: TwoFactorSectionProps) => {
 
   const handleEnableEmailOTP = () => {
     enableEmailOTP.mutate(undefined, {
-      onSuccess: (data) => {
+      onSuccess: data => {
         toast.success(t('settings.security.twoFactor.emailEnabled'))
         if (data.backupCodes && data.backupCodes.length > 0) {
           setBackupCodes(data.backupCodes)
           setShowBackupCodes(true)
         }
       },
-      onError: (error) => {
+      onError: error => {
         toast.error(error.message || t('settings.security.twoFactor.enableError'))
       }
     })
@@ -59,11 +55,11 @@ export const TwoFactorSection = ({ initialStatus }: TwoFactorSectionProps) => {
       <Card>
         <CardHeader>
           <CardTitle>{t('settings.security.twoFactor.title')}</CardTitle>
-          <Skeleton className="h-4 w-64 mt-2" />
+          <Skeleton className='h-4 w-64 mt-2' />
         </CardHeader>
-        <CardContent className="space-y-4">
-          <Skeleton className="h-20 w-full" />
-          <Skeleton className="h-20 w-full" />
+        <CardContent className='space-y-4'>
+          <Skeleton className='h-20 w-full' />
+          <Skeleton className='h-20 w-full' />
         </CardContent>
       </Card>
     )
@@ -74,62 +70,56 @@ export const TwoFactorSection = ({ initialStatus }: TwoFactorSectionProps) => {
       <Card>
         <CardHeader>
           <CardTitle>{t('settings.security.twoFactor.title')}</CardTitle>
-          <CardDescription>
-            {t('settings.security.twoFactor.description')}
-          </CardDescription>
+          <CardDescription>{t('settings.security.twoFactor.description')}</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className='space-y-4'>
           {/* TOTP Method */}
-          <div className="flex items-center justify-between rounded-lg border p-4">
+          <div className='flex items-center justify-between rounded-lg border p-4'>
             <div>
-              <p className="text-sm font-medium">{t('settings.security.twoFactor.totp.title')}</p>
-              <p className="text-xs text-muted-foreground">
+              <p className='text-sm font-medium'>{t('settings.security.twoFactor.totp.title')}</p>
+              <p className='text-xs text-muted-foreground'>
                 {t('settings.security.twoFactor.totp.description')}
               </p>
             </div>
             {status?.totpEnabled ? (
-              <Badge variant="outline" className="text-green-600 border-green-600">
+              <Badge variant='outline' className='text-green-600 border-green-600'>
                 {t('settings.security.twoFactor.active')}
               </Badge>
             ) : activeMethod === 'email' ? (
-              <span className="text-xs text-muted-foreground">
+              <span className='text-xs text-muted-foreground'>
                 {t('settings.security.twoFactor.disableOtherFirst')}
               </span>
             ) : (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowTotpSetup(true)}
-              >
+              <Button variant='ghost' size='sm' onClick={() => setShowTotpSetup(true)}>
                 {t('settings.security.twoFactor.setup')}
               </Button>
             )}
           </div>
 
           {/* Email OTP Method */}
-          <div className="flex items-center justify-between rounded-lg border p-4">
+          <div className='flex items-center justify-between rounded-lg border p-4'>
             <div>
-              <p className="text-sm font-medium">{t('settings.security.twoFactor.email.title')}</p>
-              <p className="text-xs text-muted-foreground">
+              <p className='text-sm font-medium'>{t('settings.security.twoFactor.email.title')}</p>
+              <p className='text-xs text-muted-foreground'>
                 {t('settings.security.twoFactor.email.description')}
               </p>
             </div>
             {status?.emailOtpEnabled ? (
-              <Badge variant="outline" className="text-green-600 border-green-600">
+              <Badge variant='outline' className='text-green-600 border-green-600'>
                 {t('settings.security.twoFactor.active')}
               </Badge>
             ) : activeMethod === 'totp' ? (
-              <span className="text-xs text-muted-foreground">
+              <span className='text-xs text-muted-foreground'>
                 {t('settings.security.twoFactor.disableOtherFirst')}
               </span>
             ) : (
               <Button
-                variant="ghost"
-                size="sm"
+                variant='ghost'
+                size='sm'
                 onClick={handleEnableEmailOTP}
                 disabled={enableEmailOTP.isPending}
               >
-                {enableEmailOTP.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {enableEmailOTP.isPending && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
                 {t('settings.security.twoFactor.enable')}
               </Button>
             )}
@@ -137,18 +127,18 @@ export const TwoFactorSection = ({ initialStatus }: TwoFactorSectionProps) => {
 
           {/* Backup Codes Status */}
           {isEnabled && (
-            <div className="flex items-center justify-between rounded-lg border p-4">
+            <div className='flex items-center justify-between rounded-lg border p-4'>
               <div>
-                <p className="text-sm font-medium">{t('settings.security.twoFactor.backup.title')}</p>
-                <p className="text-xs text-muted-foreground">
-                  {t('settings.security.twoFactor.backup.remaining', { count: status?.backupCodesRemaining ?? 0 })}
+                <p className='text-sm font-medium'>
+                  {t('settings.security.twoFactor.backup.title')}
+                </p>
+                <p className='text-xs text-muted-foreground'>
+                  {t('settings.security.twoFactor.backup.remaining', {
+                    count: status?.backupCodesRemaining ?? 0
+                  })}
                 </p>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowBackupCodes(true)}
-              >
+              <Button variant='ghost' size='sm' onClick={() => setShowBackupCodes(true)}>
                 {t('settings.security.twoFactor.backup.regenerate')}
               </Button>
             </div>
@@ -156,11 +146,11 @@ export const TwoFactorSection = ({ initialStatus }: TwoFactorSectionProps) => {
 
           {/* Disable 2FA */}
           {isEnabled && (
-            <div className="flex justify-end">
+            <div className='flex justify-end'>
               <Button
-                variant="ghost"
-                size="sm"
-                className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                variant='ghost'
+                size='sm'
+                className='text-destructive hover:text-destructive hover:bg-destructive/10'
                 onClick={() => setShowDisable(true)}
               >
                 {t('settings.security.twoFactor.disable')}
@@ -184,10 +174,7 @@ export const TwoFactorSection = ({ initialStatus }: TwoFactorSectionProps) => {
         isRegenerate={backupCodes.length === 0}
       />
 
-      <DisableTwoFactorDialog
-        open={showDisable}
-        onOpenChange={setShowDisable}
-      />
+      <DisableTwoFactorDialog open={showDisable} onOpenChange={setShowDisable} />
     </>
   )
 }

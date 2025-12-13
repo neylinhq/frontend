@@ -20,9 +20,15 @@ export type ZoomLevel = 'very-low' | 'low' | 'medium' | 'high'
  * This prevents re-renders when zoom changes within the same level.
  */
 export const getZoomLevel = (zoom: number): ZoomLevel => {
-  if (zoom < ZOOM_THRESHOLDS.VERY_LOW_DETAIL) return 'very-low'
-  if (zoom < ZOOM_THRESHOLDS.LOW_DETAIL) return 'low'
-  if (zoom < ZOOM_THRESHOLDS.HIGH_DETAIL) return 'medium'
+  if (zoom < ZOOM_THRESHOLDS.VERY_LOW_DETAIL) {
+    return 'very-low'
+  }
+  if (zoom < ZOOM_THRESHOLDS.LOW_DETAIL) {
+    return 'low'
+  }
+  if (zoom < ZOOM_THRESHOLDS.HIGH_DETAIL) {
+    return 'medium'
+  }
   return 'high'
 }
 
@@ -91,12 +97,15 @@ export const useDiscreteZoom = (): UseDiscreteZoomResult => {
     return prevZoomLevelRef.current
   }, [zoom])
 
-  return useMemo(() => ({
-    zoom,
-    zoomLevel,
-    isLowDetail: zoomLevel === 'low' || zoomLevel === 'very-low',
-    isVeryLowDetail: zoomLevel === 'very-low'
-  }), [zoom, zoomLevel])
+  return useMemo(
+    () => ({
+      zoom,
+      zoomLevel,
+      isLowDetail: zoomLevel === 'low' || zoomLevel === 'very-low',
+      isVeryLowDetail: zoomLevel === 'very-low'
+    }),
+    [zoom, zoomLevel]
+  )
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -139,9 +148,7 @@ interface UseDebouncedZoomResult {
  * Use this in graph-visualization.tsx instead of direct useViewport().
  * The debounced zoom value should be passed to transformNodesToFlow/transformEdgesToFlow.
  */
-export const useDebouncedZoom = (
-  options: UseDebouncedZoomOptions = {}
-): UseDebouncedZoomResult => {
+export const useDebouncedZoom = (options: UseDebouncedZoomOptions = {}): UseDebouncedZoomResult => {
   const { debounceMs = 100, skipDuringInteraction = true } = options
 
   const { zoom: rawZoom } = useViewport()

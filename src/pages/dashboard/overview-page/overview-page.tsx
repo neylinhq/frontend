@@ -14,13 +14,13 @@ import {
 } from '@/entities/map'
 import { useLoaderUser } from '@/entities/user'
 import { CreateMapCard } from '@/features/maps/create-map-button'
-import { MapFilters } from '@/features/maps/map-filters'
 import { MapCard, MapCardSkeleton } from '@/features/maps/map-card'
+import { MapFilters } from '@/features/maps/map-filters'
 import { Button } from '@/shared/components/button'
 import { Input } from '@/shared/components/input'
+import { toast } from '@/shared/components/toast'
 import { Typography } from '@/shared/components/typography'
 import { MAPS_ROUTES } from '@/shared/config'
-import { toast } from '@/shared/components/toast'
 import { useDebouncedCallback } from '@/shared/hooks'
 
 interface LoaderData {
@@ -73,9 +73,7 @@ export const OverviewPage = () => {
     try {
       await setVisibility.mutateAsync({ mapId, isPublic: !currentlyPublic })
       toast.success(
-        currentlyPublic
-          ? t('dashboard.mapCard.madePrivate')
-          : t('dashboard.mapCard.madePublic')
+        currentlyPublic ? t('dashboard.mapCard.madePrivate') : t('dashboard.mapCard.madePublic')
       )
     } catch {
       toast.error(t('dashboard.mapCard.visibilityError'))
@@ -107,9 +105,7 @@ export const OverviewPage = () => {
   const counts = lastCountsRef.current
 
   // Show skeleton only on true initial load (no data yet)
-  const showSkeleton = isSearchActive
-    ? isSearchLoading && !searchData
-    : isLoading && !discoverData
+  const showSkeleton = isSearchActive ? isSearchLoading && !searchData : isLoading && !discoverData
 
   return (
     <div className='container mx-auto py-8 px-4 md:px-8'>
@@ -155,13 +151,7 @@ export const OverviewPage = () => {
       {/* Maps grid - always rendered to avoid layout shifts */}
       <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
         {/* Loading state - show skeleton cards only on true initial load */}
-        {showSkeleton && (
-          <>
-            {Array.from({ length: 6 }).map((_, i) => (
-              <MapCardSkeleton key={i} />
-            ))}
-          </>
-        )}
+        {showSkeleton && Array.from({ length: 6 }).map((_, i) => <MapCardSkeleton key={i} />)}
 
         {/* Loaded maps - show even with placeholder data during filter switch */}
         {!showSkeleton && maps && maps.length > 0 && (

@@ -3,7 +3,7 @@ import { MapChatDrawer } from '@/features/ai-assist'
 import { GraphWebGLVisualization } from '@/features/graph-webgl'
 import { ReadOnlyBanner, useMapPermissions } from '@/features/map-permissions'
 import { NodeConnectionsPanel } from '@/features/node-connections-panel'
-import { QuickAddDialog, AddNodeFab, useNodeCreationStore } from '@/features/node-creation'
+import { AddNodeFab, QuickAddDialog, useNodeCreationStore } from '@/features/node-creation'
 import { useKeyboardShortcut } from '@/shared/hooks/use-keyboard-shortcut'
 
 interface MapWebGLPageProps {

@@ -18,7 +18,7 @@ export const CloseButton = forwardRef<HTMLButtonElement, CloseButtonProps>(
   ({ className, size = 'md', ...props }, ref) => (
     <button
       ref={ref}
-      type="button"
+      type='button'
       className={cn(
         'inline-flex items-center justify-center rounded-sm',
         'cursor-pointer',
@@ -32,7 +32,7 @@ export const CloseButton = forwardRef<HTMLButtonElement, CloseButtonProps>(
       {...props}
     >
       <X />
-      <span className="sr-only">Close</span>
+      <span className='sr-only'>Close</span>
     </button>
   )
 )

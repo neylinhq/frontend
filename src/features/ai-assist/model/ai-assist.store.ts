@@ -7,9 +7,9 @@ interface AIPanelState {
   close: () => void
 }
 
-export const useAIPanelStore = create<AIPanelState>((set) => ({
+export const useAIPanelStore = create<AIPanelState>(set => ({
   isOpen: false,
-  toggle: () => set((state) => ({ isOpen: !state.isOpen })),
+  toggle: () => set(state => ({ isOpen: !state.isOpen })),
   open: () => set({ isOpen: true }),
   close: () => set({ isOpen: false })
 }))

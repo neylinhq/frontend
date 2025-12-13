@@ -1,9 +1,9 @@
 import { Filter, Minus, Plus, Sparkles } from 'lucide-react'
 import { memo, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useAIPanelStore } from '@/features/ai-assist'
 import type { RelationType } from '@/entities/edge'
 import type { NodeType } from '@/entities/node'
+import { useAIPanelStore } from '@/features/ai-assist'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import { Card } from '@/shared/components/card'
@@ -17,17 +17,16 @@ import {
 } from '@/shared/components/dropdown-menu'
 import { Slider } from '@/shared/components/slider'
 import { cn } from '@/shared/lib/cn'
+import type { ConnectionStats } from '../model/graph.data.hooks'
 import {
   ALL_EDGE_TYPES,
   ALL_NODE_TYPES,
-  CONNECTION_PRESETS,
+  type ConnectionPreset,
   useFilters,
   useFocusMode,
   useViewMode,
-  type ConnectionPreset,
   type ViewMode
 } from '../model/graph.store'
-import type { ConnectionStats } from '../model/graph.data.hooks'
 import {
   EDGE_TYPE_LABELS,
   NODE_TYPE_LABELS,
@@ -47,7 +46,14 @@ interface GraphToolbarProps {
 }
 
 export const GraphToolbar = memo(
-  ({ nodeCountsByType, edgeCountsByType, connectionStats, selectedNodeId, canEdit = true, className }: GraphToolbarProps) => {
+  ({
+    nodeCountsByType,
+    edgeCountsByType,
+    connectionStats,
+    selectedNodeId,
+    canEdit = true,
+    className
+  }: GraphToolbarProps) => {
     const { t } = useTranslation()
     const { viewMode, setViewMode } = useViewMode()
     const { focusedNodeId, focusDepth, setFocusDepth, clearFocus, focusNode } = useFocusMode()
@@ -84,7 +90,9 @@ export const GraphToolbar = memo(
 
     // Sync slider with store (for preset buttons)
     useEffect(() => {
-      if (!initialized) return
+      if (!initialized) {
+        return
+      }
       setLocalRange([
         connectionRange[0],
         connectionRange[1] === Infinity ? sliderMax : connectionRange[1]
@@ -92,11 +100,20 @@ export const GraphToolbar = memo(
     }, [initialized, connectionRange, sliderMax])
 
     // Cleanup debounce timer
-    useEffect(() => () => { if (debounceRef.current) clearTimeout(debounceRef.current) }, [])
+    useEffect(
+      () => () => {
+        if (debounceRef.current) {
+          clearTimeout(debounceRef.current)
+        }
+      },
+      []
+    )
 
     const handleSliderChange = (value: number[]) => {
       setLocalRange([value[0], value[1]])
-      if (debounceRef.current) clearTimeout(debounceRef.current)
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current)
+      }
       debounceRef.current = setTimeout(() => {
         setConnectionRange([value[0], value[1] >= sliderMax ? Infinity : value[1]])
       }, 150)
@@ -217,7 +234,11 @@ export const GraphToolbar = memo(
                 <Filter className='w-4 h-4' />
                 <span className='hidden sm:inline text-xs'>{t('graph.toolbar.filters')}</span>
                 {activeFiltersCount > 0 && (
-                  <Badge variant='destructive' className='h-4 px-1 text-[10px] ml-0.5' suppressHydrationWarning>
+                  <Badge
+                    variant='destructive'
+                    className='h-4 px-1 text-[10px] ml-0.5'
+                    suppressHydrationWarning
+                  >
                     {activeFiltersCount}
                   </Badge>
                 )}
@@ -292,7 +313,9 @@ export const GraphToolbar = memo(
               <div className='px-2 py-2'>
                 <div className='flex items-center justify-between text-xs text-muted-foreground mb-2'>
                   <span>{String(localRange[0])}</span>
-                  <span>{localRange[1] >= sliderMax ? `${sliderMax}+` : String(localRange[1])}</span>
+                  <span>
+                    {localRange[1] >= sliderMax ? `${sliderMax}+` : String(localRange[1])}
+                  </span>
                 </div>
                 <Slider
                   value={localRange}

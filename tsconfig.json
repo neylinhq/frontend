@@ -6,7 +6,7 @@
     ".react-router/types/**/*",
     ".dev/experiments/layout-algorithms.ts",
     ".dev/experiments/layout-algorithms-d3.ts"
-, "../tools/validate-fsd.ts"  ],
+, ".dev/tools/validate-fsd.ts"  ],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "types": ["node", "vite/client"],

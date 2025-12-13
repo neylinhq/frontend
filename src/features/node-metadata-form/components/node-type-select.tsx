@@ -21,11 +21,11 @@ export const NodeTypeSelect = ({ value, onChange }: NodeTypeSelectProps) => {
 
   return (
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger className="w-full">
+      <SelectTrigger className='w-full'>
         <SelectValue>
           {selectedConfig && (
-            <span className="flex items-center gap-2">
-              {SelectedIcon && <SelectedIcon className="h-4 w-4 text-muted-foreground" />}
+            <span className='flex items-center gap-2'>
+              {SelectedIcon && <SelectedIcon className='h-4 w-4 text-muted-foreground' />}
               {t(selectedConfig.labelKey)}
             </span>
           )}
@@ -36,8 +36,8 @@ export const NodeTypeSelect = ({ value, onChange }: NodeTypeSelectProps) => {
           const Icon = config.icon
           return (
             <SelectItem key={config.type} value={config.type}>
-              <span className="flex items-center gap-2">
-                <Icon className="h-4 w-4 text-muted-foreground" />
+              <span className='flex items-center gap-2'>
+                <Icon className='h-4 w-4 text-muted-foreground' />
                 {t(config.labelKey)}
               </span>
             </SelectItem>

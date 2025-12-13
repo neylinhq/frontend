@@ -1,5 +1,4 @@
 import { delay, HttpResponse, http } from 'msw'
-import type { Subscription } from '@/entities/subscription'
 import { API_URL } from '@/shared/config/env'
 import { mockPlans, mockSubscription, mockUsageStats } from '../data'
 
@@ -95,7 +94,7 @@ export const subscriptionHandlers = [
       )
     }
 
-    const body = (await request.json()) as {
+    const _body = (await request.json()) as {
       planType: string
       successUrl: string
       cancelUrl: string

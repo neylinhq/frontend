@@ -7,7 +7,9 @@ export const TermsPage = () => {
 
   return (
     <LegalLayout>
-      <Typography className='mb-4' variant='h1'>{t('legal.terms.title')}</Typography>
+      <Typography className='mb-4' variant='h1'>
+        {t('legal.terms.title')}
+      </Typography>
       <Typography variant='lead' className='mb-8'>
         {t('legal.terms.description')}
       </Typography>

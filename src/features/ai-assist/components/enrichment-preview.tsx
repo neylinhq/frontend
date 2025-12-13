@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import type { EnrichmentPreviewData } from '../ai-assist.types'
-import { ProposalCard, DiffBlock } from './proposal-card'
+import { DiffBlock, ProposalCard } from './proposal-card'
 
 interface EnrichmentPreviewProps {
   data: unknown
@@ -9,12 +9,7 @@ interface EnrichmentPreviewProps {
   onEdit?: (data: unknown) => void
 }
 
-export const EnrichmentPreview = ({
-  data,
-  onRemove,
-  onSave,
-  onEdit
-}: EnrichmentPreviewProps) => {
+export const EnrichmentPreview = ({ data, onRemove, onSave, onEdit }: EnrichmentPreviewProps) => {
   const { t } = useTranslation()
   const enrichmentData = data as EnrichmentPreviewData
 

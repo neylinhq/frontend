@@ -1,0 +1,22 @@
+@reference "../../../shared/styles/globals.css";
+
+/* Block Editor Design Tokens
+ * Vercel × Notion inspired — borders > shadows
+ */
+
+.editor {
+  /* Animation Timing (Vercel 200ms standard) */
+  --editor-duration-fast: 100ms;
+  --editor-duration-normal: 200ms;
+  --editor-duration-slow: 300ms;
+  --editor-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --editor-ease-in-out: cubic-bezier(0.45, 0, 0.55, 1);
+
+  /* Spacing Grid (Confluence 8px base) */
+  --editor-space-1: 4px;
+  --editor-space-2: 8px;
+  --editor-space-3: 12px;
+  --editor-space-4: 16px;
+  --editor-space-6: 24px;
+  --editor-space-8: 32px;
+}

@@ -63,7 +63,9 @@ export interface LoadedIconAtlas {
 /**
  * Load image as raw RGBA bytes
  */
-async function loadImageAsBytes(url: string): Promise<{ data: Uint8Array; width: number; height: number }> {
+async function loadImageAsBytes(
+  url: string
+): Promise<{ data: Uint8Array; width: number; height: number }> {
   const response = await fetch(url)
   const blob = await response.blob()
   const imageBitmap = await createImageBitmap(blob)
@@ -78,7 +80,7 @@ async function loadImageAsBytes(url: string): Promise<{ data: Uint8Array; width:
   return {
     data: new Uint8Array(imageData.data.buffer),
     width: imageBitmap.width,
-    height: imageBitmap.height,
+    height: imageBitmap.height
   }
 }
 
@@ -87,10 +89,13 @@ async function loadImageAsBytes(url: string): Promise<{ data: Uint8Array; width:
  * @param basePath Base path to assets (e.g., '/assets')
  * @param fontName Font name (e.g., 'inter-msdf')
  */
-export async function loadFontAtlas(basePath = '/assets', fontName = 'inter-msdf'): Promise<LoadedFontAtlas> {
+export async function loadFontAtlas(
+  basePath = '/assets',
+  fontName = 'inter-msdf'
+): Promise<LoadedFontAtlas> {
   const [imageResult, metricsResponse] = await Promise.all([
     loadImageAsBytes(`${basePath}/${fontName}.png`),
-    fetch(`${basePath}/${fontName}.json`),
+    fetch(`${basePath}/${fontName}.json`)
   ])
 
   // Pass the raw JSON through - WASM expects msdf-atlas-gen format directly
@@ -100,7 +105,7 @@ export async function loadFontAtlas(basePath = '/assets', fontName = 'inter-msdf
     imageData: imageResult.data,
     width: imageResult.width,
     height: imageResult.height,
-    metrics: rawMetrics, // Pass raw format, WASM parses it
+    metrics: rawMetrics // Pass raw format, WASM parses it
   }
 }
 
@@ -111,7 +116,7 @@ export async function loadFontAtlas(basePath = '/assets', fontName = 'inter-msdf
 export async function loadIconAtlas(basePath = '/assets'): Promise<LoadedIconAtlas> {
   const [imageResult, coordsResponse] = await Promise.all([
     loadImageAsBytes(`${basePath}/icons.png`),
-    fetch(`${basePath}/icons.json`),
+    fetch(`${basePath}/icons.json`)
   ])
 
   const coords: IconAtlas = await coordsResponse.json()
@@ -120,7 +125,7 @@ export async function loadIconAtlas(basePath = '/assets'): Promise<LoadedIconAtl
     imageData: imageResult.data,
     width: imageResult.width,
     height: imageResult.height,
-    coords,
+    coords
   }
 }
 
@@ -132,10 +137,7 @@ export async function preloadAtlases(basePath = '/assets'): Promise<{
   font: LoadedFontAtlas
   icons: LoadedIconAtlas
 }> {
-  const [font, icons] = await Promise.all([
-    loadFontAtlas(basePath),
-    loadIconAtlas(basePath),
-  ])
+  const [font, icons] = await Promise.all([loadFontAtlas(basePath), loadIconAtlas(basePath)])
 
   return { font, icons }
 }

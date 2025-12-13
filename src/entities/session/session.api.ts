@@ -34,7 +34,9 @@ export interface TwoFactorChallengeData {
 }
 
 // Type guard to check if login response requires 2FA
-export function isTwoFactorRequired(data: User | TwoFactorChallengeData): data is TwoFactorChallengeData {
+export function isTwoFactorRequired(
+  data: User | TwoFactorChallengeData
+): data is TwoFactorChallengeData {
   return 'requiresTwoFactor' in data && data.requiresTwoFactor === true
 }
 
@@ -104,32 +106,51 @@ export const sessionApi = {
   },
 
   login: async (data: LoginRequest, options?: RequestOptions) => {
-    const response = await api.post<LoginResponse>('/auth/login', data, { skipAuth: true, locale: options?.locale })
+    const response = await api.post<LoginResponse>('/auth/login', data, {
+      skipAuth: true,
+      locale: options?.locale
+    })
     return response.data // Returns User or TwoFactorChallengeData
   },
 
   verifyTwoFactor: async (data: VerifyTwoFactorRequest, options?: RequestOptions) => {
-    const response = await api.post<UserResponse>('/auth/verify-2fa', data, { skipAuth: true, locale: options?.locale })
+    const response = await api.post<UserResponse>('/auth/verify-2fa', data, {
+      skipAuth: true,
+      locale: options?.locale
+    })
     return response.data // Returns User after successful 2FA
   },
 
   resendTwoFactorEmail: async (data: ResendTwoFactorEmailRequest, options?: RequestOptions) => {
-    const response = await api.post<MessageResponse>('/auth/resend-2fa-email', data, { skipAuth: true, locale: options?.locale })
+    const response = await api.post<MessageResponse>('/auth/resend-2fa-email', data, {
+      skipAuth: true,
+      locale: options?.locale
+    })
     return response.data
   },
 
   register: async (data: RegisterRequest, options?: RequestOptions) => {
-    const response = await api.post<UserResponse>('/auth/register', data, { skipAuth: true, locale: options?.locale })
+    const response = await api.post<UserResponse>('/auth/register', data, {
+      skipAuth: true,
+      locale: options?.locale
+    })
     return response.data // Returns User directly
   },
 
   verifyEmail: async (data: VerifyEmailRequest, options?: RequestOptions) => {
-    const response = await api.post<MessageResponse>('/auth/verify-email', data, { skipAuth: true, locale: options?.locale })
+    const response = await api.post<MessageResponse>('/auth/verify-email', data, {
+      skipAuth: true,
+      locale: options?.locale
+    })
     return response.data
   },
 
   resendVerification: async (options?: RequestOptions) => {
-    const response = await api.post<MessageResponse>('/auth/resend-verification', {}, { locale: options?.locale })
+    const response = await api.post<MessageResponse>(
+      '/auth/resend-verification',
+      {},
+      { locale: options?.locale }
+    )
     return response.data
   },
 
@@ -143,11 +164,10 @@ export const sessionApi = {
   },
 
   resetPassword: async (data: ResetPasswordRequest, options?: RequestOptions) => {
-    const response = await api.post<MessageResponse>(
-      '/auth/reset-password',
-      data,
-      { skipAuth: true, locale: options?.locale }
-    )
+    const response = await api.post<MessageResponse>('/auth/reset-password', data, {
+      skipAuth: true,
+      locale: options?.locale
+    })
     return response.data
   },
 
@@ -156,12 +176,16 @@ export const sessionApi = {
   },
 
   telegramLogin: async (data: TelegramAuthData) => {
-    const response = await api.post<TelegramLoginResponse>('/oauth/telegram/login', data, { skipAuth: true })
+    const response = await api.post<TelegramLoginResponse>('/oauth/telegram/login', data, {
+      skipAuth: true
+    })
     return response.data
   },
 
   getTelegramBotInfo: async () => {
-    const response = await api.get<TelegramBotInfoResponse>('/oauth/telegram/info', { skipAuth: true })
+    const response = await api.get<TelegramBotInfoResponse>('/oauth/telegram/info', {
+      skipAuth: true
+    })
     return response.data
   }
 }

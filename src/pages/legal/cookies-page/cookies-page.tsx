@@ -7,7 +7,9 @@ export const CookiesPage = () => {
 
   return (
     <LegalLayout>
-      <Typography className='mb-4' variant='h1'>{t('legal.cookies.title')}</Typography>
+      <Typography className='mb-4' variant='h1'>
+        {t('legal.cookies.title')}
+      </Typography>
       <Typography variant='lead' className='mb-8'>
         {t('legal.cookies.description')}
       </Typography>

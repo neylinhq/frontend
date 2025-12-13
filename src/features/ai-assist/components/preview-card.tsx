@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import type { EdgePreviewData, NodePreviewData, PreviewCard } from '../ai-assist.types'
-import { ExercisePreview } from './exercise-preview'
 import { EnrichmentPreview } from './enrichment-preview'
-import { ProposalCard, DiffLine } from './proposal-card'
+import { ExercisePreview } from './exercise-preview'
+import { DiffLine, ProposalCard } from './proposal-card'
 
 interface PreviewCardComponentProps {
   preview: PreviewCard
@@ -22,12 +22,7 @@ export const PreviewCardComponent = ({
   switch (preview.type) {
     case 'exercise':
       return (
-        <ExercisePreview
-          data={preview.data}
-          onRemove={onRemove}
-          onSave={onSave}
-          onEdit={onEdit}
-        />
+        <ExercisePreview data={preview.data} onRemove={onRemove} onSave={onSave} onEdit={onEdit} />
       )
 
     case 'enrichment':

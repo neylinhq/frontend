@@ -3,7 +3,7 @@
  * These types mirror the Rust WASM types
  */
 
-import type { Node, Edge } from '@/entities/map'
+import type { Edge, Node } from '@/entities/map'
 
 // Re-export entity types
 export type { Node, Edge }
@@ -12,11 +12,11 @@ export type { Node, Edge }
  * Viewport state for pan/zoom
  */
 export interface ViewportState {
-  x: number        // Camera X position (center of view)
-  y: number        // Camera Y position (center of view)
-  zoom: number     // Zoom level (1.0 = 100%)
-  width: number    // Canvas width in pixels
-  height: number   // Canvas height in pixels
+  x: number // Camera X position (center of view)
+  y: number // Camera Y position (center of view)
+  zoom: number // Zoom level (1.0 = 100%)
+  width: number // Canvas width in pixels
+  height: number // Canvas height in pixels
 }
 
 /**
@@ -35,11 +35,11 @@ export interface GraphEngineState {
  */
 export interface LayoutOptions {
   viewMode: 'overview' | 'focus' | 'path'
-  spacingPercent: number        // 50-200
-  directionStrength: number     // 0-200
-  iterations: number            // 150 default
-  coolingFactor: number         // 0.97 default
-  theta: number                 // 0.9 Barnes-Hut threshold
+  spacingPercent: number // 50-200
+  directionStrength: number // 0-200
+  iterations: number // 150 default
+  coolingFactor: number // 0.97 default
+  theta: number // 0.9 Barnes-Hut threshold
   ignoreExistingPositions: boolean
   focusedNodeId?: string
 }
@@ -67,11 +67,11 @@ export interface NodePosition {
  */
 export interface VisibleNode {
   id: string
-  x: number        // Screen X
-  y: number        // Screen Y
-  width: number    // Scaled width
-  height: number   // Scaled height
-  node: Node       // Original node data
+  x: number // Screen X
+  y: number // Screen Y
+  width: number // Scaled width
+  height: number // Scaled height
+  node: Node // Original node data
 }
 
 /**
@@ -105,7 +105,7 @@ export const DEFAULT_LAYOUT_OPTIONS: LayoutOptions = {
   iterations: 150,
   coolingFactor: 0.97,
   theta: 0.9,
-  ignoreExistingPositions: false,
+  ignoreExistingPositions: false
 }
 
 /**
@@ -116,5 +116,5 @@ export const DEFAULT_VIEWPORT: ViewportState = {
   y: 0,
   zoom: 1,
   width: 800,
-  height: 600,
+  height: 600
 }

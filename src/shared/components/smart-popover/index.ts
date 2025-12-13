@@ -1,1 +1,1 @@
-export { SmartPopoverContent, Popover, PopoverTrigger } from './smart-popover'
+export { Popover, PopoverTrigger, SmartPopoverContent } from './smart-popover'

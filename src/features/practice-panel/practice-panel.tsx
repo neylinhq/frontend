@@ -56,7 +56,9 @@ export const PracticePanel = ({ nodeId, mapId }: PracticePanelProps) => {
         </div>
         <div className='space-y-1'>
           <h3 className='font-medium'>{t('practice.panel.noExercises')}</h3>
-          <p className='text-sm text-muted-foreground'>{t('practice.panel.noExercisesDescription')}</p>
+          <p className='text-sm text-muted-foreground'>
+            {t('practice.panel.noExercisesDescription')}
+          </p>
         </div>
         <Button
           onClick={handleGenerateExercises}

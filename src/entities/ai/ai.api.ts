@@ -66,10 +66,14 @@ export const aiApi = {
     currentNodeId?: string,
     history?: Array<{ role: 'user' | 'assistant'; content: string }>
   ): Promise<ChatWithMapResponse> => {
-    const response = await api.post<ApiResponse<ChatWithMapResponse>>(
-      `/maps/${mapId}/chat`,
-      { question, model, topK, nodeId, currentNodeId, history }
-    )
+    const response = await api.post<ApiResponse<ChatWithMapResponse>>(`/maps/${mapId}/chat`, {
+      question,
+      model,
+      topK,
+      nodeId,
+      currentNodeId,
+      history
+    })
     return response.data
   },
 
@@ -123,7 +127,9 @@ export const aiApi = {
 
         while (true) {
           const { done, value } = await reader.read()
-          if (done) break
+          if (done) {
+            break
+          }
 
           buffer += decoder.decode(value, { stream: true })
 

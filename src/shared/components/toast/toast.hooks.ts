@@ -137,7 +137,9 @@ const toast = (options: ToastOptions) => {
       id,
       open: true,
       onOpenChange: (open: boolean) => {
-        if (!open) dismiss()
+        if (!open) {
+          dismiss()
+        }
       }
     } as Toast
   })
@@ -172,7 +174,7 @@ const useToast = () => {
         listeners.splice(index, 1)
       }
     }
-  }, [state])
+  }, [])
 
   return {
     ...state,

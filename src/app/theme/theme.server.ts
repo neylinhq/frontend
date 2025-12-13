@@ -1,6 +1,6 @@
+import { getCookie } from '@/shared/api/server'
 import type { Mode, Palette } from '@/shared/core/theme'
 import { MODE_COOKIE_KEY, PALETTE_COOKIE_KEY } from '@/shared/core/theme'
-import { getCookie } from '@/shared/api/server'
 
 export type ThemeData = {
   mode: Mode

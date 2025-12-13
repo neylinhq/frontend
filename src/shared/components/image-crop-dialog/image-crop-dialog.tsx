@@ -1,8 +1,8 @@
 'use client'
 
+import { Loader2 } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Loader2 } from 'lucide-react'
 import { Button } from '@/shared/components/button'
 import {
   Dialog,
@@ -53,7 +53,9 @@ export const ImageCropDialog = ({
   const handleImageLoad = useCallback(() => {
     const img = imageRef.current
     const container = containerRef.current
-    if (!img || !container) return
+    if (!img || !container) {
+      return
+    }
 
     const containerRect = container.getBoundingClientRect()
     const imgAspect = img.naturalWidth / img.naturalHeight
@@ -93,7 +95,9 @@ export const ImageCropDialog = ({
 
   const getPointerPosition = (e: React.PointerEvent | PointerEvent) => {
     const container = containerRef.current
-    if (!container) return { x: 0, y: 0 }
+    if (!container) {
+      return { x: 0, y: 0 }
+    }
 
     const rect = container.getBoundingClientRect()
     const offsetX = (rect.width - imageDimensions.width) / 2
@@ -130,7 +134,9 @@ export const ImageCropDialog = ({
   }
 
   const handlePointerMove = (e: React.PointerEvent) => {
-    if (!isDragging && !isResizing) return
+    if (!isDragging && !isResizing) {
+      return
+    }
 
     const pos = getPointerPosition(e)
     const { width, height } = imageDimensions
@@ -171,7 +177,9 @@ export const ImageCropDialog = ({
 
   const handleSave = async () => {
     const img = imageRef.current
-    if (!img || !imageLoaded) return
+    if (!img || !imageLoaded) {
+      return
+    }
 
     setIsProcessing(true)
 
@@ -190,19 +198,11 @@ export const ImageCropDialog = ({
       canvas.height = outputSize
       const ctx = canvas.getContext('2d')
 
-      if (!ctx) throw new Error('No 2d context')
+      if (!ctx) {
+        throw new Error('No 2d context')
+      }
 
-      ctx.drawImage(
-        img,
-        sourceX,
-        sourceY,
-        sourceSize,
-        sourceSize,
-        0,
-        0,
-        outputSize,
-        outputSize
-      )
+      ctx.drawImage(img, sourceX, sourceY, sourceSize, sourceSize, 0, 0, outputSize, outputSize)
 
       canvas.toBlob(
         blob => {
@@ -261,9 +261,7 @@ export const ImageCropDialog = ({
               }}
             >
               {/* Resize handle */}
-              <div
-                className='absolute -right-2 -bottom-2 w-5 h-5 bg-white rounded-full border-2 border-primary cursor-se-resize shadow-md pointer-events-auto'
-              />
+              <div className='absolute -right-2 -bottom-2 w-5 h-5 bg-white rounded-full border-2 border-primary cursor-se-resize shadow-md pointer-events-auto' />
             </div>
           )}
 

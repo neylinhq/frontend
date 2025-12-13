@@ -1,6 +1,6 @@
+import { BookOpen, GraduationCap, Link2, Sparkles, Trash2 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Trash2, Sparkles, BookOpen, Link2, GraduationCap } from 'lucide-react'
 import { cn } from '@/shared/lib/cn'
 
 export interface SlashCommand {
@@ -74,11 +74,13 @@ export const CommandPalette = ({
   // Reset selection when filter changes
   useEffect(() => {
     setSelectedIndex(0)
-  }, [filter])
+  }, [])
 
   // Handle keyboard navigation
   useEffect(() => {
-    if (!isOpen) return
+    if (!isOpen) {
+      return
+    }
 
     const handleKeyDown = (e: KeyboardEvent) => {
       switch (e.key) {
@@ -117,7 +119,9 @@ export const CommandPalette = ({
     }
   }, [selectedIndex])
 
-  if (!isOpen || filteredCommands.length === 0) return null
+  if (!isOpen || filteredCommands.length === 0) {
+    return null
+  }
 
   return (
     <div
@@ -126,18 +130,21 @@ export const CommandPalette = ({
         'bg-popover border border-border rounded-lg shadow-lg',
         'animate-in fade-in-0 zoom-in-95 duration-150'
       )}
-      style={position ? { bottom: position.top, left: position.left } : { bottom: '100%', left: 0, marginBottom: 8 }}
+      style={
+        position
+          ? { bottom: position.top, left: position.left }
+          : { bottom: '100%', left: 0, marginBottom: 8 }
+      }
     >
       <div ref={listRef} className='py-1'>
         {filteredCommands.map((command, index) => (
           <button
+            type='button'
             key={command.id}
             className={cn(
               'w-full flex items-center gap-3 px-3 py-2 text-left',
               'text-sm transition-colors',
-              index === selectedIndex
-                ? 'bg-accent text-accent-foreground'
-                : 'hover:bg-muted'
+              index === selectedIndex ? 'bg-accent text-accent-foreground' : 'hover:bg-muted'
             )}
             onClick={() => onSelect(command)}
             onMouseEnter={() => setSelectedIndex(index)}
@@ -145,9 +152,7 @@ export const CommandPalette = ({
             <span className='text-muted-foreground'>{command.icon}</span>
             <div className='flex-1 min-w-0'>
               <div className='font-medium'>/{command.label}</div>
-              <div className='text-xs text-muted-foreground truncate'>
-                {command.description}
-              </div>
+              <div className='text-xs text-muted-foreground truncate'>{command.description}</div>
             </div>
           </button>
         ))}

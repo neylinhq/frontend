@@ -2,7 +2,7 @@ import { Link2, Plus, X } from 'lucide-react'
 import { memo, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
-import { RelationTypeEnum, type RelationType } from '@/entities/edge'
+import { type RelationType, RelationTypeEnum } from '@/entities/edge'
 import { useFullMap } from '@/entities/map'
 import { getNodeIcon } from '@/entities/node'
 import { Button } from '@/shared/components/button'
@@ -16,7 +16,7 @@ import {
   SelectValue
 } from '@/shared/components/select'
 import { cn } from '@/shared/lib/cn'
-import { useNodeCreationStore, type PendingConnection } from '../model/node-creation.store'
+import { type PendingConnection, useNodeCreationStore } from '../model/node-creation.store'
 
 const ALL_RELATION_TYPES = RelationTypeEnum.options
 
@@ -33,7 +33,9 @@ export const ConnectionSelector = memo(() => {
 
   // Filter available nodes (exclude already selected)
   const availableNodes = useMemo(() => {
-    if (!fullMap?.nodes) return []
+    if (!fullMap?.nodes) {
+      return []
+    }
     const selectedIds = new Set(pendingConnections.map(c => c.targetNodeId))
     return fullMap.nodes
       .filter(node => !selectedIds.has(node.id))

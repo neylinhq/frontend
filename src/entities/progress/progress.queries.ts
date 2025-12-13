@@ -1,9 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { progressApi } from './progress.api'
 import type {
-  UpdateNodeProgressRequest,
+  ReviewNodeRequest,
   UpdateMapProgressRequest,
-  ReviewNodeRequest
+  UpdateNodeProgressRequest
 } from './progress.schema'
 
 export const progressKeys = {

@@ -2,7 +2,7 @@ import { ReactFlowProvider } from '@xyflow/react'
 import type { FullMap } from '@/entities/map'
 import { MapChatDrawer } from '@/features/ai-assist'
 import { ReadOnlyBanner, useMapPermissions } from '@/features/map-permissions'
-import { QuickAddDialog, AddNodeFab, useNodeCreationStore } from '@/features/node-creation'
+import { AddNodeFab, QuickAddDialog, useNodeCreationStore } from '@/features/node-creation'
 import { useKeyboardShortcut } from '@/shared/hooks/use-keyboard-shortcut'
 import { GraphView } from '@/widgets/graph-view'
 
@@ -22,7 +22,12 @@ export const MapViewPage = ({ map, mapId }: MapViewPageProps) => {
   return (
     <ReactFlowProvider>
       <div className='h-[calc(100vh-3.5rem)] relative'>
-        <GraphView mapId={mapId} initialData={map} className='h-full w-full' interactive={canEdit} />
+        <GraphView
+          mapId={mapId}
+          initialData={map}
+          className='h-full w-full'
+          interactive={canEdit}
+        />
 
         {/* Owner-only components */}
         {canEdit && (

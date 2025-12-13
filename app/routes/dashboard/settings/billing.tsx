@@ -69,9 +69,9 @@ const BillingPage = () => {
           </div>
           <AddPaymentMethodDialog
             onAddCard={data => addPaymentMethod.mutate(data)}
-            onCryptoSuccess={() => {
-              // TODO: refresh data after crypto payment
-              console.log('Crypto payment successful')
+            onAddCrypto={data => {
+              // TODO: Implement addCryptoPaymentMethod mutation
+              console.log('Crypto wallet bound:', data.network, data.address)
             }}
             loadingCard={addPaymentMethod.isPending}
           />

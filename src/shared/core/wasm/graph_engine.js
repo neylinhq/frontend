@@ -1,7 +1,9 @@
 let wasm
 
 function addHeapObject(obj) {
-  if (heap_next === heap.length) heap.push(heap.length + 1)
+  if (heap_next === heap.length) {
+    heap.push(heap.length + 1)
+  }
   const idx = heap_next
   heap_next = heap[idx]
 
@@ -10,7 +12,9 @@ function addHeapObject(obj) {
 }
 
 function dropObject(idx) {
-  if (idx < 132) return
+  if (idx < 132) {
+    return
+  }
   heap[idx] = heap_next
   heap_next = idx
 }
@@ -100,7 +104,9 @@ function passStringToWasm0(arg, malloc, realloc) {
 
   for (; offset < len; offset++) {
     const code = arg.charCodeAt(offset)
-    if (code > 0x7f) break
+    if (code > 0x7f) {
+      break
+    }
     mem[ptr + offset] = code
   }
   if (offset !== len) {
@@ -443,7 +449,9 @@ export class GraphEngine {
     }
   }
 }
-if (Symbol.dispose) GraphEngine.prototype[Symbol.dispose] = GraphEngine.prototype.free
+if (Symbol.dispose) {
+  GraphEngine.prototype[Symbol.dispose] = GraphEngine.prototype.free
+}
 
 /**
  * Initialize the WASM module
@@ -689,7 +697,9 @@ function __wbg_finalize_init(instance, module) {
 }
 
 function initSync(module) {
-  if (wasm !== undefined) return wasm
+  if (wasm !== undefined) {
+    return wasm
+  }
 
   if (typeof module !== 'undefined') {
     if (Object.getPrototypeOf(module) === Object.prototype) {
@@ -708,7 +718,9 @@ function initSync(module) {
 }
 
 async function __wbg_init(module_or_path) {
-  if (wasm !== undefined) return wasm
+  if (wasm !== undefined) {
+    return wasm
+  }
 
   if (typeof module_or_path !== 'undefined') {
     if (Object.getPrototypeOf(module_or_path) === Object.prototype) {

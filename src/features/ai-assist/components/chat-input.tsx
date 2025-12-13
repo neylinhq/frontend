@@ -1,11 +1,11 @@
-import { useRef, useState, type KeyboardEvent } from 'react'
 import { ArrowUp, GripHorizontal, Map } from 'lucide-react'
+import { type KeyboardEvent, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { AIModel } from '@/entities/ai'
-import { Textarea } from '@/shared/components/textarea'
 import { Button } from '@/shared/components/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/select'
+import { Select, SelectContent, SelectItem, SelectTrigger } from '@/shared/components/select'
 import { Switch } from '@/shared/components/switch'
+import { Textarea } from '@/shared/components/textarea'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/components/tooltip'
 import { useResizable } from '@/shared/hooks'
 import { cn } from '@/shared/lib/cn'
@@ -51,7 +51,11 @@ export const ChatInput = ({
   const [showCommands, setShowCommands] = useState(false)
 
   // Resizable input height
-  const { size: inputHeight, isResizing, handleMouseDown: handleResizeMouseDown } = useResizable({
+  const {
+    size: inputHeight,
+    isResizing,
+    handleMouseDown: handleResizeMouseDown
+  } = useResizable({
     minSize: MIN_INPUT_HEIGHT,
     maxSize: MAX_INPUT_HEIGHT,
     initialSize: DEFAULT_INPUT_HEIGHT,
@@ -62,7 +66,8 @@ export const ChatInput = ({
 
   // Find current model name
   const currentModel = models.find(m => m.id === model)
-  const currentModelName = currentModel?.name || model?.split('/').pop()?.replace(':free', '') || 'Select model'
+  const currentModelName =
+    currentModel?.name || model?.split('/').pop()?.replace(':free', '') || 'Select model'
 
   // Check if we should show command palette
   const shouldShowCommands = value.startsWith('/') && !value.includes(' ')
@@ -116,10 +121,12 @@ export const ChatInput = ({
           'hover:bg-muted/50 transition-colors group'
         )}
       >
-        <GripHorizontal className={cn(
-          'h-3 w-6 text-muted-foreground/30 group-hover:text-muted-foreground/60 transition-colors',
-          isResizing && 'text-muted-foreground/60'
-        )} />
+        <GripHorizontal
+          className={cn(
+            'h-3 w-6 text-muted-foreground/30 group-hover:text-muted-foreground/60 transition-colors',
+            isResizing && 'text-muted-foreground/60'
+          )}
+        />
       </div>
 
       {/* Command Palette */}
@@ -158,7 +165,9 @@ export const ChatInput = ({
                 <SelectItem key={m.id} value={m.id} className='text-xs'>
                   <span className='flex items-center gap-1.5'>
                     {m.name}
-                    {m.free && <span className='text-[9px] text-green-600 dark:text-green-400'>FREE</span>}
+                    {m.free && (
+                      <span className='text-[9px] text-green-600 dark:text-green-400'>FREE</span>
+                    )}
                   </span>
                 </SelectItem>
               ))}

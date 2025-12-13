@@ -1,8 +1,12 @@
+import { BookOpen, ChevronDown, Lightbulb, Link2, Sparkles } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Sparkles, Lightbulb, Link2, BookOpen, ChevronDown } from 'lucide-react'
 import { Button } from '@/shared/components/button'
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/shared/components/collapsible'
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger
+} from '@/shared/components/collapsible'
 import { cn } from '@/shared/lib/cn'
 import type { QuickActionType } from '../ai-assist.types'
 
@@ -33,13 +37,10 @@ export const QuickActionBar = ({
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
       <div className='px-4 pt-2'>
         <CollapsibleTrigger asChild>
-          <button className='flex items-center justify-between w-full py-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors'>
+          <button type='button' className='flex items-center justify-between w-full py-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors'>
             <span>{t('ai.chat.quickActions')}</span>
             <ChevronDown
-              className={cn(
-                'h-4 w-4 transition-transform duration-200',
-                isOpen && 'rotate-180'
-              )}
+              className={cn('h-4 w-4 transition-transform duration-200', isOpen && 'rotate-180')}
             />
           </button>
         </CollapsibleTrigger>

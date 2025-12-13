@@ -1,4 +1,7 @@
-import type { Edge } from '../../map.schema'
+import type { Edge } from '@/entities/map'
+import { GRAPH_THEORY_EDGES as _gtEdges } from './graph-theory-edges.mock'
+import { NEURAL_NETWORKS_EDGES as _nnEdges } from './neural-networks-edges.mock'
+import { PHILOSOPHY_EDGES as _philEdges } from './philosophy-edges.mock'
 
 export const GRAPH_THEORY_EDGES: Edge[] = [
   // Цепочка: Граф → Вершина → Ребро
@@ -210,7 +213,6 @@ export const GRAPH_THEORY_EDGES: Edge[] = [
 
   // gt-15 (Гиперграф) остаётся изолированным - без связей
 ]
-import type { Edge } from '../../map.schema'
 
 export const NEURAL_NETWORKS_EDGES: Edge[] = [
   {
@@ -278,7 +280,6 @@ export const NEURAL_NETWORKS_EDGES: Edge[] = [
     updatedAt: '2024-03-16T10:00:00Z'
   }
 ]
-import type { Edge } from '../../map.schema'
 
 export const PHILOSOPHY_EDGES: Edge[] = [
   // Античная философия
@@ -934,15 +935,5 @@ export const PHILOSOPHY_EDGES: Edge[] = [
   }
 ]
 
-
 // Combined exports
-import type { Edge } from '@/entities/map'
-import { GRAPH_THEORY_EDGES } from './graph-theory-edges.mock'
-import { NEURAL_NETWORKS_EDGES } from './neural-networks-edges.mock'
-import { PHILOSOPHY_EDGES } from './philosophy-edges.mock'
-
-export const ALL_EDGES: Edge[] = [
-  ...NEURAL_NETWORKS_EDGES,
-  ...PHILOSOPHY_EDGES,
-  ...GRAPH_THEORY_EDGES
-]
+export const ALL_EDGES: Edge[] = [..._nnEdges, ..._philEdges, ..._gtEdges]

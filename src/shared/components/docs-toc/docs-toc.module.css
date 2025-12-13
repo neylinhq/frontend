@@ -4,15 +4,15 @@
   display: block;
   padding: 0.25rem 0;
   font-size: 0.875rem;
-  color: hsl(var(--muted-foreground));
+  color: oklch(var(--muted-foreground));
   transition: color 0.15s ease;
 }
 
 .item:hover {
-  color: hsl(var(--foreground));
+  color: oklch(var(--foreground));
 }
 
 .itemActive {
-  color: hsl(var(--foreground));
+  color: oklch(var(--foreground));
   font-weight: 500;
 }

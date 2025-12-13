@@ -3,29 +3,29 @@ export { Icon } from './icon'
 export {
   // Payment brand icons
   amexIcon,
-  dinersIcon,
-  discoverIcon,
-  jcbIcon,
-  mastercardIcon,
-  paymentBrandIcons,
-  unionpayIcon,
-  visaIcon,
+  // Network icons (for crypto payments)
+  bscIcon,
   // Crypto icons
   btcIcon,
   cryptoIcons,
+  dinersIcon,
+  discoverIcon,
   ethIcon,
-  solIcon,
-  usdcIcon,
-  usdtIcon,
-  // Network icons (for crypto payments)
-  bscIcon,
-  networkIcons,
-  polygonIcon,
-  tonIcon,
-  tronIcon,
   // OAuth brand icons
   githubIcon,
   googleIcon,
+  jcbIcon,
+  mastercardIcon,
+  networkIcons,
   oauthBrandIcons,
-  telegramIcon
+  paymentBrandIcons,
+  polygonIcon,
+  solIcon,
+  telegramIcon,
+  tonIcon,
+  tronIcon,
+  unionpayIcon,
+  usdcIcon,
+  usdtIcon,
+  visaIcon
 } from './icon.constants'

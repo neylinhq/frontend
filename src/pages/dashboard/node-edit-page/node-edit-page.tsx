@@ -1,20 +1,33 @@
 import type { Editor } from '@tiptap/react'
-import { AlertCircle, ArrowLeft, GraduationCap, Loader2, PanelRightClose, PanelRightOpen, SlidersHorizontal, Sparkles, Trash2 } from 'lucide-react'
+import {
+  AlertCircle,
+  ArrowLeft,
+  GraduationCap,
+  Loader2,
+  PanelRightClose,
+  PanelRightOpen,
+  SlidersHorizontal,
+  Sparkles,
+  Trash2
+} from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router'
-import { toast } from '@/shared/components/toast'
-
 import type { Edge } from '@/entities/edge'
 import type { FullMap, Node } from '@/entities/map'
 import { useDeleteEdge, useDeleteNode, useFullMap, useUpdateNode } from '@/entities/map'
 import type { NodeType } from '@/entities/node'
+import { AISuggestionsPanel } from '@/features/ai-assist/components/ai-suggestions-panel'
+import {
+  BlockEditor,
+  editorToHTML,
+  GUTTER,
+  htmlToEditor,
+  htmlToPlainText
+} from '@/features/block-editor'
 import { EdgeEditPopover } from '@/features/graph/components/edge-edit-popover'
 import { useEdgeManagementStore } from '@/features/graph/model/graph.edge.store'
-import { AISuggestionsPanel } from '@/features/ai-assist/components/ai-suggestions-panel'
-import { BlockEditor, editorToHTML, GUTTER, htmlToEditor, htmlToPlainText } from '@/features/block-editor'
 import { NodeConnectionsPanel } from '@/features/node-connections-panel'
-import { useAutoSave, useResizable } from '@/shared/hooks'
 import { NodeMetadataForm, type NodeMetadataFormValues } from '@/features/node-metadata-form'
 import { PracticePanel } from '@/features/practice-panel'
 import {
@@ -31,8 +44,10 @@ import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/card'
 import { Sheet, SheetContent, SheetHeader } from '@/shared/components/sheet'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/components/tabs'
 import { Skeleton } from '@/shared/components/skeleton'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/components/tabs'
+import { toast } from '@/shared/components/toast'
+import { useAutoSave, useResizable } from '@/shared/hooks'
 import { cn } from '@/shared/lib/cn'
 
 /** Default sidebar width in pixels */
@@ -125,7 +140,11 @@ export const NodeEditPage = ({
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false)
 
   // Resizable sidebar
-  const { size: sidebarWidth, isResizing, handleMouseDown: handleResizeMouseDown } = useResizable({
+  const {
+    size: sidebarWidth,
+    isResizing,
+    handleMouseDown: handleResizeMouseDown
+  } = useResizable({
     minSize: SIDEBAR_MIN_WIDTH,
     maxSize: SIDEBAR_MAX_WIDTH,
     initialSize: SIDEBAR_DEFAULT_WIDTH,
@@ -285,24 +304,30 @@ export const NodeEditPage = ({
   ).length
 
   // Handle edge edit - open popover with edge data
-  const handleEditEdge = useCallback((edge: Edge) => {
-    // Calculate a position in the center of the sidebar for the popover
-    const sidebarRect = document.querySelector('aside')?.getBoundingClientRect()
-    const position = sidebarRect
-      ? { x: sidebarRect.left + sidebarRect.width / 2, y: sidebarRect.top + 200 }
-      : { x: window.innerWidth / 2, y: 300 }
-    startEdgeEditing(edge, position)
-  }, [startEdgeEditing])
+  const handleEditEdge = useCallback(
+    (edge: Edge) => {
+      // Calculate a position in the center of the sidebar for the popover
+      const sidebarRect = document.querySelector('aside')?.getBoundingClientRect()
+      const position = sidebarRect
+        ? { x: sidebarRect.left + sidebarRect.width / 2, y: sidebarRect.top + 200 }
+        : { x: window.innerWidth / 2, y: 300 }
+      startEdgeEditing(edge, position)
+    },
+    [startEdgeEditing]
+  )
 
   // Handle edge delete
-  const handleDeleteEdge = useCallback(async (edgeId: string) => {
-    try {
-      await deleteEdgeMutation.mutateAsync(edgeId)
-      toast.success(t('common.removed', 'Removed'))
-    } catch {
-      toast.error(t('errors.failedDelete', 'Failed to delete'))
-    }
-  }, [deleteEdgeMutation, t])
+  const handleDeleteEdge = useCallback(
+    async (edgeId: string) => {
+      try {
+        await deleteEdgeMutation.mutateAsync(edgeId)
+        toast.success(t('common.removed', 'Removed'))
+      } catch {
+        toast.error(t('errors.failedDelete', 'Failed to delete'))
+      }
+    },
+    [deleteEdgeMutation, t]
+  )
 
   return (
     <div className='flex h-full'>
@@ -334,69 +359,69 @@ export const NodeEditPage = ({
 
         {/* Editor Content */}
         <div ref={contentRef} className='mx-auto max-w-3xl px-4 md:px-8 py-6 md:py-8'>
-            {/* Breadcrumb & Actions - with gutter matching editor */}
-            <div className={cn('mb-8 flex items-center justify-between', GUTTER.PADDING_CLASS)}>
-              <div className='flex items-center gap-3'>
-                <Button variant='ghost' size='sm' asChild className='h-8 px-2'>
-                  <Link to={`/dashboard/maps/${mapId}/view`}>
-                    <ArrowLeft className='h-4 w-4' />
-                  </Link>
-                </Button>
-                <Badge
-                  variant='secondary'
-                  className={cn('text-xs font-medium', NODE_TYPE_CONFIG[currentNode.type]?.color)}
-                >
-                  {t(
-                    `nodeTypes.${currentNode.type}`,
-                    NODE_TYPE_CONFIG[currentNode.type]?.label || currentNode.type
-                  )}
-                </Badge>
-                {updateNodeMutation.isPending && (
-                  <span className='flex items-center gap-1.5 text-xs text-muted-foreground'>
-                    <Loader2 className='h-3 w-3 animate-spin' />
-                    {t('errors.saving')}
-                  </span>
+          {/* Breadcrumb & Actions - with gutter matching editor */}
+          <div className={cn('mb-8 flex items-center justify-between', GUTTER.PADDING_CLASS)}>
+            <div className='flex items-center gap-3'>
+              <Button variant='ghost' size='sm' asChild className='h-8 px-2'>
+                <Link to={`/dashboard/maps/${mapId}/view`}>
+                  <ArrowLeft className='h-4 w-4' />
+                </Link>
+              </Button>
+              <Badge
+                variant='secondary'
+                className={cn('text-xs font-medium', NODE_TYPE_CONFIG[currentNode.type]?.color)}
+              >
+                {t(
+                  `nodeTypes.${currentNode.type}`,
+                  NODE_TYPE_CONFIG[currentNode.type]?.label || currentNode.type
                 )}
-              </div>
-              {/* Header toggle - shown when content is NOT scrollable */}
-              {!isScrollable && (
-                <Button
-                  variant='ghost'
-                  size='sm'
-                  onClick={() => {
-                    if (window.innerWidth >= SIDEBAR_BREAKPOINT) {
-                      setSidebarOpen(!sidebarOpen)
-                    } else {
-                      setMobileSheetOpen(true)
-                    }
-                  }}
-                  className='h-8 w-8 p-0'
-                >
-                  {sidebarOpen ? <PanelRightClose className='h-4 w-4 hidden lg:block' /> : null}
-                  <PanelRightOpen className={cn('h-4 w-4', sidebarOpen && 'lg:hidden')} />
-                </Button>
+              </Badge>
+              {updateNodeMutation.isPending && (
+                <span className='flex items-center gap-1.5 text-xs text-muted-foreground'>
+                  <Loader2 className='h-3 w-3 animate-spin' />
+                  {t('errors.saving')}
+                </span>
               )}
             </div>
-            {/* Editable Title - with gutter matching editor */}
-            <div className={cn('mb-2', GUTTER.PADDING_CLASS)}>
-              <textarea
-                ref={titleInputRef}
-                value={title}
-                onChange={handleTitleChange}
-                onKeyDown={handleTitleKeyDown}
-                placeholder={t('nodeEdit.untitledPlaceholder')}
-                rows={1}
-                className='w-full resize-none overflow-hidden border-none bg-transparent text-4xl font-bold leading-tight tracking-tight text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-0'
-              />
-            </div>
-
-            {/* Editor */}
-            <BlockEditor
-              initialContent={currentNode.content ? htmlToEditor(currentNode.content) : undefined}
-              onEditorUpdate={handleEditorChange}
-              placeholder={t('nodeEdit.editorPlaceholder')}
-              className='min-h-[500px]'
+            {/* Header toggle - shown when content is NOT scrollable */}
+            {!isScrollable && (
+              <Button
+                variant='ghost'
+                size='sm'
+                onClick={() => {
+                  if (window.innerWidth >= SIDEBAR_BREAKPOINT) {
+                    setSidebarOpen(!sidebarOpen)
+                  } else {
+                    setMobileSheetOpen(true)
+                  }
+                }}
+                className='h-8 w-8 p-0'
+              >
+                {sidebarOpen ? <PanelRightClose className='h-4 w-4 hidden lg:block' /> : null}
+                <PanelRightOpen className={cn('h-4 w-4', sidebarOpen && 'lg:hidden')} />
+              </Button>
+            )}
+          </div>
+          {/* Editable Title - with gutter matching editor */}
+          <div className={cn('mb-2', GUTTER.PADDING_CLASS)}>
+            <textarea
+              ref={titleInputRef}
+              value={title}
+              onChange={handleTitleChange}
+              onKeyDown={handleTitleKeyDown}
+              placeholder={t('nodeEdit.untitledPlaceholder')}
+              rows={1}
+              className='w-full resize-none overflow-hidden border-none bg-transparent text-4xl font-bold leading-tight tracking-tight text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-0'
             />
+          </div>
+
+          {/* Editor */}
+          <BlockEditor
+            initialContent={currentNode.content ? htmlToEditor(currentNode.content) : undefined}
+            onEditorUpdate={handleEditorChange}
+            placeholder={t('nodeEdit.editorPlaceholder')}
+            className='min-h-[500px]'
+          />
         </div>
       </main>
 
@@ -424,10 +449,18 @@ export const NodeEditPage = ({
             <Tabs defaultValue='properties' className='flex flex-1 flex-col min-h-0'>
               {/* Tab Header */}
               <TabsList variant='underline' className='grid grid-cols-3'>
-                <TabsTrigger variant='underline' value='properties' title={t('nodeEdit.tabs.properties')}>
+                <TabsTrigger
+                  variant='underline'
+                  value='properties'
+                  title={t('nodeEdit.tabs.properties')}
+                >
                   <SlidersHorizontal className='h-4 w-4' />
                 </TabsTrigger>
-                <TabsTrigger variant='underline' value='practice' title={t('nodeEdit.tabs.practice')}>
+                <TabsTrigger
+                  variant='underline'
+                  value='practice'
+                  title={t('nodeEdit.tabs.practice')}
+                >
                   <GraduationCap className='h-4 w-4' />
                 </TabsTrigger>
                 <TabsTrigger variant='underline' value='ai' title={t('nodeEdit.tabs.ai')}>
@@ -436,7 +469,10 @@ export const NodeEditPage = ({
               </TabsList>
 
               {/* Properties Tab */}
-              <TabsContent value='properties' className='flex-1 overflow-y-auto [scrollbar-gutter:stable] min-h-0 mt-0'>
+              <TabsContent
+                value='properties'
+                className='flex-1 overflow-y-auto [scrollbar-gutter:stable] min-h-0 mt-0'
+              >
                 <div className='flex flex-col min-h-full'>
                   {/* Node Metadata */}
                   <div className='border-b border-border/50 p-4'>
@@ -472,7 +508,10 @@ export const NodeEditPage = ({
                       </CardHeader>
                       <CardContent className='px-3 pb-3'>
                         <p className='text-xs text-muted-foreground mb-3'>
-                          {t('nodeEdit.deleteWarning', 'Deleting this node will also remove all its connections.')}
+                          {t(
+                            'nodeEdit.deleteWarning',
+                            'Deleting this node will also remove all its connections.'
+                          )}
                         </p>
                         <Button
                           variant='ghost'
@@ -505,15 +544,27 @@ export const NodeEditPage = ({
 
       {/* Right Sidebar - Mobile Sheet */}
       <Sheet open={mobileSheetOpen} onOpenChange={setMobileSheetOpen}>
-        <SheetContent side='right' className='p-0 flex flex-col' style={{ width: SIDEBAR_DEFAULT_WIDTH }}>
+        <SheetContent
+          side='right'
+          className='p-0 flex flex-col'
+          style={{ width: SIDEBAR_DEFAULT_WIDTH }}
+        >
           <Tabs defaultValue='properties' className='flex flex-1 flex-col min-h-0'>
             {/* Tab Header */}
             <SheetHeader className='p-0'>
               <TabsList variant='underline' className='grid grid-cols-3'>
-                <TabsTrigger variant='underline' value='properties' title={t('nodeEdit.tabs.properties')}>
+                <TabsTrigger
+                  variant='underline'
+                  value='properties'
+                  title={t('nodeEdit.tabs.properties')}
+                >
                   <SlidersHorizontal className='h-4 w-4' />
                 </TabsTrigger>
-                <TabsTrigger variant='underline' value='practice' title={t('nodeEdit.tabs.practice')}>
+                <TabsTrigger
+                  variant='underline'
+                  value='practice'
+                  title={t('nodeEdit.tabs.practice')}
+                >
                   <GraduationCap className='h-4 w-4' />
                 </TabsTrigger>
                 <TabsTrigger variant='underline' value='ai' title={t('nodeEdit.tabs.ai')}>
@@ -523,7 +574,10 @@ export const NodeEditPage = ({
             </SheetHeader>
 
             {/* Properties Tab */}
-            <TabsContent value='properties' className='flex-1 overflow-y-auto [scrollbar-gutter:stable] min-h-0 mt-0'>
+            <TabsContent
+              value='properties'
+              className='flex-1 overflow-y-auto [scrollbar-gutter:stable] min-h-0 mt-0'
+            >
               <div className='flex flex-col min-h-full'>
                 {/* Node Metadata */}
                 <div className='border-b border-border/50 p-4'>
@@ -559,7 +613,10 @@ export const NodeEditPage = ({
                     </CardHeader>
                     <CardContent className='px-3 pb-3'>
                       <p className='text-xs text-muted-foreground mb-3'>
-                        {t('nodeEdit.deleteWarning', 'Deleting this node will also remove all its connections.')}
+                        {t(
+                          'nodeEdit.deleteWarning',
+                          'Deleting this node will also remove all its connections.'
+                        )}
                       </p>
                       <Button
                         variant='ghost'
@@ -593,9 +650,7 @@ export const NodeEditPage = ({
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>
-              {t('nodeEdit.deleteConfirmTitle', 'Delete node?')}
-            </AlertDialogTitle>
+            <AlertDialogTitle>{t('nodeEdit.deleteConfirmTitle', 'Delete node?')}</AlertDialogTitle>
             <AlertDialogDescription>
               {t('nodeEdit.deleteConfirmDescription', {
                 defaultValue: '"{{label}}" and {{count}} connections will be permanently deleted.',

@@ -214,7 +214,7 @@ Excessive animations, auto-playing effects, aggressive gradients—these distrac
 - Excessive animations (distraction, performance cost)
 - Gradient backgrounds on UI (readability problems)
 - Emojis in interface chrome (unprofessional, inconsistent rendering)
-- Backdrop blur (performance issues, especially on low-end devices)
+- Backdrop blur on large areas (performance issues on low-end devices). Exception: small floating elements (menus, popovers, tooltips) where blur adds depth without significant cost.
 - Auto-playing animations or videos (accessibility violation, annoying)
 
 ### Design Smell Detection

@@ -1,5 +1,5 @@
-import * as React from 'react'
 import * as PopoverPrimitive from '@radix-ui/react-popover'
+import * as React from 'react'
 import { cn } from '@/shared/lib/cn'
 import { constrainToViewport, getViewportBounds } from '@/shared/lib/viewport'
 
@@ -17,15 +17,7 @@ interface SmartPopoverContentProps
 
 const SmartPopoverContent = React.forwardRef<HTMLDivElement, SmartPopoverContentProps>(
   (
-    {
-      className,
-      position,
-      viewportPadding = 16,
-      offset = {},
-      mode = 'auto',
-      style,
-      ...props
-    },
+    { className, position, viewportPadding = 16, offset = {}, mode = 'auto', style, ...props },
     ref
   ) => {
     const [measuredSize, setMeasuredSize] = React.useState({ width: 300, height: 200 })
@@ -45,7 +37,9 @@ const SmartPopoverContent = React.forwardRef<HTMLDivElement, SmartPopoverContent
 
     // Calculate constrained position for fixed mode
     const computedStyle = React.useMemo(() => {
-      if (mode !== 'fixed' || !position) return style
+      if (mode !== 'fixed' || !position) {
+        return style
+      }
 
       const viewport = getViewportBounds()
 
@@ -92,8 +86,11 @@ const SmartPopoverContent = React.forwardRef<HTMLDivElement, SmartPopoverContent
       <PopoverPrimitive.Content
         ref={node => {
           // Combine refs
-          if (typeof ref === 'function') ref(node)
-          else if (ref) ref.current = node
+          if (typeof ref === 'function') {
+            ref(node)
+          } else if (ref) {
+            ref.current = node
+          }
           contentRef.current = node
         }}
         className={cn(

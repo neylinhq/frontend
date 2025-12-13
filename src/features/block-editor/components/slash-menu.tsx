@@ -30,6 +30,7 @@ import type { useTranslation } from 'react-i18next'
 import { cn } from '@/shared/lib/cn'
 
 import type { SlashMenuItem } from '../model/block-editor.types'
+import styles from '../styles/slash-menu.module.css'
 
 interface SlashMenuProps {
   items: SlashMenuItem[]
@@ -151,12 +152,12 @@ export const SlashMenu = forwardRef<SlashMenuRef, SlashMenuProps>(({ items, comm
   let globalIndex = 0
 
   return (
-    <div className='z-50 max-h-[400px] min-w-[320px] overflow-y-auto rounded-xl border border-border bg-popover p-2 shadow-xl animate-menu-in'>
-      {sortedCategories.map((category, categoryIndex) => {
+    <div className={styles.container}>
+      {sortedCategories.map((category, _categoryIndex) => {
         const categoryItems = groupedItems[category]
         return (
-          <div key={category} className={cn(categoryIndex > 0 && 'mt-2')}>
-            <div className='mb-1 px-2 py-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground'>
+          <div key={category} className={styles.category}>
+            <div className={styles.categoryTitle}>
               {category}
             </div>
             {categoryItems.map(item => {
@@ -167,18 +168,16 @@ export const SlashMenu = forwardRef<SlashMenuRef, SlashMenuProps>(({ items, comm
                   key={`${category}-${item.title}`}
                   onClick={() => selectItem(currentIndex)}
                   className={cn(
-                    'flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left text-sm transition-colors',
-                    currentIndex === selectedIndex
-                      ? 'bg-accent text-accent-foreground'
-                      : 'hover:bg-accent/50'
+                    styles.item,
+                    currentIndex === selectedIndex && styles.itemSelected
                   )}
                 >
-                  <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-background shadow-sm'>
+                  <div className={styles.iconContainer}>
                     {item.icon}
                   </div>
-                  <div className='flex min-w-0 flex-1 flex-col'>
-                    <span className='truncate font-medium'>{item.title}</span>
-                    <span className='truncate text-xs text-muted-foreground'>
+                  <div className={styles.itemContent}>
+                    <span className={styles.itemTitle}>{item.title}</span>
+                    <span className={styles.itemDescription}>
                       {item.description}
                     </span>
                   </div>

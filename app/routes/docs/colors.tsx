@@ -117,7 +117,7 @@ const ColorCard = ({ name, var: cssVar, desc }: ColorItem) => (
     <CardHeader className='pb-3'>
       <div
         className='h-16 border-b mb-3 -mx-6 -mt-6'
-        style={{ backgroundColor: `hsl(var(${cssVar}))` }}
+        style={{ backgroundColor: `oklch(var(${cssVar}))` }}
       />
       <CardTitle className='text-base'>{name}</CardTitle>
       <CardDescription>
@@ -184,7 +184,7 @@ const UsageSection = () => (
             Inline CSS:
           </Typography>
           <pre className='rounded-lg bg-muted p-4 overflow-x-auto'>
-            <code className='text-sm'>{`<div style={{ color: 'hsl(var(--primary))' }}>
+            <code className='text-sm'>{`<div style={{ color: 'oklch(var(--primary))' }}>
   Custom color
 </div>`}</code>
           </pre>

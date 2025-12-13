@@ -19,7 +19,9 @@ export const PracticeSessionPage = () => {
   const generateExercisesMutation = useGenerateExercises()
 
   const handleSubmit = () => {
-    if (!exercise || !selectedAnswer || !mapId) return
+    if (!exercise || !selectedAnswer || !mapId) {
+      return
+    }
 
     submitAnswerMutation.mutate(
       { mapId, exerciseId: exercise.id, answer: selectedAnswer },
@@ -38,7 +40,9 @@ export const PracticeSessionPage = () => {
   }
 
   const handleGenerateExercises = () => {
-    if (!mapId) return
+    if (!mapId) {
+      return
+    }
 
     generateExercisesMutation.mutate(
       {
@@ -84,10 +88,7 @@ export const PracticeSessionPage = () => {
             </Link>
           </Button>
 
-          <Button
-            onClick={handleGenerateExercises}
-            disabled={generateExercisesMutation.isPending}
-          >
+          <Button onClick={handleGenerateExercises} disabled={generateExercisesMutation.isPending}>
             {generateExercisesMutation.isPending ? (
               <>
                 <Loader2 className='mr-2 h-4 w-4 animate-spin' />
@@ -128,6 +129,7 @@ export const PracticeSessionPage = () => {
               <div className='space-y-3'>
                 {exercise.options.map(option => (
                   <button
+                    type='button'
                     key={option.id}
                     onClick={() => setSelectedAnswer(option.id)}
                     disabled={showFeedback}

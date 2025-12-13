@@ -113,7 +113,16 @@ export const useFilteredGraphData = ({
     }
 
     return { nodes: visibleNodes, edges: visibleEdges }
-  }, [fullMap, visibleNodeTypes, visibleEdgeTypes, connectionRange, connectionStats, viewMode, focusedNodeId, focusDepth])
+  }, [
+    fullMap,
+    visibleNodeTypes,
+    visibleEdgeTypes,
+    connectionRange,
+    connectionStats,
+    viewMode,
+    focusedNodeId,
+    focusDepth
+  ])
 
   return {
     filteredData,

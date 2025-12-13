@@ -42,7 +42,7 @@ export const SETTINGS_ROUTES = {
   profile: '/dashboard/settings/profile',
   preferences: '/dashboard/settings/preferences',
   integrations: '/dashboard/settings/integrations',
-  security: '/dashboard/settings/security',
+  account: '/dashboard/settings/account',
   billing: '/dashboard/settings/billing'
 } as const
 

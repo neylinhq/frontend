@@ -30,7 +30,8 @@ import {
   parseExpiry
 } from '@/shared/lib/card-utils'
 import { cn } from '@/shared/lib/cn'
-import { CryptoSubscriptionDialogContent } from '../crypto-subscription-dialog'
+import type { CryptoNetwork } from '@/entities/subscription'
+import { CryptoWalletConnectContent } from '../crypto-wallet-connect'
 import { CARD_VALIDATION, getCvcLength, getCvcPlaceholder } from './lib/card-validation'
 import {
   type AddPaymentMethodValues,
@@ -41,9 +42,14 @@ import {
 // Types
 type Step = 'select' | 'card' | 'crypto'
 
+interface CryptoWalletInput {
+  network: CryptoNetwork
+  address: string
+}
+
 interface AddPaymentMethodDialogProps {
   onAddCard: (data: PaymentMethodInput) => void
-  onCryptoSuccess?: () => void
+  onAddCrypto: (data: CryptoWalletInput) => void
   loadingCard?: boolean
   trigger?: React.ReactNode
 }
@@ -121,7 +127,7 @@ const SecurityNotice = ({ children }: { children: React.ReactNode }) => {
 
 export const AddPaymentMethodDialog = ({
   onAddCard,
-  onCryptoSuccess,
+  onAddCrypto,
   loadingCard,
   trigger
 }: AddPaymentMethodDialogProps) => {
@@ -186,8 +192,8 @@ export const AddPaymentMethodDialog = ({
     resetAndClose()
   }
 
-  const handleCryptoSuccess = () => {
-    onCryptoSuccess?.()
+  const handleCryptoSuccess = (network: CryptoNetwork, address: string) => {
+    onAddCrypto({ network, address })
     resetAndClose()
   }
 
@@ -229,7 +235,9 @@ export const AddPaymentMethodDialog = ({
         {step === 'select' && (
           <>
             <DialogHeader>
-              <div className='text-lg font-semibold'>{t('billing.addPaymentMethod.selectTitle')}</div>
+              <div className='text-lg font-semibold'>
+                {t('billing.addPaymentMethod.selectTitle')}
+              </div>
               <DialogDescription>
                 {t('billing.addPaymentMethod.selectDescription')}
               </DialogDescription>
@@ -424,9 +432,7 @@ export const AddPaymentMethodDialog = ({
               <DialogDescription>{t('billing.crypto.description')}</DialogDescription>
             </DialogHeader>
 
-            <CryptoSubscriptionDialogContent
-              planType='pro'
-              amount={9.99}
+            <CryptoWalletConnectContent
               onSuccess={handleCryptoSuccess}
               onBack={handleBack}
               embedded

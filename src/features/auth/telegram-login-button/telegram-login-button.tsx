@@ -91,7 +91,9 @@ export const TelegramLoginButton = ({ className }: TelegramLoginButtonProps) => 
   }, [handleTelegramAuth])
 
   const openTelegramLogin = () => {
-    if (!botId) return
+    if (!botId) {
+      return
+    }
 
     // Open Telegram Login Widget in popup
     const width = 550
@@ -110,7 +112,9 @@ export const TelegramLoginButton = ({ className }: TelegramLoginButtonProps) => 
 
     // Listen for message from popup
     const handleMessage = (event: MessageEvent) => {
-      if (event.origin !== 'https://oauth.telegram.org') return
+      if (event.origin !== 'https://oauth.telegram.org') {
+        return
+      }
 
       // Parse JSON string if needed
       const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data

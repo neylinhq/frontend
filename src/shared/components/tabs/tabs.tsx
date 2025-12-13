@@ -4,28 +4,24 @@ import { forwardRef } from 'react'
 
 import { cn } from '@/shared/lib/cn'
 
-const Tabs = forwardRef<
-  HTMLDivElement,
-  React.ComponentPropsWithoutRef<typeof TabsPrimitive.Root>
->(({ className, ...props }, ref) => (
-  <TabsPrimitive.Root ref={ref} className={cn(className)} {...props} />
-))
+const Tabs = forwardRef<HTMLDivElement, React.ComponentPropsWithoutRef<typeof TabsPrimitive.Root>>(
+  ({ className, ...props }, ref) => (
+    <TabsPrimitive.Root ref={ref} className={cn(className)} {...props} />
+  )
+)
 Tabs.displayName = 'Tabs'
 
-const tabsListVariants = cva(
-  'inline-flex items-center justify-center text-muted-foreground',
-  {
-    variants: {
-      variant: {
-        default: 'h-10 rounded-md bg-muted p-1',
-        underline: 'h-10 w-full rounded-none border-b border-border/50 bg-transparent p-0 px-2'
-      }
-    },
-    defaultVariants: {
-      variant: 'default'
+const tabsListVariants = cva('inline-flex items-center justify-center text-muted-foreground', {
+  variants: {
+    variant: {
+      default: 'h-10 rounded-md bg-muted p-1',
+      underline: 'h-10 w-full rounded-none border-b border-border/50 bg-transparent p-0 px-2'
     }
+  },
+  defaultVariants: {
+    variant: 'default'
   }
-)
+})
 
 interface TabsListProps
   extends React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>,

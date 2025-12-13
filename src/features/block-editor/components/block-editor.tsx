@@ -324,16 +324,9 @@ export const BlockEditor = ({
   return (
     <div
       ref={editorWrapperRef}
-      className={cn(
-        'tiptap-editor-wrapper relative',
-        GUTTER.PADDING_CLASS,
-        className
-      )}
+      className={cn('tiptap-editor-wrapper relative', GUTTER.PADDING_CLASS, className)}
     >
-      <div
-        ref={editorRef}
-        className='tiptap-editor group/editor relative'
-      >
+      <div ref={editorRef} className='tiptap-editor group/editor relative'>
         <EditorBubbleMenu editor={editor} onOpenMathDialog={openMathDialog} />
 
         <MathInputDialog

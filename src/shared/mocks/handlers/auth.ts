@@ -107,7 +107,7 @@ export const authHandlers = [
   // Forgot password
   http.post(`${API_URL}/auth/forgot-password`, async ({ request }) => {
     await delay(500)
-    const body = (await request.json()) as { email: string }
+    const _body = (await request.json()) as { email: string }
 
     // Always return success (security: don't reveal if email exists)
     return HttpResponse.json({

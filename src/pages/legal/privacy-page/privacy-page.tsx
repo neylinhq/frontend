@@ -8,7 +8,9 @@ export const PrivacyPage = () => {
 
   return (
     <LegalLayout>
-      <Typography className='mb-4' variant='h1'>{t('legal.privacy.title')}</Typography>
+      <Typography className='mb-4' variant='h1'>
+        {t('legal.privacy.title')}
+      </Typography>
       <Typography variant='lead' className='mb-8'>
         {t('legal.privacy.description')}
       </Typography>

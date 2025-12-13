@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
 import { useCreateEdge } from '@/entities/map'
-import { type NodeType } from '@/entities/node'
+import type { NodeType } from '@/entities/node'
 import { Button } from '@/shared/components/button'
 import {
   Dialog,
@@ -23,8 +23,8 @@ import {
   parseQuickInput
 } from '../lib/parse-quick-input'
 import { NODE_CREATION_CONFIG } from '../model/node-creation.constants'
-import { useNodeCreationStore } from '../model/node-creation.store'
 import { useCreateNodeMutation } from '../model/node-creation.hooks'
+import { useNodeCreationStore } from '../model/node-creation.store'
 import { ConnectionSelector } from './connection-selector'
 
 export const QuickAddDialog = () => {
@@ -181,7 +181,9 @@ export const QuickAddDialog = () => {
               <div className='space-y-0.5'>
                 {suggestions.map((type, index) => {
                   const config = getNodeConfig(type)
-                  if (!config) return null
+                  if (!config) {
+                    return null
+                  }
 
                   const TypeIcon = config.icon
                   const isSelected = index === selectedSuggestionIndex

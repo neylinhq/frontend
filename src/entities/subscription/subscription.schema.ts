@@ -67,8 +67,7 @@ export const CardBrandEnum = z.enum([
 export type CardBrand = z.infer<typeof CardBrandEnum>
 
 // Crypto networks for USDT payments (Connect Wallet)
-// На данный момент поддерживаем только TON
-export const CryptoNetworkEnum = z.enum(['ton'])
+export const CryptoNetworkEnum = z.enum(['ton', 'tron', 'bsc', 'polygon', 'ethereum'])
 export type CryptoNetwork = z.infer<typeof CryptoNetworkEnum>
 
 export const CryptoCurrencyEnum = z.enum(['USDT'])

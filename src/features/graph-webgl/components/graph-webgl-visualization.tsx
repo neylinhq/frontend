@@ -12,11 +12,12 @@ import { memo, useCallback, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Edge, FullMap, Node } from '@/entities/map'
 import { useFullMap } from '@/entities/map'
-import { Card } from '@/shared/components/card'
-import { useDarkMode } from '@/shared/hooks'
-import { cn } from '@/shared/lib/cn'
-import { GraphCanvas, type GraphCanvasHandle, type ViewportState, type LayoutPosition } from '@/features/graph-webgl/components/graph-canvas'
-import { MiniMapWebGL } from '@/features/graph-webgl/components/minimap-webgl'
+import { GraphToolbar } from '@/features/graph/components/graph-toolbar'
+import { NodeDrawer } from '@/features/graph/components/node-drawer'
+import { ViewControlsPanel } from '@/features/graph/components/view-controls-panel'
+import { useGraphControls } from '@/features/graph/model/graph.controls.hooks'
+import { useFilteredGraphData } from '@/features/graph/model/graph.data.hooks'
+import { useNodeSelection } from '@/features/graph/model/graph.selection.hooks'
 import {
   useFilters,
   useFocusMode,
@@ -24,12 +25,16 @@ import {
   useNodeSpacing,
   useViewMode
 } from '@/features/graph/model/graph.store'
-import { useFilteredGraphData } from '@/features/graph/model/graph.data.hooks'
-import { useNodeSelection } from '@/features/graph/model/graph.selection.hooks'
-import { useGraphControls } from '@/features/graph/model/graph.controls.hooks'
-import { GraphToolbar } from '@/features/graph/components/graph-toolbar'
-import { ViewControlsPanel } from '@/features/graph/components/view-controls-panel'
-import { NodeDrawer } from '@/features/graph/components/node-drawer'
+import {
+  GraphCanvas,
+  type GraphCanvasHandle,
+  type LayoutPosition,
+  type ViewportState
+} from '@/features/graph-webgl/components/graph-canvas'
+import { MiniMapWebGL } from '@/features/graph-webgl/components/minimap-webgl'
+import { Card } from '@/shared/components/card'
+import { useDarkMode } from '@/shared/hooks'
+import { cn } from '@/shared/lib/cn'
 
 interface GraphWebGLVisualizationProps {
   mapId: string
@@ -50,7 +55,7 @@ interface GraphWebGLVisualizationProps {
 export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
   mapId,
   className,
-  interactive = true,
+  interactive: _interactive = true,
   initialData,
   renderConnectionsPanel
 }: GraphWebGLVisualizationProps) {
@@ -61,7 +66,7 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
   const fullMap = fetchedMap ?? initialData
 
   // Selection state
-  const { selectedElements, clearSelection, selectedNodeId, selectNode } = useNodeSelection()
+  const { clearSelection, selectedNodeId, selectNode } = useNodeSelection()
   const { controls, toggleFullscreen } = useGraphControls()
 
   // Store hooks for view settings

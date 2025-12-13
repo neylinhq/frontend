@@ -1,9 +1,15 @@
 import { useTranslation } from 'react-i18next'
-import { useMap, useUpdateNode, useNodeWithContent } from '@/entities/map'
+import { useMap, useNodeWithContent, useUpdateNode } from '@/entities/map'
 import { toast } from '@/shared/components/toast'
-import type { EnrichmentPreviewData, MapChatContext, NodeChatContext, PreviewCard, ResolvedPreview } from '../ai-assist.types'
-import { useProposalHistoryStore } from '../model/ai-assist.proposal.store'
+import type {
+  EnrichmentPreviewData,
+  MapChatContext,
+  NodeChatContext,
+  PreviewCard,
+  ResolvedPreview
+} from '../ai-assist.types'
 import { getChatSessionId } from '../model/ai-assist.chat.store'
+import { useProposalHistoryStore } from '../model/ai-assist.proposal.store'
 import { AIChatCore } from './ai-chat-core'
 
 interface NodeChatPanelProps {
@@ -52,8 +58,6 @@ export const NodeChatPanel = ({ nodeId, mapId }: NodeChatPanelProps) => {
         case 'content':
           previousState.content = node?.content || ''
           break
-        case 'examples':
-        case 'sources':
         default:
           previousState.content = node?.content || ''
           break
@@ -68,8 +72,6 @@ export const NodeChatPanel = ({ nodeId, mapId }: NodeChatPanelProps) => {
         case 'content':
           updatePayload.content = data.proposed
           break
-        case 'examples':
-        case 'sources':
         default:
           // For examples/sources, append to content
           updatePayload.content = node?.content
@@ -104,7 +106,9 @@ export const NodeChatPanel = ({ nodeId, mapId }: NodeChatPanelProps) => {
   }
 
   const handleUndoPreview = async (preview: ResolvedPreview) => {
-    if (!preview.undoData) return
+    if (!preview.undoData) {
+      return
+    }
 
     const { previousState } = preview.undoData
 

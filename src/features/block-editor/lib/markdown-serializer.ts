@@ -4,7 +4,9 @@ import type { JSONContent } from '@tiptap/core'
  * Converts TipTap JSONContent to Markdown string
  */
 export const jsonToMarkdown = (content: JSONContent): string => {
-  if (!content) return ''
+  if (!content) {
+    return ''
+  }
 
   if (content.type === 'doc') {
     return (content.content || []).map(node => nodeToMarkdown(node)).join('\n\n')
@@ -14,7 +16,9 @@ export const jsonToMarkdown = (content: JSONContent): string => {
 }
 
 const nodeToMarkdown = (node: JSONContent, depth = 0): string => {
-  if (!node) return ''
+  if (!node) {
+    return ''
+  }
 
   switch (node.type) {
     case 'paragraph':
@@ -134,7 +138,9 @@ const nodeToMarkdown = (node: JSONContent, depth = 0): string => {
 }
 
 const listItemToMarkdown = (item: JSONContent, depth: number): string => {
-  if (!item.content) return ''
+  if (!item.content) {
+    return ''
+  }
 
   const parts: string[] = []
 
@@ -146,7 +152,7 @@ const listItemToMarkdown = (item: JSONContent, depth: number): string => {
       child.type === 'orderedList' ||
       child.type === 'taskList'
     ) {
-      parts.push('\n' + nodeToMarkdown(child, depth + 1))
+      parts.push(`\n${nodeToMarkdown(child, depth + 1)}`)
     } else {
       parts.push(nodeToMarkdown(child, depth))
     }
@@ -156,7 +162,9 @@ const listItemToMarkdown = (item: JSONContent, depth: number): string => {
 }
 
 const inlineToMarkdown = (content: JSONContent[] | undefined): string => {
-  if (!content) return ''
+  if (!content) {
+    return ''
+  }
 
   return content
     .map(node => {
@@ -212,10 +220,14 @@ const inlineToMarkdown = (content: JSONContent[] | undefined): string => {
 }
 
 const tableToMarkdown = (table: JSONContent): string => {
-  if (!table.content) return ''
+  if (!table.content) {
+    return ''
+  }
 
   const rows = table.content.filter(row => row.type === 'tableRow')
-  if (rows.length === 0) return ''
+  if (rows.length === 0) {
+    return ''
+  }
 
   const lines: string[] = []
 

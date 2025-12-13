@@ -1,6 +1,6 @@
+import { Check, Pencil, X } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Check, X, Pencil } from 'lucide-react'
 import { Button } from '@/shared/components/button'
 import { cn } from '@/shared/lib/cn'
 
@@ -33,17 +33,10 @@ export const ProposalCard = ({
   const { t } = useTranslation()
 
   return (
-    <div
-      className={cn(
-        'border border-border rounded-lg overflow-hidden bg-card',
-        className
-      )}
-    >
+    <div className={cn('border border-border rounded-lg overflow-hidden bg-card', className)}>
       {/* Header */}
       <div className='px-3 py-2 bg-muted/50 border-b border-border'>
-        <span className='text-xs font-medium text-muted-foreground'>
-          {title}
-        </span>
+        <span className='text-xs font-medium text-muted-foreground'>{title}</span>
       </div>
 
       {/* Content */}
@@ -53,12 +46,7 @@ export const ProposalCard = ({
 
       {/* Actions */}
       <div className='px-3 py-2 border-t border-border flex justify-end gap-2'>
-        <Button
-          size='sm'
-          variant='ghost'
-          onClick={onReject}
-          className='text-muted-foreground'
-        >
+        <Button size='sm' variant='ghost' onClick={onReject} className='text-muted-foreground'>
           <X className='h-3.5 w-3.5 mr-1' />
           {t('common.dismiss', 'Dismiss')}
         </Button>
@@ -95,10 +83,7 @@ export const DiffLine = ({ type, children, className }: DiffLineProps) => (
       {type === 'remove' ? '−' : '+'}
     </span>
     <span
-      className={cn(
-        'flex-1 min-w-0',
-        type === 'remove' && 'line-through text-muted-foreground'
-      )}
+      className={cn('flex-1 min-w-0', type === 'remove' && 'line-through text-muted-foreground')}
     >
       {children}
     </span>
@@ -123,7 +108,9 @@ export const DiffBlock = ({ current, proposed, className, renderHtml }: DiffBloc
             className='prose prose-sm dark:prose-invert max-w-none prose-p:my-0.5 prose-headings:my-1 prose-ul:my-0.5 prose-li:my-0'
             dangerouslySetInnerHTML={{ __html: current }}
           />
-        ) : current}
+        ) : (
+          current
+        )}
       </DiffLine>
     )}
     <DiffLine type='add'>
@@ -132,7 +119,9 @@ export const DiffBlock = ({ current, proposed, className, renderHtml }: DiffBloc
           className='prose prose-sm dark:prose-invert max-w-none prose-p:my-0.5 prose-headings:my-1 prose-ul:my-0.5 prose-li:my-0'
           dangerouslySetInnerHTML={{ __html: proposed }}
         />
-      ) : proposed}
+      ) : (
+        proposed
+      )}
     </DiffLine>
   </div>
 )

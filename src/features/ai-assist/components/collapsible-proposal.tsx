@@ -1,9 +1,13 @@
+import { Check, ChevronDown, ChevronRight, Undo2, X } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Check, X, Undo2, ChevronDown, ChevronRight } from 'lucide-react'
 import { Button } from '@/shared/components/button'
 import { cn } from '@/shared/lib/cn'
-import type { ResolvedPreview, EnrichmentPreviewData, ExercisePreviewData } from '../ai-assist.types'
+import type {
+  EnrichmentPreviewData,
+  ExercisePreviewData,
+  ResolvedPreview
+} from '../ai-assist.types'
 import { DiffBlock } from './proposal-card'
 
 interface CollapsibleProposalProps {
@@ -46,12 +50,7 @@ export const CollapsibleProposal = ({
   }
 
   return (
-    <div
-      className={cn(
-        'border border-border rounded-lg overflow-hidden bg-card/50',
-        className
-      )}
-    >
+    <div className={cn('border border-border rounded-lg overflow-hidden bg-card/50', className)}>
       {/* Collapsed header - always visible */}
       <button
         type='button'
@@ -80,8 +79,7 @@ export const CollapsibleProposal = ({
         <span className='flex-1 text-xs text-muted-foreground truncate'>
           {isApproved
             ? t('ai.proposals.applied', 'Applied: {{summary}}', { summary: getSummary() })
-            : t('ai.proposals.dismissed', 'Dismissed: {{summary}}', { summary: getSummary() })
-          }
+            : t('ai.proposals.dismissed', 'Dismissed: {{summary}}', { summary: getSummary() })}
         </span>
 
         {/* Undo button - only show if canUndo and approved */}
@@ -89,7 +87,7 @@ export const CollapsibleProposal = ({
           <Button
             size='sm'
             variant='ghost'
-            onClick={(e) => {
+            onClick={e => {
               e.stopPropagation()
               onUndo()
             }}
@@ -109,11 +107,7 @@ export const CollapsibleProposal = ({
           {/* Footer with undo for expanded view */}
           {canUndo && onUndo && isApproved && (
             <div className='mt-3 pt-2 border-t border-border flex justify-end'>
-              <Button
-                size='sm'
-                variant='outline'
-                onClick={onUndo}
-              >
+              <Button size='sm' variant='outline' onClick={onUndo}>
                 <Undo2 className='h-3.5 w-3.5 mr-1' />
                 {t('common.undo', 'Undo')}
               </Button>
@@ -155,10 +149,8 @@ const ProposalContent = ({ preview }: { preview: ResolvedPreview }) => {
           <div className='font-medium'>{exercise?.question}</div>
           {exercise?.options && (
             <ul className='list-disc list-inside text-muted-foreground'>
-              {exercise.options.map((opt) => (
-                <li key={opt.id}>
-                  {opt.content}
-                </li>
+              {exercise.options.map(opt => (
+                <li key={opt.id}>{opt.content}</li>
               ))}
             </ul>
           )}
@@ -170,9 +162,7 @@ const ProposalContent = ({ preview }: { preview: ResolvedPreview }) => {
     case 'node':
       return (
         <div className='text-xs text-muted-foreground'>
-          <pre className='whitespace-pre-wrap'>
-            {JSON.stringify(preview.data, null, 2)}
-          </pre>
+          <pre className='whitespace-pre-wrap'>{JSON.stringify(preview.data, null, 2)}</pre>
         </div>
       )
 

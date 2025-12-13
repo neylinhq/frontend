@@ -26,97 +26,97 @@
   /* Code font: Geist Mono - matching monospace from Vercel */
   --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 
-  /* Colors Mapping */
-  --color-background: hsl(var(--background));
-  --color-foreground: hsl(var(--foreground));
+  /* Colors Mapping - OKLCH format: L C H */
+  --color-background: oklch(var(--background));
+  --color-foreground: oklch(var(--foreground));
 
-  --color-card: hsl(var(--card));
-  --color-card-foreground: hsl(var(--card-foreground));
+  --color-card: oklch(var(--card));
+  --color-card-foreground: oklch(var(--card-foreground));
 
-  --color-popover: hsl(var(--popover));
-  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-popover: oklch(var(--popover));
+  --color-popover-foreground: oklch(var(--popover-foreground));
 
-  --color-primary: hsl(var(--primary));
-  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-primary: oklch(var(--primary));
+  --color-primary-foreground: oklch(var(--primary-foreground));
 
-  --color-secondary: hsl(var(--secondary));
-  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-secondary: oklch(var(--secondary));
+  --color-secondary-foreground: oklch(var(--secondary-foreground));
 
-  --color-muted: hsl(var(--muted));
-  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-muted: oklch(var(--muted));
+  --color-muted-foreground: oklch(var(--muted-foreground));
 
-  --color-accent: hsl(var(--accent));
-  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-accent: oklch(var(--accent));
+  --color-accent-foreground: oklch(var(--accent-foreground));
 
-  --color-destructive: hsl(var(--destructive));
-  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-destructive: oklch(var(--destructive));
+  --color-destructive-foreground: oklch(var(--destructive-foreground));
 
-  --color-success: hsl(var(--success));
-  --color-success-foreground: hsl(var(--success-foreground));
+  --color-success: oklch(var(--success));
+  --color-success-foreground: oklch(var(--success-foreground));
 
-  --color-warning: hsl(var(--warning));
-  --color-warning-foreground: hsl(var(--warning-foreground));
+  --color-warning: oklch(var(--warning));
+  --color-warning-foreground: oklch(var(--warning-foreground));
 
-  --color-info: hsl(var(--info));
-  --color-info-foreground: hsl(var(--info-foreground));
+  --color-info: oklch(var(--info));
+  --color-info-foreground: oklch(var(--info-foreground));
 
-  --color-border: hsl(var(--border));
-  --color-input: hsl(var(--input));
-  --color-ring: hsl(var(--ring));
+  --color-border: oklch(var(--border));
+  --color-input: oklch(var(--input));
+  --color-ring: oklch(var(--ring));
 
-  --color-brand: hsl(var(--brand));
-  --color-brand-foreground: hsl(var(--brand-foreground));
-  --color-brand-muted: hsl(var(--brand-muted));
+  --color-brand: oklch(var(--brand));
+  --color-brand-foreground: oklch(var(--brand-foreground));
+  --color-brand-muted: oklch(var(--brand-muted));
 
   /* Theme preview colors */
-  --color-preview-classic: hsl(var(--preview-classic));
-  --color-preview-vanilla: hsl(var(--preview-vanilla));
-  --color-preview-vivid: hsl(var(--preview-vivid));
-  --color-preview-mono: hsl(var(--preview-mono));
+  --color-preview-classic: oklch(var(--preview-classic));
+  --color-preview-vanilla: oklch(var(--preview-vanilla));
+  --color-preview-vivid: oklch(var(--preview-vivid));
+  --color-preview-mono: oklch(var(--preview-mono));
 
   /* Semantic colors - S+ Elite */
-  --color-semantic-knowledge: hsl(var(--semantic-knowledge));
-  --color-semantic-knowledge-muted: hsl(var(--semantic-knowledge-muted));
-  --color-semantic-fact: hsl(var(--semantic-fact));
-  --color-semantic-fact-muted: hsl(var(--semantic-fact-muted));
-  --color-semantic-question: hsl(var(--semantic-question));
-  --color-semantic-question-muted: hsl(var(--semantic-question-muted));
-  --color-semantic-example: hsl(var(--semantic-example));
-  --color-semantic-example-muted: hsl(var(--semantic-example-muted));
-  --color-semantic-conflict: hsl(var(--semantic-conflict));
-  --color-semantic-conflict-muted: hsl(var(--semantic-conflict-muted));
-  --color-semantic-neutral: hsl(var(--semantic-neutral));
-  --color-semantic-neutral-muted: hsl(var(--semantic-neutral-muted));
+  --color-semantic-knowledge: oklch(var(--semantic-knowledge));
+  --color-semantic-knowledge-muted: oklch(var(--semantic-knowledge-muted));
+  --color-semantic-fact: oklch(var(--semantic-fact));
+  --color-semantic-fact-muted: oklch(var(--semantic-fact-muted));
+  --color-semantic-question: oklch(var(--semantic-question));
+  --color-semantic-question-muted: oklch(var(--semantic-question-muted));
+  --color-semantic-example: oklch(var(--semantic-example));
+  --color-semantic-example-muted: oklch(var(--semantic-example-muted));
+  --color-semantic-conflict: oklch(var(--semantic-conflict));
+  --color-semantic-conflict-muted: oklch(var(--semantic-conflict-muted));
+  --color-semantic-neutral: oklch(var(--semantic-neutral));
+  --color-semantic-neutral-muted: oklch(var(--semantic-neutral-muted));
 
   /* Complexity colors */
-  --color-complexity-basic: hsl(var(--complexity-basic));
-  --color-complexity-basic-bg: hsl(var(--complexity-basic-bg));
-  --color-complexity-intermediate: hsl(var(--complexity-intermediate));
-  --color-complexity-intermediate-bg: hsl(var(--complexity-intermediate-bg));
-  --color-complexity-advanced: hsl(var(--complexity-advanced));
-  --color-complexity-advanced-bg: hsl(var(--complexity-advanced-bg));
+  --color-complexity-basic: oklch(var(--complexity-basic));
+  --color-complexity-basic-bg: oklch(var(--complexity-basic-bg));
+  --color-complexity-intermediate: oklch(var(--complexity-intermediate));
+  --color-complexity-intermediate-bg: oklch(var(--complexity-intermediate-bg));
+  --color-complexity-advanced: oklch(var(--complexity-advanced));
+  --color-complexity-advanced-bg: oklch(var(--complexity-advanced-bg));
 
   /* Edge colors - 10 unique types */
-  --color-edge-prerequisite: hsl(var(--edge-prerequisite));
-  --color-edge-prerequisite-muted: hsl(var(--edge-prerequisite-muted));
-  --color-edge-causes: hsl(var(--edge-causes));
-  --color-edge-causes-muted: hsl(var(--edge-causes-muted));
-  --color-edge-explains: hsl(var(--edge-explains));
-  --color-edge-explains-muted: hsl(var(--edge-explains-muted));
-  --color-edge-is-a: hsl(var(--edge-is-a));
-  --color-edge-is-a-muted: hsl(var(--edge-is-a-muted));
-  --color-edge-has-a: hsl(var(--edge-has-a));
-  --color-edge-has-a-muted: hsl(var(--edge-has-a-muted));
-  --color-edge-part-of: hsl(var(--edge-part-of));
-  --color-edge-part-of-muted: hsl(var(--edge-part-of-muted));
-  --color-edge-influences: hsl(var(--edge-influences));
-  --color-edge-influences-muted: hsl(var(--edge-influences-muted));
-  --color-edge-related-to: hsl(var(--edge-related-to));
-  --color-edge-related-to-muted: hsl(var(--edge-related-to-muted));
-  --color-edge-contradicts: hsl(var(--edge-contradicts));
-  --color-edge-contradicts-muted: hsl(var(--edge-contradicts-muted));
-  --color-edge-similar-to: hsl(var(--edge-similar-to));
-  --color-edge-similar-to-muted: hsl(var(--edge-similar-to-muted));
+  --color-edge-prerequisite: oklch(var(--edge-prerequisite));
+  --color-edge-prerequisite-muted: oklch(var(--edge-prerequisite-muted));
+  --color-edge-causes: oklch(var(--edge-causes));
+  --color-edge-causes-muted: oklch(var(--edge-causes-muted));
+  --color-edge-explains: oklch(var(--edge-explains));
+  --color-edge-explains-muted: oklch(var(--edge-explains-muted));
+  --color-edge-is-a: oklch(var(--edge-is-a));
+  --color-edge-is-a-muted: oklch(var(--edge-is-a-muted));
+  --color-edge-has-a: oklch(var(--edge-has-a));
+  --color-edge-has-a-muted: oklch(var(--edge-has-a-muted));
+  --color-edge-part-of: oklch(var(--edge-part-of));
+  --color-edge-part-of-muted: oklch(var(--edge-part-of-muted));
+  --color-edge-influences: oklch(var(--edge-influences));
+  --color-edge-influences-muted: oklch(var(--edge-influences-muted));
+  --color-edge-related-to: oklch(var(--edge-related-to));
+  --color-edge-related-to-muted: oklch(var(--edge-related-to-muted));
+  --color-edge-contradicts: oklch(var(--edge-contradicts));
+  --color-edge-contradicts-muted: oklch(var(--edge-contradicts-muted));
+  --color-edge-similar-to: oklch(var(--edge-similar-to));
+  --color-edge-similar-to-muted: oklch(var(--edge-similar-to-muted));
 
   /* Radii */
   --radius-lg: var(--radius);
@@ -148,14 +148,14 @@
     0%, 100% {
       transform: scale(1);
       box-shadow:
-        0 0 0 0 hsl(var(--primary) / 0.4),
-        0 4px 12px -2px hsl(var(--primary) / 0.2);
+        0 0 0 0 oklch(var(--primary) / 0.4),
+        0 4px 12px -2px oklch(var(--primary) / 0.2);
     }
     50% {
       transform: scale(1.02);
       box-shadow:
-        0 0 20px 4px hsl(var(--primary) / 0.25),
-        0 8px 24px -4px hsl(var(--primary) / 0.3);
+        0 0 20px 4px oklch(var(--primary) / 0.25),
+        0 8px 24px -4px oklch(var(--primary) / 0.3);
     }
   }
 
@@ -175,697 +175,708 @@
 
 }
 
-/* Classic Theme (Default) - Pure neutral, no color tint */
+/* Classic Theme (Default) - Pure neutral, no color tint
+   OKLCH format: L C H (Lightness 0-1, Chroma 0-0.4, Hue 0-360) */
 @layer base {
   :root {
     /* Selection opacity - used globally and in editor */
     --selection-opacity: 0.3;
 
     /* Theme preview colors (don't change with theme) */
-    --preview-classic: 217 91% 55%;
-    --preview-vanilla: 24 80% 50%;
-    --preview-vivid: 160 84% 39%;
-    --preview-mono: 340 100% 50%;
+    --preview-classic: 0.53 0.26 263;        /* Blue #0055FF */
+    --preview-vanilla: 0.66 0.17 45;         /* Terracotta #E36B2B */
+    --preview-vivid: 0.82 0.22 180;          /* Electric cyan #00F0D0 */
+    --preview-mono: 0.64 0.25 16;            /* Hot Pink #FF0055 */
 
-    --background: 0 0% 100%;           /* #FFFFFF - pure white */
-    --foreground: 0 0% 9%;             /* #171717 - near black */
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 96%;             /* #F5F5F5 */
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 40%;      /* #666666 - improved contrast */
-    --accent: 0 0% 96%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
-    --success: 142 76% 30%;            /* Darker green for better contrast */
-    --success-foreground: 0 0% 98%;
-    --warning: 45 93% 47%;             /* Tailwind amber-500 */
-    --warning-foreground: 0 0% 9%;     /* Dark text for yellow */
-    --info: 199 89% 48%;               /* Tailwind sky-500 */
-    --info-foreground: 0 0% 98%;
-    --border: 0 0% 90%;                /* #E5E5E5 */
-    --input: 0 0% 90%;
-    --ring: 220 100% 50%;
+    /* Base UI - Pure neutral (C=0) */
+    --background: 0.99 0 0;                  /* Pure white */
+    --foreground: 0.12 0 0;                  /* Pure black */
+    --card: 0.99 0 0;
+    --card-foreground: 0.12 0 0;
+    --popover: 0.995 0 0;
+    --popover-foreground: 0.12 0 0;
+    --primary: 0.12 0 0;
+    --primary-foreground: 0.99 0 0;
+    --secondary: 0.96 0 0;
+    --secondary-foreground: 0.12 0 0;
+    --muted: 0.96 0 0;
+    --muted-foreground: 0.42 0 0;            /* Good contrast */
+    --accent: 0.95 0 0;
+    --accent-foreground: 0.12 0 0;
+    --destructive: 0.58 0.22 25;             /* Red */
+    --destructive-foreground: 0.99 0 0;
+    --success: 0.55 0.17 145;                /* Green */
+    --success-foreground: 0.99 0 0;
+    --warning: 0.78 0.16 85;                 /* Amber - higher L for Helmholtz-Kohlrausch */
+    --warning-foreground: 0.12 0 0;          /* Dark text for yellow */
+    --info: 0.58 0.14 230;                   /* Sky blue */
+    --info-foreground: 0.99 0 0;
+    --border: 0.91 0 0;
+    --input: 0.91 0 0;
+    --ring: 0.53 0.26 263;
     --radius: 0.5rem;
 
-    /* Brand: Pure Blue */
-    --brand: 220 100% 50%;             /* #0055FF */
-    --brand-foreground: 0 0% 100%;
-    --brand-muted: 220 100% 95%;
+    /* Brand: Pure Blue #0055FF */
+    --brand: 0.53 0.26 263;
+    --brand-foreground: 0.99 0 0;
+    --brand-muted: 0.95 0.04 263;
 
-    /* Graph node colors */
-    --graph-violet: 250 100% 65%;
-    --graph-blue: 210 100% 60%;
-    --graph-cyan: 185 100% 50%;
-    --graph-emerald: 160 85% 45%;
-    --graph-amber: 40 95% 55%;
-    --graph-rose: 350 90% 60%;
+    /* Graph node colors - balanced L for light/dark */
+    --graph-violet: 0.58 0.20 290;
+    --graph-blue: 0.58 0.18 250;
+    --graph-cyan: 0.62 0.14 195;
+    --graph-emerald: 0.60 0.17 160;
+    --graph-amber: 0.72 0.15 70;             /* Higher L for yellow */
+    --graph-rose: 0.62 0.20 350;
 
-    /* Semantic colors - Node types */
-    --semantic-knowledge: 217 91% 60%;       /* Blue - concept, theory */
-    --semantic-knowledge-muted: 217 60% 94%;
-    --semantic-fact: 142 76% 36%;            /* Green - fact */
-    --semantic-fact-muted: 142 50% 92%;
-    --semantic-question: 262 83% 58%;        /* Purple - question, hypothesis */
-    --semantic-question-muted: 262 50% 94%;
-    --semantic-example: 32 95% 44%;          /* Amber - example, person, school */
-    --semantic-example-muted: 32 70% 93%;
-    --semantic-conflict: 0 84% 60%;          /* Red - contradiction */
-    --semantic-conflict-muted: 0 60% 94%;
-    --semantic-neutral: 220 9% 46%;          /* Gray - neutral */
-    --semantic-neutral-muted: 220 9% 94%;
+    /* Semantic colors - Node types (L tuned per hue for equal perceived brightness) */
+    --semantic-knowledge: 0.55 0.17 250;     /* Blue - concept, theory */
+    --semantic-knowledge-muted: 0.94 0.04 250;
+    --semantic-fact: 0.58 0.17 145;          /* Green - fact */
+    --semantic-fact-muted: 0.94 0.04 145;
+    --semantic-question: 0.55 0.19 290;      /* Purple - question, hypothesis */
+    --semantic-question-muted: 0.94 0.04 290;
+    --semantic-example: 0.70 0.15 70;        /* Amber - higher L for yellow */
+    --semantic-example-muted: 0.94 0.05 70;
+    --semantic-conflict: 0.60 0.22 25;       /* Red - contradiction */
+    --semantic-conflict-muted: 0.94 0.04 25;
+    --semantic-neutral: 0.50 0 0;            /* Gray - neutral */
+    --semantic-neutral-muted: 0.94 0 0;
 
     /* Complexity colors */
-    --complexity-basic: 220 9% 46%;
-    --complexity-basic-bg: 220 9% 94%;
-    --complexity-intermediate: 217 91% 60%;
-    --complexity-intermediate-bg: 217 60% 94%;
-    --complexity-advanced: 0 84% 60%;
-    --complexity-advanced-bg: 0 60% 94%;
+    --complexity-basic: 0.50 0 0;            /* Gray */
+    --complexity-basic-bg: 0.94 0 0;
+    --complexity-intermediate: 0.55 0.17 250; /* Blue */
+    --complexity-intermediate-bg: 0.94 0.04 250;
+    --complexity-advanced: 0.60 0.22 25;     /* Red */
+    --complexity-advanced-bg: 0.94 0.04 25;
 
-    /* Edge type colors - 10 unique hues, darker for light theme */
-    --edge-contradicts: 0 85% 48%;
-    --edge-contradicts-muted: 0 70% 92%;
-    --edge-prerequisite: 35 85% 48%;
-    --edge-prerequisite-muted: 35 70% 92%;
-    --edge-influences: 16 90% 55%;
-    --edge-influences-muted: 16 75% 91%;
-    --edge-similar-to: 85 75% 35%;
-    --edge-similar-to-muted: 85 60% 90%;
-    --edge-has-a: 145 75% 35%;
-    --edge-has-a-muted: 145 60% 90%;
-    --edge-part-of: 175 75% 35%;
-    --edge-part-of-muted: 175 60% 90%;
-    --edge-related-to: 205 70% 45%;
-    --edge-related-to-muted: 205 50% 92%;
-    --edge-is-a: 235 80% 50%;
-    --edge-is-a-muted: 235 60% 92%;
-    --edge-explains: 265 80% 50%;
-    --edge-explains-muted: 265 60% 92%;
-    --edge-causes: 325 85% 48%;
-    --edge-causes-muted: 325 65% 91%;
+    /* Edge type colors - 10 unique hues across spectrum
+       L adjusted per hue for equal perceived brightness */
+    --edge-contradicts: 0.60 0.22 25;        /* Red */
+    --edge-contradicts-muted: 0.94 0.04 25;
+    --edge-prerequisite: 0.68 0.18 55;       /* Orange */
+    --edge-prerequisite-muted: 0.94 0.04 55;
+    --edge-influences: 0.72 0.16 75;         /* Amber - high L for yellow */
+    --edge-influences-muted: 0.94 0.04 75;
+    --edge-similar-to: 0.60 0.18 130;        /* Lime */
+    --edge-similar-to-muted: 0.94 0.04 130;
+    --edge-has-a: 0.58 0.16 160;             /* Teal */
+    --edge-has-a-muted: 0.94 0.04 160;
+    --edge-part-of: 0.60 0.14 195;           /* Cyan */
+    --edge-part-of-muted: 0.94 0.04 195;
+    --edge-related-to: 0.55 0.16 230;        /* Blue */
+    --edge-related-to-muted: 0.94 0.04 230;
+    --edge-is-a: 0.52 0.18 265;              /* Indigo - lower L */
+    --edge-is-a-muted: 0.94 0.04 265;
+    --edge-explains: 0.55 0.19 290;          /* Purple */
+    --edge-explains-muted: 0.94 0.04 290;
+    --edge-causes: 0.60 0.20 340;            /* Pink */
+    --edge-causes-muted: 0.94 0.04 340;
   }
 
   .dark {
-    --background: 0 0% 7%;             /* #121212 - Material dark */
-    --foreground: 0 0% 93%;            /* #EDEDED */
-    --card: 0 0% 7%;
-    --card-foreground: 0 0% 93%;
-    --popover: 0 0% 10%;               /* #1A1A1A */
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 13%;             /* #212121 */
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 13%;
-    --muted-foreground: 0 0% 60%;      /* improved contrast */
-    --accent: 0 0% 15%;
-    --accent-foreground: 0 0% 93%;
-    --destructive: 0 72% 50%;
-    --destructive-foreground: 0 0% 98%;
-    --success: 142 70% 42%;
-    --success-foreground: 0 0% 98%;
-    --warning: 45 93% 52%;
-    --warning-foreground: 0 0% 9%;
-    --info: 199 89% 55%;
-    --info-foreground: 0 0% 98%;
-    --border: 0 0% 20%;                /* #333333 */
-    --input: 0 0% 20%;
-    --ring: 217 91% 60%;
+    /* Base UI - Pure neutral dark (C=0), comfortable */
+    --background: 0.22 0 0;                  /* Dark gray - slightly lighter */
+    --foreground: 0.93 0 0;                  /* Near white */
+    --card: 0.22 0 0;
+    --card-foreground: 0.93 0 0;
+    --popover: 0.25 0 0;
+    --popover-foreground: 0.95 0 0;
+    --primary: 0.95 0 0;
+    --primary-foreground: 0.20 0 0;
+    --secondary: 0.25 0 0;
+    --secondary-foreground: 0.93 0 0;
+    --muted: 0.25 0 0;
+    --muted-foreground: 0.65 0 0;            /* Increased for readability */
+    --accent: 0.27 0 0;
+    --accent-foreground: 0.93 0 0;
+    --destructive: 0.58 0.22 25;             /* Red */
+    --destructive-foreground: 0.99 0 0;
+    --success: 0.58 0.17 145;                /* Green */
+    --success-foreground: 0.99 0 0;
+    --warning: 0.78 0.16 85;                 /* Amber */
+    --warning-foreground: 0.12 0 0;
+    --info: 0.62 0.14 230;                   /* Sky blue */
+    --info-foreground: 0.99 0 0;
+    --border: 0.28 0 0;                      /* Softer border */
+    --input: 0.32 0 0;
+    --ring: 0.57 0.24 263;
 
-    /* Brand: Blue-600 for dark mode */
-    --brand: 217 91% 60%;              /* #2563EB - Blue-600 */
-    --brand-foreground: 0 0% 100%;
-    --brand-muted: 217 50% 15%;
+    /* Brand: Blue for dark mode #0055FF +0.04L */
+    --brand: 0.57 0.24 263;
+    --brand-foreground: 0.99 0 0;
+    --brand-muted: 0.20 0.05 263;
 
-    /* Theme preview colors (brighter for dark mode) */
-    --preview-classic: 217 91% 70%;
-    --preview-vanilla: 24 85% 60%;
-    --preview-vivid: 160 90% 50%;
-    --preview-mono: 340 100% 50%;
+    /* Theme preview colors (same hue, works on dark) */
+    --preview-classic: 0.57 0.24 263;
+    --preview-vanilla: 0.70 0.16 45;
+    --preview-vivid: 0.82 0.22 180;
+    --preview-mono: 0.68 0.24 16;            /* Hot Pink #FF0055 */
 
-    /* Graph node colors (dark - more vibrant) */
-    --graph-violet: 270 100% 75%;
-    --graph-blue: 210 100% 70%;
-    --graph-cyan: 175 100% 50%;
-    --graph-emerald: 150 100% 50%;
-    --graph-amber: 45 100% 60%;
-    --graph-rose: 340 90% 65%;
+    /* Graph node colors - same as light, work universally */
+    --graph-violet: 0.58 0.20 290;
+    --graph-blue: 0.58 0.18 250;
+    --graph-cyan: 0.62 0.14 195;
+    --graph-emerald: 0.60 0.17 160;
+    --graph-amber: 0.72 0.15 70;
+    --graph-rose: 0.62 0.20 350;
 
-    /* Semantic colors - Node types (dark mode) */
-    --semantic-knowledge: 217 91% 65%;
-    --semantic-knowledge-muted: 217 40% 18%;
-    --semantic-fact: 142 70% 45%;
-    --semantic-fact-muted: 142 35% 16%;
-    --semantic-question: 262 80% 65%;
-    --semantic-question-muted: 262 40% 18%;
-    --semantic-example: 32 90% 52%;
-    --semantic-example-muted: 32 50% 16%;
-    --semantic-conflict: 0 72% 55%;
-    --semantic-conflict-muted: 0 40% 16%;
-    --semantic-neutral: 220 9% 60%;
-    --semantic-neutral-muted: 220 9% 18%;
+    /* Semantic colors - same hues, universal L values */
+    --semantic-knowledge: 0.55 0.17 250;
+    --semantic-knowledge-muted: 0.22 0.05 250;
+    --semantic-fact: 0.58 0.17 145;
+    --semantic-fact-muted: 0.22 0.05 145;
+    --semantic-question: 0.55 0.19 290;
+    --semantic-question-muted: 0.22 0.05 290;
+    --semantic-example: 0.70 0.15 70;
+    --semantic-example-muted: 0.22 0.06 70;
+    --semantic-conflict: 0.60 0.22 25;
+    --semantic-conflict-muted: 0.22 0.05 25;
+    --semantic-neutral: 0.55 0 0;
+    --semantic-neutral-muted: 0.22 0 0;
 
     /* Complexity colors (dark mode) */
-    --complexity-basic: 220 9% 60%;
-    --complexity-basic-bg: 220 9% 18%;
-    --complexity-intermediate: 217 91% 65%;
-    --complexity-intermediate-bg: 217 40% 18%;
-    --complexity-advanced: 0 72% 55%;
-    --complexity-advanced-bg: 0 40% 16%;
+    --complexity-basic: 0.55 0 0;
+    --complexity-basic-bg: 0.22 0 0;
+    --complexity-intermediate: 0.55 0.17 250;
+    --complexity-intermediate-bg: 0.22 0.05 250;
+    --complexity-advanced: 0.60 0.22 25;
+    --complexity-advanced-bg: 0.22 0.05 25;
 
-    /* Edge type colors - 10 unique hues, lighter for dark theme */
-    --edge-contradicts: 0 90% 62%;
-    --edge-contradicts-muted: 0 55% 17%;
-    --edge-prerequisite: 35 90% 62%;
-    --edge-prerequisite-muted: 35 55% 17%;
-    --edge-influences: 16 90% 65%;
-    --edge-influences-muted: 16 60% 17%;
-    --edge-similar-to: 85 80% 52%;
-    --edge-similar-to-muted: 85 50% 15%;
-    --edge-has-a: 145 80% 52%;
-    --edge-has-a-muted: 145 50% 15%;
-    --edge-part-of: 175 80% 52%;
-    --edge-part-of-muted: 175 50% 15%;
-    --edge-related-to: 205 75% 62%;
-    --edge-related-to-muted: 205 45% 16%;
-    --edge-is-a: 235 85% 75%;
-    --edge-is-a-muted: 235 50% 17%;
-    --edge-explains: 265 85% 75%;
-    --edge-explains-muted: 265 50% 17%;
-    --edge-causes: 325 90% 65%;
-    --edge-causes-muted: 325 50% 16%;
+    /* Edge type colors - same as light mode (universal) */
+    --edge-contradicts: 0.60 0.22 25;
+    --edge-contradicts-muted: 0.22 0.05 25;
+    --edge-prerequisite: 0.68 0.18 55;
+    --edge-prerequisite-muted: 0.22 0.05 55;
+    --edge-influences: 0.72 0.16 75;
+    --edge-influences-muted: 0.22 0.05 75;
+    --edge-similar-to: 0.60 0.18 130;
+    --edge-similar-to-muted: 0.22 0.05 130;
+    --edge-has-a: 0.58 0.16 160;
+    --edge-has-a-muted: 0.22 0.05 160;
+    --edge-part-of: 0.60 0.14 195;
+    --edge-part-of-muted: 0.22 0.05 195;
+    --edge-related-to: 0.55 0.16 230;
+    --edge-related-to-muted: 0.22 0.05 230;
+    --edge-is-a: 0.52 0.18 265;
+    --edge-is-a-muted: 0.22 0.05 265;
+    --edge-explains: 0.55 0.19 290;
+    --edge-explains-muted: 0.22 0.05 290;
+    --edge-causes: 0.60 0.20 340;
+    --edge-causes-muted: 0.22 0.05 340;
   }
 
   /* ========================================
      Color Themes
      ======================================== */
 
-  /* Vanilla Theme - warm, cozy, noticeable but not heavy */
+  /* Vanilla Theme - warm, cozy with barely noticeable cream tint
+     Chroma ×0.95 for slightly softer feel, backgrounds have warm H~50° (cream) tint */
   [data-palette="vanilla"] {
-    --background: 38 28% 98%;          /* Warm cream - balanced */
-    --foreground: 24 10% 12%;          /* Warm black */
-    --card: 38 25% 97%;
-    --card-foreground: 24 10% 12%;
-    --popover: 38 28% 99%;
-    --popover-foreground: 24 10% 12%;
-    --primary: 24 10% 12%;
-    --primary-foreground: 38 25% 97%;
-    --secondary: 36 18% 94%;           /* Warm gray */
-    --secondary-foreground: 24 10% 15%;
-    --muted: 36 14% 93%;
-    --muted-foreground: 24 6% 40%;     /* improved contrast */
-    --accent: 36 20% 92%;
-    --accent-foreground: 24 10% 12%;
-    --destructive: 8 80% 58%;           /* Warm coral red */
-    --destructive-foreground: 0 0% 98%;
-    --success: 150 70% 32%;            /* Warmer green → lime, darker */
-    --success-foreground: 0 0% 98%;
-    --warning: 38 90% 50%;             /* Warmer → orange */
-    --warning-foreground: 0 0% 9%;
-    --info: 210 75% 52%;               /* Warmer blue */
-    --info-foreground: 0 0% 98%;
-    --border: 36 12% 89%;              /* Warm border */
-    --input: 36 12% 89%;
-    --ring: 24 80% 50%;
-    --brand: 24 80% 50%;               /* #E36B2B - Terracotta */
-    --brand-foreground: 0 0% 100%;
-    --brand-muted: 24 55% 94%;
+    /* Base UI - Barely noticeable cream tint (H=50°, minimal C=0.003-0.004) */
+    --background: 0.99 0.003 50;             /* Nearly pure white with hint of cream */
+    --foreground: 0.12 0.004 50;             /* Nearly pure black with hint of warmth */
+    --card: 0.99 0.003 50;
+    --card-foreground: 0.12 0.004 50;
+    --popover: 0.995 0.002 50;
+    --popover-foreground: 0.12 0.004 50;
+    --primary: 0.12 0.004 50;
+    --primary-foreground: 0.99 0.003 50;
+    --secondary: 0.96 0.003 50;
+    --secondary-foreground: 0.12 0.004 50;
+    --muted: 0.96 0.003 50;
+    --muted-foreground: 0.42 0.003 50;
+    --accent: 0.95 0.004 50;
+    --accent-foreground: 0.12 0.004 50;
+    --destructive: 0.58 0.21 25;             /* Red (C×0.95) */
+    --destructive-foreground: 0.99 0 0;
+    --success: 0.55 0.16 145;                /* Green (C×0.95) */
+    --success-foreground: 0.99 0 0;
+    --warning: 0.78 0.15 85;                 /* Amber (C×0.95) */
+    --warning-foreground: 0.12 0 0;
+    --info: 0.58 0.13 230;                   /* Blue (C×0.95) */
+    --info-foreground: 0.99 0 0;
+    --border: 0.91 0.003 50;
+    --input: 0.91 0.003 50;
+    --ring: 0.66 0.17 45;
+    --brand: 0.66 0.17 45;                   /* Terracotta #E36B2B */
+    --brand-foreground: 0.99 0 0;
+    --brand-muted: 0.95 0.03 45;
 
-    /* Graph node colors - warm hue shift +5° */
-    --graph-violet: 256 85% 62%;
-    --graph-blue: 216 85% 58%;
-    --graph-cyan: 190 85% 48%;
-    --graph-emerald: 155 75% 42%;
-    --graph-amber: 35 85% 52%;
-    --graph-rose: 345 80% 58%;
+    /* Graph node colors - same hue, C×0.95 */
+    --graph-violet: 0.58 0.19 290;
+    --graph-blue: 0.58 0.17 250;
+    --graph-cyan: 0.62 0.13 195;
+    --graph-emerald: 0.60 0.16 160;
+    --graph-amber: 0.72 0.14 70;
+    --graph-rose: 0.62 0.19 350;
 
-    /* Semantic colors - warm hue shift +5° */
-    --semantic-knowledge: 222 80% 58%;
-    --semantic-knowledge-muted: 222 50% 93%;
-    --semantic-fact: 148 65% 34%;
-    --semantic-fact-muted: 148 45% 92%;
-    --semantic-question: 268 75% 56%;
-    --semantic-question-muted: 268 45% 93%;
-    --semantic-example: 28 85% 44%;
-    --semantic-example-muted: 28 60% 92%;
-    --semantic-conflict: 5 75% 58%;
-    --semantic-conflict-muted: 5 50% 93%;
-    --semantic-neutral: 30 6% 45%;
-    --semantic-neutral-muted: 30 6% 93%;
+    /* Semantic colors - same hue, C×0.95 for slightly softer look */
+    --semantic-knowledge: 0.55 0.16 250;
+    --semantic-knowledge-muted: 0.94 0.04 250;
+    --semantic-fact: 0.58 0.16 145;
+    --semantic-fact-muted: 0.94 0.04 145;
+    --semantic-question: 0.55 0.18 290;
+    --semantic-question-muted: 0.94 0.04 290;
+    --semantic-example: 0.70 0.14 70;
+    --semantic-example-muted: 0.94 0.05 70;
+    --semantic-conflict: 0.60 0.21 25;
+    --semantic-conflict-muted: 0.94 0.04 25;
+    --semantic-neutral: 0.50 0.006 50;
+    --semantic-neutral-muted: 0.94 0.005 50;
 
-    /* Complexity colors - warm hue shift */
-    --complexity-basic: 30 6% 45%;
-    --complexity-basic-bg: 30 6% 93%;
-    --complexity-intermediate: 222 80% 58%;
-    --complexity-intermediate-bg: 222 50% 93%;
-    --complexity-advanced: 5 75% 58%;
-    --complexity-advanced-bg: 5 50% 93%;
+    /* Complexity colors */
+    --complexity-basic: 0.50 0.006 50;
+    --complexity-basic-bg: 0.94 0.005 50;
+    --complexity-intermediate: 0.55 0.16 250;
+    --complexity-intermediate-bg: 0.94 0.04 250;
+    --complexity-advanced: 0.60 0.21 25;
+    --complexity-advanced-bg: 0.94 0.04 25;
 
-    /* Edge type colors - 10 unique hues, warm shift +3°, darker for light */
-    --edge-contradicts: 3 80% 45%;
-    --edge-contradicts-muted: 3 65% 91%;
-    --edge-prerequisite: 38 80% 45%;
-    --edge-prerequisite-muted: 38 65% 91%;
-    --edge-influences: 19 85% 52%;
-    --edge-influences-muted: 19 70% 90%;
-    --edge-similar-to: 88 70% 33%;
-    --edge-similar-to-muted: 88 55% 89%;
-    --edge-has-a: 148 70% 33%;
-    --edge-has-a-muted: 148 55% 89%;
-    --edge-part-of: 178 70% 33%;
-    --edge-part-of-muted: 178 55% 89%;
-    --edge-related-to: 208 65% 43%;
-    --edge-related-to-muted: 208 45% 91%;
-    --edge-is-a: 238 75% 48%;
-    --edge-is-a-muted: 238 55% 91%;
-    --edge-explains: 268 75% 48%;
-    --edge-explains-muted: 268 55% 91%;
-    --edge-causes: 328 80% 45%;
-    --edge-causes-muted: 328 60% 90%;
+    /* Edge type colors - same hue as Classic, C×0.95 */
+    --edge-contradicts: 0.60 0.21 25;
+    --edge-contradicts-muted: 0.94 0.04 25;
+    --edge-prerequisite: 0.68 0.17 55;
+    --edge-prerequisite-muted: 0.94 0.04 55;
+    --edge-influences: 0.72 0.15 75;
+    --edge-influences-muted: 0.94 0.04 75;
+    --edge-similar-to: 0.60 0.17 130;
+    --edge-similar-to-muted: 0.94 0.04 130;
+    --edge-has-a: 0.58 0.15 160;
+    --edge-has-a-muted: 0.94 0.04 160;
+    --edge-part-of: 0.60 0.13 195;
+    --edge-part-of-muted: 0.94 0.04 195;
+    --edge-related-to: 0.55 0.15 230;
+    --edge-related-to-muted: 0.94 0.04 230;
+    --edge-is-a: 0.52 0.17 265;
+    --edge-is-a-muted: 0.94 0.04 265;
+    --edge-explains: 0.55 0.18 290;
+    --edge-explains-muted: 0.94 0.04 290;
+    --edge-causes: 0.60 0.19 340;
+    --edge-causes-muted: 0.94 0.04 340;
   }
   [data-palette="vanilla"].dark {
-    --background: 24 10% 8%;           /* #161412 - warm dark */
-    --foreground: 36 15% 90%;          /* #E8E4DE */
-    --card: 24 10% 8%;
-    --card-foreground: 36 15% 90%;
-    --popover: 24 8% 11%;              /* #1D1A17 */
-    --popover-foreground: 36 15% 95%;
-    --primary: 36 15% 95%;
-    --primary-foreground: 24 10% 10%;
-    --secondary: 24 8% 13%;            /* #231F1B */
-    --secondary-foreground: 36 15% 92%;
-    --muted: 24 8% 13%;
-    --muted-foreground: 36 8% 55%;     /* improved contrast */
-    --accent: 24 10% 15%;
-    --accent-foreground: 36 15% 90%;
-    --destructive: 8 75% 52%;
-    --destructive-foreground: 0 0% 98%;
-    --success: 150 65% 45%;
-    --success-foreground: 0 0% 98%;
-    --warning: 38 90% 55%;
-    --warning-foreground: 0 0% 9%;
-    --info: 210 75% 58%;
-    --info-foreground: 0 0% 98%;
-    --border: 24 8% 20%;               /* #352F29 */
-    --input: 24 8% 20%;
-    --ring: 24 75% 55%;
-    --brand: 24 75% 55%;               /* #D97941 - Terracotta */
-    --brand-foreground: 0 0% 100%;
-    --brand-muted: 24 40% 15%;
+    /* Base UI - Dark with barely noticeable warm tint (H=50°, minimal C) - cozy */
+    --background: 0.18 0.004 50;             /* Warm dark - cozy */
+    --foreground: 0.93 0.003 50;             /* Nearly pure white with hint of cream */
+    --card: 0.18 0.004 50;
+    --card-foreground: 0.93 0.003 50;
+    --popover: 0.21 0.003 50;
+    --popover-foreground: 0.95 0.002 50;
+    --primary: 0.95 0.002 50;
+    --primary-foreground: 0.18 0.004 50;
+    --secondary: 0.23 0.003 50;
+    --secondary-foreground: 0.93 0.003 50;
+    --muted: 0.23 0.003 50;
+    --muted-foreground: 0.65 0.003 50;       /* Increased for readability */
+    --accent: 0.25 0.004 50;
+    --accent-foreground: 0.93 0.003 50;
+    --destructive: 0.58 0.21 25;             /* C×0.95 */
+    --destructive-foreground: 0.99 0 0;
+    --success: 0.58 0.16 145;
+    --success-foreground: 0.99 0 0;
+    --warning: 0.78 0.15 85;
+    --warning-foreground: 0.12 0 0;
+    --info: 0.62 0.13 230;
+    --info-foreground: 0.99 0 0;
+    --border: 0.26 0.003 50;                 /* Softer border */
+    --input: 0.30 0.003 50;
+    --ring: 0.70 0.16 45;
+    --brand: 0.70 0.16 45;                   /* Terracotta #E36B2B +0.04L */
+    --brand-foreground: 0.99 0 0;
+    --brand-muted: 0.26 0.04 45;
 
-    /* Graph node colors - warm hue shift +5° (dark) */
-    --graph-violet: 256 90% 72%;
-    --graph-blue: 216 90% 68%;
-    --graph-cyan: 190 90% 52%;
-    --graph-emerald: 155 85% 48%;
-    --graph-amber: 35 95% 58%;
-    --graph-rose: 345 85% 62%;
+    /* Graph node colors - same as light, C×0.95 */
+    --graph-violet: 0.58 0.19 290;
+    --graph-blue: 0.58 0.17 250;
+    --graph-cyan: 0.62 0.13 195;
+    --graph-emerald: 0.60 0.16 160;
+    --graph-amber: 0.72 0.14 70;
+    --graph-rose: 0.62 0.19 350;
 
-    /* Semantic colors - warm hue shift +5° (dark) */
-    --semantic-knowledge: 222 80% 63%;
-    --semantic-knowledge-muted: 222 35% 17%;
-    --semantic-fact: 148 60% 43%;
-    --semantic-fact-muted: 148 30% 15%;
-    --semantic-question: 268 70% 63%;
-    --semantic-question-muted: 268 35% 17%;
-    --semantic-example: 28 80% 52%;
-    --semantic-example-muted: 28 45% 15%;
-    --semantic-conflict: 5 65% 53%;
-    --semantic-conflict-muted: 5 35% 15%;
-    --semantic-neutral: 30 6% 58%;
-    --semantic-neutral-muted: 30 6% 17%;
+    /* Semantic colors - C×0.95 */
+    --semantic-knowledge: 0.55 0.16 250;
+    --semantic-knowledge-muted: 0.18 0.04 250;
+    --semantic-fact: 0.58 0.16 145;
+    --semantic-fact-muted: 0.18 0.04 145;
+    --semantic-question: 0.55 0.18 290;
+    --semantic-question-muted: 0.18 0.04 290;
+    --semantic-example: 0.70 0.14 70;
+    --semantic-example-muted: 0.18 0.05 70;
+    --semantic-conflict: 0.60 0.21 25;
+    --semantic-conflict-muted: 0.18 0.04 25;
+    --semantic-neutral: 0.55 0.003 50;
+    --semantic-neutral-muted: 0.18 0.003 50;
 
-    /* Complexity colors - warm hue shift (dark) */
-    --complexity-basic: 30 6% 58%;
-    --complexity-basic-bg: 30 6% 17%;
-    --complexity-intermediate: 222 80% 63%;
-    --complexity-intermediate-bg: 222 35% 17%;
-    --complexity-advanced: 5 65% 53%;
-    --complexity-advanced-bg: 5 35% 15%;
+    /* Complexity colors (dark) */
+    --complexity-basic: 0.55 0.003 50;
+    --complexity-basic-bg: 0.18 0.003 50;
+    --complexity-intermediate: 0.55 0.16 250;
+    --complexity-intermediate-bg: 0.18 0.04 250;
+    --complexity-advanced: 0.60 0.21 25;
+    --complexity-advanced-bg: 0.18 0.04 25;
 
-    /* Edge type colors - 10 unique hues, warm shift +3°, brighter for dark theme */
-    --edge-contradicts: 3 85% 62%;
-    --edge-contradicts-muted: 3 55% 16%;
-    --edge-prerequisite: 38 85% 62%;
-    --edge-prerequisite-muted: 38 55% 16%;
-    --edge-influences: 19 85% 65%;
-    --edge-influences-muted: 19 60% 17%;
-    --edge-similar-to: 88 75% 52%;
-    --edge-similar-to-muted: 88 50% 15%;
-    --edge-has-a: 148 75% 52%;
-    --edge-has-a-muted: 148 50% 15%;
-    --edge-part-of: 178 75% 52%;
-    --edge-part-of-muted: 178 50% 15%;
-    --edge-related-to: 208 70% 62%;
-    --edge-related-to-muted: 208 45% 16%;
-    --edge-is-a: 238 80% 75%;
-    --edge-is-a-muted: 238 55% 17%;
-    --edge-explains: 268 80% 75%;
-    --edge-explains-muted: 268 55% 17%;
-    --edge-causes: 328 85% 65%;
-    --edge-causes-muted: 328 55% 16%;
+    /* Edge type colors - C×0.95 */
+    --edge-contradicts: 0.60 0.21 25;
+    --edge-contradicts-muted: 0.18 0.04 25;
+    --edge-prerequisite: 0.68 0.17 55;
+    --edge-prerequisite-muted: 0.18 0.04 55;
+    --edge-influences: 0.72 0.15 75;
+    --edge-influences-muted: 0.18 0.04 75;
+    --edge-similar-to: 0.60 0.17 130;
+    --edge-similar-to-muted: 0.18 0.04 130;
+    --edge-has-a: 0.58 0.15 160;
+    --edge-has-a-muted: 0.18 0.04 160;
+    --edge-part-of: 0.60 0.13 195;
+    --edge-part-of-muted: 0.18 0.04 195;
+    --edge-related-to: 0.55 0.15 230;
+    --edge-related-to-muted: 0.18 0.04 230;
+    --edge-is-a: 0.52 0.17 265;
+    --edge-is-a-muted: 0.18 0.04 265;
+    --edge-explains: 0.55 0.18 290;
+    --edge-explains-muted: 0.18 0.04 290;
+    --edge-causes: 0.60 0.19 340;
+    --edge-causes-muted: 0.18 0.04 340;
   }
 
-  /* Vivid Theme - cool, modern, energetic */
+  /* Vivid Theme - cool, modern, energetic
+     Barely noticeable cool tint H~250° (blue-violet), C~0.005
+     Semantic chroma ×1.05 for vibrant but not neon colors */
   [data-palette="vivid"] {
-    --background: 210 28% 98%;         /* Cool white - more noticeable */
-    --foreground: 210 18% 10%;         /* Cool black */
-    --card: 210 22% 97%;
-    --card-foreground: 210 18% 10%;
-    --popover: 210 28% 99%;
-    --popover-foreground: 210 18% 10%;
-    --primary: 210 18% 10%;
-    --primary-foreground: 210 22% 98%;
-    --secondary: 210 20% 94%;          /* Cool gray */
-    --secondary-foreground: 210 18% 12%;
-    --muted: 210 16% 93%;
-    --muted-foreground: 210 10% 40%;   /* improved contrast */
-    --accent: 210 24% 92%;
-    --accent-foreground: 210 18% 10%;
-    --destructive: 355 90% 55%;         /* Cool pink-red */
-    --destructive-foreground: 0 0% 98%;
-    --success: 160 85% 32%;            /* Mint/cyan green, darker */
-    --success-foreground: 0 0% 98%;
-    --warning: 50 95% 50%;             /* Lemon yellow */
-    --warning-foreground: 0 0% 9%;
-    --info: 195 95% 50%;               /* Cyan */
-    --info-foreground: 0 0% 98%;
-    --border: 210 15% 88%;             /* Cool border */
-    --input: 210 15% 88%;
-    --ring: 160 84% 39%;
-    --brand: 160 84% 39%;              /* #34D399 - Emerald-400 */
-    --brand-foreground: 0 0% 100%;
-    --brand-muted: 160 60% 94%;
+    --background: 0.99 0.005 250;       /* Nearly pure white with hint of cool */
+    --foreground: 0.12 0.006 250;       /* Nearly pure black with hint of cool */
+    --card: 0.99 0.004 250;
+    --card-foreground: 0.12 0.006 250;
+    --popover: 0.995 0.003 250;
+    --popover-foreground: 0.12 0.006 250;
+    --primary: 0.12 0.006 250;
+    --primary-foreground: 0.99 0.005 250;
+    --secondary: 0.96 0.004 250;        /* Cool gray */
+    --secondary-foreground: 0.14 0.006 250;
+    --muted: 0.96 0.004 250;
+    --muted-foreground: 0.42 0.005 250; /* Good contrast */
+    --accent: 0.95 0.005 250;
+    --accent-foreground: 0.12 0.006 250;
+    --destructive: 0.58 0.23 25;        /* Vivid red, C×1.05 */
+    --destructive-foreground: 0.99 0 0;
+    --success: 0.58 0.18 160;           /* Vivid teal-green */
+    --success-foreground: 0.99 0 0;
+    --warning: 0.78 0.17 85;            /* Vivid yellow - toned down */
+    --warning-foreground: 0.12 0 0;
+    --info: 0.62 0.15 200;              /* Vivid cyan - toned down */
+    --info-foreground: 0.99 0 0;
+    --border: 0.91 0.004 250;           /* Cool border - subtle */
+    --input: 0.91 0.004 250;
+    --ring: 0.65 0.22 180;              /* Electric cyan - darker for light mode */
+    --brand: 0.65 0.22 180;             /* Electric cyan - darker for light mode */
+    --brand-foreground: 0.99 0 0;       /* White text for darker brand */
+    --brand-muted: 0.95 0.05 180;
 
-    /* Graph node colors - cool hue shift -5° */
-    --graph-violet: 244 100% 65%;
-    --graph-blue: 204 100% 60%;
-    --graph-cyan: 180 100% 50%;
-    --graph-emerald: 165 95% 45%;
-    --graph-amber: 45 100% 55%;
-    --graph-rose: 345 100% 60%;
+    /* Graph node colors - vivid, C×1.05 */
+    --graph-violet: 0.55 0.22 285;
+    --graph-blue: 0.58 0.19 235;
+    --graph-cyan: 0.68 0.14 195;
+    --graph-emerald: 0.62 0.18 160;
+    --graph-amber: 0.75 0.16 85;
+    --graph-rose: 0.62 0.21 350;
 
-    /* Semantic colors - cool hue shift -5° */
-    --semantic-knowledge: 212 100% 60%;
-    --semantic-knowledge-muted: 212 70% 93%;
-    --semantic-fact: 138 90% 36%;
-    --semantic-fact-muted: 138 60% 91%;
-    --semantic-question: 256 100% 58%;
-    --semantic-question-muted: 256 60% 93%;
-    --semantic-example: 36 100% 46%;
-    --semantic-example-muted: 36 75% 92%;
-    --semantic-conflict: 355 95% 60%;
-    --semantic-conflict-muted: 355 65% 93%;
-    --semantic-neutral: 215 14% 45%;
-    --semantic-neutral-muted: 215 14% 93%;
+    /* Semantic colors - same hues, C×1.05 for vibrant */
+    --semantic-knowledge: 0.55 0.18 250;   /* Blue - same hue as Classic */
+    --semantic-knowledge-muted: 0.95 0.035 250;
+    --semantic-fact: 0.58 0.18 145;        /* Green */
+    --semantic-fact-muted: 0.95 0.035 145;
+    --semantic-question: 0.55 0.20 290;    /* Purple */
+    --semantic-question-muted: 0.95 0.035 290;
+    --semantic-example: 0.72 0.16 70;      /* Amber */
+    --semantic-example-muted: 0.95 0.04 70;
+    --semantic-conflict: 0.60 0.23 25;     /* Red */
+    --semantic-conflict-muted: 0.95 0.035 25;
+    --semantic-neutral: 0.50 0.005 250;    /* Cool gray */
+    --semantic-neutral-muted: 0.95 0.004 250;
 
-    /* Complexity colors - cool hue shift -5° */
-    --complexity-basic: 215 14% 45%;
-    --complexity-basic-bg: 215 14% 93%;
-    --complexity-intermediate: 212 100% 60%;
-    --complexity-intermediate-bg: 212 70% 93%;
-    --complexity-advanced: 355 95% 60%;
-    --complexity-advanced-bg: 355 65% 93%;
+    /* Complexity colors - vivid */
+    --complexity-basic: 0.50 0.005 250;
+    --complexity-basic-bg: 0.95 0.004 250;
+    --complexity-intermediate: 0.55 0.18 250;
+    --complexity-intermediate-bg: 0.95 0.035 250;
+    --complexity-advanced: 0.60 0.23 25;
+    --complexity-advanced-bg: 0.95 0.035 25;
 
-    /* Edge type colors - 10 unique hues, max saturation, darker for light theme */
-    --edge-contradicts: 0 95% 42%;
-    --edge-contradicts-muted: 0 80% 91%;
-    --edge-prerequisite: 35 95% 42%;
-    --edge-prerequisite-muted: 35 80% 91%;
-    --edge-influences: 16 95% 52%;
-    --edge-influences-muted: 16 80% 90%;
-    --edge-similar-to: 85 85% 28%;
-    --edge-similar-to-muted: 85 70% 89%;
-    --edge-has-a: 145 85% 28%;
-    --edge-has-a-muted: 145 70% 89%;
-    --edge-part-of: 175 85% 28%;
-    --edge-part-of-muted: 175 70% 89%;
-    --edge-related-to: 205 80% 40%;
-    --edge-related-to-muted: 205 60% 91%;
-    --edge-is-a: 235 90% 45%;
-    --edge-is-a-muted: 235 70% 91%;
-    --edge-explains: 265 90% 45%;
-    --edge-explains-muted: 265 70% 91%;
-    --edge-causes: 325 95% 42%;
-    --edge-causes-muted: 325 75% 90%;
+    /* Edge type colors - 10 unique hues, C×1.05, L adjusted per hue */
+    --edge-contradicts: 0.60 0.23 25;        /* Red */
+    --edge-contradicts-muted: 0.95 0.035 25;
+    --edge-prerequisite: 0.68 0.19 55;       /* Orange */
+    --edge-prerequisite-muted: 0.95 0.035 55;
+    --edge-influences: 0.72 0.17 75;         /* Amber - high L */
+    --edge-influences-muted: 0.95 0.035 75;
+    --edge-similar-to: 0.60 0.19 130;        /* Lime */
+    --edge-similar-to-muted: 0.95 0.035 130;
+    --edge-has-a: 0.58 0.17 160;             /* Teal */
+    --edge-has-a-muted: 0.95 0.035 160;
+    --edge-part-of: 0.60 0.15 195;           /* Cyan */
+    --edge-part-of-muted: 0.95 0.035 195;
+    --edge-related-to: 0.55 0.17 230;        /* Blue */
+    --edge-related-to-muted: 0.95 0.035 230;
+    --edge-is-a: 0.52 0.19 265;              /* Indigo */
+    --edge-is-a-muted: 0.95 0.035 265;
+    --edge-explains: 0.55 0.20 290;          /* Purple */
+    --edge-explains-muted: 0.95 0.035 290;
+    --edge-causes: 0.60 0.21 340;            /* Pink */
+    --edge-causes-muted: 0.95 0.035 340;
   }
   [data-palette="vivid"].dark {
-    --background: 215 20% 7%;          /* #0F1318 - cool dark blue */
-    --foreground: 210 15% 92%;         /* #E6E9EC */
-    --card: 215 20% 7%;
-    --card-foreground: 210 15% 92%;
-    --popover: 215 18% 10%;            /* #151A21 */
-    --popover-foreground: 210 15% 96%;
-    --primary: 210 15% 96%;
-    --primary-foreground: 215 20% 9%;
-    --secondary: 215 15% 13%;          /* #1C2128 */
-    --secondary-foreground: 210 15% 94%;
-    --muted: 215 15% 13%;
-    --muted-foreground: 210 10% 57%;   /* improved contrast */
-    --accent: 215 18% 15%;
-    --accent-foreground: 210 15% 92%;
-    --destructive: 355 100% 60%;       /* Neon pink-red */
-    --destructive-foreground: 0 0% 98%;
-    --success: 160 100% 50%;           /* Neon mint */
-    --success-foreground: 0 0% 0%;     /* Black text for neon */
-    --warning: 50 100% 55%;            /* Neon yellow */
-    --warning-foreground: 0 0% 0%;
-    --info: 195 100% 55%;              /* Neon cyan */
-    --info-foreground: 0 0% 0%;
-    --border: 215 12% 20%;             /* #2D333B */
-    --input: 215 12% 20%;
-    --ring: 150 100% 50%;
-    --brand: 150 100% 50%;             /* #00FF7F - Spring Green */
-    --brand-foreground: 0 0% 0%;       /* Black text for neon */
-    --brand-muted: 150 50% 15%;
+    /* Dark with barely noticeable cool tint (C=0.005-0.006) - energetic */
+    --background: 0.12 0.006 250;      /* Dark - high contrast/energy */
+    --foreground: 0.93 0.005 250;      /* Nearly pure white with hint of cool */
+    --card: 0.12 0.006 250;
+    --card-foreground: 0.93 0.005 250;
+    --popover: 0.15 0.005 250;
+    --popover-foreground: 0.95 0.004 250;
+    --primary: 0.95 0.004 250;
+    --primary-foreground: 0.12 0.006 250;
+    --secondary: 0.17 0.005 250;        /* Cool dark gray */
+    --secondary-foreground: 0.94 0.004 250;
+    --muted: 0.17 0.005 250;
+    --muted-foreground: 0.65 0.005 250; /* Increased for readability */
+    --accent: 0.19 0.006 250;
+    --accent-foreground: 0.93 0.005 250;
+    --destructive: 0.60 0.23 25;       /* Vivid red - toned down */
+    --destructive-foreground: 0.99 0 0;
+    --success: 0.65 0.18 160;          /* Vivid teal - toned down from neon */
+    --success-foreground: 0.99 0 0;
+    --warning: 0.80 0.16 85;           /* Vivid yellow - toned down */
+    --warning-foreground: 0.12 0 0;
+    --info: 0.70 0.15 200;             /* Vivid cyan - toned down */
+    --info-foreground: 0.99 0 0;
+    --border: 0.20 0.004 250;          /* Softer border */
+    --input: 0.24 0.004 250;
+    --ring: 0.82 0.22 180;             /* Electric cyan #00F0D0 (same for dark) */
+    --brand: 0.82 0.22 180;            /* Electric cyan #00F0D0 (same for dark) */
+    --brand-foreground: 0.12 0 0;      /* Dark text for bright brand */
+    --brand-muted: 0.20 0.06 180;
 
-    /* Graph node colors - cool hue shift -5° (dark) */
-    --graph-violet: 244 100% 75%;
-    --graph-blue: 204 100% 70%;
-    --graph-cyan: 180 100% 55%;
-    --graph-emerald: 165 100% 50%;
-    --graph-amber: 45 100% 60%;
-    --graph-rose: 345 100% 65%;
+    /* Graph node colors - vivid dark, C×1.05 (not 1.15) */
+    --graph-violet: 0.58 0.22 285;
+    --graph-blue: 0.60 0.19 235;
+    --graph-cyan: 0.70 0.14 195;
+    --graph-emerald: 0.65 0.18 160;
+    --graph-amber: 0.75 0.16 85;
+    --graph-rose: 0.62 0.21 350;
 
-    /* Semantic colors - cool hue shift -5° (dark) */
-    --semantic-knowledge: 212 100% 65%;
-    --semantic-knowledge-muted: 212 50% 17%;
-    --semantic-fact: 138 100% 48%;
-    --semantic-fact-muted: 138 50% 15%;
-    --semantic-question: 256 100% 65%;
-    --semantic-question-muted: 256 50% 17%;
-    --semantic-example: 36 100% 54%;
-    --semantic-example-muted: 36 55% 15%;
-    --semantic-conflict: 355 100% 58%;
-    --semantic-conflict-muted: 355 50% 15%;
-    --semantic-neutral: 215 14% 58%;
-    --semantic-neutral-muted: 215 14% 17%;
+    /* Semantic colors - same hues, C×1.05 (not 1.15) */
+    --semantic-knowledge: 0.58 0.19 235;   /* Blue */
+    --semantic-knowledge-muted: 0.18 0.05 235;
+    --semantic-fact: 0.60 0.19 145;        /* Green */
+    --semantic-fact-muted: 0.18 0.05 145;
+    --semantic-question: 0.58 0.21 285;    /* Purple */
+    --semantic-question-muted: 0.18 0.05 285;
+    --semantic-example: 0.72 0.16 55;      /* Amber */
+    --semantic-example-muted: 0.18 0.05 55;
+    --semantic-conflict: 0.60 0.23 25;     /* Red */
+    --semantic-conflict-muted: 0.18 0.05 25;
+    --semantic-neutral: 0.55 0.005 250;    /* Cool gray */
+    --semantic-neutral-muted: 0.18 0.004 250;
 
-    /* Complexity colors - cool hue shift -5° (dark) */
-    --complexity-basic: 215 14% 58%;
-    --complexity-basic-bg: 215 14% 17%;
-    --complexity-intermediate: 212 100% 65%;
-    --complexity-intermediate-bg: 212 50% 17%;
-    --complexity-advanced: 355 100% 58%;
-    --complexity-advanced-bg: 355 50% 15%;
+    /* Complexity colors - vivid dark */
+    --complexity-basic: 0.55 0.005 250;
+    --complexity-basic-bg: 0.18 0.004 250;
+    --complexity-intermediate: 0.58 0.19 235;
+    --complexity-intermediate-bg: 0.18 0.05 235;
+    --complexity-advanced: 0.60 0.23 25;
+    --complexity-advanced-bg: 0.18 0.05 25;
 
-    /* Edge type colors - 10 unique hues, max saturation, lighter for dark theme */
-    --edge-contradicts: 0 95% 65%;
-    --edge-contradicts-muted: 0 65% 17%;
-    --edge-prerequisite: 35 95% 65%;
-    --edge-prerequisite-muted: 35 65% 17%;
-    --edge-influences: 16 95% 68%;
-    --edge-influences-muted: 16 65% 18%;
-    --edge-similar-to: 85 85% 55%;
-    --edge-similar-to-muted: 85 55% 16%;
-    --edge-has-a: 145 85% 55%;
-    --edge-has-a-muted: 145 55% 16%;
-    --edge-part-of: 175 85% 55%;
-    --edge-part-of-muted: 175 55% 16%;
-    --edge-related-to: 205 80% 65%;
-    --edge-related-to-muted: 205 50% 17%;
-    --edge-is-a: 235 90% 78%;
-    --edge-is-a-muted: 235 60% 18%;
-    --edge-explains: 265 90% 78%;
-    --edge-explains-muted: 265 60% 18%;
-    --edge-causes: 325 95% 68%;
-    --edge-causes-muted: 325 60% 17%;
+    /* Edge type colors - 10 unique hues, C×1.05, L adjusted per hue */
+    --edge-contradicts: 0.60 0.23 25;        /* Red */
+    --edge-contradicts-muted: 0.18 0.05 25;
+    --edge-prerequisite: 0.68 0.19 55;       /* Orange */
+    --edge-prerequisite-muted: 0.18 0.05 55;
+    --edge-influences: 0.72 0.17 75;         /* Amber - high L */
+    --edge-influences-muted: 0.18 0.05 75;
+    --edge-similar-to: 0.62 0.19 130;        /* Lime */
+    --edge-similar-to-muted: 0.18 0.05 130;
+    --edge-has-a: 0.60 0.17 160;             /* Teal */
+    --edge-has-a-muted: 0.18 0.05 160;
+    --edge-part-of: 0.62 0.15 195;           /* Cyan */
+    --edge-part-of-muted: 0.18 0.05 195;
+    --edge-related-to: 0.58 0.17 230;        /* Blue */
+    --edge-related-to-muted: 0.18 0.05 230;
+    --edge-is-a: 0.55 0.19 265;              /* Indigo */
+    --edge-is-a-muted: 0.18 0.05 265;
+    --edge-explains: 0.58 0.20 290;          /* Purple */
+    --edge-explains-muted: 0.18 0.05 290;
+    --edge-causes: 0.62 0.21 340;            /* Pink */
+    --edge-causes-muted: 0.18 0.05 340;
   }
 
   /* ========================================
      Mono Theme - Terminal/Brutalist aesthetic
-     Near black & white with pure blue accent
+     Pure black & white backgrounds (C=0), max contrast
+     Semantic colors keep hue but same chroma as Classic
      ======================================== */
   [data-palette="mono"] {
-    --background: 0 0% 99%;            /* #FCFCFC - near white */
-    --foreground: 0 0% 4%;             /* #0A0A0A - near black */
-    --card: 0 0% 99%;
-    --card-foreground: 0 0% 4%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 4%;
-    --primary: 0 0% 4%;
-    --primary-foreground: 0 0% 99%;
-    --secondary: 0 0% 96%;             /* #F5F5F5 */
-    --secondary-foreground: 0 0% 4%;
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 35%;      /* #595959 - good contrast */
-    --accent: 0 0% 96%;
-    --accent-foreground: 0 0% 4%;
-    --destructive: 0 100% 50%;         /* Pure red */
-    --destructive-foreground: 0 0% 100%;
-    --success: 120 100% 28%;           /* Pure green, darker */
-    --success-foreground: 0 0% 100%;
-    --warning: 60 100% 45%;            /* Pure yellow */
-    --warning-foreground: 0 0% 0%;
-    --info: 190 100% 40%;              /* Pure Cyan - distinct from brand */
-    --info-foreground: 0 0% 100%;
-    --border: 0 0% 88%;                /* #E0E0E0 */
-    --input: 0 0% 88%;
-    --ring: 340 100% 50%;
-    --brand: 340 100% 50%;             /* Hot Pink #FF0055 */
-    --brand-foreground: 0 0% 100%;
-    --brand-muted: 340 100% 95%;
+    --background: 1 0 0;               /* Pure white #FFFFFF */
+    --foreground: 0 0 0;               /* Pure black #000000 */
+    --card: 1 0 0;
+    --card-foreground: 0 0 0;
+    --popover: 1 0 0;
+    --popover-foreground: 0 0 0;
+    --primary: 0 0 0;
+    --primary-foreground: 1 0 0;
+    --secondary: 0.96 0 0;             /* Light gray */
+    --secondary-foreground: 0 0 0;
+    --muted: 0.96 0 0;
+    --muted-foreground: 0.40 0 0;      /* Good contrast */
+    --accent: 0.96 0 0;
+    --accent-foreground: 0 0 0;
+    --destructive: 0.55 0.22 25;       /* Same as Classic */
+    --destructive-foreground: 0.99 0 0;
+    --success: 0.52 0.16 145;          /* Same hue as Classic */
+    --success-foreground: 0.99 0 0;
+    --warning: 0.80 0.16 85;           /* Same as Classic */
+    --warning-foreground: 0.15 0 0;
+    --info: 0.65 0.14 200;             /* Cyan */
+    --info-foreground: 0.99 0 0;
+    --border: 0.91 0 0;                /* Gray border - subtle */
+    --input: 0.91 0 0;
+    --ring: 0.64 0.25 16;              /* Hot pink #FF0055 */
+    --brand: 0.64 0.25 16;             /* Hot pink #FF0055 */
+    --brand-foreground: 0.99 0 0;
+    --brand-muted: 0.95 0.04 16;
 
-    /* Graph node colors - pure RGB (rounded to 30°) */
-    --graph-violet: 270 100% 65%;
-    --graph-blue: 210 100% 60%;
-    --graph-cyan: 180 100% 50%;
-    --graph-emerald: 150 100% 45%;
-    --graph-amber: 30 100% 55%;
-    --graph-rose: 330 100% 60%;
+    /* Graph node colors - same hues as Classic */
+    --graph-violet: 0.55 0.24 285;
+    --graph-blue: 0.55 0.18 235;
+    --graph-cyan: 0.70 0.12 195;
+    --graph-emerald: 0.60 0.17 160;
+    --graph-amber: 0.75 0.15 85;
+    --graph-rose: 0.60 0.20 350;
 
-    /* Semantic colors - pure RGB (rounded to 30°) */
-    --semantic-knowledge: 210 100% 60%;
-    --semantic-knowledge-muted: 210 70% 93%;
-    --semantic-fact: 150 100% 36%;
-    --semantic-fact-muted: 150 60% 91%;
-    --semantic-question: 270 100% 58%;
-    --semantic-question-muted: 270 60% 93%;
-    --semantic-example: 30 100% 46%;
-    --semantic-example-muted: 30 75% 92%;
-    --semantic-conflict: 0 100% 60%;
-    --semantic-conflict-muted: 0 65% 93%;
-    --semantic-neutral: 0 0% 46%;
-    --semantic-neutral-muted: 0 0% 94%;
+    /* Semantic colors - same hues and chroma as Classic */
+    --semantic-knowledge: 0.55 0.18 235;   /* Blue */
+    --semantic-knowledge-muted: 0.94 0.04 235;
+    --semantic-fact: 0.58 0.18 145;        /* Green */
+    --semantic-fact-muted: 0.94 0.04 145;
+    --semantic-question: 0.55 0.21 285;    /* Purple */
+    --semantic-question-muted: 0.94 0.04 285;
+    --semantic-example: 0.70 0.15 55;      /* Amber */
+    --semantic-example-muted: 0.94 0.04 55;
+    --semantic-conflict: 0.55 0.21 15;     /* Red */
+    --semantic-conflict-muted: 0.94 0.04 15;
+    --semantic-neutral: 0.50 0 0;          /* Pure gray */
+    --semantic-neutral-muted: 0.94 0 0;
 
-    /* Complexity colors - pure RGB */
-    --complexity-basic: 0 0% 46%;
-    --complexity-basic-bg: 0 0% 94%;
-    --complexity-intermediate: 210 100% 60%;
-    --complexity-intermediate-bg: 210 70% 93%;
-    --complexity-advanced: 0 100% 60%;
-    --complexity-advanced-bg: 0 65% 93%;
+    /* Complexity colors - mono */
+    --complexity-basic: 0.50 0 0;
+    --complexity-basic-bg: 0.94 0 0;
+    --complexity-intermediate: 0.55 0.18 235;
+    --complexity-intermediate-bg: 0.94 0.04 235;
+    --complexity-advanced: 0.55 0.21 15;
+    --complexity-advanced-bg: 0.94 0.04 15;
 
-    /* Edge type colors - 10 unique hues, darker for light theme */
-    --edge-contradicts: 0 90% 45%;
-    --edge-contradicts-muted: 0 75% 92%;
-    --edge-prerequisite: 35 90% 45%;
-    --edge-prerequisite-muted: 35 75% 92%;
-    --edge-influences: 16 90% 55%;
-    --edge-influences-muted: 16 75% 91%;
-    --edge-similar-to: 85 80% 32%;
-    --edge-similar-to-muted: 85 65% 90%;
-    --edge-has-a: 145 80% 32%;
-    --edge-has-a-muted: 145 65% 90%;
-    --edge-part-of: 175 80% 32%;
-    --edge-part-of-muted: 175 65% 90%;
-    --edge-related-to: 205 75% 42%;
-    --edge-related-to-muted: 205 55% 92%;
-    --edge-is-a: 235 85% 48%;
-    --edge-is-a-muted: 235 65% 92%;
-    --edge-explains: 265 85% 48%;
-    --edge-explains-muted: 265 65% 92%;
-    --edge-causes: 325 90% 45%;
-    --edge-causes-muted: 325 70% 91%;
+    /* Edge type colors - same hues as Classic, L adjusted per hue */
+    --edge-contradicts: 0.60 0.22 25;        /* Red */
+    --edge-contradicts-muted: 0.94 0.04 25;
+    --edge-prerequisite: 0.68 0.18 55;       /* Orange */
+    --edge-prerequisite-muted: 0.94 0.04 55;
+    --edge-influences: 0.72 0.16 75;         /* Amber - high L */
+    --edge-influences-muted: 0.94 0.04 75;
+    --edge-similar-to: 0.60 0.18 130;        /* Lime */
+    --edge-similar-to-muted: 0.94 0.04 130;
+    --edge-has-a: 0.58 0.16 160;             /* Teal */
+    --edge-has-a-muted: 0.94 0.04 160;
+    --edge-part-of: 0.60 0.14 195;           /* Cyan */
+    --edge-part-of-muted: 0.94 0.04 195;
+    --edge-related-to: 0.55 0.16 230;        /* Blue */
+    --edge-related-to-muted: 0.94 0.04 230;
+    --edge-is-a: 0.52 0.18 265;              /* Indigo - lower L */
+    --edge-is-a-muted: 0.94 0.04 265;
+    --edge-explains: 0.55 0.19 290;          /* Purple */
+    --edge-explains-muted: 0.94 0.04 290;
+    --edge-causes: 0.60 0.20 340;            /* Pink */
+    --edge-causes-muted: 0.94 0.04 340;
   }
   [data-palette="mono"].dark {
-    --background: 0 0% 4%;             /* #0A0A0A - near black */
-    --foreground: 0 0% 96%;            /* #F5F5F5 - near white */
-    --card: 0 0% 4%;
-    --card-foreground: 0 0% 96%;
-    --popover: 0 0% 6%;                /* #0F0F0F */
-    --popover-foreground: 0 0% 96%;
-    --primary: 0 0% 96%;
-    --primary-foreground: 0 0% 4%;
-    --secondary: 0 0% 8%;              /* #141414 */
-    --secondary-foreground: 0 0% 96%;
-    --muted: 0 0% 8%;
-    --muted-foreground: 0 0% 65%;      /* #A6A6A6 - good contrast */
-    --accent: 0 0% 10%;
-    --accent-foreground: 0 0% 96%;
-    --destructive: 0 100% 55%;         /* Slightly brighter red */
-    --destructive-foreground: 0 0% 100%;
-    --success: 120 100% 42%;           /* Brighter green */
-    --success-foreground: 0 0% 0%;
-    --warning: 60 100% 50%;            /* Brighter yellow */
-    --warning-foreground: 0 0% 0%;
-    --info: 190 100% 50%;              /* Pure Cyan - brighter for dark */
-    --info-foreground: 0 0% 0%;
-    --border: 0 0% 15%;                /* #262626 */
-    --input: 0 0% 15%;
-    --ring: 340 100% 50%;
-    --brand: 340 100% 50%;             /* Hot Pink #FF0055 */
-    --brand-foreground: 0 0% 100%;
-    --brand-muted: 340 50% 12%;
+    --background: 0.08 0 0;            /* Near black ~#141414 - slightly softer */
+    --foreground: 0.97 0 0;            /* Near white ~#F5F5F5 */
+    --card: 0.08 0 0;
+    --card-foreground: 0.97 0 0;
+    --popover: 0.12 0 0;               /* Slightly lighter for layering */
+    --popover-foreground: 0.97 0 0;
+    --primary: 0.97 0 0;
+    --primary-foreground: 0.08 0 0;
+    --secondary: 0.14 0 0;             /* Dark gray */
+    --secondary-foreground: 0.97 0 0;
+    --muted: 0.14 0 0;
+    --muted-foreground: 0.65 0 0;      /* Good contrast */
+    --accent: 0.16 0 0;
+    --accent-foreground: 0.97 0 0;
+    --destructive: 0.62 0.22 25;       /* Same as Classic dark */
+    --destructive-foreground: 0.99 0 0;
+    --success: 0.65 0.16 145;          /* Brighter green */
+    --success-foreground: 0.15 0 0;
+    --warning: 0.85 0.16 85;           /* Brighter yellow */
+    --warning-foreground: 0.15 0 0;
+    --info: 0.72 0.14 200;             /* Brighter cyan */
+    --info-foreground: 0.15 0 0;
+    --border: 0.20 0 0;                /* Gray border - visible */
+    --input: 0.20 0 0;
+    --ring: 0.68 0.24 16;              /* Hot pink #FF0055 +0.04L */
+    --brand: 0.68 0.24 16;             /* Hot pink #FF0055 +0.04L */
+    --brand-foreground: 0.99 0 0;
+    --brand-muted: 0.20 0.05 16;
 
-    /* Graph node colors - pure RGB (rounded to 30°), brighter for dark */
-    --graph-violet: 270 100% 75%;
-    --graph-blue: 210 100% 70%;
-    --graph-cyan: 180 100% 55%;
-    --graph-emerald: 150 100% 50%;
-    --graph-amber: 30 100% 60%;
-    --graph-rose: 330 100% 65%;
+    /* Graph node colors - same hues as Classic dark */
+    --graph-violet: 0.65 0.24 285;
+    --graph-blue: 0.65 0.18 235;
+    --graph-cyan: 0.78 0.12 195;
+    --graph-emerald: 0.72 0.17 160;
+    --graph-amber: 0.80 0.15 85;
+    --graph-rose: 0.68 0.20 350;
 
-    /* Semantic colors - pure RGB (rounded to 30°), brighter for dark */
-    --semantic-knowledge: 210 100% 65%;
-    --semantic-knowledge-muted: 210 50% 17%;
-    --semantic-fact: 150 100% 48%;
-    --semantic-fact-muted: 150 50% 15%;
-    --semantic-question: 270 100% 65%;
-    --semantic-question-muted: 270 50% 17%;
-    --semantic-example: 30 100% 54%;
-    --semantic-example-muted: 30 55% 15%;
-    --semantic-conflict: 0 100% 58%;
-    --semantic-conflict-muted: 0 50% 15%;
-    --semantic-neutral: 0 0% 60%;
-    --semantic-neutral-muted: 0 0% 18%;
+    /* Semantic colors - same hues and chroma as Classic dark */
+    --semantic-knowledge: 0.65 0.18 235;   /* Blue */
+    --semantic-knowledge-muted: 0.22 0.05 235;
+    --semantic-fact: 0.65 0.18 145;        /* Green */
+    --semantic-fact-muted: 0.22 0.05 145;
+    --semantic-question: 0.65 0.21 285;    /* Purple */
+    --semantic-question-muted: 0.22 0.05 285;
+    --semantic-example: 0.75 0.15 55;      /* Amber */
+    --semantic-example-muted: 0.22 0.05 55;
+    --semantic-conflict: 0.62 0.21 15;     /* Red */
+    --semantic-conflict-muted: 0.22 0.05 15;
+    --semantic-neutral: 0.60 0 0;          /* Pure gray */
+    --semantic-neutral-muted: 0.22 0 0;
 
-    /* Complexity colors - pure RGB, brighter for dark */
-    --complexity-basic: 0 0% 60%;
-    --complexity-basic-bg: 0 0% 18%;
-    --complexity-intermediate: 210 100% 65%;
-    --complexity-intermediate-bg: 210 50% 17%;
-    --complexity-advanced: 0 100% 58%;
-    --complexity-advanced-bg: 0 50% 15%;
+    /* Complexity colors - mono dark */
+    --complexity-basic: 0.60 0 0;
+    --complexity-basic-bg: 0.22 0 0;
+    --complexity-intermediate: 0.65 0.18 235;
+    --complexity-intermediate-bg: 0.22 0.05 235;
+    --complexity-advanced: 0.62 0.21 15;
+    --complexity-advanced-bg: 0.22 0.05 15;
 
-    /* Edge type colors - 10 unique hues, lighter for dark theme */
-    --edge-contradicts: 0 95% 65%;
-    --edge-contradicts-muted: 0 60% 18%;
-    --edge-prerequisite: 35 95% 65%;
-    --edge-prerequisite-muted: 35 60% 18%;
-    --edge-influences: 16 95% 68%;
-    --edge-influences-muted: 16 65% 18%;
-    --edge-similar-to: 85 85% 55%;
-    --edge-similar-to-muted: 85 55% 16%;
-    --edge-has-a: 145 85% 55%;
-    --edge-has-a-muted: 145 55% 16%;
-    --edge-part-of: 175 85% 55%;
-    --edge-part-of-muted: 175 55% 16%;
-    --edge-related-to: 205 80% 65%;
-    --edge-related-to-muted: 205 50% 17%;
-    --edge-is-a: 235 90% 78%;
-    --edge-is-a-muted: 235 55% 18%;
-    --edge-explains: 265 90% 78%;
-    --edge-explains-muted: 265 55% 18%;
-    --edge-causes: 325 95% 68%;
-    --edge-causes-muted: 325 55% 17%;
+    /* Edge type colors - same hues as Classic, L adjusted per hue for dark */
+    --edge-contradicts: 0.65 0.22 25;        /* Red */
+    --edge-contradicts-muted: 0.22 0.05 25;
+    --edge-prerequisite: 0.72 0.18 55;       /* Orange */
+    --edge-prerequisite-muted: 0.22 0.05 55;
+    --edge-influences: 0.78 0.16 75;         /* Amber - high L */
+    --edge-influences-muted: 0.22 0.05 75;
+    --edge-similar-to: 0.68 0.18 130;        /* Lime */
+    --edge-similar-to-muted: 0.22 0.05 130;
+    --edge-has-a: 0.65 0.16 160;             /* Teal */
+    --edge-has-a-muted: 0.22 0.05 160;
+    --edge-part-of: 0.68 0.14 195;           /* Cyan */
+    --edge-part-of-muted: 0.22 0.05 195;
+    --edge-related-to: 0.65 0.16 230;        /* Blue */
+    --edge-related-to-muted: 0.22 0.05 230;
+    --edge-is-a: 0.62 0.18 265;              /* Indigo */
+    --edge-is-a-muted: 0.22 0.05 265;
+    --edge-explains: 0.65 0.19 290;          /* Purple */
+    --edge-explains-muted: 0.22 0.05 290;
+    --edge-causes: 0.68 0.20 340;            /* Pink */
+    --edge-causes-muted: 0.22 0.05 340;
   }
 
   * {
@@ -887,7 +898,7 @@
   /* Selection color - brand highlight, preserve original text color */
   /* Exclude editor - it uses custom decorations */
   *:not(.tiptap-editor):not(.tiptap-editor *)::selection {
-    background-color: hsl(var(--brand) / var(--selection-opacity));
+    background-color: oklch(var(--brand) / var(--selection-opacity));
   }
 
   /* Kill selection inside editor completely */
@@ -908,8 +919,8 @@
   a.bg-primary::selection,
   a.bg-brand ::selection,
   a.bg-brand::selection {
-    background-color: hsl(0 0% 100% / 0.7);
-    color: hsl(var(--primary));
+    background-color: oklch(1 0 0 / 0.7);
+    color: oklch(var(--primary));
   }
 
   /* In dark mode, primary buttons have light bg - use normal selection */
@@ -917,8 +928,8 @@
   .dark button.bg-primary::selection,
   .dark a.bg-primary ::selection,
   .dark a.bg-primary::selection {
-    background-color: hsl(var(--brand) / 0.3);
-    color: hsl(var(--foreground));
+    background-color: oklch(var(--brand) / 0.3);
+    color: oklch(var(--foreground));
   }
 
   /* Brand/destructive stay colored in dark mode - inverted selection */
@@ -928,8 +939,8 @@
   .dark button.bg-destructive::selection,
   .dark a.bg-brand ::selection,
   .dark a.bg-brand::selection {
-    background-color: hsl(0 0% 0% / 0.5);
-    color: hsl(0 0% 100%);
+    background-color: oklch(0 0 0 / 0.5);
+    color: oklch(1 0 0);
   }
 
   /* Fix Chrome autocomplete blue highlight */
@@ -937,9 +948,9 @@
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus,
   input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 30px hsl(var(--background)) inset !important;
-    -webkit-text-fill-color: hsl(var(--foreground)) !important;
-    caret-color: hsl(var(--foreground)) !important;
+    -webkit-box-shadow: 0 0 0 30px oklch(var(--background)) inset !important;
+    -webkit-text-fill-color: oklch(var(--foreground)) !important;
+    caret-color: oklch(var(--foreground)) !important;
   }
 
   /* Custom Scrollbar - base (no border by default) */
@@ -951,13 +962,13 @@
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background-color: hsl(var(--muted-foreground) / 0.3);
+    background-color: oklch(var(--muted-foreground) / 0.3);
     background-clip: content-box;
     border-radius: 9999px;
     border: 3px solid transparent;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background-color: hsl(var(--muted-foreground) / 0.5);
+    background-color: oklch(var(--muted-foreground) / 0.5);
   }
   ::-webkit-scrollbar-corner {
     background: transparent;
@@ -970,7 +981,7 @@
 }
 
 .tiptap-editor .ProseMirror {
-  color: hsl(var(--foreground));
+  color: oklch(var(--foreground));
   font-size: 1rem;
   line-height: 1.75;
   max-width: 100%;
@@ -1034,17 +1045,17 @@
 
 /* Blockquote */
 .tiptap-editor blockquote {
-  border-left: 3px solid hsl(var(--border));
+  border-left: 3px solid oklch(var(--border));
   padding-left: 1rem;
   margin-left: 0;
   margin-right: 0;
   font-style: italic;
-  color: hsl(var(--muted-foreground));
+  color: oklch(var(--muted-foreground));
 }
 
 /* Placeholder styling */
 .tiptap-editor .is-editor-empty:first-child::before {
-  color: hsl(var(--muted-foreground));
+  color: oklch(var(--muted-foreground));
   content: attr(data-placeholder);
   float: left;
   height: 0;
@@ -1052,7 +1063,7 @@
 }
 
 .tiptap-editor .is-empty::before {
-  color: hsl(var(--muted-foreground));
+  color: oklch(var(--muted-foreground));
   content: attr(data-placeholder);
   float: left;
   height: 0;
@@ -1079,9 +1090,9 @@
   width: 1rem;
   height: 1rem;
   border-radius: 0.25rem;
-  border: 1px solid hsl(var(--border));
+  border: 1px solid oklch(var(--border));
   cursor: pointer;
-  accent-color: hsl(var(--primary));
+  accent-color: oklch(var(--primary));
 }
 
 .tiptap-editor .task-item > div {
@@ -1090,12 +1101,12 @@
 
 .tiptap-editor .task-item[data-checked="true"] > div {
   text-decoration: line-through;
-  color: hsl(var(--muted-foreground));
+  color: oklch(var(--muted-foreground));
 }
 
 /* Link styling */
 .tiptap-editor .editor-link {
-  color: hsl(var(--primary));
+  color: oklch(var(--primary));
   text-decoration: underline;
   text-underline-offset: 2px;
   cursor: pointer;
@@ -1107,9 +1118,9 @@
 
 /* Code block styling */
 .tiptap-editor pre {
-  background-color: hsl(var(--muted));
+  background-color: oklch(var(--muted));
   border-radius: 0.5rem;
-  border: 1px solid hsl(var(--border));
+  border: 1px solid oklch(var(--border));
   padding: 1rem;
   font-family: var(--font-mono);
   font-size: 0.875rem;
@@ -1125,22 +1136,22 @@
 
 /* Inline code */
 .tiptap-editor code {
-  background-color: hsl(var(--muted));
+  background-color: oklch(var(--muted));
   border-radius: 0.25rem;
   padding: 0.125rem 0.375rem;
   font-family: var(--font-mono);
   font-size: 0.875em;
 }
 
-/* Highlight */
+/* Highlight - yellow H=85 */
 .tiptap-editor mark {
-  background-color: hsl(50 100% 70%);
+  background-color: oklch(0.88 0.15 85);
   border-radius: 0.125rem;
   padding: 0.125rem 0;
 }
 
 .dark .tiptap-editor mark {
-  background-color: hsl(50 100% 30%);
+  background-color: oklch(0.45 0.12 85);
 }
 
 /* Disable browser selection on highlighted text to avoid double-highlighting */
@@ -1154,33 +1165,24 @@
 /* Horizontal rule */
 .tiptap-editor hr {
   border: none;
-  border-top: 1px solid hsl(var(--border));
+  border-top: 1px solid oklch(var(--border));
   margin: 1.5rem 0;
 }
 
 /* Custom selection styles */
 .tiptap-editor .ProseMirror .text-selected {
-  background: hsl(var(--brand) / var(--selection-opacity, 0.3));
+  background: oklch(var(--brand) / var(--selection-opacity, 0.3));
   border-radius: 2px;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
 }
 
 .tiptap-editor .ProseMirror .block-selected {
-  background: hsl(var(--brand) / calc(var(--selection-opacity, 0.3) * 0.5));
+  background: oklch(var(--brand) / calc(var(--selection-opacity, 0.3) * 0.5));
   border-radius: 0.25rem;
 }
 
-/* Floating menu - hide on touch devices */
-.editor-floating-menu {
-  display: none;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .editor-floating-menu {
-    display: flex;
-  }
-}
+/* Floating menu - moved to floating-menu.module.css */
 
 /* Focus styling */
 .tiptap-editor .ProseMirror:focus {
@@ -1206,7 +1208,7 @@
 }
 
 .tiptap-editor .editor-image.ProseMirror-selectednode {
-  outline: 2px solid hsl(var(--primary));
+  outline: 2px solid oklch(var(--primary));
   outline-offset: 2px;
 }
 
@@ -1217,7 +1219,7 @@
   margin: 1rem 0;
   overflow: hidden;
   border-radius: 0.5rem;
-  border: 1px solid hsl(var(--border));
+  border: 1px solid oklch(var(--border));
 }
 
 .tiptap-editor table {
@@ -1228,7 +1230,7 @@
 
 .tiptap-editor th,
 .tiptap-editor td {
-  border: 1px solid hsl(var(--border));
+  border: 1px solid oklch(var(--border));
   padding: 0.5rem 0.75rem;
   text-align: left;
   vertical-align: top;
@@ -1237,7 +1239,7 @@
 }
 
 .tiptap-editor th {
-  background-color: hsl(var(--muted));
+  background-color: oklch(var(--muted));
   font-weight: 600;
 }
 
@@ -1246,7 +1248,7 @@
 }
 
 .tiptap-editor .selectedCell {
-  background-color: hsl(var(--primary) / 0.1);
+  background-color: oklch(var(--primary) / 0.1);
 }
 
 .tiptap-editor th p,
@@ -1261,7 +1263,7 @@
   top: 0;
   bottom: 0;
   width: 4px;
-  background-color: hsl(var(--primary));
+  background-color: oklch(var(--primary));
   cursor: col-resize;
   z-index: 10;
 }
@@ -1310,99 +1312,99 @@
   margin: 0;
 }
 
-/* Info Callout */
+/* Info Callout - Blue H=235 */
 .tiptap-editor .callout-info {
-  background-color: hsl(210 100% 96%);
-  border-color: hsl(210 100% 85%);
+  background-color: oklch(0.95 0.04 235);
+  border-color: oklch(0.82 0.08 235);
 }
 
 .tiptap-editor .callout-info .callout-icon {
-  color: hsl(210 100% 50%);
+  color: oklch(0.55 0.18 235);
 }
 
 .dark .tiptap-editor .callout-info {
-  background-color: hsl(210 100% 15% / 0.3);
-  border-color: hsl(210 100% 30%);
+  background-color: oklch(0.22 0.05 235 / 0.3);
+  border-color: oklch(0.40 0.10 235);
 }
 
 .dark .tiptap-editor .callout-info .callout-icon {
-  color: hsl(210 100% 70%);
+  color: oklch(0.70 0.14 235);
 }
 
-/* Warning Callout */
+/* Warning Callout - Amber H=85 */
 .tiptap-editor .callout-warning {
-  background-color: hsl(45 100% 94%);
-  border-color: hsl(45 100% 70%);
+  background-color: oklch(0.95 0.06 85);
+  border-color: oklch(0.85 0.12 85);
 }
 
 .tiptap-editor .callout-warning .callout-icon {
-  color: hsl(45 100% 40%);
+  color: oklch(0.70 0.16 85);
 }
 
 .dark .tiptap-editor .callout-warning {
-  background-color: hsl(45 100% 15% / 0.3);
-  border-color: hsl(45 100% 30%);
+  background-color: oklch(0.25 0.08 85 / 0.3);
+  border-color: oklch(0.45 0.12 85);
 }
 
 .dark .tiptap-editor .callout-warning .callout-icon {
-  color: hsl(45 100% 60%);
+  color: oklch(0.80 0.14 85);
 }
 
-/* Success Callout */
+/* Success Callout - Green H=145 */
 .tiptap-editor .callout-success {
-  background-color: hsl(142 70% 94%);
-  border-color: hsl(142 70% 70%);
+  background-color: oklch(0.95 0.04 145);
+  border-color: oklch(0.78 0.10 145);
 }
 
 .tiptap-editor .callout-success .callout-icon {
-  color: hsl(142 70% 45%);
+  color: oklch(0.58 0.14 145);
 }
 
 .dark .tiptap-editor .callout-success {
-  background-color: hsl(142 70% 15% / 0.3);
-  border-color: hsl(142 70% 30%);
+  background-color: oklch(0.22 0.05 145 / 0.3);
+  border-color: oklch(0.42 0.10 145);
 }
 
 .dark .tiptap-editor .callout-success .callout-icon {
-  color: hsl(142 70% 60%);
+  color: oklch(0.68 0.14 145);
 }
 
-/* Error Callout */
+/* Error Callout - Red H=25 */
 .tiptap-editor .callout-error {
-  background-color: hsl(0 100% 96%);
-  border-color: hsl(0 100% 80%);
+  background-color: oklch(0.95 0.04 25);
+  border-color: oklch(0.78 0.12 25);
 }
 
 .tiptap-editor .callout-error .callout-icon {
-  color: hsl(0 100% 50%);
+  color: oklch(0.55 0.20 25);
 }
 
 .dark .tiptap-editor .callout-error {
-  background-color: hsl(0 100% 15% / 0.3);
-  border-color: hsl(0 100% 30%);
+  background-color: oklch(0.22 0.06 25 / 0.3);
+  border-color: oklch(0.42 0.12 25);
 }
 
 .dark .tiptap-editor .callout-error .callout-icon {
-  color: hsl(0 100% 70%);
+  color: oklch(0.68 0.18 25);
 }
 
-/* Tip Callout */
+/* Tip Callout - Purple H=285 */
 .tiptap-editor .callout-tip {
-  background-color: hsl(270 100% 96%);
-  border-color: hsl(270 100% 80%);
+  background-color: oklch(0.95 0.04 285);
+  border-color: oklch(0.78 0.12 285);
 }
 
 .tiptap-editor .callout-tip .callout-icon {
-  color: hsl(270 100% 50%);
+  color: oklch(0.55 0.20 285);
 }
 
 .dark .tiptap-editor .callout-tip {
-  background-color: hsl(270 100% 15% / 0.3);
-  border-color: hsl(270 100% 30%);
+  background-color: oklch(0.22 0.06 285 / 0.3);
+  border-color: oklch(0.42 0.12 285);
 }
 
 .dark .tiptap-editor .callout-tip .callout-icon {
-  color: hsl(270 100% 70%);
+  color: oklch(0.68 0.18 285);
 }
 
 /* ========================================
@@ -1410,7 +1412,7 @@
    ======================================== */
 .tiptap-editor details.editor-details {
   margin: 0.75rem 0;
-  border: 1px solid hsl(var(--border));
+  border: 1px solid oklch(var(--border));
   border-radius: 0.5rem;
   overflow: hidden;
 }
@@ -1422,7 +1424,7 @@
   padding: 0.75rem 1rem;
   cursor: pointer;
   font-weight: 500;
-  background-color: hsl(var(--muted) / 0.5);
+  background-color: oklch(var(--muted) / 0.5);
   user-select: none;
   list-style: none;
 }
@@ -1435,7 +1437,7 @@
   content: "▶";
   font-size: 0.75rem;
   transition: transform 0.2s ease;
-  color: hsl(var(--muted-foreground));
+  color: oklch(var(--muted-foreground));
 }
 
 .tiptap-editor details.editor-details[open] summary.editor-details-summary::before {
@@ -1443,12 +1445,12 @@
 }
 
 .tiptap-editor details.editor-details summary.editor-details-summary:hover {
-  background-color: hsl(var(--muted));
+  background-color: oklch(var(--muted));
 }
 
 .tiptap-editor details.editor-details .editor-details-content {
   padding: 0.75rem 1rem;
-  border-top: 1px solid hsl(var(--border));
+  border-top: 1px solid oklch(var(--border));
 }
 
 .tiptap-editor details.editor-details .editor-details-content > *:first-child {
@@ -1464,9 +1466,9 @@
    ======================================== */
 .tiptap-editor .editor-code-block {
   position: relative;
-  background-color: hsl(var(--muted));
+  background-color: oklch(var(--muted));
   border-radius: 0.5rem;
-  border: 1px solid hsl(var(--border));
+  border: 1px solid oklch(var(--border));
   margin: 0.75rem 0;
   overflow: hidden;
 }
@@ -1491,29 +1493,31 @@
 /* Syntax highlighting colors */
 .tiptap-editor .hljs-comment,
 .tiptap-editor .hljs-quote {
-  color: hsl(var(--muted-foreground));
+  color: oklch(var(--muted-foreground));
   font-style: italic;
 }
 
+/* Keywords - Purple H=285 */
 .tiptap-editor .hljs-keyword,
 .tiptap-editor .hljs-selector-tag,
 .tiptap-editor .hljs-addition {
-  color: hsl(280 80% 50%);
+  color: oklch(0.55 0.20 285);
 }
 
 .dark .tiptap-editor .hljs-keyword,
 .dark .tiptap-editor .hljs-selector-tag,
 .dark .tiptap-editor .hljs-addition {
-  color: hsl(280 80% 70%);
+  color: oklch(0.70 0.18 285);
 }
 
+/* Strings/Numbers - Green H=145 */
 .tiptap-editor .hljs-number,
 .tiptap-editor .hljs-string,
 .tiptap-editor .hljs-meta .hljs-meta-string,
 .tiptap-editor .hljs-literal,
 .tiptap-editor .hljs-doctag,
 .tiptap-editor .hljs-regexp {
-  color: hsl(142 70% 35%);
+  color: oklch(0.52 0.14 145);
 }
 
 .dark .tiptap-editor .hljs-number,
@@ -1522,15 +1526,16 @@
 .dark .tiptap-editor .hljs-literal,
 .dark .tiptap-editor .hljs-doctag,
 .dark .tiptap-editor .hljs-regexp {
-  color: hsl(142 70% 60%);
+  color: oklch(0.70 0.14 145);
 }
 
+/* Titles/Names - Blue H=235 */
 .tiptap-editor .hljs-title,
 .tiptap-editor .hljs-section,
 .tiptap-editor .hljs-name,
 .tiptap-editor .hljs-selector-id,
 .tiptap-editor .hljs-selector-class {
-  color: hsl(210 100% 45%);
+  color: oklch(0.52 0.16 235);
 }
 
 .dark .tiptap-editor .hljs-title,
@@ -1538,16 +1543,17 @@
 .dark .tiptap-editor .hljs-name,
 .dark .tiptap-editor .hljs-selector-id,
 .dark .tiptap-editor .hljs-selector-class {
-  color: hsl(210 100% 70%);
+  color: oklch(0.70 0.14 235);
 }
 
+/* Attributes/Variables - Orange H=55 */
 .tiptap-editor .hljs-attribute,
 .tiptap-editor .hljs-attr,
 .tiptap-editor .hljs-variable,
 .tiptap-editor .hljs-template-variable,
 .tiptap-editor .hljs-class .hljs-title,
 .tiptap-editor .hljs-type {
-  color: hsl(30 100% 45%);
+  color: oklch(0.65 0.14 55);
 }
 
 .dark .tiptap-editor .hljs-attribute,
@@ -1556,9 +1562,10 @@
 .dark .tiptap-editor .hljs-template-variable,
 .dark .tiptap-editor .hljs-class .hljs-title,
 .dark .tiptap-editor .hljs-type {
-  color: hsl(30 100% 65%);
+  color: oklch(0.78 0.12 55);
 }
 
+/* Symbols/Meta - Red H=25 */
 .tiptap-editor .hljs-symbol,
 .tiptap-editor .hljs-bullet,
 .tiptap-editor .hljs-subst,
@@ -1567,7 +1574,7 @@
 .tiptap-editor .hljs-selector-attr,
 .tiptap-editor .hljs-selector-pseudo,
 .tiptap-editor .hljs-link {
-  color: hsl(0 80% 50%);
+  color: oklch(0.55 0.18 25);
 }
 
 .dark .tiptap-editor .hljs-symbol,
@@ -1578,17 +1585,18 @@
 .dark .tiptap-editor .hljs-selector-attr,
 .dark .tiptap-editor .hljs-selector-pseudo,
 .dark .tiptap-editor .hljs-link {
-  color: hsl(0 80% 65%);
+  color: oklch(0.70 0.16 25);
 }
 
+/* Built-in/Deletion - Pink H=340 */
 .tiptap-editor .hljs-built_in,
 .tiptap-editor .hljs-deletion {
-  color: hsl(350 80% 50%);
+  color: oklch(0.55 0.18 340);
 }
 
 .dark .tiptap-editor .hljs-built_in,
 .dark .tiptap-editor .hljs-deletion {
-  color: hsl(350 80% 65%);
+  color: oklch(0.70 0.16 340);
 }
 
 .tiptap-editor .hljs-emphasis {
@@ -1619,13 +1627,13 @@
 .tiptap-editor .editor-column {
   min-width: 0;
   padding: 0.5rem;
-  border: 1px dashed hsl(var(--border));
+  border: 1px dashed oklch(var(--border));
   border-radius: 0.375rem;
-  background-color: hsl(var(--muted) / 0.2);
+  background-color: oklch(var(--muted) / 0.2);
 }
 
 .tiptap-editor .editor-column:focus-within {
-  border-color: hsl(var(--primary));
+  border-color: oklch(var(--primary));
   border-style: solid;
 }
 
@@ -1652,7 +1660,7 @@
   margin: 0.75rem 0;
   border-radius: 0.5rem;
   overflow: hidden;
-  background-color: hsl(var(--muted));
+  background-color: oklch(var(--muted));
 }
 
 .tiptap-editor .editor-video-embed-wrapper {
@@ -1671,7 +1679,7 @@
 }
 
 .tiptap-editor .editor-video-embed.ProseMirror-selectednode {
-  outline: 2px solid hsl(var(--primary));
+  outline: 2px solid oklch(var(--primary));
   outline-offset: 2px;
 }
 
@@ -1681,8 +1689,8 @@
 .tiptap-editor .editor-toc {
   margin: 1rem 0;
   padding: 1rem;
-  background-color: hsl(var(--muted) / 0.5);
-  border: 1px solid hsl(var(--border));
+  background-color: oklch(var(--muted) / 0.5);
+  border: 1px solid oklch(var(--border));
   border-radius: 0.5rem;
 }
 
@@ -1691,10 +1699,10 @@
   font-size: 0.875rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: hsl(var(--muted-foreground));
+  color: oklch(var(--muted-foreground));
   margin-bottom: 0.75rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid hsl(var(--border));
+  border-bottom: 1px solid oklch(var(--border));
 }
 
 .tiptap-editor .editor-toc-nav {
@@ -1712,7 +1720,7 @@
 }
 
 .tiptap-editor .editor-toc-item a {
-  color: hsl(var(--foreground));
+  color: oklch(var(--foreground));
   text-decoration: none;
   display: block;
   padding: 0.25rem 0.5rem;
@@ -1721,8 +1729,8 @@
 }
 
 .tiptap-editor .editor-toc-item a:hover {
-  background-color: hsl(var(--accent));
-  color: hsl(var(--accent-foreground));
+  background-color: oklch(var(--accent));
+  color: oklch(var(--accent-foreground));
 }
 
 .tiptap-editor .editor-toc-item-1 {
@@ -1736,11 +1744,11 @@
 .tiptap-editor .editor-toc-item-3 {
   padding-left: 2rem;
   font-size: 0.8125rem;
-  color: hsl(var(--muted-foreground));
+  color: oklch(var(--muted-foreground));
 }
 
 .tiptap-editor .editor-toc.ProseMirror-selectednode {
-  outline: 2px solid hsl(var(--primary));
+  outline: 2px solid oklch(var(--primary));
   outline-offset: 2px;
 }
 
@@ -1791,7 +1799,7 @@
 .tiptap-editor .editor-image-caption {
   margin-top: 0.5rem;
   font-size: 0.875rem;
-  color: hsl(var(--muted-foreground));
+  color: oklch(var(--muted-foreground));
   text-align: center;
   font-style: italic;
   min-height: 1.5em;
@@ -1799,11 +1807,11 @@
 
 .tiptap-editor .editor-image-caption:empty::before {
   content: attr(data-placeholder);
-  color: hsl(var(--muted-foreground) / 0.5);
+  color: oklch(var(--muted-foreground) / 0.5);
 }
 
 .tiptap-editor .editor-image-figure.ProseMirror-selectednode {
-  outline: 2px solid hsl(var(--primary));
+  outline: 2px solid oklch(var(--primary));
   outline-offset: 4px;
   border-radius: 0.5rem;
 }
@@ -1816,7 +1824,7 @@
 
 .tiptap-editor .ProseMirror > *.is-dragging {
   opacity: 0.4;
-  background: hsl(var(--muted) / 0.5);
+  background: oklch(var(--muted) / 0.5);
   border-radius: 0.5rem;
 }
 
@@ -1841,15 +1849,7 @@
   caret-color: transparent !important;
 }
 
-/* Drop Indicator */
-.editor-drop-indicator {
-  position: absolute;
-  height: 2px;
-  background: hsl(var(--brand));
-  border-radius: 1px;
-  pointer-events: none;
-  z-index: 100;
-}
+/* Drop Indicator - moved to floating-menu.module.css */
 
 /* ========================================
    Math/KaTeX Styling
@@ -1857,17 +1857,17 @@
 .editor-math-block {
   margin: 1.5rem 0;
   padding: 1.5rem;
-  background: hsl(var(--muted) / 0.3);
+  background: oklch(var(--muted) / 0.3);
   border-radius: 0.75rem;
-  border: 1px solid hsl(var(--border) / 0.5);
+  border: 1px solid oklch(var(--border) / 0.5);
   text-align: center;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .editor-math-block:hover {
-  background: hsl(var(--muted) / 0.5);
-  border-color: hsl(var(--border));
+  background: oklch(var(--muted) / 0.5);
+  border-color: oklch(var(--border));
 }
 
 .editor-math-block .katex-display {
@@ -1882,14 +1882,14 @@
   display: inline-block;
   padding: 0.125rem 0.25rem;
   margin: 0 0.125rem;
-  background: hsl(var(--muted) / 0.4);
+  background: oklch(var(--muted) / 0.4);
   border-radius: 0.25rem;
   cursor: pointer;
   transition: background 0.15s ease;
 }
 
 .editor-math-inline:hover {
-  background: hsl(var(--muted) / 0.7);
+  background: oklch(var(--muted) / 0.7);
 }
 
 .editor-math-inline .katex {
@@ -1898,25 +1898,25 @@
 
 /* Math Error Styling */
 .math-error {
-  color: hsl(var(--destructive));
+  color: oklch(var(--destructive));
   font-family: var(--font-mono);
   font-size: 0.875em;
   padding: 0.25rem 0.5rem;
-  background: hsl(var(--destructive) / 0.1);
+  background: oklch(var(--destructive) / 0.1);
   border-radius: 0.25rem;
 }
 
 /* Dark mode adjustments for math */
 .dark .editor-math-block {
-  background: hsl(var(--muted) / 0.2);
+  background: oklch(var(--muted) / 0.2);
 }
 
 .dark .editor-math-inline {
-  background: hsl(var(--muted) / 0.3);
+  background: oklch(var(--muted) / 0.3);
 }
 
 .dark .editor-math-inline:hover {
-  background: hsl(var(--muted) / 0.5);
+  background: oklch(var(--muted) / 0.5);
 }
 
 /* Focus node highlight - ultra-soft diffused glow with subtle breathing
@@ -1928,30 +1928,30 @@
 @keyframes focus-breathe {
   0%, 100% {
     box-shadow:
-      0 0 25px hsl(var(--brand) / 0.15),
-      0 0 50px hsl(var(--brand) / 0.08),
-      0 0 90px hsl(var(--brand) / 0.04);
+      0 0 25px oklch(var(--brand) / 0.15),
+      0 0 50px oklch(var(--brand) / 0.08),
+      0 0 90px oklch(var(--brand) / 0.04);
   }
   50% {
     box-shadow:
-      0 0 30px hsl(var(--brand) / 0.2),
-      0 0 60px hsl(var(--brand) / 0.1),
-      0 0 100px hsl(var(--brand) / 0.05);
+      0 0 30px oklch(var(--brand) / 0.2),
+      0 0 60px oklch(var(--brand) / 0.1),
+      0 0 100px oklch(var(--brand) / 0.05);
   }
 }
 
 @keyframes focus-breathe-dark {
   0%, 100% {
     box-shadow:
-      0 0 25px hsl(0 0% 100% / 0.1),
-      0 0 50px hsl(0 0% 100% / 0.06),
-      0 0 90px hsl(0 0% 100% / 0.03);
+      0 0 25px oklch(1 0 0 / 0.1),
+      0 0 50px oklch(1 0 0 / 0.06),
+      0 0 90px oklch(1 0 0 / 0.03);
   }
   50% {
     box-shadow:
-      0 0 30px hsl(0 0% 100% / 0.15),
-      0 0 60px hsl(0 0% 100% / 0.08),
-      0 0 100px hsl(0 0% 100% / 0.04);
+      0 0 30px oklch(1 0 0 / 0.15),
+      0 0 60px oklch(1 0 0 / 0.08),
+      0 0 100px oklch(1 0 0 / 0.04);
   }
 }
 
@@ -1999,59 +1999,59 @@
 .toast-info > * {
   position: relative;
   z-index: 1;
-  color: hsl(var(--foreground));
+  color: oklch(var(--foreground));
 }
 
 /* Error toast */
 .toast-error::before {
-  background: hsl(var(--destructive));
+  background: oklch(var(--destructive));
 }
 
 .toast-error {
-  border-color: hsl(var(--destructive) / 0.4) !important;
+  border-color: oklch(var(--destructive) / 0.4) !important;
 }
 
 .toast-error [data-icon] {
-  color: hsl(var(--destructive)) !important;
+  color: oklch(var(--destructive)) !important;
 }
 
 /* Success toast */
 .toast-success::before {
-  background: hsl(var(--success));
+  background: oklch(var(--success));
 }
 
 .toast-success {
-  border-color: hsl(var(--success) / 0.4) !important;
+  border-color: oklch(var(--success) / 0.4) !important;
 }
 
 .toast-success [data-icon] {
-  color: hsl(var(--success)) !important;
+  color: oklch(var(--success)) !important;
 }
 
 /* Warning toast */
 .toast-warning::before {
-  background: hsl(var(--warning));
+  background: oklch(var(--warning));
 }
 
 .toast-warning {
-  border-color: hsl(var(--warning) / 0.4) !important;
+  border-color: oklch(var(--warning) / 0.4) !important;
 }
 
 .toast-warning [data-icon] {
-  color: hsl(var(--warning)) !important;
+  color: oklch(var(--warning)) !important;
 }
 
 /* Info toast */
 .toast-info::before {
-  background: hsl(var(--info));
+  background: oklch(var(--info));
 }
 
 .toast-info {
-  border-color: hsl(var(--info) / 0.4) !important;
+  border-color: oklch(var(--info) / 0.4) !important;
 }
 
 .toast-info [data-icon] {
-  color: hsl(var(--info)) !important;
+  color: oklch(var(--info)) !important;
 }
 
 /* ========================================
@@ -2061,8 +2061,8 @@
 
 /* React Flow node containers - GPU compositing */
 .react-flow__node {
-  contain: layout style;
-  will-change: transform;
+  /* contain: layout style; */
+  /* will-change: transform; */
 }
 
 /* Knowledge node cards - full containment */
@@ -2118,15 +2118,15 @@ html.theme-transition-disabled *::after {
   .animate-glow-pulse {
     animation: none !important;
     box-shadow:
-      0 0 28px hsl(var(--brand) / 0.17),
-      0 0 55px hsl(var(--brand) / 0.09),
-      0 0 95px hsl(var(--brand) / 0.045) !important;
+      0 0 28px oklch(var(--brand) / 0.17),
+      0 0 55px oklch(var(--brand) / 0.09),
+      0 0 95px oklch(var(--brand) / 0.045) !important;
   }
 
   .dark .animate-glow-pulse {
     box-shadow:
-      0 0 28px hsl(0 0% 100% / 0.12),
-      0 0 55px hsl(0 0% 100% / 0.07),
-      0 0 95px hsl(0 0% 100% / 0.035) !important;
+      0 0 28px oklch(1 0 0 / 0.12),
+      0 0 55px oklch(1 0 0 / 0.07),
+      0 0 95px oklch(1 0 0 / 0.035) !important;
   }
 }

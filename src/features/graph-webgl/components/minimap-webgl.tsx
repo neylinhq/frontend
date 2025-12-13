@@ -11,10 +11,10 @@ import type { Node } from '@/entities/map'
 import { cn } from '@/shared/lib/cn'
 
 interface ViewportState {
-  x: number      // Camera center X in world coords
-  y: number      // Camera center Y in world coords
-  zoom: number   // Zoom level
-  width: number  // Canvas width in pixels
+  x: number // Camera center X in world coords
+  y: number // Camera center Y in world coords
+  zoom: number // Zoom level
+  width: number // Canvas width in pixels
   height: number // Canvas height in pixels
 }
 
@@ -27,7 +27,7 @@ interface LayoutPosition {
 
 interface MiniMapWebGLProps {
   nodes: Node[]
-  layoutPositions?: LayoutPosition[]  // Positions from WASM layout
+  layoutPositions?: LayoutPosition[] // Positions from WASM layout
   viewport?: ViewportState
   isDark?: boolean
   className?: string
@@ -36,12 +36,12 @@ interface MiniMapWebGLProps {
 
 // Colors for node types (matching React Flow minimap)
 const NODE_COLORS: Record<string, string> = {
-  concept: '#3b82f6',    // blue
-  theory: '#8b5cf6',     // purple
-  fact: '#10b981',       // green
-  example: '#f59e0b',    // amber
+  concept: '#3b82f6', // blue
+  theory: '#8b5cf6', // purple
+  fact: '#10b981', // green
+  example: '#f59e0b', // amber
   definition: '#ef4444', // red
-  question: '#ec4899',   // pink
+  question: '#ec4899' // pink
 }
 
 const DEFAULT_NODE_COLOR = '#64748b' // slate
@@ -60,7 +60,7 @@ export const MiniMapWebGL = memo(function MiniMapWebGL({
   nodes,
   layoutPositions,
   viewport,
-  isDark = false,
+  isDark: _isDark = false,
   className,
   onNavigate
 }: MiniMapWebGLProps) {
@@ -86,8 +86,10 @@ export const MiniMapWebGL = memo(function MiniMapWebGL({
     }
 
     // Find bounds using WASM positions if available, fallback to node.position
-    let minX = Infinity, maxX = -Infinity
-    let minY = Infinity, maxY = -Infinity
+    let minX = Infinity,
+      maxX = -Infinity
+    let minY = Infinity,
+      maxY = -Infinity
 
     for (const node of nodes) {
       // Use WASM layout position if available, otherwise use node.position
@@ -182,7 +184,9 @@ export const MiniMapWebGL = memo(function MiniMapWebGL({
 
   // Handle click to navigate
   const handleClick = (e: React.MouseEvent) => {
-    if (!onNavigate) return
+    if (!onNavigate) {
+      return
+    }
 
     const rect = e.currentTarget.getBoundingClientRect()
     const clickX = e.clientX - rect.left

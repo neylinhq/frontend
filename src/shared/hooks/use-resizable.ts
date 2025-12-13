@@ -38,7 +38,7 @@ export function useResizable({
       const stored = localStorage.getItem(storageKey)
       if (stored) {
         const parsed = parseInt(stored, 10)
-        if (!isNaN(parsed) && parsed >= minSize && parsed <= maxSize) {
+        if (!Number.isNaN(parsed) && parsed >= minSize && parsed <= maxSize) {
           return parsed
         }
       }
@@ -57,15 +57,20 @@ export function useResizable({
     }
   }, [size, storageKey])
 
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    e.preventDefault()
-    setIsResizing(true)
-    startPosRef.current = direction === 'horizontal' ? e.clientX : e.clientY
-    startSizeRef.current = size
-  }, [direction, size])
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault()
+      setIsResizing(true)
+      startPosRef.current = direction === 'horizontal' ? e.clientX : e.clientY
+      startSizeRef.current = size
+    },
+    [direction, size]
+  )
 
   useEffect(() => {
-    if (!isResizing) return
+    if (!isResizing) {
+      return
+    }
 
     const handleMouseMove = (e: MouseEvent) => {
       const currentPos = direction === 'horizontal' ? e.clientX : e.clientY

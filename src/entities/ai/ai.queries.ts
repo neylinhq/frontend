@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useCallback, useEffect, useState } from 'react'
 import { aiApi } from './ai.api'
 import type { EnrichType } from './ai.schema'
 
@@ -62,8 +62,15 @@ export const useEnrichNode = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ mapId, nodeId, enrichType }: { mapId: string; nodeId: string; enrichType: EnrichType }) =>
-      aiApi.enrichNode(mapId, nodeId, enrichType, true),
+    mutationFn: ({
+      mapId,
+      nodeId,
+      enrichType
+    }: {
+      mapId: string
+      nodeId: string
+      enrichType: EnrichType
+    }) => aiApi.enrichNode(mapId, nodeId, enrichType, true),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['nodes'] })
     }

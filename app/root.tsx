@@ -11,7 +11,7 @@ import {
 } from 'react-router'
 import { QueryProvider } from '@/app/providers/query-provider'
 import { ThemeProvider } from '@/app/theme'
-import { WalletProviders } from '@/features/billing/crypto-subscription-dialog/lib/wallet-providers'
+import { WalletProviders } from '@/features/billing/crypto-wallet-connect/lib/wallet-providers'
 import { Toaster } from '@/shared/components/toast'
 import { TooltipProvider } from '@/shared/components/tooltip'
 import '@/shared/styles/globals.css'

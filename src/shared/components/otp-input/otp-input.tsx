@@ -1,4 +1,4 @@
-import { useRef, type KeyboardEvent, type ClipboardEvent, type ChangeEvent } from 'react'
+import { type ChangeEvent, type ClipboardEvent, type KeyboardEvent, useRef } from 'react'
 import { cn } from '@/shared/lib/cn'
 
 interface OtpInputProps {
@@ -19,7 +19,7 @@ export const OtpInput = ({
   length = 6,
   disabled = false,
   error = false,
-  autoFocus = true,
+  autoFocus: _autoFocus = true,
   className
 }: OtpInputProps) => {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
@@ -28,7 +28,9 @@ export const OtpInput = ({
     const inputValue = e.target.value
 
     // Only allow digits
-    if (!/^\d*$/.test(inputValue)) return
+    if (!/^\d*$/.test(inputValue)) {
+      return
+    }
 
     const newValue = value.split('')
     newValue[index] = inputValue.slice(-1) // Take only last character
@@ -97,9 +99,9 @@ export const OtpInput = ({
           ref={el => {
             inputRefs.current[index] = el
           }}
-          type="text"
-          inputMode="numeric"
-          pattern="\d*"
+          type='text'
+          inputMode='numeric'
+          pattern='\d*'
           maxLength={1}
           value={value[index] || ''}
           onChange={e => handleChange(index, e)}
@@ -107,7 +109,6 @@ export const OtpInput = ({
           onPaste={handlePaste}
           onFocus={() => handleFocus(index)}
           disabled={disabled}
-          autoFocus={autoFocus && index === 0}
           className={cn(
             'w-12 h-14 text-center text-2xl font-semibold rounded-lg border-2 transition-all duration-200',
             'focus:outline-none focus:ring-2 focus:ring-offset-1',

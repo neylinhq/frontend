@@ -1,4 +1,4 @@
-import type { Node, LightweightNode } from '@/entities/node'
+import type { LightweightNode, Node } from '@/entities/node'
 import type { UserNodeProgress } from './progress.schema'
 import { DEFAULT_NODE_PROGRESS } from './progress.schema'
 
@@ -43,15 +43,14 @@ export function enrichNodesWithProgress<T extends Node | LightweightNode>(
 export function getProgressStats(nodes: EnrichedNode[] | EnrichedLightweightNode[]) {
   const total = nodes.length
   const mastered = nodes.filter(n => n.progress.masteryLevel === 'mastered').length
-  const learning = nodes.filter(n =>
-    n.progress.masteryLevel === 'learning' || n.progress.masteryLevel === 'practicing'
+  const learning = nodes.filter(
+    n => n.progress.masteryLevel === 'learning' || n.progress.masteryLevel === 'practicing'
   ).length
   const notStarted = nodes.filter(n => n.progress.masteryLevel === 'not_started').length
   const bookmarked = nodes.filter(n => n.progress.isBookmarked).length
 
-  const avgConfidence = total > 0
-    ? nodes.reduce((sum, n) => sum + n.progress.confidence, 0) / total
-    : 0
+  const avgConfidence =
+    total > 0 ? nodes.reduce((sum, n) => sum + n.progress.confidence, 0) / total : 0
 
   return {
     total,

@@ -1,0 +1,169 @@
+@reference "../../../shared/styles/globals.css";
+
+/* Bubble Menu Styles
+ * S+ tier polish: entrance animation, layered shadows, premium interactions
+ */
+
+/* Menu entrance animation */
+@keyframes menuIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -100%) translateY(-4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -100%) translateY(0) scale(1);
+  }
+}
+
+.container {
+  @apply absolute z-50 flex items-center gap-0.5;
+  @apply rounded-xl border border-border;
+  @apply bg-popover;
+  @apply p-1.5;
+
+  animation: menuIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Toolbar button base */
+.toolbarButton {
+  @apply flex items-center justify-center;
+  @apply h-8 w-8;
+  @apply rounded-lg;
+  @apply text-muted-foreground;
+
+  transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.toolbarButton:hover:not(:disabled) {
+  @apply bg-accent/60 text-foreground;
+  transform: scale(1.05);
+}
+
+.toolbarButton:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.toolbarButton:focus-visible {
+  @apply outline-none;
+  @apply ring-2 ring-primary/50 ring-offset-1 ring-offset-background;
+}
+
+.toolbarButton:disabled {
+  @apply opacity-40 cursor-not-allowed;
+}
+
+.toolbarButtonActive {
+  @apply bg-accent text-accent-foreground;
+}
+
+/* Turn Into dropdown trigger */
+.turnIntoTrigger {
+  @apply flex items-center gap-1;
+  @apply h-7 px-1.5;
+  @apply rounded-md whitespace-nowrap;
+  @apply text-muted-foreground;
+
+  transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.turnIntoTrigger:hover {
+  @apply bg-accent/50 text-foreground;
+}
+
+.turnIntoTriggerActive {
+  @apply bg-accent text-accent-foreground;
+}
+
+/* Dropdown menus */
+.dropdown {
+  @apply absolute top-full mt-1 z-50;
+  @apply rounded-lg border border-border;
+  @apply bg-popover p-1.5;
+  @apply flex flex-col gap-0.5;
+
+  animation: menuIn 0.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.dropdownItem {
+  @apply flex w-full items-center justify-between;
+  @apply px-1.5 py-1 text-[13px] text-left;
+  @apply rounded-md;
+
+  transition: all 100ms ease;
+}
+
+.dropdownItem:hover {
+  @apply bg-accent/70;
+}
+
+.dropdownItemSelected {
+  @apply bg-accent;
+}
+
+/* Separator */
+.separator {
+  @apply h-5 w-px;
+  @apply mx-1;
+  @apply bg-border/60;
+}
+
+/* Color picker */
+.colorSection {
+  @apply px-2 py-1;
+}
+
+.colorSectionTitle {
+  @apply text-[10px] font-medium uppercase tracking-wider;
+  @apply text-muted-foreground/70;
+  @apply mb-1.5;
+}
+
+.colorGrid {
+  @apply flex flex-wrap gap-1;
+}
+
+.colorButton {
+  @apply w-5 h-5; /* Increased from w-4 h-4 */
+  @apply rounded-md;
+  @apply border-2 border-transparent;
+
+  transition: all 100ms ease;
+}
+
+.colorButton:hover {
+  transform: scale(1.1);
+  @apply border-foreground/20;
+}
+
+.colorButton:focus-visible {
+  @apply outline-none;
+  @apply ring-2 ring-primary/50 ring-offset-1;
+}
+
+.colorButtonActive {
+  @apply border-foreground/50;
+}
+
+/* Link input */
+.linkInput {
+  @apply flex-1 h-7 px-2;
+  @apply rounded-md border border-input;
+  @apply bg-transparent text-sm;
+
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.linkInput:focus {
+  @apply outline-none;
+  @apply border-primary;
+}
+
+/* More menu delete button */
+.deleteButton {
+  @apply text-destructive;
+}
+
+.deleteButton:hover {
+  @apply bg-destructive/15;
+}

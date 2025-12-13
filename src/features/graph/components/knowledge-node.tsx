@@ -1,7 +1,7 @@
 import { Handle, Position } from '@xyflow/react'
 import { memo } from 'react'
 import type { Node } from '@/entities/map'
-import { getComplexityColor, getNodeBgColor, getNodeBorderColor, getNodeIcon } from '@/entities/node'
+import { getComplexityColor, getNodeBorderColor, getNodeIcon } from '@/entities/node'
 import { Badge } from '@/shared/components/badge'
 import { Card } from '@/shared/components/card'
 import { cn } from '@/shared/lib/cn'
@@ -74,12 +74,8 @@ const KnowledgeNodeComponent = ({ data }: KnowledgeNodeProps) => {
         {/* Tags - under title, LOD: hidden at low zoom */}
         {showDetails && data.metadata.tags?.length > 0 && (
           <div className='flex flex-wrap gap-1.5 mt-2'>
-            {data.metadata.tags.slice(0, 3).map((tag) => (
-              <Badge
-                key={tag}
-                variant='outline'
-                className='text-xs pointer-events-none'
-              >
+            {data.metadata.tags.slice(0, 3).map(tag => (
+              <Badge key={tag} variant='outline' className='text-xs pointer-events-none'>
                 {tag}
               </Badge>
             ))}
@@ -125,8 +121,7 @@ export const KnowledgeNode = memo(KnowledgeNodeComponent, (prevProps, nextProps)
   const nextTags = nextData.metadata?.tags
   const tagsEqual =
     prevTags === nextTags ||
-    (prevTags?.length === nextTags?.length &&
-      prevTags?.every((t, i) => t === nextTags?.[i]))
+    (prevTags?.length === nextTags?.length && prevTags?.every((t, i) => t === nextTags?.[i]))
 
   return (
     prevProps.id === nextProps.id &&

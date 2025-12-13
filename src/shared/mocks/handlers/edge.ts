@@ -12,8 +12,8 @@ export const edgeHandlers = [
     await delay(150)
 
     const url = new URL(request.url)
-    const limit = parseInt(url.searchParams.get('limit') || '100')
-    const offset = parseInt(url.searchParams.get('offset') || '0')
+    const limit = parseInt(url.searchParams.get('limit') || '100', 10)
+    const offset = parseInt(url.searchParams.get('offset') || '0', 10)
 
     const mapEdges = edges.filter(e => e.mapId === params.mapId)
     const paginatedEdges = mapEdges.slice(offset, offset + limit)

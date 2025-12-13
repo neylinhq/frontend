@@ -146,13 +146,17 @@ export const createExtensions = (placeholder?: string) => [
 
           // Find the top-level block node
           const depth = $from.depth
-          if (depth === 0) return false
+          if (depth === 0) {
+            return false
+          }
 
           const blockStart = $from.before(1)
           const blockEnd = $from.after(1)
           const blockNode = state.doc.nodeAt(blockStart)
 
-          if (!blockNode) return false
+          if (!blockNode) {
+            return false
+          }
 
           // Insert duplicate after the current block
           editor.chain().focus().insertContentAt(blockEnd, blockNode.toJSON()).run()
@@ -165,19 +169,27 @@ export const createExtensions = (placeholder?: string) => [
           const { selection } = state
           const { $from } = selection
 
-          if ($from.depth === 0) return false
+          if ($from.depth === 0) {
+            return false
+          }
 
           const blockStart = $from.before(1)
-          if (blockStart === 0) return false // Already at top
+          if (blockStart === 0) {
+            return false // Already at top
+          }
 
           const blockNode = state.doc.nodeAt(blockStart)
-          if (!blockNode) return false
+          if (!blockNode) {
+            return false
+          }
 
           const blockEnd = $from.after(1)
 
           // Find previous block
           const $prevPos = state.doc.resolve(blockStart - 1)
-          if ($prevPos.depth === 0) return false
+          if ($prevPos.depth === 0) {
+            return false
+          }
 
           const prevBlockStart = $prevPos.before(1)
 
@@ -201,19 +213,27 @@ export const createExtensions = (placeholder?: string) => [
           const { selection } = state
           const { $from } = selection
 
-          if ($from.depth === 0) return false
+          if ($from.depth === 0) {
+            return false
+          }
 
           const blockStart = $from.before(1)
           const blockEnd = $from.after(1)
           const blockNode = state.doc.nodeAt(blockStart)
 
-          if (!blockNode) return false
+          if (!blockNode) {
+            return false
+          }
 
           // Check if there's a next block
-          if (blockEnd >= state.doc.content.size) return false
+          if (blockEnd >= state.doc.content.size) {
+            return false
+          }
 
           const $nextPos = state.doc.resolve(blockEnd + 1)
-          if ($nextPos.depth === 0) return false
+          if ($nextPos.depth === 0) {
+            return false
+          }
 
           const nextBlockEnd = $nextPos.after(1)
 

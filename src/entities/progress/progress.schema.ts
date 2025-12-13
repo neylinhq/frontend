@@ -4,12 +4,7 @@ import { z } from 'zod'
 // USER NODE PROGRESS
 // =====================
 
-export const MasteryLevelEnum = z.enum([
-  'not_started',
-  'learning',
-  'practicing',
-  'mastered'
-])
+export const MasteryLevelEnum = z.enum(['not_started', 'learning', 'practicing', 'mastered'])
 
 export type MasteryLevel = z.infer<typeof MasteryLevelEnum>
 
@@ -40,7 +35,10 @@ export const UserNodeProgressSchema = z.object({
 export type UserNodeProgress = z.infer<typeof UserNodeProgressSchema>
 
 // Default progress for nodes without explicit progress
-export const DEFAULT_NODE_PROGRESS: Omit<UserNodeProgress, 'id' | 'userId' | 'nodeId' | 'createdAt' | 'updatedAt'> = {
+export const DEFAULT_NODE_PROGRESS: Omit<
+  UserNodeProgress,
+  'id' | 'userId' | 'nodeId' | 'createdAt' | 'updatedAt'
+> = {
   confidence: 0,
   masteryLevel: 'not_started',
   lastReviewedAt: null,

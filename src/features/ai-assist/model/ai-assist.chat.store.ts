@@ -38,7 +38,9 @@ interface ChatHistoryActions {
 const customStorage = {
   getItem: (name: string) => {
     const str = localStorage.getItem(name)
-    if (!str) return null
+    if (!str) {
+      return null
+    }
     try {
       const parsed = JSON.parse(str)
       // Revive Date objects in messages
@@ -105,7 +107,9 @@ export const useChatHistoryStore = create<ChatHistoryState & ChatHistoryActions>
       updateMessage: (sessionId: string, messageId: string, updates: Partial<ChatMessage>) => {
         set(state => {
           const session = state.sessions[sessionId]
-          if (!session) return state
+          if (!session) {
+            return state
+          }
 
           return {
             sessions: {
@@ -125,7 +129,9 @@ export const useChatHistoryStore = create<ChatHistoryState & ChatHistoryActions>
       removePreview: (sessionId: string, messageId: string, previewId: string) => {
         set(state => {
           const session = state.sessions[sessionId]
-          if (!session) return state
+          if (!session) {
+            return state
+          }
 
           return {
             sessions: {
@@ -133,7 +139,9 @@ export const useChatHistoryStore = create<ChatHistoryState & ChatHistoryActions>
               [sessionId]: {
                 ...session,
                 messages: session.messages.map(msg => {
-                  if (msg.id !== messageId) return msg
+                  if (msg.id !== messageId) {
+                    return msg
+                  }
                   return {
                     ...msg,
                     preview: msg.preview?.filter(p => p.id !== previewId)
@@ -155,7 +163,9 @@ export const useChatHistoryStore = create<ChatHistoryState & ChatHistoryActions>
       ) => {
         set(state => {
           const session = state.sessions[sessionId]
-          if (!session) return state
+          if (!session) {
+            return state
+          }
 
           return {
             sessions: {
@@ -163,10 +173,14 @@ export const useChatHistoryStore = create<ChatHistoryState & ChatHistoryActions>
               [sessionId]: {
                 ...session,
                 messages: session.messages.map(msg => {
-                  if (msg.id !== messageId || !msg.preview) return msg
+                  if (msg.id !== messageId || !msg.preview) {
+                    return msg
+                  }
 
                   const preview = msg.preview.find(p => p.id === previewId)
-                  if (!preview) return msg
+                  if (!preview) {
+                    return msg
+                  }
 
                   const resolvedPreview: ResolvedPreview = {
                     ...preview,
@@ -191,7 +205,9 @@ export const useChatHistoryStore = create<ChatHistoryState & ChatHistoryActions>
       undoResolved: (sessionId: string, messageId: string, previewId: string) => {
         set(state => {
           const session = state.sessions[sessionId]
-          if (!session) return state
+          if (!session) {
+            return state
+          }
 
           return {
             sessions: {
@@ -199,10 +215,14 @@ export const useChatHistoryStore = create<ChatHistoryState & ChatHistoryActions>
               [sessionId]: {
                 ...session,
                 messages: session.messages.map(msg => {
-                  if (msg.id !== messageId || !msg.resolvedPreviews) return msg
+                  if (msg.id !== messageId || !msg.resolvedPreviews) {
+                    return msg
+                  }
 
                   const resolved = msg.resolvedPreviews.find(p => p.id === previewId)
-                  if (!resolved) return msg
+                  if (!resolved) {
+                    return msg
+                  }
 
                   // Move back to pending
                   const pendingPreview = {
@@ -228,10 +248,14 @@ export const useChatHistoryStore = create<ChatHistoryState & ChatHistoryActions>
       truncateFromMessage: (sessionId: string, messageId: string) => {
         set(state => {
           const session = state.sessions[sessionId]
-          if (!session) return state
+          if (!session) {
+            return state
+          }
 
           const messageIndex = session.messages.findIndex(m => m.id === messageId)
-          if (messageIndex === -1) return state
+          if (messageIndex === -1) {
+            return state
+          }
 
           // Remove this message and all subsequent messages
           return {
@@ -295,16 +319,14 @@ export const useChatHistory = (sessionId: string) => {
     addMessage: (msg: ChatMessage) => addMessage(sessionId, msg),
     updateMessage: (msgId: string, updates: Partial<ChatMessage>) =>
       updateMessage(sessionId, msgId, updates),
-    removePreview: (msgId: string, previewId: string) =>
-      removePreview(sessionId, msgId, previewId),
+    removePreview: (msgId: string, previewId: string) => removePreview(sessionId, msgId, previewId),
     moveToResolved: (
       msgId: string,
       previewId: string,
       status: 'approved' | 'rejected',
       undoData?: ResolvedPreview['undoData']
     ) => moveToResolved(sessionId, msgId, previewId, status, undoData),
-    undoResolved: (msgId: string, previewId: string) =>
-      undoResolved(sessionId, msgId, previewId),
+    undoResolved: (msgId: string, previewId: string) => undoResolved(sessionId, msgId, previewId),
     clearSession: () => clearSession(sessionId)
   }
 }

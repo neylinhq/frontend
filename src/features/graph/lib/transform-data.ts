@@ -16,22 +16,11 @@ interface TransformNodesOptions {
  * PERFORMANCE: zoom is passed to each node via data prop
  * to avoid useViewport() subscription in each KnowledgeNode component.
  */
-export const transformNodesToFlow = (
-  nodes: Node[],
-  options: TransformNodesOptions = {}
-) => {
-  const {
-    selectedNodeIds = [],
-    onSelect,
-    focusedNodeId,
-    animated,
-    zoom = 1
-  } = options
+export const transformNodesToFlow = (nodes: Node[], options: TransformNodesOptions = {}) => {
+  const { selectedNodeIds = [], onSelect, focusedNodeId, animated, zoom = 1 } = options
 
   // Convert to Set for O(1) lookup if array passed
-  const selectedSet = selectedNodeIds instanceof Set
-    ? selectedNodeIds
-    : new Set(selectedNodeIds)
+  const selectedSet = selectedNodeIds instanceof Set ? selectedNodeIds : new Set(selectedNodeIds)
 
   return nodes.map(node => ({
     id: node.id,
@@ -67,21 +56,11 @@ interface TransformEdgesOptions {
  * - translations passed via data prop (avoids useTranslation() per edge)
  * - onStartEditing callback passed (avoids store subscription per edge)
  */
-export const transformEdgesToFlow = (
-  edges: Edge[],
-  options: TransformEdgesOptions = {}
-) => {
-  const {
-    selectedEdgeIds = [],
-    zoom = 1,
-    translations,
-    onStartEditing
-  } = options
+export const transformEdgesToFlow = (edges: Edge[], options: TransformEdgesOptions = {}) => {
+  const { selectedEdgeIds = [], zoom = 1, translations, onStartEditing } = options
 
   // Convert to Set for O(1) lookup if array passed
-  const selectedSet = selectedEdgeIds instanceof Set
-    ? selectedEdgeIds
-    : new Set(selectedEdgeIds)
+  const selectedSet = selectedEdgeIds instanceof Set ? selectedEdgeIds : new Set(selectedEdgeIds)
 
   return edges.map(edge => ({
     id: edge.id,

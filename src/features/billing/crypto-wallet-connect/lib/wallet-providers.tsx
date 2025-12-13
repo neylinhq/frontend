@@ -1,13 +1,35 @@
 'use client'
 
 import { type ReactNode, useEffect, useState } from 'react'
+import { http, createConfig, WagmiProvider } from 'wagmi'
+import { mainnet, bsc, polygon } from 'wagmi/chains'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { WalletProvider as TronWalletProvider } from '@tronweb3/tronwallet-adapter-react-hooks'
+import { TronLinkAdapter } from '@tronweb3/tronwallet-adapters'
+
+// Wagmi config for EVM networks
+const wagmiConfig = createConfig({
+  chains: [mainnet, bsc, polygon],
+  transports: {
+    [mainnet.id]: http(),
+    [bsc.id]: http(),
+    [polygon.id]: http()
+  }
+})
+
+// QueryClient for wagmi
+const queryClient = new QueryClient()
+
+// Tron adapters
+const tronAdapters = [new TronLinkAdapter()]
 
 interface WalletProvidersProps {
   children: ReactNode
 }
 
 /**
- * Провайдеры для TON Connect
+ * Провайдеры для всех крипто кошельков
+ * TON Connect, EVM (wagmi), Tron
  * Lazy-load чтобы избежать SSR проблем с window
  */
 export const WalletProviders = ({ children }: WalletProvidersProps) => {
@@ -22,7 +44,15 @@ export const WalletProviders = ({ children }: WalletProvidersProps) => {
     return <>{children}</>
   }
 
-  return <TonProvider>{children}</TonProvider>
+  return (
+    <QueryClientProvider client={queryClient}>
+      <WagmiProvider config={wagmiConfig}>
+        <TronWalletProvider adapters={tronAdapters} autoConnect={false}>
+          <TonProvider>{children}</TonProvider>
+        </TronWalletProvider>
+      </WagmiProvider>
+    </QueryClientProvider>
+  )
 }
 
 // Отдельный компонент для TON Connect чтобы lazy-load его
@@ -34,7 +64,7 @@ const TonProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     // Dynamic import для client-only библиотеки
     import('@tonconnect/ui-react')
-      .then((tonModule) => {
+      .then(tonModule => {
         setProvider({
           TonConnectUIProvider: tonModule.TonConnectUIProvider
         })
@@ -51,8 +81,6 @@ const TonProvider = ({ children }: { children: ReactNode }) => {
   const { TonConnectUIProvider } = Provider
 
   return (
-    <TonConnectUIProvider manifestUrl='/tonconnect-manifest.json'>
-      {children}
-    </TonConnectUIProvider>
+    <TonConnectUIProvider manifestUrl='/tonconnect-manifest.json'>{children}</TonConnectUIProvider>
   )
 }

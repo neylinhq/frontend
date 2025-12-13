@@ -2,7 +2,7 @@
  * Theme Bridge - Extract CSS variables and convert to WASM-compatible format
  *
  * Extracts theme colors from CSS custom properties and converts them
- * from HSL to RGB for use in WebGL shaders.
+ * from OKLCH to RGB for use in WebGL shaders.
  */
 
 export interface ThemeColors {
@@ -19,43 +19,51 @@ export interface ThemeColors {
 }
 
 /**
- * Convert HSL string to RGBA array
- * Input format: "217 91% 60%" (shadcn format without commas)
+ * Convert OKLCH string to RGBA array
+ * Input format: "0.55 0.17 250" (L C H without units)
  */
-function hslToRgba(hslString: string, alpha = 1): [number, number, number, number] {
-  const parts = hslString.trim().split(/\s+/)
+function oklchToRgba(oklchString: string, alpha = 1): [number, number, number, number] {
+  const parts = oklchString.trim().split(/\s+/)
   if (parts.length < 3) {
-    console.warn(`Invalid HSL string: "${hslString}", using fallback`)
+    console.warn(`Invalid OKLCH string: "${oklchString}", using fallback`)
     return [0.5, 0.5, 0.5, alpha]
   }
 
-  const h = parseFloat(parts[0]) / 360
-  const s = parseFloat(parts[1].replace('%', '')) / 100
-  const l = parseFloat(parts[2].replace('%', '')) / 100
+  const L = parseFloat(parts[0])
+  const C = parseFloat(parts[1])
+  const H = parseFloat(parts[2])
 
-  let r: number, g: number, b: number
+  // OKLCH to OKLab
+  const hRad = (H * Math.PI) / 180
+  const a = C * Math.cos(hRad)
+  const b = C * Math.sin(hRad)
 
-  if (s === 0) {
-    r = g = b = l
-  } else {
-    const hue2rgb = (p: number, q: number, t: number) => {
-      if (t < 0) t += 1
-      if (t > 1) t -= 1
-      if (t < 1 / 6) return p + (q - p) * 6 * t
-      if (t < 1 / 2) return q
-      if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6
-      return p
-    }
+  // OKLab to linear RGB via LMS
+  const l_ = L + 0.3963377774 * a + 0.2158037573 * b
+  const m_ = L - 0.1055613458 * a - 0.0638541728 * b
+  const s_ = L - 0.0894841775 * a - 1.291485548 * b
 
-    const q = l < 0.5 ? l * (1 + s) : l + s - l * s
-    const p = 2 * l - q
+  const l = l_ * l_ * l_
+  const m = m_ * m_ * m_
+  const s = s_ * s_ * s_
 
-    r = hue2rgb(p, q, h + 1 / 3)
-    g = hue2rgb(p, q, h)
-    b = hue2rgb(p, q, h - 1 / 3)
+  // Linear RGB
+  let rLin = +4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s
+  let gLin = -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s
+  let bLin = -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s
+
+  // Linear to sRGB gamma correction
+  const toSrgb = (x: number) => {
+    if (x <= 0) return 0
+    if (x >= 1) return 1
+    return x <= 0.0031308 ? 12.92 * x : 1.055 * Math.pow(x, 1 / 2.4) - 0.055
   }
 
-  return [r, g, b, alpha]
+  const r = toSrgb(rLin)
+  const g = toSrgb(gLin)
+  const bVal = toSrgb(bLin)
+
+  return [r, g, bVal, alpha]
 }
 
 /**
@@ -76,32 +84,32 @@ export function extractThemeColors(): ThemeColors {
   // Card colors - use --popover for graph nodes as it's slightly lighter than --card
   // In most themes, --card === --background which makes nodes invisible
   const cardBgRaw = getCssVar('--popover') || getCssVar('--card')
-  const cardBg = cardBgRaw || (isDark ? '0 0% 12%' : '0 0% 100%')
+  const cardBg = cardBgRaw || (isDark ? '0.19 0 0' : '0.995 0 0')
 
-  const cardFg = getCssVar('--card-foreground') || '0 0% 98%'
-  const border = getCssVar('--border') || '0 0% 15%'
-  const background = getCssVar('--background') || '0 0% 4%'
+  const cardFg = getCssVar('--card-foreground') || (isDark ? '0.93 0 0' : '0.12 0 0')
+  const border = getCssVar('--border') || (isDark ? '0.28 0 0' : '0.91 0 0')
+  const background = getCssVar('--background') || (isDark ? '0.16 0 0' : '0.99 0 0')
 
-  // Semantic colors - try to get from CSS, fallback to defaults
-  const knowledge = getCssVar('--semantic-knowledge') || '217 91% 60%'   // blue
-  const fact = getCssVar('--semantic-fact') || '142 71% 45%'             // green
-  const question = getCssVar('--semantic-question') || '38 92% 50%'      // amber
-  const example = getCssVar('--semantic-example') || '270 67% 47%'       // purple
+  // Semantic colors - try to get from CSS, fallback to defaults (OKLCH)
+  const knowledge = getCssVar('--semantic-knowledge') || '0.55 0.17 250' // blue
+  const fact = getCssVar('--semantic-fact') || '0.58 0.17 145' // green
+  const question = getCssVar('--semantic-question') || '0.55 0.19 290' // purple
+  const example = getCssVar('--semantic-example') || '0.70 0.15 70' // amber
 
   // UI colors
-  const primary = getCssVar('--primary') || '217 91% 60%'
+  const primary = getCssVar('--primary') || (isDark ? '0.95 0 0' : '0.12 0 0')
 
   return {
-    card_bg: hslToRgba(cardBg),
-    card_fg: hslToRgba(cardFg),
-    border: hslToRgba(border),
-    background: hslToRgba(background),
-    knowledge: hslToRgba(knowledge),
-    fact: hslToRgba(fact),
-    question: hslToRgba(question),
-    example: hslToRgba(example),
-    primary: hslToRgba(primary),
-    glow: hslToRgba(primary, 0.5), // Glow with 50% alpha
+    card_bg: oklchToRgba(cardBg),
+    card_fg: oklchToRgba(cardFg),
+    border: oklchToRgba(border),
+    background: oklchToRgba(background),
+    knowledge: oklchToRgba(knowledge),
+    fact: oklchToRgba(fact),
+    question: oklchToRgba(question),
+    example: oklchToRgba(example),
+    primary: oklchToRgba(primary),
+    glow: oklchToRgba(primary, 0.5) // Glow with 50% alpha
   }
 }
 

@@ -1,6 +1,6 @@
 import { redirect } from 'react-router'
 import { API_URL } from '@/shared/config/env'
-import { getSession, commitSession } from './session.server'
+import { commitSession, getSession } from './session.server'
 import type { SessionData } from './session.types'
 
 interface RefreshResult {

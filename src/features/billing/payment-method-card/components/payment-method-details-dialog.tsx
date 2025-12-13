@@ -1,14 +1,12 @@
 import { Check, Copy, Pencil, Star, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { toast } from '@/shared/components/toast'
 import type { PaymentMethod, UpdatePaymentMethodInput } from '@/entities/subscription'
 import {
   getCurrencyDisplayName,
   getNetworkDisplayName,
   isValidWalletAddress
 } from '@/entities/subscription'
-import { useCopyToClipboard } from '@/shared/lib/use-copy-to-clipboard'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,6 +24,7 @@ import { cryptoIcons, Icon } from '@/shared/components/icon'
 import { Input } from '@/shared/components/input'
 import { Label } from '@/shared/components/label'
 import type { CardBrand } from '@/shared/lib/card-utils'
+import { useCopyToClipboard } from '@/shared/lib/use-copy-to-clipboard'
 
 interface PaymentMethodDetailsDialogProps {
   method: PaymentMethod | null
@@ -248,7 +247,11 @@ export const PaymentMethodDetailsDialog = ({
               {method.walletAddress}
             </span>
             <Button variant='ghost' size='sm' onClick={handleCopyAddress} className='h-8'>
-              {copied ? <Check className='h-4 w-4 mr-2 text-success' /> : <Copy className='h-4 w-4 mr-2' />}
+              {copied ? (
+                <Check className='h-4 w-4 mr-2 text-success' />
+              ) : (
+                <Copy className='h-4 w-4 mr-2' />
+              )}
               {copied ? t('common.copied') : t('billing.copyAddress')}
             </Button>
           </div>

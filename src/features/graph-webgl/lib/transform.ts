@@ -2,8 +2,8 @@
  * Data transformation utilities for WASM
  */
 
-import type { Node, Edge } from './types'
 import { ComplexityEnum } from '@/entities/node'
+import type { Edge, Node } from './types'
 
 // Valid complexity values from single source of truth
 const VALID_COMPLEXITY = ComplexityEnum.options
@@ -13,7 +13,9 @@ const VALID_COMPLEXITY = ComplexityEnum.options
  * WASM/Rust uses strict enums that don't accept empty strings
  */
 function sanitizeMetadata(metadata: Node['metadata']): Record<string, unknown> | undefined {
-  if (!metadata) return undefined
+  if (!metadata) {
+    return undefined
+  }
 
   const result: Record<string, unknown> = {}
 
@@ -42,7 +44,7 @@ interface WasmNode {
   mapId: string
   label: string
   description?: string
-  type: string  // NodeType enum in Rust
+  type: string // NodeType enum in Rust
   position: { x: number; y: number }
   metadata?: Record<string, unknown>
 }
@@ -72,7 +74,7 @@ export function transformToWasm(nodes: Node[], edges: Edge[]): string {
       mapId: node.mapId,
       label: node.label,
       type: node.type,
-      position: node.position || { x: 0, y: 0 },
+      position: node.position || { x: 0, y: 0 }
     }
 
     // Only add optional fields if they have values
@@ -94,7 +96,7 @@ export function transformToWasm(nodes: Node[], edges: Edge[]): string {
       mapId: edge.mapId,
       sourceNodeId: edge.sourceNodeId,
       targetNodeId: edge.targetNodeId,
-      relationType: edge.relationType || 'related-to',
+      relationType: edge.relationType || 'related-to'
     }
 
     // Only add optional fields if they have values
@@ -113,7 +115,7 @@ export function transformToWasm(nodes: Node[], edges: Edge[]): string {
 
   const data = {
     nodes: wasmNodes,
-    edges: wasmEdges,
+    edges: wasmEdges
   }
 
   return JSON.stringify(data)
@@ -122,9 +124,7 @@ export function transformToWasm(nodes: Node[], edges: Edge[]): string {
 /**
  * Transform position data from WASM back to frontend format
  */
-export function transformPositions(
-  positionsJson: string
-): Map<string, { x: number; y: number }> {
+export function transformPositions(positionsJson: string): Map<string, { x: number; y: number }> {
   const positions = JSON.parse(positionsJson) as Array<{
     id: string
     x: number
@@ -142,10 +142,7 @@ export function transformPositions(
 /**
  * Apply positions from WASM to frontend nodes
  */
-export function applyPositions(
-  nodes: Node[],
-  positionsJson: string
-): Node[] {
+export function applyPositions(nodes: Node[], positionsJson: string): Node[] {
   const positions = transformPositions(positionsJson)
 
   return nodes.map(node => {
@@ -153,7 +150,7 @@ export function applyPositions(
     if (pos) {
       return {
         ...node,
-        position: { x: pos.x, y: pos.y },
+        position: { x: pos.x, y: pos.y }
       }
     }
     return node
@@ -194,6 +191,6 @@ export function layoutOptionsToWasm(options: {
     coolingFactor: options.coolingFactor ?? 0.97,
     theta: options.theta ?? 0.9,
     ignoreExistingPositions: options.ignoreExistingPositions ?? false,
-    focusedNodeId: options.focusedNodeId,
+    focusedNodeId: options.focusedNodeId
   })
 }

@@ -19,9 +19,7 @@ export const useLoaderUser = (): User | null => {
   const matches = useMatches()
 
   // Находим любой match с user в data (dashboard layout загружает user)
-  const matchWithUser = matches.find(
-    match => (match.data as LoaderDataWithUser)?.user
-  )
+  const matchWithUser = matches.find(match => (match.data as LoaderDataWithUser)?.user)
 
   return (matchWithUser?.data as LoaderDataWithUser)?.user ?? null
 }

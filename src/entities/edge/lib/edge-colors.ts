@@ -8,16 +8,16 @@ import type { RelationType } from '../model/edge.schema'
 
 // CSS variable for SVG stroke - each type has unique color
 export const EDGE_STROKE_COLORS: Record<RelationType, string> = {
-  prerequisite: 'hsl(var(--edge-prerequisite))',
-  causes: 'hsl(var(--edge-causes))',
-  explains: 'hsl(var(--edge-explains))',
-  'is-a': 'hsl(var(--edge-is-a))',
-  'has-a': 'hsl(var(--edge-has-a))',
-  'part-of': 'hsl(var(--edge-part-of))',
-  influences: 'hsl(var(--edge-influences))',
-  'related-to': 'hsl(var(--edge-related-to))',
-  contradicts: 'hsl(var(--edge-contradicts))',
-  'similar-to': 'hsl(var(--edge-similar-to))'
+  prerequisite: 'oklch(var(--edge-prerequisite))',
+  causes: 'oklch(var(--edge-causes))',
+  explains: 'oklch(var(--edge-explains))',
+  'is-a': 'oklch(var(--edge-is-a))',
+  'has-a': 'oklch(var(--edge-has-a))',
+  'part-of': 'oklch(var(--edge-part-of))',
+  influences: 'oklch(var(--edge-influences))',
+  'related-to': 'oklch(var(--edge-related-to))',
+  contradicts: 'oklch(var(--edge-contradicts))',
+  'similar-to': 'oklch(var(--edge-similar-to))'
 }
 
 // Tailwind classes for badge background - using registered edge colors
@@ -77,7 +77,7 @@ export const EDGE_TEXT_CLASSES: Record<RelationType, string> = {
 }
 
 export const getEdgeStrokeColor = (type: RelationType) =>
-  EDGE_STROKE_COLORS[type] || 'hsl(var(--edge-related-to))'
+  EDGE_STROKE_COLORS[type] || 'oklch(var(--edge-related-to))'
 
 export const getEdgeBgClass = (type: RelationType) =>
   EDGE_BG_CLASSES[type] || 'bg-edge-related-to-muted'

@@ -2,9 +2,16 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { v4 as uuidv4 } from 'uuid'
 import { aiApi, type ChatStreamChunk, type ProposalData, useSelectedModel } from '@/entities/ai'
+import { useLoaderUser } from '@/entities/user'
 import { toast } from '@/shared/components/toast'
-import type { ChatMessage, MapChatContext, NodeChatContext, PreviewCard, ResolvedPreview } from '../ai-assist.types'
-import { useChatHistoryStore, getChatSessionId } from '../model/ai-assist.chat.store'
+import type {
+  ChatMessage,
+  MapChatContext,
+  NodeChatContext,
+  PreviewCard,
+  ResolvedPreview
+} from '../ai-assist.types'
+import { getChatSessionId, useChatHistoryStore } from '../model/ai-assist.chat.store'
 import { ChatInput } from './chat-input'
 import { ChatMessageList } from './chat-message-list'
 
@@ -19,7 +26,10 @@ interface AIChatCoreProps {
   placeholderText?: string
   /** Show node/map context toggle. Only relevant in node chat panel. */
   showContextSwitch?: boolean
-  onSavePreview?: (messageId: string, preview: PreviewCard) => Promise<{ previousState: Record<string, unknown>; actionId: string } | void>
+  onSavePreview?: (
+    messageId: string,
+    preview: PreviewCard
+  ) => Promise<{ previousState: Record<string, unknown>; actionId: string } | undefined>
   onUndoPreview?: (preview: ResolvedPreview) => Promise<void>
 }
 
@@ -52,7 +62,9 @@ export const AIChatCore = ({
   const clearSession = useChatHistoryStore(s => s.clearSession)
 
   const handleSendMessage = async (content: string) => {
-    if (!content.trim() || isStreaming) return
+    if (!content.trim() || isStreaming) {
+      return
+    }
 
     const userMessage: ChatMessage = {
       id: uuidv4(),
@@ -147,7 +159,7 @@ export const AIChatCore = ({
         isStreaming: false
       })
       toast.error(t('ai.chat.error'), {
-        description: error instanceof Error ? error.message : 'An error occurred',
+        description: error instanceof Error ? error.message : 'An error occurred'
       })
     } finally {
       setIsStreaming(false)
@@ -247,11 +259,11 @@ export const AIChatCore = ({
   const defaultEmptyMessage = t('ai.chat.noMessages')
 
   return (
-    <div className="flex h-full flex-col">
-      <div className="flex-1 overflow-y-auto px-3 py-3">
+    <div className='flex h-full flex-col'>
+      <div className='flex-1 overflow-y-auto px-3 py-3'>
         {messages.length === 0 ? (
-          <div className="flex h-full items-center justify-center">
-            <p className="max-w-xs text-balance text-center text-xs text-muted-foreground">
+          <div className='flex h-full items-center justify-center'>
+            <p className='max-w-xs text-balance text-center text-xs text-muted-foreground'>
               {emptyStateMessage || defaultEmptyMessage}
             </p>
           </div>
@@ -269,7 +281,7 @@ export const AIChatCore = ({
         )}
       </div>
 
-      <div className="border-t border-border">
+      <div className='border-t border-border'>
         <ChatInput
           value={inputValue}
           onChange={setInputValue}

@@ -1,7 +1,7 @@
 import { BaseEdge, EdgeLabelRenderer, getBezierPath, type Position } from '@xyflow/react'
 import { memo, useCallback } from 'react'
-import type { Edge } from '@/entities/map'
 import { getEdgeTextClass } from '@/entities/edge'
+import type { Edge } from '@/entities/map'
 import { cn } from '@/shared/lib/cn'
 import { getEdgeDashArray, getEdgeStrokeByType, getEdgeWidth } from '../lib/get-edge-style'
 
@@ -62,16 +62,21 @@ export const KnowledgeEdge = memo(
 
     // Calculate perpendicular offset to prevent badge overlap for counter-edges (A→B and B→A)
     // Using deterministic offset based on sourceNodeId vs targetNodeId comparison
-    const labelOffset = data?.sourceNodeId && data?.targetNodeId
-      ? data.sourceNodeId > data.targetNodeId ? -12 : 12
-      : 0
+    const labelOffset =
+      data?.sourceNodeId && data?.targetNodeId
+        ? data.sourceNodeId > data.targetNodeId
+          ? -12
+          : 12
+        : 0
 
     const isSelected = data?.selected ?? false
 
     const handleClick = useCallback(
       (e: React.MouseEvent) => {
         e.stopPropagation()
-        if (!data) return
+        if (!data) {
+          return
+        }
 
         // Use callback from parent instead of store subscription
         data.onStartEditing?.(data, {
@@ -87,8 +92,8 @@ export const KnowledgeEdge = memo(
       return null
     }
 
-    // HSL color for background with opacity
-    const edgeColorHsl = `var(--edge-${data.relationType})`
+    // OKLCH color for background with opacity
+    const edgeColor = `var(--edge-${data.relationType})`
 
     // LOD: At low zoom, increase stroke width for visibility and hide label
     const isLowZoom = zoom < 0.05
@@ -112,39 +117,41 @@ export const KnowledgeEdge = memo(
           }}
         />
 
-        {!isLowZoom && <EdgeLabelRenderer>
-          <button
-            type='button'
-            style={{
-              position: 'absolute',
-              transform: `translate(-50%, -50%) translate(${labelX}px,${labelY + labelOffset}px)`,
-              fontSize: 12,
-              pointerEvents: 'all',
-              backgroundColor: `hsl(${edgeColorHsl} / ${isSelected ? 0.3 : 0.2})`
-            }}
-            className={cn(
-              'nodrag nopan cursor-pointer rounded-md px-2.5 py-0.5 text-xs font-medium transition-colors',
-              getEdgeTextClass(data.relationType)
-            )}
-            onClick={handleClick}
-            onMouseEnter={e => {
-              e.currentTarget.style.backgroundColor = `hsl(${edgeColorHsl} / 0.3)`
-            }}
-            onMouseLeave={e => {
-              if (!isSelected) {
-                e.currentTarget.style.backgroundColor = `hsl(${edgeColorHsl} / 0.2)`
-              }
-            }}
-          >
-            {typeLabel}
-            {data.label && (
-              <>
-                <span className='mx-1.5'>•</span>
-                {data.label}
-              </>
-            )}
-          </button>
-        </EdgeLabelRenderer>}
+        {!isLowZoom && (
+          <EdgeLabelRenderer>
+            <button
+              type='button'
+              style={{
+                position: 'absolute',
+                transform: `translate(-50%, -50%) translate(${labelX}px,${labelY + labelOffset}px)`,
+                fontSize: 12,
+                pointerEvents: 'all',
+                backgroundColor: `oklch(${edgeColor} / ${isSelected ? 0.3 : 0.2})`
+              }}
+              className={cn(
+                'nodrag nopan cursor-pointer rounded-md px-2.5 py-0.5 text-xs font-medium transition-colors',
+                getEdgeTextClass(data.relationType)
+              )}
+              onClick={handleClick}
+              onMouseEnter={e => {
+                e.currentTarget.style.backgroundColor = `oklch(${edgeColor} / 0.3)`
+              }}
+              onMouseLeave={e => {
+                if (!isSelected) {
+                  e.currentTarget.style.backgroundColor = `oklch(${edgeColor} / 0.2)`
+                }
+              }}
+            >
+              {typeLabel}
+              {data.label && (
+                <>
+                  <span className='mx-1.5'>•</span>
+                  {data.label}
+                </>
+              )}
+            </button>
+          </EdgeLabelRenderer>
+        )}
       </>
     )
   }

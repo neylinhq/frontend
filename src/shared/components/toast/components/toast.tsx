@@ -1,6 +1,6 @@
-import * as React from 'react'
 import * as ToastPrimitives from '@radix-ui/react-toast'
 import { X } from 'lucide-react'
+import * as React from 'react'
 import { cn } from '@/shared/lib/cn'
 
 const ToastProvider = ToastPrimitives.Provider
@@ -85,11 +85,7 @@ const ToastTitle = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Title>,
   React.ComponentPropsWithoutRef<typeof ToastPrimitives.Title>
 >(({ className, ...props }, ref) => (
-  <ToastPrimitives.Title
-    ref={ref}
-    className={cn('text-xs font-semibold', className)}
-    {...props}
-  />
+  <ToastPrimitives.Title ref={ref} className={cn('text-xs font-semibold', className)} {...props} />
 ))
 ToastTitle.displayName = ToastPrimitives.Title.displayName
 
@@ -105,4 +101,12 @@ const ToastDescription = React.forwardRef<
 ))
 ToastDescription.displayName = ToastPrimitives.Description.displayName
 
-export { ToastProvider, ToastViewport, Toast, ToastTitle, ToastDescription, ToastClose, ToastAction }
+export {
+  ToastProvider,
+  ToastViewport,
+  Toast,
+  ToastTitle,
+  ToastDescription,
+  ToastClose,
+  ToastAction
+}

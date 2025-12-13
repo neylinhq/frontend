@@ -10,12 +10,7 @@ interface ExercisePreviewProps {
   onEdit?: (data: unknown) => void
 }
 
-export const ExercisePreview = ({
-  data,
-  onRemove,
-  onSave,
-  onEdit
-}: ExercisePreviewProps) => {
+export const ExercisePreview = ({ data, onRemove, onSave, onEdit }: ExercisePreviewProps) => {
   const { t } = useTranslation()
   const exerciseData = data as ExercisePreviewData
 
@@ -25,9 +20,14 @@ export const ExercisePreview = ({
 
   const { exercise, index, total } = exerciseData
 
-  const title = index !== undefined && total !== undefined
-    ? t('ai.preview.exercise', { n: index + 1, total, defaultValue: `Exercise ${index + 1}/${total}` })
-    : t('ai.preview.exerciseNew', 'New exercise')
+  const title =
+    index !== undefined && total !== undefined
+      ? t('ai.preview.exercise', {
+          n: index + 1,
+          total,
+          defaultValue: `Exercise ${index + 1}/${total}`
+        })
+      : t('ai.preview.exerciseNew', 'New exercise')
 
   return (
     <ProposalCard
@@ -44,14 +44,16 @@ export const ExercisePreview = ({
         {/* Options (for quiz type) */}
         {exercise.options && Array.isArray(exercise.options) && (
           <ul className='space-y-1 pl-4'>
-            {exercise.options.map((option: { id?: string; content?: string } | string, idx: number) => (
-              <li
-                key={typeof option === 'object' ? option.id || idx : idx}
-                className='text-xs text-muted-foreground list-disc'
-              >
-                {typeof option === 'object' ? option.content : option}
-              </li>
-            ))}
+            {exercise.options.map(
+              (option: { id?: string; content?: string } | string, idx: number) => (
+                <li
+                  key={typeof option === 'object' ? option.id || idx : idx}
+                  className='text-xs text-muted-foreground list-disc'
+                >
+                  {typeof option === 'object' ? option.content : option}
+                </li>
+              )
+            )}
           </ul>
         )}
 

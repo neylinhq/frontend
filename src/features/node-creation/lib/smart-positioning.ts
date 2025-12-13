@@ -132,10 +132,14 @@ export const calculatePositionNearConnections = (
   existingNodes: FlowNode[],
   minDistance: number = DEFAULT_MIN_DISTANCE
 ): Position | null => {
-  if (connectedNodeIds.length === 0) return null
+  if (connectedNodeIds.length === 0) {
+    return null
+  }
 
   const connectedNodes = existingNodes.filter(n => connectedNodeIds.includes(n.id))
-  if (connectedNodes.length === 0) return null
+  if (connectedNodes.length === 0) {
+    return null
+  }
 
   // Calculate center of mass of connected nodes
   const centerOfConnected = {

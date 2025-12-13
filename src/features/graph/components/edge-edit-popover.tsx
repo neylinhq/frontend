@@ -1,7 +1,7 @@
 import { Trash2 } from 'lucide-react'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { RelationTypeEnum, type RelationType } from '@/entities/edge'
+import { type RelationType, RelationTypeEnum } from '@/entities/edge'
 import { useDeleteEdge, useUpdateEdge } from '@/entities/map'
 import { Button } from '@/shared/components/button'
 import { EdgeTypeButton } from '@/shared/components/edge-type-button'
@@ -21,7 +21,9 @@ export const EdgeEditPopover = memo(({ mapId }: EdgeEditPopoverProps) => {
   const { editingEdge, editPosition, cancelEdgeEditing } = useEdgeManagementStore()
 
   // Local state for editable fields (optimistic UI)
-  const [localRelationType, setLocalRelationType] = useState(editingEdge?.relationType || 'related-to')
+  const [localRelationType, setLocalRelationType] = useState(
+    editingEdge?.relationType || 'related-to'
+  )
   const [localLabel, setLocalLabel] = useState(editingEdge?.label || '')
 
   const updateEdge = useUpdateEdge(mapId || '')
@@ -47,7 +49,7 @@ export const EdgeEditPopover = memo(({ mapId }: EdgeEditPopoverProps) => {
       setLocalRelationType(editingEdge.relationType)
       setLocalLabel(editingEdge.label || '')
     }
-  }, [editingEdge?.id])
+  }, [editingEdge?.id, editingEdge?.label, editingEdge])
 
   // Cleanup debounce timer on unmount
   useEffect(() => {
@@ -60,7 +62,9 @@ export const EdgeEditPopover = memo(({ mapId }: EdgeEditPopoverProps) => {
 
   const handleTypeChange = useCallback(
     (relationType: RelationType) => {
-      if (!editingEdge || !mapId) return
+      if (!editingEdge || !mapId) {
+        return
+      }
       // Optimistic update
       setLocalRelationType(relationType)
       updateEdge.mutate({
@@ -84,7 +88,9 @@ export const EdgeEditPopover = memo(({ mapId }: EdgeEditPopoverProps) => {
       // Set new debounced save - use refs to get current values in callback
       labelSaveTimerRef.current = setTimeout(() => {
         const currentEdge = editingEdgeRef.current
-        if (!currentEdge || !mapId) return
+        if (!currentEdge || !mapId) {
+          return
+        }
 
         const trimmedLabel = value.trim()
         if (trimmedLabel !== (currentEdge.label || '')) {
@@ -99,7 +105,9 @@ export const EdgeEditPopover = memo(({ mapId }: EdgeEditPopoverProps) => {
   )
 
   const handleDelete = useCallback(async () => {
-    if (!editingEdge || !mapId) return
+    if (!editingEdge || !mapId) {
+      return
+    }
 
     try {
       await deleteEdge.mutateAsync(editingEdge.id)
@@ -109,7 +117,9 @@ export const EdgeEditPopover = memo(({ mapId }: EdgeEditPopoverProps) => {
     }
   }, [editingEdge, mapId, deleteEdge, cancelEdgeEditing])
 
-  if (!editingEdge || !editPosition) return null
+  if (!editingEdge || !editPosition) {
+    return null
+  }
 
   return (
     <Popover open={true} onOpenChange={open => !open && cancelEdgeEditing()}>
@@ -143,9 +153,7 @@ export const EdgeEditPopover = memo(({ mapId }: EdgeEditPopoverProps) => {
 
         {/* Label */}
         <div className='mb-4 space-y-2'>
-          <span className='text-xs font-medium text-muted-foreground'>
-            {t('edgeEdit.label')}
-          </span>
+          <span className='text-xs font-medium text-muted-foreground'>{t('edgeEdit.label')}</span>
           <Input
             value={localLabel}
             onChange={e => handleLabelChange(e.target.value)}

@@ -1,4 +1,7 @@
-import type { Node } from '../../map.schema'
+import type { Node } from '@/entities/map'
+import { GRAPH_THEORY_NODES as _gtNodes } from './graph-theory.mock'
+import { NEURAL_NETWORKS_NODES as _nnNodes } from './neural-networks.mock'
+import { PHILOSOPHY_NODES as _philNodes } from './philosophy.mock'
 
 export const GRAPH_THEORY_NODES: Node[] = [
   // Корневой узел + цепочка
@@ -178,7 +181,6 @@ export const GRAPH_THEORY_NODES: Node[] = [
     updatedAt: '2024-03-21T08:14:00Z'
   }
 ]
-import type { Node } from '../../map.schema'
 
 export const NEURAL_NETWORKS_NODES: Node[] = [
   {
@@ -261,7 +263,6 @@ export const NEURAL_NETWORKS_NODES: Node[] = [
     updatedAt: '2024-03-16T10:00:00Z'
   }
 ]
-import type { Node } from '../../map.schema'
 
 export const PHILOSOPHY_NODES: Node[] = [
   // Античная философия
@@ -900,15 +901,5 @@ export const PHILOSOPHY_NODES: Node[] = [
   }
 ]
 
-
 // Combined exports
-import type { Node } from '@/entities/map'
-import { GRAPH_THEORY_NODES } from './graph-theory.mock'
-import { NEURAL_NETWORKS_NODES } from './neural-networks.mock'
-import { PHILOSOPHY_NODES } from './philosophy.mock'
-
-export const ALL_NODES: Node[] = [
-  ...NEURAL_NETWORKS_NODES,
-  ...PHILOSOPHY_NODES,
-  ...GRAPH_THEORY_NODES
-]
+export const ALL_NODES: Node[] = [..._nnNodes, ..._philNodes, ..._gtNodes]

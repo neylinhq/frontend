@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
 import type { MapEntity, MatchedNode } from '@/entities/map'
-import { pluralizeItems } from '@/shared/lib/pluralize'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/shared/components/card'
@@ -17,6 +16,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/shared/components/dropdown-menu'
+import { pluralizeItems } from '@/shared/lib/pluralize'
 
 interface MapCardProps {
   map: MapEntity
@@ -65,9 +65,7 @@ export const MapCard = memo(
               {isOwned ? (
                 <>
                   <DropdownMenuItem asChild>
-                    <Link to={`/dashboard/maps/${map.id}/view`}>
-                      {t('dashboard.mapCard.edit')}
-                    </Link>
+                    <Link to={`/dashboard/maps/${map.id}/view`}>{t('dashboard.mapCard.edit')}</Link>
                   </DropdownMenuItem>
                   {onToggleVisibility && (
                     <DropdownMenuItem onClick={onToggleVisibility}>
@@ -94,9 +92,7 @@ export const MapCard = memo(
               ) : (
                 <>
                   <DropdownMenuItem asChild>
-                    <Link to={`/dashboard/maps/${map.id}/view`}>
-                      {t('dashboard.mapCard.view')}
-                    </Link>
+                    <Link to={`/dashboard/maps/${map.id}/view`}>{t('dashboard.mapCard.view')}</Link>
                   </DropdownMenuItem>
                   {onCopy && (
                     <DropdownMenuItem onClick={onCopy}>

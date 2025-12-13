@@ -57,7 +57,9 @@ export const PaymentHistoryTable = ({ payments }: PaymentHistoryTableProps) => {
       <Card>
         <CardHeader>
           <CardTitle>{t('billing.paymentHistory.title')}</CardTitle>
-          <CardDescription className='text-balance'>{t('billing.paymentHistory.description')}</CardDescription>
+          <CardDescription className='text-balance'>
+            {t('billing.paymentHistory.description')}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <p className='text-sm text-muted-foreground text-center py-8'>
@@ -72,7 +74,9 @@ export const PaymentHistoryTable = ({ payments }: PaymentHistoryTableProps) => {
     <Card>
       <CardHeader>
         <CardTitle>{t('billing.paymentHistory.title')}</CardTitle>
-        <CardDescription className='text-balance'>{t('billing.paymentHistory.description')}</CardDescription>
+        <CardDescription className='text-balance'>
+          {t('billing.paymentHistory.description')}
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <Table>

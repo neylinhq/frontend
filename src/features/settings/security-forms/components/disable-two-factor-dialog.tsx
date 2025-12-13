@@ -1,5 +1,5 @@
 import { Loader2 } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDisableTwoFactor, useSendEmailCode, useTwoFactorStatus } from '@/entities/two-factor'
 import {
@@ -40,43 +40,48 @@ export const DisableTwoFactorDialog = ({ open, onOpenChange }: DisableTwoFactorD
           onSuccess: () => {
             toast.success(t('settings.security.twoFactor.codeSent'))
           },
-          onError: (error) => {
+          onError: error => {
             toast.error(error.message || t('settings.security.twoFactor.sendCodeError'))
           }
         })
       }
     }
-  }, [open])
+  }, [open, isEmailMethod, sendEmailCode.mutate, t])
 
   const handleDisable = (completedCode?: string) => {
     const codeToUse = completedCode || code
-    if (codeToUse.length !== 6) return
+    if (codeToUse.length !== 6) {
+      return
+    }
 
     setHasError(false)
-    disable.mutate({ code: codeToUse }, {
-      onSuccess: () => {
-        toast.success(t('settings.security.twoFactor.disabled'))
-        onOpenChange(false)
-      },
-      onError: (error) => {
-        setHasError(true)
-        setCode('')
-        toast.error(error.message || t('settings.security.twoFactor.disableError'))
+    disable.mutate(
+      { code: codeToUse },
+      {
+        onSuccess: () => {
+          toast.success(t('settings.security.twoFactor.disabled'))
+          onOpenChange(false)
+        },
+        onError: error => {
+          setHasError(true)
+          setCode('')
+          toast.error(error.message || t('settings.security.twoFactor.disableError'))
+        }
       }
-    })
+    )
   }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-sm">
+      <DialogContent className='sm:max-w-sm'>
         <DialogHeader>
           <DialogTitle>{t('settings.security.twoFactor.disableTitle')}</DialogTitle>
-          <DialogDescription className="text-balance">
+          <DialogDescription className='text-balance'>
             {t('settings.security.twoFactor.enterCodeToDisable')}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex justify-center py-4">
+        <div className='flex justify-center py-4'>
           <OtpInput
             value={code}
             onChange={setCode}
@@ -89,8 +94,8 @@ export const DisableTwoFactorDialog = ({ open, onOpenChange }: DisableTwoFactorD
         </div>
 
         {disable.isPending && (
-          <div className="flex justify-center">
-            <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+          <div className='flex justify-center'>
+            <Loader2 className='h-5 w-5 animate-spin text-muted-foreground' />
           </div>
         )}
       </DialogContent>

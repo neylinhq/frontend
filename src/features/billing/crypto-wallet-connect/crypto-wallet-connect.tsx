@@ -1,7 +1,7 @@
 import { ChevronRight, Loader2 } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { CryptoNetwork, PlanType } from '@/entities/subscription'
+import type { CryptoNetwork } from '@/entities/subscription'
 import { Button } from '@/shared/components/button'
 import {
   Dialog,
@@ -12,30 +12,25 @@ import {
   DialogTitle
 } from '@/shared/components/dialog'
 import { cn } from '@/shared/lib/cn'
-import { ConfirmStep } from './components/confirm-step'
 import { NetworkSelector } from './components/network-selector'
 import { WalletConnectStep } from './components/wallet-connect-step'
 import { useCryptoWallet } from './lib/use-crypto-wallet'
 
-type Step = 'network' | 'wallet' | 'confirm'
+type Step = 'network' | 'wallet'
 
-interface CryptoSubscriptionDialogProps {
+interface CryptoWalletConnectDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  planType: PlanType
-  amount: number
-  onSuccess: () => void
+  onSuccess: (network: CryptoNetwork, address: string) => void
 }
 
-interface CryptoSubscriptionDialogContentProps {
-  planType: PlanType
-  amount: number
-  onSuccess: () => void
+interface CryptoWalletConnectContentProps {
+  onSuccess: (network: CryptoNetwork, address: string) => void
   onBack?: () => void
   embedded?: boolean
 }
 
-const STEPS: Step[] = ['network', 'wallet', 'confirm']
+const STEPS: Step[] = ['network', 'wallet']
 
 const StepIndicator = ({ steps, currentStep }: { steps: Step[]; currentStep: Step }) => {
   const { t } = useTranslation()
@@ -43,8 +38,7 @@ const StepIndicator = ({ steps, currentStep }: { steps: Step[]; currentStep: Ste
 
   const labels: Record<Step, string> = {
     network: t('billing.crypto.steps.network'),
-    wallet: t('billing.crypto.steps.wallet'),
-    confirm: t('billing.crypto.steps.confirm')
+    wallet: t('billing.crypto.steps.wallet')
   }
 
   return (
@@ -78,7 +72,7 @@ const StepIndicator = ({ steps, currentStep }: { steps: Step[]; currentStep: Ste
 /**
  * SSR-safe wrapper - only renders the content that uses wallet hooks on client
  */
-export const CryptoSubscriptionDialog = (props: CryptoSubscriptionDialogProps) => {
+export const CryptoWalletConnectDialog = (props: CryptoWalletConnectDialogProps) => {
   const [mounted, setMounted] = useState(false)
   const { t } = useTranslation()
 
@@ -110,11 +104,7 @@ export const CryptoSubscriptionDialog = (props: CryptoSubscriptionDialogProps) =
           <DialogTitle>{t('billing.crypto.title')}</DialogTitle>
           <DialogDescription>{t('billing.crypto.description')}</DialogDescription>
         </DialogHeader>
-        <CryptoSubscriptionDialogContent
-          planType={props.planType}
-          amount={props.amount}
-          onSuccess={props.onSuccess}
-        />
+        <CryptoWalletConnectContent onSuccess={props.onSuccess} />
       </DialogContent>
     </Dialog>
   )
@@ -122,27 +112,23 @@ export const CryptoSubscriptionDialog = (props: CryptoSubscriptionDialogProps) =
 
 /**
  * Inner component that uses wallet hooks - can be used standalone (embedded) or inside dialog
+ * Only handles wallet connection, NOT payment
  */
-export const CryptoSubscriptionDialogContent = ({
-  planType,
-  amount,
+export const CryptoWalletConnectContent = ({
   onSuccess,
   onBack: externalOnBack,
   embedded = false
-}: CryptoSubscriptionDialogContentProps) => {
+}: CryptoWalletConnectContentProps) => {
   const { t } = useTranslation()
   const [mounted, setMounted] = useState(false)
 
   // State
   const [step, setStep] = useState<Step>('network')
   const [network, setNetwork] = useState<CryptoNetwork | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   // Crypto wallet hook - safe to call here, after hydration
   const wallet = useCryptoWallet(network)
-
-  // Transaction state
-  const [isSubscribing, setIsSubscribing] = useState(false)
-  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     setMounted(true)
@@ -152,7 +138,6 @@ export const CryptoSubscriptionDialogContent = ({
   const resetState = useCallback(() => {
     setStep('network')
     setNetwork(null)
-    setIsSubscribing(false)
     setError(null)
   }, [])
 
@@ -164,7 +149,9 @@ export const CryptoSubscriptionDialogContent = ({
 
   // Wallet connection
   const handleConnect = async () => {
-    if (!network) return
+    if (!network) {
+      return
+    }
     setError(null)
 
     try {
@@ -179,27 +166,11 @@ export const CryptoSubscriptionDialogContent = ({
     setError(null)
   }
 
-  // Subscribe
-  const handleSubscribe = async () => {
-    if (!network) return
-
-    setIsSubscribing(true)
-    setError(null)
-
-    try {
-      // Generate order ID (in production this comes from backend)
-      const orderId = crypto.randomUUID()
-
-      // Convert amount to smallest unit (6 decimals for USDT)
-      const amountInSmallestUnit = BigInt(Math.round(amount * 10 ** 6))
-
-      await wallet.subscribe(orderId, amountInSmallestUnit)
-      onSuccess()
+  // Confirm wallet binding
+  const handleConfirm = () => {
+    if (network && wallet.address) {
+      onSuccess(network, wallet.address)
       resetState()
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to subscribe')
-    } finally {
-      setIsSubscribing(false)
     }
   }
 
@@ -210,8 +181,6 @@ export const CryptoSubscriptionDialogContent = ({
         return network !== null
       case 'wallet':
         return wallet.isConnected && wallet.address !== null
-      case 'confirm':
-        return false
     }
   }
 
@@ -232,7 +201,7 @@ export const CryptoSubscriptionDialogContent = ({
     }
   }
 
-  const isLoading = wallet.isConnecting || isSubscribing
+  const isLoading = wallet.isConnecting
 
   // Скрытый элемент-коннектор для управления кошельком
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -271,17 +240,6 @@ export const CryptoSubscriptionDialogContent = ({
             address={wallet.address}
             onConnect={handleConnect}
             onDisconnect={handleDisconnect}
-          />
-        )}
-
-        {step === 'confirm' && network && wallet.address && (
-          <ConfirmStep
-            network={network}
-            address={wallet.address}
-            planType={planType}
-            amount={amount}
-            isSubscribing={isSubscribing}
-            onSubscribe={handleSubscribe}
             error={error}
           />
         )}
@@ -294,9 +252,14 @@ export const CryptoSubscriptionDialogContent = ({
             {t('common.back')}
           </Button>
         )}
-        {step !== 'confirm' && (
+        {step === 'network' && (
           <Button onClick={handleNext} disabled={!canGoNext() || isLoading}>
             {t('common.next')}
+          </Button>
+        )}
+        {step === 'wallet' && (
+          <Button onClick={handleConfirm} disabled={!canGoNext() || isLoading}>
+            {t('billing.addPaymentMethod.submit')}
           </Button>
         )}
       </DialogFooter>

@@ -19,7 +19,8 @@ export const mapKeys = {
   nodes: () => [...mapKeys.all, 'nodes'] as const,
   node: (mapId: string, nodeId: string) => [...mapKeys.nodes(), mapId, nodeId] as const,
   mapNodes: (mapId: string) => [...mapKeys.nodes(), mapId] as const,
-  nodeWithContent: (mapId: string, nodeId: string) => [...mapKeys.nodes(), mapId, nodeId, 'content'] as const,
+  nodeWithContent: (mapId: string, nodeId: string) =>
+    [...mapKeys.nodes(), mapId, nodeId, 'content'] as const,
   edges: () => [...mapKeys.all, 'edges'] as const,
   edge: (mapId: string, edgeId: string) => [...mapKeys.edges(), mapId, edgeId] as const,
   mapEdges: (mapId: string) => [...mapKeys.edges(), mapId] as const,
@@ -94,7 +95,8 @@ export const useUpdateNode = (mapId: string) => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Partial<Node> }) => mapApi.updateNode(mapId, id, data),
+    mutationFn: ({ id, data }: { id: string; data: Partial<Node> }) =>
+      mapApi.updateNode(mapId, id, data),
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: mapKeys.mapNodes(mapId) })
       queryClient.invalidateQueries({ queryKey: mapKeys.fullMap(mapId) })

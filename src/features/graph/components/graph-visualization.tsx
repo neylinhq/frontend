@@ -1,4 +1,5 @@
 import '@xyflow/react/dist/style.css'
+import { useQueryClient } from '@tanstack/react-query'
 import {
   addEdge,
   Background,
@@ -7,7 +8,6 @@ import {
   MiniMap,
   type NodeChange,
   ReactFlow,
-  ReactFlowProvider,
   useEdgesState,
   useNodesState,
   useReactFlow
@@ -15,24 +15,30 @@ import {
 import { Loader2 } from 'lucide-react'
 import { memo, useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useQueryClient } from '@tanstack/react-query'
-import { getEdgeTranslations, type EdgeTranslations } from '../lib/edge-translations'
 import {
   type Edge,
   type FullMap,
   mapKeys,
   type Node,
+  useCreateEdge,
+  useDeleteEdge,
   useFullMap,
   useUpdateNodePosition,
-  useUpdateNodePositions,
-  useCreateEdge,
-  useDeleteEdge
+  useUpdateNodePositions
 } from '@/entities/map'
 import { Card } from '@/shared/components/card'
 import { useDarkMode } from '@/shared/hooks'
 import { cn } from '@/shared/lib/cn'
+import { type EdgeTranslations, getEdgeTranslations } from '../lib/edge-translations'
 import { applyLayout } from '../lib/layout-algorithms-optimized'
 import { transformEdgesToFlow, transformNodesToFlow } from '../lib/transform-data'
+import { useGraphControls } from '../model/graph.controls.hooks'
+import { useFilteredGraphData } from '../model/graph.data.hooks'
+import { useEdgeManagementStore } from '../model/graph.edge.store'
+import { useGraphKeyboard } from '../model/graph.keyboard.hooks'
+import { easeOutCubic, useAnimatedLayout } from '../model/graph.layout.hooks'
+import { useLayoutHistory } from '../model/graph.layout-history.store'
+import { useNodeSelection } from '../model/graph.selection.hooks'
 import {
   layoutEvent,
   useFilters,
@@ -42,13 +48,6 @@ import {
   useViewMode
 } from '../model/graph.store'
 import { useDebouncedZoom } from '../model/graph.zoom.hooks'
-import { useGraphControls } from '../model/graph.controls.hooks'
-import { useFilteredGraphData } from '../model/graph.data.hooks'
-import { useGraphKeyboard } from '../model/graph.keyboard.hooks'
-import { easeOutCubic, useAnimatedLayout } from '../model/graph.layout.hooks'
-import { useLayoutHistory } from '../model/graph.layout-history.store'
-import { useEdgeManagementStore } from '../model/graph.edge.store'
-import { useNodeSelection } from '../model/graph.selection.hooks'
 import { EdgeEditPopover } from './edge-edit-popover'
 import { EdgeTypeSelector } from './edge-type-selector'
 import { GraphToolbar } from './graph-toolbar'
@@ -110,18 +109,23 @@ const GraphVisualizationContent = ({
   // Mutations for persisting positions to DB
   const updatePositionMutation = useUpdateNodePosition(mapId)
   const updatePositionsMutation = useUpdateNodePositions(mapId)
-  const createEdgeMutation = useCreateEdge(mapId)
+  useCreateEdge(mapId)
   const deleteEdgeMutation = useDeleteEdge(mapId)
 
   // Edge management store (needed early for handleEditEdge)
   const { pendingEdge, startEdgeCreation, cancelEdgeCreation, startEdgeEditing } =
     useEdgeManagementStore()
 
-  const { zoomIn, zoomOut, fitView, setCenter, getNode, screenToFlowPosition, getViewport } = useReactFlow()
+  const { zoomIn, zoomOut, fitView, setCenter, getNode, screenToFlowPosition, getViewport } =
+    useReactFlow()
 
   // PERFORMANCE: Debounced zoom for node/edge data updates
   // Updates only after interaction stops, preventing cascade re-renders during pan/zoom
-  const { zoom: debouncedZoom, rawZoom: viewportZoom, isInteracting } = useDebouncedZoom({
+  const {
+    zoom: debouncedZoom,
+    rawZoom: viewportZoom,
+    isInteracting
+  } = useDebouncedZoom({
     debounceMs: 100,
     skipDuringInteraction: true
   })
@@ -200,15 +204,16 @@ const GraphVisualizationContent = ({
   }
 
   // Get filtered data and counts using extracted hook
-  const { filteredData, nodeCountsByType, edgeCountsByType, connectionStats } = useFilteredGraphData({
-    fullMap,
-    visibleNodeTypes,
-    visibleEdgeTypes,
-    connectionRange,
-    viewMode,
-    focusedNodeId,
-    focusDepth
-  })
+  const { filteredData, nodeCountsByType, edgeCountsByType, connectionStats } =
+    useFilteredGraphData({
+      fullMap,
+      visibleNodeTypes,
+      visibleEdgeTypes,
+      connectionRange,
+      viewMode,
+      focusedNodeId,
+      focusDepth
+    })
 
   // Handle node click:
   // - In focus mode → focus on clicked node (change focus target)
@@ -232,9 +237,9 @@ const GraphVisualizationContent = ({
   }, [])
 
   // PERFORMANCE: Stable callback ref for edge editing to avoid re-renders
-  const handleEdgeStartEditingRef = useRef<(edge: Edge, position: { x: number; y: number }) => void>(
-    () => {}
-  )
+  const handleEdgeStartEditingRef = useRef<
+    (edge: Edge, position: { x: number; y: number }) => void
+  >(() => {})
   handleEdgeStartEditingRef.current = startEdgeEditing
 
   const stableHandleEdgeStartEditing = useCallback(
@@ -253,7 +258,13 @@ const GraphVisualizationContent = ({
       focusedNodeId,
       zoom: debouncedZoom
     })
-  }, [filteredData.nodes, selectedElements.nodes, stableHandleNodeClick, focusedNodeId, debouncedZoom])
+  }, [
+    filteredData.nodes,
+    selectedElements.nodes,
+    stableHandleNodeClick,
+    focusedNodeId,
+    debouncedZoom
+  ])
 
   // Transform edges for XYFlow
   // PERFORMANCE: Pass debounced zoom, translations, and callback via data prop
@@ -264,7 +275,13 @@ const GraphVisualizationContent = ({
       translations: edgeTranslations,
       onStartEditing: stableHandleEdgeStartEditing
     })
-  }, [filteredData.edges, selectedElements.edges, debouncedZoom, edgeTranslations, stableHandleEdgeStartEditing])
+  }, [
+    filteredData.edges,
+    selectedElements.edges,
+    debouncedZoom,
+    edgeTranslations,
+    stableHandleEdgeStartEditing
+  ])
 
   const [reactFlowNodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [reactFlowEdges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
@@ -398,10 +415,13 @@ const GraphVisualizationContent = ({
       layoutAppliedRef.current = true
 
       // Check if nodes already have valid spread positions from backend
-      const hasValidPositions = initialNodes.some(n => n.position.x !== 0 || n.position.y !== 0) &&
+      const hasValidPositions =
+        initialNodes.some(n => n.position.x !== 0 || n.position.y !== 0) &&
         (() => {
-          let minX = Infinity, maxX = -Infinity
-          let minY = Infinity, maxY = -Infinity
+          let minX = Infinity,
+            maxX = -Infinity
+          let minY = Infinity,
+            maxY = -Infinity
           for (const n of initialNodes) {
             minX = Math.min(minX, n.position.x)
             maxX = Math.max(maxX, n.position.x)
@@ -561,13 +581,17 @@ const GraphVisualizationContent = ({
       const sourceNode = fullMap?.nodes.find(n => n.id === params.source)
       const targetNode = fullMap?.nodes.find(n => n.id === params.target)
 
-      if (!sourceNode || !targetNode) return
+      if (!sourceNode || !targetNode) {
+        return
+      }
 
       // Find flow nodes to calculate position
       const sourceFlowNode = reactFlowNodes.find(n => n.id === params.source)
       const targetFlowNode = reactFlowNodes.find(n => n.id === params.target)
 
-      if (!sourceFlowNode || !targetFlowNode) return
+      if (!sourceFlowNode || !targetFlowNode) {
+        return
+      }
 
       // Optimistic update - show temporary edge with full data structure
       const tempEdgeId = `temp-${Date.now()}`
@@ -622,7 +646,8 @@ const GraphVisualizationContent = ({
       reactFlowNodes,
       screenToFlowPosition,
       viewportZoom,
-      startEdgeCreation
+      startEdgeCreation,
+      mapId
     ]
   )
 

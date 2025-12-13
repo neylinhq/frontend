@@ -1,17 +1,20 @@
+import { Bot, Check, Copy, FileText, Loader2, Pencil, RefreshCw, User } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import { Bot, User, Loader2, FileText, Check, Copy, RefreshCw, Pencil } from 'lucide-react'
+import { Avatar, AvatarFallback, AvatarImage } from '@/shared/components/avatar'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
+import { Icon } from '@/shared/components/icon'
+import { aiBrandIcons } from '@/shared/components/icon/icon.constants'
 import { Textarea } from '@/shared/components/textarea'
 import { toast } from '@/shared/components/toast'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/components/tooltip'
 import { cn } from '@/shared/lib/cn'
 import type { ChatMessage, PreviewCard, ResolvedPreview } from '../ai-assist.types'
-import { PreviewCardComponent } from './preview-card'
 import { CollapsibleProposal } from './collapsible-proposal'
+import { PreviewCardComponent } from './preview-card'
 
 interface ChatMessageListProps {
   messages: ChatMessage[]
@@ -22,6 +25,10 @@ interface ChatMessageListProps {
   onUndoResolved: (messageId: string, preview: ResolvedPreview) => void
   onRegenerate?: () => void
   onEditMessage?: (messageId: string, newContent: string) => void
+  /** User avatar URL for user messages */
+  userAvatarUrl?: string
+  /** User display name for avatar fallback */
+  userDisplayName?: string
 }
 
 export const ChatMessageList = ({
@@ -32,7 +39,9 @@ export const ChatMessageList = ({
   onRejectPreview,
   onUndoResolved,
   onRegenerate,
-  onEditMessage
+  onEditMessage,
+  userAvatarUrl,
+  userDisplayName
 }: ChatMessageListProps) => {
   const { t } = useTranslation()
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -78,7 +87,7 @@ export const ChatMessageList = ({
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
+  }, [])
 
   return (
     <div className='space-y-4 py-4'>
@@ -92,10 +101,14 @@ export const ChatMessageList = ({
           onMouseEnter={() => setHoveredMessageId(message.id)}
           onMouseLeave={() => setHoveredMessageId(null)}
         >
-          {/* Avatar */}
+          {/* AI Avatar */}
           {message.role === 'assistant' && (
             <div className='flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center'>
-              <Bot className='w-4 h-4 text-primary' />
+              {message.brand && aiBrandIcons[message.brand] ? (
+                <Icon icon={aiBrandIcons[message.brand]} className='w-4 h-4 text-primary' />
+              ) : (
+                <Bot className='w-4 h-4 text-primary' />
+              )}
             </div>
           )}
 
@@ -120,9 +133,7 @@ export const ChatMessageList = ({
                   placeholder={t('ai.chat.placeholder')}
                 />
                 <div className='flex items-center justify-between gap-4'>
-                  <p className='text-xs text-muted-foreground'>
-                    {t('ai.chat.editWarning')}
-                  </p>
+                  <p className='text-xs text-muted-foreground'>{t('ai.chat.editWarning')}</p>
                   <div className='flex gap-2 flex-shrink-0'>
                     <Button
                       variant='ghost'
@@ -147,9 +158,7 @@ export const ChatMessageList = ({
               <div
                 className={cn(
                   'rounded-lg px-4 py-2.5 text-sm',
-                  message.role === 'user'
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-muted'
+                  message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'
                 )}
               >
                 {message.role === 'assistant' ? (
@@ -170,9 +179,7 @@ export const ChatMessageList = ({
                             }
                           }
                         }
-                        return content
-                          .replace(/\s*[•·]\s*/g, '\n- ')
-                          .replace(/^\s*-\s*$/gm, '')
+                        return content.replace(/\s*[•·]\s*/g, '\n- ').replace(/^\s*-\s*$/gm, '')
                       })()}
                     </Markdown>
                   </div>
@@ -235,7 +242,10 @@ export const ChatMessageList = ({
                     }}
                   >
                     <Check className='h-4 w-4 mr-2' />
-                    {t('ai.chat.applyAll', { count: message.preview.length, defaultValue: `Apply all (${message.preview.length})` })}
+                    {t('ai.chat.applyAll', {
+                      count: message.preview.length,
+                      defaultValue: `Apply all (${message.preview.length})`
+                    })}
                   </Button>
                 )}
               </div>
@@ -255,11 +265,16 @@ export const ChatMessageList = ({
               </div>
             )}
 
-            {/* Hover Actions */}
+            {/* Actions */}
             <div
               className={cn(
-                'flex items-center gap-1 h-6 transition-opacity',
-                hoveredMessageId === message.id ? 'opacity-100' : 'opacity-0'
+                'flex items-center gap-0.5 h-7 transition-opacity',
+                // User messages: show on hover only; AI messages: always visible
+                message.role === 'user'
+                  ? hoveredMessageId === message.id
+                    ? 'opacity-100'
+                    : 'opacity-0'
+                  : 'opacity-100'
               )}
             >
               {message.role === 'user' ? (
@@ -271,10 +286,10 @@ export const ChatMessageList = ({
                         <Button
                           variant='ghost'
                           size='icon'
-                          className='h-6 w-6'
+                          className='h-7 w-7 text-muted-foreground hover:text-foreground'
                           onClick={() => handleStartEdit(message.id, message.content)}
                         >
-                          <Pencil className='h-2.5 w-2.5' />
+                          <Pencil className='h-3 w-3' />
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent side='bottom'>
@@ -287,17 +302,17 @@ export const ChatMessageList = ({
                       <Button
                         variant='ghost'
                         size='icon'
-                        className='h-6 w-6'
+                        className='h-7 w-7 text-muted-foreground hover:text-foreground'
                         onClick={() => handleCopy(message.content)}
                       >
-                        <Copy className='h-2.5 w-2.5' />
+                        <Copy className='h-3 w-3' />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent side='bottom'>
                       <p className='text-xs'>{t('common.copy')}</p>
                     </TooltipContent>
                   </Tooltip>
-                  <span className='text-[10px] text-muted-foreground'>
+                  <span className='text-[10px] text-muted-foreground ml-1'>
                     {message.timestamp.toLocaleTimeString('en-US', {
                       hour: '2-digit',
                       minute: '2-digit'
@@ -305,17 +320,17 @@ export const ChatMessageList = ({
                   </span>
                 </>
               ) : (
-                // Assistant message: show copy + regenerate on hover
+                // Assistant message: always visible actions
                 <>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button
                         variant='ghost'
                         size='icon'
-                        className='h-6 w-6'
+                        className='h-7 w-7 text-muted-foreground hover:text-foreground'
                         onClick={() => handleCopy(message.content)}
                       >
-                        <Copy className='h-2.5 w-2.5' />
+                        <Copy className='h-3 w-3' />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent side='bottom'>
@@ -328,10 +343,10 @@ export const ChatMessageList = ({
                         <Button
                           variant='ghost'
                           size='icon'
-                          className='h-6 w-6'
+                          className='h-7 w-7 text-muted-foreground hover:text-foreground'
                           onClick={onRegenerate}
                         >
-                          <RefreshCw className='h-2.5 w-2.5' />
+                          <RefreshCw className='h-3 w-3' />
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent side='bottom'>
@@ -346,9 +361,12 @@ export const ChatMessageList = ({
 
           {/* User Avatar */}
           {message.role === 'user' && (
-            <div className='flex-shrink-0 w-8 h-8 rounded-full bg-muted flex items-center justify-center'>
-              <User className='w-4 h-4 text-muted-foreground' />
-            </div>
+            <Avatar className='flex-shrink-0 w-8 h-8'>
+              {userAvatarUrl && <AvatarImage src={userAvatarUrl} alt={userDisplayName || 'User'} />}
+              <AvatarFallback className='bg-muted text-muted-foreground text-xs'>
+                {userDisplayName ? userDisplayName.charAt(0).toUpperCase() : <User className='w-4 h-4' />}
+              </AvatarFallback>
+            </Avatar>
           )}
         </div>
       ))}

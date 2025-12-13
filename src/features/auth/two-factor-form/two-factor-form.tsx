@@ -1,14 +1,14 @@
+import { useQueryClient } from '@tanstack/react-query'
 import { KeyRound, Loader2, Mail, RefreshCw, Shield } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
-import { useQueryClient } from '@tanstack/react-query'
 import { sessionApi, type TwoFactorChallengeData } from '@/entities/session'
 import { ApiError } from '@/shared/api/client'
 import { Button } from '@/shared/components/button'
 import { Input } from '@/shared/components/input'
 import { OtpInput } from '@/shared/components/otp-input'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/components/tabs'
+import { Tabs, TabsList, TabsTrigger } from '@/shared/components/tabs'
 import { toast } from '@/shared/components/toast'
 
 interface TwoFactorFormProps {
@@ -20,7 +20,10 @@ const RESEND_COOLDOWN = 60 // seconds
 
 type TwoFactorMethod = 'totp' | 'email' | 'backup'
 
-export const TwoFactorForm = ({ challengeData, returnUrl = '/dashboard/overview' }: TwoFactorFormProps) => {
+export const TwoFactorForm = ({
+  challengeData,
+  returnUrl = '/dashboard/overview'
+}: TwoFactorFormProps) => {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
@@ -29,8 +32,12 @@ export const TwoFactorForm = ({ challengeData, returnUrl = '/dashboard/overview'
 
   // Determine initial tab based on available methods (prefer TOTP)
   const getInitialMethod = (): TwoFactorMethod => {
-    if (twoFactorMethods.includes('totp')) return 'totp'
-    if (twoFactorMethods.includes('email')) return 'email'
+    if (twoFactorMethods.includes('totp')) {
+      return 'totp'
+    }
+    if (twoFactorMethods.includes('email')) {
+      return 'email'
+    }
     return 'backup'
   }
 
@@ -56,24 +63,30 @@ export const TwoFactorForm = ({ challengeData, returnUrl = '/dashboard/overview'
     setCode('')
     setBackupCode('')
     setHasError(false)
-  }, [method])
+  }, [])
 
   const handleSubmit = async (completedCode?: string) => {
     const codeToSubmit = completedCode || (method === 'backup' ? backupCode : code)
 
     if (method === 'backup') {
-      if (codeToSubmit.length < 8) return
+      if (codeToSubmit.length < 8) {
+        return
+      }
     } else {
-      if (codeToSubmit.length !== 6) return
+      if (codeToSubmit.length !== 6) {
+        return
+      }
     }
 
-    if (isSubmitting) return
+    if (isSubmitting) {
+      return
+    }
 
     setIsSubmitting(true)
     setHasError(false)
 
     try {
-      const result = await sessionApi.verifyTwoFactor({
+      const _result = await sessionApi.verifyTwoFactor({
         challengeToken,
         code: codeToSubmit,
         method
@@ -101,7 +114,9 @@ export const TwoFactorForm = ({ challengeData, returnUrl = '/dashboard/overview'
   }
 
   const handleResend = async () => {
-    if (!canResend || isSubmitting) return
+    if (!canResend || isSubmitting) {
+      return
+    }
 
     try {
       await sessionApi.resendTwoFactorEmail({ challengeToken })
@@ -120,27 +135,25 @@ export const TwoFactorForm = ({ challengeData, returnUrl = '/dashboard/overview'
   const getIcon = () => {
     switch (method) {
       case 'totp':
-        return <Shield className="h-8 w-8 text-primary" />
+        return <Shield className='h-8 w-8 text-primary' />
       case 'email':
-        return <Mail className="h-8 w-8 text-primary" />
+        return <Mail className='h-8 w-8 text-primary' />
       case 'backup':
-        return <KeyRound className="h-8 w-8 text-primary" />
+        return <KeyRound className='h-8 w-8 text-primary' />
     }
   }
 
   const hasMultipleMethods = twoFactorMethods.length > 1
 
   return (
-    <div className="grid gap-6">
-      <div className="flex flex-col items-center gap-4 text-center">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+    <div className='grid gap-6'>
+      <div className='flex flex-col items-center gap-4 text-center'>
+        <div className='flex h-16 w-16 items-center justify-center rounded-full bg-primary/10'>
           {getIcon()}
         </div>
-        <div className="space-y-2">
-          <h1 className="text-2xl font-semibold tracking-tight">
-            {t('auth.twoFactor.title')}
-          </h1>
-          <p className="text-sm text-muted-foreground">
+        <div className='space-y-2'>
+          <h1 className='text-2xl font-semibold tracking-tight'>{t('auth.twoFactor.title')}</h1>
+          <p className='text-sm text-muted-foreground'>
             {method === 'totp' && t('auth.twoFactor.totpDescription')}
             {method === 'email' && t('auth.twoFactor.emailDescription')}
             {method === 'backup' && t('auth.twoFactor.backupDescription')}
@@ -149,23 +162,30 @@ export const TwoFactorForm = ({ challengeData, returnUrl = '/dashboard/overview'
       </div>
 
       {hasMultipleMethods && (
-        <Tabs value={method} onValueChange={(v) => setMethod(v as TwoFactorMethod)} className="w-full">
-          <TabsList className="grid w-full" style={{ gridTemplateColumns: `repeat(${twoFactorMethods.length}, 1fr)` }}>
+        <Tabs
+          value={method}
+          onValueChange={v => setMethod(v as TwoFactorMethod)}
+          className='w-full'
+        >
+          <TabsList
+            className='grid w-full'
+            style={{ gridTemplateColumns: `repeat(${twoFactorMethods.length}, 1fr)` }}
+          >
             {twoFactorMethods.includes('totp') && (
-              <TabsTrigger value="totp">
-                <Shield className="mr-2 h-4 w-4" />
+              <TabsTrigger value='totp'>
+                <Shield className='mr-2 h-4 w-4' />
                 {t('auth.twoFactor.totpTab')}
               </TabsTrigger>
             )}
             {twoFactorMethods.includes('email') && (
-              <TabsTrigger value="email">
-                <Mail className="mr-2 h-4 w-4" />
+              <TabsTrigger value='email'>
+                <Mail className='mr-2 h-4 w-4' />
                 {t('auth.twoFactor.emailTab')}
               </TabsTrigger>
             )}
             {twoFactorMethods.includes('backup') && (
-              <TabsTrigger value="backup">
-                <KeyRound className="mr-2 h-4 w-4" />
+              <TabsTrigger value='backup'>
+                <KeyRound className='mr-2 h-4 w-4' />
                 {t('auth.twoFactor.backupTab')}
               </TabsTrigger>
             )}
@@ -173,11 +193,11 @@ export const TwoFactorForm = ({ challengeData, returnUrl = '/dashboard/overview'
         </Tabs>
       )}
 
-      <div className="space-y-4">
+      <div className='space-y-4'>
         {method === 'backup' ? (
           <Input
             value={backupCode}
-            onChange={(e) => setBackupCode(e.target.value.toUpperCase())}
+            onChange={e => setBackupCode(e.target.value.toUpperCase())}
             placeholder={t('auth.twoFactor.backupPlaceholder')}
             disabled={isSubmitting}
             className={hasError ? 'border-destructive' : ''}
@@ -197,37 +217,39 @@ export const TwoFactorForm = ({ challengeData, returnUrl = '/dashboard/overview'
 
         {method === 'backup' ? (
           <Button
-            type="button"
-            className="w-full"
+            type='button'
+            className='w-full'
             disabled={backupCode.length < 8 || isSubmitting}
             onClick={() => handleSubmit()}
           >
-            {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {isSubmitting && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
             {t('auth.twoFactor.submitButton')}
           </Button>
         ) : (
           isSubmitting && (
-            <div className="flex justify-center">
-              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+            <div className='flex justify-center'>
+              <Loader2 className='h-5 w-5 animate-spin text-muted-foreground' />
             </div>
           )
         )}
 
         {method === 'email' && twoFactorMethods.includes('email') && (
-          <div className="flex items-center justify-center text-sm text-muted-foreground">
+          <div className='flex items-center justify-center text-sm text-muted-foreground'>
             <Button
-              type="button"
-              variant="link"
-              size="sm"
-              className="h-auto p-0"
+              type='button'
+              variant='link'
+              size='sm'
+              className='h-auto p-0'
               disabled={!canResend || isSubmitting}
               onClick={handleResend}
             >
               {!canResend && resendCooldown > 0 ? (
-                <span className="tabular-nums">{t('auth.twoFactor.resendIn', { seconds: resendCooldown })}</span>
+                <span className='tabular-nums'>
+                  {t('auth.twoFactor.resendIn', { seconds: resendCooldown })}
+                </span>
               ) : (
                 <>
-                  <RefreshCw className="mr-1 h-3 w-3" />
+                  <RefreshCw className='mr-1 h-3 w-3' />
                   {t('auth.twoFactor.resendButton')}
                 </>
               )}

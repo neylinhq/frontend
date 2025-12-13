@@ -113,7 +113,7 @@ export const OverviewPage = () => {
 
   return (
     <div className='container mx-auto py-8 px-4 md:px-8'>
-      <div className='flex items-center justify-between mb-8'>
+      <div className='flex items-center justify-between mb-8 gap-6'>
         <div>
           <Typography variant='h1'>{t('dashboard.overview.title')}</Typography>
           <p className='text-muted-foreground mt-1'>{t('dashboard.overview.description')}</p>

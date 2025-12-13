@@ -215,8 +215,7 @@ export const ImageCropDialog = ({
         'image/jpeg',
         0.9
       )
-    } catch (error) {
-      console.error('Error cropping image:', error)
+    } catch {
       setIsProcessing(false)
     }
   }

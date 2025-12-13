@@ -10,19 +10,16 @@ export const useWebSocket = (mapId: string) => {
 
     wsClient.joinRoom(mapId)
 
-    const unsubTaskCompleted = wsClient.subscribe('ai.task.completed', msg => {
-      console.log('[WS] AI task completed:', msg.payload)
+    const unsubTaskCompleted = wsClient.subscribe('ai.task.completed', () => {
       queryClient.invalidateQueries({ queryKey: ['maps', mapId] })
       queryClient.invalidateQueries({ queryKey: ['nodes'] })
     })
 
-    const unsubNodeUpdated = wsClient.subscribe('node.updated', msg => {
-      console.log('[WS] Node updated:', msg.payload)
+    const unsubNodeUpdated = wsClient.subscribe('node.updated', () => {
       queryClient.invalidateQueries({ queryKey: ['nodes'] })
     })
 
-    const unsubEdgeCreated = wsClient.subscribe('edge.created', msg => {
-      console.log('[WS] Edge created:', msg.payload)
+    const unsubEdgeCreated = wsClient.subscribe('edge.created', () => {
       queryClient.invalidateQueries({ queryKey: ['edges'] })
     })
 

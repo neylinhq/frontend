@@ -235,7 +235,6 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
 
       {/* Toolbar - view modes, focus controls, filters */}
       <GraphToolbar
-        mapId={mapId}
         nodeCountsByType={nodeCountsByType}
         edgeCountsByType={edgeCountsByType}
         selectedNodeId={selectedNodeId}

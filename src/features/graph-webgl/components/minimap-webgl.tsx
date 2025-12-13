@@ -64,9 +64,6 @@ export const MiniMapWebGL = memo(function MiniMapWebGL({
   className,
   onNavigate
 }: MiniMapWebGLProps) {
-  // Debug
-  console.log('[MiniMap] nodes:', nodes.length, 'layoutPositions:', layoutPositions?.length, 'viewport:', viewport)
-
   // Build position map from WASM layout (or use node.position as fallback)
   const positionMap = useMemo(() => {
     const map = new Map<string, { x: number; y: number }>()
@@ -130,11 +127,6 @@ export const MiniMapWebGL = memo(function MiniMapWebGL({
         color: NODE_COLORS[node.type] || DEFAULT_NODE_COLOR
       }
     })
-
-    console.log('[MiniMap] calculated:', { minX, minY, maxX, maxY, scale, dotsCount: nodeDots.length })
-    if (nodeDots.length > 0) {
-      console.log('[MiniMap] first dot:', nodeDots[0])
-    }
 
     return {
       bounds: { minX, minY, maxX, maxY, width: boundsWidth, height: boundsHeight },

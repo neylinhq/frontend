@@ -1,7 +1,7 @@
 import { Filter, Minus, Plus, Sparkles } from 'lucide-react'
 import { memo, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router'
+import { useAIPanelStore } from '@/features/ai-assist'
 import type { RelationType } from '@/entities/edge'
 import type { NodeType } from '@/entities/node'
 import { Badge } from '@/shared/components/badge'
@@ -37,7 +37,6 @@ import {
 const CONNECTION_PRESET_ORDER: ConnectionPreset[] = ['leaves', 'medium', 'hubs']
 
 interface GraphToolbarProps {
-  mapId: string
   nodeCountsByType?: Record<NodeType, number>
   edgeCountsByType?: Record<RelationType, number>
   connectionStats?: ConnectionStats
@@ -48,10 +47,11 @@ interface GraphToolbarProps {
 }
 
 export const GraphToolbar = memo(
-  ({ mapId, nodeCountsByType, edgeCountsByType, connectionStats, selectedNodeId, canEdit = true, className }: GraphToolbarProps) => {
+  ({ nodeCountsByType, edgeCountsByType, connectionStats, selectedNodeId, canEdit = true, className }: GraphToolbarProps) => {
     const { t } = useTranslation()
     const { viewMode, setViewMode } = useViewMode()
     const { focusedNodeId, focusDepth, setFocusDepth, clearFocus, focusNode } = useFocusMode()
+    const { isOpen: isAIPanelOpen, toggle: toggleAIPanel } = useAIPanelStore()
     const {
       visibleNodeTypes,
       visibleEdgeTypes,
@@ -116,18 +116,16 @@ export const GraphToolbar = memo(
             <>
               <Button
                 size='sm'
-                variant='ghost'
-                asChild
-                className='h-8 px-3 hidden sm:flex'
+                variant={isAIPanelOpen ? 'secondary' : 'ghost'}
+                onClick={toggleAIPanel}
+                className='h-8 px-3'
                 title={t('graph.toolbar.aiAnalysis')}
               >
-                <Link to={`/dashboard/maps/${mapId}/ai`}>
-                  <Sparkles className='w-4 h-4 sm:mr-1' />
-                  <span className='hidden sm:inline'>AI</span>
-                </Link>
+                <Sparkles className='w-4 h-4 sm:mr-1' />
+                <span className='hidden sm:inline'>AI</span>
               </Button>
 
-              <div className='h-4 w-px bg-border hidden sm:block' />
+              <div className='h-4 w-px bg-border' />
             </>
           )}
 

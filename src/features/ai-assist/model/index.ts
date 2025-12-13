@@ -3,3 +3,5 @@ export type { ChatSession } from './chat-history.store'
 
 export { useProposalHistoryStore, useProposalHistory } from './proposal-history.store'
 export type { ProposalAction } from './proposal-history.store'
+
+export { useAIPanelStore } from './ai-panel.store'

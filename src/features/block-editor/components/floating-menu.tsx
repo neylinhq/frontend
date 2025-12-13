@@ -606,8 +606,8 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
             editorEl?.classList.remove('just-dropped')
           }, UI_DELAYS.EDITOR_DROP_FEEDBACK)
         }
-      } catch (err) {
-        console.error('[Drop] Transaction error:', err)
+      } catch {
+        // Transaction error - ignore
       }
 
       cleanupDrag()

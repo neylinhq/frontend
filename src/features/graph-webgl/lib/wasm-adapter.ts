@@ -90,10 +90,7 @@ export class GraphEngine {
       // Create engine instance
       this.wasmEngine = new wasm.GraphEngine()
       this.wasmEngine.init_renderer(canvas)
-
-      console.log('[GraphEngine] WASM engine initialized')
     } catch (error) {
-      console.error('[GraphEngine] Failed to initialize WASM:', error)
       throw new Error(`Failed to initialize WASM engine: ${error}`)
     }
   }

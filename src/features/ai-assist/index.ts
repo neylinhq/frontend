@@ -11,6 +11,9 @@ export { AIChatCore } from './components/ai-chat-core'
 // Proposal UI components
 export { ProposalCard, DiffLine, DiffBlock } from './components/proposal-card'
 
+// Store
+export { useAIPanelStore } from './model'
+
 // Types
 export type {
   ChatContext,

@@ -29,10 +29,8 @@ export const MapViewPage = ({ map, mapId }: MapViewPageProps) => {
           <>
             <QuickAddDialog />
             <AddNodeFab />
-            {/* AI Chat Drawer */}
-            <div className='absolute right-4 top-4 z-10'>
-              <MapChatDrawer mapId={mapId} />
-            </div>
+            {/* AI Chat Drawer - controlled by toolbar button */}
+            <MapChatDrawer mapId={mapId} />
           </>
         )}
 

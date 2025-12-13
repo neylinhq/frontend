@@ -21,7 +21,6 @@ class WebSocketClient {
     this.ws = new WebSocket(`${url}?token=${token}`)
 
     this.ws.onopen = () => {
-      console.log('[WS] Connected')
       this.reconnectAttempts = 0
       this.rooms.forEach(room => this.joinRoom(room))
     }
@@ -32,7 +31,6 @@ class WebSocketClient {
     }
 
     this.ws.onclose = () => {
-      console.log('[WS] Disconnected')
       if (this.reconnectAttempts < this.maxReconnects) {
         setTimeout(
           () => {
@@ -44,8 +42,8 @@ class WebSocketClient {
       }
     }
 
-    this.ws.onerror = error => {
-      console.error('[WS] Error:', error)
+    this.ws.onerror = () => {
+      // WebSocket error - will trigger reconnect via onclose
     }
   }
 

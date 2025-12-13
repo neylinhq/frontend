@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import { erc20Abi } from 'viem'
 import {
   useAccount,
@@ -8,6 +8,7 @@ import {
   useWriteContract
 } from 'wagmi'
 import type { CryptoNetwork } from '@/entities/subscription'
+import type { CryptoWallet } from './use-crypto-wallet'
 import { getChainId, SUBSCRIPTION_ADDRESSES, USDT_ADDRESSES } from './wagmi-config'
 
 // Subscription contract ABI (simplified)
@@ -24,14 +25,19 @@ const subscriptionAbi = [
   }
 ] as const
 
-export const useEvmWallet = (network: CryptoNetwork | null) => {
+interface EvmWalletConnectorProps {
+  network: CryptoNetwork
+  onWalletChange: (wallet: CryptoWallet) => void
+}
+
+export const EvmWalletConnector = ({ network, onWalletChange }: EvmWalletConnectorProps) => {
   const { address, isConnected, chainId } = useAccount()
   const { connect, connectors, isPending: isConnecting } = useConnect()
   const { disconnect } = useDisconnect()
   const { switchChain } = useSwitchChain()
   const { writeContractAsync } = useWriteContract()
 
-  const targetChainId = network && ['bsc', 'polygon', 'ethereum'].includes(network)
+  const targetChainId = ['bsc', 'polygon', 'ethereum'].includes(network)
     ? getChainId(network as 'bsc' | 'polygon' | 'ethereum')
     : null
 
@@ -98,13 +104,19 @@ export const useEvmWallet = (network: CryptoNetwork | null) => {
     return hash
   }, [targetChainId, ensureCorrectChain, writeContractAsync])
 
-  return {
-    address: address ?? null,
-    isConnected,
-    isConnecting,
-    connect: handleConnect,
-    disconnect: handleDisconnect,
-    approve,
-    subscribe
-  }
+  // Обновляем родительский компонент при изменении состояния
+  useEffect(() => {
+    onWalletChange({
+      address: address ?? null,
+      isConnected,
+      isConnecting,
+      connect: handleConnect,
+      disconnect: handleDisconnect,
+      approve,
+      subscribe
+    })
+  }, [address, isConnected, isConnecting, handleConnect, handleDisconnect, approve, subscribe, onWalletChange])
+
+  // Этот компонент не рендерит UI
+  return null
 }

@@ -47,7 +47,6 @@ export const useGraphEngine = (options: UseGraphEngineOptions = {}): UseGraphEng
       } catch (err) {
         const error = err instanceof Error ? err : new Error('Failed to initialize graph engine')
         setError(error)
-        console.error('[useGraphEngine] Initialization failed:', error)
         throw error
       }
     })()

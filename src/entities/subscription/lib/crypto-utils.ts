@@ -18,11 +18,7 @@ export const shortenWalletAddress = (address: string, startChars = 6, endChars =
  */
 export const getNetworkDisplayName = (network: CryptoNetwork) => {
   const names: Record<CryptoNetwork, string> = {
-    ton: 'TON',
-    tron: 'Tron (TRC-20)',
-    bsc: 'BNB Smart Chain (BEP-20)',
-    polygon: 'Polygon',
-    ethereum: 'Ethereum (ERC-20)'
+    ton: 'TON'
   }
   return names[network]
 }
@@ -32,11 +28,7 @@ export const getNetworkDisplayName = (network: CryptoNetwork) => {
  */
 export const getNetworkFeeEstimate = (network: CryptoNetwork): string => {
   const fees: Record<CryptoNetwork, string> = {
-    ton: '~$0.01',
-    tron: '~$0.50',
-    bsc: '~$0.10',
-    polygon: '~$0.01',
-    ethereum: '~$2-10'
+    ton: '~$0.01'
   }
   return fees[network]
 }
@@ -44,10 +36,8 @@ export const getNetworkFeeEstimate = (network: CryptoNetwork): string => {
 /**
  * Get the wallet type for network
  */
-export const getWalletType = (network: CryptoNetwork): 'tonconnect' | 'evm' | 'tron' => {
-  if (network === 'ton') return 'tonconnect'
-  if (network === 'tron') return 'tron'
-  return 'evm' // bsc, polygon, ethereum
+export const getWalletType = (network: CryptoNetwork): 'tonconnect' => {
+  return 'tonconnect'
 }
 
 /**
@@ -68,14 +58,6 @@ export const isValidWalletAddress = (address: string, network: CryptoNetwork) =>
     case 'ton':
       // TON: EQ... or UQ... followed by 46 characters (base64)
       return /^[EU]Q[a-zA-Z0-9_-]{46}$/.test(address)
-    case 'tron':
-      // Tron: T followed by 33 characters (base58)
-      return /^T[a-zA-Z0-9]{33}$/.test(address)
-    case 'bsc':
-    case 'polygon':
-    case 'ethereum':
-      // EVM: 0x followed by 40 hex characters
-      return /^0x[a-fA-F0-9]{40}$/.test(address)
     default:
       return false
   }

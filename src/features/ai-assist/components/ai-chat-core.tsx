@@ -16,6 +16,7 @@ interface AIChatCoreProps {
   nodeContext: NodeChatContext
   mapContext: MapChatContext
   emptyStateMessage?: string
+  placeholderText?: string
   onSavePreview?: (messageId: string, preview: PreviewCard) => Promise<{ previousState: Record<string, unknown>; actionId: string } | void>
   onUndoPreview?: (preview: ResolvedPreview) => Promise<void>
 }
@@ -23,6 +24,7 @@ interface AIChatCoreProps {
 export const AIChatCore = ({
   nodeContext,
   emptyStateMessage,
+  placeholderText,
   onSavePreview,
   onUndoPreview
 }: AIChatCoreProps) => {
@@ -176,8 +178,7 @@ export const AIChatCore = ({
           'approved',
           result ? { previousState: result.previousState, actionId: result.actionId } : undefined
         )
-      } catch (error) {
-        console.error('[AI Chat] Save preview failed:', error)
+      } catch {
         toast.error(t('common.error'), {
           description: t('ai.saveFailed')
         })
@@ -255,7 +256,7 @@ export const AIChatCore = ({
           onSend={handleSendMessage}
           onCommand={handleCommand}
           disabled={isStreaming}
-          placeholder={t('ai.chat.placeholder')}
+          placeholder={placeholderText || t('ai.chat.placeholder')}
           model={selectedModel}
           onModelChange={setSelectedModel}
           models={models}

@@ -26,10 +26,6 @@ const Toast = React.forwardRef<
     variant?: 'default' | 'success' | 'error' | 'warning'
   }
 >(({ className, variant = 'default', ...props }, ref) => {
-  console.log({
-    variant
-  })
-
   return (
     <ToastPrimitives.Root
       ref={ref}

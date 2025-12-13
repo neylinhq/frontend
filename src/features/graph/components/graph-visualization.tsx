@@ -886,7 +886,6 @@ const GraphVisualizationContent = ({
 
       {/* Toolbar - view modes, focus controls, filters */}
       <GraphToolbar
-        mapId={mapId}
         nodeCountsByType={nodeCountsByType}
         edgeCountsByType={edgeCountsByType}
         connectionStats={connectionStats}

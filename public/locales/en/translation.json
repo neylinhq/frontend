@@ -1138,6 +1138,7 @@
     "startPractice": "Start Practice Session",
     "chat": {
       "placeholder": "Ask AI to help with this node...",
+      "placeholderMap": "Ask about this map...",
       "contextLabel": "Context",
       "quickActions": "Quick Actions",
       "saveAll": "Save All ({{count}})",
@@ -1240,7 +1241,7 @@
       "profile": "Profile",
       "preferences": "Preferences",
       "integrations": "Integrations",
-      "account": "Account",
+      "security": "Security",
       "billing": "Billing"
     },
     "profile": {
@@ -1573,6 +1574,52 @@
       "networkNotEditable": "Network cannot be changed",
       "save": "Save Changes",
       "cardNumberNotEditable": "Card number cannot be changed"
+    },
+    "crypto": {
+      "title": "Pay with Crypto",
+      "description": "Connect your wallet to pay for subscription",
+      "steps": {
+        "network": "Network",
+        "wallet": "Wallet",
+        "confirm": "Confirm"
+      },
+      "networks": {
+        "ton": "TON",
+        "tonDescription": "Fast and cheap transactions"
+      },
+      "selectNetwork": "Select network for payment",
+      "wallet": {
+        "connect": "Connect Wallet",
+        "connecting": "Connecting...",
+        "connected": "Wallet Connected",
+        "disconnect": "Disconnect",
+        "address": "Address",
+        "changeWallet": "Change Wallet"
+      },
+      "confirm": {
+        "title": "Confirm Payment",
+        "plan": "Plan",
+        "amount": "Amount",
+        "network": "Network",
+        "wallet": "Wallet",
+        "approve": "Approve Spending",
+        "approving": "Approving...",
+        "approved": "Approved",
+        "subscribe": "Pay",
+        "subscribing": "Processing...",
+        "approveHint": "Allow the contract to spend USDT for auto-renewal"
+      },
+      "success": {
+        "title": "Subscription Activated!",
+        "description": "Your subscription has been successfully paid"
+      },
+      "errors": {
+        "walletNotConnected": "Wallet not connected",
+        "transactionFailed": "Transaction failed",
+        "insufficientBalance": "Insufficient balance",
+        "userRejected": "Transaction rejected",
+        "networkMismatch": "Wrong network in wallet"
+      }
     }
   },
   "pricing": {

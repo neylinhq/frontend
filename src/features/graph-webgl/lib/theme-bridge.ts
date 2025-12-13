@@ -72,13 +72,11 @@ function getCssVar(name: string): string {
 export function extractThemeColors(): ThemeColors {
   // Check if dark mode is active
   const isDark = document.documentElement.classList.contains('dark')
-  console.log('[theme-bridge] isDark:', isDark)
 
   // Card colors - use --popover for graph nodes as it's slightly lighter than --card
   // In most themes, --card === --background which makes nodes invisible
   const cardBgRaw = getCssVar('--popover') || getCssVar('--card')
   const cardBg = cardBgRaw || (isDark ? '0 0% 12%' : '0 0% 100%')
-  console.log('[theme-bridge] --popover/card raw:', `"${cardBgRaw}"`, '→ using:', cardBg)
 
   const cardFg = getCssVar('--card-foreground') || '0 0% 98%'
   const border = getCssVar('--border') || '0 0% 15%'

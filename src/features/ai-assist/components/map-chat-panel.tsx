@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { useMap } from '@/entities/map'
 import type { MapChatContext, NodeChatContext } from '../ai-assist.types'
 import { AIChatCore } from './ai-chat-core'
@@ -7,6 +8,7 @@ interface MapChatPanelProps {
 }
 
 export const MapChatPanel = ({ mapId }: MapChatPanelProps) => {
+  const { t } = useTranslation()
   const { data: map } = useMap(mapId)
 
   // For map-level chat, we create a minimal node context
@@ -33,6 +35,8 @@ export const MapChatPanel = ({ mapId }: MapChatPanelProps) => {
     <AIChatCore
       nodeContext={nodeContext}
       mapContext={mapContext}
+      emptyStateMessage={t('ai.chat.noMessagesMap')}
+      placeholderText={t('ai.chat.placeholderMap', 'Ask about this map...')}
     />
   )
 }

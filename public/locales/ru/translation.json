@@ -1164,6 +1164,7 @@
     "startPractice": "Начать тренировку",
     "chat": {
       "placeholder": "Спросите AI как помочь с этой нодой...",
+      "placeholderMap": "Спросите об этой карте...",
       "contextLabel": "Контекст",
       "quickActions": "Быстрые действия",
       "saveAll": "Сохранить все ({{count}})",
@@ -1266,7 +1267,7 @@
       "profile": "Профиль",
       "preferences": "Предпочтения",
       "integrations": "Интеграции",
-      "account": "Аккаунт",
+      "security": "Безопасность",
       "billing": "Подписка"
     },
     "profile": {
@@ -1600,6 +1601,52 @@
       "networkNotEditable": "Сеть нельзя изменить",
       "save": "Сохранить изменения",
       "cardNumberNotEditable": "Номер карты нельзя изменить"
+    },
+    "crypto": {
+      "title": "Оплата криптовалютой",
+      "description": "Подключите кошелёк для оплаты подписки",
+      "steps": {
+        "network": "Сеть",
+        "wallet": "Кошелёк",
+        "confirm": "Подтверждение"
+      },
+      "networks": {
+        "ton": "TON",
+        "tonDescription": "Быстрые и дешёвые транзакции"
+      },
+      "selectNetwork": "Выберите сеть для оплаты",
+      "wallet": {
+        "connect": "Подключить кошелёк",
+        "connecting": "Подключение...",
+        "connected": "Кошелёк подключен",
+        "disconnect": "Отключить",
+        "address": "Адрес",
+        "changeWallet": "Сменить кошелёк"
+      },
+      "confirm": {
+        "title": "Подтвердите оплату",
+        "plan": "Тариф",
+        "amount": "Сумма",
+        "network": "Сеть",
+        "wallet": "Кошелёк",
+        "approve": "Разрешить списание",
+        "approving": "Разрешаем...",
+        "approved": "Разрешено",
+        "subscribe": "Оплатить",
+        "subscribing": "Обработка...",
+        "approveHint": "Разрешите контракту списывать USDT для автопродления подписки"
+      },
+      "success": {
+        "title": "Подписка активирована!",
+        "description": "Ваша подписка успешно оплачена"
+      },
+      "errors": {
+        "walletNotConnected": "Кошелёк не подключен",
+        "transactionFailed": "Ошибка транзакции",
+        "insufficientBalance": "Недостаточно средств",
+        "userRejected": "Транзакция отклонена",
+        "networkMismatch": "Неверная сеть в кошельке"
+      }
     }
   },
   "pricing": {

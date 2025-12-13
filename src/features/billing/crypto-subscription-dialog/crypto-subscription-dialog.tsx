@@ -1,5 +1,5 @@
-import { ChevronRight } from 'lucide-react'
-import { useCallback, useState } from 'react'
+import { ChevronRight, Loader2 } from 'lucide-react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { CryptoNetwork, PlanType } from '@/entities/subscription'
 import { getWalletType } from '@/entities/subscription'
@@ -68,10 +68,41 @@ const StepIndicator = ({ steps, currentStep }: { steps: Step[]; currentStep: Ste
   )
 }
 
-// USDT decimals = 6
-const USDT_DECIMALS = 6n
+/**
+ * SSR-safe wrapper - only renders the content that uses wallet hooks on client
+ */
+export const CryptoSubscriptionDialog = (props: CryptoSubscriptionDialogProps) => {
+  const [mounted, setMounted] = useState(false)
+  const { t } = useTranslation()
 
-export const CryptoSubscriptionDialog = ({
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Before hydration, show a simple loading dialog
+  if (!mounted) {
+    return (
+      <Dialog open={props.open} onOpenChange={props.onOpenChange}>
+        <DialogContent className='sm:max-w-[480px]'>
+          <DialogHeader>
+            <DialogTitle>{t('billing.crypto.title')}</DialogTitle>
+            <DialogDescription>{t('billing.crypto.description')}</DialogDescription>
+          </DialogHeader>
+          <div className='py-8 flex items-center justify-center'>
+            <Loader2 className='h-8 w-8 animate-spin text-muted-foreground' />
+          </div>
+        </DialogContent>
+      </Dialog>
+    )
+  }
+
+  return <CryptoSubscriptionDialogContent {...props} />
+}
+
+/**
+ * Inner component that uses wallet hooks - only rendered after hydration
+ */
+const CryptoSubscriptionDialogContent = ({
   open,
   onOpenChange,
   planType,
@@ -84,7 +115,7 @@ export const CryptoSubscriptionDialog = ({
   const [step, setStep] = useState<Step>('network')
   const [network, setNetwork] = useState<CryptoNetwork | null>(null)
 
-  // Crypto wallet hook
+  // Crypto wallet hook - safe to call here, after hydration
   const wallet = useCryptoWallet(network)
 
   // Transaction state
@@ -215,9 +246,16 @@ export const CryptoSubscriptionDialog = ({
 
   const isLoading = wallet.isConnecting || isApproving || isSubscribing
 
+  // Скрытый элемент-коннектор для управления кошельком
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const WalletConnector = (wallet as any)._connector
+
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className='sm:max-w-[480px]'>
+        {/* Скрытый коннектор кошелька */}
+        {WalletConnector}
+
         <DialogHeader>
           <DialogTitle>{t('billing.crypto.title')}</DialogTitle>
           <DialogDescription>{t('billing.crypto.description')}</DialogDescription>

@@ -157,8 +157,8 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
       const positionsJson = engine.get_all_positions()
       const positions = JSON.parse(positionsJson) as LayoutPosition[]
       onLayoutComplete(positions)
-    } catch (err) {
-      console.error('[GraphCanvas] Failed to get positions:', err)
+    } catch {
+      // Failed to get positions - ignore
     }
   }, [onLayoutComplete])
 
@@ -215,18 +215,12 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
 
     const init = async () => {
       try {
-        console.log('[GraphCanvas] Loading WASM module...')
         const wasm = await import('../wasm/graph_engine')
-
-        console.log('[GraphCanvas] Initializing WASM...')
         await wasm.default()
 
         if (!mounted) return
 
-        console.log('[GraphCanvas] Creating GraphEngine...')
         const engine = new wasm.GraphEngine()
-
-        console.log('[GraphCanvas] init_renderer...')
         engine.init_renderer(canvas)
 
         // Set initial size
@@ -236,19 +230,14 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
         canvas.height = rect.height * dpr
         canvas.style.width = `${rect.width}px`
         canvas.style.height = `${rect.height}px`
-        console.log(`[GraphCanvas] resize(${canvas.width}, ${canvas.height}), dpr=${dpr}, rect=${rect.width}x${rect.height}`)
         engine.resize(canvas.width, canvas.height)
 
         // Set initial theme
-        const themeJson = themeToJson()
-        console.log('[GraphCanvas] Setting theme:', themeJson)
-        engine.set_theme(themeJson)
+        engine.set_theme(themeToJson())
 
         // Load atlases (Figma S+ level GPU text/icon rendering)
-        console.log('[GraphCanvas] Loading atlases...')
         try {
           // Create SDF font atlas using Mapbox tiny-sdf (dynamic, system fonts)
-          console.log('[GraphCanvas] Creating SDF font atlas...')
           const sdfAtlas = createSDFAtlas({
             fontSize: 48,
             fontFamily: 'Inter, system-ui, sans-serif',
@@ -256,25 +245,19 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
           })
           const atlasData = sdfAtlas.getAtlasData()
           const metricsJson = sdfAtlas.getGlyphMetricsJson()
-          console.log(`[GraphCanvas] SDF atlas: ${atlasData.width}x${atlasData.height}, ${sdfAtlas.getShaderParams().fontSize}px font`)
           engine.load_sdf_atlas_data(atlasData.data, atlasData.width, atlasData.height, metricsJson)
 
           // Load icon atlas (static, from PNG)
-          console.log('[GraphCanvas] Loading icon atlas...')
           const icons = await loadIconAtlas('/assets')
           engine.load_icon_atlas_data(icons.imageData, icons.width, icons.height, JSON.stringify(icons.coords))
-          console.log('[GraphCanvas] Atlases loaded!')
-        } catch (atlasErr) {
-          console.warn('[GraphCanvas] Atlas loading failed (text/icons will use fallback):', atlasErr)
+        } catch {
+          // Atlas loading failed - text/icons will use fallback
         }
 
         engineRef.current = engine
         setIsReady(true)
         setError(null)
-
-        console.log('[GraphCanvas] WASM engine ready!')
       } catch (err) {
-        console.error('[GraphCanvas] WASM init failed:', err)
         if (mounted) {
           setError(err instanceof Error ? err.message : 'Failed to initialize WASM')
         }
@@ -302,7 +285,6 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
   // Sync theme when dark mode changes
   useEffect(() => {
     if (!isReady || !engineRef.current) return
-    console.log('[GraphCanvas] Theme changed, updating WASM engine')
     engineRef.current.set_theme(themeToJson())
   }, [isDark, isReady])
 
@@ -349,31 +331,23 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
     lastEdgesRef.current = edges
 
     try {
-      console.log(`[GraphCanvas] Loading ${nodes.length} nodes, ${edges.length} edges...`)
       const json = transformToWasm(nodes, edges)
-      console.log('[GraphCanvas] JSON preview:', json.slice(0, 500))
       engine.load_graph(json)
-      console.log(`[GraphCanvas] Graph loaded. node_count=${engine.node_count()}, edge_count=${engine.edge_count()}`)
 
       // Run layout
       const options: LayoutOptions = {
         ...DEFAULT_LAYOUT_OPTIONS,
         ...layoutOptions,
       }
-      console.log('[GraphCanvas] Running layout with options:', options)
       engine.run_layout(layoutOptionsToWasm(options))
 
       // Fit view
-      console.log('[GraphCanvas] Fitting view...')
       engine.fit_view(0.1)
 
       // Notify parent about layout positions for minimap
       notifyLayoutComplete()
       notifyViewportChange()
-
-      console.log('[GraphCanvas] Graph ready!')
     } catch (err) {
-      console.error('[GraphCanvas] Failed to load graph:', err)
       setError(err instanceof Error ? err.message : 'Failed to load graph')
     }
   }, [isReady, nodes, edges, notifyLayoutComplete, notifyViewportChange])
@@ -387,7 +361,6 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
       ...DEFAULT_LAYOUT_OPTIONS,
       ...layoutOptions,
     }
-    console.log('[GraphCanvas] Re-running layout with new options:', options)
     engine.run_layout(layoutOptionsToWasm(options))
 
     // Notify about new positions

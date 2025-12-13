@@ -11,6 +11,7 @@ import {
 } from 'react-router'
 import { QueryProvider } from '@/app/providers/query-provider'
 import { ThemeProvider } from '@/app/theme'
+import { WalletProviders } from '@/features/billing/crypto-subscription-dialog/lib/wallet-providers'
 import { Toaster } from '@/shared/components/toast'
 import { TooltipProvider } from '@/shared/components/tooltip'
 import '@/shared/styles/globals.css'
@@ -181,10 +182,12 @@ const App = () => {
   return (
     <QueryProvider>
       <ThemeProvider defaultMode={themeData.mode} defaultPalette={themeData.palette}>
-        <TooltipProvider>
-          <Outlet />
-          <Toaster />
-        </TooltipProvider>
+        <WalletProviders>
+          <TooltipProvider>
+            <Outlet />
+            <Toaster />
+          </TooltipProvider>
+        </WalletProviders>
       </ThemeProvider>
     </QueryProvider>
   )

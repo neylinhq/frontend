@@ -54,13 +54,10 @@ export const SignInForm = () => {
           onSubmit={form.handleSubmit(async data => {
             setIsLoading(true)
             try {
-              console.log('[SignIn] Calling login API...')
               const result = await sessionApi.login(data)
-              console.log('[SignIn] Login result:', result)
 
               // Check if 2FA is required
               if (isTwoFactorRequired(result)) {
-                console.log('[SignIn] 2FA required, redirecting...')
                 const returnUrl = searchParams.get('from') || '/dashboard/overview'
                 // Navigate to 2FA page with challenge data
                 navigate('/auth/two-factor', {
@@ -75,13 +72,10 @@ export const SignInForm = () => {
               }
 
               // Normal login - clear cache and redirect
-              console.log('[SignIn] Login success')
               queryClient.clear()
               const returnUrl = searchParams.get('from') || '/dashboard/overview'
-              console.log('[SignIn] Navigating to:', returnUrl)
               navigate(returnUrl)
             } catch (error) {
-              console.error('[SignIn] Error:', error)
               if (error instanceof ApiError) {
                 const errorData = error.data as { error?: { message?: string } } | null
                 const message = errorData?.error?.message

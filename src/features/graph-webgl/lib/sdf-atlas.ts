@@ -94,8 +94,6 @@ export class SDFAtlas {
     this.atlasHeight = this.config.atlasSize
     // Single-channel (alpha only) - will be uploaded as GL_ALPHA or GL_RED
     this.atlasData = new Uint8Array(this.atlasWidth * this.atlasHeight)
-
-    console.log('[SDFAtlas] Created with config:', this.config)
   }
 
   /**
@@ -139,8 +137,7 @@ export class SDFAtlas {
     // Find position in atlas
     const { x, y } = this.allocateSpace(glyphData.width, glyphData.height)
     if (x < 0) {
-      console.warn('[SDFAtlas] Atlas full, cannot add glyph:', char)
-      return null
+      return null // Atlas full
     }
 
     // Copy glyph data to atlas
@@ -175,11 +172,9 @@ export class SDFAtlas {
    * Pre-generate glyphs for a character set
    */
   preloadCharset(charset: string): void {
-    console.log(`[SDFAtlas] Preloading ${charset.length} characters...`)
     for (const char of charset) {
       this.getGlyph(char)
     }
-    console.log(`[SDFAtlas] Preloaded, atlas has ${this.glyphs.size} glyphs`)
   }
 
   /**

@@ -48,8 +48,7 @@ export const MapCreationPage = () => {
       })
 
       navigate(MAPS_ROUTES.view(newMap.id))
-    } catch (error) {
-      console.error('Map creation error:', error)
+    } catch {
       toast.error(t('mapCreation.error'))
     }
   }

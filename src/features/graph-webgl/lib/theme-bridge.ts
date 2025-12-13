@@ -10,10 +10,17 @@ export interface ThemeColors {
   card_fg: [number, number, number, number]
   border: [number, number, number, number]
   background: [number, number, number, number]
-  knowledge: [number, number, number, number]
+  // Node type colors (8 unique hues)
+  concept: [number, number, number, number]
+  theory: [number, number, number, number]
   fact: [number, number, number, number]
-  question: [number, number, number, number]
   example: [number, number, number, number]
+  question: [number, number, number, number]
+  hypothesis: [number, number, number, number]
+  person: [number, number, number, number]
+  school: [number, number, number, number]
+  // Legacy aliases (for backward compatibility)
+  knowledge: [number, number, number, number]
   primary: [number, number, number, number]
   glow: [number, number, number, number]
 }
@@ -48,9 +55,9 @@ function oklchToRgba(oklchString: string, alpha = 1): [number, number, number, n
   const s = s_ * s_ * s_
 
   // Linear RGB
-  let rLin = +4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s
-  let gLin = -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s
-  let bLin = -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s
+  const rLin = +4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s
+  const gLin = -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s
+  const bLin = -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s
 
   // Linear to sRGB gamma correction
   const toSrgb = (x: number) => {
@@ -90,11 +97,15 @@ export function extractThemeColors(): ThemeColors {
   const border = getCssVar('--border') || (isDark ? '0.28 0 0' : '0.91 0 0')
   const background = getCssVar('--background') || (isDark ? '0.16 0 0' : '0.99 0 0')
 
-  // Semantic colors - try to get from CSS, fallback to defaults (OKLCH)
-  const knowledge = getCssVar('--semantic-knowledge') || '0.55 0.17 250' // blue
-  const fact = getCssVar('--semantic-fact') || '0.58 0.17 145' // green
-  const question = getCssVar('--semantic-question') || '0.55 0.19 290' // purple
-  const example = getCssVar('--semantic-example') || '0.70 0.15 70' // amber
+  // Node type colors - 8 unique hues
+  const concept = getCssVar('--node-concept') || '0.55 0.17 240'
+  const theory = getCssVar('--node-theory') || '0.52 0.18 265'
+  const fact = getCssVar('--node-fact') || '0.58 0.17 145'
+  const example = getCssVar('--node-example') || '0.68 0.17 55'
+  const question = getCssVar('--node-question') || '0.55 0.18 290'
+  const hypothesis = getCssVar('--node-hypothesis') || '0.58 0.19 315'
+  const person = getCssVar('--node-person') || '0.62 0.18 25'
+  const school = getCssVar('--node-school') || '0.60 0.14 195'
 
   // UI colors
   const primary = getCssVar('--primary') || (isDark ? '0.95 0 0' : '0.12 0 0')
@@ -104,10 +115,17 @@ export function extractThemeColors(): ThemeColors {
     card_fg: oklchToRgba(cardFg),
     border: oklchToRgba(border),
     background: oklchToRgba(background),
-    knowledge: oklchToRgba(knowledge),
+    // Node type colors
+    concept: oklchToRgba(concept),
+    theory: oklchToRgba(theory),
     fact: oklchToRgba(fact),
-    question: oklchToRgba(question),
     example: oklchToRgba(example),
+    question: oklchToRgba(question),
+    hypothesis: oklchToRgba(hypothesis),
+    person: oklchToRgba(person),
+    school: oklchToRgba(school),
+    // Legacy alias
+    knowledge: oklchToRgba(concept),
     primary: oklchToRgba(primary),
     glow: oklchToRgba(primary, 0.5) // Glow with 50% alpha
   }

@@ -91,7 +91,11 @@ export const ChatMessageList = ({
 
   return (
     <div className='space-y-4 py-4'>
-      {messages.map((message, index) => (
+      {messages.map((message, index) => {
+        // Check if AI is "thinking" (streaming but no content yet)
+        const isThinking = message.role === 'assistant' && message.isStreaming && !message.content
+
+        return (
         <div
           key={message.id}
           className={cn(
@@ -105,7 +109,7 @@ export const ChatMessageList = ({
           {message.role === 'assistant' && (
             <div className='flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center'>
               {message.brand && aiBrandIcons[message.brand] ? (
-                <Icon icon={aiBrandIcons[message.brand]} className='w-4 h-4 text-primary' />
+                <Icon data={aiBrandIcons[message.brand]} className='w-4 h-4 text-primary' />
               ) : (
                 <Bot className='w-4 h-4 text-primary' />
               )}
@@ -120,8 +124,16 @@ export const ChatMessageList = ({
               message.role === 'user' && 'items-end'
             )}
           >
-            {/* Message Bubble */}
-            {message.role === 'user' && editingMessageId === message.id ? (
+            {/* Thinking Bubble - shown when AI is processing but no content yet */}
+            {isThinking ? (
+              <div className='rounded-lg px-4 py-3 bg-muted'>
+                <div className='flex items-center gap-1.5'>
+                  <span className='w-2 h-2 rounded-full bg-primary/60 animate-pulse' style={{ animationDelay: '0ms' }} />
+                  <span className='w-2 h-2 rounded-full bg-primary/60 animate-pulse' style={{ animationDelay: '150ms' }} />
+                  <span className='w-2 h-2 rounded-full bg-primary/60 animate-pulse' style={{ animationDelay: '300ms' }} />
+                </div>
+              </div>
+            ) : message.role === 'user' && editingMessageId === message.id ? (
               // Inline edit mode for user message
               <div className='flex flex-col gap-2 w-full'>
                 <Textarea
@@ -211,8 +223,8 @@ export const ChatMessageList = ({
               </div>
             )}
 
-            {/* Streaming Indicator */}
-            {message.isStreaming && (
+            {/* Streaming Indicator - only show when actually streaming content, not when thinking */}
+            {message.isStreaming && message.content && (
               <div className='flex items-center gap-2 text-xs text-muted-foreground px-2'>
                 <Loader2 className='w-3 h-3 animate-spin' />
                 <span>{t('ai.chat.streaming')}</span>
@@ -369,7 +381,8 @@ export const ChatMessageList = ({
             </Avatar>
           )}
         </div>
-      ))}
+        )
+      })}
 
       {/* Scroll anchor */}
       <div ref={messagesEndRef} />

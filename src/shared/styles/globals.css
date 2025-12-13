@@ -96,6 +96,24 @@
   --color-complexity-advanced: oklch(var(--complexity-advanced));
   --color-complexity-advanced-bg: oklch(var(--complexity-advanced-bg));
 
+  /* Node type colors - 8 unique types */
+  --color-node-concept: oklch(var(--node-concept));
+  --color-node-concept-muted: oklch(var(--node-concept-muted));
+  --color-node-theory: oklch(var(--node-theory));
+  --color-node-theory-muted: oklch(var(--node-theory-muted));
+  --color-node-fact: oklch(var(--node-fact));
+  --color-node-fact-muted: oklch(var(--node-fact-muted));
+  --color-node-example: oklch(var(--node-example));
+  --color-node-example-muted: oklch(var(--node-example-muted));
+  --color-node-question: oklch(var(--node-question));
+  --color-node-question-muted: oklch(var(--node-question-muted));
+  --color-node-hypothesis: oklch(var(--node-hypothesis));
+  --color-node-hypothesis-muted: oklch(var(--node-hypothesis-muted));
+  --color-node-person: oklch(var(--node-person));
+  --color-node-person-muted: oklch(var(--node-person-muted));
+  --color-node-school: oklch(var(--node-school));
+  --color-node-school-muted: oklch(var(--node-school-muted));
+
   /* Edge colors - 10 unique types */
   --color-edge-prerequisite: oklch(var(--edge-prerequisite));
   --color-edge-prerequisite-muted: oklch(var(--edge-prerequisite-muted));
@@ -185,7 +203,7 @@
     /* Theme preview colors (don't change with theme) */
     --preview-classic: 0.53 0.26 263;        /* Blue #0055FF */
     --preview-vanilla: 0.66 0.17 45;         /* Terracotta #E36B2B */
-    --preview-vivid: 0.82 0.22 180;          /* Electric cyan #00F0D0 */
+    --preview-vivid: 0.70 0.20 165;          /* Teal-green - more green */
     --preview-mono: 0.64 0.25 16;            /* Hot Pink #FF0055 */
 
     /* Base UI - Pure neutral (C=0) */
@@ -221,23 +239,34 @@
     --brand-foreground: 0.99 0 0;
     --brand-muted: 0.95 0.04 263;
 
-    /* Graph node colors - balanced L for light/dark */
-    --graph-violet: 0.58 0.20 290;
-    --graph-blue: 0.58 0.18 250;
-    --graph-cyan: 0.62 0.14 195;
-    --graph-emerald: 0.60 0.17 160;
-    --graph-amber: 0.72 0.15 70;             /* Higher L for yellow */
-    --graph-rose: 0.62 0.20 350;
+    /* Node type colors - 8 unique hues for visual distinction
+       L adjusted per hue for Helmholtz-Kohlrausch compensation */
+    --node-concept: 0.55 0.17 240;           /* Blue - abstract knowledge */
+    --node-concept-muted: 0.94 0.04 240;
+    --node-theory: 0.52 0.18 265;            /* Indigo - deep theory */
+    --node-theory-muted: 0.94 0.04 265;
+    --node-fact: 0.58 0.17 145;              /* Green - verified info */
+    --node-fact-muted: 0.94 0.04 145;
+    --node-example: 0.68 0.17 55;            /* Orange - practical */
+    --node-example-muted: 0.94 0.04 55;
+    --node-question: 0.55 0.18 290;          /* Purple - unknown */
+    --node-question-muted: 0.94 0.04 290;
+    --node-hypothesis: 0.58 0.19 315;        /* Magenta - speculation */
+    --node-hypothesis-muted: 0.94 0.04 315;
+    --node-person: 0.62 0.18 25;             /* Coral - human (warm) */
+    --node-person-muted: 0.94 0.04 25;
+    --node-school: 0.60 0.14 195;            /* Cyan - institution */
+    --node-school-muted: 0.94 0.04 195;
 
-    /* Semantic colors - Node types (L tuned per hue for equal perceived brightness) */
-    --semantic-knowledge: 0.55 0.17 250;     /* Blue - concept, theory */
-    --semantic-knowledge-muted: 0.94 0.04 250;
-    --semantic-fact: 0.58 0.17 145;          /* Green - fact */
-    --semantic-fact-muted: 0.94 0.04 145;
-    --semantic-question: 0.55 0.19 290;      /* Purple - question, hypothesis */
-    --semantic-question-muted: 0.94 0.04 290;
-    --semantic-example: 0.70 0.15 70;        /* Amber - higher L for yellow */
-    --semantic-example-muted: 0.94 0.05 70;
+    /* Semantic colors (legacy - kept for backward compatibility) */
+    --semantic-knowledge: var(--node-concept);
+    --semantic-knowledge-muted: var(--node-concept-muted);
+    --semantic-fact: var(--node-fact);
+    --semantic-fact-muted: var(--node-fact-muted);
+    --semantic-question: var(--node-question);
+    --semantic-question-muted: var(--node-question-muted);
+    --semantic-example: var(--node-example);
+    --semantic-example-muted: var(--node-example-muted);
     --semantic-conflict: 0.60 0.22 25;       /* Red - contradiction */
     --semantic-conflict-muted: 0.94 0.04 25;
     --semantic-neutral: 0.50 0 0;            /* Gray - neutral */
@@ -311,30 +340,40 @@
     /* Theme preview colors (same hue, works on dark) */
     --preview-classic: 0.57 0.24 263;
     --preview-vanilla: 0.70 0.16 45;
-    --preview-vivid: 0.82 0.22 180;
+    --preview-vivid: 0.82 0.22 165;
     --preview-mono: 0.68 0.24 16;            /* Hot Pink #FF0055 */
 
-    /* Graph node colors - same as light, work universally */
-    --graph-violet: 0.58 0.20 290;
-    --graph-blue: 0.58 0.18 250;
-    --graph-cyan: 0.62 0.14 195;
-    --graph-emerald: 0.60 0.17 160;
-    --graph-amber: 0.72 0.15 70;
-    --graph-rose: 0.62 0.20 350;
+    /* Node type colors - 8 unique hues (same as light, muted for dark bg) */
+    --node-concept: 0.55 0.17 240;
+    --node-concept-muted: 0.24 0.05 240;
+    --node-theory: 0.52 0.18 265;
+    --node-theory-muted: 0.24 0.05 265;
+    --node-fact: 0.58 0.17 145;
+    --node-fact-muted: 0.24 0.05 145;
+    --node-example: 0.68 0.17 55;
+    --node-example-muted: 0.24 0.05 55;
+    --node-question: 0.55 0.18 290;
+    --node-question-muted: 0.24 0.05 290;
+    --node-hypothesis: 0.58 0.19 315;
+    --node-hypothesis-muted: 0.24 0.05 315;
+    --node-person: 0.62 0.18 25;
+    --node-person-muted: 0.24 0.05 25;
+    --node-school: 0.60 0.14 195;
+    --node-school-muted: 0.24 0.05 195;
 
-    /* Semantic colors - same hues, universal L values */
-    --semantic-knowledge: 0.55 0.17 250;
-    --semantic-knowledge-muted: 0.22 0.05 250;
-    --semantic-fact: 0.58 0.17 145;
-    --semantic-fact-muted: 0.22 0.05 145;
-    --semantic-question: 0.55 0.19 290;
-    --semantic-question-muted: 0.22 0.05 290;
-    --semantic-example: 0.70 0.15 70;
-    --semantic-example-muted: 0.22 0.06 70;
+    /* Semantic colors (legacy aliases) */
+    --semantic-knowledge: var(--node-concept);
+    --semantic-knowledge-muted: var(--node-concept-muted);
+    --semantic-fact: var(--node-fact);
+    --semantic-fact-muted: var(--node-fact-muted);
+    --semantic-question: var(--node-question);
+    --semantic-question-muted: var(--node-question-muted);
+    --semantic-example: var(--node-example);
+    --semantic-example-muted: var(--node-example-muted);
     --semantic-conflict: 0.60 0.22 25;
-    --semantic-conflict-muted: 0.22 0.05 25;
+    --semantic-conflict-muted: 0.24 0.05 25;
     --semantic-neutral: 0.55 0 0;
-    --semantic-neutral-muted: 0.22 0 0;
+    --semantic-neutral-muted: 0.24 0 0;
 
     /* Complexity colors (dark mode) */
     --complexity-basic: 0.55 0 0;
@@ -404,23 +443,33 @@
     --brand-foreground: 0.99 0 0;
     --brand-muted: 0.95 0.03 45;
 
-    /* Graph node colors - same hue, C×0.95 */
-    --graph-violet: 0.58 0.19 290;
-    --graph-blue: 0.58 0.17 250;
-    --graph-cyan: 0.62 0.13 195;
-    --graph-emerald: 0.60 0.16 160;
-    --graph-amber: 0.72 0.14 70;
-    --graph-rose: 0.62 0.19 350;
+    /* Node type colors - 8 unique hues, C×0.95 */
+    --node-concept: 0.55 0.16 240;
+    --node-concept-muted: 0.94 0.04 240;
+    --node-theory: 0.52 0.17 265;
+    --node-theory-muted: 0.94 0.04 265;
+    --node-fact: 0.58 0.16 145;
+    --node-fact-muted: 0.94 0.04 145;
+    --node-example: 0.68 0.16 55;
+    --node-example-muted: 0.94 0.04 55;
+    --node-question: 0.55 0.17 290;
+    --node-question-muted: 0.94 0.04 290;
+    --node-hypothesis: 0.58 0.18 315;
+    --node-hypothesis-muted: 0.94 0.04 315;
+    --node-person: 0.62 0.17 25;
+    --node-person-muted: 0.94 0.04 25;
+    --node-school: 0.60 0.13 195;
+    --node-school-muted: 0.94 0.04 195;
 
-    /* Semantic colors - same hue, C×0.95 for slightly softer look */
-    --semantic-knowledge: 0.55 0.16 250;
-    --semantic-knowledge-muted: 0.94 0.04 250;
-    --semantic-fact: 0.58 0.16 145;
-    --semantic-fact-muted: 0.94 0.04 145;
-    --semantic-question: 0.55 0.18 290;
-    --semantic-question-muted: 0.94 0.04 290;
-    --semantic-example: 0.70 0.14 70;
-    --semantic-example-muted: 0.94 0.05 70;
+    /* Semantic colors (legacy aliases) */
+    --semantic-knowledge: var(--node-concept);
+    --semantic-knowledge-muted: var(--node-concept-muted);
+    --semantic-fact: var(--node-fact);
+    --semantic-fact-muted: var(--node-fact-muted);
+    --semantic-question: var(--node-question);
+    --semantic-question-muted: var(--node-question-muted);
+    --semantic-example: var(--node-example);
+    --semantic-example-muted: var(--node-example-muted);
     --semantic-conflict: 0.60 0.21 25;
     --semantic-conflict-muted: 0.94 0.04 25;
     --semantic-neutral: 0.50 0.006 50;
@@ -487,27 +536,37 @@
     --brand-foreground: 0.99 0 0;
     --brand-muted: 0.26 0.04 45;
 
-    /* Graph node colors - same as light, C×0.95 */
-    --graph-violet: 0.58 0.19 290;
-    --graph-blue: 0.58 0.17 250;
-    --graph-cyan: 0.62 0.13 195;
-    --graph-emerald: 0.60 0.16 160;
-    --graph-amber: 0.72 0.14 70;
-    --graph-rose: 0.62 0.19 350;
+    /* Node type colors - 8 unique hues, C×0.95 */
+    --node-concept: 0.55 0.16 240;
+    --node-concept-muted: 0.22 0.04 240;
+    --node-theory: 0.52 0.17 265;
+    --node-theory-muted: 0.22 0.04 265;
+    --node-fact: 0.58 0.16 145;
+    --node-fact-muted: 0.22 0.04 145;
+    --node-example: 0.68 0.16 55;
+    --node-example-muted: 0.22 0.04 55;
+    --node-question: 0.55 0.17 290;
+    --node-question-muted: 0.22 0.04 290;
+    --node-hypothesis: 0.58 0.18 315;
+    --node-hypothesis-muted: 0.22 0.04 315;
+    --node-person: 0.62 0.17 25;
+    --node-person-muted: 0.22 0.04 25;
+    --node-school: 0.60 0.13 195;
+    --node-school-muted: 0.22 0.04 195;
 
-    /* Semantic colors - C×0.95 */
-    --semantic-knowledge: 0.55 0.16 250;
-    --semantic-knowledge-muted: 0.18 0.04 250;
-    --semantic-fact: 0.58 0.16 145;
-    --semantic-fact-muted: 0.18 0.04 145;
-    --semantic-question: 0.55 0.18 290;
-    --semantic-question-muted: 0.18 0.04 290;
-    --semantic-example: 0.70 0.14 70;
-    --semantic-example-muted: 0.18 0.05 70;
+    /* Semantic colors (legacy aliases) */
+    --semantic-knowledge: var(--node-concept);
+    --semantic-knowledge-muted: var(--node-concept-muted);
+    --semantic-fact: var(--node-fact);
+    --semantic-fact-muted: var(--node-fact-muted);
+    --semantic-question: var(--node-question);
+    --semantic-question-muted: var(--node-question-muted);
+    --semantic-example: var(--node-example);
+    --semantic-example-muted: var(--node-example-muted);
     --semantic-conflict: 0.60 0.21 25;
-    --semantic-conflict-muted: 0.18 0.04 25;
+    --semantic-conflict-muted: 0.22 0.04 25;
     --semantic-neutral: 0.55 0.003 50;
-    --semantic-neutral-muted: 0.18 0.003 50;
+    --semantic-neutral-muted: 0.22 0.003 50;
 
     /* Complexity colors (dark) */
     --complexity-basic: 0.55 0.003 50;
@@ -568,31 +627,41 @@
     --info-foreground: 0.99 0 0;
     --border: 0.91 0.004 250;           /* Cool border - subtle */
     --input: 0.91 0.004 250;
-    --ring: 0.65 0.22 180;              /* Electric cyan - darker for light mode */
-    --brand: 0.65 0.22 180;             /* Electric cyan - darker for light mode */
-    --brand-foreground: 0.99 0 0;       /* White text for darker brand */
-    --brand-muted: 0.95 0.05 180;
+    --ring: 0.60 0.20 165;              /* Teal-green - for light mode */
+    --brand: 0.60 0.20 165;             /* Teal-green - darker on light bg */
+    --brand-foreground: 0.99 0 0;       /* White text */
+    --brand-muted: 0.95 0.05 165;
 
-    /* Graph node colors - vivid, C×1.05 */
-    --graph-violet: 0.55 0.22 285;
-    --graph-blue: 0.58 0.19 235;
-    --graph-cyan: 0.68 0.14 195;
-    --graph-emerald: 0.62 0.18 160;
-    --graph-amber: 0.75 0.16 85;
-    --graph-rose: 0.62 0.21 350;
+    /* Node type colors - 8 unique hues, C×1.05 */
+    --node-concept: 0.55 0.18 240;
+    --node-concept-muted: 0.95 0.04 240;
+    --node-theory: 0.52 0.19 265;
+    --node-theory-muted: 0.95 0.04 265;
+    --node-fact: 0.58 0.18 145;
+    --node-fact-muted: 0.95 0.04 145;
+    --node-example: 0.68 0.18 55;
+    --node-example-muted: 0.95 0.04 55;
+    --node-question: 0.55 0.19 290;
+    --node-question-muted: 0.95 0.04 290;
+    --node-hypothesis: 0.58 0.20 315;
+    --node-hypothesis-muted: 0.95 0.04 315;
+    --node-person: 0.62 0.19 25;
+    --node-person-muted: 0.95 0.04 25;
+    --node-school: 0.60 0.15 195;
+    --node-school-muted: 0.95 0.04 195;
 
-    /* Semantic colors - same hues, C×1.05 for vibrant */
-    --semantic-knowledge: 0.55 0.18 250;   /* Blue - same hue as Classic */
-    --semantic-knowledge-muted: 0.95 0.035 250;
-    --semantic-fact: 0.58 0.18 145;        /* Green */
-    --semantic-fact-muted: 0.95 0.035 145;
-    --semantic-question: 0.55 0.20 290;    /* Purple */
-    --semantic-question-muted: 0.95 0.035 290;
-    --semantic-example: 0.72 0.16 70;      /* Amber */
-    --semantic-example-muted: 0.95 0.04 70;
-    --semantic-conflict: 0.60 0.23 25;     /* Red */
-    --semantic-conflict-muted: 0.95 0.035 25;
-    --semantic-neutral: 0.50 0.005 250;    /* Cool gray */
+    /* Semantic colors (legacy aliases) */
+    --semantic-knowledge: var(--node-concept);
+    --semantic-knowledge-muted: var(--node-concept-muted);
+    --semantic-fact: var(--node-fact);
+    --semantic-fact-muted: var(--node-fact-muted);
+    --semantic-question: var(--node-question);
+    --semantic-question-muted: var(--node-question-muted);
+    --semantic-example: var(--node-example);
+    --semantic-example-muted: var(--node-example-muted);
+    --semantic-conflict: 0.60 0.23 25;
+    --semantic-conflict-muted: 0.95 0.04 25;
+    --semantic-neutral: 0.50 0.005 250;
     --semantic-neutral-muted: 0.95 0.004 250;
 
     /* Complexity colors - vivid */
@@ -649,33 +718,43 @@
     --warning-foreground: 0.12 0 0;
     --info: 0.70 0.15 200;             /* Vivid cyan - toned down */
     --info-foreground: 0.99 0 0;
-    --border: 0.20 0.004 250;          /* Softer border */
+    --border: 0.24 0.004 250;          /* Δ0.12 from bg for visibility */
     --input: 0.24 0.004 250;
-    --ring: 0.82 0.22 180;             /* Electric cyan #00F0D0 (same for dark) */
-    --brand: 0.82 0.22 180;            /* Electric cyan #00F0D0 (same for dark) */
+    --ring: 0.78 0.20 165;             /* Teal-green - bright for dark bg */
+    --brand: 0.78 0.20 165;            /* Teal-green - bright for dark bg */
     --brand-foreground: 0.12 0 0;      /* Dark text for bright brand */
-    --brand-muted: 0.20 0.06 180;
+    --brand-muted: 0.18 0.06 165;
 
-    /* Graph node colors - vivid dark, C×1.05 (not 1.15) */
-    --graph-violet: 0.58 0.22 285;
-    --graph-blue: 0.60 0.19 235;
-    --graph-cyan: 0.70 0.14 195;
-    --graph-emerald: 0.65 0.18 160;
-    --graph-amber: 0.75 0.16 85;
-    --graph-rose: 0.62 0.21 350;
+    /* Node type colors - 8 unique hues, C×1.05 (SAME hue as light!) */
+    --node-concept: 0.55 0.18 240;
+    --node-concept-muted: 0.18 0.05 240;
+    --node-theory: 0.52 0.19 265;
+    --node-theory-muted: 0.18 0.05 265;
+    --node-fact: 0.58 0.18 145;
+    --node-fact-muted: 0.18 0.05 145;
+    --node-example: 0.68 0.18 55;
+    --node-example-muted: 0.18 0.05 55;
+    --node-question: 0.55 0.19 290;
+    --node-question-muted: 0.18 0.05 290;
+    --node-hypothesis: 0.58 0.20 315;
+    --node-hypothesis-muted: 0.18 0.05 315;
+    --node-person: 0.62 0.19 25;
+    --node-person-muted: 0.18 0.05 25;
+    --node-school: 0.60 0.15 195;
+    --node-school-muted: 0.18 0.05 195;
 
-    /* Semantic colors - same hues, C×1.05 (not 1.15) */
-    --semantic-knowledge: 0.58 0.19 235;   /* Blue */
-    --semantic-knowledge-muted: 0.18 0.05 235;
-    --semantic-fact: 0.60 0.19 145;        /* Green */
-    --semantic-fact-muted: 0.18 0.05 145;
-    --semantic-question: 0.58 0.21 285;    /* Purple */
-    --semantic-question-muted: 0.18 0.05 285;
-    --semantic-example: 0.72 0.16 55;      /* Amber */
-    --semantic-example-muted: 0.18 0.05 55;
-    --semantic-conflict: 0.60 0.23 25;     /* Red */
+    /* Semantic colors (legacy aliases) */
+    --semantic-knowledge: var(--node-concept);
+    --semantic-knowledge-muted: var(--node-concept-muted);
+    --semantic-fact: var(--node-fact);
+    --semantic-fact-muted: var(--node-fact-muted);
+    --semantic-question: var(--node-question);
+    --semantic-question-muted: var(--node-question-muted);
+    --semantic-example: var(--node-example);
+    --semantic-example-muted: var(--node-example-muted);
+    --semantic-conflict: 0.60 0.23 25;
     --semantic-conflict-muted: 0.18 0.05 25;
-    --semantic-neutral: 0.55 0.005 250;    /* Cool gray */
+    --semantic-neutral: 0.55 0.005 250;
     --semantic-neutral-muted: 0.18 0.004 250;
 
     /* Complexity colors - vivid dark */
@@ -744,26 +823,36 @@
     --brand-foreground: 0.99 0 0;
     --brand-muted: 0.95 0.04 16;
 
-    /* Graph node colors - same hues as Classic */
-    --graph-violet: 0.55 0.24 285;
-    --graph-blue: 0.55 0.18 235;
-    --graph-cyan: 0.70 0.12 195;
-    --graph-emerald: 0.60 0.17 160;
-    --graph-amber: 0.75 0.15 85;
-    --graph-rose: 0.60 0.20 350;
+    /* Node type colors - 8 unique hues, same as Classic */
+    --node-concept: 0.55 0.17 240;
+    --node-concept-muted: 0.94 0.04 240;
+    --node-theory: 0.52 0.18 265;
+    --node-theory-muted: 0.94 0.04 265;
+    --node-fact: 0.58 0.17 145;
+    --node-fact-muted: 0.94 0.04 145;
+    --node-example: 0.68 0.17 55;
+    --node-example-muted: 0.94 0.04 55;
+    --node-question: 0.55 0.18 290;
+    --node-question-muted: 0.94 0.04 290;
+    --node-hypothesis: 0.58 0.19 315;
+    --node-hypothesis-muted: 0.94 0.04 315;
+    --node-person: 0.62 0.18 25;
+    --node-person-muted: 0.94 0.04 25;
+    --node-school: 0.60 0.14 195;
+    --node-school-muted: 0.94 0.04 195;
 
-    /* Semantic colors - same hues and chroma as Classic */
-    --semantic-knowledge: 0.55 0.18 235;   /* Blue */
-    --semantic-knowledge-muted: 0.94 0.04 235;
-    --semantic-fact: 0.58 0.18 145;        /* Green */
-    --semantic-fact-muted: 0.94 0.04 145;
-    --semantic-question: 0.55 0.21 285;    /* Purple */
-    --semantic-question-muted: 0.94 0.04 285;
-    --semantic-example: 0.70 0.15 55;      /* Amber */
-    --semantic-example-muted: 0.94 0.04 55;
-    --semantic-conflict: 0.55 0.21 15;     /* Red */
-    --semantic-conflict-muted: 0.94 0.04 15;
-    --semantic-neutral: 0.50 0 0;          /* Pure gray */
+    /* Semantic colors (legacy aliases) */
+    --semantic-knowledge: var(--node-concept);
+    --semantic-knowledge-muted: var(--node-concept-muted);
+    --semantic-fact: var(--node-fact);
+    --semantic-fact-muted: var(--node-fact-muted);
+    --semantic-question: var(--node-question);
+    --semantic-question-muted: var(--node-question-muted);
+    --semantic-example: var(--node-example);
+    --semantic-example-muted: var(--node-example-muted);
+    --semantic-conflict: 0.55 0.21 25;
+    --semantic-conflict-muted: 0.94 0.04 25;
+    --semantic-neutral: 0.50 0 0;
     --semantic-neutral-muted: 0.94 0 0;
 
     /* Complexity colors - mono */
@@ -819,34 +908,44 @@
     --warning-foreground: 0.15 0 0;
     --info: 0.72 0.14 200;             /* Brighter cyan */
     --info-foreground: 0.15 0 0;
-    --border: 0.20 0 0;                /* Gray border - visible */
+    --border: 0.22 0 0;                /* Δ0.14 from bg for visibility */
     --input: 0.20 0 0;
     --ring: 0.68 0.24 16;              /* Hot pink #FF0055 +0.04L */
     --brand: 0.68 0.24 16;             /* Hot pink #FF0055 +0.04L */
     --brand-foreground: 0.99 0 0;
-    --brand-muted: 0.20 0.05 16;
+    --brand-muted: 0.16 0.05 16;
 
-    /* Graph node colors - same hues as Classic dark */
-    --graph-violet: 0.65 0.24 285;
-    --graph-blue: 0.65 0.18 235;
-    --graph-cyan: 0.78 0.12 195;
-    --graph-emerald: 0.72 0.17 160;
-    --graph-amber: 0.80 0.15 85;
-    --graph-rose: 0.68 0.20 350;
+    /* Node type colors - 8 unique hues, brighter L for dark bg */
+    --node-concept: 0.60 0.17 240;
+    --node-concept-muted: 0.16 0.05 240;
+    --node-theory: 0.58 0.18 265;
+    --node-theory-muted: 0.16 0.05 265;
+    --node-fact: 0.62 0.17 145;
+    --node-fact-muted: 0.16 0.05 145;
+    --node-example: 0.72 0.17 55;
+    --node-example-muted: 0.16 0.05 55;
+    --node-question: 0.60 0.18 290;
+    --node-question-muted: 0.16 0.05 290;
+    --node-hypothesis: 0.62 0.19 315;
+    --node-hypothesis-muted: 0.16 0.05 315;
+    --node-person: 0.65 0.18 25;
+    --node-person-muted: 0.16 0.05 25;
+    --node-school: 0.65 0.14 195;
+    --node-school-muted: 0.16 0.05 195;
 
-    /* Semantic colors - same hues and chroma as Classic dark */
-    --semantic-knowledge: 0.65 0.18 235;   /* Blue */
-    --semantic-knowledge-muted: 0.22 0.05 235;
-    --semantic-fact: 0.65 0.18 145;        /* Green */
-    --semantic-fact-muted: 0.22 0.05 145;
-    --semantic-question: 0.65 0.21 285;    /* Purple */
-    --semantic-question-muted: 0.22 0.05 285;
-    --semantic-example: 0.75 0.15 55;      /* Amber */
-    --semantic-example-muted: 0.22 0.05 55;
-    --semantic-conflict: 0.62 0.21 15;     /* Red */
-    --semantic-conflict-muted: 0.22 0.05 15;
-    --semantic-neutral: 0.60 0 0;          /* Pure gray */
-    --semantic-neutral-muted: 0.22 0 0;
+    /* Semantic colors (legacy aliases) */
+    --semantic-knowledge: var(--node-concept);
+    --semantic-knowledge-muted: var(--node-concept-muted);
+    --semantic-fact: var(--node-fact);
+    --semantic-fact-muted: var(--node-fact-muted);
+    --semantic-question: var(--node-question);
+    --semantic-question-muted: var(--node-question-muted);
+    --semantic-example: var(--node-example);
+    --semantic-example-muted: var(--node-example-muted);
+    --semantic-conflict: 0.62 0.21 25;
+    --semantic-conflict-muted: 0.16 0.05 25;
+    --semantic-neutral: 0.60 0 0;
+    --semantic-neutral-muted: 0.16 0 0;
 
     /* Complexity colors - mono dark */
     --complexity-basic: 0.60 0 0;

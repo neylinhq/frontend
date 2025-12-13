@@ -1,49 +1,48 @@
 import type { NodeType } from '../node.schema'
 
 /**
- * S+ Elite Semantic Color System
- * - Knowledge (concept, theory): Blue
- * - Fact: Green
- * - Question (question, hypothesis): Purple
- * - Example (example, person, school): Amber
+ * Node Type Color System - 8 unique hues
+ * Each node type has its own distinct color for visual identification.
  * Uses CSS variables that adapt to palette (mono/classic/vanilla/vivid)
+ *
+ * Hue mapping:
+ * - concept:    240° Blue      - abstract knowledge
+ * - theory:     265° Indigo    - deep theoretical framework
+ * - fact:       145° Green     - verified information
+ * - example:     55° Orange    - practical demonstration
+ * - question:   290° Purple    - unknown/inquiry
+ * - hypothesis: 315° Magenta   - speculation/untested
+ * - person:      25° Coral     - human entity (warm)
+ * - school:     195° Cyan      - institution/organization
  */
 export const getNodeBorderColor = (type: NodeType): string => {
   const colors: Record<NodeType, string> = {
-    // Knowledge group - Blue
-    concept: 'border-l-semantic-knowledge',
-    theory: 'border-l-semantic-knowledge',
-    // Fact group - Green
-    fact: 'border-l-semantic-fact',
-    // Question group - Purple
-    question: 'border-l-semantic-question',
-    hypothesis: 'border-l-semantic-question',
-    // Example group - Amber
-    example: 'border-l-semantic-example',
-    person: 'border-l-semantic-example',
-    school: 'border-l-semantic-example'
+    concept: 'border-l-node-concept',
+    theory: 'border-l-node-theory',
+    fact: 'border-l-node-fact',
+    example: 'border-l-node-example',
+    question: 'border-l-node-question',
+    hypothesis: 'border-l-node-hypothesis',
+    person: 'border-l-node-person',
+    school: 'border-l-node-school'
   }
   return colors[type] || 'border-l-semantic-neutral'
 }
 
 /**
  * Background color for LOD view (zoomed out)
- * Uses muted semantic colors for softer appearance
+ * Uses muted node colors for softer appearance
  */
 export const getNodeBgColor = (type: NodeType): string => {
   const colors: Record<NodeType, string> = {
-    // Knowledge group - Blue
-    concept: 'bg-semantic-knowledge-muted',
-    theory: 'bg-semantic-knowledge-muted',
-    // Fact group - Green
-    fact: 'bg-semantic-fact-muted',
-    // Question group - Purple
-    question: 'bg-semantic-question-muted',
-    hypothesis: 'bg-semantic-question-muted',
-    // Example group - Amber
-    example: 'bg-semantic-example-muted',
-    person: 'bg-semantic-example-muted',
-    school: 'bg-semantic-example-muted'
+    concept: 'bg-node-concept-muted',
+    theory: 'bg-node-theory-muted',
+    fact: 'bg-node-fact-muted',
+    example: 'bg-node-example-muted',
+    question: 'bg-node-question-muted',
+    hypothesis: 'bg-node-hypothesis-muted',
+    person: 'bg-node-person-muted',
+    school: 'bg-node-school-muted'
   }
   return colors[type] || 'bg-semantic-neutral-muted'
 }

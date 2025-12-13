@@ -32,6 +32,8 @@ export interface ChatStreamChunk {
   content?: string
   sourceNodes?: NodeReference[]
   proposal?: ProposalData
+  /** AI brand identifier for avatar icons (e.g., 'openai', 'anthropic', 'deepseek') */
+  brand?: string
 }
 
 export interface EmbeddingsResponse {
@@ -94,14 +96,13 @@ export const aiApi = {
     return new Promise(async (resolve, reject) => {
       try {
         const baseUrl = import.meta.env.VITE_API_URL || '/api'
-        const token = localStorage.getItem('accessToken')
 
         const response = await fetch(`${baseUrl}/maps/${mapId}/chat/stream`, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
-            ...(token ? { Authorization: `Bearer ${token}` } : {})
+            'Content-Type': 'application/json'
           },
+          credentials: 'include', // Use cookie-based auth (same as api client)
           body: JSON.stringify({
             question,
             model: options?.model,
@@ -114,7 +115,17 @@ export const aiApi = {
         })
 
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
+          // Try to parse error response for better error message
+          let errorMessage = `HTTP error! status: ${response.status}`
+          try {
+            const errorData = await response.json()
+            if (errorData?.error?.message) {
+              errorMessage = errorData.error.message
+            }
+          } catch {
+            // Ignore JSON parse errors
+          }
+          throw new Error(errorMessage)
         }
 
         const reader = response.body?.getReader()

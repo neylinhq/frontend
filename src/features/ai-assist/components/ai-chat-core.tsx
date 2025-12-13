@@ -42,6 +42,7 @@ export const AIChatCore = ({
   onUndoPreview
 }: AIChatCoreProps) => {
   const { t } = useTranslation()
+  const user = useLoaderUser()
   const [contextMode, setContextMode] = useState<ContextMode>('node')
   const [inputValue, setInputValue] = useState('')
   const [isStreaming, setIsStreaming] = useState(false)
@@ -130,11 +131,12 @@ export const AIChatCore = ({
               break
 
             case 'done':
-              // Finalize message
+              // Finalize message with brand for avatar icon
               updateMessage(sessionId, aiMessageId, {
                 content: streamedContent,
                 preview,
-                isStreaming: false
+                isStreaming: false,
+                brand: chunk.brand
               })
               break
 
@@ -184,7 +186,9 @@ export const AIChatCore = ({
   const handleSavePreview = async (messageId: string, previewCard: PreviewCard) => {
     if (onSavePreview) {
       try {
+        console.log('[AI Chat] Starting save preview', { messageId, previewCard })
         const result = await onSavePreview(messageId, previewCard)
+        console.log('[AI Chat] Save preview result', result)
         // Move to resolved with undo data if available
         moveToResolved(
           sessionId,
@@ -193,7 +197,9 @@ export const AIChatCore = ({
           'approved',
           result ? { previousState: result.previousState, actionId: result.actionId } : undefined
         )
-      } catch {
+        console.log('[AI Chat] Move to resolved complete')
+      } catch (error) {
+        console.error('[AI Chat] Save preview error', error)
         toast.error(t('common.error'), {
           description: t('ai.saveFailed')
         })
@@ -277,6 +283,8 @@ export const AIChatCore = ({
             onUndoResolved={handleUndoResolved}
             onRegenerate={handleRegenerate}
             onEditMessage={handleEditMessage}
+            userAvatarUrl={user?.avatarUrl}
+            userDisplayName={user?.displayName || user?.firstName}
           />
         )}
       </div>

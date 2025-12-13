@@ -46,8 +46,10 @@ export const NodeChatPanel = ({ nodeId, mapId }: NodeChatPanelProps) => {
   const sessionId = getChatSessionId(mapId, nodeId)
 
   const handleSavePreview = async (messageId: string, previewCard: PreviewCard) => {
+    console.log('[NodeChatPanel] handleSavePreview called', { messageId, previewCard })
     if (previewCard.type === 'enrichment') {
       const data = previewCard.data as EnrichmentPreviewData
+      console.log('[NodeChatPanel] Processing enrichment', data)
 
       // Capture previous state for undo
       const previousState: Record<string, unknown> = {}
@@ -80,8 +82,18 @@ export const NodeChatPanel = ({ nodeId, mapId }: NodeChatPanelProps) => {
           break
       }
 
-      await updateNodeMutation.mutateAsync({ id: nodeId, data: updatePayload })
+      console.log('[NodeChatPanel] Calling mutateAsync', { nodeId, updatePayload })
+      // mutateAsync throws on error - let it propagate to AIChatCore for toast
+      try {
+        await updateNodeMutation.mutateAsync({ id: nodeId, data: updatePayload })
+        console.log('[NodeChatPanel] mutateAsync success')
+      } catch (error) {
+        console.error('[NodeChatPanel] mutateAsync error', error)
+        // Re-throw to be caught by AIChatCore
+        throw error
+      }
 
+      console.log('[NodeChatPanel] Recording action')
       // Record action for undo
       const actionId = recordAction({
         type: 'apply',
@@ -93,8 +105,10 @@ export const NodeChatPanel = ({ nodeId, mapId }: NodeChatPanelProps) => {
         previousState,
         newState: updatePayload
       })
+      console.log('[NodeChatPanel] Action recorded', actionId)
 
       toast.success(t('ai.enrichment.saved', 'Changes saved'))
+      console.log('[NodeChatPanel] Returning result')
 
       return { previousState, actionId }
     } else if (previewCard.type === 'exercise') {
@@ -103,6 +117,7 @@ export const NodeChatPanel = ({ nodeId, mapId }: NodeChatPanelProps) => {
         description: t('ai.exercises.savedDescription')
       })
     }
+    console.log('[NodeChatPanel] handleSavePreview done (no return)')
   }
 
   const handleUndoPreview = async (preview: ResolvedPreview) => {

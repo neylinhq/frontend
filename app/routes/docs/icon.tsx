@@ -1,9 +1,10 @@
 import { Bot } from 'lucide-react'
-import { Badge } from '@/shared/components/badge'
-import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
+import { DocsApiTable } from '@/shared/components/docs-api-table'
 import { DocsCodeBlock } from '@/shared/components/docs-code-block'
 import { DocsComponentPreview, DocsPreview } from '@/shared/components/docs-component-preview'
-import { DocsToc, type TocItem } from '@/shared/components/docs-toc'
+import { DocsPageLayout } from '@/shared/components/docs-page-layout'
+import { DocsSection } from '@/shared/components/docs-section'
+import type { TocItem } from '@/shared/components/docs-toc'
 import { Icon } from '@/shared/components/icon'
 import {
   aiBrandIcons,
@@ -24,178 +25,164 @@ export const meta = (_args: Route.MetaArgs) => {
   return getMeta('uiShowcase')
 }
 
+const TOC_ITEMS: TocItem[] = [
+  { id: 'ai-brands', title: 'AI Brands', level: 2 },
+  { id: 'payment-brands', title: 'Payment Brands', level: 2 },
+  { id: 'crypto', title: 'Cryptocurrency', level: 2 },
+  { id: 'networks', title: 'Blockchain Networks', level: 2 },
+  { id: 'oauth', title: 'OAuth Providers', level: 2 },
+  { id: 'usage', title: 'Usage', level: 2 },
+  { id: 'api-reference', title: 'API Reference', level: 2 }
+]
+
+const AI_BRAND_KEYS = [
+  'openai',
+  'anthropic',
+  'claude',
+  'deepseek',
+  'gemini',
+  'meta',
+  'mistral',
+  'xai',
+  'perplexity',
+  'huggingface',
+  'minimax'
+]
+
+const PAYMENT_KEYS = ['visa', 'mastercard', 'amex', 'discover', 'diners', 'jcb', 'unionpay']
+const CRYPTO_KEYS = ['btc', 'eth', 'usdt', 'usdc', 'sol']
+const NETWORK_KEYS = ['ton', 'tron', 'bsc', 'polygon', 'ethereum']
+const OAUTH_KEYS = ['github', 'telegram', 'google']
+
 const IconPage = () => {
-  const TOC_ITEMS: TocItem[] = [
-    { id: 'ai-brands', title: 'AI Brands', level: 2 },
-    { id: 'payment-brands', title: 'Payment Brands', level: 2 },
-    { id: 'crypto', title: 'Cryptocurrency', level: 2 },
-    { id: 'networks', title: 'Blockchain Networks', level: 2 },
-    { id: 'oauth', title: 'OAuth Providers', level: 2 },
-    { id: 'usage', title: 'Usage', level: 2 },
-    { id: 'api-reference', title: 'API Reference', level: 2 }
-  ]
-
-  const AI_BRAND_KEYS = [
-    'openai',
-    'anthropic',
-    'gemini',
-    'meta',
-    'mistral',
-    'xai',
-    'perplexity',
-    'huggingface',
-    'minimax'
-  ]
-
-  const PAYMENT_KEYS = ['visa', 'mastercard', 'amex', 'discover', 'diners', 'jcb', 'unionpay']
-  const CRYPTO_KEYS = ['btc', 'eth', 'usdt', 'usdc', 'sol']
-  const NETWORK_KEYS = ['ton', 'tron', 'bsc', 'polygon', 'ethereum']
-  const OAUTH_KEYS = ['github', 'telegram', 'google']
-
   return (
-    <div className='flex gap-10'>
-      <div className='flex-1 min-w-0 space-y-10'>
-        <header className='space-y-4'>
-          <DocsBreadcrumbs
-            items={[{ label: 'Components', href: '/docs/ui/button' }, { label: 'Icon' }]}
-          />
-          <div className='flex items-center gap-3'>
-            <Typography variant='h1'>Icon</Typography>
-            <Badge variant='brand'>Component</Badge>
-          </div>
-          <Typography variant='lead' className='max-w-2xl'>
-            SVG icon component for brand logos. Monochrome icons that adapt to currentColor.
-          </Typography>
-        </header>
-
-        <section id='ai-brands' className='scroll-mt-20 space-y-4'>
-          <Typography variant='h2'>AI Brands</Typography>
-          <p className='text-xs text-muted-foreground'>Icons for AI providers and models.</p>
-
-          <DocsComponentPreview
-            code={`import { Icon } from '@/shared/components/icon'
+    <DocsPageLayout
+      title='Icon'
+      description='SVG icon component for brand logos. Monochrome icons that adapt to currentColor.'
+      tocItems={TOC_ITEMS}
+    >
+      <DocsSection id='ai-brands' title='AI Brands' description='Icons for AI providers and models.'>
+        <DocsComponentPreview
+          code={`import { Icon } from '@/shared/components/icon'
 import { aiBrandIcons } from '@/shared/components/icon/icon.constants'
 
 <Icon data={aiBrandIcons['openai']} className='w-6 h-6' />
 <Icon data={aiBrandIcons['anthropic']} className='w-6 h-6' />`}
-          >
-            <DocsPreview className='flex flex-wrap justify-center gap-6'>
-              {AI_BRAND_KEYS.map(key => (
-                <div key={key} className='flex flex-col items-center gap-2'>
-                  <div className='w-12 h-12 rounded-lg bg-muted flex items-center justify-center'>
-                    {aiBrandIcons[key] ? (
-                      <Icon data={aiBrandIcons[key]} className='w-6 h-6' />
-                    ) : (
-                      <Bot className='w-6 h-6' />
-                    )}
-                  </div>
-                  <span className='text-xs text-muted-foreground'>{key}</span>
+        >
+          <DocsPreview className='flex flex-wrap justify-center gap-6'>
+            {AI_BRAND_KEYS.map(key => (
+              <div key={key} className='flex flex-col items-center gap-2'>
+                <div className='w-12 h-12 rounded-lg bg-muted flex items-center justify-center'>
+                  {aiBrandIcons[key] ? (
+                    <Icon data={aiBrandIcons[key]} className='w-6 h-6' />
+                  ) : (
+                    <Bot className='w-6 h-6' />
+                  )}
                 </div>
-              ))}
-            </DocsPreview>
-          </DocsComponentPreview>
-        </section>
+                <span className='text-xs text-muted-foreground'>{key}</span>
+              </div>
+            ))}
+          </DocsPreview>
+        </DocsComponentPreview>
+      </DocsSection>
 
-        <section id='payment-brands' className='scroll-mt-20 space-y-4 pt-6 border-t'>
-          <Typography variant='h2'>Payment Brands</Typography>
-          <p className='text-xs text-muted-foreground'>Payment method and card brand icons.</p>
-
-          <DocsComponentPreview
-            code={`import { paymentBrandIcons } from '@/shared/components/icon/icon.constants'
+      <DocsSection
+        id='payment-brands'
+        title='Payment Brands'
+        description='Payment method and card brand icons.'
+        bordered
+      >
+        <DocsComponentPreview
+          code={`import { paymentBrandIcons } from '@/shared/components/icon/icon.constants'
 
 <Icon data={paymentBrandIcons['visa']} className='h-6 w-auto' />`}
-          >
-            <DocsPreview className='flex flex-wrap gap-6'>
-              {PAYMENT_KEYS.map(key => (
-                <div key={key} className='flex flex-col items-center gap-2'>
-                  <div className='w-12 h-12 rounded-lg bg-muted flex items-center justify-center'>
-                    {paymentBrandIcons[key] && (
-                      <Icon data={paymentBrandIcons[key]} className='w-6 h-6' />
-                    )}
-                  </div>
-                  <span className='text-xs text-muted-foreground'>{key}</span>
+        >
+          <DocsPreview className='flex flex-wrap gap-6'>
+            {PAYMENT_KEYS.map(key => (
+              <div key={key} className='flex flex-col items-center gap-2'>
+                <div className='w-12 h-12 rounded-lg bg-muted flex items-center justify-center'>
+                  {paymentBrandIcons[key] && (
+                    <Icon data={paymentBrandIcons[key]} className='w-6 h-6' />
+                  )}
                 </div>
-              ))}
-            </DocsPreview>
-          </DocsComponentPreview>
-        </section>
+                <span className='text-xs text-muted-foreground'>{key}</span>
+              </div>
+            ))}
+          </DocsPreview>
+        </DocsComponentPreview>
+      </DocsSection>
 
-        <section id='crypto' className='scroll-mt-20 space-y-4 pt-6 border-t'>
-          <Typography variant='h2'>Cryptocurrency</Typography>
-          <p className='text-xs text-muted-foreground'>Cryptocurrency token icons.</p>
-
-          <DocsComponentPreview
-            code={`import { cryptoIcons } from '@/shared/components/icon/icon.constants'
+      <DocsSection id='crypto' title='Cryptocurrency' description='Cryptocurrency token icons.' bordered>
+        <DocsComponentPreview
+          code={`import { cryptoIcons } from '@/shared/components/icon/icon.constants'
 
 <Icon data={cryptoIcons['btc']} className='w-6 h-6' />`}
-          >
-            <DocsPreview className='flex flex-wrap gap-6'>
-              {CRYPTO_KEYS.map(key => (
-                <div key={key} className='flex flex-col items-center gap-2'>
-                  <div className='w-12 h-12 rounded-lg bg-muted flex items-center justify-center'>
-                    {cryptoIcons[key] && <Icon data={cryptoIcons[key]} className='w-6 h-6' />}
-                  </div>
-                  <span className='text-xs text-muted-foreground'>{key}</span>
+        >
+          <DocsPreview className='flex flex-wrap gap-6'>
+            {CRYPTO_KEYS.map(key => (
+              <div key={key} className='flex flex-col items-center gap-2'>
+                <div className='w-12 h-12 rounded-lg bg-muted flex items-center justify-center'>
+                  {cryptoIcons[key] && <Icon data={cryptoIcons[key]} className='w-6 h-6' />}
                 </div>
-              ))}
-            </DocsPreview>
-          </DocsComponentPreview>
-        </section>
+                <span className='text-xs text-muted-foreground'>{key}</span>
+              </div>
+            ))}
+          </DocsPreview>
+        </DocsComponentPreview>
+      </DocsSection>
 
-        <section id='networks' className='scroll-mt-20 space-y-4 pt-6 border-t'>
-          <Typography variant='h2'>Blockchain Networks</Typography>
-          <p className='text-xs text-muted-foreground'>
-            Blockchain network icons for crypto payments.
-          </p>
-
-          <DocsComponentPreview
-            code={`import { networkIcons } from '@/shared/components/icon/icon.constants'
+      <DocsSection
+        id='networks'
+        title='Blockchain Networks'
+        description='Blockchain network icons for crypto payments.'
+        bordered
+      >
+        <DocsComponentPreview
+          code={`import { networkIcons } from '@/shared/components/icon/icon.constants'
 
 <Icon data={networkIcons['ton']} className='w-6 h-6' />`}
-          >
-            <DocsPreview className='flex flex-wrap gap-6'>
-              {NETWORK_KEYS.map(key => (
-                <div key={key} className='flex flex-col items-center gap-2'>
-                  <div className='w-12 h-12 rounded-lg bg-muted flex items-center justify-center'>
-                    {networkIcons[key] && <Icon data={networkIcons[key]} className='w-6 h-6' />}
-                  </div>
-                  <span className='text-xs text-muted-foreground'>{key}</span>
+        >
+          <DocsPreview className='flex flex-wrap gap-6'>
+            {NETWORK_KEYS.map(key => (
+              <div key={key} className='flex flex-col items-center gap-2'>
+                <div className='w-12 h-12 rounded-lg bg-muted flex items-center justify-center'>
+                  {networkIcons[key] && <Icon data={networkIcons[key]} className='w-6 h-6' />}
                 </div>
-              ))}
-            </DocsPreview>
-          </DocsComponentPreview>
-        </section>
+                <span className='text-xs text-muted-foreground'>{key}</span>
+              </div>
+            ))}
+          </DocsPreview>
+        </DocsComponentPreview>
+      </DocsSection>
 
-        <section id='oauth' className='scroll-mt-20 space-y-4 pt-6 border-t'>
-          <Typography variant='h2'>OAuth Providers</Typography>
-          <p className='text-xs text-muted-foreground'>
-            Social login and OAuth provider icons.
-          </p>
-
-          <DocsComponentPreview
-            code={`import { oauthBrandIcons } from '@/shared/components/icon/icon.constants'
+      <DocsSection
+        id='oauth'
+        title='OAuth Providers'
+        description='Social login and OAuth provider icons.'
+        bordered
+      >
+        <DocsComponentPreview
+          code={`import { oauthBrandIcons } from '@/shared/components/icon/icon.constants'
 
 <Icon data={oauthBrandIcons['github']} className='w-6 h-6' />`}
-          >
-            <DocsPreview className='flex flex-wrap gap-6'>
-              {OAUTH_KEYS.map(key => (
-                <div key={key} className='flex flex-col items-center gap-2'>
-                  <div className='w-12 h-12 rounded-lg bg-muted flex items-center justify-center'>
-                    {oauthBrandIcons[key] && <Icon data={oauthBrandIcons[key]} className='w-6 h-6' />}
-                  </div>
-                  <span className='text-xs text-muted-foreground'>{key}</span>
+        >
+          <DocsPreview className='flex flex-wrap gap-6'>
+            {OAUTH_KEYS.map(key => (
+              <div key={key} className='flex flex-col items-center gap-2'>
+                <div className='w-12 h-12 rounded-lg bg-muted flex items-center justify-center'>
+                  {oauthBrandIcons[key] && <Icon data={oauthBrandIcons[key]} className='w-6 h-6' />}
                 </div>
-              ))}
-            </DocsPreview>
-          </DocsComponentPreview>
-        </section>
+                <span className='text-xs text-muted-foreground'>{key}</span>
+              </div>
+            ))}
+          </DocsPreview>
+        </DocsComponentPreview>
+      </DocsSection>
 
-        <section id='usage' className='scroll-mt-20 space-y-4 pt-6 border-t'>
-          <Typography variant='h2'>Usage</Typography>
-
-          <DocsCodeBlock
-            language='tsx'
-            code={`import { Icon } from '@/shared/components/icon'
+      <DocsSection id='usage' title='Usage' bordered>
+        <DocsCodeBlock
+          language='tsx'
+          code={`import { Icon } from '@/shared/components/icon'
 import { aiBrandIcons } from '@/shared/components/icon/icon.constants'
 import { Bot } from 'lucide-react'
 
@@ -210,109 +197,66 @@ function ChatAvatar({ brand }: { brand?: string }) {
     </div>
   )
 }`}
-          />
-        </section>
+        />
+      </DocsSection>
 
-        <section id='api-reference' className='scroll-mt-20 space-y-4 pt-6 border-t'>
-          <Typography variant='h2'>API Reference</Typography>
+      <DocsSection id='api-reference' title='API Reference' bordered>
+        <DocsApiTable
+          variant='props'
+          rows={[
+            { name: 'data', type: 'IconData', defaultValue: 'required' },
+            { name: 'size', type: 'number | string', defaultValue: '24' },
+            { name: 'className', type: 'string', defaultValue: '-' }
+          ]}
+        />
 
-          <div className='rounded-lg border overflow-hidden'>
-            <table className='w-full text-sm'>
-              <thead className='bg-muted/50'>
-                <tr>
-                  <th className='text-left px-4 py-3 font-medium'>Prop</th>
-                  <th className='text-left px-4 py-3 font-medium'>Type</th>
-                  <th className='text-left px-4 py-3 font-medium'>Default</th>
-                </tr>
-              </thead>
-              <tbody className='divide-y'>
-                <tr>
-                  <td className='px-4 py-3'>
-                    <code className='text-sm font-semibold text-brand'>data</code>
-                  </td>
-                  <td className='px-4 py-3'>
-                    <code className='text-xs text-muted-foreground'>IconData</code>
-                  </td>
-                  <td className='px-4 py-3'>
-                    <span className='text-xs text-muted-foreground'>required</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td className='px-4 py-3'>
-                    <code className='text-sm font-semibold text-brand'>size</code>
-                  </td>
-                  <td className='px-4 py-3'>
-                    <code className='text-xs text-muted-foreground'>number | string</code>
-                  </td>
-                  <td className='px-4 py-3'>
-                    <code className='text-xs bg-muted px-1.5 py-0.5 rounded'>24</code>
-                  </td>
-                </tr>
-                <tr>
-                  <td className='px-4 py-3'>
-                    <code className='text-sm font-semibold text-brand'>className</code>
-                  </td>
-                  <td className='px-4 py-3'>
-                    <code className='text-xs text-muted-foreground'>string</code>
-                  </td>
-                  <td className='px-4 py-3'>
-                    <code className='text-xs bg-muted px-1.5 py-0.5 rounded'>-</code>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <Typography variant='h3' className='pt-4'>
-            IconData
-          </Typography>
-          <div className='rounded-lg border overflow-hidden'>
-            <table className='w-full text-sm'>
-              <thead className='bg-muted/50'>
-                <tr>
-                  <th className='text-left px-4 py-3 font-medium'>Prop</th>
-                  <th className='text-left px-4 py-3 font-medium'>Type</th>
-                  <th className='text-left px-4 py-3 font-medium'>Description</th>
-                </tr>
-              </thead>
-              <tbody className='divide-y'>
-                <tr>
-                  <td className='px-4 py-3'>
-                    <code className='text-sm font-semibold text-brand'>viewBox</code>
-                  </td>
-                  <td className='px-4 py-3'>
-                    <code className='text-xs text-muted-foreground'>string</code>
-                  </td>
-                  <td className='px-4 py-3 text-xs text-muted-foreground'>
-                    SVG viewBox, typically "0 0 24 24"
-                  </td>
-                </tr>
-                <tr>
-                  <td className='px-4 py-3'>
-                    <code className='text-sm font-semibold text-brand'>path</code>
-                  </td>
-                  <td className='px-4 py-3'>
-                    <code className='text-xs text-muted-foreground'>string | string[]</code>
-                  </td>
-                  <td className='px-4 py-3 text-xs text-muted-foreground'>SVG path d attribute(s)</td>
-                </tr>
-                <tr>
-                  <td className='px-4 py-3'>
-                    <code className='text-sm font-semibold text-brand'>displayName</code>
-                  </td>
-                  <td className='px-4 py-3'>
-                    <code className='text-xs text-muted-foreground'>string?</code>
-                  </td>
-                  <td className='px-4 py-3 text-xs text-muted-foreground'>Accessibility label</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-      </div>
-
-      <DocsToc items={TOC_ITEMS} className='hidden xl:block' />
-    </div>
+        <Typography variant='h3' className='pt-4'>
+          IconData
+        </Typography>
+        <div className='rounded-lg border overflow-hidden'>
+          <table className='w-full text-sm'>
+            <thead className='bg-muted/50'>
+              <tr>
+                <th className='text-left px-4 py-3 font-medium'>Prop</th>
+                <th className='text-left px-4 py-3 font-medium'>Type</th>
+                <th className='text-left px-4 py-3 font-medium'>Description</th>
+              </tr>
+            </thead>
+            <tbody className='divide-y'>
+              <tr>
+                <td className='px-4 py-3'>
+                  <code className='text-sm font-semibold text-brand'>viewBox</code>
+                </td>
+                <td className='px-4 py-3'>
+                  <code className='text-xs text-muted-foreground'>string</code>
+                </td>
+                <td className='px-4 py-3 text-xs text-muted-foreground'>
+                  SVG viewBox, typically "0 0 24 24"
+                </td>
+              </tr>
+              <tr>
+                <td className='px-4 py-3'>
+                  <code className='text-sm font-semibold text-brand'>path</code>
+                </td>
+                <td className='px-4 py-3'>
+                  <code className='text-xs text-muted-foreground'>string | string[]</code>
+                </td>
+                <td className='px-4 py-3 text-xs text-muted-foreground'>SVG path d attribute(s)</td>
+              </tr>
+              <tr>
+                <td className='px-4 py-3'>
+                  <code className='text-sm font-semibold text-brand'>displayName</code>
+                </td>
+                <td className='px-4 py-3'>
+                  <code className='text-xs text-muted-foreground'>string?</code>
+                </td>
+                <td className='px-4 py-3 text-xs text-muted-foreground'>Accessibility label</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </DocsSection>
+    </DocsPageLayout>
   )
 }
 

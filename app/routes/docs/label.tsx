@@ -1,12 +1,11 @@
-import { Badge } from '@/shared/components/badge'
 import { Checkbox } from '@/shared/components/checkbox'
-import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
 import { DocsCodeBlock } from '@/shared/components/docs-code-block'
 import { DocsComponentPreview, DocsPreview } from '@/shared/components/docs-component-preview'
-import { DocsToc, type TocItem } from '@/shared/components/docs-toc'
+import { DocsPageLayout } from '@/shared/components/docs-page-layout'
+import { DocsSection } from '@/shared/components/docs-section'
+import type { TocItem } from '@/shared/components/docs-toc'
 import { Input } from '@/shared/components/input'
 import { Label } from '@/shared/components/label'
-import { Typography } from '@/shared/components/typography'
 import { getMeta } from '@/shared/lib/get-meta'
 import type { Route } from './+types/label'
 
@@ -27,69 +26,55 @@ const TOC_ITEMS: TocItem[] = [
 
 const LabelPage = () => {
   return (
-    <div className='flex gap-10'>
-      <div className='flex-1 min-w-0 space-y-10'>
-        <header className='space-y-4'>
-          <DocsBreadcrumbs
-            items={[{ label: 'Components', href: '/docs/ui/button' }, { label: 'Label' }]}
-          />
-          <div className='flex items-center gap-3'>
-            <Typography variant='h1'>Label</Typography>
-            <Badge variant='brand'>Component</Badge>
-          </div>
-          <Typography variant='lead' className='max-w-2xl'>
-            Renders an accessible label associated with controls. Built with Radix UI.
-          </Typography>
-        </header>
+    <DocsPageLayout
+      title='Label'
+      description='Renders an accessible label associated with controls. Built with Radix UI.'
+      tocItems={TOC_ITEMS}
+    >
+      <DocsSection id='basic' title='Basic'>
+        <DocsComponentPreview code={`<Label>Email address</Label>`}>
+          <DocsPreview>
+            <Label>Email address</Label>
+          </DocsPreview>
+        </DocsComponentPreview>
+      </DocsSection>
 
-        <section id='basic' className='scroll-mt-20 space-y-4'>
-          <Typography variant='h2'>Basic</Typography>
-          <DocsComponentPreview code={`<Label>Email address</Label>`}>
-            <DocsPreview>
-              <Label>Email address</Label>
-            </DocsPreview>
-          </DocsComponentPreview>
-        </section>
-
-        <section id='with-input' className='scroll-mt-20 space-y-4'>
-          <Typography variant='h2'>With Input</Typography>
-          <DocsComponentPreview
-            code={`<div className="space-y-2">
+      <DocsSection id='with-input' title='With Input'>
+        <DocsComponentPreview
+          code={`<div className="space-y-2">
   <Label htmlFor="email">Email</Label>
   <Input id="email" type="email" placeholder="email@example.com" />
 </div>`}
-          >
-            <DocsPreview>
-              <div className='space-y-2 w-full max-w-sm'>
-                <Label htmlFor='email'>Email</Label>
-                <Input id='email' type='email' placeholder='email@example.com' />
-              </div>
-            </DocsPreview>
-          </DocsComponentPreview>
-        </section>
+        >
+          <DocsPreview>
+            <div className='space-y-2 w-full max-w-sm'>
+              <Label htmlFor='email'>Email</Label>
+              <Input id='email' type='email' placeholder='email@example.com' />
+            </div>
+          </DocsPreview>
+        </DocsComponentPreview>
+      </DocsSection>
 
-        <section id='with-checkbox' className='scroll-mt-20 space-y-4'>
-          <Typography variant='h2'>With Checkbox</Typography>
-          <DocsComponentPreview
-            code={`<div className="flex items-center space-x-2">
+      <DocsSection id='with-checkbox' title='With Checkbox'>
+        <DocsComponentPreview
+          code={`<div className="flex items-center space-x-2">
   <Checkbox id="terms" />
   <Label htmlFor="terms">Accept terms</Label>
 </div>`}
-          >
-            <DocsPreview>
-              <div className='flex items-center space-x-2'>
-                <Checkbox id='terms' />
-                <Label htmlFor='terms'>Accept terms and conditions</Label>
-              </div>
-            </DocsPreview>
-          </DocsComponentPreview>
-        </section>
+        >
+          <DocsPreview>
+            <div className='flex items-center space-x-2'>
+              <Checkbox id='terms' />
+              <Label htmlFor='terms'>Accept terms and conditions</Label>
+            </div>
+          </DocsPreview>
+        </DocsComponentPreview>
+      </DocsSection>
 
-        <section id='usage' className='scroll-mt-20 space-y-4 pt-6 border-t'>
-          <Typography variant='h2'>Usage</Typography>
-          <DocsCodeBlock
-            language='tsx'
-            code={`import { Label } from '@/shared/components/label'
+      <DocsSection id='usage' title='Usage' bordered>
+        <DocsCodeBlock
+          language='tsx'
+          code={`import { Label } from '@/shared/components/label'
 import { Input } from '@/shared/components/input'
 
 export function FormField() {
@@ -100,11 +85,9 @@ export function FormField() {
     </div>
   )
 }`}
-          />
-        </section>
-      </div>
-      <DocsToc items={TOC_ITEMS} className='hidden xl:block' />
-    </div>
+        />
+      </DocsSection>
+    </DocsPageLayout>
   )
 }
 

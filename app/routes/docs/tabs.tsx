@@ -1,8 +1,9 @@
-import { Badge } from '@/shared/components/badge'
-import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
+import { DocsApiTable } from '@/shared/components/docs-api-table'
 import { DocsCodeBlock } from '@/shared/components/docs-code-block'
 import { DocsComponentPreview, DocsPreview } from '@/shared/components/docs-component-preview'
-import { DocsToc, type TocItem } from '@/shared/components/docs-toc'
+import { DocsPageLayout } from '@/shared/components/docs-page-layout'
+import { DocsSection } from '@/shared/components/docs-section'
+import type { TocItem } from '@/shared/components/docs-toc'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/components/tabs'
 import { Typography } from '@/shared/components/typography'
 import { getMeta } from '@/shared/lib/get-meta'
@@ -24,27 +25,14 @@ const TOC_ITEMS: TocItem[] = [
 
 const TabsPage = () => {
   return (
-    <div className='flex gap-10'>
-      <div className='flex-1 min-w-0 space-y-10'>
-        <header className='space-y-4'>
-          <DocsBreadcrumbs
-            items={[{ label: 'Components', href: '/docs/ui/button' }, { label: 'Tabs' }]}
-          />
-          <div className='flex items-center gap-3'>
-            <Typography variant='h1'>Tabs</Typography>
-            <Badge variant='brand'>Component</Badge>
-          </div>
-          <Typography variant='lead' className='max-w-2xl'>
-            A set of layered sections of content. Built with Radix UI for accessibility.
-          </Typography>
-        </header>
-
-        <section id='basic' className='scroll-mt-20 space-y-4'>
-          <Typography variant='h2'>Basic</Typography>
-          <Typography variant='muted'>Simple tab navigation with content panels.</Typography>
-
-          <DocsComponentPreview
-            code={`<Tabs defaultValue="account" className="w-[400px]">
+    <DocsPageLayout
+      title='Tabs'
+      description='A set of layered sections of content. Built with Radix UI for accessibility.'
+      tocItems={TOC_ITEMS}
+    >
+      <DocsSection id='basic' title='Basic' description='Simple tab navigation with content panels'>
+        <DocsComponentPreview
+          code={`<Tabs defaultValue="account" className="w-[400px]">
   <TabsList>
     <TabsTrigger value="account">Account</TabsTrigger>
     <TabsTrigger value="password">Password</TabsTrigger>
@@ -56,34 +44,32 @@ const TabsPage = () => {
     Password settings content here.
   </TabsContent>
 </Tabs>`}
-          >
-            <DocsPreview>
-              <Tabs defaultValue='account' className='w-[400px]'>
-                <TabsList>
-                  <TabsTrigger value='account'>Account</TabsTrigger>
-                  <TabsTrigger value='password'>Password</TabsTrigger>
-                </TabsList>
-                <TabsContent value='account' className='p-4 border rounded-lg mt-2'>
-                  <Typography variant='p'>
-                    Make changes to your account here. Click save when you're done.
-                  </Typography>
-                </TabsContent>
-                <TabsContent value='password' className='p-4 border rounded-lg mt-2'>
-                  <Typography variant='p'>
-                    Change your password here. After saving, you'll be logged out.
-                  </Typography>
-                </TabsContent>
-              </Tabs>
-            </DocsPreview>
-          </DocsComponentPreview>
-        </section>
+        >
+          <DocsPreview>
+            <Tabs defaultValue='account' className='w-[400px]'>
+              <TabsList>
+                <TabsTrigger value='account'>Account</TabsTrigger>
+                <TabsTrigger value='password'>Password</TabsTrigger>
+              </TabsList>
+              <TabsContent value='account' className='p-4 border rounded-lg mt-2'>
+                <Typography variant='p'>
+                  Make changes to your account here. Click save when you're done.
+                </Typography>
+              </TabsContent>
+              <TabsContent value='password' className='p-4 border rounded-lg mt-2'>
+                <Typography variant='p'>
+                  Change your password here. After saving, you'll be logged out.
+                </Typography>
+              </TabsContent>
+            </Tabs>
+          </DocsPreview>
+        </DocsComponentPreview>
+      </DocsSection>
 
-        <section id='usage' className='scroll-mt-20 space-y-4 pt-6 border-t'>
-          <Typography variant='h2'>Usage</Typography>
-
-          <DocsCodeBlock
-            language='tsx'
-            code={`import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/components/tabs'
+      <DocsSection id='usage' title='Usage' bordered>
+        <DocsCodeBlock
+          language='tsx'
+          code={`import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/components/tabs'
 
 export function SettingsTabs() {
   return (
@@ -105,67 +91,33 @@ export function SettingsTabs() {
     </Tabs>
   )
 }`}
-          />
-        </section>
+        />
+      </DocsSection>
 
-        <section id='api-reference' className='scroll-mt-20 space-y-4 pt-6 border-t'>
-          <Typography variant='h2'>API Reference</Typography>
-
-          <div className='rounded-lg border overflow-hidden'>
-            <table className='w-full text-sm'>
-              <thead className='bg-muted/50'>
-                <tr>
-                  <th className='text-left px-4 py-3 font-medium'>Component</th>
-                  <th className='text-left px-4 py-3 font-medium'>Description</th>
-                </tr>
-              </thead>
-              <tbody className='divide-y'>
-                <tr>
-                  <td className='px-4 py-3'>
-                    <code className='text-sm font-semibold text-brand'>Tabs</code>
-                  </td>
-                  <td className='px-4 py-3'>
-                    <code className='text-xs text-muted-foreground'>
-                      Root with defaultValue prop
-                    </code>
-                  </td>
-                </tr>
-                <tr>
-                  <td className='px-4 py-3'>
-                    <code className='text-sm font-semibold text-brand'>TabsList</code>
-                  </td>
-                  <td className='px-4 py-3'>
-                    <code className='text-xs text-muted-foreground'>
-                      Container for tab triggers
-                    </code>
-                  </td>
-                </tr>
-                <tr>
-                  <td className='px-4 py-3'>
-                    <code className='text-sm font-semibold text-brand'>TabsTrigger</code>
-                  </td>
-                  <td className='px-4 py-3'>
-                    <code className='text-xs text-muted-foreground'>Button with value prop</code>
-                  </td>
-                </tr>
-                <tr>
-                  <td className='px-4 py-3'>
-                    <code className='text-sm font-semibold text-brand'>TabsContent</code>
-                  </td>
-                  <td className='px-4 py-3'>
-                    <code className='text-xs text-muted-foreground'>
-                      Content panel with value prop
-                    </code>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-      </div>
-
-      <DocsToc items={TOC_ITEMS} className='hidden xl:block' />
-    </div>
+      <DocsSection id='api-reference' title='API Reference' bordered>
+        <DocsApiTable
+          variant='components'
+          rows={[
+            {
+              name: 'Tabs',
+              description: 'Root with defaultValue prop'
+            },
+            {
+              name: 'TabsList',
+              description: 'Container for tab triggers'
+            },
+            {
+              name: 'TabsTrigger',
+              description: 'Button with value prop'
+            },
+            {
+              name: 'TabsContent',
+              description: 'Content panel with value prop'
+            }
+          ]}
+        />
+      </DocsSection>
+    </DocsPageLayout>
   )
 }
 

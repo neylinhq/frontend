@@ -1,9 +1,9 @@
-import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
-import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
 import { DocsCodeBlock } from '@/shared/components/docs-code-block'
 import { DocsComponentPreview, DocsPreview } from '@/shared/components/docs-component-preview'
-import { DocsToc, type TocItem } from '@/shared/components/docs-toc'
+import { DocsPageLayout } from '@/shared/components/docs-page-layout'
+import { DocsSection } from '@/shared/components/docs-section'
+import type { TocItem } from '@/shared/components/docs-toc'
 import { Input } from '@/shared/components/input'
 import { Label } from '@/shared/components/label'
 import {
@@ -16,7 +16,6 @@ import {
   SheetTitle,
   SheetTrigger
 } from '@/shared/components/sheet'
-import { Typography } from '@/shared/components/typography'
 import { getMeta } from '@/shared/lib/get-meta'
 import type { Route } from './+types/sheet'
 
@@ -36,25 +35,14 @@ const TOC_ITEMS: TocItem[] = [
 
 const SheetPage = () => {
   return (
-    <div className='flex gap-10'>
-      <div className='flex-1 min-w-0 space-y-10'>
-        <header className='space-y-4'>
-          <DocsBreadcrumbs
-            items={[{ label: 'Components', href: '/docs/ui/button' }, { label: 'Sheet' }]}
-          />
-          <div className='flex items-center gap-3'>
-            <Typography variant='h1'>Sheet</Typography>
-            <Badge variant='brand'>Component</Badge>
-          </div>
-          <Typography variant='lead' className='max-w-2xl'>
-            A panel that slides out from the edge of the screen. Built with Radix UI Dialog.
-          </Typography>
-        </header>
-
-        <section id='basic' className='scroll-mt-20 space-y-4'>
-          <Typography variant='h2'>Basic</Typography>
-          <DocsComponentPreview
-            code={`<Sheet>
+    <DocsPageLayout
+      title='Sheet'
+      description='A panel that slides out from the edge of the screen. Built with Radix UI Dialog.'
+      tocItems={TOC_ITEMS}
+    >
+      <DocsSection id='basic' title='Basic' description='Basic sheet panel'>
+        <DocsComponentPreview
+          code={`<Sheet>
   <SheetTrigger asChild>
     <Button variant="outline">Open Sheet</Button>
   </SheetTrigger>
@@ -78,103 +66,98 @@ const SheetPage = () => {
     </SheetFooter>
   </SheetContent>
 </Sheet>`}
-          >
-            <DocsPreview>
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button variant='outline'>Open Sheet</Button>
-                </SheetTrigger>
-                <SheetContent>
-                  <SheetHeader>
-                    <SheetTitle>Edit profile</SheetTitle>
-                    <SheetDescription>
-                      Make changes to your profile here. Click save when you're done.
-                    </SheetDescription>
-                  </SheetHeader>
-                  <div className='grid gap-4 py-4'>
-                    <div className='grid gap-2'>
-                      <Label htmlFor='name'>Name</Label>
-                      <Input id='name' defaultValue='John Doe' />
-                    </div>
-                    <div className='grid gap-2'>
-                      <Label htmlFor='username'>Username</Label>
-                      <Input id='username' defaultValue='@johndoe' />
-                    </div>
+        >
+          <DocsPreview>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant='outline'>Open Sheet</Button>
+              </SheetTrigger>
+              <SheetContent>
+                <SheetHeader>
+                  <SheetTitle>Edit profile</SheetTitle>
+                  <SheetDescription>
+                    Make changes to your profile here. Click save when you're done.
+                  </SheetDescription>
+                </SheetHeader>
+                <div className='grid gap-4 py-4'>
+                  <div className='grid gap-2'>
+                    <Label htmlFor='name'>Name</Label>
+                    <Input id='name' defaultValue='John Doe' />
                   </div>
-                  <SheetFooter>
-                    <SheetClose asChild>
-                      <Button type='submit'>Save changes</Button>
-                    </SheetClose>
-                  </SheetFooter>
-                </SheetContent>
-              </Sheet>
-            </DocsPreview>
-          </DocsComponentPreview>
-        </section>
+                  <div className='grid gap-2'>
+                    <Label htmlFor='username'>Username</Label>
+                    <Input id='username' defaultValue='@johndoe' />
+                  </div>
+                </div>
+                <SheetFooter>
+                  <SheetClose asChild>
+                    <Button type='submit'>Save changes</Button>
+                  </SheetClose>
+                </SheetFooter>
+              </SheetContent>
+            </Sheet>
+          </DocsPreview>
+        </DocsComponentPreview>
+      </DocsSection>
 
-        <section id='sides' className='scroll-mt-20 space-y-4'>
-          <Typography variant='h2'>Sides</Typography>
-          <Typography variant='muted'>
-            Sheet can appear from different sides using the side prop.
-          </Typography>
-          <DocsComponentPreview
-            code={`<Sheet>
+      <DocsSection id='sides' title='Sides' description='Sheet from different sides'>
+        <DocsComponentPreview
+          code={`<Sheet>
   <SheetTrigger asChild>
     <Button variant="outline">Left</Button>
   </SheetTrigger>
   <SheetContent side="left">...</SheetContent>
 </Sheet>`}
-          >
-            <DocsPreview className='flex gap-4'>
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button variant='outline'>Left</Button>
-                </SheetTrigger>
-                <SheetContent side='left'>
-                  <SheetHeader>
-                    <SheetTitle>Left Sheet</SheetTitle>
-                  </SheetHeader>
-                </SheetContent>
-              </Sheet>
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button variant='outline'>Right</Button>
-                </SheetTrigger>
-                <SheetContent side='right'>
-                  <SheetHeader>
-                    <SheetTitle>Right Sheet</SheetTitle>
-                  </SheetHeader>
-                </SheetContent>
-              </Sheet>
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button variant='outline'>Top</Button>
-                </SheetTrigger>
-                <SheetContent side='top'>
-                  <SheetHeader>
-                    <SheetTitle>Top Sheet</SheetTitle>
-                  </SheetHeader>
-                </SheetContent>
-              </Sheet>
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button variant='outline'>Bottom</Button>
-                </SheetTrigger>
-                <SheetContent side='bottom'>
-                  <SheetHeader>
-                    <SheetTitle>Bottom Sheet</SheetTitle>
-                  </SheetHeader>
-                </SheetContent>
-              </Sheet>
-            </DocsPreview>
-          </DocsComponentPreview>
-        </section>
+        >
+          <DocsPreview className='flex gap-4'>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant='outline'>Left</Button>
+              </SheetTrigger>
+              <SheetContent side='left'>
+                <SheetHeader>
+                  <SheetTitle>Left Sheet</SheetTitle>
+                </SheetHeader>
+              </SheetContent>
+            </Sheet>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant='outline'>Right</Button>
+              </SheetTrigger>
+              <SheetContent side='right'>
+                <SheetHeader>
+                  <SheetTitle>Right Sheet</SheetTitle>
+                </SheetHeader>
+              </SheetContent>
+            </Sheet>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant='outline'>Top</Button>
+              </SheetTrigger>
+              <SheetContent side='top'>
+                <SheetHeader>
+                  <SheetTitle>Top Sheet</SheetTitle>
+                </SheetHeader>
+              </SheetContent>
+            </Sheet>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant='outline'>Bottom</Button>
+              </SheetTrigger>
+              <SheetContent side='bottom'>
+                <SheetHeader>
+                  <SheetTitle>Bottom Sheet</SheetTitle>
+                </SheetHeader>
+              </SheetContent>
+            </Sheet>
+          </DocsPreview>
+        </DocsComponentPreview>
+      </DocsSection>
 
-        <section id='usage' className='scroll-mt-20 space-y-4 pt-6 border-t'>
-          <Typography variant='h2'>Usage</Typography>
-          <DocsCodeBlock
-            language='tsx'
-            code={`import {
+      <DocsSection id='usage' title='Usage' bordered>
+        <DocsCodeBlock
+          language='tsx'
+          code={`import {
   Sheet,
   SheetContent,
   SheetDescription,
@@ -203,11 +186,9 @@ export function SettingsPanel() {
     </Sheet>
   )
 }`}
-          />
-        </section>
-      </div>
-      <DocsToc items={TOC_ITEMS} className='hidden xl:block' />
-    </div>
+        />
+      </DocsSection>
+    </DocsPageLayout>
   )
 }
 

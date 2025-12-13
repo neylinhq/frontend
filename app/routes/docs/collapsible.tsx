@@ -1,18 +1,17 @@
 'use client'
 import { ChevronsUpDown } from 'lucide-react'
 import { useState } from 'react'
-import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger
 } from '@/shared/components/collapsible'
-import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
 import { DocsCodeBlock } from '@/shared/components/docs-code-block'
 import { DocsComponentPreview, DocsPreview } from '@/shared/components/docs-component-preview'
-import { DocsToc, type TocItem } from '@/shared/components/docs-toc'
-import { Typography } from '@/shared/components/typography'
+import { DocsPageLayout } from '@/shared/components/docs-page-layout'
+import { DocsSection } from '@/shared/components/docs-section'
+import type { TocItem } from '@/shared/components/docs-toc'
 import { getMeta } from '@/shared/lib/get-meta'
 import type { Route } from './+types/collapsible'
 
@@ -58,25 +57,14 @@ const CollapsibleDemo = () => {
 
 const CollapsiblePage = () => {
   return (
-    <div className='flex gap-10'>
-      <div className='flex-1 min-w-0 space-y-10'>
-        <header className='space-y-4'>
-          <DocsBreadcrumbs
-            items={[{ label: 'Components', href: '/docs/ui/button' }, { label: 'Collapsible' }]}
-          />
-          <div className='flex items-center gap-3'>
-            <Typography variant='h1'>Collapsible</Typography>
-            <Badge variant='brand'>Component</Badge>
-          </div>
-          <Typography variant='lead' className='max-w-2xl'>
-            An interactive component which expands/collapses a panel. Built with Radix UI.
-          </Typography>
-        </header>
-
-        <section id='basic' className='scroll-mt-20 space-y-4'>
-          <Typography variant='h2'>Basic</Typography>
-          <DocsComponentPreview
-            code={`<Collapsible open={isOpen} onOpenChange={setIsOpen}>
+    <DocsPageLayout
+      title='Collapsible'
+      description='An interactive component which expands/collapses a panel. Built with Radix UI.'
+      tocItems={TOC_ITEMS}
+    >
+      <DocsSection id='basic' title='Basic'>
+        <DocsComponentPreview
+          code={`<Collapsible open={isOpen} onOpenChange={setIsOpen}>
   <CollapsibleTrigger asChild>
     <Button variant="ghost" size="sm">
       <ChevronsUpDown className="h-4 w-4" />
@@ -89,18 +77,17 @@ const CollapsiblePage = () => {
     </div>
   </CollapsibleContent>
 </Collapsible>`}
-          >
-            <DocsPreview>
-              <CollapsibleDemo />
-            </DocsPreview>
-          </DocsComponentPreview>
-        </section>
+        >
+          <DocsPreview>
+            <CollapsibleDemo />
+          </DocsPreview>
+        </DocsComponentPreview>
+      </DocsSection>
 
-        <section id='usage' className='scroll-mt-20 space-y-4 pt-6 border-t'>
-          <Typography variant='h2'>Usage</Typography>
-          <DocsCodeBlock
-            language='tsx'
-            code={`import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/shared/components/collapsible'
+      <DocsSection id='usage' title='Usage' bordered>
+        <DocsCodeBlock
+          language='tsx'
+          code={`import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/shared/components/collapsible'
 
 export function FAQ({ question, answer }: { question: string; answer: string }) {
   const [open, setOpen] = useState(false)
@@ -117,11 +104,9 @@ export function FAQ({ question, answer }: { question: string; answer: string }) 
     </Collapsible>
   )
 }`}
-          />
-        </section>
-      </div>
-      <DocsToc items={TOC_ITEMS} className='hidden xl:block' />
-    </div>
+        />
+      </DocsSection>
+    </DocsPageLayout>
   )
 }
 

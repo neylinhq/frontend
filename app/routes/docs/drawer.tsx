@@ -1,9 +1,10 @@
-import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
-import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
+import { DocsApiTable } from '@/shared/components/docs-api-table'
 import { DocsCodeBlock } from '@/shared/components/docs-code-block'
 import { DocsComponentPreview, DocsPreview } from '@/shared/components/docs-component-preview'
-import { DocsToc, type TocItem } from '@/shared/components/docs-toc'
+import { DocsPageLayout } from '@/shared/components/docs-page-layout'
+import { DocsSection } from '@/shared/components/docs-section'
+import type { TocItem } from '@/shared/components/docs-toc'
 import {
   Drawer,
   DrawerClose,
@@ -14,7 +15,6 @@ import {
   DrawerTitle,
   DrawerTrigger
 } from '@/shared/components/drawer'
-import { Typography } from '@/shared/components/typography'
 import { getMeta } from '@/shared/lib/get-meta'
 import type { Route } from './+types/drawer'
 
@@ -34,25 +34,14 @@ const TOC_ITEMS: TocItem[] = [
 
 const DrawerPage = () => {
   return (
-    <div className='flex gap-10'>
-      <div className='flex-1 min-w-0 space-y-10'>
-        <header className='space-y-4'>
-          <DocsBreadcrumbs
-            items={[{ label: 'Components', href: '/docs/ui/button' }, { label: 'Drawer' }]}
-          />
-          <div className='flex items-center gap-3'>
-            <Typography variant='h1'>Drawer</Typography>
-            <Badge variant='brand'>Component</Badge>
-          </div>
-          <Typography variant='lead' className='max-w-2xl'>
-            A draggable dialog that slides in from the edge of the screen. Built with Vaul.
-          </Typography>
-        </header>
-
-        <section id='basic' className='scroll-mt-20 space-y-4'>
-          <Typography variant='h2'>Basic</Typography>
-          <DocsComponentPreview
-            code={`<Drawer>
+    <DocsPageLayout
+      title='Drawer'
+      description='A draggable dialog that slides in from the edge of the screen. Built with Vaul.'
+      tocItems={TOC_ITEMS}
+    >
+      <DocsSection id='basic' title='Basic'>
+        <DocsComponentPreview
+          code={`<Drawer>
   <DrawerTrigger asChild>
     <Button variant="outline">Open Drawer</Button>
   </DrawerTrigger>
@@ -69,44 +58,43 @@ const DrawerPage = () => {
     </DrawerFooter>
   </DrawerContent>
 </Drawer>`}
-          >
-            <DocsPreview>
-              <Drawer>
-                <DrawerTrigger asChild>
-                  <Button variant='outline'>Open Drawer</Button>
-                </DrawerTrigger>
-                <DrawerContent>
-                  <div className='mx-auto w-full max-w-sm'>
-                    <DrawerHeader>
-                      <DrawerTitle>Move Goal</DrawerTitle>
-                      <DrawerDescription>Set your daily activity goal.</DrawerDescription>
-                    </DrawerHeader>
-                    <div className='p-4'>
-                      <div className='flex items-center justify-center space-x-2'>
-                        <div className='flex-1 text-center'>
-                          <div className='text-7xl font-bold tracking-tighter'>350</div>
-                          <div className='text-muted-foreground'>Calories/day</div>
-                        </div>
+        >
+          <DocsPreview>
+            <Drawer>
+              <DrawerTrigger asChild>
+                <Button variant='outline'>Open Drawer</Button>
+              </DrawerTrigger>
+              <DrawerContent>
+                <div className='mx-auto w-full max-w-sm'>
+                  <DrawerHeader>
+                    <DrawerTitle>Move Goal</DrawerTitle>
+                    <DrawerDescription>Set your daily activity goal.</DrawerDescription>
+                  </DrawerHeader>
+                  <div className='p-4'>
+                    <div className='flex items-center justify-center space-x-2'>
+                      <div className='flex-1 text-center'>
+                        <div className='text-7xl font-bold tracking-tighter'>350</div>
+                        <div className='text-muted-foreground'>Calories/day</div>
                       </div>
                     </div>
-                    <DrawerFooter>
-                      <Button>Submit</Button>
-                      <DrawerClose asChild>
-                        <Button variant='outline'>Cancel</Button>
-                      </DrawerClose>
-                    </DrawerFooter>
                   </div>
-                </DrawerContent>
-              </Drawer>
-            </DocsPreview>
-          </DocsComponentPreview>
-        </section>
+                  <DrawerFooter>
+                    <Button>Submit</Button>
+                    <DrawerClose asChild>
+                      <Button variant='outline'>Cancel</Button>
+                    </DrawerClose>
+                  </DrawerFooter>
+                </div>
+              </DrawerContent>
+            </Drawer>
+          </DocsPreview>
+        </DocsComponentPreview>
+      </DocsSection>
 
-        <section id='usage' className='scroll-mt-20 space-y-4 pt-6 border-t'>
-          <Typography variant='h2'>Usage</Typography>
-          <DocsCodeBlock
-            language='tsx'
-            code={`import {
+      <DocsSection id='usage' title='Usage' bordered>
+        <DocsCodeBlock
+          language='tsx'
+          code={`import {
   Drawer,
   DrawerClose,
   DrawerContent,
@@ -138,51 +126,21 @@ export function MobileMenu() {
     </Drawer>
   )
 }`}
-          />
-        </section>
+        />
+      </DocsSection>
 
-        <section id='api-reference' className='scroll-mt-20 space-y-4 pt-6 border-t'>
-          <Typography variant='h2'>API Reference</Typography>
-          <div className='rounded-lg border overflow-hidden'>
-            <table className='w-full text-sm'>
-              <thead className='bg-muted/50'>
-                <tr>
-                  <th className='text-left px-4 py-3 font-medium'>Component</th>
-                  <th className='text-left px-4 py-3 font-medium'>Description</th>
-                </tr>
-              </thead>
-              <tbody className='divide-y'>
-                <tr>
-                  <td className='px-4 py-3'>
-                    <code className='text-sm font-semibold text-brand'>Drawer</code>
-                  </td>
-                  <td className='px-4 py-3'>Root component</td>
-                </tr>
-                <tr>
-                  <td className='px-4 py-3'>
-                    <code className='text-sm font-semibold text-brand'>DrawerTrigger</code>
-                  </td>
-                  <td className='px-4 py-3'>Button that opens drawer</td>
-                </tr>
-                <tr>
-                  <td className='px-4 py-3'>
-                    <code className='text-sm font-semibold text-brand'>DrawerContent</code>
-                  </td>
-                  <td className='px-4 py-3'>Drawer panel</td>
-                </tr>
-                <tr>
-                  <td className='px-4 py-3'>
-                    <code className='text-sm font-semibold text-brand'>DrawerClose</code>
-                  </td>
-                  <td className='px-4 py-3'>Closes the drawer</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-      </div>
-      <DocsToc items={TOC_ITEMS} className='hidden xl:block' />
-    </div>
+      <DocsSection id='api-reference' title='API Reference' bordered>
+        <DocsApiTable
+          variant='component'
+          rows={[
+            { name: 'Drawer', description: 'Root component' },
+            { name: 'DrawerTrigger', description: 'Button that opens drawer' },
+            { name: 'DrawerContent', description: 'Drawer panel' },
+            { name: 'DrawerClose', description: 'Closes the drawer' }
+          ]}
+        />
+      </DocsSection>
+    </DocsPageLayout>
   )
 }
 

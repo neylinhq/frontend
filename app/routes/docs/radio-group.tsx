@@ -1,11 +1,10 @@
-import { Badge } from '@/shared/components/badge'
-import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
 import { DocsCodeBlock } from '@/shared/components/docs-code-block'
 import { DocsComponentPreview, DocsPreview } from '@/shared/components/docs-component-preview'
-import { DocsToc, type TocItem } from '@/shared/components/docs-toc'
+import { DocsPageLayout } from '@/shared/components/docs-page-layout'
+import { DocsSection } from '@/shared/components/docs-section'
+import type { TocItem } from '@/shared/components/docs-toc'
 import { Label } from '@/shared/components/label'
 import { RadioGroup, RadioGroupItem } from '@/shared/components/radio-group'
-import { Typography } from '@/shared/components/typography'
 import { getMeta } from '@/shared/lib/get-meta'
 import type { Route } from './+types/radio-group'
 
@@ -24,25 +23,14 @@ const TOC_ITEMS: TocItem[] = [
 
 const RadioGroupPage = () => {
   return (
-    <div className='flex gap-10'>
-      <div className='flex-1 min-w-0 space-y-10'>
-        <header className='space-y-4'>
-          <DocsBreadcrumbs
-            items={[{ label: 'Components', href: '/docs/ui/button' }, { label: 'Radio Group' }]}
-          />
-          <div className='flex items-center gap-3'>
-            <Typography variant='h1'>Radio Group</Typography>
-            <Badge variant='brand'>Component</Badge>
-          </div>
-          <Typography variant='lead' className='max-w-2xl'>
-            A set of checkable buttons where only one can be checked at a time. Built with Radix UI.
-          </Typography>
-        </header>
-
-        <section id='basic' className='scroll-mt-20 space-y-4'>
-          <Typography variant='h2'>Basic</Typography>
-          <DocsComponentPreview
-            code={`<RadioGroup defaultValue="option-one">
+    <DocsPageLayout
+      title='Radio Group'
+      description='A set of checkable buttons where only one can be checked at a time. Built with Radix UI.'
+      tocItems={TOC_ITEMS}
+    >
+      <DocsSection id='basic' title='Basic' description='Basic radio group with options'>
+        <DocsComponentPreview
+          code={`<RadioGroup defaultValue="option-one">
   <div className="flex items-center space-x-2">
     <RadioGroupItem value="option-one" id="option-one" />
     <Label htmlFor="option-one">Option One</Label>
@@ -52,31 +40,30 @@ const RadioGroupPage = () => {
     <Label htmlFor="option-two">Option Two</Label>
   </div>
 </RadioGroup>`}
-          >
-            <DocsPreview>
-              <RadioGroup defaultValue='option-one'>
-                <div className='flex items-center space-x-2'>
-                  <RadioGroupItem value='option-one' id='option-one' />
-                  <Label htmlFor='option-one'>Option One</Label>
-                </div>
-                <div className='flex items-center space-x-2'>
-                  <RadioGroupItem value='option-two' id='option-two' />
-                  <Label htmlFor='option-two'>Option Two</Label>
-                </div>
-                <div className='flex items-center space-x-2'>
-                  <RadioGroupItem value='option-three' id='option-three' />
-                  <Label htmlFor='option-three'>Option Three</Label>
-                </div>
-              </RadioGroup>
-            </DocsPreview>
-          </DocsComponentPreview>
-        </section>
+        >
+          <DocsPreview>
+            <RadioGroup defaultValue='option-one'>
+              <div className='flex items-center space-x-2'>
+                <RadioGroupItem value='option-one' id='option-one' />
+                <Label htmlFor='option-one'>Option One</Label>
+              </div>
+              <div className='flex items-center space-x-2'>
+                <RadioGroupItem value='option-two' id='option-two' />
+                <Label htmlFor='option-two'>Option Two</Label>
+              </div>
+              <div className='flex items-center space-x-2'>
+                <RadioGroupItem value='option-three' id='option-three' />
+                <Label htmlFor='option-three'>Option Three</Label>
+              </div>
+            </RadioGroup>
+          </DocsPreview>
+        </DocsComponentPreview>
+      </DocsSection>
 
-        <section id='usage' className='scroll-mt-20 space-y-4 pt-6 border-t'>
-          <Typography variant='h2'>Usage</Typography>
-          <DocsCodeBlock
-            language='tsx'
-            code={`import { RadioGroup, RadioGroupItem } from '@/shared/components/radio-group'
+      <DocsSection id='usage' title='Usage' bordered>
+        <DocsCodeBlock
+          language='tsx'
+          code={`import { RadioGroup, RadioGroupItem } from '@/shared/components/radio-group'
 import { Label } from '@/shared/components/label'
 
 export function ThemeSelector() {
@@ -99,11 +86,9 @@ export function ThemeSelector() {
     </RadioGroup>
   )
 }`}
-          />
-        </section>
-      </div>
-      <DocsToc items={TOC_ITEMS} className='hidden xl:block' />
-    </div>
+        />
+      </DocsSection>
+    </DocsPageLayout>
   )
 }
 

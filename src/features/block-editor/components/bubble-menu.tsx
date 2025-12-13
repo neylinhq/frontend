@@ -311,23 +311,46 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
 
   // FIX: Wrap updateMenu in useCallback to prevent memory leak from event listener accumulation
   // Previously, updateMenu was created inside useEffect, causing cleanup to use stale references
+  // Ref to track hide timeout for debouncing
+  const hideTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
   const updateMenu = useCallback(() => {
     const { selection } = editor.state
     const { empty, from, to } = selection
 
+    // DEBUG
+    console.log('[BubbleMenu] updateMenu called:', { empty, from, to, selectionType: selection.constructor.name })
+
+    // Clear any pending hide timeout
+    if (hideTimeoutRef.current) {
+      clearTimeout(hideTimeoutRef.current)
+      hideTimeoutRef.current = null
+    }
+
     // Hide menu if selection is empty or is a node selection
-    // But don't hide immediately - wait a tick to handle triple-click (paragraph select)
+    // Use delay to handle triple-click (paragraph select) which briefly clears selection
+    // 150ms is enough for triple-click to complete on most systems
     if (empty || from === to) {
-      // Use requestAnimationFrame to avoid hiding during triple-click transition
-      requestAnimationFrame(() => {
+      console.log('[BubbleMenu] Selection empty, scheduling hide in 150ms')
+      hideTimeoutRef.current = setTimeout(() => {
         const currentSelection = editor.state.selection
+        console.log('[BubbleMenu] Hide timeout fired, checking:', {
+          empty: currentSelection.empty,
+          from: currentSelection.from,
+          to: currentSelection.to
+        })
         if (currentSelection.empty || currentSelection.from === currentSelection.to) {
+          console.log('[BubbleMenu] Hiding menu')
           setIsVisible(false)
           dispatch({ type: 'CLOSE_ALL' })
+        } else {
+          console.log('[BubbleMenu] Selection restored, NOT hiding')
         }
-      })
+      }, 150)
       return
     }
+
+    console.log('[BubbleMenu] Selection valid, showing menu')
 
     // Get the selection coordinates (viewport-relative)
     const { view } = editor

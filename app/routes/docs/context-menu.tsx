@@ -1,4 +1,3 @@
-import { Badge } from '@/shared/components/badge'
 import {
   ContextMenu,
   ContextMenuContent,
@@ -7,11 +6,11 @@ import {
   ContextMenuShortcut,
   ContextMenuTrigger
 } from '@/shared/components/context-menu'
-import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
 import { DocsCodeBlock } from '@/shared/components/docs-code-block'
 import { DocsComponentPreview, DocsPreview } from '@/shared/components/docs-component-preview'
-import { DocsToc, type TocItem } from '@/shared/components/docs-toc'
-import { Typography } from '@/shared/components/typography'
+import { DocsPageLayout } from '@/shared/components/docs-page-layout'
+import { DocsSection } from '@/shared/components/docs-section'
+import type { TocItem } from '@/shared/components/docs-toc'
 import { getMeta } from '@/shared/lib/get-meta'
 import type { Route } from './+types/context-menu'
 
@@ -30,26 +29,14 @@ const TOC_ITEMS: TocItem[] = [
 
 const ContextMenuPage = () => {
   return (
-    <div className='flex gap-10'>
-      <div className='flex-1 min-w-0 space-y-10'>
-        <header className='space-y-4'>
-          <DocsBreadcrumbs
-            items={[{ label: 'Components', href: '/docs/ui/button' }, { label: 'Context Menu' }]}
-          />
-          <div className='flex items-center gap-3'>
-            <Typography variant='h1'>Context Menu</Typography>
-            <Badge variant='brand'>Component</Badge>
-          </div>
-          <Typography variant='lead' className='max-w-2xl'>
-            Displays a menu at pointer position on right-click. Built with Radix UI.
-          </Typography>
-        </header>
-
-        <section id='basic' className='scroll-mt-20 space-y-4'>
-          <Typography variant='h2'>Basic</Typography>
-          <Typography variant='muted'>Right-click on the area to see the context menu.</Typography>
-          <DocsComponentPreview
-            code={`<ContextMenu>
+    <DocsPageLayout
+      title='Context Menu'
+      description='Displays a menu at pointer position on right-click. Built with Radix UI.'
+      tocItems={TOC_ITEMS}
+    >
+      <DocsSection id='basic' title='Basic' description='Right-click on the area to see the context menu.'>
+        <DocsComponentPreview
+          code={`<ContextMenu>
   <ContextMenuTrigger className="flex h-[150px] w-[300px] items-center justify-center rounded-md border border-dashed">
     Right click here
   </ContextMenuTrigger>
@@ -64,41 +51,40 @@ const ContextMenuPage = () => {
     </ContextMenuItem>
   </ContextMenuContent>
 </ContextMenu>`}
-          >
-            <DocsPreview>
-              <ContextMenu>
-                <ContextMenuTrigger className='flex h-[150px] w-[300px] items-center justify-center rounded-md border border-dashed text-sm'>
-                  Right click here
-                </ContextMenuTrigger>
-                <ContextMenuContent className='w-64'>
-                  <ContextMenuItem>
-                    Back
-                    <ContextMenuShortcut>⌘[</ContextMenuShortcut>
-                  </ContextMenuItem>
-                  <ContextMenuItem>
-                    Forward
-                    <ContextMenuShortcut>⌘]</ContextMenuShortcut>
-                  </ContextMenuItem>
-                  <ContextMenuItem>
-                    Reload
-                    <ContextMenuShortcut>⌘R</ContextMenuShortcut>
-                  </ContextMenuItem>
-                  <ContextMenuSeparator />
-                  <ContextMenuItem>
-                    Save Page As...
-                    <ContextMenuShortcut>⌘S</ContextMenuShortcut>
-                  </ContextMenuItem>
-                </ContextMenuContent>
-              </ContextMenu>
-            </DocsPreview>
-          </DocsComponentPreview>
-        </section>
+        >
+          <DocsPreview>
+            <ContextMenu>
+              <ContextMenuTrigger className='flex h-[150px] w-[300px] items-center justify-center rounded-md border border-dashed text-sm'>
+                Right click here
+              </ContextMenuTrigger>
+              <ContextMenuContent className='w-64'>
+                <ContextMenuItem>
+                  Back
+                  <ContextMenuShortcut>⌘[</ContextMenuShortcut>
+                </ContextMenuItem>
+                <ContextMenuItem>
+                  Forward
+                  <ContextMenuShortcut>⌘]</ContextMenuShortcut>
+                </ContextMenuItem>
+                <ContextMenuItem>
+                  Reload
+                  <ContextMenuShortcut>⌘R</ContextMenuShortcut>
+                </ContextMenuItem>
+                <ContextMenuSeparator />
+                <ContextMenuItem>
+                  Save Page As...
+                  <ContextMenuShortcut>⌘S</ContextMenuShortcut>
+                </ContextMenuItem>
+              </ContextMenuContent>
+            </ContextMenu>
+          </DocsPreview>
+        </DocsComponentPreview>
+      </DocsSection>
 
-        <section id='usage' className='scroll-mt-20 space-y-4 pt-6 border-t'>
-          <Typography variant='h2'>Usage</Typography>
-          <DocsCodeBlock
-            language='tsx'
-            code={`import {
+      <DocsSection id='usage' title='Usage' bordered>
+        <DocsCodeBlock
+          language='tsx'
+          code={`import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
@@ -131,11 +117,9 @@ export function FileContextMenu({ children }: { children: React.ReactNode }) {
     </ContextMenu>
   )
 }`}
-          />
-        </section>
-      </div>
-      <DocsToc items={TOC_ITEMS} className='hidden xl:block' />
-    </div>
+        />
+      </DocsSection>
+    </DocsPageLayout>
   )
 }
 

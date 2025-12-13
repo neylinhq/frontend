@@ -145,7 +145,7 @@ module/
 ├── [domain].server.ts    # Server-only код (loaders/actions)
 ├── [domain].d.ts         # Type declarations
 ├── [domain].module.css   # CSS Module (ТОЛЬКО .module.css)
-└── [domain].test.ts      # Тесты
+└── __tests__/            # Тесты модуля (см. 06-testing.md)
 ```
 
 **❌ НЕЛЬЗЯ**:
@@ -175,7 +175,6 @@ module/
 - ✅ `.utils.ts` - утилиты
 - ✅ `.hooks.ts` - хуки
 - ✅ `.module.css` - стили
-- ✅ `.test.ts` - тесты
 
 **❌ ЗАПРЕЩЕНО**:
 - Вложенные папки (`/components/card/card.tsx`)
@@ -410,3 +409,4 @@ components/
 
 - [01-layers.md](./01-layers.md) — Слои архитектуры
 - [03-dependencies.md](./03-dependencies.md) — Правила импортов
+- [06-testing.md](./06-testing.md) — Организация тестов

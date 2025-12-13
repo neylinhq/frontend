@@ -119,6 +119,7 @@ export const NodeChatPanel = ({ nodeId, mapId }: NodeChatPanelProps) => {
     <AIChatCore
       nodeContext={nodeContext}
       mapContext={mapContext}
+      showContextSwitch
       onSavePreview={handleSavePreview}
       onUndoPreview={handleUndoPreview}
     />

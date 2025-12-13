@@ -17,6 +17,8 @@ interface AIChatCoreProps {
   mapContext: MapChatContext
   emptyStateMessage?: string
   placeholderText?: string
+  /** Show node/map context toggle. Only relevant in node chat panel. */
+  showContextSwitch?: boolean
   onSavePreview?: (messageId: string, preview: PreviewCard) => Promise<{ previousState: Record<string, unknown>; actionId: string } | void>
   onUndoPreview?: (preview: ResolvedPreview) => Promise<void>
 }
@@ -25,6 +27,7 @@ export const AIChatCore = ({
   nodeContext,
   emptyStateMessage,
   placeholderText,
+  showContextSwitch = false,
   onSavePreview,
   onUndoPreview
 }: AIChatCoreProps) => {
@@ -262,7 +265,7 @@ export const AIChatCore = ({
           models={models}
           contextMode={contextMode}
           onContextModeChange={setContextMode}
-          showContextSwitch
+          showContextSwitch={showContextSwitch}
         />
       </div>
     </div>

@@ -33,31 +33,31 @@ export const CommandPalette = ({
   const commands: SlashCommand[] = [
     {
       id: 'clear',
-      label: t('ai.commands.clear', 'clear'),
+      label: 'clear',
       description: t('ai.commands.clearDesc', 'Clear chat history'),
       icon: <Trash2 className='h-4 w-4' />
     },
     {
       id: 'enrich',
-      label: t('ai.commands.enrich', 'enrich'),
+      label: 'enrich',
       description: t('ai.commands.enrichDesc', 'Improve node description'),
       icon: <Sparkles className='h-4 w-4' />
     },
     {
       id: 'examples',
-      label: t('ai.commands.examples', 'examples'),
+      label: 'examples',
       description: t('ai.commands.examplesDesc', 'Generate examples'),
       icon: <BookOpen className='h-4 w-4' />
     },
     {
       id: 'sources',
-      label: t('ai.commands.sources', 'sources'),
+      label: 'sources',
       description: t('ai.commands.sourcesDesc', 'Find related sources'),
       icon: <Link2 className='h-4 w-4' />
     },
     {
       id: 'exercises',
-      label: t('ai.commands.exercises', 'exercises'),
+      label: 'exercises',
       description: t('ai.commands.exercisesDesc', 'Generate practice exercises'),
       icon: <GraduationCap className='h-4 w-4' />
     }

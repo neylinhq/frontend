@@ -203,25 +203,39 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
       const mouseY = e.clientY - editorRect.top
       const target = e.target as HTMLElement
 
-      // Always find block by Y coordinate - this enables hover from anywhere
-      // in the row (gutter, left margin, over text, right margin)
-      const blocks = Array.from(proseMirror.children).filter(
-        (el): el is HTMLElement => el instanceof HTMLElement
-      )
+      // Recursively find the most specific block at Y coordinate
+      // This handles nested structures like lists where we want to target individual <li> elements
+      const findBlockAtY = (element: Element): HTMLElement | null => {
+        for (const child of element.children) {
+          if (!(child instanceof HTMLElement)) continue
 
-      let block: HTMLElement | null = null
-      for (const b of blocks) {
-        const blockRect = b.getBoundingClientRect()
-        const blockTop = blockRect.top - editorRect.top
-        const blockBottom = blockRect.bottom - editorRect.top
-        if (
-          mouseY >= blockTop - THRESHOLD.BLOCK_HOVER &&
-          mouseY <= blockBottom + THRESHOLD.BLOCK_HOVER
-        ) {
-          block = b
-          break
+          const childRect = child.getBoundingClientRect()
+          const childTop = childRect.top - editorRect.top
+          const childBottom = childRect.bottom - editorRect.top
+
+          if (
+            mouseY >= childTop - THRESHOLD.BLOCK_HOVER &&
+            mouseY <= childBottom + THRESHOLD.BLOCK_HOVER
+          ) {
+            // If this is a list item, return it directly (Notion-like behavior)
+            if (child.tagName === 'LI') {
+              return child
+            }
+            // If this is a list container, search inside for specific list item
+            if (child.tagName === 'UL' || child.tagName === 'OL') {
+              const nested = findBlockAtY(child)
+              if (nested) return nested
+              // Fallback to the list itself if no specific item found
+              return child
+            }
+            // For other blocks, return as-is
+            return child
+          }
         }
+        return null
       }
+
+      const block = findBlockAtY(proseMirror)
 
       if (block && block !== hoveredBlock) {
         const blockRect = block.getBoundingClientRect()
@@ -321,62 +335,89 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
       // Y-based fallback when cursor is in gutter (posAtCoords returns null)
       if (!posResult) {
         const proseMirror = view.dom
-        const blocks = Array.from(proseMirror.children).filter(
-          (el): el is HTMLElement => el instanceof HTMLElement
-        )
-
-        if (blocks.length === 0) {
-          return
-        }
-
-        let targetBlock: HTMLElement | null = null
-        let insertAfter = false
-
         const mouseY = e.clientY
 
-        // Find target block by Y coordinate
-        for (let i = 0; i < blocks.length; i++) {
-          const block = blocks[i]
-          const rect = block.getBoundingClientRect()
-          const blockCenter = (rect.top + rect.bottom) / 2
-
-          if (mouseY < blockCenter) {
-            targetBlock = block
-            insertAfter = false
-            break
-          } else if (i === blocks.length - 1) {
-            // Cursor below last block - insert after it
-            targetBlock = block
-            insertAfter = true
-          }
-        }
-
-        if (targetBlock) {
-          const targetRect = targetBlock.getBoundingClientRect()
-          const indicatorY = insertAfter
-            ? targetRect.bottom - editorRect.top
-            : targetRect.top - editorRect.top
-
-          showDropIndicator(
-            editorElement,
-            indicatorY,
-            targetRect.left - editorRect.left,
-            targetRect.width
+        // Recursively find target block/list item by Y coordinate
+        const findTargetAtY = (element: Element): { block: HTMLElement; insertAfter: boolean } | null => {
+          const children = Array.from(element.children).filter(
+            (el): el is HTMLElement => el instanceof HTMLElement
           )
 
-          // Get ProseMirror position for the block
-          const pos = view.posAtDOM(targetBlock, 0)
-          if (pos !== undefined && pos !== null) {
-            // Resolve to get block position (before the block node)
-            const $pos = view.state.doc.resolve(pos)
-            const blockPos = $pos.depth >= 1 ? $pos.before(1) : pos
+          for (let i = 0; i < children.length; i++) {
+            const child = children[i]
+            const rect = child.getBoundingClientRect()
+            const blockCenter = (rect.top + rect.bottom) / 2
 
-            dropTargetRef.current = {
-              pos: blockPos,
-              insertAfter,
-              isNested: false,
-              listItemDepth: -1
+            // Check if mouse is within this element's bounds
+            if (mouseY >= rect.top && mouseY <= rect.bottom) {
+              // If it's a list item, return it directly
+              if (child.tagName === 'LI') {
+                return { block: child, insertAfter: mouseY > blockCenter }
+              }
+              // If it's a list, search inside
+              if (child.tagName === 'UL' || child.tagName === 'OL') {
+                const nested = findTargetAtY(child)
+                if (nested) return nested
+              }
+              // Regular block
+              return { block: child, insertAfter: mouseY > blockCenter }
             }
+
+            // Check if mouse is above this block (insert before)
+            if (mouseY < rect.top) {
+              return { block: child, insertAfter: false }
+            }
+
+            // If this is the last block and mouse is below it
+            if (i === children.length - 1 && mouseY > rect.bottom) {
+              return { block: child, insertAfter: true }
+            }
+          }
+          return null
+        }
+
+        const result = findTargetAtY(proseMirror)
+        if (!result) return
+
+        const { block: targetBlock, insertAfter } = result
+        const targetRect = targetBlock.getBoundingClientRect()
+        const indicatorY = insertAfter
+          ? targetRect.bottom - editorRect.top
+          : targetRect.top - editorRect.top
+
+        showDropIndicator(
+          editorElement,
+          indicatorY,
+          targetRect.left - editorRect.left,
+          targetRect.width
+        )
+
+        // Get ProseMirror position for the block
+        const pos = view.posAtDOM(targetBlock, 0)
+        if (pos !== undefined && pos !== null) {
+          const $pos = view.state.doc.resolve(pos)
+
+          // For list items, find the correct depth
+          let listItemDepth = -1
+          if (targetBlock.tagName === 'LI') {
+            for (let d = $pos.depth; d >= 1; d--) {
+              const node = $pos.node(d)
+              if (node.type.name === 'listItem' || node.type.name === 'taskItem') {
+                listItemDepth = d
+                break
+              }
+            }
+          }
+
+          // Use listItemDepth for list items, otherwise use block depth
+          const effectiveDepth = listItemDepth > 0 ? listItemDepth : ($pos.depth >= 1 ? $pos.depth : 0)
+          const blockPos = effectiveDepth > 0 ? $pos.before(effectiveDepth) : pos
+
+          dropTargetRef.current = {
+            pos: blockPos,
+            insertAfter,
+            isNested: false,
+            listItemDepth
           }
         }
         return
@@ -503,11 +544,22 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
       let sourceEnd: number
 
       try {
-        // Resolve to get the actual block node
-        if ($sourcePos.depth >= 1) {
-          sourceNode = $sourcePos.node(1)
-          sourceStart = $sourcePos.before(1)
-          sourceEnd = $sourcePos.after(1)
+        // Find the correct depth for source node
+        // For list items, we want the listItem node, not the whole list
+        let sourceDepth = 1
+        for (let d = $sourcePos.depth; d >= 1; d--) {
+          const node = $sourcePos.node(d)
+          if (node.type.name === 'listItem' || node.type.name === 'taskItem') {
+            sourceDepth = d
+            break
+          }
+        }
+
+        // Resolve to get the actual block node at correct depth
+        if ($sourcePos.depth >= sourceDepth) {
+          sourceNode = $sourcePos.node(sourceDepth)
+          sourceStart = $sourcePos.before(sourceDepth)
+          sourceEnd = $sourcePos.after(sourceDepth)
         } else {
           sourceNode = view.state.doc.nodeAt(sourcePos)
           if (!sourceNode) {
@@ -583,14 +635,41 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
             return
           }
 
-          // Delete source first
+          // Determine what to insert BEFORE deleting (to access original structure)
+          let nodeToInsert = sourceNode
+
+          // If source is a listItem being dropped at top-level, wrap in list
+          const isSourceListItem = sourceNode.type.name === 'listItem' || sourceNode.type.name === 'taskItem'
+          const isTargetTopLevel = $targetPos.depth <= 1
+
+          if (isSourceListItem && isTargetTopLevel) {
+            // Find parent list type from the original position (before any changes)
+            let parentListType: string | null = null
+            for (let d = $sourcePos.depth - 1; d >= 0; d--) {
+              const node = $sourcePos.node(d)
+              if (node.type.name === 'bulletList' || node.type.name === 'orderedList' || node.type.name === 'taskList') {
+                parentListType = node.type.name
+                break
+              }
+            }
+
+            // Wrap in appropriate list type
+            if (parentListType) {
+              const listType = view.state.schema.nodes[parentListType]
+              if (listType) {
+                nodeToInsert = listType.create(null, sourceNode)
+              }
+            }
+          }
+
+          // Delete source
           tr.delete(sourceStart, sourceEnd)
 
           // Map the insert position after deletion
           const mappedInsertPos = tr.mapping.map(insertPos)
 
           // Insert at mapped position
-          tr.insert(mappedInsertPos, sourceNode)
+          tr.insert(mappedInsertPos, nodeToInsert)
         }
 
         view.dispatch(tr)

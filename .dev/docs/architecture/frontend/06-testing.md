@@ -1,43 +1,114 @@
 # Стратегия тестирования
 
+## Структура тестов
+
+```
+src/
+├── app/__tests__/                    # Cross-module тесты (сценарии)
+│   ├── auth/
+│   │   ├── sign-in.e2e.ts
+│   │   └── sign-up.e2e.ts
+│   ├── billing/
+│   │   └── checkout.e2e.ts
+│   └── providers.integration.ts      # App-level integration (редко)
+│
+├── features/auth/sign-in-form/
+│   └── __tests__/                    # Module-level тесты
+│       ├── sign-in-form.test.ts
+│       ├── sign-in-form.validation.test.ts
+│       └── sign-in-form.integration.ts
+│
+└── entities/user/
+    └── __tests__/
+        ├── user.test.ts
+        └── user.schema.test.ts
+```
+
+---
+
+## Naming Convention
+
+### Module-level (`module/__tests__/`)
+
+```
+[module|component].[part?].[test|integration].ts
+```
+
+| Пример | Описание |
+|--------|----------|
+| `sign-in-form.test.ts` | Unit: весь модуль |
+| `sign-in-form.validation.test.ts` | Unit: часть модуля (validation) |
+| `sign-in-form.integration.ts` | Integration: модуль целиком |
+| `sign-in-form.api.integration.ts` | Integration: API часть |
+| `graph-canvas.test.ts` | Unit: компонент из `components/` |
+| `node-drawer.drag.test.ts` | Unit: часть компонента |
+
+**Для segmented module** domain может быть:
+- Имя модуля (`graph`, `sign-in-form`)
+- Имя компонента из `components/` (`graph-canvas`, `node-drawer`)
+
+### App-level (`app/__tests__/`)
+
+```
+[scenario].[e2e|integration].ts
+```
+
+| Пример | Описание |
+|--------|----------|
+| `sign-in.e2e.ts` | E2E: user flow авторизации |
+| `checkout.e2e.ts` | E2E: flow оплаты |
+| `providers.integration.ts` | Integration: app providers |
+
+---
+
 ## Уровни тестирования
 
-| Уровень | Расположение | Что тестируем |
-|---------|--------------|---------------|
-| **Unit** | `*.test.ts` рядом с файлом | Схемы, утилиты, хелперы |
-| **Integration** | `app/__tests__/*.integration.test.ts` | Flows, взаимодействие features |
-| **E2E** | `app/__tests__/*.e2e.test.ts` | Критические пользовательские пути |
+| Тип | Где | Суффикс | Runner | Что тестируем |
+|-----|-----|---------|--------|---------------|
+| **Unit** | `module/__tests__/` | `.test.ts` | Vitest | Схемы, утилиты, хуки, компоненты |
+| **Integration** | `module/__tests__/` или `app/__tests__/` | `.integration.ts` | Vitest | Взаимодействие частей модуля, API |
+| **E2E** | `app/__tests__/[group]/` | `.e2e.ts` | Playwright | User flows, критические пути |
+
+---
+
+## Правила размещения
+
+1. **Unit + Integration модуля** → `module/__tests__/`
+2. **Cross-module сценарии** → `app/__tests__/[group]/`
+3. **Плоская структура** внутри `__tests__/` (без вложенных папок)
+4. **Группы в app/__tests__/** соответствуют FSD группам (`auth/`, `billing/`, `graph/`)
 
 ---
 
 ## Unit тесты
 
-**Co-located** - `.test.ts` рядом с тестируемым файлом:
+**Расположение**: `module/__tests__/`
 
 ```
-entities/user/
-├── user.schema.ts
-├── user.schema.test.ts      # ✅ Тестируем Zod схемы
-├── user.api.ts
-└── user.queries.ts
+features/auth/sign-in-form/
+└── __tests__/
+    ├── sign-in-form.test.ts           # Основные тесты
+    ├── sign-in-form.schema.test.ts    # Тесты схемы
+    └── sign-in-form.validation.test.ts # Тесты валидации
 
-shared/lib/
-├── cn.ts
-└── cn.test.ts               # ✅ Тестируем утилиты
+entities/user/
+└── __tests__/
+    ├── user.test.ts
+    └── user.schema.test.ts
 ```
 
 **Что тестируем:**
 - Zod схемы (валидация, edge cases)
-- Утилиты в shared/lib
-- Хелперы в features/*/lib
+- Утилиты в `lib/`
+- Хуки
 - Чистые функции
 
 **Пример:**
 
 ```tsx
-// entities/node/node.schema.test.ts
+// entities/node/__tests__/node.schema.test.ts
 import { describe, it, expect } from 'vitest'
-import { NodeSchema, NodeIdSchema } from './node.schema'
+import { NodeSchema, NodeIdSchema } from '../node.schema'
 
 describe('NodeIdSchema', () => {
   it('accepts valid UUID', () => {
@@ -50,52 +121,48 @@ describe('NodeIdSchema', () => {
     expect(result.success).toBe(false)
   })
 })
-
-describe('NodeSchema', () => {
-  it('validates complete node', () => {
-    const node = {
-      id: '123e4567-e89b-12d3-a456-426614174000',
-      type: 'concept',
-      title: 'Test Node',
-      content: 'Test content'
-    }
-    expect(NodeSchema.parse(node)).toEqual(node)
-  })
-})
 ```
 
 ---
 
 ## Integration тесты
 
-**Расположение**: `app/__tests__/`
+### Module-level
+
+**Расположение**: `module/__tests__/`
 
 ```
-app/
-├── __tests__/
-│   ├── auth.integration.test.ts       # Auth flow
-│   ├── billing.integration.test.ts    # Upgrade flow
-│   └── graph.integration.test.ts      # Graph interactions
-├── providers/
-└── theme/
+features/auth/sign-in-form/
+└── __tests__/
+    └── sign-in-form.integration.ts    # Взаимодействие частей модуля
 ```
 
 **Что тестируем:**
-- Многошаговые пользовательские сценарии
-- Взаимодействие между features
-- React Query + Zustand integration
+- Компонент + хук + API вместе
+- React Query + MSW
+- Zustand store interactions
+
+### App-level
+
+**Расположение**: `app/__tests__/`
+
+```
+app/__tests__/
+├── providers.integration.ts           # App providers работают вместе
+└── routing.integration.ts             # Router guards
+```
 
 **Пример:**
 
 ```tsx
-// app/__tests__/auth.integration.test.ts
+// features/auth/sign-in-form/__tests__/sign-in-form.integration.ts
 import { renderWithProviders, screen, userEvent } from '@/shared/tests'
-import { SignInForm } from '@/features/auth/sign-in-form'
+import { SignInForm } from '../sign-in-form'
 import { server } from '@/shared/mocks/server'
 import { http, HttpResponse } from 'msw'
 
-describe('Auth Flow', () => {
-  it('redirects to dashboard after successful login', async () => {
+describe('SignInForm Integration', () => {
+  it('shows success toast after login', async () => {
     server.use(
       http.post('/api/auth/login', () => {
         return HttpResponse.json({ user: { id: '1', email: 'test@test.com' } })
@@ -108,7 +175,7 @@ describe('Auth Flow', () => {
     await userEvent.type(screen.getByLabelText('Password'), 'password123')
     await userEvent.click(screen.getByRole('button', { name: 'Sign In' }))
 
-    expect(window.location.pathname).toBe('/dashboard')
+    expect(await screen.findByText('Welcome!')).toBeInTheDocument()
   })
 })
 ```
@@ -117,20 +184,43 @@ describe('Auth Flow', () => {
 
 ## E2E тесты
 
-**Расположение**: `app/__tests__/`
+**Расположение**: `app/__tests__/[group]/`
 
 ```
-app/
-├── __tests__/
-│   ├── smoke.e2e.test.ts              # Критические пути
-│   ├── signup.e2e.test.ts             # Регистрация + onboarding
-│   └── map-creation.e2e.test.ts       # Создание карты + узлы
+app/__tests__/
+├── auth/
+│   ├── sign-in.e2e.ts                 # Login flow
+│   ├── sign-up.e2e.ts                 # Registration + onboarding
+│   └── password-reset.e2e.ts          # Password recovery
+├── billing/
+│   └── checkout.e2e.ts                # Payment flow
+├── graph/
+│   └── node-creation.e2e.ts           # Create node flow
+└── smoke.e2e.ts                       # Critical paths smoke test
 ```
 
 **Что тестируем:**
 - Критические пользовательские пути
 - Happy path scenarios
-- Smoke tests для production
+- Cross-module flows (auth → dashboard → create map)
+
+**Пример:**
+
+```ts
+// app/__tests__/auth/sign-in.e2e.ts
+import { test, expect } from '@playwright/test'
+
+test('user can sign in and see dashboard', async ({ page }) => {
+  await page.goto('/sign-in')
+
+  await page.fill('[name="email"]', 'test@example.com')
+  await page.fill('[name="password"]', 'password123')
+  await page.click('button[type="submit"]')
+
+  await expect(page).toHaveURL('/dashboard')
+  await expect(page.getByText('Welcome back')).toBeVisible()
+})
+```
 
 ---
 
@@ -138,34 +228,25 @@ app/
 
 ### Размещение моков
 
-**Централизованно в `shared/mocks/`** - все mock data и MSW handlers в одном месте:
+**Централизованно в `shared/mocks/`**:
 
 ```
-shared/
-├── mocks/
-│   ├── data/                     # Mock data (типизированные объекты)
-│   │   ├── users.ts             # Mock users
-│   │   ├── maps.ts              # Mock maps
-│   │   └── subscriptions.ts     # Mock subscriptions
-│   ├── handlers/                # MSW request handlers
-│   │   ├── auth.ts              # Auth endpoints
-│   │   ├── user.ts              # User endpoints
-│   │   ├── map.ts               # Map endpoints
-│   │   └── subscription.ts      # Subscription endpoints
-│   ├── server.ts                # MSW server setup (Node.js)
-│   └── browser.ts               # MSW browser setup (dev mode)
+shared/mocks/
+├── data/                     # Mock data
+│   ├── users.ts
+│   ├── maps.ts
+│   └── subscriptions.ts
+├── handlers/                 # MSW request handlers
+│   ├── auth.ts
+│   ├── user.ts
+│   └── map.ts
+├── server.ts                 # MSW server setup (Node.js)
+└── browser.ts                # MSW browser setup (dev mode)
 ```
 
 **⚠️ FSD Исключение:**
-- `shared/mocks/` импортирует типы из `entities/*` - это **допустимо** для тестовых данных
-- Моки используются **только в тестах**, не попадают в production bundle
-- Моки **не экспортируются** через barrel exports `shared/index.ts`
-
-**Почему централизованно:**
-- Моки используются на разных уровнях (integration tests в `app/__tests__/`, unit tests в entities)
-- Один источник правды для всех тестовых данных
-- Легче поддерживать consistency между тестами
-- MSW handlers могут комбинировать данные из разных entities
+- `shared/mocks/` импортирует типы из `entities/*` — это **допустимо** для тестовых данных
+- Моки не попадают в production bundle
 
 ### Setup
 
@@ -178,26 +259,9 @@ export const server = setupServer(...handlers)
 ```
 
 ```tsx
-// shared/mocks/handlers/index.ts
-import { http, HttpResponse } from 'msw'
-import { MOCK_USERS } from '../data/users'
-import { MOCK_MAPS } from '../data/maps'
-
-export const handlers = [
-  http.get('/api/user/current', () => {
-    return HttpResponse.json(MOCK_USERS[0])
-  }),
-
-  http.get('/api/maps', () => {
-    return HttpResponse.json(MOCK_MAPS)
-  })
-]
-```
-
-```tsx
-// shared/mocks/setup.ts
+// vitest.setup.ts
 import { beforeAll, afterEach, afterAll } from 'vitest'
-import { server } from './server'
+import { server } from '@/shared/mocks/server'
 
 beforeAll(() => server.listen({ onUnhandledRequest: 'error' }))
 afterEach(() => server.resetHandlers())
@@ -276,64 +340,27 @@ export const createMockUser = (overrides?: Partial<User>): User => ({
 
 ---
 
-## Правила
+## Конфигурация
 
-1. **Co-locate** unit тесты - `.test.ts` рядом с `.ts`
-2. **Integration/E2E** → `app/__tests__/`
-3. **Моки централизованно** → `shared/mocks/` для MSW handlers и mock data
-4. **Coverage** → фокус на критической логике (схемы, утилиты)
-5. **Не тестируем** → UI компоненты unit-тестами (слишком хрупко)
-6. **MSW** → для всех API моков (не jest.mock)
-7. **Isolated** → каждый тест независим
-
----
-
-## Что НЕ тестировать unit-тестами
-
-- ❌ React компоненты (используйте integration/e2e)
-- ❌ Стили и layout
-- ❌ Third-party библиотеки
-- ❌ Моки (тестируйте реальную логику)
-
-**Почему:**
-- UI тесты хрупкие (ломаются при любом изменении)
-- Лучше покрыть E2E критические пути
-- Unit-тесты для чистой логики, не UI
-
----
-
-## Coverage Thresholds
-
-### Минимальные требования
-
-| Метрика | Порог | Примечание |
-|---------|-------|------------|
-| Statements | 60% | Базовый уровень |
-| Branches | 50% | Условная логика |
-| Functions | 60% | Покрытие функций |
-| Lines | 60% | Строки кода |
-
-### Конфигурация (vitest.config.ts)
+### Vitest
 
 ```ts
+// vitest.config.ts
 export default defineConfig({
   test: {
+    include: ['**/__tests__/**/*.test.ts', '**/__tests__/**/*.integration.ts'],
+    exclude: ['**/*.e2e.ts'],
+    setupFiles: ['./vitest.setup.ts'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html'],
-      thresholds: {
-        statements: 60,
-        branches: 50,
-        functions: 60,
-        lines: 60
-      },
       include: [
         'src/entities/**/*.ts',
         'src/features/**/lib/**/*.ts',
         'src/shared/lib/**/*.ts'
       ],
       exclude: [
-        '**/*.test.ts',
+        '**/__tests__/**',
         '**/index.ts',
         '**/*.d.ts'
       ]
@@ -342,19 +369,65 @@ export default defineConfig({
 })
 ```
 
+### Playwright
+
+```ts
+// playwright.config.ts
+import { defineConfig } from '@playwright/test'
+
+export default defineConfig({
+  testDir: './src/app/__tests__',
+  testMatch: '**/*.e2e.ts',
+  use: {
+    baseURL: 'http://localhost:3000'
+  }
+})
+```
+
+---
+
+## Coverage Thresholds
+
+| Метрика | Порог | Примечание |
+|---------|-------|------------|
+| Statements | 60% | Базовый уровень |
+| Branches | 50% | Условная логика |
+| Functions | 60% | Покрытие функций |
+| Lines | 60% | Строки кода |
+
+---
+
+## Правила
+
+1. **Тесты в `__tests__/`** — не co-located рядом с файлами
+2. **Плоская структура** — без вложенных папок внутри `__tests__/`
+3. **Naming по domain** — `[module|component].[part?].[type].ts`
+4. **E2E в app/** — cross-module сценарии отдельно
+5. **MSW для API** — не jest.mock
+6. **Isolated** — каждый тест независим
+
+---
+
+## Что НЕ тестировать unit-тестами
+
+- ❌ Чисто UI логику (используйте integration/e2e)
+- ❌ Стили и layout
+- ❌ Third-party библиотеки
+- ❌ Простые pass-through функции
+
+**Почему:**
+- UI тесты хрупкие (ломаются при любом изменении)
+- Лучше покрыть E2E критические пути
+- Unit-тесты для бизнес-логики, не UI
+
 ---
 
 ## Дополнительные типы тестов
 
 ### Visual Regression (опционально)
 
-```bash
-# Playwright для visual tests
-bunx playwright test --project=visual
-```
-
 ```ts
-// tests/visual/button.visual.test.ts
+// Playwright для visual tests
 test('button variants', async ({ page }) => {
   await page.goto('/storybook/button')
   await expect(page).toHaveScreenshot('button-variants.png')
@@ -364,38 +437,13 @@ test('button variants', async ({ page }) => {
 ### Accessibility Testing
 
 ```ts
-// Используем @axe-core/playwright
-import { test, expect } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 
 test('page has no a11y violations', async ({ page }) => {
   await page.goto('/dashboard')
-
   const results = await new AxeBuilder({ page }).analyze()
-
   expect(results.violations).toEqual([])
 })
-```
-
-### Performance Testing
-
-```ts
-// Lighthouse CI в pipeline
-// lighthouserc.js
-module.exports = {
-  ci: {
-    collect: {
-      url: ['http://localhost:3000/'],
-      numberOfRuns: 3
-    },
-    assert: {
-      assertions: {
-        'categories:performance': ['error', { minScore: 0.8 }],
-        'categories:accessibility': ['error', { minScore: 0.9 }]
-      }
-    }
-  }
-}
 ```
 
 ---
@@ -409,24 +457,28 @@ name: Tests
 on: [push, pull_request]
 
 jobs:
-  test:
+  unit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-
       - run: bun install
       - run: bun run test:coverage
 
-      - name: Upload coverage
-        uses: codecov/codecov-action@v3
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      - run: bunx playwright install --with-deps
+      - run: bun run test:e2e
 ```
 
 ---
 
 ## См. также
 
+- [02-modules.md](./02-modules.md) — Структура модулей
 - [09-security.md](./09-security.md) — Security testing
 - [99-best-practices.md](./99-best-practices.md) — Чеклист

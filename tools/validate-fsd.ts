@@ -13,6 +13,8 @@
  * 7. /styles: ONLY .module.css
  * 8. /model: files use [domain].*.ts or [component].*.ts pattern
  * 9. shared/core/: free internal structure, but MUST have index.ts
+ * 10. module/__tests__/: FLAT, [module|component].[part?].[test|integration].ts
+ * 11. app/__tests__/: group dirs with [scenario].[e2e|integration].ts
  */
 
 import * as fs from 'node:fs'
@@ -84,7 +86,7 @@ type Layer = (typeof LAYERS)[number]
 const ALLOWED_SEGMENTS = ['components', 'model', 'lib', 'api', 'styles'] as const
 
 // Special directories that are allowed but not FSD segments
-const SPECIAL_DIRS = ['__mocks__', '__tests__', 'pkg', 'wasm', 'ui'] as const
+const SPECIAL_DIRS = ['__mocks__', '__tests__', 'pkg', 'wasm', 'ui', 'mocks'] as const
 
 // Allowed suffixes in flat module files: [domain].suffix.ts
 // e.g., user.types.ts, user.schema.ts, user.api.ts
@@ -102,8 +104,8 @@ const ALLOWED_FLAT_SUFFIXES = [
   'd',          // [domain].d.ts
   'module',     // [domain].module.css
   'test',       // [domain].test.ts
-  'store',      // [domain].store.ts
-  'context'     // [domain].context.tsx
+  'store'       // [domain].store.ts
+  // NO .context - FORBIDDEN
 ] as const
 
 const RESERVED_DOMAINS = [
@@ -177,6 +179,18 @@ const validateFlatModule = (
   const files = getFiles(modulePath)
   const dirs = getDirs(modulePath)
   const relPath = getRelativePath(modulePath, srcPath)
+
+  // Get component names if components/ exists (for __tests__ validation)
+  const componentsPath = path.join(modulePath, 'components')
+  const componentNames = isDirectory(componentsPath)
+    ? getFiles(componentsPath).filter((f) => f.endsWith('.tsx'))
+    : []
+
+  // Validate __tests__/ if it exists
+  const testsPath = path.join(modulePath, '__tests__')
+  if (isDirectory(testsPath)) {
+    errors.push(...validateTestsSegment(testsPath, moduleName, componentNames, srcPath))
+  }
 
   // Check for disallowed directories (except components/ which converts to segmented)
   for (const dir of dirs) {
@@ -337,9 +351,224 @@ const ALLOWED_MODEL_SUFFIXES = [
   'schema',     // [domain].schema.ts
   'store',      // [domain].store.ts
   'hooks',      // [domain].hooks.ts
-  'context',    // [domain].context.tsx
-  'config'      // [domain].config.ts
+  'config',     // [domain].config.ts
+  'd',          // [domain].d.ts
+  'server'      // [domain].server.ts
+  // NO .context - FORBIDDEN
 ] as const
+
+// Allowed test types in module __tests__/ segment
+// Pattern: [module|component].[part?].[test|integration].ts
+const ALLOWED_TEST_TYPES = ['test', 'integration'] as const
+
+// Allowed test types in app/__tests__/
+// Pattern: [scenario].[e2e|integration].ts
+const ALLOWED_APP_TEST_TYPES = ['e2e', 'integration'] as const
+
+/**
+ * Validates __tests__/ directory in a module
+ *
+ * Rules:
+ * 1. FLAT structure - no subdirectories
+ * 2. Files follow pattern: [module|component].[part?].[test|integration].ts
+ * 3. Domain must be module name or component name from components/
+ */
+const validateTestsSegment = (
+  testsPath: string,
+  moduleName: string,
+  componentNames: string[],
+  srcPath: string
+): ValidationError[] => {
+  const errors: ValidationError[] = []
+  const files = getFiles(testsPath)
+  const dirs = getDirs(testsPath)
+  const relPath = getRelativePath(testsPath, srcPath)
+
+  // Rule 1: FLAT structure - no subdirectories
+  if (dirs.length > 0) {
+    for (const dir of dirs) {
+      errors.push({
+        path: `${relPath}/${dir}`,
+        rule: 'tests-flat-structure',
+        message: `__tests__/ must be FLAT, no subdirectories allowed, found '${dir}'`,
+        severity: 'error'
+      })
+    }
+  }
+
+  // Rule 2 & 3: Validate file naming
+  for (const file of files) {
+    if (file.startsWith('.')) continue
+
+    // Must be .ts or .tsx
+    if (!file.endsWith('.ts') && !file.endsWith('.tsx')) {
+      errors.push({
+        path: `${relPath}/${file}`,
+        rule: 'tests-file-type',
+        message: `Only .ts/.tsx files allowed in __tests__/, found '${file}'`,
+        severity: 'error'
+      })
+      continue
+    }
+
+    // Parse: "sign-in-form.validation.test.ts" -> domain="sign-in-form", part="validation", type="test"
+    // or: "sign-in-form.test.ts" -> domain="sign-in-form", part=null, type="test"
+    const parts = file.split('.')
+
+    // Minimum: domain.type.ts (3 parts)
+    if (parts.length < 3) {
+      errors.push({
+        path: `${relPath}/${file}`,
+        rule: 'tests-naming',
+        message: `Test file should follow [domain].[part?].[test|integration].ts pattern, got '${file}'`,
+        severity: 'warning'
+      })
+      continue
+    }
+
+    const domain = parts[0]
+    const ext = parts[parts.length - 1] // 'ts' or 'tsx'
+    const testType = parts[parts.length - 2] // 'test' or 'integration'
+
+    // Check test type is valid
+    if (!ALLOWED_TEST_TYPES.includes(testType as (typeof ALLOWED_TEST_TYPES)[number])) {
+      errors.push({
+        path: `${relPath}/${file}`,
+        rule: 'tests-naming',
+        message: `Test type must be 'test' or 'integration', got '${testType}' in '${file}'`,
+        severity: 'warning'
+      })
+      continue
+    }
+
+    // Check domain is module name or component name
+    const validDomains = [moduleName, ...componentNames.map((c) => c.replace('.tsx', ''))]
+
+    if (!validDomains.includes(domain)) {
+      errors.push({
+        path: `${relPath}/${file}`,
+        rule: 'tests-naming',
+        message: `Test domain '${domain}' not found. Valid: ${validDomains.join(', ')}`,
+        severity: 'warning'
+      })
+    }
+  }
+
+  return errors
+}
+
+/**
+ * Validates app/__tests__/ directory for cross-module e2e tests
+ *
+ * Rules:
+ * 1. Contains group subdirectories (auth/, billing/, graph/)
+ * 2. Group dirs contain e2e test files: [scenario].[e2e|integration].ts
+ * 3. Root can have smoke.e2e.ts and similar cross-cutting tests
+ */
+const validateAppTestsDirectory = (
+  testsPath: string,
+  srcPath: string
+): ValidationError[] => {
+  const errors: ValidationError[] = []
+  const files = getFiles(testsPath)
+  const dirs = getDirs(testsPath)
+  const relPath = getRelativePath(testsPath, srcPath)
+
+  // Validate root files (smoke tests, etc.)
+  for (const file of files) {
+    if (file.startsWith('.')) continue
+
+    if (!file.endsWith('.ts') && !file.endsWith('.tsx')) {
+      errors.push({
+        path: `${relPath}/${file}`,
+        rule: 'app-tests-file-type',
+        message: `Only .ts/.tsx files allowed in app/__tests__/, found '${file}'`,
+        severity: 'error'
+      })
+      continue
+    }
+
+    // Parse: "smoke.e2e.ts" -> scenario="smoke", type="e2e"
+    const parts = file.split('.')
+    if (parts.length < 3) {
+      errors.push({
+        path: `${relPath}/${file}`,
+        rule: 'app-tests-naming',
+        message: `Test file should follow [scenario].[e2e|integration].ts pattern, got '${file}'`,
+        severity: 'warning'
+      })
+      continue
+    }
+
+    const testType = parts[parts.length - 2]
+    if (!ALLOWED_APP_TEST_TYPES.includes(testType as (typeof ALLOWED_APP_TEST_TYPES)[number])) {
+      errors.push({
+        path: `${relPath}/${file}`,
+        rule: 'app-tests-naming',
+        message: `App test type must be 'e2e' or 'integration', got '${testType}' in '${file}'`,
+        severity: 'warning'
+      })
+    }
+  }
+
+  // Validate group directories
+  for (const dir of dirs) {
+    const groupPath = path.join(testsPath, dir)
+    const groupFiles = getFiles(groupPath)
+    const groupDirs = getDirs(groupPath)
+    const groupRelPath = `${relPath}/${dir}`
+
+    // No nested directories inside group
+    if (groupDirs.length > 0) {
+      for (const nestedDir of groupDirs) {
+        errors.push({
+          path: `${groupRelPath}/${nestedDir}`,
+          rule: 'app-tests-flat-groups',
+          message: `No nested directories allowed in test group '${dir}/', found '${nestedDir}'`,
+          severity: 'error'
+        })
+      }
+    }
+
+    // Validate files in group
+    for (const file of groupFiles) {
+      if (file.startsWith('.')) continue
+
+      if (!file.endsWith('.ts') && !file.endsWith('.tsx')) {
+        errors.push({
+          path: `${groupRelPath}/${file}`,
+          rule: 'app-tests-file-type',
+          message: `Only .ts/.tsx files allowed, found '${file}'`,
+          severity: 'error'
+        })
+        continue
+      }
+
+      const parts = file.split('.')
+      if (parts.length < 3) {
+        errors.push({
+          path: `${groupRelPath}/${file}`,
+          rule: 'app-tests-naming',
+          message: `Test file should follow [scenario].[e2e|integration].ts pattern, got '${file}'`,
+          severity: 'warning'
+        })
+        continue
+      }
+
+      const testType = parts[parts.length - 2]
+      if (!ALLOWED_APP_TEST_TYPES.includes(testType as (typeof ALLOWED_APP_TEST_TYPES)[number])) {
+        errors.push({
+          path: `${groupRelPath}/${file}`,
+          rule: 'app-tests-naming',
+          message: `App test type must be 'e2e' or 'integration', got '${testType}' in '${file}'`,
+          severity: 'warning'
+        })
+      }
+    }
+  }
+
+  return errors
+}
 
 const validateModelSegment = (
   segmentPath: string,
@@ -451,6 +680,12 @@ const validateSegmentedModule = (
         errors.push(...validateModelSegment(segmentPath, moduleName, componentNames, srcPath))
         break
     }
+  }
+
+  // Validate __tests__/ if it exists
+  const testsPath = path.join(modulePath, '__tests__')
+  if (isDirectory(testsPath)) {
+    errors.push(...validateTestsSegment(testsPath, moduleName, componentNames, srcPath))
   }
 
   return errors
@@ -605,8 +840,18 @@ const analyzeLayer = (
 
   const entries = getDirs(layerPath)
 
-  // Special handling for shared/core/
+  // Special handling for app/__tests__/ (e2e tests)
+  if (layer === 'app') {
+    const appTestsPath = path.join(layerPath, '__tests__')
+    if (isDirectory(appTestsPath)) {
+      const testErrors = validateAppTestsDirectory(appTestsPath, srcPath)
+      report.errors.push(...testErrors)
+    }
+  }
+
+  // Special handling for shared/core/ and shared/mocks/
   if (layer === 'shared') {
+    // shared/core/ - core modules with free internal structure
     const corePath = path.join(layerPath, 'core')
     if (isDirectory(corePath)) {
       const coreModules = getDirs(corePath)
@@ -617,10 +862,15 @@ const analyzeLayer = (
         report.errors.push(...moduleInfo.errors)
       }
     }
+
+    // shared/mocks/ - special module with unique MSW structure, skip validation
+    // Has: browser.ts, server.ts at root + data/, handlers/ subdirs
+    // This is NOT a group, it's a special testing infrastructure module
   }
 
   for (const entry of entries) {
     if (entry === 'core' && layer === 'shared') continue // Already handled
+    if (entry === 'mocks' && layer === 'shared') continue // Special MSW module, skip
 
     const entryPath = path.join(layerPath, entry)
 

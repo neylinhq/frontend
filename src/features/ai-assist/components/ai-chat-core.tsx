@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { aiApi, type ChatStreamChunk, type ProposalData, useSelectedModel } from '@/entities/ai'
 import { toast } from '@/shared/components/toast'
 import type { ChatMessage, MapChatContext, NodeChatContext, PreviewCard, ResolvedPreview } from '../ai-assist.types'
-import { useChatHistoryStore, getChatSessionId } from '../model/chat-history.store'
+import { useChatHistoryStore, getChatSessionId } from '../model/ai-assist.chat.store'
 import { ChatInput } from './chat-input'
 import { ChatMessageList } from './chat-message-list'
 
@@ -48,6 +48,7 @@ export const AIChatCore = ({
   const removePreview = useChatHistoryStore(s => s.removePreview)
   const moveToResolved = useChatHistoryStore(s => s.moveToResolved)
   const undoResolved = useChatHistoryStore(s => s.undoResolved)
+  const truncateFromMessage = useChatHistoryStore(s => s.truncateFromMessage)
   const clearSession = useChatHistoryStore(s => s.clearSession)
 
   const handleSendMessage = async (content: string) => {
@@ -145,8 +146,7 @@ export const AIChatCore = ({
         content: t('ai.chat.error'),
         isStreaming: false
       })
-      toast({
-        title: 'Error',
+      toast.error(t('ai.chat.error'), {
         description: error instanceof Error ? error.message : 'An error occurred',
       })
     } finally {
@@ -229,6 +229,21 @@ export const AIChatCore = ({
     }
   }
 
+  const handleRegenerate = () => {
+    // Find last user message and resend it
+    const lastUserMessage = [...messages].reverse().find(m => m.role === 'user')
+    if (lastUserMessage) {
+      handleSendMessage(lastUserMessage.content)
+    }
+  }
+
+  const handleEditMessage = (messageId: string, newContent: string) => {
+    // Truncate history from this message (removes it and all subsequent)
+    truncateFromMessage(sessionId, messageId)
+    // Send the edited message immediately
+    handleSendMessage(newContent)
+  }
+
   const defaultEmptyMessage = t('ai.chat.noMessages')
 
   return (
@@ -248,6 +263,8 @@ export const AIChatCore = ({
             onSavePreview={handleSavePreview}
             onRejectPreview={handleRejectPreview}
             onUndoResolved={handleUndoResolved}
+            onRegenerate={handleRegenerate}
+            onEditMessage={handleEditMessage}
           />
         )}
       </div>

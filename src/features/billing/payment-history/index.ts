@@ -1,1 +1,1 @@
-export { PaymentHistoryTable } from './payment-history-table'
+export { PaymentHistoryTable } from './payment-history'

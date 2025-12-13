@@ -20,7 +20,7 @@ export {
   type EnrichedLightweightNode,
   enrichNodesWithProgress,
   getProgressStats
-} from './enriched-node'
+} from './progress.utils'
 
 // API
 export { progressApi } from './progress.api'

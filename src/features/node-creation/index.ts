@@ -16,4 +16,4 @@ export type { NodeCreationState } from './model/node-creation.store'
 // Store
 export { useNodeCreationStore } from './model/node-creation.store'
 // Hooks
-export { useCreateNodeMutation } from './model/use-create-node-mutation'
+export { useCreateNodeMutation } from './model/node-creation.hooks'

@@ -133,11 +133,12 @@ export const aiApi = {
 
           for (const line of lines) {
             if (line.startsWith('data: ')) {
+              const data = line.slice(6)
               try {
-                const chunk = JSON.parse(line.slice(6)) as ChatStreamChunk
+                const chunk = JSON.parse(data) as ChatStreamChunk
                 onChunk(chunk)
-              } catch {
-                // Skip malformed JSON
+              } catch (parseError) {
+                console.warn('[AI Stream] Failed to parse chunk:', data, parseError)
               }
             }
           }
@@ -145,6 +146,7 @@ export const aiApi = {
 
         resolve()
       } catch (error) {
+        console.error('[AI Stream] Stream error:', error)
         if ((error as Error).name === 'AbortError') {
           resolve() // Aborted, not an error
         } else {

@@ -2,8 +2,8 @@ import { useTranslation } from 'react-i18next'
 import { useMap, useUpdateNode, useNodeWithContent } from '@/entities/map'
 import { toast } from '@/shared/components/toast'
 import type { EnrichmentPreviewData, MapChatContext, NodeChatContext, PreviewCard, ResolvedPreview } from '../ai-assist.types'
-import { useProposalHistoryStore } from '../model/proposal-history.store'
-import { getChatSessionId } from '../model/chat-history.store'
+import { useProposalHistoryStore } from '../model/ai-assist.proposal.store'
+import { getChatSessionId } from '../model/ai-assist.chat.store'
 import { AIChatCore } from './ai-chat-core'
 
 interface NodeChatPanelProps {

@@ -6,4 +6,4 @@ export type { MapCreationState } from './model/map-creation.store'
 // Store
 export { useMapCreationStore } from './model/map-creation.store'
 // Hooks
-export { useCreateMapMutation } from './model/use-create-map-mutation'
+export { useCreateMapMutation } from './model/map-creation.hooks'

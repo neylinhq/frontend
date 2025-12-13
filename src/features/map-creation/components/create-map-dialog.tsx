@@ -18,7 +18,7 @@ import { Textarea } from '@/shared/components/textarea'
 import { MAPS_ROUTES } from '@/shared/config'
 import { MAP_CREATION_CONFIG } from '../model/map-creation.constants'
 import { useMapCreationStore } from '../model/map-creation.store'
-import { useCreateMapMutation } from '../model/use-create-map-mutation'
+import { useCreateMapMutation } from '../model/map-creation.hooks'
 
 export const CreateMapDialog = () => {
   const { t } = useTranslation()

@@ -1,2 +1,2 @@
 export { DocsToc, type TocItem } from './docs-toc'
-export { useActiveHeading } from './use-active-heading'
+export { useActiveHeading } from './docs-toc.hooks'

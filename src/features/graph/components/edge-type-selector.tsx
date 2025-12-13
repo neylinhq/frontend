@@ -5,7 +5,7 @@ import { RelationTypeEnum } from '@/entities/edge'
 import { useCreateEdge } from '@/entities/map'
 import { Button } from '@/shared/components/button'
 import { EdgeTypeButton } from '@/shared/components/edge-type-button'
-import { useEdgeManagementStore } from '../model/edge-management.store'
+import { useEdgeManagementStore } from '../model/graph.edge.store'
 
 const ALL_RELATION_TYPES = RelationTypeEnum.options
 

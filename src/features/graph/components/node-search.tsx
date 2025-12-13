@@ -28,7 +28,7 @@ const filterNodeItem = (item: NodeSearchItem, query: string): boolean => {
   return terms.every(term => searchableText.includes(term))
 }
 
-// Node type labels for grouping (matching graph-toolbar.constants.ts)
+// Node type labels for grouping (matching graph.toolbar.constants.ts)
 const NODE_TYPE_LABELS: Record<string, string> = {
   concept: 'graph.nodeTypes.concept',
   fact: 'graph.nodeTypes.fact',

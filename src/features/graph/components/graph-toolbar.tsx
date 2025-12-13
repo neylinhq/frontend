@@ -27,7 +27,7 @@ import {
   type ConnectionPreset,
   type ViewMode
 } from '../model/graph.store'
-import type { ConnectionStats } from '../model/graph-data.hooks'
+import type { ConnectionStats } from '../model/graph.data.hooks'
 import {
   EDGE_TYPE_LABELS,
   NODE_TYPE_LABELS,

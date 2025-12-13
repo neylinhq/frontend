@@ -1,2 +1,2 @@
-export { MapCard } from './map-card'
-export { MapCardSkeleton } from './map-card-skeleton'
+export { MapCard } from './components/map-card'
+export { MapCardSkeleton } from './components/map-card-skeleton'

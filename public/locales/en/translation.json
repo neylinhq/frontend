@@ -152,7 +152,8 @@
     "undo": "Undo",
     "undone": "Undone",
     "copied": "Copied",
-    "copy": "Copy"
+    "copy": "Copy",
+    "send": "Send"
   },
   "imageCrop": {
     "title": "Crop image",
@@ -1146,7 +1147,9 @@
       "streaming": "AI is thinking...",
       "error": "Something went wrong. Try again.",
       "noMessages": "Start a conversation with AI to get help with this node",
-      "noMessagesMap": "Ask me about this map or try /analyze"
+      "noMessagesMap": "Ask me about this map or try /analyze",
+      "regenerate": "Regenerate",
+      "editWarning": "Editing will delete all messages after this one"
     },
     "preview": {
       "edit": "Edit",

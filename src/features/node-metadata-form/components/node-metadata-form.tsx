@@ -15,7 +15,7 @@ import {
 } from '@/shared/components/select'
 import { Slider } from '@/shared/components/slider'
 import { useDebouncedCallback } from '@/shared/hooks'
-import { COMPLEXITY_OPTIONS } from '../model/complexity.constants'
+import { COMPLEXITY_OPTIONS } from '../model/node-metadata-form.constants'
 import { type NodeMetadataFormValues, nodeMetadataFormSchema } from '../lib/validation'
 import type { NodeMetadataFormProps } from '../model/node-metadata-form.types'
 import { NodeTypeSelect } from './node-type-select'

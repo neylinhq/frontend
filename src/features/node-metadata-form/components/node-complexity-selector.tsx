@@ -7,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/shared/components/select'
-import { COMPLEXITY_OPTIONS } from '../model/complexity.constants'
+import { COMPLEXITY_OPTIONS } from '../model/node-metadata-form.constants'
 
 interface NodeComplexitySelectorProps {
   value?: string

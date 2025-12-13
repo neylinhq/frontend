@@ -36,12 +36,18 @@ export {
   type ViewMode
 } from './model/graph.store'
 // Model - Hooks
-export { useGraphControls } from './model/graph-controls.hooks'
-export { useFilteredGraphData } from './model/graph-data.hooks'
-export { useGraphKeyboard } from './model/graph-keyboard.hooks'
-export { useAnimatedLayout } from './model/graph-layout.hooks'
-export { useDebouncedZoom } from './model/use-debounced-zoom'
-export { useDiscreteZoom, getSnappedZoom, getZoomLevel, ZOOM_THRESHOLDS, type ZoomLevel } from './model/use-discrete-zoom'
+export { useGraphControls } from './model/graph.controls.hooks'
+export { useFilteredGraphData } from './model/graph.data.hooks'
+export { useGraphKeyboard } from './model/graph.keyboard.hooks'
+export { useAnimatedLayout } from './model/graph.layout.hooks'
+export {
+  useDebouncedZoom,
+  useDiscreteZoom,
+  getSnappedZoom,
+  getZoomLevel,
+  ZOOM_THRESHOLDS,
+  type ZoomLevel
+} from './model/graph.zoom.hooks'
 // Model - Types
 export type {
   DisplayMode,
@@ -50,4 +56,4 @@ export type {
   SelectedElements,
   ToolbarState
 } from './model/graph-visualization.types'
-export { useNodeSelection } from './model/node-selection.hooks'
+export { useNodeSelection } from './model/graph.selection.hooks'

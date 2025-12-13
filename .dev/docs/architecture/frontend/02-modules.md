@@ -197,7 +197,8 @@ graph/
 │   ├── graph.schema.ts
 │   ├── graph.types.ts
 │   ├── graph.store.ts
-│   └── graph.hooks.ts
+│   ├── graph.hooks.ts
+│   └── graph.layout.hooks.ts    # Subpart: graph.layout
 ├── lib/                     # ПЛОСКАЯ структура
 │   ├── layout-utils.ts      # ❌ НЕТ /lib/utils/layout.ts
 │   └── transform-utils.ts   # ❌ НЕТ /lib/hooks/useTransform.ts
@@ -228,12 +229,74 @@ graph/
 
 ---
 
+## Именование файлов в model/
+
+### Domain правило
+
+Domain (первая часть имени файла) должен быть:
+1. **Имя модуля**: `graph.hooks.ts` (domain = `graph`)
+2. **Имя модуля + subpart**: `graph.layout.hooks.ts` (domain = `graph.layout`)
+3. **Имя компонента**: `node-drawer.hooks.ts` (если `components/node-drawer.tsx` существует)
+4. **Имя компонента + subpart**: `node-drawer.panel.hooks.ts`
+
+### Примеры
+
+```
+model/
+├── graph.hooks.ts            # ✅ Модуль: graph
+├── graph.layout.hooks.ts     # ✅ Модуль + subpart: graph.layout
+├── graph.selection.hooks.ts  # ✅ Модуль + subpart: graph.selection
+├── graph.store.ts            # ✅ Модуль: graph
+├── node-drawer.hooks.ts      # ✅ Компонент: node-drawer.tsx
+├── node-drawer.panel.hooks.ts # ✅ Компонент + subpart
+```
+
+### ❌ ЗАПРЕЩЕНО
+
+```
+model/
+├── graph-layout.hooks.ts     # ❌ Дефис = имя компонента!
+│                             #    Ожидается components/graph-layout.tsx
+├── layout.hooks.ts           # ❌ Domain не совпадает с модулем/компонентом
+├── use-graph-selection.ts    # ❌ Неверный формат (use-*)
+```
+
+### Разница между `-` и `.`
+
+| Символ | Значение | Пример |
+|--------|----------|--------|
+| `-` (дефис) | Часть имени компонента | `node-drawer.hooks.ts` → компонент `node-drawer.tsx` |
+| `.` (точка) | Разделитель subpart | `graph.layout.hooks.ts` → модуль `graph` с subpart `layout` |
+
+**Правило**: Если нужно разбить большой файл на части — используй **точку** для subpart:
+```
+graph.hooks.ts          # Основные хуки
+graph.layout.hooks.ts   # Хуки для layout
+graph.zoom.hooks.ts     # Хуки для zoom
+```
+
+### Разрешённые суффиксы в model/
+
+| Суффикс | Назначение |
+|---------|------------|
+| `.types.ts` | TypeScript типы |
+| `.constants.ts` | Константы |
+| `.schema.ts` | Zod схемы |
+| `.store.ts` | Zustand stores |
+| `.hooks.ts` | React hooks |
+| `.config.ts` | Конфигурация |
+| `.context.ts` | React Context |
+| `.server.ts` | Server-only код |
+| `.d.ts` | Type declarations |
+
+---
+
 ## Barrel Exports (index.ts)
 
 **Правила**:
 1. ✅ Явные экспорты (НЕ `export *`)
 2. ✅ Экспортируем из сегментов
-3. ⛔ `[domain].server.ts` НЕ экспортируем
+3. ⛔ `[domain].server.ts` **НИКОГДА** не экспортируем через index.ts
 
 ```tsx
 // ❌ ПЛОХО - export *
@@ -249,6 +312,28 @@ export { userApi } from './user.api'
 // ⛔ НИКОГДА не экспортируем server код
 // export { requireAuth } from './user.server' // ОПАСНО!
 ```
+
+### ⛔ .server.ts и client bundle leak
+
+Файлы `.server.ts` содержат server-only код (DB queries, auth, secrets). **НИКОГДА** не экспортируй их через `index.ts`:
+
+```tsx
+// index.ts
+
+// ⛔ НИКОГДА так не делай
+export { createServerApi } from './api.server'  // LEAK!
+export { requireAuth } from './auth.server'     // LEAK!
+
+// ✅ Server-only код импортируется напрямую в route loaders/actions
+// import { requireAuth } from '@/entities/session/session.server'
+```
+
+**Почему опасно?**
+- `index.ts` — public API модуля, импортируется в client components
+- Bundler включит весь `.server.ts` код в client bundle
+- Секреты, DB queries, auth логика утекут в браузер
+
+**Правило**: `.server.ts` импортируется **ТОЛЬКО** напрямую в route loaders/actions, **НИКОГДА** через barrel.
 
 ---
 
@@ -285,18 +370,22 @@ graph/
 ├── components/              # ТОЛЬКО .tsx
 │   ├── graph-canvas.tsx
 │   ├── graph-toolbar.tsx
-│   ├── node-context-menu.tsx
+│   ├── node-drawer.tsx
 │   └── edge-label.tsx
 ├── model/                   # Логика
-│   ├── graph-view.store.ts  # Zustand
+│   ├── graph.store.ts           # Zustand
 │   ├── graph.types.ts
-│   └── use-graph-selection.ts
+│   ├── graph.hooks.ts           # Основные хуки
+│   ├── graph.layout.hooks.ts    # Subpart: layout
+│   ├── graph.selection.hooks.ts # Subpart: selection
+│   └── node-drawer.hooks.ts     # Компонент: node-drawer.tsx
 └── lib/                     # ПЛОСКАЯ структура
     ├── force-layout.ts      # ❌ НЕТ /lib/layout/force.ts
     └── graph-utils.ts
 ```
 
 **Почему сложная**: 10+ файлов, чёткие зоны (components, model, lib).
+**Именование в model/**: Используем точку для subparts (`graph.layout.hooks.ts`), дефис для компонентов (`node-drawer.hooks.ts`).
 
 ---
 
@@ -327,43 +416,115 @@ entities/subscription/  // Чёткая граница, переиспользу
 
 ---
 
-## Core модули (shared/core/)
+## Инфраструктура shared/
 
-**Core модули** — инфраструктурные подсистемы в `shared/core/`.
+`shared/` — инфраструктурный слой, **НЕ** domain-логика. Паттерн `[domain].[subpart].suffix.ts` здесь **НЕ применяется**.
 
-### Отличие от обычных модулей
+### shared/api/ — API клиент
 
-| Аспект | Обычный модуль | Core модуль |
-|--------|----------------|-------------|
-| Расположение | entities/, features/ | shared/core/ |
-| Нейминг файлов | `[domain].types.ts` | Свободный |
-| Внутренняя структура | По правилам FSD | На усмотрение |
-| Обязательно | index.ts | index.ts |
+**СТРОГО** два файла:
 
-### Почему свободная структура?
-
-Core модули могут содержать:
-- Внешние/сгенерированные файлы (wasm, protobuf)
-- Код с собственными конвенциями (third-party)
-- Обёртки над внешними библиотеками
-
-Главное — **публичный API через index.ts**. Внутренности скрыты.
-
-### Примеры
-
-**theme/** — система тем:
 ```
-shared/core/theme/
-├── index.ts              # Публичный API
-└── ...внутренние файлы
+shared/api/
+├── client.ts             # Клиентский API (браузер)
+└── server.ts             # Серверный API (SSR, loaders)
 ```
 
-**wasm/** — WebAssembly движок:
+### shared/config/ — конфигурация
+
+Плоская структура, `kebab-case.ts`:
+
 ```
-shared/core/wasm/
-├── index.ts              # Публичный API
-├── graph_engine.js       # Сгенерированный код
-└── graph_engine.d.ts
+shared/config/
+├── index.ts
+├── routes.ts
+├── api-endpoints.ts
+├── breakpoints.ts
+├── env.ts
+└── ...
+```
+
+### shared/lib/ — утилиты
+
+Плоская структура, `kebab-case.ts`:
+
+```
+shared/lib/
+├── cn/
+│   └── index.ts          # classnames utility
+├── format-date.ts
+├── debounce.ts
+└── ...
+```
+
+### shared/hooks/ — React хуки
+
+Паттерн `use-*.ts`:
+
+```
+shared/hooks/
+├── index.ts
+├── use-debounce.ts
+├── use-dark-mode.ts
+├── use-click-outside.ts
+└── ...
+```
+
+### shared/styles/ — глобальные стили
+
+Любые `.css` файлы:
+
+```
+shared/styles/
+├── globals.css
+├── normalize.css
+└── ...
+```
+
+### shared/components/ — UI компоненты
+
+**Группа модулей** (обычные FSD правила):
+
+```
+shared/components/
+├── button/               # Модуль
+│   ├── index.ts
+│   └── button.tsx
+├── card/
+│   ├── index.ts
+│   └── card.tsx
+└── ...
+```
+
+**Это ГРУППА** — нет `shared/components/index.ts`!
+
+### shared/core/ — инфраструктурные модули
+
+Группа модулей со свободной внутренней структурой:
+
+```
+shared/core/
+├── theme/
+│   ├── index.ts
+│   └── ...
+└── wasm/
+    ├── index.ts
+    ├── graph_engine.js
+    └── graph_engine.d.ts
+```
+
+### shared/mocks/ — MSW инфраструктура
+
+Специальный модуль, валидатор пропускает:
+
+```
+shared/mocks/
+├── client.ts             # MSW browser setup
+├── server.ts             # MSW server setup (тесты)
+├── handlers/
+│   └── ...
+└── data/
+    └── ...
 ```
 
 ---

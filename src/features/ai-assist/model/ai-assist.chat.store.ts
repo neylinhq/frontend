@@ -29,6 +29,7 @@ interface ChatHistoryActions {
     undoData?: ResolvedPreview['undoData']
   ) => void
   undoResolved: (sessionId: string, messageId: string, previewId: string) => void
+  truncateFromMessage: (sessionId: string, messageId: string) => void
   clearSession: (sessionId: string) => void
   clearOldSessions: () => void
 }
@@ -217,6 +218,28 @@ export const useChatHistoryStore = create<ChatHistoryState & ChatHistoryActions>
                     resolvedPreviews: msg.resolvedPreviews.filter(p => p.id !== previewId)
                   }
                 }),
+                lastUpdated: Date.now()
+              }
+            }
+          }
+        })
+      },
+
+      truncateFromMessage: (sessionId: string, messageId: string) => {
+        set(state => {
+          const session = state.sessions[sessionId]
+          if (!session) return state
+
+          const messageIndex = session.messages.findIndex(m => m.id === messageId)
+          if (messageIndex === -1) return state
+
+          // Remove this message and all subsequent messages
+          return {
+            sessions: {
+              ...state.sessions,
+              [sessionId]: {
+                ...session,
+                messages: session.messages.slice(0, messageIndex),
                 lastUpdated: Date.now()
               }
             }

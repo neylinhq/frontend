@@ -7,7 +7,7 @@ import { Button } from '@/shared/components/button'
 import { EdgeTypeButton } from '@/shared/components/edge-type-button'
 import { Input } from '@/shared/components/input'
 import { Popover, SmartPopoverContent } from '@/shared/components/smart-popover'
-import { useEdgeManagementStore } from '../model/edge-management.store'
+import { useEdgeManagementStore } from '../model/graph.edge.store'
 
 const ALL_RELATION_TYPES = RelationTypeEnum.options
 

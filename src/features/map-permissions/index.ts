@@ -1,2 +1,2 @@
-export { useMapPermissions } from './use-map-permissions'
-export { ReadOnlyBanner } from './read-only-banner'
+export { useMapPermissions } from './map-permissions.hooks'
+export { ReadOnlyBanner } from './map-permissions'

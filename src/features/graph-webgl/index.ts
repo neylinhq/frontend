@@ -21,10 +21,8 @@ export { NodeOverlay } from './components/node-overlay'
 export { EdgeOverlay } from './components/edge-overlay'
 export { MiniMapWebGL } from './components/minimap-webgl'
 
-// New hooks
-export { useGraphEngine } from './model/use-graph-engine'
-export { useViewport } from './model/use-viewport'
-export { useInteraction } from './model/use-interaction'
+// Hooks
+export { useGraphEngine, useViewport, useInteraction } from './model/graph-webgl.hooks'
 
 // Types
 export type {
@@ -49,7 +47,7 @@ export { GraphWebGLVisualization as GraphVisualization } from './components/grap
 export { GraphWebGLVisualization } from './components/graph-webgl-visualization'
 export type { GraphEdge, GraphNode, GraphStats } from './lib/wasm-adapter'
 export { GraphEngine as LegacyGraphEngine } from './lib/wasm-adapter'
-export { useGraphEngine as useLegacyGraphEngine } from './model/use-graph-engine.hooks'
+export { useLegacyGraphEngine } from './model/graph-webgl.hooks'
 
 /**
  * Feature flag to switch between WebGL and xyflow renderers.

@@ -24,9 +24,9 @@ import {
   useNodeSpacing,
   useViewMode
 } from '@/features/graph/model/graph.store'
-import { useFilteredGraphData } from '@/features/graph/model/graph-data.hooks'
-import { useNodeSelection } from '@/features/graph/model/node-selection.hooks'
-import { useGraphControls } from '@/features/graph/model/graph-controls.hooks'
+import { useFilteredGraphData } from '@/features/graph/model/graph.data.hooks'
+import { useNodeSelection } from '@/features/graph/model/graph.selection.hooks'
+import { useGraphControls } from '@/features/graph/model/graph.controls.hooks'
 import { GraphToolbar } from '@/features/graph/components/graph-toolbar'
 import { ViewControlsPanel } from '@/features/graph/components/view-controls-panel'
 import { NodeDrawer } from '@/features/graph/components/node-drawer'

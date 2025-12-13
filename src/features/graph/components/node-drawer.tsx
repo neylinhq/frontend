@@ -22,7 +22,7 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/shared/compo
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/components/tabs'
 import { toast } from '@/shared/components/toast'
 import { cn } from '@/shared/lib/cn'
-import { useDrawerTabs } from '../model/drawer-tabs.hooks'
+import { useDrawerTabs } from '../model/graph.drawer.hooks'
 import { useFocusMode } from '../model/graph.store'
 
 interface NodeDrawerProps {

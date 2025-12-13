@@ -24,7 +24,7 @@ import {
 } from '../lib/parse-quick-input'
 import { NODE_CREATION_CONFIG } from '../model/node-creation.constants'
 import { useNodeCreationStore } from '../model/node-creation.store'
-import { useCreateNodeMutation } from '../model/use-create-node-mutation'
+import { useCreateNodeMutation } from '../model/node-creation.hooks'
 import { ConnectionSelector } from './connection-selector'
 
 export const QuickAddDialog = () => {

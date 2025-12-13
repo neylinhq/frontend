@@ -1,1 +1,1 @@
-export { createServerApi, requireAuth, withAuthRedirect } from './server-api'
+export { createServerApi, requireAuth, withAuthRedirect } from './api.server'

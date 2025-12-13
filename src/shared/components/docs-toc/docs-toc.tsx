@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next'
 import { cn } from '@/shared/lib/cn'
 import { useActiveHeading } from './docs-toc.hooks'
 import styles from './docs-toc.module.css'
@@ -15,7 +14,6 @@ interface DocsTocProps {
 }
 
 export const DocsToc = ({ items, className }: DocsTocProps) => {
-  const { t } = useTranslation()
   const activeId = useActiveHeading(items.map(item => item.id))
 
   if (items.length === 0) {
@@ -34,7 +32,7 @@ export const DocsToc = ({ items, className }: DocsTocProps) => {
 
   return (
     <nav className={cn('space-y-1', className)}>
-      <p className='text-sm font-medium mb-4 text-foreground'>{t('docs.onThisPage')}</p>
+      <p className='text-sm font-medium mb-4 text-foreground'>On this page</p>
       {items.map(item => (
         <a
           key={item.id}

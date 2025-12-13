@@ -41,6 +41,7 @@ export default [
       route('docs/ui/drawer', 'routes/docs/drawer.tsx'),
       route('docs/ui/dropdown-menu', 'routes/docs/dropdown-menu.tsx'),
       route('docs/ui/form', 'routes/docs/form.tsx'),
+      route('docs/ui/icon', 'routes/docs/icon.tsx'),
       route('docs/ui/input', 'routes/docs/input.tsx'),
       route('docs/ui/label', 'routes/docs/label.tsx'),
       route('docs/ui/popover', 'routes/docs/popover.tsx'),

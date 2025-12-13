@@ -74,20 +74,6 @@
   --color-preview-vivid: oklch(var(--preview-vivid));
   --color-preview-mono: oklch(var(--preview-mono));
 
-  /* Semantic colors - S+ Elite */
-  --color-semantic-knowledge: oklch(var(--semantic-knowledge));
-  --color-semantic-knowledge-muted: oklch(var(--semantic-knowledge-muted));
-  --color-semantic-fact: oklch(var(--semantic-fact));
-  --color-semantic-fact-muted: oklch(var(--semantic-fact-muted));
-  --color-semantic-question: oklch(var(--semantic-question));
-  --color-semantic-question-muted: oklch(var(--semantic-question-muted));
-  --color-semantic-example: oklch(var(--semantic-example));
-  --color-semantic-example-muted: oklch(var(--semantic-example-muted));
-  --color-semantic-conflict: oklch(var(--semantic-conflict));
-  --color-semantic-conflict-muted: oklch(var(--semantic-conflict-muted));
-  --color-semantic-neutral: oklch(var(--semantic-neutral));
-  --color-semantic-neutral-muted: oklch(var(--semantic-neutral-muted));
-
   /* Complexity colors */
   --color-complexity-basic: oklch(var(--complexity-basic));
   --color-complexity-basic-bg: oklch(var(--complexity-basic-bg));
@@ -306,19 +292,19 @@
 
   .dark {
     /* Base UI - Pure neutral dark (C=0), comfortable */
-    --background: 0.22 0 0;                  /* Dark gray - slightly lighter */
+    --background: 0.20 0 0;                  /* Dark gray */
     --foreground: 0.93 0 0;                  /* Near white */
-    --card: 0.22 0 0;
+    --card: 0.20 0 0;
     --card-foreground: 0.93 0 0;
-    --popover: 0.25 0 0;
+    --popover: 0.23 0 0;
     --popover-foreground: 0.95 0 0;
     --primary: 0.95 0 0;
-    --primary-foreground: 0.20 0 0;
-    --secondary: 0.25 0 0;
+    --primary-foreground: 0.18 0 0;
+    --secondary: 0.23 0 0;
     --secondary-foreground: 0.93 0 0;
-    --muted: 0.25 0 0;
+    --muted: 0.23 0 0;
     --muted-foreground: 0.65 0 0;            /* Increased for readability */
-    --accent: 0.27 0 0;
+    --accent: 0.25 0 0;
     --accent-foreground: 0.93 0 0;
     --destructive: 0.58 0.22 25;             /* Red */
     --destructive-foreground: 0.99 0 0;
@@ -328,14 +314,14 @@
     --warning-foreground: 0.12 0 0;
     --info: 0.62 0.14 230;                   /* Sky blue */
     --info-foreground: 0.99 0 0;
-    --border: 0.28 0 0;                      /* Softer border */
-    --input: 0.32 0 0;
+    --border: 0.26 0 0;                      /* Softer border */
+    --input: 0.30 0 0;
     --ring: 0.57 0.24 263;
 
     /* Brand: Blue for dark mode #0055FF +0.04L */
     --brand: 0.57 0.24 263;
     --brand-foreground: 0.99 0 0;
-    --brand-muted: 0.20 0.05 263;
+    --brand-muted: 0.18 0.05 263;
 
     /* Theme preview colors (same hue, works on dark) */
     --preview-classic: 0.57 0.24 263;
@@ -345,21 +331,21 @@
 
     /* Node type colors - 8 unique hues (same as light, muted for dark bg) */
     --node-concept: 0.55 0.17 240;
-    --node-concept-muted: 0.24 0.05 240;
+    --node-concept-muted: 0.22 0.05 240;
     --node-theory: 0.52 0.18 265;
-    --node-theory-muted: 0.24 0.05 265;
+    --node-theory-muted: 0.22 0.05 265;
     --node-fact: 0.58 0.17 145;
-    --node-fact-muted: 0.24 0.05 145;
+    --node-fact-muted: 0.22 0.05 145;
     --node-example: 0.68 0.17 55;
-    --node-example-muted: 0.24 0.05 55;
+    --node-example-muted: 0.22 0.05 55;
     --node-question: 0.55 0.18 290;
-    --node-question-muted: 0.24 0.05 290;
+    --node-question-muted: 0.22 0.05 290;
     --node-hypothesis: 0.58 0.19 315;
-    --node-hypothesis-muted: 0.24 0.05 315;
+    --node-hypothesis-muted: 0.22 0.05 315;
     --node-person: 0.62 0.18 25;
-    --node-person-muted: 0.24 0.05 25;
+    --node-person-muted: 0.22 0.05 25;
     --node-school: 0.60 0.14 195;
-    --node-school-muted: 0.24 0.05 195;
+    --node-school-muted: 0.22 0.05 195;
 
     /* Semantic colors (legacy aliases) */
     --semantic-knowledge: var(--node-concept);
@@ -371,39 +357,39 @@
     --semantic-example: var(--node-example);
     --semantic-example-muted: var(--node-example-muted);
     --semantic-conflict: 0.60 0.22 25;
-    --semantic-conflict-muted: 0.24 0.05 25;
+    --semantic-conflict-muted: 0.22 0.05 25;
     --semantic-neutral: 0.55 0 0;
-    --semantic-neutral-muted: 0.24 0 0;
+    --semantic-neutral-muted: 0.22 0 0;
 
     /* Complexity colors (dark mode) */
     --complexity-basic: 0.55 0 0;
-    --complexity-basic-bg: 0.22 0 0;
+    --complexity-basic-bg: 0.20 0 0;
     --complexity-intermediate: 0.55 0.17 250;
-    --complexity-intermediate-bg: 0.22 0.05 250;
+    --complexity-intermediate-bg: 0.20 0.05 250;
     --complexity-advanced: 0.60 0.22 25;
-    --complexity-advanced-bg: 0.22 0.05 25;
+    --complexity-advanced-bg: 0.20 0.05 25;
 
     /* Edge type colors - same as light mode (universal) */
     --edge-contradicts: 0.60 0.22 25;
-    --edge-contradicts-muted: 0.22 0.05 25;
+    --edge-contradicts-muted: 0.20 0.05 25;
     --edge-prerequisite: 0.68 0.18 55;
-    --edge-prerequisite-muted: 0.22 0.05 55;
+    --edge-prerequisite-muted: 0.20 0.05 55;
     --edge-influences: 0.72 0.16 75;
-    --edge-influences-muted: 0.22 0.05 75;
+    --edge-influences-muted: 0.20 0.05 75;
     --edge-similar-to: 0.60 0.18 130;
-    --edge-similar-to-muted: 0.22 0.05 130;
+    --edge-similar-to-muted: 0.20 0.05 130;
     --edge-has-a: 0.58 0.16 160;
-    --edge-has-a-muted: 0.22 0.05 160;
+    --edge-has-a-muted: 0.20 0.05 160;
     --edge-part-of: 0.60 0.14 195;
-    --edge-part-of-muted: 0.22 0.05 195;
+    --edge-part-of-muted: 0.20 0.05 195;
     --edge-related-to: 0.55 0.16 230;
-    --edge-related-to-muted: 0.22 0.05 230;
+    --edge-related-to-muted: 0.20 0.05 230;
     --edge-is-a: 0.52 0.18 265;
-    --edge-is-a-muted: 0.22 0.05 265;
+    --edge-is-a-muted: 0.20 0.05 265;
     --edge-explains: 0.55 0.19 290;
-    --edge-explains-muted: 0.22 0.05 290;
+    --edge-explains-muted: 0.20 0.05 290;
     --edge-causes: 0.60 0.20 340;
-    --edge-causes-muted: 0.22 0.05 340;
+    --edge-causes-muted: 0.20 0.05 340;
   }
 
   /* ========================================
@@ -850,18 +836,18 @@
     --semantic-question-muted: var(--node-question-muted);
     --semantic-example: var(--node-example);
     --semantic-example-muted: var(--node-example-muted);
-    --semantic-conflict: 0.55 0.21 25;
+    --semantic-conflict: 0.60 0.22 25;
     --semantic-conflict-muted: 0.94 0.04 25;
     --semantic-neutral: 0.50 0 0;
     --semantic-neutral-muted: 0.94 0 0;
 
-    /* Complexity colors - mono */
+    /* Complexity colors - mono (same hue as Classic: H=250, H=25) */
     --complexity-basic: 0.50 0 0;
     --complexity-basic-bg: 0.94 0 0;
-    --complexity-intermediate: 0.55 0.18 235;
-    --complexity-intermediate-bg: 0.94 0.04 235;
-    --complexity-advanced: 0.55 0.21 15;
-    --complexity-advanced-bg: 0.94 0.04 15;
+    --complexity-intermediate: 0.55 0.17 250;
+    --complexity-intermediate-bg: 0.94 0.04 250;
+    --complexity-advanced: 0.60 0.22 25;
+    --complexity-advanced-bg: 0.94 0.04 25;
 
     /* Edge type colors - same hues as Classic, L adjusted per hue */
     --edge-contradicts: 0.60 0.22 25;        /* Red */
@@ -947,13 +933,13 @@
     --semantic-neutral: 0.60 0 0;
     --semantic-neutral-muted: 0.16 0 0;
 
-    /* Complexity colors - mono dark */
+    /* Complexity colors - mono dark (same hue as Classic: H=250, H=25) */
     --complexity-basic: 0.60 0 0;
     --complexity-basic-bg: 0.22 0 0;
-    --complexity-intermediate: 0.65 0.18 235;
-    --complexity-intermediate-bg: 0.22 0.05 235;
-    --complexity-advanced: 0.62 0.21 15;
-    --complexity-advanced-bg: 0.22 0.05 15;
+    --complexity-intermediate: 0.60 0.17 250;
+    --complexity-intermediate-bg: 0.22 0.05 250;
+    --complexity-advanced: 0.65 0.22 25;
+    --complexity-advanced-bg: 0.22 0.05 25;
 
     /* Edge type colors - same hues as Classic, L adjusted per hue for dark */
     --edge-contradicts: 0.65 0.22 25;        /* Red */

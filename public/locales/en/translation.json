@@ -1674,6 +1674,7 @@
       "drawer": "Drawer",
       "dropdownMenu": "Dropdown Menu",
       "form": "Form",
+      "icon": "Icon",
       "input": "Input",
       "label": "Label",
       "popover": "Popover",

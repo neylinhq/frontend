@@ -53,29 +53,19 @@ const COLOR_SECTIONS: ColorSectionData[] = [
     ]
   },
   {
-    id: 'graph',
-    title: 'Graph Colors',
-    description: '6 базовых цветов для элементов графа',
+    id: 'node-types',
+    title: 'Node Type Colors',
+    description: '8 уникальных цветов для типов нод в графе знаний',
+    columns: 4,
     colors: [
-      { name: 'Violet', var: '--graph-violet', desc: 'Фиолетовый' },
-      { name: 'Blue', var: '--graph-blue', desc: 'Синий' },
-      { name: 'Cyan', var: '--graph-cyan', desc: 'Голубой' },
-      { name: 'Emerald', var: '--graph-emerald', desc: 'Изумрудный' },
-      { name: 'Amber', var: '--graph-amber', desc: 'Янтарный' },
-      { name: 'Rose', var: '--graph-rose', desc: 'Розовый' }
-    ]
-  },
-  {
-    id: 'node-semantic',
-    title: 'Node Semantic Colors',
-    description: 'S+ Elite — 6 цветов для типов нод в графе знаний',
-    colors: [
-      { name: 'Knowledge', var: '--semantic-knowledge', desc: 'Синий — concept, theory' },
-      { name: 'Fact', var: '--semantic-fact', desc: 'Зелёный — fact' },
-      { name: 'Question', var: '--semantic-question', desc: 'Фиолетовый — question, hypothesis' },
-      { name: 'Example', var: '--semantic-example', desc: 'Янтарный — example, person, school' },
-      { name: 'Conflict', var: '--semantic-conflict', desc: 'Красный — противоречия' },
-      { name: 'Neutral', var: '--semantic-neutral', desc: 'Серый — нейтральный' }
+      { name: 'Concept', var: '--node-concept', desc: 'Синий H=240 — абстрактное знание' },
+      { name: 'Theory', var: '--node-theory', desc: 'Индиго H=265 — глубокая теория' },
+      { name: 'Fact', var: '--node-fact', desc: 'Зелёный H=145 — верифицированная информация' },
+      { name: 'Example', var: '--node-example', desc: 'Оранжевый H=55 — практический пример' },
+      { name: 'Question', var: '--node-question', desc: 'Пурпурный H=290 — неизвестное' },
+      { name: 'Hypothesis', var: '--node-hypothesis', desc: 'Маджента H=315 — гипотеза' },
+      { name: 'Person', var: '--node-person', desc: 'Коралловый H=25 — персона' },
+      { name: 'School', var: '--node-school', desc: 'Бирюзовый H=195 — школа/институция' }
     ]
   },
   {

@@ -179,8 +179,33 @@
 
 }
 
-/* Classic Theme (Default) - Pure neutral, no color tint
-   OKLCH format: L C H (Lightness 0-1, Chroma 0-0.4, Hue 0-360) */
+/* ═══════════════════════════════════════════════════════════════════════════
+   OKLCH Color System Architecture
+   ═══════════════════════════════════════════════════════════════════════════
+
+   Format: L C H (Lightness 0-1, Chroma 0-0.4, Hue 0-360°)
+
+   Helmholtz-Kohlrausch Compensation:
+   - Different hues have different perceived brightness at same L
+   - Yellow (H~75°) appears brighter → needs higher L (0.72)
+   - Indigo (H~265°) appears darker → needs lower L (0.52)
+
+   Muted Color Formula:
+   - Light mode: L=0.94, C=0.04 (consistent across all themes)
+   - Dark mode: L_muted = L_bg + delta, where delta scales with darkness
+     Classic (bg=0.20): delta=0.02 → muted=0.22
+     Vanilla (bg=0.18): delta=0.04 → muted=0.22
+     Vivid (bg=0.12):   delta=0.06 → muted=0.18
+     Mono (bg=0.08):    delta=0.08 → muted=0.16
+
+   Palette Chroma Modifiers:
+   - Classic: C×1.00 (reference)
+   - Vanilla: C×0.95 (softer)
+   - Vivid:   C×1.05 (more saturated)
+   - Mono:    C×1.00 (same as Classic)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Classic Theme (Default) - Pure neutral, no color tint */
 @layer base {
   :root {
     /* Selection opacity - used globally and in editor */
@@ -620,21 +645,21 @@
 
     /* Node type colors - 8 unique hues, C×1.05 */
     --node-concept: 0.55 0.18 240;
-    --node-concept-muted: 0.95 0.04 240;
+    --node-concept-muted: 0.94 0.04 240;
     --node-theory: 0.52 0.19 265;
-    --node-theory-muted: 0.95 0.04 265;
+    --node-theory-muted: 0.94 0.04 265;
     --node-fact: 0.58 0.18 145;
-    --node-fact-muted: 0.95 0.04 145;
+    --node-fact-muted: 0.94 0.04 145;
     --node-example: 0.68 0.18 55;
-    --node-example-muted: 0.95 0.04 55;
+    --node-example-muted: 0.94 0.04 55;
     --node-question: 0.55 0.19 290;
-    --node-question-muted: 0.95 0.04 290;
+    --node-question-muted: 0.94 0.04 290;
     --node-hypothesis: 0.58 0.20 315;
-    --node-hypothesis-muted: 0.95 0.04 315;
+    --node-hypothesis-muted: 0.94 0.04 315;
     --node-person: 0.62 0.19 25;
-    --node-person-muted: 0.95 0.04 25;
+    --node-person-muted: 0.94 0.04 25;
     --node-school: 0.60 0.15 195;
-    --node-school-muted: 0.95 0.04 195;
+    --node-school-muted: 0.94 0.04 195;
 
     /* Semantic colors (legacy aliases) */
     --semantic-knowledge: var(--node-concept);
@@ -646,39 +671,39 @@
     --semantic-example: var(--node-example);
     --semantic-example-muted: var(--node-example-muted);
     --semantic-conflict: 0.60 0.23 25;
-    --semantic-conflict-muted: 0.95 0.04 25;
+    --semantic-conflict-muted: 0.94 0.04 25;
     --semantic-neutral: 0.50 0.005 250;
-    --semantic-neutral-muted: 0.95 0.004 250;
+    --semantic-neutral-muted: 0.94 0.004 250;
 
     /* Complexity colors - vivid */
     --complexity-basic: 0.50 0.005 250;
-    --complexity-basic-bg: 0.95 0.004 250;
+    --complexity-basic-bg: 0.94 0.004 250;
     --complexity-intermediate: 0.55 0.18 250;
-    --complexity-intermediate-bg: 0.95 0.035 250;
+    --complexity-intermediate-bg: 0.94 0.04 250;
     --complexity-advanced: 0.60 0.23 25;
-    --complexity-advanced-bg: 0.95 0.035 25;
+    --complexity-advanced-bg: 0.94 0.04 25;
 
     /* Edge type colors - 10 unique hues, C×1.05, L adjusted per hue */
     --edge-contradicts: 0.60 0.23 25;        /* Red */
-    --edge-contradicts-muted: 0.95 0.035 25;
+    --edge-contradicts-muted: 0.94 0.04 25;
     --edge-prerequisite: 0.68 0.19 55;       /* Orange */
-    --edge-prerequisite-muted: 0.95 0.035 55;
+    --edge-prerequisite-muted: 0.94 0.04 55;
     --edge-influences: 0.72 0.17 75;         /* Amber - high L */
-    --edge-influences-muted: 0.95 0.035 75;
+    --edge-influences-muted: 0.94 0.04 75;
     --edge-similar-to: 0.60 0.19 130;        /* Lime */
-    --edge-similar-to-muted: 0.95 0.035 130;
+    --edge-similar-to-muted: 0.94 0.04 130;
     --edge-has-a: 0.58 0.17 160;             /* Teal */
-    --edge-has-a-muted: 0.95 0.035 160;
+    --edge-has-a-muted: 0.94 0.04 160;
     --edge-part-of: 0.60 0.15 195;           /* Cyan */
-    --edge-part-of-muted: 0.95 0.035 195;
+    --edge-part-of-muted: 0.94 0.04 195;
     --edge-related-to: 0.55 0.17 230;        /* Blue */
-    --edge-related-to-muted: 0.95 0.035 230;
+    --edge-related-to-muted: 0.94 0.04 230;
     --edge-is-a: 0.52 0.19 265;              /* Indigo */
-    --edge-is-a-muted: 0.95 0.035 265;
+    --edge-is-a-muted: 0.94 0.04 265;
     --edge-explains: 0.55 0.20 290;          /* Purple */
-    --edge-explains-muted: 0.95 0.035 290;
+    --edge-explains-muted: 0.94 0.04 290;
     --edge-causes: 0.60 0.21 340;            /* Pink */
-    --edge-causes-muted: 0.95 0.035 340;
+    --edge-causes-muted: 0.94 0.04 340;
   }
   [data-palette="vivid"].dark {
     /* Dark with barely noticeable cool tint (C=0.005-0.006) - energetic */
@@ -901,7 +926,9 @@
     --brand-foreground: 0.99 0 0;
     --brand-muted: 0.16 0.05 16;
 
-    /* Node type colors - 8 unique hues, brighter L for dark bg */
+    /* Node type colors - 8 unique hues
+       L boosted +0.05 vs standard H-K table for high contrast on L=0.08 bg
+       Standard: concept=0.55, theory=0.52, etc. Mono dark: +0.05 each */
     --node-concept: 0.60 0.17 240;
     --node-concept-muted: 0.16 0.05 240;
     --node-theory: 0.58 0.18 265;

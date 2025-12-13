@@ -25,75 +25,75 @@ const COLOR_SECTIONS: ColorSectionData[] = [
   {
     id: 'semantic',
     title: 'Semantic Colors',
-    description: 'Базовые семантические цвета UI — адаптируются к теме и палитре',
+    description: 'Core UI colors that adapt to theme and palette',
     colors: [
-      { name: 'Background', var: '--background', desc: 'Основной фон' },
-      { name: 'Foreground', var: '--foreground', desc: 'Основной текст' },
-      { name: 'Card', var: '--card', desc: 'Фон карточек' },
-      { name: 'Popover', var: '--popover', desc: 'Фон поповеров' },
-      { name: 'Primary', var: '--primary', desc: 'Основной акцент' },
-      { name: 'Secondary', var: '--secondary', desc: 'Вторичный цвет' },
-      { name: 'Muted', var: '--muted', desc: 'Приглушенный фон' },
-      { name: 'Accent', var: '--accent', desc: 'Акцентный фон' },
-      { name: 'Destructive', var: '--destructive', desc: 'Ошибки/удаление' },
-      { name: 'Success', var: '--success', desc: 'Успех' },
-      { name: 'Warning', var: '--warning', desc: 'Предупреждение' },
-      { name: 'Info', var: '--info', desc: 'Информация' },
-      { name: 'Border', var: '--border', desc: 'Границы' },
-      { name: 'Ring', var: '--ring', desc: 'Focus ring' }
+      { name: 'Background', var: '--background', desc: 'Main background' },
+      { name: 'Foreground', var: '--foreground', desc: 'Primary text' },
+      { name: 'Card', var: '--card', desc: 'Card backgrounds' },
+      { name: 'Popover', var: '--popover', desc: 'Popover backgrounds' },
+      { name: 'Primary', var: '--primary', desc: 'Primary accent' },
+      { name: 'Secondary', var: '--secondary', desc: 'Secondary color' },
+      { name: 'Muted', var: '--muted', desc: 'Muted backgrounds' },
+      { name: 'Accent', var: '--accent', desc: 'Accent backgrounds' },
+      { name: 'Destructive', var: '--destructive', desc: 'Errors & deletion' },
+      { name: 'Success', var: '--success', desc: 'Success states' },
+      { name: 'Warning', var: '--warning', desc: 'Warning states' },
+      { name: 'Info', var: '--info', desc: 'Information' },
+      { name: 'Border', var: '--border', desc: 'Borders' },
+      { name: 'Ring', var: '--ring', desc: 'Focus rings' }
     ]
   },
   {
     id: 'brand',
     title: 'Brand Colors',
-    description: 'Фирменные цвета — меняются в зависимости от палитры',
+    description: 'Brand colors that change with palette',
     colors: [
-      { name: 'Brand', var: '--brand', desc: 'Фирменный цвет' },
-      { name: 'Brand Muted', var: '--brand-muted', desc: 'Приглушенный brand' }
+      { name: 'Brand', var: '--brand', desc: 'Brand color' },
+      { name: 'Brand Muted', var: '--brand-muted', desc: 'Muted brand' }
     ]
   },
   {
     id: 'node-types',
     title: 'Node Type Colors',
-    description: '8 уникальных цветов для типов нод в графе знаний',
+    description: '8 unique colors for knowledge graph node types',
     columns: 4,
     colors: [
-      { name: 'Concept', var: '--node-concept', desc: 'Синий H=240 — абстрактное знание' },
-      { name: 'Theory', var: '--node-theory', desc: 'Индиго H=265 — глубокая теория' },
-      { name: 'Fact', var: '--node-fact', desc: 'Зелёный H=145 — верифицированная информация' },
-      { name: 'Example', var: '--node-example', desc: 'Оранжевый H=55 — практический пример' },
-      { name: 'Question', var: '--node-question', desc: 'Пурпурный H=290 — неизвестное' },
-      { name: 'Hypothesis', var: '--node-hypothesis', desc: 'Маджента H=315 — гипотеза' },
-      { name: 'Person', var: '--node-person', desc: 'Коралловый H=25 — персона' },
-      { name: 'School', var: '--node-school', desc: 'Бирюзовый H=195 — школа/институция' }
+      { name: 'Concept', var: '--node-concept', desc: 'H=240 abstract knowledge' },
+      { name: 'Theory', var: '--node-theory', desc: 'H=265 deep theory' },
+      { name: 'Fact', var: '--node-fact', desc: 'H=145 verified info' },
+      { name: 'Example', var: '--node-example', desc: 'H=55 practical example' },
+      { name: 'Question', var: '--node-question', desc: 'H=290 unknown' },
+      { name: 'Hypothesis', var: '--node-hypothesis', desc: 'H=315 hypothesis' },
+      { name: 'Person', var: '--node-person', desc: 'H=25 person' },
+      { name: 'School', var: '--node-school', desc: 'H=195 institution' }
     ]
   },
   {
     id: 'complexity',
     title: 'Complexity Colors',
-    description: '3 уровня сложности контента',
+    description: '3 content complexity levels',
     colors: [
-      { name: 'Basic', var: '--complexity-basic', desc: 'Серый — базовый' },
-      { name: 'Intermediate', var: '--complexity-intermediate', desc: 'Синий — средний' },
-      { name: 'Advanced', var: '--complexity-advanced', desc: 'Красный — продвинутый' }
+      { name: 'Basic', var: '--complexity-basic', desc: 'Gray - basic' },
+      { name: 'Intermediate', var: '--complexity-intermediate', desc: 'Blue - intermediate' },
+      { name: 'Advanced', var: '--complexity-advanced', desc: 'Red - advanced' }
     ]
   },
   {
     id: 'edge',
     title: 'Edge Colors',
-    description: '10 уникальных цветов для типов связей между нодами',
+    description: '10 unique colors for node relationship types',
     columns: 4,
     colors: [
-      { name: 'Prerequisite', var: '--edge-prerequisite', desc: 'Оранжевый — зависимость' },
-      { name: 'Causes', var: '--edge-causes', desc: 'Красный — причина' },
-      { name: 'Explains', var: '--edge-explains', desc: 'Фиолетовый — объяснение' },
-      { name: 'Is-A', var: '--edge-is-a', desc: 'Индиго — таксономия' },
-      { name: 'Has-A', var: '--edge-has-a', desc: 'Изумрудный — композиция' },
-      { name: 'Part-Of', var: '--edge-part-of', desc: 'Бирюзовый — агрегация' },
-      { name: 'Influences', var: '--edge-influences', desc: 'Янтарный — влияние' },
-      { name: 'Related-To', var: '--edge-related-to', desc: 'Серый — слабая связь' },
-      { name: 'Contradicts', var: '--edge-contradicts', desc: 'Тёмно-красный — противоречие' },
-      { name: 'Similar-To', var: '--edge-similar-to', desc: 'Лаймовый — сходство' }
+      { name: 'Prerequisite', var: '--edge-prerequisite', desc: 'Orange - dependency' },
+      { name: 'Causes', var: '--edge-causes', desc: 'Red - causation' },
+      { name: 'Explains', var: '--edge-explains', desc: 'Purple - explanation' },
+      { name: 'Is-A', var: '--edge-is-a', desc: 'Indigo - taxonomy' },
+      { name: 'Has-A', var: '--edge-has-a', desc: 'Emerald - composition' },
+      { name: 'Part-Of', var: '--edge-part-of', desc: 'Teal - aggregation' },
+      { name: 'Influences', var: '--edge-influences', desc: 'Amber - influence' },
+      { name: 'Related-To', var: '--edge-related-to', desc: 'Gray - weak link' },
+      { name: 'Contradicts', var: '--edge-contradicts', desc: 'Dark red - contradiction' },
+      { name: 'Similar-To', var: '--edge-similar-to', desc: 'Lime - similarity' }
     ]
   }
 ]
@@ -109,15 +109,13 @@ const ColorCard = ({ name, var: cssVar, desc }: ColorItem) => (
         className='h-16 border-b mb-3 -mx-6 -mt-6'
         style={{ backgroundColor: `oklch(var(${cssVar}))` }}
       />
-      <CardTitle className='text-base'>{name}</CardTitle>
-      <CardDescription>
-        <code className='text-xs'>{cssVar}</code>
+      <CardTitle className='text-sm'>{name}</CardTitle>
+      <CardDescription className='text-xs'>
+        <code>{cssVar}</code>
       </CardDescription>
     </CardHeader>
     <CardContent>
-      <Typography variant='small' className='text-muted-foreground'>
-        {desc}
-      </Typography>
+      <p className='text-xs text-muted-foreground'>{desc}</p>
     </CardContent>
   </Card>
 )
@@ -155,26 +153,22 @@ const UsageSection = () => (
     <Typography variant='h2'>Usage</Typography>
     <Card>
       <CardHeader>
-        <CardTitle>Использование в коде</CardTitle>
-        <CardDescription>Примеры использования CSS переменных</CardDescription>
+        <CardTitle>Code Usage</CardTitle>
+        <CardDescription>CSS variable usage examples</CardDescription>
       </CardHeader>
       <CardContent className='space-y-4'>
         <div>
-          <Typography variant='small' className='mb-2'>
-            Tailwind CSS:
-          </Typography>
+          <p className='text-xs text-muted-foreground mb-2'>Tailwind CSS:</p>
           <pre className='rounded-lg bg-muted p-4 overflow-x-auto'>
-            <code className='text-sm'>{`<div className="bg-primary text-primary-foreground">
+            <code className='text-xs'>{`<div className="bg-primary text-primary-foreground">
   Primary content
 </div>`}</code>
           </pre>
         </div>
         <div>
-          <Typography variant='small' className='mb-2'>
-            Inline CSS:
-          </Typography>
+          <p className='text-xs text-muted-foreground mb-2'>Inline CSS:</p>
           <pre className='rounded-lg bg-muted p-4 overflow-x-auto'>
-            <code className='text-sm'>{`<div style={{ color: 'oklch(var(--primary))' }}>
+            <code className='text-xs'>{`<div style={{ color: 'oklch(var(--primary))' }}>
   Custom color
 </div>`}</code>
           </pre>
@@ -193,7 +187,7 @@ const ColorsPage = () => (
     <div className='space-y-3'>
       <Typography variant='h1'>Colors</Typography>
       <Typography variant='lead'>
-        Система цветов адаптируется к палитре (Classic/Vanilla/Vivid/Mono) и теме (Light/Dark)
+        Color system adapts to palette (Classic/Vanilla/Vivid/Mono) and theme (Light/Dark)
       </Typography>
     </div>
 

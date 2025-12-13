@@ -1,6 +1,5 @@
 'use client'
 
-import { useTranslation } from 'react-i18next'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import {
@@ -31,13 +30,11 @@ export const meta = (_args: Route.MetaArgs) => {
 }
 
 const DialogPage = () => {
-  const { t } = useTranslation()
-
   const TOC_ITEMS: TocItem[] = [
-    { id: 'basic', title: t('docs.common.basic'), level: 2 },
-    { id: 'with-form', title: t('docs.dialog.withForm.title'), level: 2 },
-    { id: 'usage', title: t('docs.common.usage'), level: 2 },
-    { id: 'api-reference', title: t('docs.common.apiReference'), level: 2 }
+    { id: 'basic', title: 'Basic', level: 2 },
+    { id: 'with-form', title: 'With Form', level: 2 },
+    { id: 'usage', title: 'Usage', level: 2 },
+    { id: 'api-reference', title: 'API Reference', level: 2 }
   ]
 
   return (
@@ -45,34 +42,31 @@ const DialogPage = () => {
       <div className='flex-1 min-w-0 space-y-10'>
         <header className='space-y-4'>
           <DocsBreadcrumbs
-            items={[
-              { label: t('docs.common.components'), href: '/docs/ui/button' },
-              { label: 'Dialog' }
-            ]}
+            items={[{ label: 'Components', href: '/docs/ui/button' }, { label: 'Dialog' }]}
           />
           <div className='flex items-center gap-3'>
             <Typography variant='h1'>Dialog</Typography>
-            <Badge variant='brand'>{t('docs.common.component')}</Badge>
+            <Badge variant='brand'>Component</Badge>
           </div>
           <Typography variant='lead' className='max-w-2xl'>
-            {t('docs.dialog.lead')}
+            Modal dialog for displaying content over the main page. Built with Radix UI.
           </Typography>
         </header>
 
         <section id='basic' className='scroll-mt-20 space-y-4'>
-          <Typography variant='h2'>{t('docs.common.basic')}</Typography>
-          <Typography variant='muted'>{t('docs.dialog.basic.sectionDescription')}</Typography>
+          <Typography variant='h2'>Basic</Typography>
+          <p className='text-xs text-muted-foreground'>Simple dialog with title and description</p>
 
           <DocsComponentPreview
             code={`<Dialog>
   <DialogTrigger asChild>
-    <Button variant="outline">${t('docs.dialog.basic.openDialog')}</Button>
+    <Button variant="outline">Open Dialog</Button>
   </DialogTrigger>
   <DialogContent>
     <DialogHeader>
-      <DialogTitle>${t('docs.dialog.basic.title')}</DialogTitle>
+      <DialogTitle>Are you sure?</DialogTitle>
       <DialogDescription>
-        ${t('docs.dialog.basic.description')}
+        This action cannot be undone. Please confirm.
       </DialogDescription>
     </DialogHeader>
   </DialogContent>
@@ -81,12 +75,14 @@ const DialogPage = () => {
             <DocsPreview>
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button variant='outline'>{t('docs.dialog.basic.openDialog')}</Button>
+                  <Button variant='outline'>Open Dialog</Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>{t('docs.dialog.basic.title')}</DialogTitle>
-                    <DialogDescription>{t('docs.dialog.basic.description')}</DialogDescription>
+                    <DialogTitle>Are you sure?</DialogTitle>
+                    <DialogDescription>
+                      This action cannot be undone. Please confirm.
+                    </DialogDescription>
                   </DialogHeader>
                 </DialogContent>
               </Dialog>
@@ -95,33 +91,33 @@ const DialogPage = () => {
         </section>
 
         <section id='with-form' className='scroll-mt-20 space-y-4'>
-          <Typography variant='h2'>{t('docs.dialog.withForm.title')}</Typography>
-          <Typography variant='muted'>{t('docs.dialog.withForm.description')}</Typography>
+          <Typography variant='h2'>With Form</Typography>
+          <p className='text-xs text-muted-foreground'>Dialog containing a form</p>
 
           <DocsComponentPreview
             code={`<Dialog>
   <DialogTrigger asChild>
-    <Button>${t('docs.dialog.withForm.editProfile')}</Button>
+    <Button>Edit Profile</Button>
   </DialogTrigger>
   <DialogContent className="sm:max-w-[425px]">
     <DialogHeader>
-      <DialogTitle>${t('docs.dialog.withForm.editProfileTitle')}</DialogTitle>
+      <DialogTitle>Edit Profile</DialogTitle>
       <DialogDescription>
-        ${t('docs.dialog.withForm.editProfileDescription')}
+        Make changes to your profile here.
       </DialogDescription>
     </DialogHeader>
     <div className="grid gap-4 py-4">
       <div className="grid gap-2">
-        <Label htmlFor="name">${t('docs.dialog.withForm.nameLabel')}</Label>
-        <Input id="name" defaultValue="${t('docs.dialog.withForm.nameValue')}" />
+        <Label htmlFor="name">Name</Label>
+        <Input id="name" defaultValue="John Doe" />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="email">${t('docs.dialog.withForm.emailLabel')}</Label>
-        <Input id="email" defaultValue="${t('docs.dialog.withForm.emailValue')}" />
+        <Label htmlFor="email">Email</Label>
+        <Input id="email" defaultValue="john@example.com" />
       </div>
     </div>
     <DialogFooter>
-      <Button type="submit">${t('docs.dialog.withForm.saveChanges')}</Button>
+      <Button type="submit">Save Changes</Button>
     </DialogFooter>
   </DialogContent>
 </Dialog>`}
@@ -129,27 +125,25 @@ const DialogPage = () => {
             <DocsPreview>
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button>{t('docs.dialog.withForm.editProfile')}</Button>
+                  <Button>Edit Profile</Button>
                 </DialogTrigger>
                 <DialogContent className='sm:max-w-[425px]'>
                   <DialogHeader>
-                    <DialogTitle>{t('docs.dialog.withForm.editProfileTitle')}</DialogTitle>
-                    <DialogDescription>
-                      {t('docs.dialog.withForm.editProfileDescription')}
-                    </DialogDescription>
+                    <DialogTitle>Edit Profile</DialogTitle>
+                    <DialogDescription>Make changes to your profile here.</DialogDescription>
                   </DialogHeader>
                   <div className='grid gap-4 py-4'>
                     <div className='grid gap-2'>
-                      <Label htmlFor='name'>{t('docs.dialog.withForm.nameLabel')}</Label>
-                      <Input id='name' defaultValue={t('docs.dialog.withForm.nameValue')} />
+                      <Label htmlFor='name'>Name</Label>
+                      <Input id='name' defaultValue='John Doe' />
                     </div>
                     <div className='grid gap-2'>
-                      <Label htmlFor='email'>{t('docs.dialog.withForm.emailLabel')}</Label>
-                      <Input id='email' defaultValue={t('docs.dialog.withForm.emailValue')} />
+                      <Label htmlFor='email'>Email</Label>
+                      <Input id='email' defaultValue='john@example.com' />
                     </div>
                   </div>
                   <DialogFooter>
-                    <Button type='submit'>{t('docs.dialog.withForm.saveChanges')}</Button>
+                    <Button type='submit'>Save Changes</Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
@@ -158,7 +152,7 @@ const DialogPage = () => {
         </section>
 
         <section id='usage' className='scroll-mt-20 space-y-4 pt-6 border-t'>
-          <Typography variant='h2'>{t('docs.common.usage')}</Typography>
+          <Typography variant='h2'>Usage</Typography>
 
           <DocsCodeBlock
             language='tsx'
@@ -206,16 +200,14 @@ export function ConfirmDialog() {
         </section>
 
         <section id='api-reference' className='scroll-mt-20 space-y-4 pt-6 border-t'>
-          <Typography variant='h2'>{t('docs.common.apiReference')}</Typography>
+          <Typography variant='h2'>API Reference</Typography>
 
           <div className='rounded-lg border overflow-hidden'>
             <table className='w-full text-sm'>
               <thead className='bg-muted/50'>
                 <tr>
-                  <th className='text-left px-4 py-3 font-medium'>{t('docs.common.component')}</th>
-                  <th className='text-left px-4 py-3 font-medium'>
-                    {t('docs.common.description')}
-                  </th>
+                  <th className='text-left px-4 py-3 font-medium'>Component</th>
+                  <th className='text-left px-4 py-3 font-medium'>Description</th>
                 </tr>
               </thead>
               <tbody className='divide-y'>
@@ -225,7 +217,7 @@ export function ConfirmDialog() {
                   </td>
                   <td className='px-4 py-3'>
                     <code className='text-xs text-muted-foreground'>
-                      {t('docs.dialog.api.dialogDescription')}
+                      Root with open/onOpenChange props
                     </code>
                   </td>
                 </tr>
@@ -235,7 +227,7 @@ export function ConfirmDialog() {
                   </td>
                   <td className='px-4 py-3'>
                     <code className='text-xs text-muted-foreground'>
-                      {t('docs.dialog.api.triggerDescription')}
+                      Button that opens the dialog
                     </code>
                   </td>
                 </tr>
@@ -244,9 +236,7 @@ export function ConfirmDialog() {
                     <code className='text-sm font-semibold text-brand'>DialogContent</code>
                   </td>
                   <td className='px-4 py-3'>
-                    <code className='text-xs text-muted-foreground'>
-                      {t('docs.dialog.api.contentDescription')}
-                    </code>
+                    <code className='text-xs text-muted-foreground'>Dialog modal container</code>
                   </td>
                 </tr>
                 <tr>
@@ -254,9 +244,7 @@ export function ConfirmDialog() {
                     <code className='text-sm font-semibold text-brand'>DialogHeader</code>
                   </td>
                   <td className='px-4 py-3'>
-                    <code className='text-xs text-muted-foreground'>
-                      {t('docs.dialog.api.headerDescription')}
-                    </code>
+                    <code className='text-xs text-muted-foreground'>Header section</code>
                   </td>
                 </tr>
                 <tr>
@@ -265,7 +253,7 @@ export function ConfirmDialog() {
                   </td>
                   <td className='px-4 py-3'>
                     <code className='text-xs text-muted-foreground'>
-                      {t('docs.dialog.api.footerDescription')}
+                      Footer for action buttons
                     </code>
                   </td>
                 </tr>

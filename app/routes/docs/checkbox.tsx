@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next'
 import { Badge } from '@/shared/components/badge'
 import { Checkbox } from '@/shared/components/checkbox'
 import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
@@ -19,37 +18,32 @@ export const meta = (_args: Route.MetaArgs) => {
 }
 
 const CheckboxPage = () => {
-  const { t } = useTranslation()
-
   const TOC_ITEMS: TocItem[] = [
-    { id: 'basic', title: t('docs.common.basic'), level: 2 },
-    { id: 'with-label', title: t('docs.common.withLabel'), level: 2 },
-    { id: 'states', title: t('docs.common.states'), level: 2 },
-    { id: 'usage', title: t('docs.common.usage'), level: 2 },
-    { id: 'api-reference', title: t('docs.common.apiReference'), level: 2 }
+    { id: 'basic', title: 'Basic', level: 2 },
+    { id: 'with-label', title: 'With Label', level: 2 },
+    { id: 'states', title: 'States', level: 2 },
+    { id: 'usage', title: 'Usage', level: 2 },
+    { id: 'api-reference', title: 'API Reference', level: 2 }
   ]
   return (
     <div className='flex gap-10'>
       <div className='flex-1 min-w-0 space-y-10'>
         <header className='space-y-4'>
           <DocsBreadcrumbs
-            items={[
-              { label: t('docs.common.components'), href: '/docs/ui/button' },
-              { label: 'Checkbox' }
-            ]}
+            items={[{ label: 'Components', href: '/docs/ui/button' }, { label: 'Checkbox' }]}
           />
           <div className='flex items-center gap-3'>
             <Typography variant='h1'>Checkbox</Typography>
-            <Badge variant='brand'>{t('docs.common.component')}</Badge>
+            <Badge variant='brand'>Component</Badge>
           </div>
           <Typography variant='lead' className='max-w-2xl'>
-            {t('docs.checkbox.lead')}
+            Checkbox for binary choice selection. Built with Radix UI.
           </Typography>
         </header>
 
         <section id='basic' className='scroll-mt-20 space-y-4'>
-          <Typography variant='h2'>{t('docs.common.basic')}</Typography>
-          <Typography variant='muted'>{t('docs.checkbox.basic.description')}</Typography>
+          <Typography variant='h2'>Basic</Typography>
+          <p className='text-xs text-muted-foreground'>Simple checkbox</p>
 
           <DocsComponentPreview code={`<Checkbox />`}>
             <DocsPreview>
@@ -59,27 +53,27 @@ const CheckboxPage = () => {
         </section>
 
         <section id='with-label' className='scroll-mt-20 space-y-4'>
-          <Typography variant='h2'>{t('docs.common.withLabel')}</Typography>
-          <Typography variant='muted'>{t('docs.checkbox.withLabel.description')}</Typography>
+          <Typography variant='h2'>With Label</Typography>
+          <p className='text-xs text-muted-foreground'>Checkbox with associated label</p>
 
           <DocsComponentPreview
             code={`<div className="flex items-center space-x-2">
   <Checkbox id="terms" />
-  <Label htmlFor="terms">${t('docs.checkbox.withLabel.acceptTerms')}</Label>
+  <Label htmlFor="terms">Accept terms and conditions</Label>
 </div>`}
           >
             <DocsPreview>
               <div className='flex items-center space-x-2'>
                 <Checkbox id='terms' />
-                <Label htmlFor='terms'>{t('docs.checkbox.withLabel.acceptTerms')}</Label>
+                <Label htmlFor='terms'>Accept terms and conditions</Label>
               </div>
             </DocsPreview>
           </DocsComponentPreview>
         </section>
 
         <section id='states' className='scroll-mt-20 space-y-4'>
-          <Typography variant='h2'>{t('docs.common.states')}</Typography>
-          <Typography variant='muted'>{t('docs.checkbox.states.description')}</Typography>
+          <Typography variant='h2'>States</Typography>
+          <p className='text-xs text-muted-foreground'>Different checkbox states</p>
 
           <DocsComponentPreview
             code={`<Checkbox defaultChecked />
@@ -89,18 +83,18 @@ const CheckboxPage = () => {
             <DocsPreview className='flex gap-6'>
               <div className='flex items-center space-x-2'>
                 <Checkbox id='checked' defaultChecked />
-                <Label htmlFor='checked'>{t('docs.checkbox.states.checked')}</Label>
+                <Label htmlFor='checked'>Checked</Label>
               </div>
               <div className='flex items-center space-x-2'>
                 <Checkbox id='disabled' disabled />
                 <Label htmlFor='disabled' className='text-muted-foreground'>
-                  {t('docs.checkbox.states.disabled')}
+                  Disabled
                 </Label>
               </div>
               <div className='flex items-center space-x-2'>
                 <Checkbox id='disabled-checked' disabled defaultChecked />
                 <Label htmlFor='disabled-checked' className='text-muted-foreground'>
-                  {t('docs.checkbox.states.disabledChecked')}
+                  Disabled Checked
                 </Label>
               </div>
             </DocsPreview>
@@ -108,7 +102,7 @@ const CheckboxPage = () => {
         </section>
 
         <section id='usage' className='scroll-mt-20 space-y-4 pt-6 border-t'>
-          <Typography variant='h2'>{t('docs.common.usage')}</Typography>
+          <Typography variant='h2'>Usage</Typography>
 
           <DocsCodeBlock
             language='tsx'
@@ -125,7 +119,7 @@ export function RememberMe() {
         checked={checked}
         onCheckedChange={setChecked}
       />
-      <Label htmlFor="remember">${t('docs.checkbox.usage.rememberMe')}</Label>
+      <Label htmlFor="remember">Remember me</Label>
     </div>
   )
 }`}
@@ -133,15 +127,15 @@ export function RememberMe() {
         </section>
 
         <section id='api-reference' className='scroll-mt-20 space-y-4 pt-6 border-t'>
-          <Typography variant='h2'>{t('docs.common.apiReference')}</Typography>
+          <Typography variant='h2'>API Reference</Typography>
 
           <div className='rounded-lg border overflow-hidden'>
             <table className='w-full text-sm'>
               <thead className='bg-muted/50'>
                 <tr>
-                  <th className='text-left px-4 py-3 font-medium'>{t('docs.common.prop')}</th>
-                  <th className='text-left px-4 py-3 font-medium'>{t('docs.common.type')}</th>
-                  <th className='text-left px-4 py-3 font-medium'>{t('docs.common.default')}</th>
+                  <th className='text-left px-4 py-3 font-medium'>Prop</th>
+                  <th className='text-left px-4 py-3 font-medium'>Type</th>
+                  <th className='text-left px-4 py-3 font-medium'>Default</th>
                 </tr>
               </thead>
               <tbody className='divide-y'>

@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next'
 import { Badge } from '@/shared/components/badge'
 import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
 import { DocsCodeBlock } from '@/shared/components/docs-code-block'
@@ -17,56 +16,51 @@ export const meta = (_args: Route.MetaArgs) => {
 }
 
 const BadgePage = () => {
-  const { t } = useTranslation()
-
   const TOC_ITEMS: TocItem[] = [
-    { id: 'variants', title: t('docs.common.variants'), level: 2 },
-    { id: 'usage', title: t('docs.common.usage'), level: 2 },
-    { id: 'api-reference', title: t('docs.common.apiReference'), level: 2 }
+    { id: 'variants', title: 'Variants', level: 2 },
+    { id: 'usage', title: 'Usage', level: 2 },
+    { id: 'api-reference', title: 'API Reference', level: 2 }
   ]
 
   const BADGE_VARIANTS = [
-    { variant: 'default' as const, label: t('docs.badge.examples.default') },
-    { variant: 'secondary' as const, label: t('docs.badge.examples.secondary') },
-    { variant: 'destructive' as const, label: t('docs.badge.examples.destructive') },
-    { variant: 'outline' as const, label: t('docs.badge.examples.outline') },
-    { variant: 'brand' as const, label: t('docs.badge.examples.brand') },
-    { variant: 'success' as const, label: t('docs.badge.examples.success') },
-    { variant: 'warning' as const, label: t('docs.badge.examples.warning') },
-    { variant: 'info' as const, label: t('docs.badge.examples.info') }
+    { variant: 'default' as const, label: 'Default' },
+    { variant: 'secondary' as const, label: 'Secondary' },
+    { variant: 'destructive' as const, label: 'Destructive' },
+    { variant: 'outline' as const, label: 'Outline' },
+    { variant: 'brand' as const, label: 'Brand' },
+    { variant: 'success' as const, label: 'Success' },
+    { variant: 'warning' as const, label: 'Warning' },
+    { variant: 'info' as const, label: 'Info' }
   ]
   return (
     <div className='flex gap-10'>
       <div className='flex-1 min-w-0 space-y-10'>
         <header className='space-y-4'>
           <DocsBreadcrumbs
-            items={[
-              { label: t('docs.common.components'), href: '/docs/ui/button' },
-              { label: 'Badge' }
-            ]}
+            items={[{ label: 'Components', href: '/docs/ui/button' }, { label: 'Badge' }]}
           />
           <div className='flex items-center gap-3'>
             <Typography variant='h1'>Badge</Typography>
-            <Badge variant='brand'>{t('docs.common.component')}</Badge>
+            <Badge variant='brand'>Component</Badge>
           </div>
           <Typography variant='lead' className='max-w-2xl'>
-            {t('docs.badge.lead')}
+            Small status indicator or label component.
           </Typography>
         </header>
 
         <section id='variants' className='scroll-mt-20 space-y-4'>
-          <Typography variant='h2'>{t('docs.common.variants')}</Typography>
-          <Typography variant='muted'>{t('docs.badge.variants.description')}</Typography>
+          <Typography variant='h2'>Variants</Typography>
+          <p className='text-xs text-muted-foreground'>Different visual styles</p>
 
           <DocsComponentPreview
-            code={`<Badge>${t('docs.badge.examples.default')}</Badge>
-<Badge variant="secondary">${t('docs.badge.examples.secondary')}</Badge>
-<Badge variant="destructive">${t('docs.badge.examples.destructive')}</Badge>
-<Badge variant="outline">${t('docs.badge.examples.outline')}</Badge>
-<Badge variant="brand">${t('docs.badge.examples.brand')}</Badge>
-<Badge variant="success">${t('docs.badge.examples.success')}</Badge>
-<Badge variant="warning">${t('docs.badge.examples.warning')}</Badge>
-<Badge variant="info">${t('docs.badge.examples.info')}</Badge>`}
+            code={`<Badge>Default</Badge>
+<Badge variant="secondary">Secondary</Badge>
+<Badge variant="destructive">Destructive</Badge>
+<Badge variant="outline">Outline</Badge>
+<Badge variant="brand">Brand</Badge>
+<Badge variant="success">Success</Badge>
+<Badge variant="warning">Warning</Badge>
+<Badge variant="info">Info</Badge>`}
           >
             <DocsPreview className='flex flex-wrap gap-3'>
               {BADGE_VARIANTS.map(({ variant, label }) => (
@@ -79,15 +73,15 @@ const BadgePage = () => {
         </section>
 
         <section id='usage' className='scroll-mt-20 space-y-4 pt-6 border-t'>
-          <Typography variant='h2'>{t('docs.common.usage')}</Typography>
+          <Typography variant='h2'>Usage</Typography>
 
           <DocsCodeBlock
             language='tsx'
             code={`import { Badge } from '@/shared/components/badge'
 
-export function StatusBadge({ status }: { status: '${t('docs.badge.usage.active')}' | '${t('docs.badge.usage.inactive')}' }) {
+export function StatusBadge({ status }: { status: 'active' | 'inactive' }) {
   return (
-    <Badge variant={status === '${t('docs.badge.usage.active')}' ? 'success' : 'secondary'}>
+    <Badge variant={status === 'active' ? 'success' : 'secondary'}>
       {status}
     </Badge>
   )
@@ -96,15 +90,15 @@ export function StatusBadge({ status }: { status: '${t('docs.badge.usage.active'
         </section>
 
         <section id='api-reference' className='scroll-mt-20 space-y-4 pt-6 border-t'>
-          <Typography variant='h2'>{t('docs.common.apiReference')}</Typography>
+          <Typography variant='h2'>API Reference</Typography>
 
           <div className='rounded-lg border overflow-hidden'>
             <table className='w-full text-sm'>
               <thead className='bg-muted/50'>
                 <tr>
-                  <th className='text-left px-4 py-3 font-medium'>{t('docs.common.prop')}</th>
-                  <th className='text-left px-4 py-3 font-medium'>{t('docs.common.type')}</th>
-                  <th className='text-left px-4 py-3 font-medium'>{t('docs.common.default')}</th>
+                  <th className='text-left px-4 py-3 font-medium'>Prop</th>
+                  <th className='text-left px-4 py-3 font-medium'>Type</th>
+                  <th className='text-left px-4 py-3 font-medium'>Default</th>
                 </tr>
               </thead>
               <tbody className='divide-y'>

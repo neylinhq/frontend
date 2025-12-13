@@ -37,7 +37,7 @@ const NAV_SECTIONS: DocsSidebarSection[] = [
       { title: 'Drawer', href: '/docs/ui/drawer' },
       { title: 'Dropdown Menu', href: '/docs/ui/dropdown-menu' },
       { title: 'Form', href: '/docs/ui/form' },
-      { title: 'Icon', href: '/docs/ui/icon', isNew: true },
+      { title: 'Icon', href: '/docs/ui/icon', createdAt: '2025-12-14' },
       { title: 'Input', href: '/docs/ui/input' },
       { title: 'Label', href: '/docs/ui/label' },
       { title: 'Popover', href: '/docs/ui/popover' },

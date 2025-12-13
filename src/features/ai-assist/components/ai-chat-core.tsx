@@ -186,9 +186,7 @@ export const AIChatCore = ({
   const handleSavePreview = async (messageId: string, previewCard: PreviewCard) => {
     if (onSavePreview) {
       try {
-        console.log('[AI Chat] Starting save preview', { messageId, previewCard })
         const result = await onSavePreview(messageId, previewCard)
-        console.log('[AI Chat] Save preview result', result)
         // Move to resolved with undo data if available
         moveToResolved(
           sessionId,
@@ -197,9 +195,7 @@ export const AIChatCore = ({
           'approved',
           result ? { previousState: result.previousState, actionId: result.actionId } : undefined
         )
-        console.log('[AI Chat] Move to resolved complete')
-      } catch (error) {
-        console.error('[AI Chat] Save preview error', error)
+      } catch {
         toast.error(t('common.error'), {
           description: t('ai.saveFailed')
         })

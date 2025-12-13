@@ -13,7 +13,10 @@ import styles from './docs-sidebar.module.css'
 export interface DocsSidebarItem {
   title: string
   href: string
-  isNew?: boolean
+  /** Date when component was created (YYYY-MM-DD) */
+  createdAt?: string
+  /** Date when component was last updated (YYYY-MM-DD) */
+  updatedAt?: string
   isDeprecated?: boolean
 }
 
@@ -39,6 +42,35 @@ export const DocsSidebar = ({ sections, className }: DocsSidebarProps) => {
   )
 }
 
+/**
+ * Calculate badge status based on createdAt/updatedAt dates
+ * - "New" if created within last 30 days
+ * - "Updated" if updated within last 30 days (and not new)
+ * - null otherwise
+ */
+const getItemBadge = (item: DocsSidebarItem): 'new' | 'updated' | null => {
+  if (item.isDeprecated) return null
+
+  const now = new Date()
+  const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+
+  if (item.createdAt) {
+    const createdDate = new Date(item.createdAt)
+    if (createdDate > thirtyDaysAgo) {
+      return 'new'
+    }
+  }
+
+  if (item.updatedAt) {
+    const updatedDate = new Date(item.updatedAt)
+    if (updatedDate > thirtyDaysAgo) {
+      return 'updated'
+    }
+  }
+
+  return null
+}
+
 const DocsSidebarSectionComponent = ({ section }: { section: DocsSidebarSection }) => {
   const [isOpen, setIsOpen] = React.useState(section.defaultOpen ?? true)
   const Icon = section.icon
@@ -59,29 +91,38 @@ const DocsSidebarSectionComponent = ({ section }: { section: DocsSidebarSection 
       </CollapsibleTrigger>
       <CollapsibleContent className='pt-1'>
         <div className='space-y-0.5'>
-          {section.items.map(item => (
-            <NavLink
-              key={item.href}
-              to={item.href}
-              end={item.href === '/docs/ui'}
-              className={({ isActive }) => cn(styles.navItem, isActive && styles.navItemActive)}
-            >
-              <span className='flex-1 truncate'>{item.title}</span>
-              {item.isNew && (
-                <Badge variant='secondary' className='ml-auto text-[10px] h-5 px-1.5'>
-                  New
-                </Badge>
-              )}
-              {item.isDeprecated && (
-                <Badge
-                  variant='outline'
-                  className='ml-auto text-[10px] h-5 px-1.5 text-muted-foreground'
-                >
-                  Deprecated
-                </Badge>
-              )}
-            </NavLink>
-          ))}
+          {section.items.map(item => {
+            const badge = getItemBadge(item)
+
+            return (
+              <NavLink
+                key={item.href}
+                to={item.href}
+                end={item.href === '/docs/ui'}
+                className={({ isActive }) => cn(styles.navItem, isActive && styles.navItemActive)}
+              >
+                <span className='flex-1 truncate'>{item.title}</span>
+                {badge === 'new' && (
+                  <Badge variant='secondary' className='ml-auto text-[10px] h-5 px-1.5'>
+                    New
+                  </Badge>
+                )}
+                {badge === 'updated' && (
+                  <Badge variant='brand' className='ml-auto text-[10px] h-5 px-1.5'>
+                    Updated
+                  </Badge>
+                )}
+                {item.isDeprecated && (
+                  <Badge
+                    variant='outline'
+                    className='ml-auto text-[10px] h-5 px-1.5 text-muted-foreground'
+                  >
+                    Deprecated
+                  </Badge>
+                )}
+              </NavLink>
+            )
+          })}
         </div>
       </CollapsibleContent>
     </Collapsible>

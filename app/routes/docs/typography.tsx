@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
 import { Typography } from '@/shared/components/typography'
 import { getMeta } from '@/shared/lib/get-meta'
@@ -79,20 +78,20 @@ const TYPOGRAPHY_EXAMPLES = [
 ]
 
 const TypographyPage = () => {
-  const { t } = useTranslation()
-
   return (
     <div className='space-y-8'>
       <div className='space-y-3'>
-        <Typography variant='h1'>{t('docs.typography.title')}</Typography>
-        <Typography variant='lead'>{t('docs.typography.lead')}</Typography>
+        <Typography variant='h1'>Typography</Typography>
+        <Typography variant='lead'>
+          Type scale and text formatting for consistent hierarchy and readability
+        </Typography>
       </div>
 
       {/* Examples */}
       <section className='space-y-6'>
         <div>
-          <Typography variant='h2'>{t('docs.typography.variants.title')}</Typography>
-          <Typography variant='muted'>{t('docs.typography.variants.description')}</Typography>
+          <Typography variant='h2'>Typography Variants</Typography>
+          <Typography variant='muted'>All available text styles</Typography>
         </div>
 
         <div className='space-y-8'>
@@ -116,13 +115,11 @@ const TypographyPage = () => {
 
       {/* Font */}
       <section className='space-y-4 pt-4 border-t'>
-        <Typography variant='h2'>Шрифт</Typography>
+        <Typography variant='h2'>Font</Typography>
         <Card>
           <CardHeader>
             <CardTitle>IBM Plex Sans</CardTitle>
-            <CardDescription>
-              Технический, геометрический шрифт для профессионального вида
-            </CardDescription>
+            <CardDescription>Technical, geometric typeface for professional appearance</CardDescription>
           </CardHeader>
           <CardContent className='space-y-4'>
             <div className='space-y-2'>
@@ -151,38 +148,32 @@ const TypographyPage = () => {
         <Typography variant='h2'>Usage</Typography>
         <Card>
           <CardHeader>
-            <CardTitle>Использование компонента</CardTitle>
+            <CardTitle>Component Usage</CardTitle>
           </CardHeader>
           <CardContent className='space-y-4'>
             <div>
-              <Typography variant='small' className='mb-2'>
-                Базовое использование:
-              </Typography>
+              <p className='text-xs text-muted-foreground mb-2'>Basic usage:</p>
               <pre className='rounded-lg bg-muted p-4 overflow-x-auto'>
-                <code className='text-sm'>{`import { Typography } from '@/shared/components/typography'
+                <code className='text-xs'>{`import { Typography } from '@/shared/components/typography'
 
-<Typography variant="h1">Заголовок</Typography>
-<Typography variant="p">Параграф текста</Typography>
-<Typography variant="muted">Вторичная информация</Typography>`}</code>
+<Typography variant="h1">Heading</Typography>
+<Typography variant="p">Paragraph text</Typography>
+<Typography variant="muted">Secondary info</Typography>`}</code>
               </pre>
             </div>
             <div>
-              <Typography variant='small' className='mb-2'>
-                Кастомный HTML тег:
-              </Typography>
+              <p className='text-xs text-muted-foreground mb-2'>Custom HTML tag:</p>
               <pre className='rounded-lg bg-muted p-4 overflow-x-auto'>
-                <code className='text-sm'>{`<Typography variant="large" as="span">
-  Span с large стилями
+                <code className='text-xs'>{`<Typography variant="large" as="span">
+  Span with large styles
 </Typography>`}</code>
               </pre>
             </div>
             <div>
-              <Typography variant='small' className='mb-2'>
-                С дополнительными классами:
-              </Typography>
+              <p className='text-xs text-muted-foreground mb-2'>With additional classes:</p>
               <pre className='rounded-lg bg-muted p-4 overflow-x-auto'>
-                <code className='text-sm'>{`<Typography variant="p" className="text-center max-w-lg">
-  Центрированный параграф с ограничением ширины
+                <code className='text-xs'>{`<Typography variant="p" className="text-center max-w-lg">
+  Centered paragraph with max width
 </Typography>`}</code>
               </pre>
             </div>

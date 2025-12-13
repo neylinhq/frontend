@@ -1,5 +1,4 @@
 import { Bot } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
 import { Badge } from '@/shared/components/badge'
 import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
 import { DocsCodeBlock } from '@/shared/components/docs-code-block'
@@ -26,27 +25,23 @@ export const meta = (_args: Route.MetaArgs) => {
 }
 
 const IconPage = () => {
-  const { t } = useTranslation()
-
   const TOC_ITEMS: TocItem[] = [
-    { id: 'ai-brands', title: t('docs.icon.aiBrands', 'AI Brands'), level: 2 },
-    { id: 'payment-brands', title: t('docs.icon.paymentBrands', 'Payment Brands'), level: 2 },
-    { id: 'crypto', title: t('docs.icon.crypto', 'Cryptocurrency'), level: 2 },
-    { id: 'networks', title: t('docs.icon.networks', 'Blockchain Networks'), level: 2 },
-    { id: 'oauth', title: t('docs.icon.oauth', 'OAuth Providers'), level: 2 },
-    { id: 'usage', title: t('docs.common.usage'), level: 2 },
-    { id: 'api-reference', title: t('docs.common.apiReference'), level: 2 }
+    { id: 'ai-brands', title: 'AI Brands', level: 2 },
+    { id: 'payment-brands', title: 'Payment Brands', level: 2 },
+    { id: 'crypto', title: 'Cryptocurrency', level: 2 },
+    { id: 'networks', title: 'Blockchain Networks', level: 2 },
+    { id: 'oauth', title: 'OAuth Providers', level: 2 },
+    { id: 'usage', title: 'Usage', level: 2 },
+    { id: 'api-reference', title: 'API Reference', level: 2 }
   ]
 
   const AI_BRAND_KEYS = [
     'openai',
     'anthropic',
-    'deepseek',
     'gemini',
     'meta',
     'mistral',
     'xai',
-    'cohere',
     'perplexity',
     'huggingface',
     'minimax'
@@ -62,28 +57,20 @@ const IconPage = () => {
       <div className='flex-1 min-w-0 space-y-10'>
         <header className='space-y-4'>
           <DocsBreadcrumbs
-            items={[
-              { label: t('docs.common.components'), href: '/docs/ui/button' },
-              { label: 'Icon' }
-            ]}
+            items={[{ label: 'Components', href: '/docs/ui/button' }, { label: 'Icon' }]}
           />
           <div className='flex items-center gap-3'>
             <Typography variant='h1'>Icon</Typography>
-            <Badge variant='brand'>{t('docs.common.component')}</Badge>
+            <Badge variant='brand'>Component</Badge>
           </div>
           <Typography variant='lead' className='max-w-2xl'>
-            {t(
-              'docs.icon.lead',
-              'SVG icon component for brand logos. Monochrome icons that adapt to currentColor.'
-            )}
+            SVG icon component for brand logos. Monochrome icons that adapt to currentColor.
           </Typography>
         </header>
 
         <section id='ai-brands' className='scroll-mt-20 space-y-4'>
-          <Typography variant='h2'>{t('docs.icon.aiBrands', 'AI Brands')}</Typography>
-          <Typography variant='muted'>
-            {t('docs.icon.aiBrandsDescription', 'Icons for AI providers and models.')}
-          </Typography>
+          <Typography variant='h2'>AI Brands</Typography>
+          <p className='text-xs text-muted-foreground'>Icons for AI providers and models.</p>
 
           <DocsComponentPreview
             code={`import { Icon } from '@/shared/components/icon'
@@ -92,7 +79,7 @@ import { aiBrandIcons } from '@/shared/components/icon/icon.constants'
 <Icon data={aiBrandIcons['openai']} className='w-6 h-6' />
 <Icon data={aiBrandIcons['anthropic']} className='w-6 h-6' />`}
           >
-            <DocsPreview className='flex flex-wrap gap-6'>
+            <DocsPreview className='flex flex-wrap justify-center gap-6'>
               {AI_BRAND_KEYS.map(key => (
                 <div key={key} className='flex flex-col items-center gap-2'>
                   <div className='w-12 h-12 rounded-lg bg-muted flex items-center justify-center'>
@@ -110,10 +97,8 @@ import { aiBrandIcons } from '@/shared/components/icon/icon.constants'
         </section>
 
         <section id='payment-brands' className='scroll-mt-20 space-y-4 pt-6 border-t'>
-          <Typography variant='h2'>{t('docs.icon.paymentBrands', 'Payment Brands')}</Typography>
-          <Typography variant='muted'>
-            {t('docs.icon.paymentDescription', 'Payment method and card brand icons.')}
-          </Typography>
+          <Typography variant='h2'>Payment Brands</Typography>
+          <p className='text-xs text-muted-foreground'>Payment method and card brand icons.</p>
 
           <DocsComponentPreview
             code={`import { paymentBrandIcons } from '@/shared/components/icon/icon.constants'
@@ -136,10 +121,8 @@ import { aiBrandIcons } from '@/shared/components/icon/icon.constants'
         </section>
 
         <section id='crypto' className='scroll-mt-20 space-y-4 pt-6 border-t'>
-          <Typography variant='h2'>{t('docs.icon.crypto', 'Cryptocurrency')}</Typography>
-          <Typography variant='muted'>
-            {t('docs.icon.cryptoDescription', 'Cryptocurrency token icons.')}
-          </Typography>
+          <Typography variant='h2'>Cryptocurrency</Typography>
+          <p className='text-xs text-muted-foreground'>Cryptocurrency token icons.</p>
 
           <DocsComponentPreview
             code={`import { cryptoIcons } from '@/shared/components/icon/icon.constants'
@@ -160,10 +143,10 @@ import { aiBrandIcons } from '@/shared/components/icon/icon.constants'
         </section>
 
         <section id='networks' className='scroll-mt-20 space-y-4 pt-6 border-t'>
-          <Typography variant='h2'>{t('docs.icon.networks', 'Blockchain Networks')}</Typography>
-          <Typography variant='muted'>
-            {t('docs.icon.networksDescription', 'Blockchain network icons for crypto payments.')}
-          </Typography>
+          <Typography variant='h2'>Blockchain Networks</Typography>
+          <p className='text-xs text-muted-foreground'>
+            Blockchain network icons for crypto payments.
+          </p>
 
           <DocsComponentPreview
             code={`import { networkIcons } from '@/shared/components/icon/icon.constants'
@@ -184,10 +167,10 @@ import { aiBrandIcons } from '@/shared/components/icon/icon.constants'
         </section>
 
         <section id='oauth' className='scroll-mt-20 space-y-4 pt-6 border-t'>
-          <Typography variant='h2'>{t('docs.icon.oauth', 'OAuth Providers')}</Typography>
-          <Typography variant='muted'>
-            {t('docs.icon.oauthDescription', 'Social login and OAuth provider icons.')}
-          </Typography>
+          <Typography variant='h2'>OAuth Providers</Typography>
+          <p className='text-xs text-muted-foreground'>
+            Social login and OAuth provider icons.
+          </p>
 
           <DocsComponentPreview
             code={`import { oauthBrandIcons } from '@/shared/components/icon/icon.constants'
@@ -208,7 +191,7 @@ import { aiBrandIcons } from '@/shared/components/icon/icon.constants'
         </section>
 
         <section id='usage' className='scroll-mt-20 space-y-4 pt-6 border-t'>
-          <Typography variant='h2'>{t('docs.common.usage')}</Typography>
+          <Typography variant='h2'>Usage</Typography>
 
           <DocsCodeBlock
             language='tsx'
@@ -231,15 +214,15 @@ function ChatAvatar({ brand }: { brand?: string }) {
         </section>
 
         <section id='api-reference' className='scroll-mt-20 space-y-4 pt-6 border-t'>
-          <Typography variant='h2'>{t('docs.common.apiReference')}</Typography>
+          <Typography variant='h2'>API Reference</Typography>
 
           <div className='rounded-lg border overflow-hidden'>
             <table className='w-full text-sm'>
               <thead className='bg-muted/50'>
                 <tr>
-                  <th className='text-left px-4 py-3 font-medium'>{t('docs.common.prop')}</th>
-                  <th className='text-left px-4 py-3 font-medium'>{t('docs.common.type')}</th>
-                  <th className='text-left px-4 py-3 font-medium'>{t('docs.common.default')}</th>
+                  <th className='text-left px-4 py-3 font-medium'>Prop</th>
+                  <th className='text-left px-4 py-3 font-medium'>Type</th>
+                  <th className='text-left px-4 py-3 font-medium'>Default</th>
                 </tr>
               </thead>
               <tbody className='divide-y'>
@@ -287,11 +270,9 @@ function ChatAvatar({ brand }: { brand?: string }) {
             <table className='w-full text-sm'>
               <thead className='bg-muted/50'>
                 <tr>
-                  <th className='text-left px-4 py-3 font-medium'>{t('docs.common.prop')}</th>
-                  <th className='text-left px-4 py-3 font-medium'>{t('docs.common.type')}</th>
-                  <th className='text-left px-4 py-3 font-medium'>
-                    {t('docs.common.description', 'Description')}
-                  </th>
+                  <th className='text-left px-4 py-3 font-medium'>Prop</th>
+                  <th className='text-left px-4 py-3 font-medium'>Type</th>
+                  <th className='text-left px-4 py-3 font-medium'>Description</th>
                 </tr>
               </thead>
               <tbody className='divide-y'>

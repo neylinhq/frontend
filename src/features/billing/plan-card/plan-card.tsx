@@ -53,7 +53,9 @@ export const PlanCard = memo(
         {/* Header */}
         <div className={cn('mb-6', (highlighted || isCurrentPlan) && 'mt-2')}>
           <h3 className='text-lg font-medium mb-1'>{plan.name}</h3>
-          <p className='text-sm text-muted-foreground'>{plan.description}</p>
+          <p className='text-sm text-muted-foreground'>
+            {t(`billing.planDescriptions.${plan.type}`)}
+          </p>
         </div>
 
         {/* Price */}

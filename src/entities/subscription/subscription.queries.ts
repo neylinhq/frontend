@@ -108,16 +108,13 @@ export const useAddCryptoPaymentMethod = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (data: { walletAddress: string; network: string; currency: string }) => {
-      console.log('[useAddCryptoPaymentMethod] mutationFn called with:', data)
-      return subscriptionApi.addCryptoPaymentMethod(data)
-    },
-    onSuccess: (result) => {
-      console.log('[useAddCryptoPaymentMethod] onSuccess, result:', result)
-      queryClient.invalidateQueries({ queryKey: subscriptionKeys.paymentMethods() })
-    },
-    onError: (error) => {
-      console.error('[useAddCryptoPaymentMethod] onError:', error)
+    mutationFn: (data: { walletAddress: string; network: string; currency: string }) =>
+      subscriptionApi.addCryptoPaymentMethod(data),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: subscriptionKeys.paymentMethods(),
+        refetchType: 'all'
+      })
     }
   })
 }
@@ -127,22 +124,11 @@ export const useRemovePaymentMethod = () => {
 
   return useMutation({
     mutationFn: (paymentMethodId: string) => subscriptionApi.removePaymentMethod(paymentMethodId),
-    onMutate: async (paymentMethodId: string) => {
-      await queryClient.cancelQueries({ queryKey: subscriptionKeys.paymentMethods() })
-      const previous = queryClient.getQueryData<PaymentMethod[]>(subscriptionKeys.paymentMethods())
-
-      queryClient.setQueryData<PaymentMethod[]>(subscriptionKeys.paymentMethods(), old =>
-        old?.filter(m => m.id !== paymentMethodId)
-      )
-      return { previous }
-    },
-    onError: (_err, _vars, context) => {
-      if (context?.previous) {
-        queryClient.setQueryData(subscriptionKeys.paymentMethods(), context.previous)
-      }
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: subscriptionKeys.paymentMethods() })
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: subscriptionKeys.paymentMethods(),
+        refetchType: 'all'
+      })
     }
   })
 }
@@ -191,8 +177,7 @@ export const useUpdatePaymentMethod = () => {
             return { ...m, expiryMonth: input.expiryMonth, expiryYear: input.expiryYear }
           }
           if ('walletAddress' in input && m.type === 'crypto') {
-            const short = `${input.walletAddress.slice(0, 6)}...${input.walletAddress.slice(-4)}`
-            return { ...m, walletAddress: input.walletAddress, walletAddressShort: short }
+            return { ...m, walletAddress: input.walletAddress }
           }
           return m
         })

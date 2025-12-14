@@ -21,9 +21,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/shared/components/dropdown-menu'
-import { cryptoIcons, Icon } from '@/shared/components/icon'
+import { Icon, networkIcons } from '@/shared/components/icon'
 import type { CardBrand } from '@/shared/lib/card-utils'
 import { cn } from '@/shared/lib/cn'
+import { shortenWalletAddress } from '@/shared/lib/crypto-utils'
 
 interface PaymentMethodCardProps {
   method: PaymentMethod
@@ -52,7 +53,7 @@ export const PaymentMethodCard = ({
     if (method.type === 'crypto') {
       return t('billing.removeCryptoWallet.description', {
         currency: method.currency,
-        address: method.walletAddressShort
+        address: shortenWalletAddress(method.walletAddress)
       })
     }
     return t('billing.removePaymentMethod.description', {
@@ -63,7 +64,7 @@ export const PaymentMethodCard = ({
 
   const renderIcon = () => {
     if (method.type === 'crypto') {
-      const iconData = cryptoIcons[method.currency.toLowerCase()]
+      const iconData = networkIcons[method.network.toLowerCase()]
       if (iconData) {
         return <Icon data={iconData} size={24} className='text-foreground' />
       }
@@ -77,7 +78,7 @@ export const PaymentMethodCard = ({
     if (method.type === 'crypto') {
       return (
         <span className='font-mono text-sm font-medium whitespace-nowrap'>
-          {method.walletAddressShort}
+          {shortenWalletAddress(method.walletAddress)}
         </span>
       )
     }
@@ -122,7 +123,7 @@ export const PaymentMethodCard = ({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align='end' className='w-48'>
-            {onEdit && (
+            {onEdit && method.type !== 'crypto' && (
               <>
                 <DropdownMenuItem onClick={() => onEdit(method)} disabled={loading}>
                   <Pencil className='h-4 w-4 mr-2' />
@@ -139,11 +140,8 @@ export const PaymentMethodCard = ({
             )}
             <DropdownMenuItem
               onClick={() => setIsDeleteOpen(true)}
-              disabled={loading || method.isDefault}
-              className={cn(
-                'text-destructive focus:text-destructive',
-                method.isDefault && 'opacity-50'
-              )}
+              disabled={loading}
+              className='text-destructive focus:text-destructive'
             >
               <Trash2 className='h-4 w-4 mr-2' />
               {t('billing.removePaymentMethod.confirm')}

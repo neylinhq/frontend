@@ -141,17 +141,6 @@ export const AddPaymentMethodDialog = ({
   const [showCvc, setShowCvc] = useState(false)
   const [cardBrand, setCardBrand] = useState<CardBrand>('unknown')
 
-  // Track if crypto mutation was initiated
-  const prevLoadingCrypto = useRef(false)
-
-  // Close dialog when crypto mutation completes successfully
-  useEffect(() => {
-    // If was loading and now not loading, mutation completed
-    if (prevLoadingCrypto.current && !loadingCrypto) {
-      resetAndClose()
-    }
-    prevLoadingCrypto.current = loadingCrypto || false
-  }, [loadingCrypto])
 
   const cardForm = useForm<AddPaymentMethodValues>({
     resolver: zodResolver(addPaymentMethodSchema),
@@ -210,8 +199,7 @@ export const AddPaymentMethodDialog = ({
     console.log('[AddPaymentMethodDialog] handleCryptoSuccess called:', { network, address })
     onAddCrypto({ network, address })
     console.log('[AddPaymentMethodDialog] onAddCrypto called')
-    // Don't close immediately - let the mutation complete
-    // Dialog will close via useEffect watching loadingCrypto
+    // Don't close dialog - user might want to add another wallet
   }
 
   const resetAndClose = () => {
@@ -270,7 +258,7 @@ export const AddPaymentMethodDialog = ({
               <SelectionCard
                 icon={<Wallet className='h-12 w-12' />}
                 title={t('billing.addPaymentMethod.cryptoOption.title')}
-                description='TON (USDT)'
+                description='USDT (TRC-20, TON, BSC, ETH)'
                 onClick={() => setStep('crypto')}
               />
             </div>

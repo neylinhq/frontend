@@ -12,6 +12,7 @@ import { DiffBlock } from './proposal-card'
 
 interface CollapsibleProposalProps {
   preview: ResolvedPreview
+  canUndo?: boolean
   onUndo?: () => void
   className?: string
 }
@@ -31,7 +32,8 @@ export const CollapsibleProposal = ({
     switch (preview.type) {
       case 'enrichment': {
         const data = preview.data as EnrichmentPreviewData
-        return t(`ai.fields.${data.field}`, data.field).toLowerCase()
+        const field = data.field || 'description'
+        return t(`ai.fields.${field}`, field).toLowerCase()
       }
       case 'exercise': {
         const data = preview.data as ExercisePreviewData
@@ -92,16 +94,6 @@ export const CollapsibleProposal = ({
       {isExpanded && (
         <div className='px-3 py-2 border-t border-border bg-muted/30'>
           <ProposalContent preview={preview} />
-
-          {/* Footer with undo/restore for expanded view */}
-          {onUndo && (
-            <div className='mt-3 pt-2 border-t border-border flex justify-end'>
-              <Button size='sm' variant='outline' onClick={onUndo}>
-                <Undo2 className='h-3.5 w-3.5 mr-1' />
-                {isApproved ? t('common.undo', 'Undo') : t('common.restore', 'Restore')}
-              </Button>
-            </div>
-          )}
         </div>
       )}
     </div>

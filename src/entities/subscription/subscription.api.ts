@@ -94,8 +94,8 @@ export const subscriptionApi = {
   },
 
   // Get payment methods
-  getPaymentMethods: async (): Promise<PaymentMethod[]> => {
-    const response = await api.get<PaymentMethodsResponse>('/payments/methods')
+  getPaymentMethods: async (options?: { cookies?: string }): Promise<PaymentMethod[]> => {
+    const response = await api.get<PaymentMethodsResponse>('/payments/methods', options)
     return response.data
   },
 
@@ -140,10 +140,12 @@ export const subscriptionApi = {
   // Get payment history
   getPaymentHistory: async (
     limit = 20,
-    offset = 0
+    offset = 0,
+    options?: { cookies?: string }
   ): Promise<{ history: PaymentHistory[]; total: number }> => {
     const response = await api.get<PaymentHistoryResponse>(
-      `/payments/history?limit=${limit}&offset=${offset}`
+      `/payments/history?limit=${limit}&offset=${offset}`,
+      options
     )
     return {
       history: response.data,

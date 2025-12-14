@@ -38,7 +38,7 @@ export const mockPlans: PlanDetails[] = [
   {
     type: 'pro',
     name: 'Pro',
-    description: 'For serious knowledge workers',
+    description: 'For serious knowledge builders',
     price: 1900,
     currency: 'USD',
     interval: 'month',

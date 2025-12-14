@@ -549,16 +549,9 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
         const isSourceListItem =
           sourceNode.type.name === 'listItem' || sourceNode.type.name === 'taskItem'
 
-        // Check if target is inside a list (by checking if targetNode is a listItem)
-        const targetNode2 = $targetPos.nodeAfter
-        const isTargetInList =
-          targetNode2?.type.name === 'listItem' || targetNode2?.type.name === 'taskItem'
-
-        // Only wrap in list if source is listItem AND target is NOT inside a list
-        // (i.e., dropping outside of any list)
-        if (isSourceListItem && !isTargetInList) {
-          // Find parent list type from the original position (before any changes)
-          let parentListType: string | null = null
+        // Find source's parent list type
+        let sourceListType: string | null = null
+        if (isSourceListItem) {
           for (let d = $sourcePos.depth - 1; d >= 0; d--) {
             const node = $sourcePos.node(d)
             if (
@@ -566,17 +559,36 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
               node.type.name === 'orderedList' ||
               node.type.name === 'taskList'
             ) {
-              parentListType = node.type.name
+              sourceListType = node.type.name
               break
             }
           }
+        }
 
-          // Wrap in appropriate list type
-          if (parentListType) {
-            const listType = view.state.schema.nodes[parentListType]
-            if (listType) {
-              nodeToInsert = listType.create(null, sourceNode)
-            }
+        // Check if target is inside a list of the SAME type
+        // If so, we insert the listItem directly without wrapping
+        let targetListType: string | null = null
+        for (let d = $targetPos.depth; d >= 1; d--) {
+          const node = $targetPos.node(d)
+          if (
+            node.type.name === 'bulletList' ||
+            node.type.name === 'orderedList' ||
+            node.type.name === 'taskList'
+          ) {
+            targetListType = node.type.name
+            break
+          }
+        }
+
+        // Only wrap in list if:
+        // 1. Source is a listItem
+        // 2. Target is NOT inside a list of the same type
+        const shouldWrap = isSourceListItem && targetListType !== sourceListType
+
+        if (shouldWrap && sourceListType) {
+          const listType = view.state.schema.nodes[sourceListType]
+          if (listType) {
+            nodeToInsert = listType.create(null, sourceNode)
           }
         }
 
@@ -597,29 +609,59 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
           tr.insert(mappedInsertPos, nodeToInsert)
         }
 
-        // Cleanup empty parent list if source was the only child
-        if (sourceParentListInfo && sourceParentListInfo.childCount === 1) {
-          const mappedParentPos = tr.mapping.map(sourceParentListInfo.pos)
-          const parentNode = tr.doc.nodeAt(mappedParentPos)
-          if (parentNode && parentNode.childCount === 0) {
-            tr.delete(mappedParentPos, mappedParentPos + parentNode.nodeSize)
+        // Cleanup: find and remove empty list items and lists (max 10 passes)
+        const listTypes = ['bulletList', 'orderedList', 'taskList']
+        for (let pass = 0; pass < 10; pass++) {
+          const toDelete: Array<{ from: number; to: number }> = []
+
+          tr.doc.descendants((node, pos) => {
+            // Remove empty list items (no content or only empty paragraph)
+            if (node.type.name === 'listItem' || node.type.name === 'taskItem') {
+              // Check if listItem is empty or has only whitespace content
+              const textContent = node.textContent.trim()
+              const isEmpty = node.childCount === 0 || textContent === ''
+              if (isEmpty) {
+                toDelete.push({ from: pos, to: pos + node.nodeSize })
+                return false // Don't descend
+              }
+            }
+            // Remove empty lists (no children)
+            if (listTypes.includes(node.type.name) && node.childCount === 0) {
+              toDelete.push({ from: pos, to: pos + node.nodeSize })
+              return false
+            }
+            return true
+          })
+
+          if (toDelete.length === 0) break
+
+          // Delete in reverse order to preserve positions
+          for (let i = toDelete.length - 1; i >= 0; i--) {
+            const { from, to } = toDelete[i]
+            tr.delete(from, to)
           }
         }
 
         // Try to join adjacent lists of the same type
-        const listTypes = ['bulletList', 'orderedList', 'taskList']
-        tr.doc.descendants((node, pos) => {
-          if (listTypes.includes(node.type.name)) {
-            const $pos = tr.doc.resolve(pos + node.nodeSize)
-            const after = $pos.nodeAfter
-            if (after && after.type.name === node.type.name) {
-              // Join these two lists
-              tr.join(pos + node.nodeSize)
-              return false // Stop iteration after join (positions changed)
+        let joined = true
+        while (joined) {
+          joined = false
+          tr.doc.descendants((node, pos) => {
+            if (listTypes.includes(node.type.name)) {
+              const afterPos = pos + node.nodeSize
+              if (afterPos < tr.doc.content.size) {
+                const $pos = tr.doc.resolve(afterPos)
+                const after = $pos.nodeAfter
+                if (after && after.type.name === node.type.name) {
+                  tr.join(afterPos)
+                  joined = true
+                  return false
+                }
+              }
             }
-          }
-          return true
-        })
+            return true
+          })
+        }
 
         view.dispatch(tr)
 

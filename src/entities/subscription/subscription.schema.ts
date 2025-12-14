@@ -95,7 +95,6 @@ export type CardPaymentMethod = z.infer<typeof CardPaymentMethodSchema>
 export const CryptoPaymentMethodSchema = BasePaymentMethodSchema.extend({
   type: z.literal('crypto'),
   walletAddress: z.string(),
-  walletAddressShort: z.string(),
   network: CryptoNetworkEnum,
   currency: CryptoCurrencyEnum
 })

@@ -13,15 +13,48 @@ export interface NodeReference {
 }
 
 export interface ProposalData {
-  field: 'description' | 'content' | 'examples' | 'sources'
-  current: string
-  value: string
+  type: 'edit' | 'new_node' | 'connection' | 'exercise'
+
+  // For edit
+  field?: 'description' | 'content' | 'examples' | 'sources'
+  current?: string
+  value?: string
+  nodeId?: string
+  nodeVersion?: number
+
+  // For new_node
+  newNode?: {
+    label: string
+    nodeType: string
+    description: string
+    content?: string
+  }
+
+  // For connection
+  connection?: {
+    fromLabel: string
+    toLabel: string
+    relation: string
+    reasoning: string
+  }
+
+  // For exercise
+  exercise?: {
+    type: string
+    difficulty: number
+    question: string
+    options?: string[]
+    answer: unknown
+    explanation?: string
+    data?: Record<string, unknown>
+  }
 }
 
 export interface ChatWithMapResponse {
   action: 'chat' | 'proposal'
   message: string
   proposal?: ProposalData
+  proposals?: ProposalData[] // Multiple proposals (for batch exercises)
   sourceNodes: NodeReference[]
   tokensUsed: number
 }
@@ -32,6 +65,7 @@ export interface ChatStreamChunk {
   content?: string
   sourceNodes?: NodeReference[]
   proposal?: ProposalData
+  proposals?: ProposalData[] // Multiple proposals (for batch exercises)
   /** AI brand identifier for avatar icons (e.g., 'openai', 'anthropic', 'deepseek') */
   brand?: string
 }

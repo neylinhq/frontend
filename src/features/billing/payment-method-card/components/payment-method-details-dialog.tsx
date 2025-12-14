@@ -20,11 +20,12 @@ import {
 import { Button } from '@/shared/components/button'
 import { CardBrandIcon } from '@/shared/components/card-brand-icon'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/components/dialog'
-import { cryptoIcons, Icon } from '@/shared/components/icon'
+import { Icon, networkIcons } from '@/shared/components/icon'
 import { Input } from '@/shared/components/input'
 import { Label } from '@/shared/components/label'
 import type { CardBrand } from '@/shared/lib/card-utils'
 import { useCopyToClipboard } from '@/shared/lib/use-copy-to-clipboard'
+import { shortenWalletAddress } from '@/shared/lib/crypto-utils'
 
 interface PaymentMethodDetailsDialogProps {
   method: PaymentMethod | null
@@ -143,7 +144,7 @@ export const PaymentMethodDetailsDialog = ({
     if (method.type === 'crypto') {
       return t('billing.removeCryptoWallet.description', {
         currency: method.currency,
-        address: method.walletAddressShort
+        address: shortenWalletAddress(method.walletAddress)
       })
     }
     return t('billing.removePaymentMethod.description', {
@@ -154,7 +155,7 @@ export const PaymentMethodDetailsDialog = ({
 
   const renderIcon = () => {
     if (method.type === 'crypto') {
-      const iconData = cryptoIcons[method.currency.toLowerCase()]
+      const iconData = networkIcons[method.network.toLowerCase()]
       if (iconData) {
         return <Icon data={iconData} size={40} className='text-foreground' />
       }
@@ -284,8 +285,8 @@ export const PaymentMethodDetailsDialog = ({
     return method.type === 'crypto' ? t('billing.cryptoWallet') : t('billing.paymentMethod')
   }
 
-  // Only crypto wallets can be edited
-  const canEdit = method.type === 'crypto' && onUpdate
+  // Crypto wallets cannot be edited, only viewed and deleted
+  const canEdit = false
 
   return (
     <>
@@ -342,7 +343,7 @@ export const PaymentMethodDetailsDialog = ({
                   variant='outline'
                   className='w-full text-destructive hover:text-destructive'
                   onClick={() => setIsDeleteOpen(true)}
-                  disabled={loading || method.isDefault}
+                  disabled={loading}
                 >
                   <Trash2 className='h-4 w-4 mr-2' />
                   {t('common.remove')}

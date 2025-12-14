@@ -159,7 +159,9 @@
     "restore": "Restore",
     "copied": "Copied",
     "copy": "Copy",
-    "send": "Send"
+    "send": "Send",
+    "true": "True",
+    "false": "False"
   },
   "imageCrop": {
     "title": "Crop image",
@@ -1178,7 +1180,25 @@
     },
     "exercises": {
       "saved": "Exercises saved",
-      "savedDescription": "Your exercises have been saved"
+      "savedDescription": "Your exercises have been saved",
+      "exercise": "Exercise",
+      "exerciseN": "Exercise {{n}}/{{total}}",
+      "check": "Check",
+      "tryAgain": "Try again",
+      "correct": "Correct!",
+      "incorrect": "Incorrect",
+      "showAnswer": "Show answer",
+      "hideAnswer": "Hide answer",
+      "explanation": "Explanation",
+      "types": {
+        "quiz": "Quiz",
+        "flashcard": "Flashcard",
+        "fill_gaps": "Fill the gaps",
+        "match": "Match",
+        "sequence": "Sequence",
+        "true_false": "True/False",
+        "open_ended": "Open-ended"
+      }
     },
     "context": {
       "node": "Node",
@@ -1498,6 +1518,11 @@
     "paymentMethod": "Payment Method",
     "type": "Type",
     "added": "Added",
+    "planDescriptions": {
+      "free": "Perfect for getting started",
+      "pro": "For serious knowledge builders",
+      "ultra": "Unlimited knowledge mapping"
+    },
     "interval": {
       "month": "month",
       "year": "year"

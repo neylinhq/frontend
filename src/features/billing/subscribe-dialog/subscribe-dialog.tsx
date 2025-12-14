@@ -128,7 +128,9 @@ export const SubscribeDialog = ({
               <div className='flex justify-between items-center'>
                 <div>
                   <div className='font-medium'>{plan.name}</div>
-                  <div className='text-sm text-muted-foreground'>{plan.description}</div>
+                  <div className='text-sm text-muted-foreground'>
+                    {t(`billing.planDescriptions.${plan.type}`)}
+                  </div>
                 </div>
                 <div className='text-right'>
                   <div className='text-2xl font-semibold'>${formatPrice(plan.price)}</div>
@@ -149,10 +151,10 @@ export const SubscribeDialog = ({
                     type='button'
                     onClick={() => setSelectedMethodId(method.id)}
                     className={cn(
-                      'w-full flex items-center gap-3 p-3 rounded-lg border transition-colors text-left',
+                      'w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left',
                       selectedMethodId === method.id
-                        ? 'border-brand bg-brand/5'
-                        : 'border-border hover:border-border/80'
+                        ? 'bg-muted/50'
+                        : 'hover:bg-muted/30'
                     )}
                   >
                     {method.type === 'card' ? (
@@ -167,11 +169,8 @@ export const SubscribeDialog = ({
                       </>
                     ) : (
                       <>
-                        <div className='w-8 h-8 flex items-center justify-center rounded bg-muted'>
-                          <Wallet className='h-4 w-4' />
-                        </div>
                         <div className='flex-1'>
-                          <div className='font-medium'>
+                          <div className='font-medium font-mono'>
                             {shortenWalletAddress(method.walletAddress)}
                           </div>
                           <div className='text-xs text-muted-foreground'>
@@ -181,7 +180,7 @@ export const SubscribeDialog = ({
                       </>
                     )}
                     {method.isDefault && (
-                      <span className='text-xs text-muted-foreground px-2 py-0.5 bg-muted rounded'>
+                      <span className='text-xs text-muted-foreground'>
                         {t('billing.default')}
                       </span>
                     )}

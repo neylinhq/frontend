@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useLoaderData } from 'react-router'
+import type { LoaderFunctionArgs } from 'react-router'
+import { useLoaderData, useRevalidator } from 'react-router'
 
 import {
   type PaymentHistory,
   type PaymentMethod,
+  subscriptionApi,
   useAddCryptoPaymentMethod,
   useAddPaymentMethod,
-  usePaymentMethods,
   useRemovePaymentMethod,
   useSetDefaultPaymentMethod,
   useUpdatePaymentMethod
@@ -18,15 +19,29 @@ import {
   PaymentMethodCard,
   PaymentMethodDetailsDialog
 } from '@/features/billing/payment-method-card'
+import { getCookies } from '@/shared/api/server'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
 import { Typography } from '@/shared/components/typography'
 
-// TODO: Implement payment methods API endpoints
-export const loader = async () => {
-  // Return empty data until payment endpoints are implemented
-  return {
-    paymentMethods: [] as PaymentMethod[],
-    paymentHistory: [] as PaymentHistory[]
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const cookies = getCookies(request)
+
+  try {
+    const [paymentMethods, paymentHistoryData] = await Promise.all([
+      subscriptionApi.getPaymentMethods({ cookies }),
+      subscriptionApi.getPaymentHistory(20, 0, { cookies })
+    ])
+
+    return {
+      paymentMethods,
+      paymentHistory: paymentHistoryData.payments || []
+    }
+  } catch (error) {
+    console.error('Failed to load billing data:', error)
+    return {
+      paymentMethods: [] as PaymentMethod[],
+      paymentHistory: [] as PaymentHistory[]
+    }
   }
 }
 
@@ -37,10 +52,12 @@ interface LoaderData {
 
 const BillingPage = () => {
   const { t } = useTranslation()
-  const { paymentHistory } = useLoaderData() as LoaderData
+  const loaderData = useLoaderData() as LoaderData
+  const revalidator = useRevalidator()
 
-  // Use React Query to fetch payment methods
-  const { data: paymentMethods = [] } = usePaymentMethods()
+  // Mutations only - SSR data is already loaded
+  const paymentMethods = loaderData.paymentMethods || []
+  const paymentHistory = loaderData.paymentHistory || []
 
   const addPaymentMethod = useAddPaymentMethod()
   const addCryptoPaymentMethod = useAddCryptoPaymentMethod()
@@ -74,15 +91,22 @@ const BillingPage = () => {
             </CardDescription>
           </div>
           <AddPaymentMethodDialog
-            onAddCard={data => addPaymentMethod.mutate(data)}
-            onAddCrypto={data => {
-              console.log('[BillingPage] onAddCrypto called with:', data)
-              addCryptoPaymentMethod.mutate({
-                walletAddress: data.address,
-                network: data.network,
-                currency: 'USDT'
+            onAddCard={data =>
+              addPaymentMethod.mutate(data, {
+                onSuccess: () => revalidator.revalidate()
               })
-              console.log('[BillingPage] mutation triggered, isPending:', addCryptoPaymentMethod.isPending)
+            }
+            onAddCrypto={data => {
+              addCryptoPaymentMethod.mutate(
+                {
+                  walletAddress: data.address,
+                  network: data.network,
+                  currency: 'USDT'
+                },
+                {
+                  onSuccess: () => revalidator.revalidate()
+                }
+              )
             }}
             loadingCard={addPaymentMethod.isPending}
             loadingCrypto={addCryptoPaymentMethod.isPending}
@@ -94,8 +118,16 @@ const BillingPage = () => {
               <PaymentMethodCard
                 key={method.id}
                 method={method}
-                onRemove={id => removePaymentMethod.mutate(id)}
-                onSetDefault={id => setDefaultPaymentMethod.mutate(id)}
+                onRemove={id =>
+                  removePaymentMethod.mutate(id, {
+                    onSuccess: () => revalidator.revalidate()
+                  })
+                }
+                onSetDefault={id =>
+                  setDefaultPaymentMethod.mutate(id, {
+                    onSuccess: () => revalidator.revalidate()
+                  })
+                }
                 onEdit={handleEdit}
                 loading={
                   (removePaymentMethod.isPending && removePaymentMethod.variables === method.id) ||
@@ -121,14 +153,22 @@ const BillingPage = () => {
         open={detailsOpen}
         onOpenChange={setDetailsOpen}
         onRemove={id => {
-          removePaymentMethod.mutate(id)
-          setDetailsOpen(false)
+          removePaymentMethod.mutate(id, {
+            onSuccess: () => {
+              revalidator.revalidate()
+              setDetailsOpen(false)
+            }
+          })
         }}
         onSetDefault={id => {
-          setDefaultPaymentMethod.mutate(id)
+          setDefaultPaymentMethod.mutate(id, {
+            onSuccess: () => revalidator.revalidate()
+          })
         }}
         onUpdate={data => {
-          updatePaymentMethod.mutate(data)
+          updatePaymentMethod.mutate(data, {
+            onSuccess: () => revalidator.revalidate()
+          })
         }}
         loading={removePaymentMethod.isPending || setDefaultPaymentMethod.isPending}
         updateLoading={updatePaymentMethod.isPending}

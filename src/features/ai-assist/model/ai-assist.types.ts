@@ -47,7 +47,10 @@ export interface ResolvedPreview {
 
 // Preview data structures
 export interface ExercisePreviewData {
-  exercise: Partial<Exercise>
+  exercise: Partial<Exercise> & {
+    // AI-generated exercises have answer in the data, not in DB metadata
+    answer?: unknown
+  }
   index?: number
   total?: number
 }

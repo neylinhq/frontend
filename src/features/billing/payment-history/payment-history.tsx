@@ -20,6 +20,9 @@ interface PaymentHistoryTableProps {
 export const PaymentHistoryTable = ({ payments }: PaymentHistoryTableProps) => {
   const { t } = useTranslation()
 
+  // Ensure payments is always an array
+  const paymentList = Array.isArray(payments) ? payments : []
+
   const formatAmount = (cents: number, currency: string) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -52,7 +55,7 @@ export const PaymentHistoryTable = ({ payments }: PaymentHistoryTableProps) => {
     }
   }
 
-  if (payments.length === 0) {
+  if (paymentList.length === 0) {
     return (
       <Card>
         <CardHeader>
@@ -90,7 +93,7 @@ export const PaymentHistoryTable = ({ payments }: PaymentHistoryTableProps) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {payments.map(payment => (
+            {paymentList.map(payment => (
               <TableRow key={payment.id}>
                 <TableCell className='font-medium'>{formatDate(payment.createdAt)}</TableCell>
                 <TableCell>{payment.description}</TableCell>

@@ -53,9 +53,9 @@ import { cn } from '@/shared/lib/cn'
 /** Default sidebar width in pixels */
 const SIDEBAR_DEFAULT_WIDTH = 360
 /** Minimum sidebar width */
-const SIDEBAR_MIN_WIDTH = 280
+const SIDEBAR_MIN_WIDTH = 340
 /** Maximum sidebar width */
-const SIDEBAR_MAX_WIDTH = 690
+const SIDEBAR_MAX_WIDTH = 1000
 
 /** Breakpoint for switching between mobile sheet and desktop sidebar (Tailwind lg) */
 const SIDEBAR_BREAKPOINT = 1024

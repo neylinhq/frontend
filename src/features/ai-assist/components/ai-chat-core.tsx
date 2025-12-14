@@ -12,7 +12,6 @@ import type {
   ResolvedPreview
 } from '../model/ai-assist.types'
 import { getChatSessionId, useChatHistoryStore } from '../model/ai-assist.chat.store'
-import { nodeIntentHandlers } from '../lib/node-intent-handlers'
 import { ChatInput } from './chat-input'
 import { ChatMessageList } from './chat-message-list'
 
@@ -103,21 +102,8 @@ export const AIChatCore = ({
     addMessage(sessionId, aiMessage)
 
     try {
-      // Check for intent handlers (slash commands like /exercises, /enrich)
-      const intentHandler = nodeIntentHandlers.find(h => h.detect(content))
-
-      if (intentHandler) {
-        // Execute intent handler directly (no streaming)
-        const result = await intentHandler.execute(nodeContext, content, selectedModel)
-
-        updateMessage(sessionId, aiMessageId, {
-          content: result.content,
-          preview: result.preview,
-          isStreaming: false
-        })
-      } else {
-        // Regular chat - use streaming API
-        abortControllerRef.current = new AbortController()
+      // Regular chat - use streaming API
+      abortControllerRef.current = new AbortController()
 
         // Build history from previous messages (excluding current streaming one)
         const history = messages
@@ -152,8 +138,12 @@ export const AIChatCore = ({
                 break
 
               case 'proposal':
-                // Add proposal preview
-                if (chunk.proposal) {
+                // Add proposal previews (supports batch)
+                if (chunk.proposals && chunk.proposals.length > 0) {
+                  const total = chunk.proposals.length
+                  preview = chunk.proposals.map((p, idx) => createProposalPreview(p, idx, total))
+                  updateMessage(sessionId, aiMessageId, { preview })
+                } else if (chunk.proposal) {
                   preview = [createProposalPreview(chunk.proposal)]
                   updateMessage(sessionId, aiMessageId, { preview })
                 }
@@ -185,7 +175,6 @@ export const AIChatCore = ({
             signal: abortControllerRef.current.signal
           }
         )
-      }
     } catch (error) {
       updateMessage(sessionId, aiMessageId, {
         content: t('ai.chat.error'),
@@ -199,16 +188,61 @@ export const AIChatCore = ({
     }
   }
 
-  const createProposalPreview = (proposal: ProposalData): PreviewCard => ({
-    id: uuidv4(),
-    type: 'enrichment',
-    data: {
-      field: proposal.field,
-      current: proposal.current,
-      proposed: proposal.value
-    },
-    status: 'pending'
-  })
+  const createProposalPreview = (proposal: ProposalData, index?: number, total?: number): PreviewCard => {
+    const id = uuidv4()
+
+    switch (proposal.type) {
+      case 'exercise':
+        return {
+          id,
+          type: 'exercise',
+          data: {
+            exercise: proposal.exercise ? {
+              type: proposal.exercise.type as 'quiz' | 'flashcard' | 'fill_gaps' | 'match' | 'sequence' | 'true_false' | 'open_ended',
+              difficulty: proposal.exercise.difficulty,
+              question: proposal.exercise.question,
+              options: proposal.exercise.options?.map((opt, i) => ({ id: String(i), content: opt })),
+              explanation: proposal.exercise.explanation,
+              // AI-generated exercises store answer directly
+              answer: proposal.exercise.answer
+            } : {},
+            // Add batch info for ExerciseCard
+            index,
+            total
+          },
+          status: 'pending'
+        }
+
+      case 'new_node':
+        return {
+          id,
+          type: 'new_node',
+          data: proposal.newNode!,
+          status: 'pending'
+        }
+
+      case 'connection':
+        return {
+          id,
+          type: 'connection',
+          data: proposal.connection!,
+          status: 'pending'
+        }
+
+      case 'edit':
+      default:
+        return {
+          id,
+          type: 'enrichment',
+          data: {
+            field: proposal.field ?? 'description',
+            current: proposal.current ?? '',
+            proposed: proposal.value ?? ''
+          },
+          status: 'pending'
+        }
+    }
+  }
 
   const handleRemovePreview = (messageId: string, previewId: string) => {
     removePreview(sessionId, messageId, previewId)
@@ -295,11 +329,26 @@ export const AIChatCore = ({
     }
   }
 
-  const handleRegenerate = () => {
-    // Find last user message and resend it
-    const lastUserMessage = [...messages].reverse().find(m => m.role === 'user')
-    if (lastUserMessage) {
-      handleSendMessage(lastUserMessage.content)
+  const handleRegenerate = (messageId: string, role: 'user' | 'assistant') => {
+    if (role === 'user') {
+      // User message regenerate: truncate from this message and resend it
+      const message = messages.find(m => m.id === messageId)
+      if (message) {
+        truncateFromMessage(sessionId, messageId)
+        handleSendMessage(message.content)
+      }
+    } else {
+      // AI message regenerate: truncate this AI message, find previous user message and resend it
+      const messageIndex = messages.findIndex(m => m.id === messageId)
+      if (messageIndex > 0) {
+        // Truncate from the AI message
+        truncateFromMessage(sessionId, messageId)
+        // Find the user message that triggered this AI response (the one before)
+        const previousUserMessage = [...messages.slice(0, messageIndex)].reverse().find(m => m.role === 'user')
+        if (previousUserMessage) {
+          handleSendMessage(previousUserMessage.content)
+        }
+      }
     }
   }
 

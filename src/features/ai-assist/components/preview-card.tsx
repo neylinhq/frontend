@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next'
-import type { EdgePreviewData, NodePreviewData, PreviewCard } from '../model/ai-assist.types'
+import type { ConnectionPreviewData, EdgePreviewData, ExercisePreviewData, NewNodePreviewData, NodePreviewData, PreviewCard } from '../model/ai-assist.types'
 import { ConnectionPreview } from './connection-preview'
 import { EnrichmentPreview } from './enrichment-preview'
-import { ExercisePreview } from './exercise-preview'
+import { ExerciseCard } from './exercise-card'
 import { NewNodePreview } from './new-node-preview'
 import { DiffLine, ProposalCard } from './proposal-card'
 
@@ -26,9 +26,8 @@ export const PreviewCardComponent = ({
 
   switch (preview.type) {
     case 'exercise':
-      return (
-        <ExercisePreview data={preview.data} onRemove={onRemove} onSave={onSave} onEdit={onEdit} isSaving={isSaving} />
-      )
+      // Exercises use interactive ExerciseCard - no Accept/Reject buttons
+      return <ExerciseCard data={preview.data as ExercisePreviewData} />
 
     case 'enrichment':
       return (
@@ -42,10 +41,10 @@ export const PreviewCardComponent = ({
       )
 
     case 'new_node':
-      return <NewNodePreview data={preview.data} onRemove={onRemove} onSave={onSave} isSaving={isSaving} />
+      return <NewNodePreview data={preview.data as NewNodePreviewData} onRemove={onRemove} onSave={onSave} isSaving={isSaving} />
 
     case 'connection':
-      return <ConnectionPreview data={preview.data} onRemove={onRemove} onSave={onSave} isSaving={isSaving} />
+      return <ConnectionPreview data={preview.data as ConnectionPreviewData} onRemove={onRemove} onSave={onSave} isSaving={isSaving} />
 
     case 'edge': {
       const data = preview.data as EdgePreviewData

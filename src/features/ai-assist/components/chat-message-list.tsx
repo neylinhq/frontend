@@ -27,7 +27,7 @@ interface ChatMessageListProps {
   onSavePreview: (messageId: string, preview: PreviewCard) => void
   onRejectPreview: (messageId: string, previewId: string) => void
   onUndoResolved: (messageId: string, preview: ResolvedPreview) => void
-  onRegenerate?: () => void
+  onRegenerate?: (messageId: string, role: 'user' | 'assistant') => void
   onEditMessage?: (messageId: string, newContent: string) => void
   /** User avatar URL for user messages */
   userAvatarUrl?: string
@@ -66,10 +66,31 @@ export const ChatMessageList = ({
   const editTextareaRef = useRef<HTMLTextAreaElement>(null)
 
   const handleCopy = async (content: string) => {
-    const success = await copy(content)
-    if (success) {
-      toast.success(t('common.copied', 'Copied'))
-    } else {
+    try {
+      // Try modern clipboard API first
+      if (navigator?.clipboard?.writeText) {
+        await navigator.clipboard.writeText(content)
+        toast.success(t('common.copied', 'Copied'))
+        return
+      }
+
+      // Fallback to older method
+      const textarea = document.createElement('textarea')
+      textarea.value = content
+      textarea.style.position = 'fixed'
+      textarea.style.opacity = '0'
+      document.body.appendChild(textarea)
+      textarea.select()
+      const success = document.execCommand('copy')
+      document.body.removeChild(textarea)
+
+      if (success) {
+        toast.success(t('common.copied', 'Copied'))
+      } else {
+        toast.error('Failed to copy')
+      }
+    } catch (error) {
+      console.error('Copy failed:', error)
       toast.error('Failed to copy')
     }
   }
@@ -277,28 +298,34 @@ export const ChatMessageList = ({
                   />
                 ))}
 
-                {/* Apply All Button (if multiple previews) */}
-                {message.preview.length > 1 && (
-                  <Button
-                    className='w-full'
-                    disabled={isAnyPreviewSaving(message.id, message.preview)}
-                    onClick={() => {
-                      message.preview?.forEach(preview => {
-                        onSavePreview(message.id, preview)
-                      })
-                    }}
-                  >
-                    {isAnyPreviewSaving(message.id, message.preview) ? (
-                      <Loader2 className='h-4 w-4 mr-2 animate-spin' />
-                    ) : (
-                      <Check className='h-4 w-4 mr-2' />
-                    )}
-                    {t('ai.chat.applyAll', {
-                      count: message.preview.length,
-                      defaultValue: `Apply all (${message.preview.length})`
-                    })}
-                  </Button>
-                )}
+                {/* Apply All Button (if multiple non-exercise previews) */}
+                {(() => {
+                  // Exercises are auto-displayed with interactive UI, no Accept/Reject
+                  const actionablePreviews = message.preview.filter(p => p.type !== 'exercise')
+                  if (actionablePreviews.length <= 1) return null
+
+                  return (
+                    <Button
+                      className='w-full'
+                      disabled={isAnyPreviewSaving(message.id, actionablePreviews)}
+                      onClick={() => {
+                        actionablePreviews.forEach(preview => {
+                          onSavePreview(message.id, preview)
+                        })
+                      }}
+                    >
+                      {isAnyPreviewSaving(message.id, actionablePreviews) ? (
+                        <Loader2 className='h-4 w-4 mr-2 animate-spin' />
+                      ) : (
+                        <Check className='h-4 w-4 mr-2' />
+                      )}
+                      {t('ai.chat.applyAll', {
+                        count: actionablePreviews.length,
+                        defaultValue: `Apply all (${actionablePreviews.length})`
+                      })}
+                    </Button>
+                  )
+                })()}
               </div>
             )}
 
@@ -320,16 +347,15 @@ export const ChatMessageList = ({
             <div
               className={cn(
                 'flex items-center gap-0.5 h-7 transition-opacity',
-                // User messages: show on hover only; AI messages: always visible
                 message.role === 'user'
                   ? hoveredMessageId === message.id
                     ? 'opacity-100'
                     : 'opacity-0'
-                  : 'opacity-100'
+                  : 'opacity-100' // AI actions always visible
               )}
             >
               {message.role === 'user' ? (
-                // User message: show edit + copy + timestamp
+                // User message: edit + copy + regenerate (starts new branch)
                 <>
                   {onEditMessage && !isStreaming && (
                     <Tooltip>
@@ -363,6 +389,23 @@ export const ChatMessageList = ({
                       <p className='text-xs'>{t('common.copy')}</p>
                     </TooltipContent>
                   </Tooltip>
+                  {onRegenerate && !isStreaming && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant='ghost'
+                          size='icon'
+                          className='h-7 w-7 text-muted-foreground hover:text-foreground'
+                          onClick={() => onRegenerate(message.id, 'user')}
+                        >
+                          <RefreshCw className='h-3.5 w-3.5' />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side='bottom'>
+                        <p className='text-xs'>{t('ai.chat.regenerate')}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
                   <span className='text-[10px] text-muted-foreground ml-1'>
                     {message.timestamp.toLocaleTimeString('en-US', {
                       hour: '2-digit',
@@ -371,7 +414,7 @@ export const ChatMessageList = ({
                   </span>
                 </>
               ) : (
-                // Assistant message: always visible actions
+                // Assistant message: copy + regenerate (any message, not just last)
                 <>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -388,14 +431,14 @@ export const ChatMessageList = ({
                       <p className='text-xs'>{t('common.copy')}</p>
                     </TooltipContent>
                   </Tooltip>
-                  {onRegenerate && index === messages.length - 1 && !isStreaming && (
+                  {onRegenerate && !isStreaming && (
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Button
                           variant='ghost'
                           size='icon'
                           className='h-7 w-7 text-muted-foreground hover:text-foreground'
-                          onClick={onRegenerate}
+                          onClick={() => onRegenerate(message.id, 'assistant')}
                         >
                           <RefreshCw className='h-3.5 w-3.5' />
                         </Button>

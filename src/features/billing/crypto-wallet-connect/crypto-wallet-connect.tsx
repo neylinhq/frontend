@@ -1,22 +1,17 @@
-import { ChevronRight, Loader2 } from 'lucide-react'
-import { useCallback, useEffect, useState } from 'react'
+import { Loader2 } from 'lucide-react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { CryptoNetwork } from '@/entities/subscription'
-import { Button } from '@/shared/components/button'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle
 } from '@/shared/components/dialog'
-import { cn } from '@/shared/lib/cn'
 import { NetworkSelector } from './components/network-selector'
 import { WalletConnectStep } from './components/wallet-connect-step'
 import { useCryptoWallet } from './lib/use-crypto-wallet'
-
-type Step = 'network' | 'wallet'
 
 interface CryptoWalletConnectDialogProps {
   open: boolean
@@ -28,56 +23,6 @@ interface CryptoWalletConnectContentProps {
   onSuccess: (network: CryptoNetwork, address: string) => void
   onBack?: () => void
   embedded?: boolean
-}
-
-const STEPS: Step[] = ['network', 'wallet']
-
-const StepIndicator = ({
-  steps,
-  currentStep,
-  onStepClick
-}: {
-  steps: Step[]
-  currentStep: Step
-  onStepClick: (step: Step) => void
-}) => {
-  const { t } = useTranslation()
-  const currentIndex = steps.indexOf(currentStep)
-
-  const labels: Record<Step, string> = {
-    network: t('billing.crypto.steps.network'),
-    wallet: t('billing.crypto.steps.wallet')
-  }
-
-  return (
-    <div className='flex items-center gap-1 text-sm'>
-      {steps.map((step, index) => {
-        const isActive = index === currentIndex
-        const isPast = index < currentIndex
-
-        return (
-          <div key={step} className='flex items-center'>
-            <button
-              type='button'
-              onClick={() => isPast && onStepClick(step)}
-              disabled={!isPast}
-              className={cn(
-                'transition-colors text-muted-foreground',
-                isActive && 'text-foreground font-medium',
-                isPast && 'hover:text-foreground cursor-pointer',
-                !isPast && 'cursor-default'
-              )}
-            >
-              {labels[step]}
-            </button>
-            {index < steps.length - 1 && (
-              <ChevronRight className='h-4 w-4 mx-1 text-muted-foreground' />
-            )}
-          </div>
-        )
-      })}
-    </div>
-  )
 }
 
 /**
@@ -134,7 +79,6 @@ export const CryptoWalletConnectContent = ({
   const [mounted, setMounted] = useState(false)
 
   // State
-  const [step, setStep] = useState<Step>('network')
   const [network, setNetwork] = useState<CryptoNetwork | null>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -146,62 +90,34 @@ export const CryptoWalletConnectContent = ({
   }, [])
 
   // Автоматически добавляем кошелек после подключения
+  const prevConnected = useRef(wallet.isConnected)
+
   useEffect(() => {
-    if (network && wallet.isConnected && wallet.address) {
-      console.log('[CryptoWalletConnect] Wallet connected, auto-adding to payment methods')
+    // Вызываем onSuccess только когда кошелек ПЕРЕХОДИТ из disconnected в connected
+    // А не когда он уже был connected
+    if (network && wallet.isConnected && wallet.address && !prevConnected.current) {
       onSuccess(network, wallet.address)
     }
+    prevConnected.current = wallet.isConnected
   }, [network, wallet.isConnected, wallet.address, onSuccess])
 
-  // Reset state
-  const resetState = useCallback(() => {
-    setStep('network')
-    setNetwork(null)
-    setError(null)
-  }, [])
+  // Network selection - устанавливаем сеть, useEffect сработает и вызовет connect
+  const handleNetworkSelect = useCallback(
+    async (selectedNetwork: CryptoNetwork) => {
+      setNetwork(selectedNetwork)
+      setError(null)
+    },
+    []
+  )
 
-  // Network selection
-  const handleNetworkSelect = (selectedNetwork: CryptoNetwork) => {
-    setNetwork(selectedNetwork)
-    setError(null)
-    // Automatically go to wallet step
-    setStep('wallet')
-  }
-
-  // Wallet connection
-  const handleConnect = async () => {
-    if (!network) {
-      return
+  // Автоматически подключаемся когда выбрана сеть
+  useEffect(() => {
+    if (network && !wallet.isConnected && !wallet.isConnecting) {
+      wallet.connect().catch(err => {
+        setError(err instanceof Error ? err.message : 'Failed to connect wallet')
+      })
     }
-    setError(null)
-
-    try {
-      await wallet.connect()
-      // onSuccess will be called automatically by useEffect when wallet.isConnected becomes true
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to connect wallet')
-    }
-  }
-
-  const handleDisconnect = () => {
-    wallet.disconnect()
-    setError(null)
-  }
-
-  // Navigation
-  const handleBack = () => {
-    const currentIndex = STEPS.indexOf(step)
-    if (currentIndex > 0) {
-      setStep(STEPS[currentIndex - 1])
-    } else if (externalOnBack) {
-      // На первом шаге — вернуться к выбору способа оплаты
-      externalOnBack()
-    }
-  }
-
-  const canSubmit = wallet.isConnected && wallet.address !== null
-
-  const isLoading = wallet.isConnecting
+  }, [network, wallet])
 
   // Скрытый элемент-коннектор для управления кошельком
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -221,30 +137,28 @@ export const CryptoWalletConnectContent = ({
       {/* Скрытый коннектор кошелька */}
       {WalletConnector}
 
-      {/* Step indicator */}
-      <div className='py-2'>
-        <StepIndicator steps={STEPS} currentStep={step} onStepClick={setStep} />
-      </div>
-
       {/* Content */}
       <div className='py-4'>
-        {step === 'network' && (
+        {!network ? (
+          // Выбор сети
           <NetworkSelector selected={network} onSelect={handleNetworkSelect} />
-        )}
-
-        {step === 'wallet' && network && (
+        ) : (
+          // Подключение кошелька
           <WalletConnectStep
             network={network}
             isConnected={wallet.isConnected}
             isConnecting={wallet.isConnecting}
             address={wallet.address}
-            onConnect={handleConnect}
-            onDisconnect={handleDisconnect}
+            onConnect={() => wallet.connect()}
+            onDisconnect={() => {
+              wallet.disconnect()
+              setNetwork(null)
+              setError(null)
+            }}
             error={error}
           />
         )}
       </div>
-
     </>
   )
 }

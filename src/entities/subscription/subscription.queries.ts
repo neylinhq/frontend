@@ -206,3 +206,15 @@ export const useCreateBillingPortalSession = () => {
     mutationFn: subscriptionApi.createBillingPortalSession
   })
 }
+
+export const useSubscribeWithCrypto = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (data: { planType: string; paymentMethodId: string }) =>
+      subscriptionApi.subscribeWithCrypto(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: subscriptionKeys.current() })
+    }
+  })
+}

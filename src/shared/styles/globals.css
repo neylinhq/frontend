@@ -2430,3 +2430,19 @@ html.theme-transition-disabled *::after {
 .max-w-none {
   max-width: none;
 }
+
+/* ============================================================================
+   TON Connect Modal Styles
+   ============================================================================ */
+
+/* Fix aria-hidden issue - TON Connect modal should be interactive */
+#tc-widget-root[aria-hidden="true"],
+#tc-widget-root[data-aria-hidden="true"] {
+  pointer-events: auto !important;
+}
+
+/* Ensure all TON Connect elements are interactive */
+#tc-widget-root *[aria-hidden="true"],
+#tc-widget-root *[data-aria-hidden="true"] {
+  pointer-events: auto !important;
+}

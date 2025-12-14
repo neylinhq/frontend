@@ -25,6 +25,7 @@ export {
   useRemovePaymentMethod,
   useResumeSubscription,
   useSetDefaultPaymentMethod,
+  useSubscribeWithCrypto,
   useSubscription,
   useUpdatePaymentMethod,
   useUpdateSubscription,

@@ -1,9 +1,47 @@
 import { useCallback, useEffect, useRef } from 'react'
-import { useAccount, useConnect, useDisconnect, useSwitchChain } from 'wagmi'
+import { useAccount, useConnect, useDisconnect, useSwitchChain, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
 import { injected } from 'wagmi/connectors'
 import type { CryptoNetwork } from '@/entities/subscription'
-import { getEvmChainId, getUsdtContractAddress } from '@/entities/subscription/lib/crypto-utils'
+import { getEvmChainId, getUsdtContractAddress, getSubscriptionContractAddress } from '@/entities/subscription/lib/crypto-utils'
 import type { CryptoWallet } from './use-crypto-wallet'
+
+// ERC-20 ABI (только approve и allowance)
+const ERC20_ABI = [
+  {
+    name: 'approve',
+    type: 'function',
+    stateMutability: 'nonpayable',
+    inputs: [
+      { name: 'spender', type: 'address' },
+      { name: 'amount', type: 'uint256' }
+    ],
+    outputs: [{ name: '', type: 'bool' }]
+  },
+  {
+    name: 'allowance',
+    type: 'function',
+    stateMutability: 'view',
+    inputs: [
+      { name: 'owner', type: 'address' },
+      { name: 'spender', type: 'address' }
+    ],
+    outputs: [{ name: '', type: 'uint256' }]
+  }
+] as const
+
+// Subscription contract ABI
+const SUBSCRIPTION_ABI = [
+  {
+    name: 'subscribe',
+    type: 'function',
+    stateMutability: 'nonpayable',
+    inputs: [
+      { name: 'orderId', type: 'bytes32' },
+      { name: 'monthlyAmount', type: 'uint256' }
+    ],
+    outputs: []
+  }
+] as const
 
 interface EvmWalletConnectorProps {
   network: CryptoNetwork
@@ -15,25 +53,31 @@ export const EvmWalletConnector = ({ network, onWalletChange }: EvmWalletConnect
   const { connectAsync } = useConnect()
   const { disconnectAsync } = useDisconnect()
   const { switchChainAsync } = useSwitchChain()
+  const { writeContractAsync } = useWriteContract()
 
   const chainId = getEvmChainId(network)
   const usdtAddress = getUsdtContractAddress(network)
+  const subscriptionAddress = getSubscriptionContractAddress(network)
 
   // Use refs to access current values in stable callbacks
   const addressRef = useRef(address)
   const usdtAddressRef = useRef(usdtAddress)
+  const subscriptionAddressRef = useRef(subscriptionAddress)
   const chainIdRef = useRef(chainId)
   const connectAsyncRef = useRef(connectAsync)
   const disconnectAsyncRef = useRef(disconnectAsync)
   const switchChainAsyncRef = useRef(switchChainAsync)
+  const writeContractAsyncRef = useRef(writeContractAsync)
 
   // Update refs on each render
   addressRef.current = address
   usdtAddressRef.current = usdtAddress
+  subscriptionAddressRef.current = subscriptionAddress
   chainIdRef.current = chainId
   connectAsyncRef.current = connectAsync
   disconnectAsyncRef.current = disconnectAsync
   switchChainAsyncRef.current = switchChainAsync
+  writeContractAsyncRef.current = writeContractAsync
 
   // Switch chain if connected but on wrong network
   useEffect(() => {
@@ -60,16 +104,57 @@ export const EvmWalletConnector = ({ network, onWalletChange }: EvmWalletConnect
     await disconnectAsyncRef.current()
   }, [])
 
-  // ERC-20 approve + transfer
+  /**
+   * Subscribe with EVM wallet:
+   * 1. Approve USDT spending
+   * 2. Call subscribe() on subscription contract
+   */
   const subscribe = useCallback(async (orderId: string, amount: bigint) => {
-    if (!addressRef.current || !usdtAddressRef.current) {
-      throw new Error('Wallet not connected or invalid network')
+    if (!addressRef.current || !usdtAddressRef.current || !subscriptionAddressRef.current) {
+      throw new Error('Wallet not connected or contracts not deployed')
     }
 
-    // TODO: Implement actual ERC-20 transfer using wagmi writeContract
-    // For now, this is a placeholder
-    console.log('EVM subscribe:', { orderId, amount, usdtAddress: usdtAddressRef.current, address: addressRef.current })
-    throw new Error('EVM subscription not yet implemented')
+    console.log('[EVMWalletConnector] Starting subscription:', {
+      orderId,
+      amount: amount.toString(),
+      usdtAddress: usdtAddressRef.current,
+      subscriptionAddress: subscriptionAddressRef.current,
+      userAddress: addressRef.current
+    })
+
+    // Step 1: Approve USDT spending (with extra buffer for gas fluctuations)
+    const approveAmount = amount * BigInt(12) // Approve 12 months worth to avoid repeated approvals
+    console.log('[EVMWalletConnector] Approving USDT:', approveAmount.toString())
+
+    const approveTxHash = await writeContractAsyncRef.current({
+      address: usdtAddressRef.current as `0x${string}`,
+      abi: ERC20_ABI,
+      functionName: 'approve',
+      args: [subscriptionAddressRef.current as `0x${string}`, approveAmount]
+    })
+
+    console.log('[EVMWalletConnector] Approve transaction sent:', approveTxHash)
+
+    // Step 2: Call subscribe on subscription contract
+    // Convert orderId (UUID) to bytes32
+    const orderIdBytes32 = `0x${orderId.replace(/-/g, '')}` as `0x${string}`
+
+    console.log('[EVMWalletConnector] Calling subscribe:', {
+      orderId: orderIdBytes32,
+      monthlyAmount: amount.toString()
+    })
+
+    const subscribeTxHash = await writeContractAsyncRef.current({
+      address: subscriptionAddressRef.current as `0x${string}`,
+      abi: SUBSCRIPTION_ABI,
+      functionName: 'subscribe',
+      args: [orderIdBytes32, amount]
+    })
+
+    console.log('[EVMWalletConnector] Subscribe transaction sent:', subscribeTxHash)
+
+    // Return the subscribe transaction hash
+    return subscribeTxHash
   }, [])
 
   useEffect(() => {

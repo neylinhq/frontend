@@ -159,5 +159,11 @@ export const subscriptionApi = {
       '/subscriptions/billing-portal'
     )
     return response.data
+  },
+
+  // Subscribe with crypto payment method
+  subscribeWithCrypto: async (data: { planType: string; paymentMethodId: string }): Promise<Subscription> => {
+    const response = await api.post<ApiResponse<Subscription>>('/subscriptions/subscribe-crypto', data)
+    return response.data
   }
 }

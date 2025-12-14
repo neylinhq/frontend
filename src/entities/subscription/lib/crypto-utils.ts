@@ -140,3 +140,24 @@ export const getUsdtContractAddress = (network: CryptoNetwork): string | null =>
       return null
   }
 }
+
+/**
+ * Subscription contract addresses per network
+ * TODO: Update after deploying contracts to testnet/mainnet
+ */
+export const getSubscriptionContractAddress = (network: CryptoNetwork): string | null => {
+  switch (network) {
+    case 'ton':
+      return null // TODO: Deploy TON contract
+    case 'tron':
+      return null // TODO: Deploy TRON contract
+    case 'ethereum':
+      return null // TODO: Deploy Ethereum contract
+    case 'bsc':
+      return null // TODO: Deploy BSC contract
+    case 'polygon':
+      return null // TODO: Deploy Polygon contract
+    default:
+      return null
+  }
+}

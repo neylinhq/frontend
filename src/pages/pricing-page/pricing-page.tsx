@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import type { CryptoNetwork, PaymentMethod, PlanDetails } from '@/entities/subscription'
-import { usePaymentMethods, useCreateCheckoutSession, useAddPaymentMethod } from '@/entities/subscription'
+import { usePaymentMethods, useSubscribeWithCrypto, useAddPaymentMethod } from '@/entities/subscription'
 import { useCurrentUser } from '@/entities/user'
 import { PlanCard } from '@/features/billing/plan-card'
 import { SubscribeDialog } from '@/features/billing/subscribe-dialog'
@@ -17,7 +17,7 @@ export const PricingPage = ({ plans }: PricingPageProps) => {
   const { t } = useTranslation()
   const { data: user } = useCurrentUser()
   const { data: paymentMethods = [] } = usePaymentMethods()
-  const createCheckoutSession = useCreateCheckoutSession()
+  const subscribeWithCrypto = useSubscribeWithCrypto()
   const addPaymentMethod = useAddPaymentMethod()
 
   const [selectedPlan, setSelectedPlan] = useState<PlanDetails | null>(null)
@@ -38,15 +38,14 @@ export const PricingPage = ({ plans }: PricingPageProps) => {
   const handleSubscribe = async (paymentMethodId: string) => {
     if (!selectedPlan) return
 
-    // Create checkout session and redirect
-    const session = await createCheckoutSession.mutateAsync({
+    // Subscribe with crypto payment method
+    await subscribeWithCrypto.mutateAsync({
       planType: selectedPlan.type,
       paymentMethodId
     })
 
-    if (session.url) {
-      window.location.href = session.url
-    }
+    toast.success(t('billing.subscriptionCreated'))
+    setDialogOpen(false)
   }
 
   const handleAddCard = async (data: { cardholderName: string; cardNumber: string; brand: string; expiryMonth: number; expiryYear: number }): Promise<PaymentMethod> => {

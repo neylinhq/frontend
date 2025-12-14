@@ -1707,7 +1707,8 @@
         "walletAlreadyAdded": "Этот кошелёк уже добавлен"
       },
       "providerAlreadyOpen": "Окно провайдера уже открыто",
-      "walletAdded": "Кошелёк {{network}} добавлен"
+      "walletAdded": "Кошелёк {{network}} добавлен",
+      "walletAlreadyExists": "Кошелёк {{network}} уже добавлен, пропущено"
     }
   },
   "pricing": {

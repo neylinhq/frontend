@@ -98,7 +98,7 @@ const BillingPage = () => {
               })
             }
             onAddCrypto={data => {
-              // Check if wallet already exists - just skip if it does (silent)
+              // Check if wallet already exists - skip silently with warning
               const walletExists = paymentMethods.some(
                 m => m.type === 'crypto' &&
                      m.walletAddress?.toLowerCase() === data.address.toLowerCase() &&
@@ -106,8 +106,9 @@ const BillingPage = () => {
               )
 
               if (walletExists) {
-                // Already exists - show info toast
-                toast.error(t('billing.errors.walletAlreadyAdded'))
+                // Already exists - show warning toast and skip
+                const networkName = t(`billing.crypto.networks.${data.network}`)
+                toast.warning(t('billing.crypto.walletAlreadyExists', { network: networkName }))
                 return
               }
 

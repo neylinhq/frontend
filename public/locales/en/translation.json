@@ -1677,7 +1677,8 @@
         "networkMismatch": "Wrong network in wallet"
       },
       "providerAlreadyOpen": "Provider window is already open",
-      "walletAdded": "{{network}} wallet added"
+      "walletAdded": "{{network}} wallet added",
+      "walletAlreadyExists": "{{network}} wallet already exists, skipped"
     }
   },
   "pricing": {

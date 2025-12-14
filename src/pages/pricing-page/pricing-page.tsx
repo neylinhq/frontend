@@ -6,6 +6,7 @@ import { usePaymentMethods, useCreateCheckoutSession, useAddPaymentMethod } from
 import { useCurrentUser } from '@/entities/user'
 import { PlanCard } from '@/features/billing/plan-card'
 import { SubscribeDialog } from '@/features/billing/subscribe-dialog'
+import { toast } from '@/shared/components/toast'
 import { Typography } from '@/shared/components/typography'
 
 interface PricingPageProps {
@@ -61,6 +62,25 @@ export const PricingPage = ({ plans }: PricingPageProps) => {
   }
 
   const handleAddCrypto = async (data: { network: CryptoNetwork; address: string }): Promise<PaymentMethod> => {
+    // Check if wallet already exists - skip silently with warning
+    const walletExists = paymentMethods.some(
+      m => m.type === 'crypto' &&
+           m.walletAddress?.toLowerCase() === data.address.toLowerCase() &&
+           m.network === data.network
+    )
+
+    if (walletExists) {
+      // Already exists - show warning toast and return existing wallet
+      const networkName = t(`billing.crypto.networks.${data.network}`)
+      toast.warning(t('billing.crypto.walletAlreadyExists', { network: networkName }))
+      // Return the existing payment method
+      return paymentMethods.find(
+        m => m.type === 'crypto' &&
+             m.walletAddress?.toLowerCase() === data.address.toLowerCase() &&
+             m.network === data.network
+      )!
+    }
+
     const result = await addPaymentMethod.mutateAsync({
       type: 'crypto',
       walletAddress: data.address,

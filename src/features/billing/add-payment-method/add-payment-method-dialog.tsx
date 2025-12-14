@@ -23,6 +23,7 @@ import {
   FormMessage
 } from '@/shared/components/form'
 import { Input } from '@/shared/components/input'
+import { toast } from '@/shared/components/toast'
 import {
   type CardBrand,
   detectCardBrand,
@@ -32,7 +33,9 @@ import {
 } from '@/shared/lib/card-utils'
 import { cn } from '@/shared/lib/cn'
 import type { CryptoNetwork } from '@/entities/subscription'
-import { CryptoWalletConnectContent } from '../crypto-wallet-connect'
+import { getEvmChainId, getWalletType } from '@/entities/subscription/lib/crypto-utils'
+import { useCryptoWallet } from '@/features/billing/crypto-wallet-connect/model/crypto-wallet-connect.hooks'
+import { NetworkConnectButtons } from '@/features/billing/crypto-wallet-connect/components/network-connect-buttons'
 import { CARD_VALIDATION, getCvcLength, getCvcPlaceholder } from './lib/card-validation'
 import {
   type AddPaymentMethodValues,
@@ -116,6 +119,12 @@ export const AddPaymentMethodDialog = ({
   const [showCvc, setShowCvc] = useState(false)
   const [cardBrand, setCardBrand] = useState<CardBrand>('unknown')
 
+  // Crypto wallet connection state
+  const [selectedNetwork, setSelectedNetwork] = useState<CryptoNetwork | null>(null)
+  const [isConnecting, setIsConnecting] = useState(false)
+  const wallet = useCryptoWallet(selectedNetwork)
+  const initialConnectionStateRef = useRef<boolean>(false)
+  const connectionAttemptedRef = useRef<boolean>(false)
 
   const cardForm = useForm<AddPaymentMethodValues>({
     resolver: zodResolver(addPaymentMethodSchema),
@@ -170,20 +179,107 @@ export const AddPaymentMethodDialog = ({
     resetAndClose()
   }
 
-  const handleCryptoSuccess = (network: CryptoNetwork, address: string) => {
-    console.log('[AddPaymentMethodDialog] handleCryptoSuccess called:', { network, address })
-    onAddCrypto({ network, address })
-    console.log('[AddPaymentMethodDialog] onAddCrypto called')
-    // Don't close dialog - user might want to add another wallet
+  // Handle network button click - triggers wallet provider
+  const handleNetworkClick = (network: CryptoNetwork) => {
+    // Prevent multiple clicks while provider is already open
+    if (isConnecting) {
+      toast.warning(t('billing.crypto.providerAlreadyOpen'))
+      return
+    }
+    connectionAttemptedRef.current = false // Reset attempt flag
+    setSelectedNetwork(network)
+    setIsConnecting(true)
   }
 
-  const resetAndClose = () => {
+  // Reset and close dialog
+  const resetAndClose = useCallback(() => {
     setOpen(false)
     setStep('select')
     cardForm.reset()
     setCardBrand('unknown')
     setShowCvc(false)
-  }
+    // Reset crypto state
+    if (wallet.isConnected) {
+      wallet.disconnect()
+    }
+    setSelectedNetwork(null)
+    setIsConnecting(false)
+  }, [wallet, cardForm])
+
+  // Auto-trigger connection when wallet connector is ready
+  useEffect(() => {
+    if (!selectedNetwork || !isConnecting) return
+
+    // Store initial connection state when we start connecting
+    initialConnectionStateRef.current = wallet.isConnected
+
+    // Wait for wallet connector to load (wallet.connect changes from empty function)
+    if (!wallet.connect || wallet.connect.toString().includes('async () => {}')) return
+
+    // Prevent duplicate connection attempts
+    if (connectionAttemptedRef.current) return
+    connectionAttemptedRef.current = true
+
+    const triggerConnection = async () => {
+      try {
+        await wallet.connect()
+        // Don't reset state here - let auto-save useEffect handle it
+        console.log('[AddPaymentMethodDialog] Wallet connect() resolved, waiting for connection state...')
+      } catch (err) {
+        console.error('[AddPaymentMethodDialog] Wallet connection failed:', err)
+
+        // Check error type
+        const errorCode = err && typeof err === 'object' && 'code' in err ? err.code : null
+        const isUserRejection = errorCode === 4001 || errorCode === 'ACTION_REJECTED'
+        const isAlreadyPending = errorCode === -32002 // Request already pending
+
+        if (isAlreadyPending) {
+          // MetaMask window is already open, don't reset state
+          console.log('[AddPaymentMethodDialog] Connection request already pending, keeping loading state')
+          return
+        }
+
+        if (isUserRejection) {
+          console.log('[AddPaymentMethodDialog] User rejected connection')
+          setIsConnecting(false)
+          setSelectedNetwork(null)
+        } else {
+          // For other errors, also reset
+          setIsConnecting(false)
+          setSelectedNetwork(null)
+        }
+      }
+    }
+
+    triggerConnection()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedNetwork, isConnecting, wallet])
+
+  // Watch for successful connection and auto-save
+  useEffect(() => {
+    if (!selectedNetwork || !wallet.isConnected || !wallet.address || !isConnecting) {
+      return
+    }
+
+    // For EVM wallets - validate chainId
+    const walletType = getWalletType(selectedNetwork)
+    if (walletType === 'evm') {
+      const expectedChainId = getEvmChainId(selectedNetwork)
+      if (wallet.chainId !== expectedChainId) {
+        console.log('[AddPaymentMethodDialog] ChainId mismatch - waiting for network switch')
+        return
+      }
+    }
+
+    // Call parent callback to save wallet
+    setIsConnecting(false)
+    onAddCrypto({ network: selectedNetwork, address: wallet.address })
+
+    // Reset state and close dialog
+    wallet.disconnect()
+    setSelectedNetwork(null)
+    resetAndClose()
+  }, [selectedNetwork, wallet.isConnected, wallet.address, wallet.chainId, isConnecting, onAddCrypto, wallet, resetAndClose])
 
   const handleOpenChange = (newOpen: boolean) => {
     if (!newOpen) {
@@ -197,6 +293,12 @@ export const AddPaymentMethodDialog = ({
     setStep('select')
     cardForm.reset()
     setCardBrand('unknown')
+    // Reset crypto state
+    if (wallet.isConnected) {
+      wallet.disconnect()
+    }
+    setSelectedNetwork(null)
+    setIsConnecting(false)
   }
 
   return (
@@ -395,19 +497,24 @@ export const AddPaymentMethodDialog = ({
           </>
         )}
 
-        {/* Crypto Step - TON Connect */}
+        {/* Crypto Step - Network Selection */}
         {step === 'crypto' && (
           <>
             <DialogHeader>
-              <Breadcrumb onBack={handleBack} disabled={loadingCrypto} className='mb-4' />
+              <Breadcrumb onBack={handleBack} disabled={loadingCrypto || isConnecting} className='mb-4' />
               <DialogDescription>{t('billing.crypto.description')}</DialogDescription>
             </DialogHeader>
 
-            <CryptoWalletConnectContent
-              onSuccess={handleCryptoSuccess}
-              onBack={handleBack}
-              embedded
-            />
+            {/* Hidden wallet connector */}
+            {(wallet as any)?._connector && <div className='hidden'>{(wallet as any)._connector}</div>}
+
+            <div className='py-4'>
+              <NetworkConnectButtons
+                onNetworkClick={handleNetworkClick}
+                loadingNetwork={isConnecting ? selectedNetwork : null}
+                disabled={loadingCrypto}
+              />
+            </div>
           </>
         )}
       </DialogContent>

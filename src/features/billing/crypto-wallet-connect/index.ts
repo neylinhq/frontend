@@ -1,4 +1,4 @@
 export {
   CryptoWalletConnectContent,
   CryptoWalletConnectDialog
-} from './crypto-wallet-connect'
+} from './components/crypto-wallet-connect'

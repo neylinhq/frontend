@@ -1,11 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CreditCard, Eye, EyeOff, Lock, Wallet } from 'lucide-react'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import type { CryptoNetwork } from '@/entities/subscription'
-import { CryptoWalletConnectContent } from '@/features/billing/crypto-wallet-connect'
+import { getEvmChainId, getWalletType } from '@/entities/subscription/lib/crypto-utils'
+import { useCryptoWallet } from '@/features/billing/crypto-wallet-connect/model/crypto-wallet-connect.hooks'
+import { NetworkConnectButtons } from '@/features/billing/crypto-wallet-connect/components/network-connect-buttons'
 import { Breadcrumb } from '@/shared/components/breadcrumb'
 import { Button } from '@/shared/components/button'
 import { CardBrandIcon } from '@/shared/components/card-brand-icon'
@@ -19,6 +21,7 @@ import {
   FormMessage
 } from '@/shared/components/form'
 import { Input } from '@/shared/components/input'
+import { toast } from '@/shared/components/toast'
 import {
   type CardBrand,
   detectCardBrand,
@@ -134,14 +137,110 @@ export const AddPaymentMethodContent = ({
     })
   }
 
-  const handleCryptoSuccess = (network: CryptoNetwork, address: string) => {
-    onAddCrypto({ network, address })
+  // Crypto wallet connection state
+  const [selectedNetwork, setSelectedNetwork] = useState<CryptoNetwork | null>(null)
+  const [isConnecting, setIsConnecting] = useState(false)
+  const wallet = useCryptoWallet(selectedNetwork)
+  const initialConnectionStateRef = useRef<boolean>(false)
+  const connectionAttemptedRef = useRef<boolean>(false)
+
+  // Handle network button click - triggers wallet provider
+  const handleNetworkClick = (network: CryptoNetwork) => {
+    // Prevent multiple clicks while provider is already open
+    if (isConnecting) {
+      toast.warning(t('billing.crypto.providerAlreadyOpen'))
+      return
+    }
+    connectionAttemptedRef.current = false // Reset attempt flag
+    setSelectedNetwork(network)
+    setIsConnecting(true)
   }
+
+  // Auto-trigger connection when wallet connector is ready
+  useEffect(() => {
+    if (!selectedNetwork || !isConnecting) return
+
+    // Store initial connection state when we start connecting
+    initialConnectionStateRef.current = wallet.isConnected
+
+    // Wait for wallet connector to load (wallet.connect changes from empty function)
+    if (!wallet.connect || wallet.connect.toString().includes('async () => {}')) return
+
+    // Prevent duplicate connection attempts
+    if (connectionAttemptedRef.current) return
+    connectionAttemptedRef.current = true
+
+    const triggerConnection = async () => {
+      try {
+        await wallet.connect()
+        // Don't reset state here - let auto-save useEffect handle it
+        console.log('[AddPaymentMethod] Wallet connect() resolved, waiting for connection state...')
+      } catch (err) {
+        console.error('[AddPaymentMethod] Wallet connection failed:', err)
+
+        // Check error type
+        const errorCode = err && typeof err === 'object' && 'code' in err ? err.code : null
+        const isUserRejection = errorCode === 4001 || errorCode === 'ACTION_REJECTED'
+        const isAlreadyPending = errorCode === -32002 // Request already pending
+
+        if (isAlreadyPending) {
+          // MetaMask window is already open, don't reset state
+          console.log('[AddPaymentMethod] Connection request already pending, keeping loading state')
+          return
+        }
+
+        if (isUserRejection) {
+          console.log('[AddPaymentMethod] User rejected connection')
+          setIsConnecting(false)
+          setSelectedNetwork(null)
+        } else {
+          // For other errors, also reset
+          setIsConnecting(false)
+          setSelectedNetwork(null)
+        }
+      }
+    }
+
+    triggerConnection()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedNetwork, isConnecting, wallet])
+
+  // Watch for successful connection and auto-save
+  useEffect(() => {
+    if (!selectedNetwork || !wallet.isConnected || !wallet.address || !isConnecting) {
+      return
+    }
+
+    // For EVM wallets - validate chainId
+    const walletType = getWalletType(selectedNetwork)
+    if (walletType === 'evm') {
+      const expectedChainId = getEvmChainId(selectedNetwork)
+      if (wallet.chainId !== expectedChainId) {
+        console.log('[AddPaymentMethod] ChainId mismatch - waiting for network switch')
+        return
+      }
+    }
+
+    // Call parent callback to save wallet
+    setIsConnecting(false)
+    onAddCrypto({ network: selectedNetwork, address: wallet.address })
+
+    // Reset state
+    wallet.disconnect()
+    setSelectedNetwork(null)
+  }, [selectedNetwork, wallet.isConnected, wallet.address, wallet.chainId, isConnecting, onAddCrypto, wallet])
 
   const handleBack = () => {
     setStep('select')
     cardForm.reset()
     setCardBrand('unknown')
+
+    // Reset crypto state
+    if (wallet.isConnected) {
+      wallet.disconnect()
+    }
+    setSelectedNetwork(null)
+    setIsConnecting(false)
   }
 
   // Selection step
@@ -292,15 +391,23 @@ export const AddPaymentMethodContent = ({
     )
   }
 
-  // Crypto step
+  // Crypto step - show network buttons
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const WalletConnector = (wallet as any)?._connector
+
   return (
     <>
-      <Breadcrumb onBack={handleBack} disabled={loading} className='mb-4' />
-      <CryptoWalletConnectContent
-        onSuccess={handleCryptoSuccess}
-        onBack={handleBack}
-        embedded
-      />
+      {/* Hidden wallet connector */}
+      {WalletConnector && <div className='hidden'>{WalletConnector}</div>}
+
+      <Breadcrumb onBack={handleBack} disabled={loading || isConnecting} className='mb-4' />
+      <div className='py-4'>
+        <NetworkConnectButtons
+          onNetworkClick={handleNetworkClick}
+          loadingNetwork={isConnecting ? selectedNetwork : null}
+          disabled={loading}
+        />
+      </div>
     </>
   )
 }

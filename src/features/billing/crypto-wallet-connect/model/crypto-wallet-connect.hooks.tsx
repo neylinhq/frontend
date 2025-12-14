@@ -7,6 +7,7 @@ export interface CryptoWallet {
   address: string | null
   isConnected: boolean
   isConnecting: boolean
+  chainId?: number | null // Для EVM кошельков - текущий chainId
   connect: () => Promise<void>
   disconnect: () => void
   subscribe: (orderId: string, amount: bigint) => Promise<string>
@@ -53,17 +54,17 @@ export const useCryptoWallet = (
       try {
         switch (walletType) {
           case 'tonconnect': {
-            const { TonWalletConnector } = await import('./ton-wallet-connector')
+            const { TonWalletConnector } = await import('../components/ton-wallet-connector')
             setWalletComponent(() => TonWalletConnector)
             break
           }
           case 'evm': {
-            const { EvmWalletConnector } = await import('./evm-wallet-connector')
+            const { EvmWalletConnector } = await import('../components/evm-wallet-connector')
             setWalletComponent(() => EvmWalletConnector)
             break
           }
           case 'tron': {
-            const { TronWalletConnector } = await import('./tron-wallet-connector')
+            const { TronWalletConnector } = await import('../components/tron-wallet-connector')
             setWalletComponent(() => TronWalletConnector)
             break
           }

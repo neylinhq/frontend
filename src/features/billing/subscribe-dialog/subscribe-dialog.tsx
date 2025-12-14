@@ -1,5 +1,5 @@
 import { CreditCard, Loader2, Wallet } from 'lucide-react'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { CryptoNetwork, PaymentMethod, PlanDetails } from '@/entities/subscription'
 import { shortenWalletAddress, getNetworkDisplayName } from '@/entities/subscription/lib/crypto-utils'
@@ -46,6 +46,17 @@ export const SubscribeDialog = ({
   )
   const [isSubscribing, setIsSubscribing] = useState(false)
   const [isAddingMethod, setIsAddingMethod] = useState(false)
+
+  // Sync internal state when paymentMethods prop changes
+  useEffect(() => {
+    // Update step based on available methods
+    setStep(paymentMethods.length > 0 ? 'confirm' : 'add-method')
+
+    // Update selected method
+    const defaultMethod = paymentMethods.find(m => m.isDefault)
+    const firstMethod = paymentMethods[0]
+    setSelectedMethodId(defaultMethod?.id ?? firstMethod?.id ?? null)
+  }, [paymentMethods])
 
   const formatPrice = (cents: number) => {
     return (cents / 100).toFixed(2)

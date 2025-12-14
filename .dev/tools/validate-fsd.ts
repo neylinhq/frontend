@@ -19,6 +19,7 @@
  * 11. app/__tests__/: group dirs with [scenario].[e2e|integration].ts
  * 12. NO .server.ts exports in index.ts (prevents client bundle leak)
  * 13. NO React hooks (useState, useEffect, etc.) in /lib (use /model instead)
+ * 14. NO .tsx files in module root if /components exists (must be inside /components)
  */
 
 import * as fs from 'node:fs'
@@ -197,6 +198,8 @@ const validateFlatModule = (
   }
 
   // Check for disallowed directories (except components/ which converts to segmented)
+  const hasComponentsDir = dirs.includes('components')
+
   for (const dir of dirs) {
     if (dir === 'components') {
       // This is fine - module has multiple components
@@ -220,6 +223,17 @@ const validateFlatModule = (
   for (const file of files) {
     if (file === 'index.ts' || file === 'index.tsx') continue
     if (file.startsWith('.')) continue
+
+    // Rule: If components/ exists, NO .tsx files allowed in module root
+    if (hasComponentsDir && file.endsWith('.tsx')) {
+      errors.push({
+        path: `${relPath}/${file}`,
+        rule: 'no-tsx-with-components-dir',
+        message: `Module has /components directory, .tsx files must be inside /components, not in root. Found '${file}'`,
+        severity: 'error'
+      })
+      continue
+    }
 
     // Parse filename: "user.types.ts" -> domain="user", suffix="types", ext="ts"
     // or "user.tsx" -> domain="user", suffix=null, ext="tsx"
@@ -768,6 +782,7 @@ const validateSegmentedModule = (
 ): ValidationError[] => {
   const errors: ValidationError[] = []
   const dirs = getDirs(modulePath)
+  const files = getFiles(modulePath)
   const relPath = getRelativePath(modulePath, srcPath)
 
   // Get component names for model/ validation
@@ -775,6 +790,24 @@ const validateSegmentedModule = (
   const componentNames = isDirectory(componentsPath)
     ? getFiles(componentsPath).filter((f) => f.endsWith('.tsx'))
     : []
+
+  // Rule #14: If components/ exists, NO .tsx files allowed in module root
+  const hasComponentsDir = dirs.includes('components')
+  if (hasComponentsDir) {
+    for (const file of files) {
+      if (file === 'index.ts' || file === 'index.tsx') continue
+      if (file.startsWith('.')) continue
+
+      if (file.endsWith('.tsx')) {
+        errors.push({
+          path: `${relPath}/${file}`,
+          rule: 'no-tsx-with-components-dir',
+          message: `Module has /components directory, .tsx files must be inside /components, not in root. Found '${file}'`,
+          severity: 'error'
+        })
+      }
+    }
+  }
 
   for (const dir of dirs) {
     const segmentPath = path.join(modulePath, dir)

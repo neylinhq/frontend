@@ -1648,6 +1648,7 @@
         "connecting": "Connecting...",
         "connected": "Wallet Connected",
         "disconnect": "Disconnect",
+        "add": "Add Wallet",
         "address": "Address",
         "changeWallet": "Change Wallet"
       },
@@ -1674,7 +1675,9 @@
         "insufficientBalance": "Insufficient balance",
         "userRejected": "Transaction rejected",
         "networkMismatch": "Wrong network in wallet"
-      }
+      },
+      "providerAlreadyOpen": "Provider window is already open",
+      "walletAdded": "{{network}} wallet added"
     }
   },
   "pricing": {

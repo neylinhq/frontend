@@ -144,6 +144,7 @@
     "create": "Создать",
     "creating": "Создание...",
     "edit": "Изменить",
+    "view": "Просмотр",
     "enable": "Вкл",
     "disable": "Откл",
     "uploading": "Загрузка...",
@@ -1676,6 +1677,7 @@
         "connecting": "Подключение...",
         "connected": "Кошелёк подключен",
         "disconnect": "Отключить",
+        "add": "Добавить кошелёк",
         "address": "Адрес",
         "changeWallet": "Сменить кошелёк"
       },
@@ -1701,8 +1703,11 @@
         "transactionFailed": "Ошибка транзакции",
         "insufficientBalance": "Недостаточно средств",
         "userRejected": "Транзакция отклонена",
-        "networkMismatch": "Неверная сеть в кошельке"
-      }
+        "networkMismatch": "Неверная сеть в кошельке",
+        "walletAlreadyAdded": "Этот кошелёк уже добавлен"
+      },
+      "providerAlreadyOpen": "Окно провайдера уже открыто",
+      "walletAdded": "Кошелёк {{network}} добавлен"
     }
   },
   "pricing": {

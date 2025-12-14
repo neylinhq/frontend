@@ -21,6 +21,7 @@ import {
 } from '@/features/billing/payment-method-card'
 import { getCookies } from '@/shared/api/server'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
+import { toast } from '@/shared/components/toast'
 import { Typography } from '@/shared/components/typography'
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -97,6 +98,19 @@ const BillingPage = () => {
               })
             }
             onAddCrypto={data => {
+              // Check if wallet already exists - just skip if it does (silent)
+              const walletExists = paymentMethods.some(
+                m => m.type === 'crypto' &&
+                     m.walletAddress?.toLowerCase() === data.address.toLowerCase() &&
+                     m.network === data.network
+              )
+
+              if (walletExists) {
+                // Already exists - show info toast
+                toast.error(t('billing.errors.walletAlreadyAdded'))
+                return
+              }
+
               addCryptoPaymentMethod.mutate(
                 {
                   walletAddress: data.address,
@@ -104,7 +118,17 @@ const BillingPage = () => {
                   currency: 'USDT'
                 },
                 {
-                  onSuccess: () => revalidator.revalidate()
+                  onSuccess: () => {
+                    revalidator.revalidate()
+                    // Show success toast with network name
+                    const networkName = t(`billing.crypto.networks.${data.network}`)
+                    toast.success(t('billing.crypto.walletAdded', { network: networkName }))
+                  },
+                  onError: (error: any) => {
+                    // ApiError stores response data in .data field, not .response.data
+                    const errorMessage = error?.data?.error?.message || t('common.error')
+                    toast.error(errorMessage)
+                  }
                 }
               )
             }}

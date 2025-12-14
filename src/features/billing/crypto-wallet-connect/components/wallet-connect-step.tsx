@@ -12,6 +12,7 @@ interface WalletConnectStepProps {
   address: string | null
   onConnect: () => void
   onDisconnect: () => void
+  onAddWallet: () => void
   error?: string | null
 }
 
@@ -22,6 +23,7 @@ export const WalletConnectStep = ({
   address,
   onConnect,
   onDisconnect,
+  onAddWallet,
   error
 }: WalletConnectStepProps) => {
   const { t } = useTranslation()
@@ -43,6 +45,10 @@ export const WalletConnectStep = ({
           </Button>
         </div>
         <p className='text-sm text-muted-foreground'>{getNetworkDisplayName(network)}</p>
+        <Button onClick={onAddWallet} className='w-full' size='lg'>
+          <Wallet className='h-4 w-4 mr-2' />
+          {t('billing.crypto.wallet.add')}
+        </Button>
       </div>
     )
   }
@@ -71,8 +77,7 @@ export const WalletConnectStep = ({
         )}
       </Button>
       {error && (
-        <div className='flex items-center gap-2 text-sm text-destructive'>
-          <AlertCircle className='h-4 w-4' />
+        <div className='text-sm text-destructive'>
           <span>{error}</span>
         </div>
       )}

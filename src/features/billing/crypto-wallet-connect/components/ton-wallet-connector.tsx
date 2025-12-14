@@ -19,8 +19,68 @@ export const TonWalletConnector = ({ onWalletChange }: TonWalletConnectorProps) 
   const wallet = useTonWallet()
 
   const handleConnect = useCallback(async () => {
-    await tonConnectUI.openModal()
-  }, [tonConnectUI])
+    const wasConnected = !!wallet
+
+    // Subscribe to modal state and wallet changes
+    return new Promise<void>((resolve, reject) => {
+      let modalWasOpen = false
+      let resolved = false
+
+      // Listen for modal state changes
+      const unsubscribeModal = tonConnectUI.onModalStateChange((state) => {
+        console.log('[TonWalletConnector] Modal state:', state.open)
+
+        if (state.open) {
+          modalWasOpen = true
+        } else if (modalWasOpen && !resolved) {
+          // Modal closed - check if wallet connected
+          setTimeout(() => {
+            const currentWallet = tonConnectUI.wallet
+            if (!currentWallet && !wasConnected) {
+              // User closed modal without connecting
+              console.log('[TonWalletConnector] User closed modal without connecting')
+              resolved = true
+              unsubscribeModal()
+              unsubscribeWallet()
+              reject(new Error('User closed modal'))
+            }
+          }, 300) // Small delay to let state update
+        }
+      })
+
+      // Listen for wallet status changes
+      const unsubscribeWallet = tonConnectUI.onStatusChange((walletInfo) => {
+        console.log('[TonWalletConnector] Wallet status changed:', !!walletInfo)
+        if (walletInfo && !resolved) {
+          // Wallet connected successfully
+          resolved = true
+          unsubscribeModal()
+          unsubscribeWallet()
+          resolve()
+        }
+      })
+
+      // Open modal
+      tonConnectUI.openModal().catch((err) => {
+        if (!resolved) {
+          resolved = true
+          unsubscribeModal()
+          unsubscribeWallet()
+          reject(err)
+        }
+      })
+
+      // Timeout after 60 seconds
+      setTimeout(() => {
+        if (!resolved) {
+          resolved = true
+          unsubscribeModal()
+          unsubscribeWallet()
+          reject(new Error('Connection timeout'))
+        }
+      }, 60000)
+    })
+  }, [tonConnectUI, wallet])
 
   const handleDisconnect = useCallback(async () => {
     await tonConnectUI.disconnect()

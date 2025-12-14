@@ -1,4 +1,4 @@
-import { MoreVertical, Pencil, Star, Trash2 } from 'lucide-react'
+import { Eye, MoreVertical, Star, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { PaymentMethod } from '@/entities/subscription'
@@ -123,11 +123,11 @@ export const PaymentMethodCard = ({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align='end' className='w-48'>
-            {onEdit && method.type !== 'crypto' && (
+            {onEdit && (
               <>
                 <DropdownMenuItem onClick={() => onEdit(method)} disabled={loading}>
-                  <Pencil className='h-4 w-4 mr-2' />
-                  {t('common.edit')}
+                  <Eye className='h-4 w-4 mr-2' />
+                  {t('common.view')}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
               </>

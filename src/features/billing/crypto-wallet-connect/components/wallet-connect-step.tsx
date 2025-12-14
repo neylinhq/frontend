@@ -32,16 +32,11 @@ export const WalletConnectStep = ({
     return (
       <div className='space-y-4'>
         <div className='flex items-center justify-between p-4 rounded-lg border border-border bg-accent/30'>
-          <div className='flex items-center gap-3'>
-            <div className='flex h-10 w-10 items-center justify-center rounded-full bg-green-500/10'>
-              <Wallet className='h-5 w-5 text-green-500' />
-            </div>
-            <div>
-              <p className='text-sm font-medium'>{t('billing.crypto.wallet.connected')}</p>
-              <p className='text-xs text-muted-foreground font-mono'>
-                {shortenWalletAddress(address)}
-              </p>
-            </div>
+          <div>
+            <p className='text-sm font-medium'>{t('billing.crypto.wallet.connected')}</p>
+            <p className='text-xs text-muted-foreground font-mono'>
+              {shortenWalletAddress(address)}
+            </p>
           </div>
           <Button variant='ghost' size='sm' onClick={onDisconnect}>
             {t('billing.crypto.wallet.disconnect')}

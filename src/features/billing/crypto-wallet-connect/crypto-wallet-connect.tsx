@@ -104,10 +104,15 @@ export const CryptoWalletConnectContent = ({
   // Network selection - устанавливаем сеть, useEffect сработает и вызовет connect
   const handleNetworkSelect = useCallback(
     async (selectedNetwork: CryptoNetwork) => {
+      // Disconnect current wallet if connected (important for EVM networks)
+      if (wallet.isConnected) {
+        await wallet.disconnect()
+      }
+
       setNetwork(selectedNetwork)
       setError(null)
     },
-    []
+    [wallet]
   )
 
   // Автоматически подключаемся когда выбрана сеть

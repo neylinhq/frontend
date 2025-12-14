@@ -168,13 +168,7 @@ export const AddPaymentMethodContent = ({
   if (step === 'card') {
     return (
       <>
-        <Breadcrumb
-          parentLabel={t('billing.addPaymentMethod.selectTitle')}
-          currentLabel={t('billing.addPaymentMethod.cardTitle')}
-          onBack={handleBack}
-          disabled={loading}
-          className='mb-4'
-        />
+        <Breadcrumb onBack={handleBack} disabled={loading} className='mb-4' />
 
         <Form {...cardForm}>
           <form onSubmit={cardForm.handleSubmit(handleCardSubmit)} className='space-y-4'>
@@ -301,13 +295,7 @@ export const AddPaymentMethodContent = ({
   // Crypto step
   return (
     <>
-      <Breadcrumb
-        parentLabel={t('billing.addPaymentMethod.selectTitle')}
-        currentLabel={t('billing.crypto.title')}
-        onBack={handleBack}
-        disabled={loading}
-        className='mb-4'
-      />
+      <Breadcrumb onBack={handleBack} disabled={loading} className='mb-4' />
       <CryptoWalletConnectContent
         onSuccess={handleCryptoSuccess}
         onBack={handleBack}

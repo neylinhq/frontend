@@ -244,13 +244,7 @@ export const AddPaymentMethodDialog = ({
         {step === 'card' && (
           <>
             <DialogHeader>
-              <Breadcrumb
-                parentLabel={t('billing.addPaymentMethod.selectTitle')}
-                currentLabel={t('billing.addPaymentMethod.cardTitle')}
-                onBack={handleBack}
-                disabled={loadingCard}
-                className='mb-4'
-              />
+              <Breadcrumb onBack={handleBack} disabled={loadingCard} className='mb-4' />
               <DialogDescription>{t('billing.addPaymentMethod.description')}</DialogDescription>
             </DialogHeader>
 
@@ -405,13 +399,7 @@ export const AddPaymentMethodDialog = ({
         {step === 'crypto' && (
           <>
             <DialogHeader>
-              <Breadcrumb
-                parentLabel={t('billing.addPaymentMethod.selectTitle')}
-                currentLabel={t('billing.crypto.title')}
-                onBack={handleBack}
-                disabled={loadingCrypto}
-                className='mb-4'
-              />
+              <Breadcrumb onBack={handleBack} disabled={loadingCrypto} className='mb-4' />
               <DialogDescription>{t('billing.crypto.description')}</DialogDescription>
             </DialogHeader>
 

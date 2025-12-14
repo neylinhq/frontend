@@ -9,7 +9,7 @@
  * 3. Flat modules: 2-5 files, [domain].*.ts pattern
  * 4. Segmented modules: components/, model/, lib/, api/, styles/
  * 5. /components: ONLY .tsx files, NO nested folders
- * 6. /lib: FLAT structure, NO subdirectories
+ * 6. /lib: FLAT structure, NO subdirectories, NO React hooks
  * 7. /styles: ONLY .module.css
  * 8. /model: files use [domain].*.ts or [domain].[subpart].*.ts pattern
  *    - domain = module name OR component name from components/
@@ -18,6 +18,7 @@
  * 10. module/__tests__/: FLAT, [module|component].[part?].[test|integration].ts
  * 11. app/__tests__/: group dirs with [scenario].[e2e|integration].ts
  * 12. NO .server.ts exports in index.ts (prevents client bundle leak)
+ * 13. NO React hooks (useState, useEffect, etc.) in /lib (use /model instead)
  */
 
 import * as fs from 'node:fs'
@@ -308,6 +309,7 @@ const validateComponentsSegment = (
 const validateLibSegment = (segmentPath: string, srcPath: string): ValidationError[] => {
   const errors: ValidationError[] = []
   const dirs = getDirs(segmentPath)
+  const files = getFiles(segmentPath)
   const relPath = getRelativePath(segmentPath, srcPath)
 
   // No nested directories allowed - FLAT structure
@@ -319,6 +321,53 @@ const validateLibSegment = (segmentPath: string, srcPath: string): ValidationErr
         message: `/lib must be FLAT, no subdirectories allowed, found '${dir}'`,
         severity: 'error'
       })
+    }
+  }
+
+  // Check for React hooks usage in lib files
+  const reactHooks = [
+    'useState',
+    'useEffect',
+    'useContext',
+    'useReducer',
+    'useCallback',
+    'useMemo',
+    'useRef',
+    'useImperativeHandle',
+    'useLayoutEffect',
+    'useDebugValue',
+    'useDeferredValue',
+    'useTransition',
+    'useId',
+    'useSyncExternalStore',
+    'useInsertionEffect'
+  ]
+
+  for (const file of files) {
+    if (!file.endsWith('.ts') && !file.endsWith('.tsx')) continue
+    if (file.startsWith('.')) continue
+
+    const filePath = path.join(segmentPath, file)
+    try {
+      const content = fs.readFileSync(filePath, 'utf-8')
+
+      // Check for React hook usage
+      const foundHooks = reactHooks.filter(hook => {
+        // Match: useState( or useState<
+        const hookPattern = new RegExp(`\\b${hook}[(<]`, 'g')
+        return hookPattern.test(content)
+      })
+
+      if (foundHooks.length > 0) {
+        errors.push({
+          path: `${relPath}/${file}`,
+          rule: 'lib-no-react-hooks',
+          message: `React hooks NOT allowed in /lib (use /model instead). Found: ${foundHooks.join(', ')}`,
+          severity: 'error'
+        })
+      }
+    } catch {
+      // Ignore read errors
     }
   }
 

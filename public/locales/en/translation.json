@@ -144,6 +144,7 @@
     "create": "Create",
     "creating": "Creating...",
     "edit": "Edit",
+    "view": "View",
     "enable": "On",
     "disable": "Off",
     "uploading": "Uploading...",
@@ -1382,7 +1383,7 @@
       }
     },
     "security": {
-      "title": "Security",
+      "title": "Account",
       "description": "Manage your account security and privacy",
       "email": {
         "title": "Email Address",

@@ -113,6 +113,10 @@
     "knowledgeBase": "Знания",
     "support": "Поддержка"
   },
+  "userNav": {
+    "dashboard": "Дашборд",
+    "pricing": "Тарифы"
+  },
   "support": {
     "title": "Нужна помощь?",
     "description": "Выберите удобный способ связи",
@@ -132,6 +136,7 @@
     "all": "Все",
     "back": "Назад",
     "backToOverview": "Обзор",
+    "next": "Далее",
     "save": "Сохранить",
     "saved": "Сохранено",
     "saving": "Сохранение...",
@@ -151,6 +156,7 @@
     "dismiss": "Отклонить",
     "undo": "Отменить",
     "undone": "Отменено",
+    "restore": "Восстановить",
     "copied": "Скопировано",
     "copy": "Копировать",
     "send": "Отправить"
@@ -1175,7 +1181,9 @@
       "noMessages": "Начните разговор с AI чтобы получить помощь с этой нодой",
       "noMessagesMap": "Спросите AI об этой карте или попробуйте /analyze",
       "regenerate": "Перегенерировать",
-      "editWarning": "Редактирование удалит все последующие сообщения"
+      "editWarning": "Редактирование удалит все последующие сообщения",
+      "improveContent": "Улучшить содержимое",
+      "sources": "Источники"
     },
     "preview": {
       "edit": "Редактировать",
@@ -1271,7 +1279,7 @@
       "preferences": "Предпочтения",
       "integrations": "Интеграции",
       "account": "Аккаунт",
-      "billing": "Подписка"
+      "billing": "Биллинг"
     },
     "profile": {
       "title": "Профиль",
@@ -1626,7 +1634,15 @@
       },
       "networks": {
         "ton": "TON",
-        "tonDescription": "Быстрые и дешёвые транзакции"
+        "tonDescription": "The Open Network",
+        "tron": "TRON",
+        "tronDescription": "TRC-20 USDT",
+        "ethereum": "Ethereum",
+        "ethereumDescription": "ERC-20 USDT",
+        "bsc": "BSC",
+        "bscDescription": "BEP-20 USDT",
+        "polygon": "Polygon",
+        "polygonDescription": "Polygon USDT"
       },
       "selectNetwork": "Выберите сеть для оплаты",
       "wallet": {

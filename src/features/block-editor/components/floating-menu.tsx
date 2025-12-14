@@ -69,6 +69,7 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
     listItemDepth: number
   } | null>(null)
 
+
   // Cleanup timeouts on unmount
   useEffect(() => {
     return () => {
@@ -151,12 +152,12 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
       }
 
       // Position styles (dynamic, must be inline)
+      // No transition - instant positioning for clarity
       dropIndicatorRef.current.style.cssText = `
         position: absolute;
         top: ${y}px;
         left: ${left + indent}px;
         width: ${width - indent}px;
-        transition: left 0.1s ease, width 0.1s ease;
       `
     },
     []
@@ -330,198 +331,104 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
         return
       }
 
-      const coords = { left: e.clientX, top: e.clientY }
-      const posResult = view.posAtCoords(coords)
       const editorRect = editorElement.getBoundingClientRect()
+      const mouseY = e.clientY
 
-      // Y-based fallback when cursor is in gutter (posAtCoords returns null)
-      if (!posResult) {
-        const proseMirror = view.dom
-        const mouseY = e.clientY
+      // Simple DOM-based approach: find the block at mouse Y position
+      const proseMirror = view.dom
 
-        // Recursively find target block/list item by Y coordinate
-        const findTargetAtY = (
-          element: Element
-        ): { block: HTMLElement; insertAfter: boolean } | null => {
-          const children = Array.from(element.children).filter(
-            (el): el is HTMLElement => el instanceof HTMLElement
-          )
+      // Collect all blocks with their positions
+      const collectBlocks = (element: Element): Array<{ el: HTMLElement; top: number; bottom: number }> => {
+        const blocks: Array<{ el: HTMLElement; top: number; bottom: number }> = []
 
-          for (let i = 0; i < children.length; i++) {
-            const child = children[i]
+        for (const child of element.children) {
+          if (!(child instanceof HTMLElement)) continue
+
+          // If it's a list, collect its items instead
+          if (child.tagName === 'UL' || child.tagName === 'OL') {
+            blocks.push(...collectBlocks(child))
+          } else {
             const rect = child.getBoundingClientRect()
-            const blockCenter = (rect.top + rect.bottom) / 2
-
-            // Check if mouse is within this element's bounds
-            if (mouseY >= rect.top && mouseY <= rect.bottom) {
-              // If it's a list item, return it directly
-              if (child.tagName === 'LI') {
-                return { block: child, insertAfter: mouseY > blockCenter }
-              }
-              // If it's a list, search inside
-              if (child.tagName === 'UL' || child.tagName === 'OL') {
-                const nested = findTargetAtY(child)
-                if (nested) {
-                  return nested
-                }
-              }
-              // Regular block
-              return { block: child, insertAfter: mouseY > blockCenter }
-            }
-
-            // Check if mouse is above this block (insert before)
-            if (mouseY < rect.top) {
-              return { block: child, insertAfter: false }
-            }
-
-            // If this is the last block and mouse is below it
-            if (i === children.length - 1 && mouseY > rect.bottom) {
-              return { block: child, insertAfter: true }
-            }
-          }
-          return null
-        }
-
-        const result = findTargetAtY(proseMirror)
-        if (!result) {
-          return
-        }
-
-        const { block: targetBlock, insertAfter } = result
-        const targetRect = targetBlock.getBoundingClientRect()
-        const indicatorY = insertAfter
-          ? targetRect.bottom - editorRect.top
-          : targetRect.top - editorRect.top
-
-        showDropIndicator(
-          editorElement,
-          indicatorY,
-          targetRect.left - editorRect.left,
-          targetRect.width
-        )
-
-        // Get ProseMirror position for the block
-        const pos = view.posAtDOM(targetBlock, 0)
-        if (pos !== undefined && pos !== null) {
-          const $pos = view.state.doc.resolve(pos)
-
-          // For list items, find the correct depth
-          let listItemDepth = -1
-          if (targetBlock.tagName === 'LI') {
-            for (let d = $pos.depth; d >= 1; d--) {
-              const node = $pos.node(d)
-              if (node.type.name === 'listItem' || node.type.name === 'taskItem') {
-                listItemDepth = d
-                break
-              }
-            }
-          }
-
-          // Use listItemDepth for list items, otherwise use block depth
-          const effectiveDepth =
-            listItemDepth > 0 ? listItemDepth : $pos.depth >= 1 ? $pos.depth : 0
-          const blockPos = effectiveDepth > 0 ? $pos.before(effectiveDepth) : pos
-
-          dropTargetRef.current = {
-            pos: blockPos,
-            insertAfter,
-            isNested: false,
-            listItemDepth
+            blocks.push({ el: child, top: rect.top, bottom: rect.bottom })
           }
         }
+        return blocks
+      }
+
+      const blocks = collectBlocks(proseMirror)
+      if (blocks.length === 0) return
+
+      // Find the nearest gap between blocks
+      // Gaps are: before first block, between blocks, after last block
+      let bestGapY = blocks[0].top // default: before first block
+      let bestDistance = Math.abs(mouseY - bestGapY)
+      let targetBlockIndex = 0
+      let insertAfter = false
+
+      // Check gap before first block
+      const firstGapY = blocks[0].top
+      const firstDist = Math.abs(mouseY - firstGapY)
+      if (firstDist < bestDistance) {
+        bestDistance = firstDist
+        bestGapY = firstGapY
+        targetBlockIndex = 0
+        insertAfter = false
+      }
+
+      // Check gaps between blocks and after each block
+      for (let i = 0; i < blocks.length; i++) {
+        const gapY = blocks[i].bottom
+        const dist = Math.abs(mouseY - gapY)
+        if (dist < bestDistance) {
+          bestDistance = dist
+          bestGapY = gapY
+          targetBlockIndex = i
+          insertAfter = true
+        }
+      }
+
+      const targetBlock = blocks[targetBlockIndex].el
+      const indicatorY = bestGapY - editorRect.top
+
+      // Use ProseMirror container width
+      const proseMirrorRect = proseMirror.getBoundingClientRect()
+
+      showDropIndicator(
+        editorElement,
+        indicatorY,
+        proseMirrorRect.left - editorRect.left,
+        proseMirrorRect.width
+      )
+
+      // Get ProseMirror position for the block
+      const pos = view.posAtDOM(targetBlock, 0)
+      if (pos === undefined || pos === null) {
         return
       }
 
-      const $pos = view.state.doc.resolve(posResult.pos)
+      const $pos = view.state.doc.resolve(pos)
 
-      // Find nearest list item in ancestry
+      // Find the correct depth (listItem for LI, or top-level block)
+      let blockDepth = 1
       let listItemDepth = -1
-      for (let d = $pos.depth; d > 0; d--) {
+
+      for (let d = $pos.depth; d >= 1; d--) {
         const node = $pos.node(d)
         if (node.type.name === 'listItem' || node.type.name === 'taskItem') {
           listItemDepth = d
+          blockDepth = d
           break
         }
       }
 
-      let targetPos: number | undefined
-      let targetDom: HTMLElement | null = null
-      let nestingLevel = 0
-      let isNested = false
-      let insertAfter = false
+      const blockPos = $pos.before(blockDepth)
 
-      if (listItemDepth > 0) {
-        // Inside a list item - determine drop zone
-        targetPos = $pos.before(listItemDepth)
-        targetDom = view.nodeDOM(targetPos) as HTMLElement
-
-        if (targetDom) {
-          const rect = targetDom.getBoundingClientRect()
-          const relY = (e.clientY - rect.top) / rect.height
-          const relX = e.clientX - rect.left
-
-          // Count current nesting level by walking up DOM
-          let parent = targetDom.parentElement
-          while (parent && parent !== view.dom) {
-            if (parent.tagName === 'UL' || parent.tagName === 'OL') {
-              nestingLevel++
-            }
-            parent = parent.parentElement
-          }
-
-          // Determine zone: top 30% = before, middle 40% = nest, bottom 30% = after
-          const isInNestZone = relX < THRESHOLD.NEST_ZONE
-
-          if (relY < 0.3) {
-            // Top zone - insert before
-            isNested = false
-            insertAfter = false
-          } else if (relY > 0.7) {
-            // Bottom zone - insert after
-            isNested = false
-            insertAfter = true
-          } else if (isInNestZone || (relY > 0.35 && relY < 0.65)) {
-            // Middle zone or left edge - nest inside
-            isNested = true
-            nestingLevel++ // +1 for indicator
-            insertAfter = true // Will insert at end of list item
-          } else {
-            // Default to before/after based on Y
-            insertAfter = relY > 0.5
-          }
-        }
-      } else if ($pos.depth >= 1) {
-        // Regular block (not in list)
-        targetPos = $pos.before(1)
-        targetDom = view.nodeDOM(targetPos) as HTMLElement
-        if (targetDom) {
-          const targetRect = targetDom.getBoundingClientRect()
-          insertAfter = e.clientY > targetRect.top + targetRect.height / 2
-        }
-      }
-
-      if (targetDom && targetPos !== undefined) {
-        const targetRect = targetDom.getBoundingClientRect()
-
-        const indicatorY = insertAfter
-          ? targetRect.bottom - editorRect.top
-          : targetRect.top - editorRect.top
-
-        showDropIndicator(
-          editorElement,
-          indicatorY,
-          targetRect.left - editorRect.left,
-          targetRect.width,
-          { nestingLevel, isNested }
-        )
-
-        // Save for handleDrop
-        dropTargetRef.current = {
-          pos: targetPos,
-          insertAfter,
-          isNested,
-          listItemDepth
-        }
+      // Save for handleDrop
+      dropTargetRef.current = {
+        pos: blockPos,
+        insertAfter,
+        isNested: false,
+        listItemDepth
       }
     }
 
@@ -588,103 +495,131 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
         return
       }
 
-      const { pos: targetPos, insertAfter, isNested, listItemDepth } = target
+      const { pos: targetPos, insertAfter } = target
 
       try {
         const tr = view.state.tr
 
-        if (isNested && listItemDepth > 0) {
-          // Insert as nested child in list item
-          const $targetPos = view.state.doc.resolve(targetPos)
-          const listItemEnd = $targetPos.after(listItemDepth)
-
-          // Delete source first
-          tr.delete(sourceStart, sourceEnd)
-
-          // Map position after deletion
-          const mappedEnd = tr.mapping.map(listItemEnd - 1)
-
-          // Determine list type from parent
-          const parentListNode = $targetPos.node(listItemDepth - 1)
-          const listTypeName = parentListNode?.type.name || 'bulletList'
-          const listType = view.state.schema.nodes[listTypeName]
-          const listItemType = view.state.schema.nodes.listItem || view.state.schema.nodes.taskItem
-
-          if (!listType || !listItemType) {
-            // Fallback to simple insert if schema doesn't have list types
-            tr.insert(mappedEnd, sourceNode)
-          } else {
-            // Wrap content in list structure
-            let contentToInsert: typeof sourceNode
-            if (sourceNode.type.name === 'listItem' || sourceNode.type.name === 'taskItem') {
-              // Source is already a list item - wrap in list
-              contentToInsert = listType.create(null, sourceNode)
-            } else {
-              // Source is regular block - wrap in listItem, then list
-              contentToInsert = listType.create(null, listItemType.create(null, sourceNode))
+        // Helper: find parent list info before deletion
+        const findParentListInfo = (pos: number) => {
+          const $pos = view.state.doc.resolve(pos)
+          for (let d = $pos.depth; d >= 1; d--) {
+            const node = $pos.node(d)
+            if (
+              node.type.name === 'bulletList' ||
+              node.type.name === 'orderedList' ||
+              node.type.name === 'taskList'
+            ) {
+              return {
+                pos: $pos.before(d),
+                depth: d,
+                node,
+                childCount: node.childCount
+              }
             }
-            tr.insert(mappedEnd, contentToInsert)
           }
+          return null
+        }
+
+        // Get parent list info BEFORE any modifications
+        const sourceParentListInfo = findParentListInfo(sourceStart)
+
+        // Standard before/after insertion
+        const $targetPos = view.state.doc.resolve(targetPos)
+        const targetNode = $targetPos.nodeAfter || $targetPos.nodeBefore
+        const targetNodeSize = targetNode?.nodeSize || 0
+
+        let insertPos: number
+        if (insertAfter) {
+          insertPos = targetPos + targetNodeSize
         } else {
-          // Standard before/after insertion
-          const $targetPos = view.state.doc.resolve(targetPos)
-          const targetNode = $targetPos.nodeAfter || $targetPos.nodeBefore
-          const targetNodeSize = targetNode?.nodeSize || 0
+          insertPos = targetPos
+        }
 
-          let insertPos: number
-          if (insertAfter) {
-            insertPos = targetPos + targetNodeSize
-          } else {
-            insertPos = targetPos
-          }
+        // Check if dropping in same position
+        if (insertPos >= sourceStart && insertPos <= sourceEnd) {
+          cleanupDrag()
+          return
+        }
 
-          // Check if dropping in same position
-          if (insertPos >= sourceStart && insertPos <= sourceEnd) {
-            cleanupDrag()
-            return
-          }
+        // Determine what to insert BEFORE deleting (to access original structure)
+        let nodeToInsert = sourceNode
 
-          // Determine what to insert BEFORE deleting (to access original structure)
-          let nodeToInsert = sourceNode
+        // Check if source is a listItem
+        const isSourceListItem =
+          sourceNode.type.name === 'listItem' || sourceNode.type.name === 'taskItem'
 
-          // If source is a listItem being dropped at top-level, wrap in list
-          const isSourceListItem =
-            sourceNode.type.name === 'listItem' || sourceNode.type.name === 'taskItem'
-          const isTargetTopLevel = $targetPos.depth <= 1
+        // Check if target is inside a list (by checking if targetNode is a listItem)
+        const targetNode2 = $targetPos.nodeAfter
+        const isTargetInList =
+          targetNode2?.type.name === 'listItem' || targetNode2?.type.name === 'taskItem'
 
-          if (isSourceListItem && isTargetTopLevel) {
-            // Find parent list type from the original position (before any changes)
-            let parentListType: string | null = null
-            for (let d = $sourcePos.depth - 1; d >= 0; d--) {
-              const node = $sourcePos.node(d)
-              if (
-                node.type.name === 'bulletList' ||
-                node.type.name === 'orderedList' ||
-                node.type.name === 'taskList'
-              ) {
-                parentListType = node.type.name
-                break
-              }
-            }
-
-            // Wrap in appropriate list type
-            if (parentListType) {
-              const listType = view.state.schema.nodes[parentListType]
-              if (listType) {
-                nodeToInsert = listType.create(null, sourceNode)
-              }
+        // Only wrap in list if source is listItem AND target is NOT inside a list
+        // (i.e., dropping outside of any list)
+        if (isSourceListItem && !isTargetInList) {
+          // Find parent list type from the original position (before any changes)
+          let parentListType: string | null = null
+          for (let d = $sourcePos.depth - 1; d >= 0; d--) {
+            const node = $sourcePos.node(d)
+            if (
+              node.type.name === 'bulletList' ||
+              node.type.name === 'orderedList' ||
+              node.type.name === 'taskList'
+            ) {
+              parentListType = node.type.name
+              break
             }
           }
 
-          // Delete source
+          // Wrap in appropriate list type
+          if (parentListType) {
+            const listType = view.state.schema.nodes[parentListType]
+            if (listType) {
+              nodeToInsert = listType.create(null, sourceNode)
+            }
+          }
+        }
+
+        // Order of operations depends on direction to avoid position mapping issues
+        const movingUp = insertPos < sourceStart
+
+        if (movingUp) {
+          // Moving up: insert first, then delete (source position shifts down after insert)
+          tr.insert(insertPos, nodeToInsert)
+          // After insert, source positions shift by nodeToInsert size
+          const shiftedSourceStart = sourceStart + nodeToInsert.nodeSize
+          const shiftedSourceEnd = sourceEnd + nodeToInsert.nodeSize
+          tr.delete(shiftedSourceStart, shiftedSourceEnd)
+        } else {
+          // Moving down: delete first, then insert (insert position shifts up after delete)
           tr.delete(sourceStart, sourceEnd)
-
-          // Map the insert position after deletion
           const mappedInsertPos = tr.mapping.map(insertPos)
-
-          // Insert at mapped position
           tr.insert(mappedInsertPos, nodeToInsert)
         }
+
+        // Cleanup empty parent list if source was the only child
+        if (sourceParentListInfo && sourceParentListInfo.childCount === 1) {
+          const mappedParentPos = tr.mapping.map(sourceParentListInfo.pos)
+          const parentNode = tr.doc.nodeAt(mappedParentPos)
+          if (parentNode && parentNode.childCount === 0) {
+            tr.delete(mappedParentPos, mappedParentPos + parentNode.nodeSize)
+          }
+        }
+
+        // Try to join adjacent lists of the same type
+        const listTypes = ['bulletList', 'orderedList', 'taskList']
+        tr.doc.descendants((node, pos) => {
+          if (listTypes.includes(node.type.name)) {
+            const $pos = tr.doc.resolve(pos + node.nodeSize)
+            const after = $pos.nodeAfter
+            if (after && after.type.name === node.type.name) {
+              // Join these two lists
+              tr.join(pos + node.nodeSize)
+              return false // Stop iteration after join (positions changed)
+            }
+          }
+          return true
+        })
 
         view.dispatch(tr)
 

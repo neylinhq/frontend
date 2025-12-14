@@ -182,7 +182,7 @@ export const AddPaymentMethodContent = ({
         <SelectionCard
           icon={<Wallet className='h-12 w-12' />}
           title={t('billing.addPaymentMethod.cryptoOption.title')}
-          description='USDT'
+          description={t('billing.addPaymentMethod.cryptoOption.description')}
           onClick={() => setStep('crypto')}
         />
       </div>
@@ -270,10 +270,7 @@ export const AddPaymentMethodContent = ({
                 name='cvc'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className='flex items-center gap-1'>
-                      {t('billing.addPaymentMethod.cvc')}
-                      <Lock className='h-3 w-3 text-muted-foreground' />
-                    </FormLabel>
+                    <FormLabel>{t('billing.addPaymentMethod.cvc')}</FormLabel>
                     <FormControl>
                       <div className='relative'>
                         <Input

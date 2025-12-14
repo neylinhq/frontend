@@ -113,6 +113,10 @@
     "knowledgeBase": "Knowledge",
     "support": "Support"
   },
+  "userNav": {
+    "dashboard": "Dashboard",
+    "pricing": "Pricing"
+  },
   "support": {
     "title": "Need Help?",
     "description": "Choose your preferred way to contact us",
@@ -132,6 +136,7 @@
     "all": "All",
     "back": "Back",
     "backToOverview": "Overview",
+    "next": "Next",
     "save": "Save",
     "saved": "Saved",
     "saving": "Saving...",
@@ -151,6 +156,7 @@
     "dismiss": "Dismiss",
     "undo": "Undo",
     "undone": "Undone",
+    "restore": "Restore",
     "copied": "Copied",
     "copy": "Copy",
     "send": "Send"
@@ -1599,7 +1605,15 @@
       },
       "networks": {
         "ton": "TON",
-        "tonDescription": "Fast and cheap transactions"
+        "tonDescription": "The Open Network",
+        "tron": "TRON",
+        "tronDescription": "TRC-20 USDT",
+        "ethereum": "Ethereum",
+        "ethereumDescription": "ERC-20 USDT",
+        "bsc": "BSC",
+        "bscDescription": "BEP-20 USDT",
+        "polygon": "Polygon",
+        "polygonDescription": "Polygon USDT"
       },
       "selectNetwork": "Select network for payment",
       "wallet": {

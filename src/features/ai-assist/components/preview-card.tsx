@@ -11,20 +11,23 @@ interface PreviewCardComponentProps {
   onRemove: () => void
   onSave: () => void
   onEdit?: (data: unknown) => void
+  /** Whether this preview is currently being saved (disables buttons) */
+  isSaving?: boolean
 }
 
 export const PreviewCardComponent = ({
   preview,
   onRemove,
   onSave,
-  onEdit
+  onEdit,
+  isSaving = false
 }: PreviewCardComponentProps) => {
   const { t } = useTranslation()
 
   switch (preview.type) {
     case 'exercise':
       return (
-        <ExercisePreview data={preview.data} onRemove={onRemove} onSave={onSave} onEdit={onEdit} />
+        <ExercisePreview data={preview.data} onRemove={onRemove} onSave={onSave} onEdit={onEdit} isSaving={isSaving} />
       )
 
     case 'enrichment':
@@ -34,14 +37,15 @@ export const PreviewCardComponent = ({
           onRemove={onRemove}
           onSave={onSave}
           onEdit={onEdit}
+          isSaving={isSaving}
         />
       )
 
     case 'new_node':
-      return <NewNodePreview data={preview.data} onRemove={onRemove} onSave={onSave} />
+      return <NewNodePreview data={preview.data} onRemove={onRemove} onSave={onSave} isSaving={isSaving} />
 
     case 'connection':
-      return <ConnectionPreview data={preview.data} onRemove={onRemove} onSave={onSave} />
+      return <ConnectionPreview data={preview.data} onRemove={onRemove} onSave={onSave} isSaving={isSaving} />
 
     case 'edge': {
       const data = preview.data as EdgePreviewData
@@ -51,6 +55,7 @@ export const PreviewCardComponent = ({
           onAccept={onSave}
           onReject={onRemove}
           variant='compact'
+          isLoading={isSaving}
         >
           <DiffLine type='add'>
             {data.sourceLabel || data.sourceNodeId} → {data.targetLabel || data.targetNodeId}
@@ -68,6 +73,7 @@ export const PreviewCardComponent = ({
           onAccept={onSave}
           onReject={onRemove}
           variant='compact'
+          isLoading={isSaving}
         >
           <div className='space-y-1'>
             <DiffLine type='add'>{data.label}</DiffLine>

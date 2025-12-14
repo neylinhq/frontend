@@ -106,7 +106,16 @@ export const sourcesHandler: IntentHandler = {
 
 export const exercisesHandler: IntentHandler = {
   name: 'exercises',
-  detect: (content: string) => /^\/(exercises?|quiz)/i.test(content.trim()),
+  detect: (content: string) => {
+    const trimmed = content.trim().toLowerCase()
+    // Slash commands
+    if (/^\/(exercises?|quiz|задани[яе])/i.test(trimmed)) return true
+    // Natural language triggers (Russian) - more flexible matching
+    if (/(предложи|создай|сгенерируй|сделай|придумай|дай|покажи).{0,20}(задани[яе]|упражнени[яе]|тест|квиз)/i.test(trimmed)) return true
+    // Natural language triggers (English)
+    if (/(generate|create|make|give me|suggest).{0,20}(exercises?|quiz|test|practice|questions?)/i.test(trimmed)) return true
+    return false
+  },
   execute: async (ctx, _content, _model): Promise<IntentResult> => {
     if (!isNodeContext(ctx)) {
       return { content: 'This command is only available for nodes.' }

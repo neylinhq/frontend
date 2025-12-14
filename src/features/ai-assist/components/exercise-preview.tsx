@@ -8,9 +8,10 @@ interface ExercisePreviewProps {
   onRemove: () => void
   onSave: () => void
   onEdit?: (data: unknown) => void
+  isSaving?: boolean
 }
 
-export const ExercisePreview = ({ data, onRemove, onSave, onEdit }: ExercisePreviewProps) => {
+export const ExercisePreview = ({ data, onRemove, onSave, onEdit, isSaving }: ExercisePreviewProps) => {
   const { t } = useTranslation()
   const exerciseData = data as ExercisePreviewData
 
@@ -36,6 +37,7 @@ export const ExercisePreview = ({ data, onRemove, onSave, onEdit }: ExercisePrev
       onReject={onRemove}
       onEdit={onEdit ? () => onEdit(data) : undefined}
       variant='compact'
+      isLoading={isSaving}
     >
       <div className='space-y-2'>
         {/* Question */}

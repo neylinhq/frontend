@@ -9,17 +9,37 @@ export interface BlockSelectionState {
   decorations: DecorationSet
 }
 
-const findFullySelectedBlocks = (
+/**
+ * Find blocks that should be highlighted based on selection.
+ *
+ * Selection modes:
+ * 1. Partial single block -> text-selected (inline)
+ * 2. Full single block -> block-selected (node)
+ * 3. Multiple list items (even partial) -> all intersecting items get block-selected
+ * 4. Multiple blocks fully selected -> all get block-selected
+ */
+const findSelectedBlocks = (
   doc: import('@tiptap/pm/model').Node,
   from: number,
   to: number
-) => {
+): { blocks: Array<{ from: number; to: number }>; isPartial: boolean } => {
   const selectedBlocks: Array<{ from: number; to: number }> = []
 
   // Don't highlight if selection is collapsed (cursor only)
   if (from === to) {
-    return selectedBlocks
+    return { blocks: [], isPartial: false }
   }
+
+  // Collect all list items that intersect with selection
+  const intersectingListItems: Array<{
+    from: number
+    to: number
+    fullySelected: boolean
+    parentListPos: number
+  }> = []
+
+  // Collect regular blocks
+  const regularBlocks: Array<{ from: number; to: number; fullySelected: boolean }> = []
 
   doc.nodesBetween(from, to, (node, pos, parent) => {
     // Skip the doc node itself
@@ -32,11 +52,32 @@ const findFullySelectedBlocks = (
     const contentStart = nodeStart + 1 // After opening tag
     const contentEnd = nodeEnd - 1 // Before closing tag
 
-    // Handle list items separately (each item is a block)
+    // Handle list items separately
     if (node.type.name === 'listItem' || node.type.name === 'taskItem') {
-      const isFullySelected = from <= contentStart && to >= contentEnd
-      if (isFullySelected) {
-        selectedBlocks.push({ from: nodeStart, to: nodeEnd })
+      const fullySelected = from <= contentStart && to >= contentEnd
+      // Check if selection intersects this list item
+      const intersects = from < nodeEnd && to > nodeStart
+
+      if (intersects) {
+        // Find parent list position
+        let parentListPos = -1
+        if (parent) {
+          // parent is the list container
+          doc.nodesBetween(0, nodeStart, (n, p) => {
+            if (n === parent) {
+              parentListPos = p
+              return false
+            }
+            return true
+          })
+        }
+
+        intersectingListItems.push({
+          from: nodeStart,
+          to: nodeEnd,
+          fullySelected,
+          parentListPos
+        })
       }
       return false // Don't descend
     }
@@ -52,17 +93,41 @@ const findFullySelectedBlocks = (
         return true // Descend to find list items
       }
 
-      const isFullySelected = from <= contentStart && to >= contentEnd
-      if (isFullySelected) {
-        selectedBlocks.push({ from: nodeStart, to: nodeEnd })
-      }
+      const fullySelected = from <= contentStart && to >= contentEnd
+      regularBlocks.push({ from: nodeStart, to: nodeEnd, fullySelected })
       return false // Don't descend into block children
     }
 
     return true // Continue traversing
   })
 
-  return selectedBlocks
+  // Decision logic for list items:
+  // If 2+ list items are intersected, select ALL of them as blocks
+  // This gives a Notion-like experience where dragging across items selects them
+  if (intersectingListItems.length >= 2) {
+    for (const item of intersectingListItems) {
+      selectedBlocks.push({ from: item.from, to: item.to })
+    }
+  } else if (intersectingListItems.length === 1) {
+    // Single list item - only select if fully selected
+    const item = intersectingListItems[0]
+    if (item.fullySelected) {
+      selectedBlocks.push({ from: item.from, to: item.to })
+    }
+  }
+
+  // Add fully selected regular blocks
+  for (const block of regularBlocks) {
+    if (block.fullySelected) {
+      selectedBlocks.push({ from: block.from, to: block.to })
+    }
+  }
+
+  // Determine if this is a partial selection (no blocks fully selected)
+  const hasFullBlocks = selectedBlocks.length > 0
+  const isPartial = !hasFullBlocks
+
+  return { blocks: selectedBlocks, isPartial }
 }
 
 export const BlockSelection = Extension.create({
@@ -100,12 +165,16 @@ export const BlockSelection = Extension.create({
             }
 
             // Selection changed - recreate decorations
-            const selectedBlocks = findFullySelectedBlocks(newEditorState.doc, from, to)
+            const { blocks: selectedBlocks, isPartial } = findSelectedBlocks(
+              newEditorState.doc,
+              from,
+              to
+            )
 
             const decorations: Decoration[] = []
 
             if (selectedBlocks.length > 0) {
-              // Add block-level decorations for fully selected blocks
+              // Add block-level decorations for selected blocks
               for (const { from: blockFrom, to: blockTo } of selectedBlocks) {
                 decorations.push(
                   Decoration.node(blockFrom, blockTo, {
@@ -113,8 +182,10 @@ export const BlockSelection = Extension.create({
                   })
                 )
               }
-            } else {
-              // Partial selection - add inline decoration
+            }
+
+            if (isPartial) {
+              // Partial selection (no full blocks) - add inline decoration
               decorations.push(
                 Decoration.inline(from, to, {
                   class: 'text-selected'

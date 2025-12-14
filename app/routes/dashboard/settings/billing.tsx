@@ -5,7 +5,9 @@ import { useLoaderData } from 'react-router'
 import {
   type PaymentHistory,
   type PaymentMethod,
+  useAddCryptoPaymentMethod,
   useAddPaymentMethod,
+  usePaymentMethods,
   useRemovePaymentMethod,
   useSetDefaultPaymentMethod,
   useUpdatePaymentMethod
@@ -35,9 +37,13 @@ interface LoaderData {
 
 const BillingPage = () => {
   const { t } = useTranslation()
-  const { paymentMethods, paymentHistory } = useLoaderData() as LoaderData
+  const { paymentHistory } = useLoaderData() as LoaderData
+
+  // Use React Query to fetch payment methods
+  const { data: paymentMethods = [] } = usePaymentMethods()
 
   const addPaymentMethod = useAddPaymentMethod()
+  const addCryptoPaymentMethod = useAddCryptoPaymentMethod()
   const removePaymentMethod = useRemovePaymentMethod()
   const setDefaultPaymentMethod = useSetDefaultPaymentMethod()
   const updatePaymentMethod = useUpdatePaymentMethod()
@@ -70,10 +76,16 @@ const BillingPage = () => {
           <AddPaymentMethodDialog
             onAddCard={data => addPaymentMethod.mutate(data)}
             onAddCrypto={data => {
-              // TODO: Implement addCryptoPaymentMethod mutation
-              console.log('Crypto wallet bound:', data.network, data.address)
+              console.log('[BillingPage] onAddCrypto called with:', data)
+              addCryptoPaymentMethod.mutate({
+                walletAddress: data.address,
+                network: data.network,
+                currency: 'USDT'
+              })
+              console.log('[BillingPage] mutation triggered, isPending:', addCryptoPaymentMethod.isPending)
             }}
             loadingCard={addPaymentMethod.isPending}
+            loadingCrypto={addCryptoPaymentMethod.isPending}
           />
         </CardHeader>
         <CardContent className='space-y-4'>

@@ -91,9 +91,31 @@ export const aiApi = {
       currentNodeId?: string
       history?: Array<{ role: 'user' | 'assistant'; content: string }>
       signal?: AbortSignal
+      /** Timeout in milliseconds (default: 5 minutes) */
+      timeout?: number
     }
   ): Promise<void> => {
     return new Promise(async (resolve, reject) => {
+      // Setup timeout (default 5 minutes)
+      const timeoutMs = options?.timeout ?? 5 * 60 * 1000
+      let timeoutId: ReturnType<typeof setTimeout> | null = null
+      let abortController: AbortController | null = null
+
+      // Create internal AbortController for timeout
+      if (!options?.signal) {
+        abortController = new AbortController()
+      }
+
+      const signal = options?.signal ?? abortController?.signal
+
+      // Setup timeout handler
+      if (timeoutMs > 0) {
+        timeoutId = setTimeout(() => {
+          abortController?.abort()
+          onChunk({ type: 'error', content: 'Request timed out' })
+        }, timeoutMs)
+      }
+
       try {
         const baseUrl = import.meta.env.VITE_API_URL || '/api'
 
@@ -111,7 +133,7 @@ export const aiApi = {
             currentNodeId: options?.currentNodeId,
             history: options?.history
           }),
-          signal: options?.signal
+          signal
         })
 
         if (!response.ok) {
@@ -168,6 +190,11 @@ export const aiApi = {
           resolve() // Aborted, not an error
         } else {
           reject(error)
+        }
+      } finally {
+        // Clear timeout to prevent memory leak
+        if (timeoutId) {
+          clearTimeout(timeoutId)
         }
       }
     })

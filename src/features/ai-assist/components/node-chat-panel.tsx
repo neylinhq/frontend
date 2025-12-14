@@ -62,6 +62,7 @@ export const NodeChatPanel = ({ nodeId, mapId }: NodeChatPanelProps) => {
   }
 
   const handleSavePreview = async (messageId: string, previewCard: PreviewCard) => {
+    console.log('[NodeChatPanel] handleSavePreview called, type:', previewCard.type)
     if (previewCard.type === 'enrichment') {
       const data = previewCard.data as EnrichmentPreviewData
 
@@ -96,7 +97,9 @@ export const NodeChatPanel = ({ nodeId, mapId }: NodeChatPanelProps) => {
           break
       }
 
+      console.log('[NodeChatPanel] Calling updateNodeMutation.mutateAsync...')
       await updateNodeMutation.mutateAsync({ id: nodeId, data: updatePayload })
+      console.log('[NodeChatPanel] updateNodeMutation completed successfully')
 
       // Record action for undo
       const actionId = recordAction({

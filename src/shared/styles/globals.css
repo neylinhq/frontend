@@ -2242,3 +2242,191 @@ html.theme-transition-disabled *::after {
       0 0 95px oklch(1 0 0 / 0.035) !important;
   }
 }
+
+/* ========================================
+   Prose Styles (AI Chat Typography)
+   Minimal prose styles for markdown rendering
+   ======================================== */
+.prose {
+  line-height: 1.65;
+  color: oklch(var(--foreground));
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  font-weight: 600;
+  line-height: 1.35;
+  margin-top: 1.25em;
+  margin-bottom: 0.5em;
+}
+
+.prose h1 { font-size: 1.5em; }
+.prose h2 { font-size: 1.25em; }
+.prose h3 { font-size: 1.125em; }
+.prose h4 { font-size: 1em; }
+
+.prose p {
+  margin-top: 0.75em;
+  margin-bottom: 0.75em;
+}
+
+.prose p:first-child {
+  margin-top: 0;
+}
+
+.prose p:last-child {
+  margin-bottom: 0;
+}
+
+/* Lists with proper indentation */
+.prose ul,
+.prose ol {
+  margin-top: 0.75em;
+  margin-bottom: 0.75em;
+  padding-left: 1.5em;
+}
+
+.prose ul {
+  list-style-type: disc;
+}
+
+.prose ol {
+  list-style-type: decimal;
+}
+
+.prose li {
+  margin-top: 0.375em;
+  margin-bottom: 0.375em;
+  padding-left: 0.25em;
+}
+
+.prose li > ul,
+.prose li > ol {
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+}
+
+/* Nested list styling */
+.prose ul ul,
+.prose ol ul {
+  list-style-type: circle;
+}
+
+.prose ul ul ul,
+.prose ol ul ul,
+.prose ul ol ul,
+.prose ol ol ul {
+  list-style-type: square;
+}
+
+/* Code blocks */
+.prose pre {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  padding: 0.75em 1em;
+  border-radius: 0.5rem;
+  background-color: oklch(var(--muted));
+  overflow-x: auto;
+}
+
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  padding: 0.125em 0.25em;
+  background-color: oklch(var(--muted) / 0.5);
+  border-radius: 0.25rem;
+}
+
+.prose pre code {
+  padding: 0;
+  background: none;
+  border-radius: 0;
+}
+
+/* Blockquotes */
+.prose blockquote {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  padding-left: 1em;
+  border-left: 3px solid oklch(var(--border));
+  color: oklch(var(--muted-foreground));
+  font-style: italic;
+}
+
+/* Horizontal rules */
+.prose hr {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+  border: none;
+  border-top: 1px solid oklch(var(--border));
+}
+
+/* Strong/Bold */
+.prose strong {
+  font-weight: 600;
+}
+
+/* Links */
+.prose a {
+  color: oklch(var(--brand));
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.prose a:hover {
+  color: oklch(var(--brand) / 0.8);
+}
+
+/* Tables */
+.prose table {
+  width: 100%;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  border-collapse: collapse;
+}
+
+.prose th,
+.prose td {
+  padding: 0.5em 0.75em;
+  border: 1px solid oklch(var(--border));
+  text-align: left;
+}
+
+.prose th {
+  font-weight: 600;
+  background-color: oklch(var(--muted) / 0.5);
+}
+
+/* Size variants */
+.prose-sm {
+  font-size: 0.875rem;
+}
+
+.prose-sm h1 { font-size: 1.375em; }
+.prose-sm h2 { font-size: 1.125em; }
+.prose-sm h3 { font-size: 1em; }
+
+/* Dark mode adjustments */
+.dark .prose {
+  color: oklch(var(--foreground));
+}
+
+.dark .prose code {
+  background-color: oklch(var(--muted) / 0.4);
+}
+
+.dark .prose pre {
+  background-color: oklch(var(--muted) / 0.5);
+}
+
+/* Inverted prose for dark backgrounds */
+.prose-invert {
+  color: oklch(var(--foreground));
+}
+
+/* Max width none utility */
+.max-w-none {
+  max-width: none;
+}

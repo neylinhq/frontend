@@ -8,9 +8,10 @@ interface ConnectionPreviewProps {
   data: ConnectionPreviewData
   onRemove: () => void
   onSave: () => void
+  isSaving?: boolean
 }
 
-export const ConnectionPreview = ({ data, onRemove, onSave }: ConnectionPreviewProps) => {
+export const ConnectionPreview = ({ data, onRemove, onSave, isSaving }: ConnectionPreviewProps) => {
   const { t } = useTranslation()
 
   return (
@@ -18,6 +19,7 @@ export const ConnectionPreview = ({ data, onRemove, onSave }: ConnectionPreviewP
       title={t('ai.proposal.connection', 'Create Connection')}
       onAccept={onSave}
       onReject={onRemove}
+      isLoading={isSaving}
     >
       <div className='space-y-3'>
         <div className='flex items-center gap-2 text-sm'>

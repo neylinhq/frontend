@@ -3,7 +3,6 @@ import { VerifyEmailPage } from '@/pages/auth/verify-email-page'
 import { getMeta } from '@/shared/lib/get-meta'
 
 export const handle = {
-  hideAuthButtons: true,
   hideFooter: true,
   centered: true
 }

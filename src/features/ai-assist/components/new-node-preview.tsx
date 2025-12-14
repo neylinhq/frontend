@@ -7,9 +7,10 @@ interface NewNodePreviewProps {
   data: NewNodePreviewData
   onRemove: () => void
   onSave: () => void
+  isSaving?: boolean
 }
 
-export const NewNodePreview = ({ data, onRemove, onSave }: NewNodePreviewProps) => {
+export const NewNodePreview = ({ data, onRemove, onSave, isSaving }: NewNodePreviewProps) => {
   const { t } = useTranslation()
 
   return (
@@ -17,6 +18,7 @@ export const NewNodePreview = ({ data, onRemove, onSave }: NewNodePreviewProps) 
       title={t('ai.proposal.newNode', 'Create New Node')}
       onAccept={onSave}
       onReject={onRemove}
+      isLoading={isSaving}
     >
       <div className='space-y-2'>
         <div>

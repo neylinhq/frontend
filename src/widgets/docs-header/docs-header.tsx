@@ -2,6 +2,7 @@ import { Menu } from 'lucide-react'
 import { Link } from 'react-router'
 import { ModeSelect } from '@/features/theme/mode-select'
 import { PaletteSelect } from '@/features/theme/palette-select'
+import { AuthNav } from '@/widgets/auth-nav'
 import { Button } from '@/shared/components/button'
 import { DocsSearchTrigger } from '@/shared/components/docs-search'
 import { LanguageSelect } from '@/shared/components/language-switcher'
@@ -58,6 +59,7 @@ export const DocsHeader = ({ mobileNav }: DocsHeaderProps) => {
           <PaletteSelect compact />
           <ModeSelect compact />
           <LanguageSelect compact />
+          <AuthNav compact showSeparator />
         </nav>
       </div>
     </header>

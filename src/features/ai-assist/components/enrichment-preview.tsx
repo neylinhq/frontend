@@ -7,9 +7,10 @@ interface EnrichmentPreviewProps {
   onRemove: () => void
   onSave: () => void
   onEdit?: (data: unknown) => void
+  isSaving?: boolean
 }
 
-export const EnrichmentPreview = ({ data, onRemove, onSave, onEdit }: EnrichmentPreviewProps) => {
+export const EnrichmentPreview = ({ data, onRemove, onSave, onEdit, isSaving }: EnrichmentPreviewProps) => {
   const { t } = useTranslation()
   const enrichmentData = data as EnrichmentPreviewData
 
@@ -35,6 +36,7 @@ export const EnrichmentPreview = ({ data, onRemove, onSave, onEdit }: Enrichment
       onAccept={onSave}
       onReject={onRemove}
       onEdit={onEdit ? () => onEdit(data) : undefined}
+      isLoading={isSaving}
     >
       <DiffBlock current={current} proposed={proposed} renderHtml />
     </ProposalCard>

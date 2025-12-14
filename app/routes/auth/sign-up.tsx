@@ -2,7 +2,6 @@ import { SignUpPage } from '@/pages/auth/sign-up-page'
 import { getMeta } from '@/shared/lib/get-meta'
 
 export const handle = {
-  hideAuthButtons: true,
   hideFooter: true,
   centered: true
 }

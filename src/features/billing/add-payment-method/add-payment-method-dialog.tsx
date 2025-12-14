@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ChevronRight, CreditCard, Eye, EyeOff, Lock, Plus, Wallet } from 'lucide-react'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/shared/components/button'
@@ -51,6 +51,7 @@ interface AddPaymentMethodDialogProps {
   onAddCard: (data: PaymentMethodInput) => void
   onAddCrypto: (data: CryptoWalletInput) => void
   loadingCard?: boolean
+  loadingCrypto?: boolean
   trigger?: React.ReactNode
 }
 
@@ -129,6 +130,7 @@ export const AddPaymentMethodDialog = ({
   onAddCard,
   onAddCrypto,
   loadingCard,
+  loadingCrypto,
   trigger
 }: AddPaymentMethodDialogProps) => {
   const { t } = useTranslation()
@@ -138,6 +140,18 @@ export const AddPaymentMethodDialog = ({
   // Card form state
   const [showCvc, setShowCvc] = useState(false)
   const [cardBrand, setCardBrand] = useState<CardBrand>('unknown')
+
+  // Track if crypto mutation was initiated
+  const prevLoadingCrypto = useRef(false)
+
+  // Close dialog when crypto mutation completes successfully
+  useEffect(() => {
+    // If was loading and now not loading, mutation completed
+    if (prevLoadingCrypto.current && !loadingCrypto) {
+      resetAndClose()
+    }
+    prevLoadingCrypto.current = loadingCrypto || false
+  }, [loadingCrypto])
 
   const cardForm = useForm<AddPaymentMethodValues>({
     resolver: zodResolver(addPaymentMethodSchema),
@@ -193,8 +207,11 @@ export const AddPaymentMethodDialog = ({
   }
 
   const handleCryptoSuccess = (network: CryptoNetwork, address: string) => {
+    console.log('[AddPaymentMethodDialog] handleCryptoSuccess called:', { network, address })
     onAddCrypto({ network, address })
-    resetAndClose()
+    console.log('[AddPaymentMethodDialog] onAddCrypto called')
+    // Don't close immediately - let the mutation complete
+    // Dialog will close via useEffect watching loadingCrypto
   }
 
   const resetAndClose = () => {
@@ -428,6 +445,7 @@ export const AddPaymentMethodDialog = ({
                 parentLabel={t('billing.addPaymentMethod.selectTitle')}
                 currentLabel={t('billing.crypto.title')}
                 onBack={handleBack}
+                disabled={loadingCrypto}
               />
               <DialogDescription>{t('billing.crypto.description')}</DialogDescription>
             </DialogHeader>

@@ -1,4 +1,4 @@
-import { Bot, Check, Copy, FileText, Loader2, Pencil, RefreshCw, User } from 'lucide-react'
+import { Bot, Check, ChevronDown, Copy, Loader2, Pencil, RefreshCw, User } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Markdown from 'react-markdown'
@@ -13,6 +13,7 @@ import { Textarea } from '@/shared/components/textarea'
 import { toast } from '@/shared/components/toast'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/components/tooltip'
 import { cn } from '@/shared/lib/cn'
+import { useCopyToClipboard } from '@/shared/lib/use-copy-to-clipboard'
 import type { ChatMessage, PreviewCard, ResolvedPreview } from '../model/ai-assist.types'
 import { CollapsibleProposal } from './collapsible-proposal'
 import { PreviewCardComponent } from './preview-card'
@@ -20,6 +21,8 @@ import { PreviewCardComponent } from './preview-card'
 interface ChatMessageListProps {
   messages: ChatMessage[]
   isStreaming: boolean
+  /** Set of preview keys that are currently being saved (for double-click prevention) */
+  savingPreviews?: Set<string>
   onRemovePreview: (messageId: string, previewId: string) => void
   onSavePreview: (messageId: string, preview: PreviewCard) => void
   onRejectPreview: (messageId: string, previewId: string) => void
@@ -35,6 +38,7 @@ interface ChatMessageListProps {
 export const ChatMessageList = ({
   messages,
   isStreaming,
+  savingPreviews,
   onRemovePreview,
   onSavePreview,
   onRejectPreview,
@@ -48,12 +52,26 @@ export const ChatMessageList = ({
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const [hoveredMessageId, setHoveredMessageId] = useState<string | null>(null)
   const [editingMessageId, setEditingMessageId] = useState<string | null>(null)
+  const [expandedSources, setExpandedSources] = useState<Set<string>>(new Set())
+  const { copy } = useCopyToClipboard()
+
+  // Хелпер для проверки, сохраняется ли превью
+  const isPreviewSaving = (messageId: string, previewId: string) =>
+    savingPreviews?.has(`${messageId}:${previewId}`) ?? false
+
+  // Проверяем, сохраняется ли хотя бы один превью из списка
+  const isAnyPreviewSaving = (messageId: string, previews: PreviewCard[]) =>
+    previews.some(p => isPreviewSaving(messageId, p.id))
   const [editValue, setEditValue] = useState('')
   const editTextareaRef = useRef<HTMLTextAreaElement>(null)
 
   const handleCopy = async (content: string) => {
-    await navigator.clipboard.writeText(content)
-    toast.success(t('common.copied', 'Copied'))
+    const success = await copy(content)
+    if (success) {
+      toast.success(t('common.copied', 'Copied'))
+    } else {
+      toast.error('Failed to copy')
+    }
   }
 
   const handleStartEdit = (messageId: string, content: string) => {
@@ -171,7 +189,7 @@ export const ChatMessageList = ({
                 )}
               >
                 {message.role === 'assistant' ? (
-                  <div className='prose prose-sm dark:prose-invert max-w-none prose-p:my-1 prose-headings:my-2 prose-ul:my-1 prose-ol:my-1 prose-li:my-0.5 prose-pre:my-2 prose-code:text-xs prose-code:bg-background/50 prose-code:px-1 prose-code:py-0.5 prose-code:rounded'>
+                  <div className='prose prose-sm max-w-none'>
                     <Markdown remarkPlugins={[remarkGfm]}>
                       {(() => {
                         let content = message.content
@@ -188,7 +206,7 @@ export const ChatMessageList = ({
                             }
                           }
                         }
-                        return content.replace(/\s*[•·]\s*/g, '\n- ').replace(/^\s*-\s*$/gm, '')
+                        return content
                       })()}
                     </Markdown>
                   </div>
@@ -199,22 +217,40 @@ export const ChatMessageList = ({
                 {/* Source Nodes (RAG references) */}
                 {message.sourceNodes && message.sourceNodes.length > 0 && (
                   <div className='mt-3 pt-3 border-t border-border/50'>
-                    <div className='flex items-center gap-1.5 text-xs text-muted-foreground mb-2'>
-                      <FileText className='w-3 h-3' />
-                      <span>{t('ai.chat.sources', 'Sources')}</span>
-                    </div>
-                    <div className='flex flex-wrap gap-1.5'>
-                      {message.sourceNodes.map(node => (
-                        <Badge
-                          key={node.id}
-                          variant='secondary'
-                          className='text-xs font-normal cursor-default'
-                          title={`${node.label} (${node.type})`}
-                        >
-                          {node.label}
-                        </Badge>
-                      ))}
-                    </div>
+                    <button
+                      onClick={() => {
+                        const newExpanded = new Set(expandedSources)
+                        if (newExpanded.has(message.id)) {
+                          newExpanded.delete(message.id)
+                        } else {
+                          newExpanded.add(message.id)
+                        }
+                        setExpandedSources(newExpanded)
+                      }}
+                      className='flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mb-2 w-full'
+                    >
+                      <span>{t('ai.chat.sources', 'Sources')} ({message.sourceNodes.length})</span>
+                      <ChevronDown
+                        className={cn(
+                          'w-3 h-3 transition-transform ml-auto',
+                          expandedSources.has(message.id) && 'rotate-180'
+                        )}
+                      />
+                    </button>
+                    {expandedSources.has(message.id) && (
+                      <div className='flex flex-wrap gap-1.5'>
+                        {message.sourceNodes.map(node => (
+                          <Badge
+                            key={node.id}
+                            variant='secondary'
+                            className='text-xs font-normal cursor-default'
+                            title={`${node.label} (${node.type})`}
+                          >
+                            {node.label}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -237,6 +273,7 @@ export const ChatMessageList = ({
                     preview={preview}
                     onRemove={() => onRejectPreview(message.id, preview.id)}
                     onSave={() => onSavePreview(message.id, preview)}
+                    isSaving={isPreviewSaving(message.id, preview.id)}
                   />
                 ))}
 
@@ -244,13 +281,18 @@ export const ChatMessageList = ({
                 {message.preview.length > 1 && (
                   <Button
                     className='w-full'
+                    disabled={isAnyPreviewSaving(message.id, message.preview)}
                     onClick={() => {
                       message.preview?.forEach(preview => {
                         onSavePreview(message.id, preview)
                       })
                     }}
                   >
-                    <Check className='h-4 w-4 mr-2' />
+                    {isAnyPreviewSaving(message.id, message.preview) ? (
+                      <Loader2 className='h-4 w-4 mr-2 animate-spin' />
+                    ) : (
+                      <Check className='h-4 w-4 mr-2' />
+                    )}
                     {t('ai.chat.applyAll', {
                       count: message.preview.length,
                       defaultValue: `Apply all (${message.preview.length})`
@@ -298,7 +340,7 @@ export const ChatMessageList = ({
                           className='h-7 w-7 text-muted-foreground hover:text-foreground'
                           onClick={() => handleStartEdit(message.id, message.content)}
                         >
-                          <Pencil className='h-2.5 w-2.5' />
+                          <Pencil className='h-3.5 w-3.5' />
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent side='bottom'>
@@ -314,7 +356,7 @@ export const ChatMessageList = ({
                         className='h-7 w-7 text-muted-foreground hover:text-foreground'
                         onClick={() => handleCopy(message.content)}
                       >
-                        <Copy className='h-2.5 w-2.5' />
+                        <Copy className='h-3.5 w-3.5' />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent side='bottom'>
@@ -339,7 +381,7 @@ export const ChatMessageList = ({
                         className='h-7 w-7 text-muted-foreground hover:text-foreground'
                         onClick={() => handleCopy(message.content)}
                       >
-                        <Copy className='h-2.5 w-2.5' />
+                        <Copy className='h-3.5 w-3.5' />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent side='bottom'>
@@ -355,7 +397,7 @@ export const ChatMessageList = ({
                           className='h-7 w-7 text-muted-foreground hover:text-foreground'
                           onClick={onRegenerate}
                         >
-                          <RefreshCw className='h-2.5 w-2.5' />
+                          <RefreshCw className='h-3.5 w-3.5' />
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent side='bottom'>

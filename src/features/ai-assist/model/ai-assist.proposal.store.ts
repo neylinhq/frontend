@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { v4 as uuidv4 } from 'uuid'
 
 const MAX_ACTIONS = 30
 
@@ -42,7 +43,7 @@ export const useProposalHistoryStore = create<ProposalHistoryState & ProposalHis
 
       recordAction: actionData => {
         const { actions, currentIndex } = get()
-        const actionId = crypto.randomUUID()
+        const actionId = uuidv4()
 
         // Truncate forward history if not at end
         const newActions =

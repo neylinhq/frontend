@@ -104,6 +104,24 @@ export const useAddPaymentMethod = () => {
   })
 }
 
+export const useAddCryptoPaymentMethod = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (data: { walletAddress: string; network: string; currency: string }) => {
+      console.log('[useAddCryptoPaymentMethod] mutationFn called with:', data)
+      return subscriptionApi.addCryptoPaymentMethod(data)
+    },
+    onSuccess: (result) => {
+      console.log('[useAddCryptoPaymentMethod] onSuccess, result:', result)
+      queryClient.invalidateQueries({ queryKey: subscriptionKeys.paymentMethods() })
+    },
+    onError: (error) => {
+      console.error('[useAddCryptoPaymentMethod] onError:', error)
+    }
+  })
+}
+
 export const useRemovePaymentMethod = () => {
   const queryClient = useQueryClient()
 

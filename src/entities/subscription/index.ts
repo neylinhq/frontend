@@ -13,6 +13,7 @@ export {
 export { subscriptionApi } from './subscription.api'
 export {
   subscriptionKeys,
+  useAddCryptoPaymentMethod,
   useAddPaymentMethod,
   useCancelSubscription,
   useCreateBillingPortalSession,

@@ -225,7 +225,13 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
   const menuRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const turnIntoRef = useRef<HTMLDivElement>(null)
+  const turnIntoTriggerRef = useRef<HTMLButtonElement>(null)
+  const colorTriggerRef = useRef<HTMLButtonElement>(null)
+  const moreTriggerRef = useRef<HTMLButtonElement>(null)
   const moreMenuRef = useRef<HTMLDivElement>(null)
+
+  // Track dropdown positioning (top or bottom)
+  const [dropdownSide, setDropdownSide] = useState<'top' | 'bottom'>('bottom')
 
   // Derived state for cleaner checks
   const isLinkInputOpen = menuState.activeMenu === 'link'
@@ -309,34 +315,91 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
     }
   }, [isLinkInputOpen])
 
+  // Determine dropdown positioning based on viewport space
+  useEffect(() => {
+    const activeMenu = menuState.activeMenu
+    if (activeMenu === 'closed' || activeMenu === 'link') {
+      return
+    }
+
+    // Get the trigger button for the active menu
+    let triggerRef: React.RefObject<HTMLButtonElement | null> | null = null
+    let dropdownHeight = 280 // approximate height
+
+    if (activeMenu === 'turnInto') {
+      triggerRef = turnIntoTriggerRef
+      dropdownHeight = 320 // 8 items * ~40px
+    } else if (activeMenu === 'color') {
+      triggerRef = colorTriggerRef
+      dropdownHeight = 360 // color picker is taller
+    } else if (activeMenu === 'more') {
+      triggerRef = moreTriggerRef
+      dropdownHeight = 120 // 3 items
+    }
+
+    if (!triggerRef?.current) {
+      return
+    }
+
+    const rect = triggerRef.current.getBoundingClientRect()
+    const viewportHeight = window.innerHeight
+    const spaceBelow = viewportHeight - rect.bottom
+    const spaceAbove = rect.top
+
+    // Open upward if not enough space below AND there's more space above
+    if (spaceBelow < dropdownHeight + 16 && spaceAbove > spaceBelow) {
+      setDropdownSide('top')
+    } else {
+      setDropdownSide('bottom')
+    }
+  }, [menuState.activeMenu])
+
   // Track last known selection to detect actual changes
   const lastSelectionRef = useRef<{ from: number; to: number } | null>(null)
+  const updateTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  // Track when we last had a non-empty selection (for triple-click handling)
+  const lastNonEmptyTimeRef = useRef<number>(0)
 
   const updateMenu = useCallback(() => {
     const { selection } = editor.state
     const { from, to } = selection
-
-    // Only react to actual selection changes, not intermediate states
     const hasSelection = from !== to
-    const lastSelection = lastSelectionRef.current
-    const selectionChanged = !lastSelection || lastSelection.from !== from || lastSelection.to !== to
 
-    // Update last selection ref
-    lastSelectionRef.current = { from, to }
+    // Clear any pending timeout
+    if (updateTimeoutRef.current) {
+      clearTimeout(updateTimeoutRef.current)
+      updateTimeoutRef.current = null
+    }
 
-    // No selection = hide menu
+    // No selection = schedule hide (debounce to handle triple-click)
     if (!hasSelection) {
-      // Only hide if menu is currently visible (avoid unnecessary re-renders)
-      if (isVisible) {
-        setIsVisible(false)
-        dispatch({ type: 'CLOSE_ALL' })
-      }
+      // Check how recently we had a non-empty selection
+      // Triple-click causes: selection -> empty -> new selection in rapid succession
+      const timeSinceNonEmpty = Date.now() - lastNonEmptyTimeRef.current
+
+      // If we had a selection < 200ms ago, this might be triple-click intermediate state
+      // Use longer delay to let the final selection settle
+      const delay = timeSinceNonEmpty < 200 ? 150 : 50
+
+      updateTimeoutRef.current = setTimeout(() => {
+        // Re-check selection after delay
+        const { from: newFrom, to: newTo } = editor.state.selection
+        if (newFrom === newTo && isVisible) {
+          setIsVisible(false)
+          dispatch({ type: 'CLOSE_ALL' })
+        }
+      }, delay)
       return
     }
 
-    // Selection exists - show/update menu
+    // Selection exists - record timestamp and update immediately
+    lastNonEmptyTimeRef.current = Date.now()
+
+    const lastSelection = lastSelectionRef.current
+    const selectionChanged = !lastSelection || lastSelection.from !== from || lastSelection.to !== to
+    lastSelectionRef.current = { from, to }
+
     if (!selectionChanged && isVisible) {
-      // Selection didn't change and menu is visible - skip update
       return
     }
 
@@ -412,6 +475,10 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
     return () => {
       editor.off('selectionUpdate', updateMenu)
       editor.off('transaction', updateMenu)
+      // Cleanup timeout
+      if (updateTimeoutRef.current) {
+        clearTimeout(updateTimeoutRef.current)
+      }
     }
   }, [editor, updateMenu])
 
@@ -559,6 +626,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
       {/* Turn Into Dropdown */}
       <div className='relative'>
         <button
+          ref={turnIntoTriggerRef}
           type='button'
           onClick={() => dispatch({ type: 'TOGGLE_MENU', menu: 'turnInto' })}
           aria-haspopup='listbox'
@@ -576,7 +644,11 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
         {isTurnIntoOpen && (
           <div
             ref={turnIntoRef}
-            className={cn(styles.dropdown, 'left-0 w-[180px] overflow-y-auto')}
+            className={cn(
+              styles.dropdown,
+              dropdownSide === 'top' && styles.dropdownTop,
+              'left-0 w-[180px] overflow-y-auto'
+            )}
             role='listbox'
             aria-label={t('editor.bubble.turnInto')}
           >
@@ -658,6 +730,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
       {/* Color Picker */}
       <div className='relative'>
         <ToolbarButton
+          buttonRef={colorTriggerRef}
           onClick={() => dispatch({ type: 'TOGGLE_MENU', menu: 'color' })}
           isActive={isColorPickerOpen}
           aria-haspopup='dialog'
@@ -671,7 +744,11 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
 
         {isColorPickerOpen && (
           <div
-            className={cn(styles.dropdown, 'left-0 w-[200px] py-1.5')}
+            className={cn(
+              styles.dropdown,
+              dropdownSide === 'top' && styles.dropdownTop,
+              'left-0 w-[200px] py-1.5'
+            )}
             role='dialog'
             aria-label={t('editor.bubble.textColor')}
           >
@@ -773,6 +850,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
       {/* More Menu */}
       <div className='relative'>
         <ToolbarButton
+          buttonRef={moreTriggerRef}
           onClick={() => dispatch({ type: 'TOGGLE_MENU', menu: 'more' })}
           isActive={isMoreMenuOpen}
           aria-haspopup='menu'
@@ -785,7 +863,11 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
         {isMoreMenuOpen && (
           <div
             ref={moreMenuRef}
-            className={cn(styles.dropdown, 'right-0 w-[160px]')}
+            className={cn(
+              styles.dropdown,
+              dropdownSide === 'top' && styles.dropdownTop,
+              'right-0 w-[160px]'
+            )}
             role='menu'
             aria-label={t('editor.bubble.moreOptions')}
           >
@@ -848,6 +930,8 @@ interface ToolbarButtonProps {
   /** For dropdown triggers */
   'aria-haspopup'?: 'menu' | 'listbox' | 'dialog' | boolean
   'aria-expanded'?: boolean
+  /** Ref for positioning dropdowns */
+  buttonRef?: React.RefObject<HTMLButtonElement | null>
 }
 
 const ToolbarButton = ({
@@ -858,10 +942,12 @@ const ToolbarButton = ({
   isToggle = false,
   'aria-label': ariaLabel,
   'aria-haspopup': ariaHaspopup,
-  'aria-expanded': ariaExpanded
+  'aria-expanded': ariaExpanded,
+  buttonRef
 }: ToolbarButtonProps) => {
   return (
     <button
+      ref={buttonRef}
       type='button'
       onClick={onClick}
       disabled={disabled}

@@ -1,7 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { HelpCircle, Mail, Send } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { Link, useNavigate } from 'react-router'
+import { Link, useLocation, useNavigate } from 'react-router'
 import { sessionApi } from '@/entities/session'
 import { useLoaderUser } from '@/entities/user'
 import { ModeSelect } from '@/features/theme/mode-select'
@@ -24,17 +24,22 @@ import {
 import { LanguageSelect } from '@/shared/components/language-switcher'
 import { SUPPORT_CONTACTS } from '@/shared/config'
 import { getShortcut } from '@/shared/lib/platform'
-import { USER_NAV_LOGOUT_ITEM, USER_NAV_MAIN_SECTION } from './user-nav.constants'
+import { getUserNavMainSection, USER_NAV_LOGOUT_ITEM } from './user-nav.constants'
 
 export const UserNav = () => {
   const user = useLoaderUser()
   const navigate = useNavigate()
+  const location = useLocation()
   const { t } = useTranslation()
   const queryClient = useQueryClient()
 
   if (!user) {
     return null
   }
+
+  // Check if user is in dashboard
+  const isDashboard = location.pathname.startsWith('/dashboard')
+  const mainMenuItems = getUserNavMainSection(isDashboard)
 
   const handleLogout = async () => {
     try {
@@ -67,7 +72,7 @@ export const UserNav = () => {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          {USER_NAV_MAIN_SECTION.map(item => {
+          {mainMenuItems.map(item => {
             const Icon = item.icon
             const shortcut = getShortcut(item.shortcut)
 

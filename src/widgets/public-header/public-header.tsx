@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Link, NavLink } from 'react-router'
 import { ModeSelect } from '@/features/theme/mode-select'
 import { PaletteSelect } from '@/features/theme/palette-select'
+import { AuthNav } from '@/widgets/auth-nav'
 import { Button } from '@/shared/components/button'
 import { LanguageSelect } from '@/shared/components/language-switcher'
 import { Logo } from '@/shared/components/logo'
@@ -12,11 +13,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/shared/components/sheet'
 import { AUTH_ROUTES, ROUTES } from '@/shared/config'
 import { cn } from '@/shared/lib/cn'
 
-interface PublicHeaderProps {
-  hideAuthButtons?: boolean
-}
-
-export const PublicHeader = ({ hideAuthButtons }: PublicHeaderProps) => {
+export const PublicHeader = () => {
   const { t } = useTranslation()
 
   return (
@@ -32,18 +29,8 @@ export const PublicHeader = ({ hideAuthButtons }: PublicHeaderProps) => {
             <ModeSelect compact />
           </div>
 
-          {/* Desktop auth buttons */}
-          {!hideAuthButtons && (
-            <>
-              <div className='hidden md:block h-4 w-px bg-border mx-1' />
-              <Button asChild variant='ghost' size='sm' className='hidden md:inline-flex'>
-                <Link to={AUTH_ROUTES.signIn}>{t('home.cta.signIn', 'Sign in')}</Link>
-              </Button>
-              <Button asChild size='sm' className='hidden md:inline-flex'>
-                <Link to={AUTH_ROUTES.signUp}>{t('home.cta.getStarted', 'Get Started')}</Link>
-              </Button>
-            </>
-          )}
+          {/* Desktop auth */}
+          <AuthNav compact />
 
           {/* Mobile menu - always visible */}
           <Sheet>
@@ -67,17 +54,13 @@ export const PublicHeader = ({ hideAuthButtons }: PublicHeaderProps) => {
                   {t('home.nav.pricing')}
                 </MobileNavItem>
 
-                {!hideAuthButtons && (
-                  <>
-                    <Separator className='my-3' />
-                    <MobileNavItem to={AUTH_ROUTES.signIn} icon={LogIn}>
-                      {t('home.cta.signIn', 'Sign in')}
-                    </MobileNavItem>
-                    <MobileNavItem to={AUTH_ROUTES.signUp} icon={Rocket}>
-                      {t('home.cta.getStarted', 'Get Started')}
-                    </MobileNavItem>
-                  </>
-                )}
+                <Separator className='my-3' />
+                <MobileNavItem to={AUTH_ROUTES.signIn} icon={LogIn}>
+                  {t('home.cta.signIn', 'Sign in')}
+                </MobileNavItem>
+                <MobileNavItem to={AUTH_ROUTES.signUp} icon={Rocket}>
+                  {t('home.cta.getStarted', 'Get Started')}
+                </MobileNavItem>
               </div>
 
               {/* Theme controls */}

@@ -1,4 +1,4 @@
-import { Check, Pencil, X } from 'lucide-react'
+import { Check, Loader2, Pencil, X } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/shared/components/button'
@@ -19,6 +19,8 @@ interface ProposalCardProps {
   variant?: 'default' | 'compact'
   /** Additional class names */
   className?: string
+  /** Loading state - disables buttons and shows spinner */
+  isLoading?: boolean
 }
 
 export const ProposalCard = ({
@@ -28,7 +30,8 @@ export const ProposalCard = ({
   onReject,
   onEdit,
   variant = 'default',
-  className
+  className,
+  isLoading = false
 }: ProposalCardProps) => {
   const { t } = useTranslation()
 
@@ -46,18 +49,22 @@ export const ProposalCard = ({
 
       {/* Actions */}
       <div className='px-3 py-2 border-t border-border flex justify-end gap-2'>
-        <Button size='sm' variant='ghost' onClick={onReject} className='text-muted-foreground'>
+        <Button size='sm' variant='ghost' onClick={onReject} className='text-muted-foreground' disabled={isLoading}>
           <X className='h-3.5 w-3.5 mr-1' />
           {t('common.dismiss', 'Dismiss')}
         </Button>
         {onEdit && (
-          <Button size='sm' variant='outline' onClick={onEdit}>
+          <Button size='sm' variant='outline' onClick={onEdit} disabled={isLoading}>
             <Pencil className='h-3.5 w-3.5 mr-1' />
             {t('common.edit', 'Edit')}
           </Button>
         )}
-        <Button size='sm' onClick={onAccept}>
-          <Check className='h-3.5 w-3.5 mr-1' />
+        <Button size='sm' onClick={onAccept} disabled={isLoading}>
+          {isLoading ? (
+            <Loader2 className='h-3.5 w-3.5 mr-1 animate-spin' />
+          ) : (
+            <Check className='h-3.5 w-3.5 mr-1' />
+          )}
           {t('common.apply', 'Apply')}
         </Button>
       </div>

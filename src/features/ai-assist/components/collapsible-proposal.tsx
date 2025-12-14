@@ -1,4 +1,4 @@
-import { Check, ChevronDown, ChevronRight, Undo2, X } from 'lucide-react'
+import { ChevronDown, ChevronRight, Undo2 } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/shared/components/button'
@@ -13,39 +13,36 @@ import { DiffBlock } from './proposal-card'
 interface CollapsibleProposalProps {
   preview: ResolvedPreview
   onUndo?: () => void
-  canUndo?: boolean
   className?: string
 }
 
 export const CollapsibleProposal = ({
   preview,
   onUndo,
-  canUndo = true,
   className
 }: CollapsibleProposalProps) => {
   const { t } = useTranslation()
   const [isExpanded, setIsExpanded] = useState(false)
 
   const isApproved = preview.status === 'approved'
-  const StatusIcon = isApproved ? Check : X
 
-  // Get summary based on preview type
+  // Get summary based on preview type (lowercase for parenthetical display)
   const getSummary = (): string => {
     switch (preview.type) {
       case 'enrichment': {
         const data = preview.data as EnrichmentPreviewData
-        return t(`ai.fields.${data.field}`, data.field)
+        return t(`ai.fields.${data.field}`, data.field).toLowerCase()
       }
       case 'exercise': {
         const data = preview.data as ExercisePreviewData
-        return data.exercise?.type || t('ai.exercises.exercise', 'Exercise')
+        return (data.exercise?.type || t('ai.exercises.exercise', 'exercise')).toLowerCase()
       }
       case 'edge':
-        return t('ai.proposals.newEdge', 'New connection')
+        return t('ai.proposals.newEdge', 'connection').toLowerCase()
       case 'node':
-        return t('ai.proposals.newNode', 'New node')
+        return t('ai.proposals.newNode', 'node').toLowerCase()
       default:
-        return t('ai.proposals.change', 'Change')
+        return t('ai.proposals.change', 'change').toLowerCase()
     }
   }
 
@@ -67,23 +64,15 @@ export const CollapsibleProposal = ({
           <ChevronRight className='h-3.5 w-3.5 text-muted-foreground flex-shrink-0' />
         )}
 
-        {/* Status icon */}
-        <StatusIcon
-          className={cn(
-            'h-3.5 w-3.5 flex-shrink-0',
-            isApproved ? 'text-green-600' : 'text-muted-foreground'
-          )}
-        />
-
         {/* Summary text */}
         <span className='flex-1 text-xs text-muted-foreground truncate'>
           {isApproved
-            ? t('ai.proposals.applied', 'Applied: {{summary}}', { summary: getSummary() })
-            : t('ai.proposals.dismissed', 'Dismissed: {{summary}}', { summary: getSummary() })}
+            ? t('ai.proposals.applied', 'Applied ({{summary}})', { summary: getSummary() })
+            : t('ai.proposals.dismissed', 'Dismissed ({{summary}})', { summary: getSummary() })}
         </span>
 
-        {/* Undo button - only show if canUndo and approved */}
-        {canUndo && onUndo && isApproved && (
+        {/* Undo/Restore button */}
+        {onUndo && (
           <Button
             size='sm'
             variant='ghost'
@@ -94,7 +83,7 @@ export const CollapsibleProposal = ({
             className='h-6 px-2 text-xs text-muted-foreground hover:text-foreground'
           >
             <Undo2 className='h-3 w-3 mr-1' />
-            {t('common.undo', 'Undo')}
+            {isApproved ? t('common.undo', 'Undo') : t('common.restore', 'Restore')}
           </Button>
         )}
       </button>
@@ -104,12 +93,12 @@ export const CollapsibleProposal = ({
         <div className='px-3 py-2 border-t border-border bg-muted/30'>
           <ProposalContent preview={preview} />
 
-          {/* Footer with undo for expanded view */}
-          {canUndo && onUndo && isApproved && (
+          {/* Footer with undo/restore for expanded view */}
+          {onUndo && (
             <div className='mt-3 pt-2 border-t border-border flex justify-end'>
               <Button size='sm' variant='outline' onClick={onUndo}>
                 <Undo2 className='h-3.5 w-3.5 mr-1' />
-                {t('common.undo', 'Undo')}
+                {isApproved ? t('common.undo', 'Undo') : t('common.restore', 'Restore')}
               </Button>
             </div>
           )}

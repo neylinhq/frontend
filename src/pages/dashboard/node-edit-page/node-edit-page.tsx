@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router'
 import type { Edge } from '@/entities/edge'
 import type { FullMap, Node } from '@/entities/map'
-import { useDeleteEdge, useDeleteNode, useFullMap, useUpdateNode } from '@/entities/map'
+import { useDeleteEdge, useDeleteNode, useFullMap, useNodeWithContent, useUpdateNode } from '@/entities/map'
 import type { NodeType } from '@/entities/node'
 import { AISuggestionsPanel } from '@/features/ai-assist/components/ai-suggestions-panel'
 import {
@@ -55,7 +55,7 @@ const SIDEBAR_DEFAULT_WIDTH = 360
 /** Minimum sidebar width */
 const SIDEBAR_MIN_WIDTH = 280
 /** Maximum sidebar width */
-const SIDEBAR_MAX_WIDTH = 600
+const SIDEBAR_MAX_WIDTH = 690
 
 /** Breakpoint for switching between mobile sheet and desktop sidebar (Tailwind lg) */
 const SIDEBAR_BREAKPOINT = 1024
@@ -132,6 +132,10 @@ export const NodeEditPage = ({
   const { data: mapData } = useFullMap(mapId)
   const map = mapData ?? initialMap
 
+  // Subscribe to node updates from React Query (for AI panel updates)
+  const { data: nodeData } = useNodeWithContent(mapId, nodeId)
+  const node = nodeData ?? currentNode
+
   const updateNodeMutation = useUpdateNode(mapId)
   const deleteNodeMutation = useDeleteNode(mapId)
   const deleteEdgeMutation = useDeleteEdge(mapId)
@@ -205,18 +209,18 @@ export const NodeEditPage = ({
 
   // Sync title from server
   useEffect(() => {
-    if (currentNode?.label) {
-      setTitle(currentNode.label)
+    if (node?.label) {
+      setTitle(node.label)
       requestAnimationFrame(resizeTitleTextarea)
     }
-  }, [currentNode?.label, resizeTitleTextarea])
+  }, [node?.label, resizeTitleTextarea])
 
   // Auto-save for title
   const debouncedTitleSave = useAutoSave((newTitle: string) => {
     if (!nodeId) {
       return
     }
-    if (newTitle.trim() && newTitle !== currentNode?.label) {
+    if (newTitle.trim() && newTitle !== node?.label) {
       updateNodeMutation.mutate(
         { id: nodeId, data: { label: newTitle.trim() } },
         { onError: () => toast.error(t('errors.failedSaveTitle')) }
@@ -274,7 +278,7 @@ export const NodeEditPage = ({
         data: {
           type: values.type,
           metadata: {
-            ...currentNode.metadata,
+            ...node.metadata,
             tags: values.tags,
             complexity: values.complexity,
             confidence: values.confidence
@@ -369,11 +373,11 @@ export const NodeEditPage = ({
               </Button>
               <Badge
                 variant='secondary'
-                className={cn('text-xs font-medium', NODE_TYPE_CONFIG[currentNode.type]?.color)}
+                className={cn('text-xs font-medium', NODE_TYPE_CONFIG[node.type]?.color)}
               >
                 {t(
-                  `nodeTypes.${currentNode.type}`,
-                  NODE_TYPE_CONFIG[currentNode.type]?.label || currentNode.type
+                  `nodeTypes.${node.type}`,
+                  NODE_TYPE_CONFIG[node.type]?.label || node.type
                 )}
               </Badge>
               {updateNodeMutation.isPending && (
@@ -416,8 +420,10 @@ export const NodeEditPage = ({
           </div>
 
           {/* Editor */}
+          {/* key forces re-render when content changes externally (e.g., from AI panel) */}
           <BlockEditor
-            initialContent={currentNode.content ? htmlToEditor(currentNode.content) : undefined}
+            key={node.content ?? ''}
+            initialContent={node.content ? htmlToEditor(node.content) : undefined}
             onEditorUpdate={handleEditorChange}
             placeholder={t('nodeEdit.editorPlaceholder')}
             className='min-h-[500px]'
@@ -477,7 +483,7 @@ export const NodeEditPage = ({
                   {/* Node Metadata */}
                   <div className='border-b border-border/50 p-4'>
                     <NodeMetadataForm
-                      node={currentNode}
+                      node={node}
                       onSubmit={handleMetadataSubmit}
                       isPending={updateNodeMutation.isPending}
                     />
@@ -489,7 +495,7 @@ export const NodeEditPage = ({
                       {t('nodeEdit.connections')}
                     </h3>
                     <NodeConnectionsPanel
-                      node={currentNode}
+                      node={node}
                       edges={map.edges}
                       allNodes={map.nodes}
                       onEditEdge={handleEditEdge}
@@ -582,7 +588,7 @@ export const NodeEditPage = ({
                 {/* Node Metadata */}
                 <div className='border-b border-border/50 p-4'>
                   <NodeMetadataForm
-                    node={currentNode}
+                    node={node}
                     onSubmit={handleMetadataSubmit}
                     isPending={updateNodeMutation.isPending}
                   />
@@ -594,7 +600,7 @@ export const NodeEditPage = ({
                     {t('nodeEdit.connections')}
                   </h3>
                   <NodeConnectionsPanel
-                    node={currentNode}
+                    node={node}
                     edges={map.edges}
                     allNodes={map.nodes}
                     onEditEdge={handleEditEdge}
@@ -654,7 +660,7 @@ export const NodeEditPage = ({
             <AlertDialogDescription>
               {t('nodeEdit.deleteConfirmDescription', {
                 defaultValue: '"{{label}}" and {{count}} connections will be permanently deleted.',
-                label: currentNode.label,
+                label: node.label,
                 count: connectionsCount
               })}
             </AlertDialogDescription>

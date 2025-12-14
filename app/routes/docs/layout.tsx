@@ -1,6 +1,8 @@
+import type { LoaderFunctionArgs } from 'react-router'
 import { BookOpen, Package } from 'lucide-react'
 import { useState } from 'react'
 import { Outlet } from 'react-router'
+import { API_URL } from '@/shared/config/env'
 import { DocsSidebar, type DocsSidebarSection } from '@/shared/components/docs-sidebar'
 import { DocsLayout } from '@/widgets/docs-layout'
 
@@ -8,6 +10,48 @@ import { DocsLayout } from '@/widgets/docs-layout'
 export const handle = {
   bypassPublicLayout: true
 }
+
+// Server-side loader (SSR) - try to get user, but don't redirect if not authenticated
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const cookieHeader = request.headers.get('Cookie')
+
+  try {
+    const response = await fetch(`${API_URL}/users/me`, {
+      headers: {
+        ...(cookieHeader && { Cookie: cookieHeader })
+      }
+    })
+
+    if (!response.ok) {
+      return { user: null }
+    }
+
+    const data = await response.json()
+    return { user: data.data }
+  } catch {
+    return { user: null }
+  }
+}
+
+// Client-side loader
+export const clientLoader = async () => {
+  try {
+    const response = await fetch(`${API_URL}/users/me`, {
+      credentials: 'include'
+    })
+
+    if (!response.ok) {
+      return { user: null }
+    }
+
+    const data = await response.json()
+    return { user: data.data }
+  } catch {
+    return { user: null }
+  }
+}
+
+clientLoader.hydrate = true
 
 // Navigation structure - hardcoded English for technical documentation
 const NAV_SECTIONS: DocsSidebarSection[] = [

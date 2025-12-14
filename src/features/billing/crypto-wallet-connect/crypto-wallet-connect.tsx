@@ -32,7 +32,15 @@ interface CryptoWalletConnectContentProps {
 
 const STEPS: Step[] = ['network', 'wallet']
 
-const StepIndicator = ({ steps, currentStep }: { steps: Step[]; currentStep: Step }) => {
+const StepIndicator = ({
+  steps,
+  currentStep,
+  onStepClick
+}: {
+  steps: Step[]
+  currentStep: Step
+  onStepClick: (step: Step) => void
+}) => {
   const { t } = useTranslation()
   const currentIndex = steps.indexOf(currentStep)
 
@@ -45,20 +53,23 @@ const StepIndicator = ({ steps, currentStep }: { steps: Step[]; currentStep: Ste
     <div className='flex items-center gap-1 text-sm'>
       {steps.map((step, index) => {
         const isActive = index === currentIndex
-        const isCompleted = index < currentIndex
+        const isPast = index < currentIndex
 
         return (
           <div key={step} className='flex items-center'>
-            <span
+            <button
+              type='button'
+              onClick={() => isPast && onStepClick(step)}
+              disabled={!isPast}
               className={cn(
-                'transition-colors',
+                'transition-colors text-muted-foreground',
                 isActive && 'text-foreground font-medium',
-                isCompleted && 'text-brand',
-                !isActive && !isCompleted && 'text-muted-foreground'
+                isPast && 'hover:text-foreground cursor-pointer',
+                !isPast && 'cursor-default'
               )}
             >
               {labels[step]}
-            </span>
+            </button>
             {index < steps.length - 1 && (
               <ChevronRight className='h-4 w-4 mx-1 text-muted-foreground' />
             )}
@@ -134,6 +145,14 @@ export const CryptoWalletConnectContent = ({
     setMounted(true)
   }, [])
 
+  // Автоматически добавляем кошелек после подключения
+  useEffect(() => {
+    if (network && wallet.isConnected && wallet.address) {
+      console.log('[CryptoWalletConnect] Wallet connected, auto-adding to payment methods')
+      onSuccess(network, wallet.address)
+    }
+  }, [network, wallet.isConnected, wallet.address, onSuccess])
+
   // Reset state
   const resetState = useCallback(() => {
     setStep('network')
@@ -145,6 +164,8 @@ export const CryptoWalletConnectContent = ({
   const handleNetworkSelect = (selectedNetwork: CryptoNetwork) => {
     setNetwork(selectedNetwork)
     setError(null)
+    // Automatically go to wallet step
+    setStep('wallet')
   }
 
   // Wallet connection
@@ -156,6 +177,7 @@ export const CryptoWalletConnectContent = ({
 
     try {
       await wallet.connect()
+      // onSuccess will be called automatically by useEffect when wallet.isConnected becomes true
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to connect wallet')
     }
@@ -166,31 +188,7 @@ export const CryptoWalletConnectContent = ({
     setError(null)
   }
 
-  // Confirm wallet binding
-  const handleConfirm = () => {
-    if (network && wallet.address) {
-      onSuccess(network, wallet.address)
-      resetState()
-    }
-  }
-
   // Navigation
-  const canGoNext = () => {
-    switch (step) {
-      case 'network':
-        return network !== null
-      case 'wallet':
-        return wallet.isConnected && wallet.address !== null
-    }
-  }
-
-  const handleNext = () => {
-    const currentIndex = STEPS.indexOf(step)
-    if (currentIndex < STEPS.length - 1) {
-      setStep(STEPS[currentIndex + 1])
-    }
-  }
-
   const handleBack = () => {
     const currentIndex = STEPS.indexOf(step)
     if (currentIndex > 0) {
@@ -200,6 +198,8 @@ export const CryptoWalletConnectContent = ({
       externalOnBack()
     }
   }
+
+  const canSubmit = wallet.isConnected && wallet.address !== null
 
   const isLoading = wallet.isConnecting
 
@@ -223,7 +223,7 @@ export const CryptoWalletConnectContent = ({
 
       {/* Step indicator */}
       <div className='py-2'>
-        <StepIndicator steps={STEPS} currentStep={step} />
+        <StepIndicator steps={STEPS} currentStep={step} onStepClick={setStep} />
       </div>
 
       {/* Content */}
@@ -245,24 +245,6 @@ export const CryptoWalletConnectContent = ({
         )}
       </div>
 
-      {/* Footer */}
-      <DialogFooter className='gap-2 sm:gap-0'>
-        {(step !== 'network' || embedded) && (
-          <Button variant='outline' onClick={handleBack} disabled={isLoading}>
-            {t('common.back')}
-          </Button>
-        )}
-        {step === 'network' && (
-          <Button onClick={handleNext} disabled={!canGoNext() || isLoading}>
-            {t('common.next')}
-          </Button>
-        )}
-        {step === 'wallet' && (
-          <Button onClick={handleConfirm} disabled={!canGoNext() || isLoading}>
-            {t('billing.addPaymentMethod.submit')}
-          </Button>
-        )}
-      </DialogFooter>
     </>
   )
 }

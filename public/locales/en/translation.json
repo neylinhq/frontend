@@ -1167,7 +1167,8 @@
       "exercise": "Exercise {{n}}/{{total}}",
       "enrichment": "Enhancement Preview",
       "currentValue": "Current",
-      "proposedValue": "Proposed"
+      "proposedValue": "Proposed",
+      "newNode": "Create New Node"
     },
     "enrichment": {
       "saved": "Changes applied",

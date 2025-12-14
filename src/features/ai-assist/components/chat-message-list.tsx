@@ -347,11 +347,7 @@ export const ChatMessageList = ({
             <div
               className={cn(
                 'flex items-center gap-0.5 h-7 transition-opacity',
-                message.role === 'user'
-                  ? hoveredMessageId === message.id
-                    ? 'opacity-100'
-                    : 'opacity-0'
-                  : 'opacity-100' // AI actions always visible
+                hoveredMessageId === message.id ? 'opacity-100' : 'opacity-0'
               )}
             >
               {message.role === 'user' ? (

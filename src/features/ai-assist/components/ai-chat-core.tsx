@@ -279,8 +279,11 @@ export const AIChatCore = ({
     } catch (error) {
       console.error('[AI Chat] Save preview failed:', error)
       console.error('[AI Chat] Error stack:', (error as Error).stack)
+      // Extract error message from API response
+      const apiError = error as { data?: { error?: { message?: string } } }
+      const errorMessage = apiError.data?.error?.message || (error as Error).message || t('ai.saveFailed')
       toast.error(t('common.error'), {
-        description: t('ai.saveFailed')
+        description: errorMessage
       })
     } finally {
       // Убираем из Set после завершения (успех или ошибка)

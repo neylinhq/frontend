@@ -1,7 +1,6 @@
 import { Check, ChevronDown, ChevronRight, X } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { BadgeProps } from '@/shared/components/badge'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import { cn } from '@/shared/lib/cn'
@@ -12,25 +11,6 @@ interface ExerciseCardProps {
   index?: number
   total?: number
   className?: string
-}
-
-/** Get badge variant based on exercise type */
-const getExerciseBadgeVariant = (type: string | undefined): BadgeProps['variant'] => {
-  switch (type) {
-    case 'quiz':
-      return 'info'
-    case 'flashcard':
-      return 'brand'
-    case 'true_false':
-      return 'warning'
-    case 'fill_gaps':
-      return 'success'
-    case 'match':
-    case 'sequence':
-      return 'secondary'
-    default:
-      return 'secondary'
-  }
 }
 
 /**
@@ -81,7 +61,7 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
         {/* Header */}
         <div className='px-3 py-2 bg-muted/50 border-b border-border flex items-center justify-between'>
           <span className='text-xs font-medium text-muted-foreground'>{title}</span>
-          <Badge variant={getExerciseBadgeVariant(exerciseType)} className='text-[10px]'>
+          <Badge variant='secondary' className='text-[10px]'>
             {t(`ai.exercises.types.${exerciseType}`, exerciseType)}
           </Badge>
         </div>
@@ -167,7 +147,7 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
       <div className={cn('border border-border rounded-lg overflow-hidden bg-card', className)}>
         <div className='px-3 py-2 bg-muted/50 border-b border-border flex items-center justify-between'>
           <span className='text-xs font-medium text-muted-foreground'>{title}</span>
-          <Badge variant={getExerciseBadgeVariant(exerciseType)} className='text-[10px]'>
+          <Badge variant='secondary' className='text-[10px]'>
             {t('ai.exercises.types.true_false', 'True/False')}
           </Badge>
         </div>
@@ -233,7 +213,7 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
       <div className={cn('border border-border rounded-lg overflow-hidden bg-card', className)}>
         <div className='px-3 py-2 bg-muted/50 border-b border-border flex items-center justify-between'>
           <span className='text-xs font-medium text-muted-foreground'>{title}</span>
-          <Badge variant={getExerciseBadgeVariant(exerciseType)} className='text-[10px]'>
+          <Badge variant='secondary' className='text-[10px]'>
             {t('ai.exercises.types.flashcard', 'Flashcard')}
           </Badge>
         </div>
@@ -268,7 +248,7 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
     <div className={cn('border border-border rounded-lg overflow-hidden bg-card', className)}>
       <div className='px-3 py-2 bg-muted/50 border-b border-border flex items-center justify-between'>
         <span className='text-xs font-medium text-muted-foreground'>{title}</span>
-        <Badge variant={getExerciseBadgeVariant(exerciseType)} className='text-[10px]'>
+        <Badge variant='secondary' className='text-[10px]'>
           {exerciseType}
         </Badge>
       </div>

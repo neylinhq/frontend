@@ -1,11 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ChevronRight, CreditCard, Eye, EyeOff, Lock, Wallet } from 'lucide-react'
+import { CreditCard, Eye, EyeOff, Lock, Wallet } from 'lucide-react'
 import { useCallback, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import type { CryptoNetwork } from '@/entities/subscription'
 import { CryptoWalletConnectContent } from '@/features/billing/crypto-wallet-connect'
+import { Breadcrumb } from '@/shared/components/breadcrumb'
 import { Button } from '@/shared/components/button'
 import { CardBrandIcon } from '@/shared/components/card-brand-icon'
 import { DialogFooter } from '@/shared/components/dialog'
@@ -65,7 +66,7 @@ const SelectionCard = ({
       onClick={onClick}
       className={cn(
         'flex flex-col items-center justify-center gap-3 p-6 rounded-lg border-2 border-border',
-        'hover:border-brand hover:bg-accent/50 transition-all duration-200',
+        'hover:border-foreground/30 hover:bg-muted/30 transition-all duration-200',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
         'cursor-pointer'
       )}
@@ -79,32 +80,6 @@ const SelectionCard = ({
   )
 }
 
-const Breadcrumb = ({
-  parentLabel,
-  currentLabel,
-  onBack,
-  disabled
-}: {
-  parentLabel: string
-  currentLabel: string
-  onBack: () => void
-  disabled?: boolean
-}) => {
-  return (
-    <div className='flex items-center gap-1.5 text-sm mb-4'>
-      <button
-        type='button'
-        onClick={onBack}
-        disabled={disabled}
-        className='text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50'
-      >
-        {parentLabel}
-      </button>
-      <ChevronRight className='h-3.5 w-3.5 text-muted-foreground' />
-      <span className='text-foreground'>{currentLabel}</span>
-    </div>
-  )
-}
 
 export const AddPaymentMethodContent = ({
   onAddCard,
@@ -198,6 +173,7 @@ export const AddPaymentMethodContent = ({
           currentLabel={t('billing.addPaymentMethod.cardTitle')}
           onBack={handleBack}
           disabled={loading}
+          className='mb-4'
         />
 
         <Form {...cardForm}>
@@ -330,6 +306,7 @@ export const AddPaymentMethodContent = ({
         currentLabel={t('billing.crypto.title')}
         onBack={handleBack}
         disabled={loading}
+        className='mb-4'
       />
       <CryptoWalletConnectContent
         onSuccess={handleCryptoSuccess}

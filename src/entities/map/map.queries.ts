@@ -82,7 +82,7 @@ export const useCreateNode = (mapId: string) => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: mapApi.createNode,
+    mutationFn: (data: Parameters<typeof mapApi.createNode>[1]) => mapApi.createNode(mapId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: mapKeys.mapNodes(mapId) })
       queryClient.invalidateQueries({ queryKey: mapKeys.lists() })

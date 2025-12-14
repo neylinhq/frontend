@@ -36,12 +36,16 @@ export const MapChatPanel = ({ mapId }: MapChatPanelProps) => {
     if (previewCard.type === 'new_node') {
       const data = previewCard.data as NewNodePreviewData
 
-      // 1. Create node
+      // 1. Create node (with random position near center)
       const newNode = await createNodeMutation.mutateAsync({
         label: data.label,
         type: data.nodeType,
         description: data.description,
-        content: data.content || ''
+        content: data.content || '',
+        position: {
+          x: Math.random() * 200 - 100,
+          y: Math.random() * 200 - 100
+        }
       })
 
       // 2. Create connections (if suggested)

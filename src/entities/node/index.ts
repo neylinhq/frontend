@@ -1,5 +1,11 @@
 export { getNodeIcon } from './lib/node-icon'
-export { getComplexityColor, getNodeBgColor, getNodeBorderColor } from './lib/node-style'
+export {
+  getComplexityColor,
+  getNodeBgColor,
+  getNodeBorderColor,
+  getRatingColor,
+  getRatingBorderColor
+} from './lib/node-style'
 export type { NodeTypeConfig } from './node.constants'
 export { NODE_TYPE_CONFIGS } from './node.constants'
 export {

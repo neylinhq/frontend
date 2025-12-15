@@ -180,6 +180,11 @@ export const AIChatCore = ({
         content: t('ai.chat.error'),
         isStreaming: false
       })
+
+      console.log({
+        error
+      })
+
       toast.error(t('ai.chat.error'), {
         description: error instanceof Error ? error.message : 'An error occurred'
       })

@@ -22,8 +22,7 @@ export type Subscription = z.infer<typeof SubscriptionSchema>
 // Plan limits schema
 export const PlanLimitsSchema = z.object({
   maxMaps: z.number().nullable(), // null = unlimited
-  maxNodesPerMap: z.number().nullable(),
-  maxTotalNodes: z.number().nullable(),
+  maxNodesPerMap: z.number().nullable(), // limit per map
   aiModels: z.array(z.string()), // ['gpt-3.5-turbo', 'gpt-4', 'claude-sonnet', 'claude-opus']
   aiRequestsPerMonth: z.number().nullable()
 })
@@ -47,7 +46,6 @@ export type PlanDetails = z.infer<typeof PlanDetailsSchema>
 // Usage statistics schema
 export const UsageStatsSchema = z.object({
   mapsCount: z.number(),
-  totalNodesCount: z.number(),
   aiRequestsThisMonth: z.number(),
   storageUsedMB: z.number()
 })

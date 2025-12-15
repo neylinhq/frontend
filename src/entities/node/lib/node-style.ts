@@ -1,4 +1,5 @@
 import type { NodeType } from '../node.schema'
+import { getRatingTierColor, getRatingTierBorderColor, type RatingTier } from '@/shared/lib/rating'
 
 /**
  * Node Type Color System - 8 unique hues
@@ -48,10 +49,11 @@ export const getNodeBgColor = (type: NodeType): string => {
 }
 
 /**
- * Complexity colors using semantic system
+ * Complexity colors using semantic system (DEPRECATED - use getRatingTierColor instead)
  * - Basic: Neutral (gray)
  * - Intermediate: Knowledge (blue)
  * - Advanced: Conflict (red) - signals difficulty
+ * @deprecated Use getRatingTierColor from @/shared/lib/rating instead
  */
 export const getComplexityColor = (complexity?: 'basic' | 'intermediate' | 'advanced'): string => {
   if (!complexity) {
@@ -64,4 +66,20 @@ export const getComplexityColor = (complexity?: 'basic' | 'intermediate' | 'adva
     advanced: 'bg-complexity-advanced-bg text-complexity-advanced'
   }
   return colors[complexity]
+}
+
+/**
+ * Get badge color classes for rating tier
+ * Re-exports from shared/lib/rating for convenience
+ */
+export const getRatingColor = (tier: RatingTier | string | null): string => {
+  return getRatingTierColor(tier)
+}
+
+/**
+ * Get border color classes for rating tier
+ * Re-exports from shared/lib/rating for convenience
+ */
+export const getRatingBorderColor = (tier: RatingTier | string | null): string => {
+  return getRatingTierBorderColor(tier)
 }

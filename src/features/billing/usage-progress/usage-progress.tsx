@@ -40,15 +40,12 @@ export const UsageProgress = ({ usage, limits }: UsageProgressProps) => {
           <Progress value={calculatePercentage(usage.mapsCount, limits.maxMaps)} />
         </div>
 
-        {/* Nodes usage */}
+        {/* Nodes per map info */}
         <div className='space-y-2'>
           <div className='flex justify-between text-sm'>
-            <span>{t('billing.usage.nodes')}</span>
-            <span className='text-muted-foreground'>
-              {usage.totalNodesCount} / {formatLimit(limits.maxTotalNodes)}
-            </span>
+            <span>{t('billing.usage.nodesPerMap')}</span>
+            <span className='text-muted-foreground'>{formatLimit(limits.maxNodesPerMap)}</span>
           </div>
-          <Progress value={calculatePercentage(usage.totalNodesCount, limits.maxTotalNodes)} />
         </div>
 
         {/* AI requests usage */}

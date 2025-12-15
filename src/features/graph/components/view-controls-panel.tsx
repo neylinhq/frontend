@@ -11,6 +11,7 @@ import {
 import { memo, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { LightweightNode } from '@/entities/node'
+import { MapSettingsPopover } from '@/features/map-settings'
 import { Button } from '@/shared/components/button'
 import { Card } from '@/shared/components/card'
 import {
@@ -25,6 +26,7 @@ import { useGraphUI, useNodeSpacing } from '../model/graph.store'
 import { NodeSearch } from './node-search'
 
 interface ViewControlsPanelProps {
+  mapId: string
   zoom: number
   isFullscreen: boolean
   onZoomIn: () => void
@@ -38,6 +40,7 @@ interface ViewControlsPanelProps {
 
 export const ViewControlsPanel = memo(
   ({
+    mapId,
     zoom,
     isFullscreen,
     onZoomIn,
@@ -214,6 +217,11 @@ export const ViewControlsPanel = memo(
           >
             {isFullscreen ? <Minimize2 className='w-4 h-4' /> : <Maximize2 className='w-4 h-4' />}
           </Button>
+
+          <div className='h-4 w-px bg-border' />
+
+          {/* Map Settings */}
+          <MapSettingsPopover mapId={mapId} />
 
           {/* Search */}
           {nodes && nodes.length > 0 && onNodeSelect && (

@@ -1,9 +1,10 @@
 import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Node } from '@/entities/map'
-import { getComplexityColor, getNodeBorderColor } from '@/entities/node'
+import { getNodeBorderColor, getRatingColor } from '@/entities/node'
 import { Badge } from '@/shared/components/badge'
 import { cn } from '@/shared/lib/cn'
+import { getComplexityTier } from '@/shared/lib/rating'
 
 interface DrawerOverviewTabProps {
   node: Node
@@ -12,6 +13,10 @@ interface DrawerOverviewTabProps {
 
 export const DrawerOverviewTab = memo(({ node, className }: DrawerOverviewTabProps) => {
   const { t, i18n } = useTranslation()
+
+  // Calculate tier from complexity value
+  const complexityTier = getComplexityTier(node.complexity)
+  const complexity = node.complexity ?? null
 
   return (
     <div className={cn('space-y-6', className)}>
@@ -38,20 +43,15 @@ export const DrawerOverviewTab = memo(({ node, className }: DrawerOverviewTabPro
             </Badge>
           </div>
 
-          {/* Сложность */}
-          {node.metadata.complexity && (
+          {/* Complexity Tier */}
+          {complexityTier && (
             <div className='flex items-center gap-2'>
               <span className='text-xs text-muted-foreground w-20'>
                 {t('nodeDrawer.overview.complexity')}:
               </span>
-              <Badge
-                variant='secondary'
-                className={cn(
-                  'text-xs pointer-events-none',
-                  getComplexityColor(node.metadata.complexity)
-                )}
-              >
-                {node.metadata.complexity}
+              <Badge variant='secondary' className={cn('text-xs pointer-events-none', getRatingColor(complexityTier))}>
+                {complexityTier}
+                {complexity !== null && <span className='ml-1 opacity-70'>({complexity})</span>}
               </Badge>
             </div>
           )}

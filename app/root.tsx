@@ -15,7 +15,6 @@ import { WalletProviders } from '@/features/billing/crypto-wallet-connect/compon
 import { Toaster } from '@/shared/components/toast'
 import { TooltipProvider } from '@/shared/components/tooltip'
 import '@/shared/styles/globals.css'
-import '@/shared/styles/crypto.css'
 import type React from 'react'
 import { useEffect, useRef } from 'react'
 import { initI18n } from '@/app/i18n'

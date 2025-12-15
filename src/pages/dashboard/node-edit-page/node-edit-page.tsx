@@ -1,4 +1,3 @@
-import type { Editor } from '@tiptap/react'
 import {
   AlertCircle,
   ArrowLeft,
@@ -18,13 +17,8 @@ import type { FullMap, Node } from '@/entities/map'
 import { useDeleteEdge, useDeleteNode, useFullMap, useNodeWithContent, useUpdateNode } from '@/entities/map'
 import type { NodeType } from '@/entities/node'
 import { AISuggestionsPanel } from '@/features/ai-assist/components/ai-suggestions-panel'
-import {
-  BlockEditor,
-  editorToHTML,
-  GUTTER,
-  htmlToEditor,
-  htmlToPlainText
-} from '@/features/block-editor'
+import { GUTTER, htmlToPlainText } from '@/features/block-editor'
+import { UnifiedEditor } from '@/features/unified-editor'
 import { EdgeEditPopover } from '@/features/graph/components/edge-edit-popover'
 import { useEdgeManagementStore } from '@/features/graph/model/graph.edge.store'
 import { NodeConnectionsPanel } from '@/features/node-connections-panel'
@@ -228,13 +222,12 @@ export const NodeEditPage = ({
     }
   }, 1000)
 
-  // Auto-save for editor content
-  const debouncedContentSave = useAutoSave((editor: Editor) => {
+  // Auto-save for editor content (now receives HTML directly from UnifiedEditor)
+  const debouncedContentSave = useAutoSave((html: string) => {
     if (!nodeId) {
       return
     }
 
-    const html = editorToHTML(editor)
     const description = htmlToPlainText(html, 200)
 
     updateNodeMutation.mutate(
@@ -262,10 +255,10 @@ export const NodeEditPage = ({
     }
   }, [])
 
-  // Handler for editor content change
+  // Handler for editor content change (receives HTML from UnifiedEditor)
   const handleEditorChange = useCallback(
-    (editor: Editor) => {
-      debouncedContentSave(editor)
+    (html: string) => {
+      debouncedContentSave(html)
     },
     [debouncedContentSave]
   )
@@ -421,10 +414,10 @@ export const NodeEditPage = ({
 
           {/* Editor */}
           {/* key forces re-render when content changes externally (e.g., from AI panel) */}
-          <BlockEditor
+          <UnifiedEditor
             key={node.content ?? ''}
-            initialContent={node.content ? htmlToEditor(node.content) : undefined}
-            onEditorUpdate={handleEditorChange}
+            initialContent={node.content ?? ''}
+            onChange={handleEditorChange}
             placeholder={t('nodeEdit.editorPlaceholder')}
             className='min-h-[500px]'
           />

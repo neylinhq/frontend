@@ -1,0 +1,173 @@
+/**
+ * Markdown Editor Styles
+ *
+ * Styles for the CodeMirror-based Obsidian-style editor.
+ * Uses CSS variables for theme integration.
+ */
+
+.editor-wrapper {
+  position: relative;
+  min-height: 200px;
+}
+
+.editor {
+  /* Inherit font settings from parent */
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 1.6;
+
+  /* Remove default outline, rely on content styles */
+  outline: none;
+}
+
+/* Loading skeleton */
+.skeleton {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.skeleton-line {
+  height: 1em;
+  background: hsl(var(--muted));
+  border-radius: 4px;
+  margin-bottom: 0.75em;
+}
+
+.skeleton-line:nth-child(1) { width: 75%; }
+.skeleton-line:nth-child(2) { width: 100%; }
+.skeleton-line:nth-child(3) { width: 85%; }
+.skeleton-line:nth-child(4) { width: 80%; }
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Callout styles */
+.callout {
+  margin: 16px 0;
+  padding: 12px 16px;
+  border-radius: 6px;
+  border-left: 4px solid;
+}
+
+.callout-note {
+  background: hsl(210 100% 95%);
+  border-color: hsl(210 100% 50%);
+}
+
+.callout-info {
+  background: hsl(200 100% 95%);
+  border-color: hsl(200 100% 45%);
+}
+
+.callout-warning {
+  background: hsl(45 100% 94%);
+  border-color: hsl(45 100% 45%);
+}
+
+.callout-error,
+.callout-danger {
+  background: hsl(0 100% 96%);
+  border-color: hsl(0 70% 55%);
+}
+
+.callout-success {
+  background: hsl(120 60% 95%);
+  border-color: hsl(120 60% 40%);
+}
+
+.callout-tip {
+  background: hsl(270 60% 96%);
+  border-color: hsl(270 60% 55%);
+}
+
+.callout-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.callout-content {
+  color: hsl(var(--foreground) / 0.9);
+}
+
+/* Dark mode callouts */
+:global(.dark) .callout-note {
+  background: hsl(210 50% 15%);
+}
+
+:global(.dark) .callout-info {
+  background: hsl(200 50% 15%);
+}
+
+:global(.dark) .callout-warning {
+  background: hsl(45 50% 12%);
+}
+
+:global(.dark) .callout-error,
+:global(.dark) .callout-danger {
+  background: hsl(0 50% 15%);
+}
+
+:global(.dark) .callout-success {
+  background: hsl(120 30% 12%);
+}
+
+:global(.dark) .callout-tip {
+  background: hsl(270 30% 15%);
+}
+
+/* Math blocks */
+.math-block {
+  display: block;
+  padding: 16px;
+  margin: 16px 0;
+  background: hsl(var(--muted) / 0.5);
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: var(--font-mono, monospace);
+}
+
+.math-inline {
+  padding: 2px 4px;
+  background: hsl(var(--muted) / 0.5);
+  border-radius: 3px;
+  font-family: var(--font-mono, monospace);
+}
+
+/* Task list styles */
+.task-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.task-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.task-item input[type="checkbox"] {
+  margin-top: 4px;
+  cursor: pointer;
+}
+
+/* Code block enhancements */
+.code-block-wrapper {
+  position: relative;
+  margin: 16px 0;
+}
+
+.code-block-lang {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-size: 12px;
+  color: hsl(var(--muted-foreground));
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}

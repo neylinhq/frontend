@@ -6,17 +6,9 @@ import { useTranslation } from 'react-i18next'
 import { Badge } from '@/shared/components/badge'
 import { Input } from '@/shared/components/input'
 import { Label } from '@/shared/components/label'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/shared/components/select'
 import { Slider } from '@/shared/components/slider'
 import { useDebouncedCallback } from '@/shared/hooks'
 import { type NodeMetadataFormValues, nodeMetadataFormSchema } from '../lib/validation'
-import { COMPLEXITY_OPTIONS } from '../model/node-metadata-form.constants'
 import type { NodeMetadataFormProps } from '../model/node-metadata-form.types'
 import { NodeTypeSelect } from './node-type-select'
 
@@ -30,7 +22,6 @@ export const NodeMetadataForm = ({ node, onSubmit, isPending }: NodeMetadataForm
       label: node.label,
       type: node.type,
       tags: node.metadata?.tags || [],
-      complexity: node.metadata?.complexity,
       confidence: node.metadata?.confidence
     }
   })
@@ -70,7 +61,7 @@ export const NodeMetadataForm = ({ node, onSubmit, isPending }: NodeMetadataForm
     }
   }
 
-  // Instant save for discrete fields (type, complexity)
+  // Instant save for discrete fields (type)
   const handleFieldChange = <K extends keyof NodeMetadataFormValues>(
     field: K,
     value: NodeMetadataFormValues[K]
@@ -121,28 +112,6 @@ export const NodeMetadataForm = ({ node, onSubmit, isPending }: NodeMetadataForm
             className='h-6 min-w-[60px] max-w-[120px] flex-1 border-dashed text-xs px-2'
           />
         </div>
-      </div>
-
-      {/* Complexity */}
-      <div className='space-y-1.5'>
-        <Label className='text-xs text-muted-foreground'>{t('form.complexity.label')}</Label>
-        <Select
-          value={form.watch('complexity') || ''}
-          onValueChange={value =>
-            handleFieldChange('complexity', value as NodeMetadataFormValues['complexity'])
-          }
-        >
-          <SelectTrigger className='h-9'>
-            <SelectValue placeholder={t('form.complexity.placeholder')} />
-          </SelectTrigger>
-          <SelectContent>
-            {COMPLEXITY_OPTIONS.map(option => (
-              <SelectItem key={option.value} value={option.value}>
-                {t(option.labelKey)}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
       </div>
 
       {/* Confidence */}

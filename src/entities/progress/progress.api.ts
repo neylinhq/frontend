@@ -27,6 +27,9 @@ export const progressApi = {
   updateViewport: async (mapId: string, data: UpdateMapProgressRequest) =>
     api.patch(`/maps/${mapId}/progress/viewport`, data),
 
+  updateMapProgress: async (mapId: string, data: UpdateMapProgressRequest) =>
+    api.patch(`/maps/${mapId}/progress`, data),
+
   setFavorite: async (mapId: string, isFavorite: boolean) =>
     api.patch(`/maps/${mapId}/progress/favorite`, { isFavorite }),
 

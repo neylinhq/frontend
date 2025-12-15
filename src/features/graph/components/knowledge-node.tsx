@@ -1,10 +1,11 @@
 import { Handle, Position } from '@xyflow/react'
 import { memo } from 'react'
 import type { Node } from '@/entities/map'
-import { getComplexityColor, getNodeBorderColor, getNodeIcon } from '@/entities/node'
+import { getNodeBorderColor, getNodeIcon, getRatingColor } from '@/entities/node'
 import { Badge } from '@/shared/components/badge'
 import { Card } from '@/shared/components/card'
 import { cn } from '@/shared/lib/cn'
+import { getComplexityTier } from '@/shared/lib/rating'
 
 interface KnowledgeNodeProps {
   data: Node & {
@@ -17,7 +18,7 @@ interface KnowledgeNodeProps {
   id: string
 }
 
-/** Zoom threshold for showing description and complexity badge */
+/** Zoom threshold for showing description and rating tier badge */
 const DETAIL_ZOOM_THRESHOLD = 0.2
 
 /**
@@ -33,8 +34,11 @@ const KnowledgeNodeComponent = ({ data }: KnowledgeNodeProps) => {
   const isFocused = data.isFocused
   const zoom = data.zoom ?? 1
 
-  // LOD: Show description and complexity only at high zoom (> 20%)
+  // LOD: Show description and rating tier only at high zoom (> 20%)
   const showDetails = zoom >= DETAIL_ZOOM_THRESHOLD
+
+  // Calculate tier from complexity value
+  const complexityTier = getComplexityTier(data.complexity)
 
   return (
     <Card
@@ -82,17 +86,14 @@ const KnowledgeNodeComponent = ({ data }: KnowledgeNodeProps) => {
           </div>
         )}
 
-        {/* Complexity badge - pinned to bottom, LOD: hidden at low zoom */}
-        {showDetails && data.metadata.complexity && (
+        {/* Complexity tier badge - pinned to bottom, LOD: hidden at low zoom */}
+        {showDetails && complexityTier && (
           <div className='mt-auto pt-1.5'>
             <Badge
               variant='secondary'
-              className={cn(
-                'text-xs pointer-events-none',
-                getComplexityColor(data.metadata.complexity)
-              )}
+              className={cn('text-xs pointer-events-none', getRatingColor(complexityTier))}
             >
-              {data.metadata.complexity}
+              {complexityTier}
             </Badge>
           </div>
         )}
@@ -131,7 +132,7 @@ export const KnowledgeNode = memo(KnowledgeNodeComponent, (prevProps, nextProps)
     prevData.selected === nextData.selected &&
     prevData.isDimmed === nextData.isDimmed &&
     prevData.isFocused === nextData.isFocused &&
-    prevData.metadata?.complexity === nextData.metadata?.complexity &&
+    prevData.complexity === nextData.complexity &&
     tagsEqual &&
     prevShowDetails === nextShowDetails
   )

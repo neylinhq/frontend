@@ -896,6 +896,7 @@ const GraphVisualizationContent = ({
 
       {/* View controls panel - top left */}
       <ViewControlsPanel
+        mapId={mapId}
         zoom={Math.round(viewportZoom * 100)}
         isFullscreen={controls.isFullscreen}
         onZoomIn={handleZoomIn}

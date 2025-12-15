@@ -61,6 +61,10 @@ export const ViewportSchema = z.object({
 
 export type Viewport = z.infer<typeof ViewportSchema>
 
+export const RatingSystemEnum = z.enum(['elo', 'glicko'])
+
+export type RatingSystem = z.infer<typeof RatingSystemEnum>
+
 export const UserMapProgressSchema = z.object({
   id: z.string(),
   userId: z.string(),
@@ -78,8 +82,15 @@ export const UserMapProgressSchema = z.object({
   nodesLearning: z.number().default(0),
   nodesTotal: z.number().default(0),
 
+  // User ratings (0-15000 scale)
+  eloRating: z.number().default(1500), // ELO rating for this map
+  glickoRating: z.number().default(1500), // Glicko-2 rating for this map
+
   // Study settings
   studySettings: z.record(z.unknown()).default({}),
+
+  // Rating system preference
+  preferredRatingSystem: RatingSystemEnum.default('elo'),
 
   // Timestamps
   lastOpenedAt: z.string().nullable().optional(),
@@ -101,7 +112,7 @@ export type UpdateNodeProgressRequest = Partial<
 >
 
 export type UpdateMapProgressRequest = Partial<
-  Pick<UserMapProgress, 'viewport' | 'isFavorite' | 'studySettings'>
+  Pick<UserMapProgress, 'viewport' | 'isFavorite' | 'studySettings' | 'preferredRatingSystem'>
 >
 
 // Mark node as reviewed (updates spaced repetition data)

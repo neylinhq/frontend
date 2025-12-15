@@ -113,6 +113,19 @@ export const useUpdateViewport = (mapId: string) => {
   })
 }
 
+export const useUpdateMapProgress = (mapId: string) => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (data: UpdateMapProgressRequest) => progressApi.updateMapProgress(mapId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: progressKeys.mapProgressDetail(mapId)
+      })
+    }
+  })
+}
+
 export const useSetFavorite = (mapId: string) => {
   const queryClient = useQueryClient()
 

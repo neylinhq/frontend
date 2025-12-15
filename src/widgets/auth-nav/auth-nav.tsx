@@ -1,7 +1,8 @@
+import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router'
 import { useLoaderUser } from '@/entities/user'
 import { UserNav } from '@/widgets/user-nav'
 import { Button } from '@/shared/components/button'
-import { Link } from 'react-router'
 import { AUTH_ROUTES } from '@/shared/config'
 import { cn } from '@/shared/lib/cn'
 
@@ -12,6 +13,7 @@ interface AuthNavProps {
 }
 
 export const AuthNav = ({ compact = false, className, showSeparator = true }: AuthNavProps) => {
+  const { t } = useTranslation()
   const user = useLoaderUser()
 
   return (
@@ -22,10 +24,10 @@ export const AuthNav = ({ compact = false, className, showSeparator = true }: Au
       ) : (
         <div className={cn('hidden md:flex items-center gap-2', className)}>
           <Button asChild variant='ghost' size={compact ? 'sm' : 'default'}>
-            <Link to={AUTH_ROUTES.signIn}>Sign in</Link>
+            <Link to={AUTH_ROUTES.signIn}>{t('home.cta.signIn')}</Link>
           </Button>
           <Button asChild size={compact ? 'sm' : 'default'}>
-            <Link to={AUTH_ROUTES.signUp}>Get Started</Link>
+            <Link to={AUTH_ROUTES.signUp}>{t('home.cta.getStarted')}</Link>
           </Button>
         </div>
       )}

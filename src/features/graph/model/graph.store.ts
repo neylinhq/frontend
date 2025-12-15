@@ -109,33 +109,52 @@ const initialState: GraphViewState = {
   animationDuration: 300
 }
 
-// Custom serializer for Sets
+// Custom serializer for Sets and Infinity values
 const setSerializer = {
   serialize: (state: GraphViewState) => ({
     ...state,
     visibleNodeTypes: Array.from(state.visibleNodeTypes),
-    visibleEdgeTypes: Array.from(state.visibleEdgeTypes)
+    visibleEdgeTypes: Array.from(state.visibleEdgeTypes),
+    // Serialize Infinity as string since JSON doesn't support it
+    connectionRange: [
+      state.connectionRange[0],
+      state.connectionRange[1] === Infinity ? 'Infinity' : state.connectionRange[1]
+    ]
   }),
-  deserialize: (stored: Record<string, unknown>): GraphViewState => ({
-    viewMode: (stored.viewMode as ViewMode) || 'overview',
-    focusedNodeId: (stored.focusedNodeId as string | null) || null,
-    focusDepth: (stored.focusDepth as number) || 2,
-    visibleNodeTypes: new Set(
-      (stored.visibleNodeTypes as NodeType[])?.length
-        ? (stored.visibleNodeTypes as NodeType[])
-        : ALL_NODE_TYPES
-    ),
-    visibleEdgeTypes: new Set(
-      (stored.visibleEdgeTypes as RelationType[])?.length
-        ? (stored.visibleEdgeTypes as RelationType[])
-        : ALL_EDGE_TYPES
-    ),
-    connectionRange: (stored.connectionRange as [number, number]) || [0, Infinity],
-    showMinimap: stored.showMinimap !== false,
-    nodeSpacing: (stored.nodeSpacing as number) || 100,
-    directionStrength: (stored.directionStrength as number) ?? 0,
-    animationDuration: (stored.animationDuration as number) || 300
-  })
+  deserialize: (stored: Record<string, unknown>): GraphViewState => {
+    // Parse connectionRange, handling "Infinity" string and null/undefined
+    const storedRange = stored.connectionRange as [number, string | number | null] | undefined
+    let connectionRange: [number, number] = [0, Infinity]
+    if (storedRange) {
+      const min = typeof storedRange[0] === 'number' ? storedRange[0] : 0
+      const max =
+        storedRange[1] === 'Infinity' || storedRange[1] === null || storedRange[1] === undefined
+          ? Infinity
+          : (storedRange[1] as number)
+      connectionRange = [min, max]
+    }
+
+    return {
+      viewMode: (stored.viewMode as ViewMode) || 'overview',
+      focusedNodeId: (stored.focusedNodeId as string | null) || null,
+      focusDepth: (stored.focusDepth as number) || 2,
+      visibleNodeTypes: new Set(
+        (stored.visibleNodeTypes as NodeType[])?.length
+          ? (stored.visibleNodeTypes as NodeType[])
+          : ALL_NODE_TYPES
+      ),
+      visibleEdgeTypes: new Set(
+        (stored.visibleEdgeTypes as RelationType[])?.length
+          ? (stored.visibleEdgeTypes as RelationType[])
+          : ALL_EDGE_TYPES
+      ),
+      connectionRange,
+      showMinimap: stored.showMinimap !== false,
+      nodeSpacing: (stored.nodeSpacing as number) || 100,
+      directionStrength: (stored.directionStrength as number) ?? 0,
+      animationDuration: (stored.animationDuration as number) || 300
+    }
+  }
 }
 
 // Event for triggering layout recalculation
@@ -296,7 +315,7 @@ export const useGraphViewStore = create<GraphViewState & GraphViewActions>()(
       }
     }),
     {
-      name: 'graph-view-storage-v2', // New version to avoid conflicts with old storage
+      name: 'graph-view-storage-v3', // v3: Fix Infinity serialization in connectionRange
       storage: {
         getItem: name => {
           const str = localStorage.getItem(name)

@@ -22,7 +22,6 @@ export type Complexity = z.infer<typeof ComplexityEnum>
 // Персональные данные (confidence, reviewCount) вынесены в user_node_progress
 export const NodeMetadataSchema = z
   .object({
-    complexity: ComplexityEnum.optional(),
     sources: z.array(z.string()).optional(), // Источники информации
     tags: z.array(z.string()).optional()
   })
@@ -43,6 +42,10 @@ export const NodeSchema = z.object({
     y: z.number()
   }),
   metadata: NodeMetadataSchema,
+
+  // AI-calibrated difficulty (0-15000 scale)
+  complexity: z.number().nullable().optional(), // Objective difficulty, tier calculated from this value
+
   aiGenerated: z.boolean().optional(), // Whether node was AI-generated
   lastEnrichedAt: z.string().nullable().optional(), // Last AI enrichment timestamp
   factCheckStatus: z.enum(['verified', 'unverified', 'disputed', 'false']).nullable().optional(),

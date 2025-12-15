@@ -500,6 +500,7 @@
       "metadata": "Metadata",
       "type": "Type",
       "complexity": "Complexity",
+      "rating": "Rating",
       "confidence": "Confidence",
       "tags": "Tags",
       "reviews": "Reviews"
@@ -511,6 +512,22 @@
       "outgoing": "Outgoing"
     },
     "edit": "Edit"
+  },
+  "mapSettings": {
+    "title": "Map Settings",
+    "description": "Customize your map preferences",
+    "ratingSystem": {
+      "label": "Rating System",
+      "description": "Choose which rating system to display for node difficulty",
+      "placeholder": "Select rating system",
+      "elo": "ELO Rating (AI-calibrated)",
+      "eloShort": "ELO",
+      "eloTooltip": "AI-calibrated rating based on node difficulty analysis",
+      "glicko": "Glicko-2 Rating (Exercise-based)",
+      "glickoShort": "Glicko-2",
+      "glickoTooltip": "Exercise-based rating from spaced repetition practice",
+      "saved": "Rating system preference saved"
+    }
   },
   "mapView": {
     "navigationError": "Navigation error",
@@ -1542,7 +1559,7 @@
       "title": "Current Usage",
       "description": "Your usage for the current billing period",
       "maps": "Knowledge Maps",
-      "nodes": "Total Nodes",
+      "nodesPerMap": "Nodes per Map",
       "aiRequests": "AI Requests This Month",
       "storage": "Storage Used"
     },

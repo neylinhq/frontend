@@ -129,6 +129,7 @@
     "system": "System"
   },
   "common": {
+    "untitled": "Untitled",
     "loading": "Loading",
     "error": "Error",
     "created": "Created",
@@ -514,11 +515,36 @@
     "edit": "Edit"
   },
   "mapSettings": {
-    "title": "Map Settings",
-    "description": "Customize your map preferences",
+    "title": "About map",
+    "saved": "Settings saved",
+    "tabs": {
+      "overview": "Overview",
+      "progress": "Progress",
+      "settings": "Settings"
+    },
+    "overview": {
+      "mapTitle": "Title",
+      "description": "Description",
+      "descriptionPlaceholder": "Add a description...",
+      "author": "Author",
+      "createdAt": "Created"
+    },
+    "visibility": {
+      "public": "Public",
+      "private": "Private",
+      "madePublic": "Map is now public",
+      "madePrivate": "Map is now private"
+    },
+    "progress": {
+      "yourRating": "Your Rating",
+      "nodesTotal": "Nodes",
+      "nodesMastered": "Mastered",
+      "nodesLearning": "Learning",
+      "overallProgress": "Progress"
+    },
     "ratingSystem": {
       "label": "Rating System",
-      "description": "Choose which rating system to display for node difficulty",
+      "description": "Affects node difficulty display and your personal rating",
       "placeholder": "Select rating system",
       "elo": "ELO Rating (AI-calibrated)",
       "eloShort": "ELO",
@@ -526,7 +552,15 @@
       "glicko": "Glicko-2 Rating (Exercise-based)",
       "glickoShort": "Glicko-2",
       "glickoTooltip": "Exercise-based rating from spaced repetition practice",
-      "saved": "Rating system preference saved"
+      "saved": "Rating system updated"
+    },
+    "dangerZone": {
+      "title": "Danger zone",
+      "warning": "Deleting this map will permanently remove all nodes and your progress.",
+      "delete": "Delete map",
+      "deleted": "Map deleted",
+      "confirmTitle": "Delete map?",
+      "confirmDescription": "\"{{title}}\" and {{nodesCount}} nodes will be permanently deleted. This action cannot be undone."
     }
   },
   "mapView": {
@@ -1175,7 +1209,22 @@
       "noMessages": "Start a conversation with AI to get help with this node",
       "noMessagesMap": "Ask me about this map or try /analyze",
       "regenerate": "Regenerate",
-      "editWarning": "Editing will delete all messages after this one"
+      "editWarning": "Editing will delete all messages after this one",
+      "newChat": "New chat",
+      "untitled": "New chat",
+      "selectOrCreate": "Select or create a chat",
+      "closeTab": "Close tab",
+      "closeOthers": "Close other tabs",
+      "closeAll": "Close all tabs",
+      "exportChat": "Export chat",
+      "searchChats": "Search chats...",
+      "noSearchResults": "No chats found",
+      "noChats": "No chats yet",
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "thisWeek": "This week",
+      "thisMonth": "This month",
+      "older": "Older"
     },
     "preview": {
       "edit": "Edit",
@@ -1255,6 +1304,34 @@
       "content": "Content",
       "examples": "Examples",
       "sources": "Sources"
+    },
+    "proposal": {
+      "connection": "Create Connection",
+      "newNode": "Create Node",
+      "edit": "Edit Node"
+    },
+    "reasoning": "Reasoning",
+    "node": {
+      "created": "Node created",
+      "createdMultiple": "Created {{count}} nodes"
+    },
+    "connection": {
+      "created": "Connection created",
+      "createdMultiple": "Created {{count}} connections",
+      "updated": "Connection updated",
+      "nodesNotFound": "Could not find nodes"
+    },
+    "graphFragment": {
+      "title": "Graph Changes",
+      "nodes": "Nodes",
+      "nodesCount": "{{count}} nodes",
+      "edges": "Connections",
+      "edgesCount": "{{count}} connections",
+      "selectAll": "Select all",
+      "applyAll": "Apply All",
+      "applySelected": "Apply ({{count}})",
+      "applied": "Created {{nodes}} nodes and {{edges}} connections",
+      "edgeRequiresNodes": "Select the connected nodes first"
     }
   },
   "practice": {

@@ -1,4 +1,4 @@
-import { AIChatPanel } from './ai-chat-panel'
+import { NodeChatWrapper } from './node-chat-wrapper'
 
 interface AISuggestionsPanelProps {
   nodeId: string
@@ -8,7 +8,7 @@ interface AISuggestionsPanelProps {
 export const AISuggestionsPanel = ({ nodeId, mapId }: AISuggestionsPanelProps) => {
   return (
     <div className='flex flex-col h-full w-full'>
-      <AIChatPanel nodeId={nodeId} mapId={mapId} />
+      <NodeChatWrapper nodeId={nodeId} mapId={mapId} />
     </div>
   )
 }

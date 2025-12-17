@@ -13,7 +13,7 @@ export interface NodeReference {
 }
 
 export interface ProposalData {
-  type: 'edit' | 'new_node' | 'connection' | 'exercise'
+  type: 'edit' | 'new_node' | 'connection' | 'exercise' | 'graph_fragment'
 
   // For edit
   field?: 'description' | 'content' | 'examples' | 'sources'
@@ -47,6 +47,27 @@ export interface ProposalData {
     answer: unknown
     explanation?: string
     data?: Record<string, unknown>
+  }
+
+  // For graph_fragment (unified nodes + edges)
+  graphFragment?: {
+    title: string
+    nodes: Array<{
+      tempId: string
+      label: string
+      nodeType: string
+      description: string
+      content?: string
+    }>
+    edges: Array<{
+      tempId: string
+      fromRef: string
+      toRef: string
+      fromIsNew: boolean
+      toIsNew: boolean
+      relation: string
+    }>
+    reasoning?: string
   }
 }
 

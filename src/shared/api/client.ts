@@ -1,6 +1,16 @@
 import { i18n } from '@/app/i18n'
 import { API_URL, IS_BROWSER } from '@/shared/config/env'
 
+export interface ApiResponse<T> {
+  success: boolean
+  data: T
+  meta?: {
+    total: number
+    limit: number
+    offset: number
+  }
+}
+
 type RequestOptions = RequestInit & {
   json?: unknown
   skipAuth?: boolean

@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useQueryClient } from '@tanstack/react-query'
 import { v4 as uuidv4 } from 'uuid'
 import { aiApi, type ChatStreamChunk, type ProposalData, useSelectedModel } from '@/entities/ai'
 import { useLoaderUser } from '@/entities/user'
@@ -12,41 +13,48 @@ import type {
   ResolvedPreview
 } from '../model/ai-assist.types'
 import { getChatSessionId, useChatHistoryStore } from '../model/ai-assist.chat.store'
+import { chatSessionKeys, useChatSession, useAddChatMessage } from '../model/chat-sessions.api'
+import type { ChatProposal } from '../model/chat-sessions.types'
 import { ChatInput } from './chat-input'
 import { ChatMessageList } from './chat-message-list'
 
 const EMPTY_MESSAGES: ChatMessage[] = []
 
-type ContextMode = 'node' | 'map'
-
 interface AIChatCoreProps {
   nodeContext: NodeChatContext
   mapContext: MapChatContext
+  /** Session ID for multi-chat support. If not provided, uses legacy localStorage-based session. */
+  sessionId?: string | null
   emptyStateMessage?: string
   placeholderText?: string
-  /** Show node/map context toggle. Only relevant in node chat panel. */
+  /** @deprecated Context switch removed - unified context is always used */
   showContextSwitch?: boolean
   onSavePreview?: (
     messageId: string,
     preview: PreviewCard
   ) => Promise<{ previousState: Record<string, unknown>; actionId: string } | undefined>
   onUndoPreview?: (preview: ResolvedPreview) => Promise<void>
+  /** Called when rejecting a preview that was previously applied (to delete created entities) */
+  onRejectAppliedPreview?: (preview: PreviewCard) => Promise<void>
 }
 
 export const AIChatCore = ({
   nodeContext,
+  mapContext,
+  sessionId: externalSessionId,
   emptyStateMessage,
   placeholderText,
-  showContextSwitch = false,
   onSavePreview,
-  onUndoPreview
+  onUndoPreview,
+  onRejectAppliedPreview
 }: AIChatCoreProps) => {
   const { t } = useTranslation()
   const user = useLoaderUser()
-  const [contextMode, setContextMode] = useState<ContextMode>('node')
+  const queryClient = useQueryClient()
   const [inputValue, setInputValue] = useState('')
   const [isStreaming, setIsStreaming] = useState(false)
   const [savingPreviews, setSavingPreviews] = useState<Set<string>>(new Set())
+  const [dbMessagesLoaded, setDbMessagesLoaded] = useState(false)
 
   // AbortController для отмены стрима при размонтировании
   const abortControllerRef = useRef<AbortController | null>(null)
@@ -60,13 +68,31 @@ export const AIChatCore = ({
     }
   }, [])
 
+  // Stop streaming handler
+  const handleStop = useCallback(() => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+      abortControllerRef.current = null
+    }
+  }, [])
+
   const { models, selectedModel, setSelectedModel } = useSelectedModel()
 
-  // Session ID always based on node (chat history persists regardless of context mode)
-  const sessionId = getChatSessionId(nodeContext.mapId, nodeContext.nodeId)
+  // Session ID: use external DB session if provided, otherwise fallback to legacy localStorage-based
+  const legacySessionId = getChatSessionId(nodeContext.mapId, nodeContext.nodeId)
+  const sessionId = externalSessionId || legacySessionId
+
+  // Fetch session with messages from DB (only for DB sessions)
+  const { data: dbSessionData, isLoading: isLoadingSession } = useChatSession(
+    mapContext.mapId,
+    externalSessionId || ''
+  )
+
+  // API hook for saving messages to DB
+  const addMessageToDb = useAddChatMessage(mapContext.mapId)
 
   // Use persisted chat history - direct selector to avoid new array on each render
-  const messages = useChatHistoryStore(s => s.sessions[sessionId]?.messages) ?? EMPTY_MESSAGES
+  const localMessages = useChatHistoryStore(s => s.sessions[sessionId]?.messages) ?? EMPTY_MESSAGES
   const addMessage = useChatHistoryStore(s => s.addMessage)
   const updateMessage = useChatHistoryStore(s => s.updateMessage)
   const removePreview = useChatHistoryStore(s => s.removePreview)
@@ -74,6 +100,93 @@ export const AIChatCore = ({
   const undoResolved = useChatHistoryStore(s => s.undoResolved)
   const truncateFromMessage = useChatHistoryStore(s => s.truncateFromMessage)
   const clearSession = useChatHistoryStore(s => s.clearSession)
+  const setMessages = useChatHistoryStore(s => s.setMessages)
+
+  // Load messages from DB when session changes (sync DB -> localStorage for display)
+  useEffect(() => {
+    if (!externalSessionId || !dbSessionData?.messages || isLoadingSession) return
+
+    // Only load once per session to avoid overwriting local streaming state
+    if (dbMessagesLoaded) return
+
+    // Convert DB messages to local format
+    const dbMessages: ChatMessage[] = dbSessionData.messages.map(m => {
+      // Map DB proposals to PreviewCard format
+      const pendingPreviews: PreviewCard[] = (m.proposals || [])
+        .filter(p => p.status === 'pending')
+        .map(p => ({
+          id: (p.data?.id as string) || uuidv4(),
+          type: p.type as PreviewCard['type'],
+          data: p.data as unknown as PreviewCard['data'],
+          status: 'pending' as const
+        }))
+
+      // Map to ResolvedPreview format
+      const resolvedPreviews: ResolvedPreview[] = (m.proposals || [])
+        .filter(p => p.status !== 'pending')
+        .map(p => ({
+          id: (p.data?.id as string) || uuidv4(),
+          type: p.type as ResolvedPreview['type'],
+          data: p.data as unknown as ResolvedPreview['data'],
+          status: p.status === 'accepted' ? 'approved' as const : 'rejected' as const,
+          resolvedAt: new Date()
+        }))
+
+      return {
+        id: m.id,
+        role: m.role as 'user' | 'assistant',
+        content: m.content,
+        timestamp: new Date(m.createdAt),
+        preview: pendingPreviews.length > 0 ? pendingPreviews : undefined,
+        resolvedPreviews: resolvedPreviews.length > 0 ? resolvedPreviews : undefined
+      }
+    })
+
+    // Set messages in local store (replace existing)
+    if (setMessages) {
+      setMessages(sessionId, dbMessages)
+    }
+    setDbMessagesLoaded(true)
+  }, [externalSessionId, dbSessionData, isLoadingSession, sessionId, dbMessagesLoaded, setMessages])
+
+  // Reset loaded flag when session changes
+  useEffect(() => {
+    setDbMessagesLoaded(false)
+  }, [externalSessionId])
+
+  // Use local messages for display (they include streaming state)
+  const messages = localMessages
+
+  // Save message to DB (for DB sessions)
+  const saveMessageToDb = useCallback(async (
+    role: 'user' | 'assistant',
+    content: string,
+    proposals?: PreviewCard[]
+  ) => {
+    if (!externalSessionId) return
+
+    try {
+      // Convert PreviewCard[] to ChatProposal[] for DB
+      const dbProposals = proposals?.map(p => ({
+        type: p.type as ChatProposal['type'],
+        status: 'pending' as const,
+        data: p.data as unknown as Record<string, unknown>
+      }))
+
+      await addMessageToDb.mutateAsync({
+        sessionId: externalSessionId,
+        role,
+        content,
+        proposals: dbProposals
+      })
+
+      // Invalidate session cache to sync with DB
+      queryClient.invalidateQueries({ queryKey: chatSessionKeys.list(mapContext.mapId) })
+    } catch {
+      // Non-critical error - message is still in localStorage
+      // This can happen if backend is not updated or not available
+    }
+  }, [externalSessionId, addMessageToDb, queryClient, mapContext.mapId])
 
   const handleSendMessage = async (content: string) => {
     if (!content.trim() || isStreaming) {
@@ -91,6 +204,9 @@ export const AIChatCore = ({
     setInputValue('')
     setIsStreaming(true)
 
+    // Save user message to DB (title auto-generated on backend for first message)
+    saveMessageToDb('user', content.trim())
+
     const aiMessageId = uuidv4()
     const aiMessage: ChatMessage = {
       id: aiMessageId,
@@ -105,76 +221,78 @@ export const AIChatCore = ({
       // Regular chat - use streaming API
       abortControllerRef.current = new AbortController()
 
-        // Build history from previous messages (excluding current streaming one)
-        const history = messages
-          .filter(msg => !msg.isStreaming)
-          .map(msg => ({
-            role: msg.role as 'user' | 'assistant',
-            content: msg.content
-          }))
+      // Build history from previous messages (excluding current streaming one)
+      const history = messages
+        .filter(msg => !msg.isStreaming)
+        .map(msg => ({
+          role: msg.role as 'user' | 'assistant',
+          content: msg.content
+        }))
 
-        let streamedContent = ''
-        let preview: PreviewCard[] | undefined
+      let streamedContent = ''
+      let preview: PreviewCard[] | undefined
 
-        await aiApi.chatWithMapStream(
-          nodeContext.mapId,
-          content,
-          (chunk: ChatStreamChunk) => {
-            switch (chunk.type) {
-              case 'text':
-                // Append text incrementally
-                streamedContent += chunk.content || ''
-                updateMessage(sessionId, aiMessageId, {
-                  content: streamedContent,
-                  isStreaming: true
-                })
-                break
+      await aiApi.chatWithMapStream(
+        nodeContext.mapId,
+        content,
+        (chunk: ChatStreamChunk) => {
+          switch (chunk.type) {
+            case 'text':
+              // Append text incrementally
+              streamedContent += chunk.content || ''
+              updateMessage(sessionId, aiMessageId, {
+                content: streamedContent,
+                isStreaming: true
+              })
+              break
 
-              case 'sources':
-                // Update source nodes
-                updateMessage(sessionId, aiMessageId, {
-                  sourceNodes: chunk.sourceNodes
-                })
-                break
+            case 'sources':
+              // Update source nodes
+              updateMessage(sessionId, aiMessageId, {
+                sourceNodes: chunk.sourceNodes
+              })
+              break
 
-              case 'proposal':
-                // Add proposal previews (supports batch)
-                if (chunk.proposals && chunk.proposals.length > 0) {
-                  const total = chunk.proposals.length
-                  preview = chunk.proposals.map((p, idx) => createProposalPreview(p, idx, total))
-                  updateMessage(sessionId, aiMessageId, { preview })
-                } else if (chunk.proposal) {
-                  preview = [createProposalPreview(chunk.proposal)]
-                  updateMessage(sessionId, aiMessageId, { preview })
-                }
-                break
+            case 'proposal':
+              // Add proposal previews (supports batch)
+              if (chunk.proposals && chunk.proposals.length > 0) {
+                const total = chunk.proposals.length
+                preview = chunk.proposals.map((p, idx) => createProposalPreview(p, idx, total))
+                updateMessage(sessionId, aiMessageId, { preview })
+              } else if (chunk.proposal) {
+                preview = [createProposalPreview(chunk.proposal)]
+                updateMessage(sessionId, aiMessageId, { preview })
+              }
+              break
 
-              case 'done':
-                // Finalize message with brand for avatar icon
-                updateMessage(sessionId, aiMessageId, {
-                  content: streamedContent,
-                  preview,
-                  isStreaming: false,
-                  brand: chunk.brand
-                })
-                break
+            case 'done':
+              // Finalize message with brand for avatar icon
+              updateMessage(sessionId, aiMessageId, {
+                content: streamedContent,
+                preview,
+                isStreaming: false,
+                brand: chunk.brand
+              })
+              // Save assistant message to DB after streaming completes
+              saveMessageToDb('assistant', streamedContent, preview)
+              break
 
-              case 'error':
-                updateMessage(sessionId, aiMessageId, {
-                  content: chunk.content || t('ai.chat.error'),
-                  isStreaming: false
-                })
-                break
-            }
-          },
-          {
-            model: selectedModel,
-            nodeId: contextMode === 'node' ? nodeContext.nodeId : undefined,
-            currentNodeId: nodeContext.nodeId,
-            history,
-            signal: abortControllerRef.current.signal
+            case 'error':
+              updateMessage(sessionId, aiMessageId, {
+                content: chunk.content || t('ai.chat.error'),
+                isStreaming: false
+              })
+              break
           }
-        )
+        },
+        {
+          model: selectedModel,
+          // Unified context: always pass currentNodeId for focus node
+          currentNodeId: nodeContext.nodeId,
+          history,
+          signal: abortControllerRef.current.signal
+        }
+      )
     } catch (error) {
       updateMessage(sessionId, aiMessageId, {
         content: t('ai.chat.error'),
@@ -214,6 +332,34 @@ export const AIChatCore = ({
             // Add batch info for ExerciseCard
             index,
             total
+          },
+          status: 'pending'
+        }
+
+      case 'graph_fragment':
+        return {
+          id,
+          type: 'graph_fragment',
+          data: {
+            title: proposal.graphFragment?.title ?? '',
+            nodes: (proposal.graphFragment?.nodes ?? []).map(n => ({
+              tempId: n.tempId,
+              label: n.label,
+              nodeType: n.nodeType,
+              description: n.description,
+              content: n.content,
+              selected: true
+            })),
+            edges: (proposal.graphFragment?.edges ?? []).map(e => ({
+              tempId: e.tempId,
+              fromRef: e.fromRef,
+              toRef: e.toRef,
+              fromIsNew: e.fromIsNew,
+              toIsNew: e.toIsNew,
+              relation: e.relation,
+              selected: true
+            })),
+            reasoning: proposal.graphFragment?.reasoning
           },
           status: 'pending'
         }
@@ -300,8 +446,22 @@ export const AIChatCore = ({
     }
   }
 
-  const handleRejectPreview = (messageId: string, previewId: string) => {
-    moveToResolved(sessionId, messageId, previewId, 'rejected')
+  const handleRejectPreview = async (messageId: string, preview: PreviewCard) => {
+    // If preview has applied entity IDs, delete them first
+    if (onRejectAppliedPreview) {
+      const data = preview.data as { appliedNodeId?: string; appliedEdgeId?: string }
+      if (data.appliedNodeId || data.appliedEdgeId) {
+        try {
+          await onRejectAppliedPreview(preview)
+        } catch {
+          toast.error(t('common.error'), {
+            description: t('ai.deleteFailed', 'Failed to delete')
+          })
+          return
+        }
+      }
+    }
+    moveToResolved(sessionId, messageId, preview.id, 'rejected')
   }
 
   const handleUndoResolved = async (messageId: string, preview: ResolvedPreview) => {
@@ -400,15 +560,14 @@ export const AIChatCore = ({
           value={inputValue}
           onChange={setInputValue}
           onSend={handleSendMessage}
+          onStop={handleStop}
           onCommand={handleCommand}
           disabled={isStreaming}
+          isLoading={isStreaming}
           placeholder={placeholderText || t('ai.chat.placeholder')}
           model={selectedModel}
           onModelChange={setSelectedModel}
           models={models}
-          contextMode={contextMode}
-          onContextModeChange={setContextMode}
-          showContextSwitch={showContextSwitch}
         />
       </div>
     </div>

@@ -1,26 +1,40 @@
-import { api } from '@/shared/api/client'
+import { api, type ApiResponse } from '@/shared/api/client'
+import type { Node } from './node.schema'
 import type { CreateNodeRequest, UpdateNodeRequest, UpdatePositionsRequest } from './node.schema'
 
 export const nodeApi = {
   // Existing node operations
-  create: async (mapId: string, data: CreateNodeRequest) => api.post(`/maps/${mapId}/nodes`, data),
-
-  get: async (mapId: string, nodeId: string) => api.get(`/maps/${mapId}/nodes/${nodeId}`),
-
-  list: async (mapId: string, type?: string) => {
-    const params = type ? { type } : undefined
-    return api.get(`/maps/${mapId}/nodes`, { params })
+  create: async (mapId: string, data: CreateNodeRequest): Promise<Node> => {
+    const response = await api.post<ApiResponse<Node>>(`/maps/${mapId}/nodes`, data)
+    return response.data
   },
 
-  update: async (mapId: string, nodeId: string, data: UpdateNodeRequest) =>
-    api.patch(`/maps/${mapId}/nodes/${nodeId}`, data),
+  get: async (mapId: string, nodeId: string): Promise<Node> => {
+    const response = await api.get<ApiResponse<Node>>(`/maps/${mapId}/nodes/${nodeId}`)
+    return response.data
+  },
 
-  delete: async (mapId: string, nodeId: string) => api.delete(`/maps/${mapId}/nodes/${nodeId}`),
+  list: async (mapId: string, type?: string): Promise<Node[]> => {
+    const params = type ? `?type=${type}` : ''
+    const response = await api.get<ApiResponse<Node[]>>(`/maps/${mapId}/nodes${params}`)
+    return response.data
+  },
 
-  updatePositions: async (mapId: string, data: UpdatePositionsRequest) =>
-    api.patch(`/maps/${mapId}/nodes/positions`, data),
+  update: async (mapId: string, nodeId: string, data: UpdateNodeRequest): Promise<Node> => {
+    const response = await api.patch<ApiResponse<Node>>(`/maps/${mapId}/nodes/${nodeId}`, data)
+    return response.data
+  },
+
+  delete: async (mapId: string, nodeId: string): Promise<void> => {
+    await api.delete(`/maps/${mapId}/nodes/${nodeId}`)
+  },
+
+  updatePositions: async (mapId: string, data: UpdatePositionsRequest): Promise<void> => {
+    await api.patch(`/maps/${mapId}/nodes/positions`, data)
+  },
 
   // RAG operations
-  generateEmbedding: async (mapId: string, nodeId: string) =>
-    api.post(`/maps/${mapId}/nodes/${nodeId}/embedding`)
+  generateEmbedding: async (mapId: string, nodeId: string): Promise<void> => {
+    await api.post(`/maps/${mapId}/nodes/${nodeId}/embedding`)
+  }
 }

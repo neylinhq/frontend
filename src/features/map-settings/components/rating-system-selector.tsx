@@ -23,9 +23,6 @@ export const RatingSystemSelector = ({ mapId, currentSystem }: RatingSystemSelec
     updateMapProgress.mutate(
       { preferredRatingSystem: value },
       {
-        onSuccess: () => {
-          toast.success(t('mapSettings.ratingSystem.saved'))
-        },
         onError: () => {
           toast.error(t('errors.failedSave'))
         }

@@ -11,7 +11,7 @@ import {
 import { memo, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { LightweightNode } from '@/entities/node'
-import { MapSettingsPopover } from '@/features/map-settings'
+import { MapSettingsDrawer } from '@/features/map-settings'
 import { Button } from '@/shared/components/button'
 import { Card } from '@/shared/components/card'
 import {
@@ -27,6 +27,7 @@ import { NodeSearch } from './node-search'
 
 interface ViewControlsPanelProps {
   mapId: string
+  mapTitle?: string
   zoom: number
   isFullscreen: boolean
   onZoomIn: () => void
@@ -41,6 +42,7 @@ interface ViewControlsPanelProps {
 export const ViewControlsPanel = memo(
   ({
     mapId,
+    mapTitle,
     zoom,
     isFullscreen,
     onZoomIn,
@@ -54,6 +56,7 @@ export const ViewControlsPanel = memo(
     const { t } = useTranslation()
     const { showMinimap, toggleMinimap } = useGraphUI()
     const [searchOpen, setSearchOpen] = useState(false)
+    const [settingsOpen, setSettingsOpen] = useState(false)
     const {
       nodeSpacing,
       setNodeSpacing,
@@ -79,42 +82,54 @@ export const ViewControlsPanel = memo(
     return (
       <div className={cn('absolute top-4 left-4 z-10', className)}>
         <Card className='flex items-center gap-1 p-1.5 shadow-lg border'>
-          {/* Zoom controls */}
+          {/* 1. Map Title — context first */}
           <Button
             size='sm'
             variant='ghost'
-            onClick={onZoomOut}
-            className='h-8 w-8 p-0'
-            title={t('graph.toolbar.zoomOut')}
+            onClick={() => setSettingsOpen(true)}
+            className='h-8 px-2.5 max-w-[200px] group'
+            title={t('mapSettings.title')}
           >
-            <ZoomOut className='w-4 h-4' />
+            <span className='truncate text-sm font-medium'>
+              {mapTitle || t('common.untitled')}
+            </span>
           </Button>
+          <MapSettingsDrawer mapId={mapId} open={settingsOpen} onOpenChange={setSettingsOpen} />
 
-          <span className='text-xs font-medium text-muted-foreground min-w-[3rem] text-center'>
-            {Math.round(zoom)}%
-          </span>
-
-          <Button
-            size='sm'
-            variant='ghost'
-            onClick={onZoomIn}
-            className='h-8 w-8 p-0'
-            title={t('graph.toolbar.zoomIn')}
-          >
-            <ZoomIn className='w-4 h-4' />
-          </Button>
+          {/* 2. Search — high frequency action */}
+          {nodes && nodes.length > 0 && onNodeSelect && (
+            <>
+              <div className='h-4 w-px bg-border' />
+              <Button
+                size='sm'
+                variant='ghost'
+                onClick={() => setSearchOpen(true)}
+                className='h-8 w-8 p-0'
+                title={`${t('graph.search.title', 'Search nodes')} (${isMac ? '⌘' : 'Ctrl+'}K)`}
+              >
+                <Search className='w-4 h-4' />
+              </Button>
+              <NodeSearch
+                nodes={nodes}
+                open={searchOpen}
+                onOpenChange={setSearchOpen}
+                onSelect={onNodeSelect}
+              />
+            </>
+          )}
 
           <div className='h-4 w-px bg-border' />
 
-          {/* Center */}
+          {/* 3. View settings */}
+          {/* Minimap toggle */}
           <Button
             size='sm'
-            variant='ghost'
-            onClick={onCenter}
+            variant={showMinimap ? 'secondary' : 'ghost'}
+            onClick={toggleMinimap}
             className='h-8 w-8 p-0'
-            title={t('graph.toolbar.centerTooltip')}
+            title={showMinimap ? t('graph.toolbar.hideMinimap') : t('graph.toolbar.showMinimap')}
           >
-            <Focus className='w-4 h-4' />
+            <MapIcon className='w-4 h-4' />
           </Button>
 
           {/* Layout settings dropdown */}
@@ -194,19 +209,6 @@ export const ViewControlsPanel = memo(
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <div className='h-4 w-px bg-border' />
-
-          {/* Minimap toggle */}
-          <Button
-            size='sm'
-            variant={showMinimap ? 'secondary' : 'ghost'}
-            onClick={toggleMinimap}
-            className='h-8 w-8 p-0'
-            title={showMinimap ? t('graph.toolbar.hideMinimap') : t('graph.toolbar.showMinimap')}
-          >
-            <MapIcon className='w-4 h-4' />
-          </Button>
-
           {/* Fullscreen toggle */}
           <Button
             size='sm'
@@ -220,33 +222,41 @@ export const ViewControlsPanel = memo(
 
           <div className='h-4 w-px bg-border' />
 
-          {/* Map Settings */}
-          <MapSettingsPopover mapId={mapId} />
+          {/* 4. Zoom controls — rightmost, heaviest visually */}
+          <Button
+            size='sm'
+            variant='ghost'
+            onClick={onZoomOut}
+            className='h-8 w-8 p-0'
+            title={t('graph.toolbar.zoomOut')}
+          >
+            <ZoomOut className='w-4 h-4' />
+          </Button>
 
-          {/* Search */}
-          {nodes && nodes.length > 0 && onNodeSelect && (
-            <>
-              <div className='h-4 w-px bg-border' />
-              <Button
-                size='sm'
-                variant='ghost'
-                onClick={() => setSearchOpen(true)}
-                className='h-8 px-2 gap-1.5'
-                title={t('graph.search.title', 'Search nodes')}
-              >
-                <Search className='w-4 h-4' />
-                <kbd className='hidden sm:inline-flex h-5 items-center rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground'>
-                  {isMac ? '⌘' : '⌃'}K
-                </kbd>
-              </Button>
-              <NodeSearch
-                nodes={nodes}
-                open={searchOpen}
-                onOpenChange={setSearchOpen}
-                onSelect={onNodeSelect}
-              />
-            </>
-          )}
+          <span className='text-xs font-medium text-muted-foreground min-w-[3rem] text-center'>
+            {Math.round(zoom)}%
+          </span>
+
+          <Button
+            size='sm'
+            variant='ghost'
+            onClick={onZoomIn}
+            className='h-8 w-8 p-0'
+            title={t('graph.toolbar.zoomIn')}
+          >
+            <ZoomIn className='w-4 h-4' />
+          </Button>
+
+          {/* Center */}
+          <Button
+            size='sm'
+            variant='ghost'
+            onClick={onCenter}
+            className='h-8 w-8 p-0'
+            title={t('graph.toolbar.centerTooltip')}
+          >
+            <Focus className='w-4 h-4' />
+          </Button>
         </Card>
       </div>
     )

@@ -336,9 +336,10 @@ const livePreviewStyles = EditorView.baseTheme({
 
   // When line is active, show marks faded
   '.cm-activeLine .cm-hidden-mark': {
-    opacity: '0.5',
+    opacity: '0.4',
     fontSize: 'inherit',
-    width: 'auto'
+    width: 'auto',
+    color: '#999'
   },
 
   // Headings
@@ -361,7 +362,7 @@ const livePreviewStyles = EditorView.baseTheme({
     fontSize: '1.1em'
   },
   '.cm-heading-mark': {
-    color: 'hsl(var(--muted-foreground))'
+    color: '#999'
   },
 
   // Bold & Italic
@@ -373,13 +374,13 @@ const livePreviewStyles = EditorView.baseTheme({
   },
   '.cm-strikethrough': {
     textDecoration: 'line-through',
-    color: 'hsl(var(--muted-foreground))'
+    color: '#888'
   },
 
   // Inline code
   '.cm-inline-code': {
-    fontFamily: 'var(--font-mono, monospace)',
-    backgroundColor: 'hsl(var(--muted))',
+    fontFamily: 'ui-monospace, monospace',
+    backgroundColor: 'rgba(128, 128, 128, 0.1)',
     padding: '1px 4px',
     borderRadius: '3px',
     fontSize: '0.9em'
@@ -387,33 +388,33 @@ const livePreviewStyles = EditorView.baseTheme({
 
   // Links
   '.cm-link': {
-    color: 'hsl(var(--primary))',
+    color: '#0066cc',
     textDecoration: 'underline',
     cursor: 'pointer'
   },
   '.cm-link-url': {
-    color: 'hsl(var(--muted-foreground))',
+    color: '#888',
     fontSize: '0.9em'
   },
 
   // Blockquotes
   '.cm-blockquote': {
-    borderLeft: '3px solid hsl(var(--border))',
+    borderLeft: '3px solid #ddd',
     paddingLeft: '12px',
-    color: 'hsl(var(--muted-foreground))',
+    color: '#666',
     fontStyle: 'italic'
   },
 
   // Highlights
   '.cm-highlight': {
-    backgroundColor: 'hsl(50 100% 50% / 0.3)',
+    backgroundColor: 'rgba(255, 235, 59, 0.4)',
     borderRadius: '2px',
     padding: '0 2px'
   },
 
   // List bullets
   '.cm-list-bullet': {
-    color: 'hsl(var(--primary))',
+    color: '#0066cc',
     fontWeight: '600'
   },
 
@@ -439,7 +440,7 @@ const livePreviewStyles = EditorView.baseTheme({
 
   // Horizontal rule
   '.cm-hr-line': {
-    borderBottom: '2px solid hsl(var(--border))',
+    borderBottom: '2px solid #ddd',
     margin: '16px 0'
   }
 })

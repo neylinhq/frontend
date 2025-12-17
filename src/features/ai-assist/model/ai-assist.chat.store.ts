@@ -18,6 +18,7 @@ interface ChatHistoryState {
 
 interface ChatHistoryActions {
   getMessages: (sessionId: string) => ChatMessage[]
+  setMessages: (sessionId: string, messages: ChatMessage[]) => void
   addMessage: (sessionId: string, message: ChatMessage) => void
   updateMessage: (sessionId: string, messageId: string, updates: Partial<ChatMessage>) => void
   removePreview: (sessionId: string, messageId: string, previewId: string) => void
@@ -79,6 +80,19 @@ export const useChatHistoryStore = create<ChatHistoryState & ChatHistoryActions>
       getMessages: (sessionId: string) => {
         const session = get().sessions[sessionId]
         return session?.messages || []
+      },
+
+      setMessages: (sessionId: string, messages: ChatMessage[]) => {
+        set(state => ({
+          sessions: {
+            ...state.sessions,
+            [sessionId]: {
+              id: sessionId,
+              messages: messages.slice(-MAX_MESSAGES_PER_SESSION),
+              lastUpdated: Date.now()
+            }
+          }
+        }))
       },
 
       addMessage: (sessionId: string, message: ChatMessage) => {
@@ -224,11 +238,29 @@ export const useChatHistoryStore = create<ChatHistoryState & ChatHistoryActions>
                     return msg
                   }
 
+                  // Preserve applied entity IDs in data for duplicate prevention
+                  let dataWithAppliedIds = resolved.data
+                  if (resolved.undoData?.previousState) {
+                    const { createdNodeId, createdEdgeIds, createdEdgeId } = resolved.undoData.previousState
+                    if (resolved.type === 'new_node' && createdNodeId) {
+                      dataWithAppliedIds = {
+                        ...resolved.data,
+                        appliedNodeId: createdNodeId as string,
+                        appliedEdgeIds: createdEdgeIds as string[] | undefined
+                      }
+                    } else if (resolved.type === 'connection' && createdEdgeId) {
+                      dataWithAppliedIds = {
+                        ...resolved.data,
+                        appliedEdgeId: createdEdgeId as string
+                      }
+                    }
+                  }
+
                   // Move back to pending
                   const pendingPreview = {
                     id: resolved.id,
                     type: resolved.type,
-                    data: resolved.data,
+                    data: dataWithAppliedIds,
                     status: 'pending' as const
                   }
 

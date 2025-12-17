@@ -2,12 +2,19 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Drawer as VaulDrawer } from 'vaul'
 import { Drawer, DrawerContent } from '@/shared/components/drawer'
 import { cn } from '@/shared/lib/cn'
-import { useAIPanelStore } from '../model'
+import {
+  useAIPanelStore,
+  useChatSessions,
+  useCreateChatSession,
+  useDeleteChatSession,
+  useRenameChatSession,
+} from '../model'
+import { ChatHeader } from './chat-header'
 import { MapChatPanel } from './map-chat-panel'
 
 const STORAGE_KEY = 'ai-panel-width'
 const MIN_WIDTH = 300
-const MAX_WIDTH = 600
+const MAX_WIDTH = 900
 const DEFAULT_WIDTH = 400
 
 interface MapChatDrawerProps {
@@ -27,6 +34,151 @@ export const MapChatDrawer = ({ mapId }: MapChatDrawerProps) => {
   const [isResizing, setIsResizing] = useState(false)
   const startXRef = useRef(0)
   const startWidthRef = useRef(width)
+
+  // Chat sessions state
+  const { data: sessions = [], isLoading: sessionsLoading, isError } = useChatSessions(mapId)
+  const createSession = useCreateChatSession(mapId)
+  const renameSession = useRenameChatSession(mapId)
+  const deleteSession = useDeleteChatSession(mapId)
+  const [activeSessionId, setActiveSessionId] = useState<string | null>(null)
+  const [autoCreateAttempted, setAutoCreateAttempted] = useState(false)
+
+  // Auto-select first session or create one if none exist
+  useEffect(() => {
+    if (sessions.length > 0 && !activeSessionId) {
+      setActiveSessionId(sessions[0].id)
+      setAutoCreateAttempted(false) // Reset on successful load
+    } else if (
+      sessions.length === 0 &&
+      !sessionsLoading &&
+      !isError &&
+      isOpen &&
+      !createSession.isPending &&
+      !autoCreateAttempted
+    ) {
+      // Auto-create first session when drawer opens (only once)
+      setAutoCreateAttempted(true)
+      createSession.mutate(
+        { contextType: 'map' },
+        {
+          onSuccess: session => {
+            setActiveSessionId(session.id)
+          },
+        }
+      )
+    }
+  }, [sessions, activeSessionId, sessionsLoading, isError, isOpen, createSession.isPending, autoCreateAttempted])
+
+  // Handle session deletion - switch to another session
+  const handleCloseSession = useCallback(
+    (sessionId: string) => {
+      deleteSession.mutate(sessionId, {
+        onSuccess: () => {
+          if (activeSessionId === sessionId) {
+            // Switch to another session
+            const remaining = sessions.filter(s => s.id !== sessionId)
+            setActiveSessionId(remaining[0]?.id || null)
+          }
+        },
+      })
+    },
+    [deleteSession, activeSessionId, sessions]
+  )
+
+  const handleCreateSession = useCallback(() => {
+    createSession.mutate(
+      { contextType: 'map' },
+      {
+        onSuccess: session => {
+          setActiveSessionId(session.id)
+        },
+      }
+    )
+  }, [createSession])
+
+  const handleRenameSession = useCallback(
+    (sessionId: string, title: string) => {
+      renameSession.mutate({ sessionId, title })
+    },
+    [renameSession]
+  )
+
+  const handleCloseAll = useCallback(() => {
+    // Close all sessions except create a new one
+    sessions.forEach(s => {
+      deleteSession.mutate(s.id)
+    })
+    // Create a new session after closing all
+    setTimeout(() => {
+      createSession.mutate(
+        { contextType: 'map' },
+        {
+          onSuccess: session => {
+            setActiveSessionId(session.id)
+          },
+        }
+      )
+    }, 100)
+  }, [sessions, deleteSession, createSession])
+
+  const handleCloseOthers = useCallback(() => {
+    // Close all sessions except the active one
+    sessions
+      .filter(s => s.id !== activeSessionId)
+      .forEach(s => {
+        deleteSession.mutate(s.id)
+      })
+  }, [sessions, activeSessionId, deleteSession])
+
+  // Keyboard shortcuts for tab navigation
+  useEffect(() => {
+    if (!isOpen) return
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const isMod = e.metaKey || e.ctrlKey
+
+      // Cmd/Ctrl + T — new chat
+      if (isMod && e.key === 't') {
+        e.preventDefault()
+        handleCreateSession()
+        return
+      }
+
+      // Cmd/Ctrl + W — close current tab (only if more than 1 session)
+      if (isMod && e.key === 'w' && !e.shiftKey && sessions.length > 1 && activeSessionId) {
+        e.preventDefault()
+        handleCloseSession(activeSessionId)
+        return
+      }
+
+      // Cmd/Ctrl + Shift + W — close all tabs
+      if (isMod && e.shiftKey && e.key === 'W') {
+        e.preventDefault()
+        handleCloseAll()
+        return
+      }
+
+      // Cmd/Ctrl + [ or ] — switch tabs
+      if (isMod && (e.key === '[' || e.key === ']') && sessions.length > 1 && activeSessionId) {
+        e.preventDefault()
+        const currentIndex = sessions.findIndex(s => s.id === activeSessionId)
+        if (currentIndex === -1) return
+
+        let newIndex: number
+        if (e.key === '[') {
+          // Previous tab
+          newIndex = currentIndex === 0 ? sessions.length - 1 : currentIndex - 1
+        } else {
+          // Next tab
+          newIndex = currentIndex === sessions.length - 1 ? 0 : currentIndex + 1
+        }
+        setActiveSessionId(sessions[newIndex].id)
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, sessions, activeSessionId, handleCreateSession, handleCloseSession, handleCloseAll])
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768)
@@ -77,6 +229,22 @@ export const MapChatDrawer = ({ mapId }: MapChatDrawerProps) => {
     }
   }, [isResizing])
 
+  // Header component with tabs and selector
+  const chatHeader = (
+    <ChatHeader
+      sessions={sessions}
+      activeSessionId={activeSessionId}
+      onSelectSession={setActiveSessionId}
+      onCreateSession={handleCreateSession}
+      onCloseSession={handleCloseSession}
+      onCloseAll={handleCloseAll}
+      onCloseOthers={handleCloseOthers}
+      onRenameSession={handleRenameSession}
+      isLoading={sessionsLoading || createSession.isPending}
+      isMobile={isMobile}
+    />
+  )
+
   if (isMobile) {
     return (
       <VaulDrawer.Root open={isOpen} onOpenChange={open => !open && close()}>
@@ -85,8 +253,9 @@ export const MapChatDrawer = ({ mapId }: MapChatDrawerProps) => {
           <VaulDrawer.Content className='fixed inset-x-0 bottom-0 z-50 flex h-[85vh] flex-col rounded-t-xl bg-background'>
             {/* Drag handle for swipe-to-close */}
             <div className='mx-auto mt-3 h-1 w-12 shrink-0 rounded-full bg-muted-foreground/30' />
+            {chatHeader}
             <div className='flex-1 overflow-hidden'>
-              <MapChatPanel mapId={mapId} />
+              <MapChatPanel mapId={mapId} sessionId={activeSessionId} />
             </div>
           </VaulDrawer.Content>
         </VaulDrawer.Portal>
@@ -100,7 +269,7 @@ export const MapChatDrawer = ({ mapId }: MapChatDrawerProps) => {
         side='right'
         size={`${width}px`}
         showOverlay={false}
-        showClose={true}
+        showClose={false}
         onInteractOutside={e => e.preventDefault()}
         onPointerDownOutside={e => e.preventDefault()}
       >
@@ -114,8 +283,11 @@ export const MapChatDrawer = ({ mapId }: MapChatDrawerProps) => {
           )}
           onMouseDown={handleMouseDown}
         />
-        <div className='flex h-full flex-col pt-2 pl-1'>
-          <MapChatPanel mapId={mapId} />
+        <div className='flex min-h-0 flex-1 flex-col'>
+          {chatHeader}
+          <div className='min-h-0 flex-1'>
+            <MapChatPanel mapId={mapId} sessionId={activeSessionId} />
+          </div>
         </div>
       </DrawerContent>
     </Drawer>

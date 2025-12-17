@@ -129,6 +129,7 @@
     "system": "Система"
   },
   "common": {
+    "untitled": "Без названия",
     "loading": "Загрузка",
     "error": "Ошибка",
     "created": "Создан",
@@ -514,11 +515,36 @@
     "edit": "Изменить"
   },
   "mapSettings": {
-    "title": "Настройки карты",
-    "description": "Настройте параметры карты",
+    "title": "О карте",
+    "saved": "Сохранено",
+    "tabs": {
+      "overview": "Обзор",
+      "progress": "Прогресс",
+      "settings": "Настройки"
+    },
+    "overview": {
+      "mapTitle": "Название",
+      "description": "Описание",
+      "descriptionPlaceholder": "Добавьте описание...",
+      "author": "Автор",
+      "createdAt": "Создана"
+    },
+    "visibility": {
+      "public": "Публичная",
+      "private": "Приватная",
+      "madePublic": "Карта теперь публичная",
+      "madePrivate": "Карта теперь приватная"
+    },
+    "progress": {
+      "yourRating": "Ваш рейтинг",
+      "nodesTotal": "Узлов",
+      "nodesMastered": "Освоено",
+      "nodesLearning": "Изучается",
+      "overallProgress": "Прогресс"
+    },
     "ratingSystem": {
       "label": "Система рейтинга",
-      "description": "Выберите систему рейтинга для отображения сложности узлов",
+      "description": "Влияет на отображение сложности узлов и ваш личный рейтинг",
       "placeholder": "Выберите систему",
       "elo": "Рейтинг ELO (AI-калибровка)",
       "eloShort": "ELO",
@@ -526,7 +552,15 @@
       "glicko": "Рейтинг Glicko-2 (На основе упражнений)",
       "glickoShort": "Glicko-2",
       "glickoTooltip": "Рейтинг на основе упражнений и интервального повторения",
-      "saved": "Предпочтение системы рейтинга сохранено"
+      "saved": "Система рейтинга обновлена"
+    },
+    "dangerZone": {
+      "title": "Опасная зона",
+      "warning": "Удаление карты навсегда удалит все узлы и ваш прогресс.",
+      "delete": "Удалить карту",
+      "deleted": "Карта удалена",
+      "confirmTitle": "Удалить карту?",
+      "confirmDescription": "«{{title}}» и {{nodesCount}} узлов будут удалены навсегда. Это действие нельзя отменить."
     }
   },
   "mapView": {
@@ -1203,7 +1237,22 @@
       "regenerate": "Перегенерировать",
       "editWarning": "Редактирование удалит все последующие сообщения",
       "improveContent": "Улучшить содержимое",
-      "sources": "Источники"
+      "sources": "Источники",
+      "newChat": "Новый чат",
+      "untitled": "Новый чат",
+      "selectOrCreate": "Выберите или создайте чат",
+      "closeTab": "Закрыть вкладку",
+      "closeOthers": "Закрыть другие вкладки",
+      "closeAll": "Закрыть все вкладки",
+      "exportChat": "Экспортировать чат",
+      "searchChats": "Поиск чатов...",
+      "noSearchResults": "Чаты не найдены",
+      "noChats": "Пока нет чатов",
+      "today": "Сегодня",
+      "yesterday": "Вчера",
+      "thisWeek": "На этой неделе",
+      "thisMonth": "В этом месяце",
+      "older": "Ранее"
     },
     "preview": {
       "edit": "Редактировать",
@@ -1283,6 +1332,34 @@
       "content": "Содержимое",
       "examples": "Примеры",
       "sources": "Источники"
+    },
+    "proposal": {
+      "connection": "Создать связь",
+      "newNode": "Создать узел",
+      "edit": "Изменить узел"
+    },
+    "reasoning": "Обоснование",
+    "node": {
+      "created": "Узел создан",
+      "createdMultiple": "Создано {{count}} узлов"
+    },
+    "connection": {
+      "created": "Связь создана",
+      "createdMultiple": "Создано {{count}} связей",
+      "updated": "Связь обновлена",
+      "nodesNotFound": "Не удалось найти узлы"
+    },
+    "graphFragment": {
+      "title": "Изменения графа",
+      "nodes": "Узлы",
+      "nodesCount": "{{count}} узлов",
+      "edges": "Связи",
+      "edgesCount": "{{count}} связей",
+      "selectAll": "Выбрать все",
+      "applyAll": "Применить все",
+      "applySelected": "Применить ({{count}})",
+      "applied": "Создано {{nodes}} узлов и {{edges}} связей",
+      "edgeRequiresNodes": "Сначала выберите связанные узлы"
     }
   },
   "practice": {

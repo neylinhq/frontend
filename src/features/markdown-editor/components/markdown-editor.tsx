@@ -101,20 +101,29 @@ export const MarkdownEditor = ({
     })
   }, [editable])
 
-  // Update content when initialContent changes externally
+  // Track the initial content to avoid overwriting user edits
+  // Only update if content was externally changed (e.g., loading different document)
+  const lastInitialContentRef = useRef(initialContent)
+
   useEffect(() => {
     if (!viewRef.current || !isInitialized.current) return
 
-    const currentContent = viewRef.current.state.doc.toString()
-    if (currentContent !== initialContent) {
+    // Only update if this is a fundamentally different document
+    // (e.g., navigating to a different note), not just a save cycle
+    const isNewDocument = lastInitialContentRef.current !== initialContent &&
+                          initialContent !== viewRef.current.state.doc.toString()
+
+    if (isNewDocument) {
       viewRef.current.dispatch({
         changes: {
           from: 0,
-          to: currentContent.length,
+          to: viewRef.current.state.doc.length,
           insert: initialContent
         }
       })
     }
+
+    lastInitialContentRef.current = initialContent
   }, [initialContent])
 
   // Loading skeleton

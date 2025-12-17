@@ -1,8 +1,9 @@
 import { useTranslation } from 'react-i18next'
-import type { ConnectionPreviewData, EdgePreviewData, ExercisePreviewData, NewNodePreviewData, NodePreviewData, PreviewCard } from '../model/ai-assist.types'
+import type { ConnectionPreviewData, EdgePreviewData, ExercisePreviewData, GraphFragmentPreviewData, NewNodePreviewData, NodePreviewData, PreviewCard } from '../model/ai-assist.types'
 import { ConnectionPreview } from './connection-preview'
 import { EnrichmentPreview } from './enrichment-preview'
 import { ExerciseCard } from './exercise-card'
+import { GraphFragmentCard } from './graph-fragment-card'
 import { NewNodePreview } from './new-node-preview'
 import { DiffLine, ProposalCard } from './proposal-card'
 
@@ -13,6 +14,8 @@ interface PreviewCardComponentProps {
   onEdit?: (data: unknown) => void
   /** Whether this preview is currently being saved (disables buttons) */
   isSaving?: boolean
+  /** Handler for graph_fragment apply with selected items */
+  onApplyFragment?: (data: GraphFragmentPreviewData) => void
 }
 
 export const PreviewCardComponent = ({
@@ -20,7 +23,8 @@ export const PreviewCardComponent = ({
   onRemove,
   onSave,
   onEdit,
-  isSaving = false
+  isSaving = false,
+  onApplyFragment
 }: PreviewCardComponentProps) => {
   const { t } = useTranslation()
 
@@ -28,6 +32,31 @@ export const PreviewCardComponent = ({
     case 'exercise':
       // Exercises use interactive ExerciseCard - no Accept/Reject buttons
       return <ExerciseCard data={preview.data as ExercisePreviewData} />
+
+    case 'graph_fragment': {
+      const data = preview.data as GraphFragmentPreviewData
+      return (
+        <GraphFragmentCard
+          data={data}
+          onApply={(selectedNodes, selectedEdges) => {
+            // Create filtered data with only selected items
+            const filteredData: GraphFragmentPreviewData = {
+              ...data,
+              nodes: selectedNodes,
+              edges: selectedEdges
+            }
+            if (onApplyFragment) {
+              onApplyFragment(filteredData)
+            } else {
+              // Fallback: just call onSave (parent will handle full data)
+              onSave()
+            }
+          }}
+          onReject={onRemove}
+          isLoading={isSaving}
+        />
+      )
+    }
 
     case 'enrichment':
       return (

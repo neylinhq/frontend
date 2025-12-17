@@ -262,5 +262,41 @@ export const mapApi = {
 
   deleteEdge: async (mapId: string, edgeId: string): Promise<void> => {
     await api.delete(`/maps/${mapId}/edges/${edgeId}`)
+  },
+
+  // ====== Graph Fragment (Batch) ======
+  applyFragment: async (
+    mapId: string,
+    data: {
+      nodes: Array<{
+        tempId: string
+        label: string
+        type: string
+        description: string
+        content?: string
+        positionX: number
+        positionY: number
+      }>
+      edges: Array<{
+        fromRef: string
+        toRef: string
+        fromIsNew: boolean
+        toIsNew: boolean
+        relationType: string
+      }>
+    }
+  ): Promise<{
+    createdNodes: Node[]
+    createdEdges: Edge[]
+    tempIdMapping: Record<string, string>
+  }> => {
+    const response = await api.post<
+      ApiResponse<{
+        createdNodes: Node[]
+        createdEdges: Edge[]
+        tempIdMapping: Record<string, string>
+      }>
+    >(`/maps/${mapId}/fragment`, data)
+    return response.data
   }
 }

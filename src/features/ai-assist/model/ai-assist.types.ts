@@ -23,12 +23,12 @@ export interface ChatMessage {
 }
 
 // Preview card types
-export type PreviewType = 'exercise' | 'enrichment' | 'edge' | 'node' | 'new_node' | 'connection'
+export type PreviewType = 'exercise' | 'enrichment' | 'edge' | 'node' | 'new_node' | 'connection' | 'graph_fragment'
 
 export interface PreviewCard {
   id: string
   type: PreviewType
-  data: ExercisePreviewData | EnrichmentPreviewData | EdgePreviewData | NodePreviewData | NewNodePreviewData | ConnectionPreviewData
+  data: ExercisePreviewData | EnrichmentPreviewData | EdgePreviewData | NodePreviewData | NewNodePreviewData | ConnectionPreviewData | GraphFragmentPreviewData
   status: 'pending' | 'editing'
 }
 
@@ -36,7 +36,7 @@ export interface PreviewCard {
 export interface ResolvedPreview {
   id: string
   type: PreviewType
-  data: ExercisePreviewData | EnrichmentPreviewData | EdgePreviewData | NodePreviewData | NewNodePreviewData | ConnectionPreviewData
+  data: ExercisePreviewData | EnrichmentPreviewData | EdgePreviewData | NodePreviewData | NewNodePreviewData | ConnectionPreviewData | GraphFragmentPreviewData
   status: 'approved' | 'rejected'
   resolvedAt: Date
   undoData?: {
@@ -84,6 +84,10 @@ export interface NewNodePreviewData {
     nodeLabel: string
     relation: string
   }>
+  /** ID of already created node (set after Apply, preserved after Undo) */
+  appliedNodeId?: string
+  /** IDs of already created edges (set after Apply, preserved after Undo) */
+  appliedEdgeIds?: string[]
 }
 
 export interface ConnectionPreviewData {
@@ -91,6 +95,51 @@ export interface ConnectionPreviewData {
   toLabel: string
   relation: string
   reasoning: string
+  /** ID of already created edge (set after Apply, preserved after Undo) */
+  appliedEdgeId?: string
+}
+
+// Graph fragment - unified proposal for multiple nodes and edges
+export interface GraphFragmentNode {
+  /** Temporary ID for referencing within the fragment (e.g., "new_1") */
+  tempId: string
+  label: string
+  nodeType: string
+  description: string
+  content?: string
+  /** Whether this node is selected for applying */
+  selected?: boolean
+  /** Real node ID after creation */
+  appliedNodeId?: string
+}
+
+export interface GraphFragmentEdge {
+  /** Temporary ID for this edge (e.g., "edge_1") */
+  tempId: string
+  /** Source - either existing node label or tempId of new node */
+  fromRef: string
+  /** Target - either existing node label or tempId of new node */
+  toRef: string
+  /** Whether fromRef is a tempId (new node) or existing label */
+  fromIsNew: boolean
+  /** Whether toRef is a tempId (new node) or existing label */
+  toIsNew: boolean
+  relation: string
+  /** Whether this edge is selected for applying */
+  selected?: boolean
+  /** Real edge ID after creation */
+  appliedEdgeId?: string
+}
+
+export interface GraphFragmentPreviewData {
+  /** Human-readable title for this fragment */
+  title: string
+  /** Nodes to create */
+  nodes: GraphFragmentNode[]
+  /** Edges to create (between new and/or existing nodes) */
+  edges: GraphFragmentEdge[]
+  /** Overall reasoning for this proposal */
+  reasoning?: string
 }
 
 // Context types

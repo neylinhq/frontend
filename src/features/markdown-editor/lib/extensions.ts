@@ -26,14 +26,10 @@ import {
   indentOnInput
 } from '@codemirror/language'
 import {
-  crosshairCursor,
   drawSelection,
   dropCursor,
   EditorView,
-  highlightActiveLine,
-  highlightActiveLineGutter,
   keymap,
-  lineNumbers,
   placeholder as placeholderExtension,
   rectangularSelection
 } from '@codemirror/view'
@@ -60,9 +56,6 @@ export const createExtensions = (options: {
     bracketMatching(),
     closeBrackets(),
     rectangularSelection(),
-    crosshairCursor(),
-    highlightActiveLine(),
-    highlightActiveLineGutter(),
     highlightSelectionMatches(),
 
     // Markdown language support with code block highlighting
@@ -87,10 +80,6 @@ export const createExtensions = (options: {
       ...completionKeymap,
       indentWithTab
     ]),
-
-    // Line numbers and fold gutter
-    lineNumbers(),
-    foldGutter(),
 
     // Autocompletion
     autocompletion(),
@@ -137,6 +126,5 @@ export const createPreviewExtensions = (): Extension[] => [
   livePreview(),
   EditorView.editable.of(false),
   EditorState.readOnly.of(true),
-  highlightActiveLine(),
   drawSelection()
 ]

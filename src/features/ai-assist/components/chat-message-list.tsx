@@ -25,7 +25,7 @@ interface ChatMessageListProps {
   savingPreviews?: Set<string>
   onRemovePreview: (messageId: string, previewId: string) => void
   onSavePreview: (messageId: string, preview: PreviewCard) => void
-  onRejectPreview: (messageId: string, previewId: string) => void
+  onRejectPreview: (messageId: string, preview: PreviewCard) => void
   onUndoResolved: (messageId: string, preview: ResolvedPreview) => void
   onRegenerate?: (messageId: string, role: 'user' | 'assistant') => void
   onEditMessage?: (messageId: string, newContent: string) => void
@@ -277,13 +277,14 @@ export const ChatMessageList = ({
               </div>
             )}
 
-            {/* Streaming Indicator - only show when actually streaming content, not when thinking */}
+            {/* Streaming Indicator - temporarily disabled
             {message.isStreaming && message.content && (
               <div className='flex items-center gap-2 text-xs text-muted-foreground px-2'>
                 <Loader2 className='w-3 h-3 animate-spin' />
                 <span>{t('ai.chat.streaming')}</span>
               </div>
             )}
+            */}
 
             {/* Pending Preview Cards */}
             {message.preview && message.preview.length > 0 && (
@@ -292,7 +293,7 @@ export const ChatMessageList = ({
                   <PreviewCardComponent
                     key={preview.id}
                     preview={preview}
-                    onRemove={() => onRejectPreview(message.id, preview.id)}
+                    onRemove={() => onRejectPreview(message.id, preview)}
                     onSave={() => onSavePreview(message.id, preview)}
                     isSaving={isPreviewSaving(message.id, preview.id)}
                   />

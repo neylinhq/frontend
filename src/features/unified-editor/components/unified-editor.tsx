@@ -9,7 +9,7 @@
  * Handles conversion between HTML (storage) and Markdown (CodeMirror) formats.
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import type { Editor, JSONContent } from '@tiptap/react'
 import type { EditorView } from '@codemirror/view'
 
@@ -34,17 +34,18 @@ export const UnifiedEditor = ({
   // Track if we've initialized to avoid double conversions
   const isInitialized = useRef(false)
 
-  // Convert HTML to markdown for CodeMirror initial content
-  const initialMarkdown = useMemo(() => {
-    if (!useCodeMirror || !initialContent) return ''
-    return toMarkdown(initialContent)
-  }, [useCodeMirror, initialContent])
+  // Store initial content only once on mount - never update after that
+  // This prevents the editor from being reset when parent re-renders after save
+  const initialMarkdownRef = useRef<string | null>(null)
+  const initialJsonContentRef = useRef<JSONContent | undefined>(undefined)
 
-  // Convert HTML to Tiptap JSONContent
-  const initialJsonContent = useMemo(() => {
-    if (useCodeMirror || !initialContent) return undefined
-    return htmlToEditor(initialContent)
-  }, [useCodeMirror, initialContent])
+  // Initialize only once
+  if (initialMarkdownRef.current === null && useCodeMirror) {
+    initialMarkdownRef.current = initialContent ? toMarkdown(initialContent) : ''
+  }
+  if (initialJsonContentRef.current === undefined && !useCodeMirror) {
+    initialJsonContentRef.current = initialContent ? htmlToEditor(initialContent) : undefined
+  }
 
   // Debounce timer ref
   const debounceRef = useRef<NodeJS.Timeout | null>(null)
@@ -122,7 +123,7 @@ export const UnifiedEditor = ({
   if (useCodeMirror) {
     return (
       <MarkdownEditor
-        initialContent={initialMarkdown}
+        initialContent={initialMarkdownRef.current ?? ''}
         onChange={handleMarkdownChange}
         onEditorUpdate={handleCodeMirrorReady}
         editable={editable}
@@ -135,7 +136,7 @@ export const UnifiedEditor = ({
   // Render Tiptap editor
   return (
     <BlockEditor
-      initialContent={initialJsonContent}
+      initialContent={initialJsonContentRef.current}
       onChange={handleTiptapChange}
       onEditorUpdate={handleTiptapEditorUpdate}
       editable={editable}

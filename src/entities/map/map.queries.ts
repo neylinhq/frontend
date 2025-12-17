@@ -69,6 +69,22 @@ export const useDeleteMap = () => {
   })
 }
 
+export const useUpdateMap = (mapId: string) => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (data: { title?: string; description?: string }) =>
+      mapApi.updateMap(mapId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: mapKeys.detail(mapId) })
+      queryClient.invalidateQueries({ queryKey: mapKeys.fullMap(mapId) })
+      queryClient.invalidateQueries({ queryKey: mapKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: mapKeys.discover('all') })
+      queryClient.invalidateQueries({ queryKey: mapKeys.discover('owned') })
+    }
+  })
+}
+
 // ====== Хуки для узлов ======
 export const useMapNodes = (mapId: string) => {
   return useQuery({
@@ -237,6 +253,38 @@ export const useUpdateNodePositions = (mapId: string) => {
   return useMutation({
     mutationFn: (updates: Array<{ id: string; position: { x: number; y: number } }>) =>
       mapApi.updateNodePositions(mapId, updates)
+  })
+}
+
+// ====== Graph Fragment (Batch) ======
+export const useApplyGraphFragment = (mapId: string) => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (data: {
+      nodes: Array<{
+        tempId: string
+        label: string
+        type: string
+        description: string
+        content?: string
+        positionX: number
+        positionY: number
+      }>
+      edges: Array<{
+        fromRef: string
+        toRef: string
+        fromIsNew: boolean
+        toIsNew: boolean
+        relationType: string
+      }>
+    }) => mapApi.applyFragment(mapId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: mapKeys.mapNodes(mapId) })
+      queryClient.invalidateQueries({ queryKey: mapKeys.mapEdges(mapId) })
+      queryClient.invalidateQueries({ queryKey: mapKeys.fullMap(mapId) })
+      queryClient.invalidateQueries({ queryKey: mapKeys.lightweightMap(mapId) })
+    }
   })
 }
 

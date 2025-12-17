@@ -3,6 +3,7 @@ export { mapApi } from './map.api'
 export {
   mapKeys,
   useAnalyzeGraph,
+  useApplyGraphFragment,
   useCopyMap,
   useCreateEdge,
   useCreateMap,
@@ -22,6 +23,7 @@ export {
   useSearchMaps,
   useSetVisibility,
   useUpdateEdge,
+  useUpdateMap,
   useUpdateNode,
   useUpdateNodePosition,
   useUpdateNodePositions

@@ -1,14 +1,30 @@
 import { ChevronDown, ChevronRight, Undo2 } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import { cn } from '@/shared/lib/cn'
 import type {
+  ConnectionPreviewData,
   EnrichmentPreviewData,
   ExercisePreviewData,
+  GraphFragmentPreviewData,
+  NewNodePreviewData,
   ResolvedPreview
 } from '../model/ai-assist.types'
 import { DiffBlock } from './proposal-card'
+
+/** Node type colors - same as new-node-preview.tsx */
+const NODE_TYPE_COLORS: Record<string, string> = {
+  concept: 'bg-blue-500/10 text-blue-600 dark:text-blue-400',
+  fact: 'bg-green-500/10 text-green-600 dark:text-green-400',
+  theory: 'bg-purple-500/10 text-purple-600 dark:text-purple-400',
+  example: 'bg-orange-500/10 text-orange-600 dark:text-orange-400',
+  question: 'bg-yellow-500/10 text-yellow-600 dark:text-yellow-400',
+  hypothesis: 'bg-pink-500/10 text-pink-600 dark:text-pink-400',
+  person: 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400',
+  school: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400'
+}
 
 interface CollapsibleProposalProps {
   preview: ResolvedPreview
@@ -19,6 +35,7 @@ interface CollapsibleProposalProps {
 
 export const CollapsibleProposal = ({
   preview,
+  canUndo,
   onUndo,
   className
 }: CollapsibleProposalProps) => {
@@ -38,6 +55,25 @@ export const CollapsibleProposal = ({
       case 'exercise': {
         const data = preview.data as ExercisePreviewData
         return (data.exercise?.type || t('ai.exercises.exercise', 'exercise')).toLowerCase()
+      }
+      case 'new_node': {
+        const data = preview.data as NewNodePreviewData
+        return `${t('ai.proposals.newNode', 'node')}: ${data.label}`.toLowerCase()
+      }
+      case 'connection': {
+        const data = preview.data as ConnectionPreviewData
+        return `${data.fromLabel} → ${data.toLabel}`.toLowerCase()
+      }
+      case 'graph_fragment': {
+        const data = preview.data as GraphFragmentPreviewData
+        const parts: string[] = []
+        if (data.nodes?.length > 0) {
+          parts.push(t('ai.graphFragment.nodesCount', '{{count}} nodes', { count: data.nodes.length }))
+        }
+        if (data.edges?.length > 0) {
+          parts.push(t('ai.graphFragment.edgesCount', '{{count}} edges', { count: data.edges.length }))
+        }
+        return parts.join(', ').toLowerCase() || t('ai.proposals.change', 'change').toLowerCase()
       }
       case 'edge':
         return t('ai.proposals.newEdge', 'connection').toLowerCase()
@@ -73,8 +109,8 @@ export const CollapsibleProposal = ({
             : t('ai.proposals.dismissed', 'Dismissed ({{summary}})', { summary: getSummary() })}
         </span>
 
-        {/* Undo/Restore button */}
-        {onUndo && (
+        {/* Undo/Restore button - only show if canUndo is true or status is rejected (restore) */}
+        {onUndo && (canUndo || !isApproved) && (
           <Button
             size='sm'
             variant='ghost'
@@ -134,6 +170,109 @@ const ProposalContent = ({ preview }: { preview: ResolvedPreview }) => {
                 <li key={opt.id}>{opt.content}</li>
               ))}
             </ul>
+          )}
+        </div>
+      )
+    }
+
+    case 'new_node': {
+      const data = preview.data as NewNodePreviewData
+      return (
+        <div className='space-y-2 text-xs'>
+          <div className='flex items-center justify-between gap-2'>
+            <span className='font-medium'>{data.label}</span>
+            <Badge
+              variant='secondary'
+              className={cn('text-xs font-medium', NODE_TYPE_COLORS[data.nodeType])}
+            >
+              {t(`nodeTypes.${data.nodeType}`, data.nodeType)}
+            </Badge>
+          </div>
+          {data.description && (
+            <p className='text-muted-foreground'>{data.description}</p>
+          )}
+          {data.connectTo && data.connectTo.length > 0 && (
+            <div className='flex flex-wrap gap-1'>
+              {data.connectTo.map((conn, i) => (
+                <Badge key={i} variant='outline' className='text-xs'>
+                  → {conn.nodeLabel} ({t(`graph.edgeTypes.${conn.relation}`, conn.relation)})
+                </Badge>
+              ))}
+            </div>
+          )}
+        </div>
+      )
+    }
+
+    case 'connection': {
+      const data = preview.data as ConnectionPreviewData
+      return (
+        <div className='space-y-2 text-xs'>
+          <div className='flex items-center justify-between gap-2'>
+            <span className='font-medium'>
+              {data.fromLabel} → {data.toLabel}
+            </span>
+            <Badge variant='outline' className='text-xs'>
+              {t(`graph.edgeTypes.${data.relation}`, data.relation)}
+            </Badge>
+          </div>
+          {data.reasoning && <p className='text-muted-foreground italic'>{data.reasoning}</p>}
+        </div>
+      )
+    }
+
+    case 'graph_fragment': {
+      const data = preview.data as GraphFragmentPreviewData
+      return (
+        <div className='space-y-2 text-xs'>
+          {/* Nodes */}
+          {data.nodes && data.nodes.length > 0 && (
+            <div className='space-y-1'>
+              <div className='text-[10px] font-medium text-muted-foreground uppercase tracking-wide'>
+                {t('ai.graphFragment.nodes', 'Nodes')}
+              </div>
+              {data.nodes.map((node, i) => (
+                <div key={node.tempId || i} className='flex items-center gap-2 pl-2'>
+                  <span className='font-medium'>{node.label}</span>
+                  <Badge
+                    variant='secondary'
+                    className={cn('text-[10px] font-medium', NODE_TYPE_COLORS[node.nodeType])}
+                  >
+                    {t(`nodeTypes.${node.nodeType}`, node.nodeType)}
+                  </Badge>
+                </div>
+              ))}
+            </div>
+          )}
+          {/* Edges */}
+          {data.edges && data.edges.length > 0 && (
+            <div className='space-y-1'>
+              <div className='text-[10px] font-medium text-muted-foreground uppercase tracking-wide'>
+                {t('ai.graphFragment.edges', 'Connections')}
+              </div>
+              {data.edges.map((edge, i) => {
+                const fromLabel = edge.fromIsNew
+                  ? data.nodes?.find(n => n.tempId === edge.fromRef)?.label || edge.fromRef
+                  : edge.fromRef
+                const toLabel = edge.toIsNew
+                  ? data.nodes?.find(n => n.tempId === edge.toRef)?.label || edge.toRef
+                  : edge.toRef
+                return (
+                  <div key={edge.tempId || i} className='flex items-center gap-2 pl-2'>
+                    <span>{fromLabel}</span>
+                    <span className='text-muted-foreground'>→</span>
+                    <Badge variant='outline' className='text-[10px]'>
+                      {t(`graph.edgeTypes.${edge.relation}`, edge.relation)}
+                    </Badge>
+                    <span className='text-muted-foreground'>→</span>
+                    <span>{toLabel}</span>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+          {data.reasoning && (
+            <p className='text-muted-foreground italic border-t border-border pt-2'>{data.reasoning}</p>
           )}
         </div>
       )

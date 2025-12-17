@@ -10,10 +10,12 @@ interface FieldProps {
   htmlFor?: string
   children: React.ReactElement
   className?: string
+  /** Custom classes for the label element */
+  labelClassName?: string
 }
 
 const Field = React.forwardRef<HTMLDivElement, FieldProps>(
-  ({ label, error, description, required, htmlFor, children, className }, ref) => {
+  ({ label, error, description, required, htmlFor, children, className, labelClassName }, ref) => {
     const generatedId = React.useId()
     const id = htmlFor ?? generatedId
     const isInvalid = Boolean(error)
@@ -28,7 +30,7 @@ const Field = React.forwardRef<HTMLDivElement, FieldProps>(
 
     return (
       <div ref={ref} className={cn('space-y-1.5', className)}>
-        <Label htmlFor={id} className={cn(isInvalid && 'text-destructive')}>
+        <Label htmlFor={id} className={cn(isInvalid && 'text-destructive', labelClassName)}>
           {label}
           {required && <span className='text-destructive ml-1'>*</span>}
         </Label>

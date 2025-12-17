@@ -1,12 +1,9 @@
-import { ArrowUp, GripHorizontal, Map } from 'lucide-react'
+import { ArrowUp, GripHorizontal, Square } from 'lucide-react'
 import { type KeyboardEvent, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import type { AIModel } from '@/entities/ai'
 import { Button } from '@/shared/components/button'
 import { Select, SelectContent, SelectItem, SelectTrigger } from '@/shared/components/select'
-import { Switch } from '@/shared/components/switch'
 import { Textarea } from '@/shared/components/textarea'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/components/tooltip'
 import { useResizable } from '@/shared/hooks'
 import { cn } from '@/shared/lib/cn'
 import { CommandPalette, type SlashCommand } from './command-palette'
@@ -15,38 +12,33 @@ const MIN_INPUT_HEIGHT = 80
 const MAX_INPUT_HEIGHT = 300
 const DEFAULT_INPUT_HEIGHT = 80
 
-type ContextMode = 'node' | 'map'
-
 interface ChatInputProps {
   value: string
   onChange: (value: string) => void
   onSend: (value: string) => void
+  onStop?: () => void
   onCommand?: (commandId: string) => void
   disabled?: boolean
+  isLoading?: boolean
   placeholder?: string
   model?: string
   onModelChange?: (model: string) => void
   models?: AIModel[]
-  contextMode?: ContextMode
-  onContextModeChange?: (mode: ContextMode) => void
-  showContextSwitch?: boolean
 }
 
 export const ChatInput = ({
   value,
   onChange,
   onSend,
+  onStop,
   onCommand,
   disabled = false,
+  isLoading = false,
   placeholder = 'Type a message...',
   model,
   onModelChange,
-  models = [],
-  contextMode = 'node',
-  onContextModeChange,
-  showContextSwitch = false
+  models = []
 }: ChatInputProps) => {
-  const { t } = useTranslation()
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const [showCommands, setShowCommands] = useState(false)
 
@@ -175,41 +167,28 @@ export const ChatInput = ({
           </Select>
         )}
 
-        {/* Context mode toggle */}
-        {showContextSwitch && onContextModeChange && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div className='flex items-center gap-1.5'>
-                <Switch
-                  checked={contextMode === 'map'}
-                  onCheckedChange={checked => onContextModeChange(checked ? 'map' : 'node')}
-                  disabled={disabled}
-                  className='h-4 w-7 data-[state=checked]:bg-primary data-[state=unchecked]:bg-input [&>span]:h-3 [&>span]:w-3 [&>span]:data-[state=checked]:translate-x-3'
-                />
-                <span className='text-[10px] text-muted-foreground flex items-center gap-0.5'>
-                  <Map className='h-3 w-3' />
-                  {t('ai.context.map', 'Map')}
-                </span>
-              </div>
-            </TooltipTrigger>
-            <TooltipContent side='top' className='text-xs'>
-              {contextMode === 'map'
-                ? t('ai.context.mapHint', 'Search across map ($)')
-                : t('ai.context.nodeHint', 'Current node only')}
-            </TooltipContent>
-          </Tooltip>
-        )}
       </div>
 
-      {/* Send button - bottom right */}
-      <Button
-        size='icon'
-        onClick={handleSend}
-        disabled={!value.trim() || disabled}
-        className='absolute right-3 bottom-2.5 h-8 w-8 flex-shrink-0'
-      >
-        <ArrowUp className='h-4 w-4' />
-      </Button>
+      {/* Send/Stop button - bottom right */}
+      {isLoading ? (
+        <Button
+          size='icon'
+          variant='destructive'
+          onClick={onStop}
+          className='absolute right-3 bottom-2.5 h-8 w-8 flex-shrink-0'
+        >
+          <Square className='h-3 w-3 fill-current' />
+        </Button>
+      ) : (
+        <Button
+          size='icon'
+          onClick={handleSend}
+          disabled={!value.trim() || disabled}
+          className='absolute right-3 bottom-2.5 h-8 w-8 flex-shrink-0'
+        >
+          <ArrowUp className='h-4 w-4' />
+        </Button>
+      )}
     </div>
   )
 }

@@ -66,6 +66,26 @@ export const RATING_TIER_COLORS: Record<RatingTier, string> = {
 }
 
 /**
+ * Rating tier hex colors for inline styles
+ */
+export const RATING_TIER_HEX_COLORS: Record<RatingTier, string> = {
+  Novice: '#6b7280',
+  Apprentice: '#3b82f6',
+  Journeyman: '#22c55e',
+  Expert: '#eab308',
+  Master: '#f97316',
+  Grandmaster: '#ef4444',
+  Legend: '#a855f7',
+  Mythic: '#ec4899'
+}
+
+export interface TierInfo {
+  name: RatingTier
+  color: string
+  colorClass: string
+}
+
+/**
  * Rating tier border colors for nodes
  */
 export const RATING_TIER_BORDER_COLORS: Record<RatingTier, string> = {
@@ -85,8 +105,9 @@ export const RATING_TIER_BORDER_COLORS: Record<RatingTier, string> = {
 
 /**
  * Calculate rating tier from complexity value (0-15000 scale)
+ * Returns TierInfo with name, hex color, and tailwind class
  */
-export const getComplexityTier = (complexity: number | null | undefined): RatingTier | null => {
+export const getComplexityTier = (complexity: number | null | undefined): TierInfo | null => {
   if (complexity === null || complexity === undefined) {
     return null
   }
@@ -94,11 +115,24 @@ export const getComplexityTier = (complexity: number | null | undefined): Rating
   // Find tier by checking which range the complexity falls into
   for (const [tierName, range] of Object.entries(RATING_SEGMENTS)) {
     if (complexity >= range.min && complexity <= range.max) {
-      return tierName as RatingTier
+      const tier = tierName as RatingTier
+      return {
+        name: tier,
+        color: RATING_TIER_HEX_COLORS[tier],
+        colorClass: RATING_TIER_COLORS[tier]
+      }
     }
   }
 
   return null
+}
+
+/**
+ * Get just the tier name from complexity (for backward compatibility)
+ */
+export const getComplexityTierName = (complexity: number | null | undefined): RatingTier | null => {
+  const tier = getComplexityTier(complexity)
+  return tier?.name ?? null
 }
 
 /**

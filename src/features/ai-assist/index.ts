@@ -17,6 +17,7 @@ export { AISuggestionsPanel } from './components/ai-suggestions-panel'
 export { MapChatDrawer } from './components/map-chat-drawer'
 export { MapChatPanel } from './components/map-chat-panel'
 export { NodeChatPanel } from './components/node-chat-panel'
+export { NodeChatWrapper } from './components/node-chat-wrapper'
 
 // Proposal UI components
 export { DiffBlock, DiffLine, ProposalCard } from './components/proposal-card'

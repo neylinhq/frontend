@@ -13,6 +13,10 @@ interface ChatSelectorRowProps {
   onSelectSession: (id: string) => void
   onCreateSession: () => void
   isLoading?: boolean
+  /** Controlled open state for Cmd+K shortcut */
+  open?: boolean
+  /** Controlled open change handler */
+  onOpenChange?: (open: boolean) => void
 }
 
 export const ChatSelectorRow = ({
@@ -20,10 +24,22 @@ export const ChatSelectorRow = ({
   activeSession,
   onSelectSession,
   onCreateSession,
-  isLoading
+  isLoading,
+  open: controlledOpen,
+  onOpenChange
 }: ChatSelectorRowProps) => {
   const { t } = useTranslation()
-  const [isOpen, setIsOpen] = useState(false)
+  const [internalOpen, setInternalOpen] = useState(false)
+
+  // Support both controlled and uncontrolled modes
+  const isOpen = controlledOpen !== undefined ? controlledOpen : internalOpen
+  const setIsOpen = (value: boolean) => {
+    if (onOpenChange) {
+      onOpenChange(value)
+    } else {
+      setInternalOpen(value)
+    }
+  }
 
   const handleSelect = (id: string) => {
     onSelectSession(id)
@@ -74,7 +90,7 @@ export const ChatSelectorRow = ({
         className="h-6 w-6 shrink-0"
         onClick={onCreateSession}
         disabled={isLoading}
-        title={t('ai.chat.newChat', 'New chat')}
+        aria-label={t('ai.chat.newChat', 'New chat')}
       >
         <Plus className="h-3 w-3" />
       </Button>

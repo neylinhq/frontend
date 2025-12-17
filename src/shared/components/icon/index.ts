@@ -1,6 +1,20 @@
 export type { IconData, IconProps } from './icon'
 export { Icon } from './icon'
 export {
+  // AI brand icons
+  aiBrandIcons,
+  anthropicIcon,
+  claudeIcon,
+  cohereIcon,
+  deepseekIcon,
+  googleGeminiIcon,
+  huggingfaceIcon,
+  metaIcon,
+  minimaxIcon,
+  mistralIcon,
+  openaiIcon,
+  perplexityIcon,
+  xaiIcon,
   // Payment brand icons
   amexIcon,
   // Network icons (for crypto payments)

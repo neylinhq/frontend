@@ -84,11 +84,14 @@ export type MissingNodesResult = z.infer<typeof MissingNodesResultSchema>
 
 export type EnrichType = 'description' | 'examples' | 'sources' | 'all'
 
+export const AIModelTierSchema = z.enum(['pro', 'fast', 'free'])
+export type AIModelTier = z.infer<typeof AIModelTierSchema>
+
 export const AIModelSchema = z.object({
   id: z.string(),
   name: z.string(),
   provider: z.string(),
-  free: z.boolean().optional()
+  tier: AIModelTierSchema
 })
 
 export type AIModel = z.infer<typeof AIModelSchema>

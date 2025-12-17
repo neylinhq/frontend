@@ -1,5 +1,5 @@
 import { Check, ChevronDown, ChevronRight, X } from 'lucide-react'
-import { useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
@@ -22,6 +22,7 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [showExplanation, setShowExplanation] = useState(false)
+  const cardRef = useRef<HTMLDivElement>(null)
 
   const { exercise } = data
   if (!exercise) return null
@@ -34,17 +35,45 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
 
   const isCorrect = selectedAnswer === correctAnswer
 
-  const handleSubmit = () => {
+  const handleSubmit = useCallback(() => {
     if (selectedAnswer === null) return
     setIsSubmitted(true)
     setShowExplanation(true)
-  }
+  }, [selectedAnswer])
 
   const handleReset = () => {
     setSelectedAnswer(null)
     setIsSubmitted(false)
     setShowExplanation(false)
   }
+
+  // Keyboard navigation: 1-9 to select options, Enter to submit
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Only handle when card is focused or contains focus
+      if (!cardRef.current?.contains(document.activeElement) && document.activeElement !== cardRef.current) {
+        return
+      }
+
+      // Number keys 1-9 to select options
+      if (e.key >= '1' && e.key <= '9' && !isSubmitted) {
+        const optionIdx = parseInt(e.key) - 1
+        if (exercise.options && optionIdx < exercise.options.length) {
+          e.preventDefault()
+          setSelectedAnswer(optionIdx)
+        }
+      }
+
+      // Enter to submit
+      if (e.key === 'Enter' && selectedAnswer !== null && !isSubmitted) {
+        e.preventDefault()
+        handleSubmit()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [exercise.options, isSubmitted, selectedAnswer, handleSubmit])
 
   // Prefer data values, fallback to props
   const exerciseIndex = data.index ?? index
@@ -57,7 +86,12 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
   // Quiz type
   if (exerciseType === 'quiz' && exercise.options) {
     return (
-      <div className={cn('border border-border rounded-lg overflow-hidden bg-card', className)}>
+      <div
+        ref={cardRef}
+        tabIndex={0}
+        className={cn('border border-border rounded-lg overflow-hidden bg-card focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2', className)}
+        aria-label={t('ai.exercises.quizCard', 'Quiz exercise. Press 1-9 to select an answer, Enter to submit.')}
+      >
         {/* Header */}
         <div className='px-3 py-2 bg-muted/50 border-b border-border flex items-center justify-between'>
           <span className='text-xs font-medium text-muted-foreground'>{title}</span>
@@ -88,17 +122,17 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
                     'w-full text-left px-3 py-2 rounded-md border text-sm transition-colors',
                     !isSubmitted && isSelected && 'border-primary bg-primary/5',
                     !isSubmitted && !isSelected && 'border-border hover:border-primary/50',
-                    isSubmitted && isThisCorrect && 'border-green-500 bg-green-500/10',
-                    isSubmitted && isSelected && !isThisCorrect && 'border-red-500 bg-red-500/10',
+                    isSubmitted && isThisCorrect && 'border-success bg-success/10',
+                    isSubmitted && isSelected && !isThisCorrect && 'border-destructive bg-destructive/10',
                     isSubmitted && 'cursor-default'
                   )}
                 >
                   <div className='flex items-center gap-2'>
                     {showResult && isThisCorrect && (
-                      <Check className='h-4 w-4 text-green-600 flex-shrink-0' />
+                      <Check className='h-4 w-4 text-success flex-shrink-0' aria-hidden='true' />
                     )}
                     {showResult && isSelected && !isThisCorrect && (
-                      <X className='h-4 w-4 text-red-500 flex-shrink-0' />
+                      <X className='h-4 w-4 text-destructive flex-shrink-0' aria-hidden='true' />
                     )}
                     <span>{optionContent}</span>
                   </div>
@@ -171,8 +205,8 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
                     'flex-1 px-3 py-2 rounded-md border text-sm font-medium transition-colors',
                     !isSubmitted && isSelected && 'border-primary bg-primary/5',
                     !isSubmitted && !isSelected && 'border-border hover:border-primary/50',
-                    showResult && isThisCorrect && 'border-green-500 bg-green-500/10',
-                    showResult && isSelected && !isThisCorrect && 'border-red-500 bg-red-500/10',
+                    showResult && isThisCorrect && 'border-success bg-success/10',
+                    showResult && isSelected && !isThisCorrect && 'border-destructive bg-destructive/10',
                     isSubmitted && 'cursor-default'
                   )}
                 >

@@ -84,7 +84,7 @@ export const DiffLine = ({ type, children, className }: DiffLineProps) => (
     <span
       className={cn(
         'flex-shrink-0 w-4 text-center font-mono text-xs leading-5',
-        type === 'remove' ? 'text-red-500/70' : 'text-green-600'
+        type === 'remove' ? 'text-destructive/70' : 'text-success'
       )}
     >
       {type === 'remove' ? '−' : '+'}

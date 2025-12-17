@@ -7,12 +7,17 @@ interface ChatHeaderProps {
   activeSessionId: string | null
   onSelectSession: (id: string) => void
   onCreateSession: () => void
-  onCloseSession: (id: string) => void
-  onCloseAll: () => void
-  onCloseOthers: () => void
-  onRenameSession: (id: string, title: string) => void
+  // Props kept for future ChatTabsRow re-enablement
+  onCloseSession?: (id: string) => void
+  onCloseAll?: () => void
+  onCloseOthers?: () => void
+  onRenameSession?: (id: string, title: string) => void
   isLoading?: boolean
   isMobile?: boolean
+  /** Controlled selector open state for Cmd+K */
+  selectorOpen?: boolean
+  /** Controlled selector open change handler */
+  onSelectorOpenChange?: (open: boolean) => void
 }
 
 export const ChatHeader = ({
@@ -25,14 +30,19 @@ export const ChatHeader = ({
   onCloseOthers,
   onRenameSession,
   isLoading,
-  isMobile
+  isMobile,
+  selectorOpen,
+  onSelectorOpenChange
 }: ChatHeaderProps) => {
   const activeSession = sessions.find(s => s.id === activeSessionId) || null
 
+  // Smart Tabs: show tabs only when multiple chats exist (Progressive Disclosure)
+  const showTabs = !isMobile && sessions.length > 1
+
   return (
     <div className="flex flex-col shrink-0">
-      {/* Row 1: Tabs (hidden on mobile) */}
-      {!isMobile && (
+      {/* Row 1: Tabs - shown only when >1 chat exists */}
+      {showTabs && (
         <ChatTabsRow
           sessions={sessions}
           activeSessionId={activeSessionId}
@@ -44,13 +54,15 @@ export const ChatHeader = ({
         />
       )}
 
-      {/* Row 2: Selector + New button */}
+      {/* Row 2: Selector + New button (always visible) */}
       <ChatSelectorRow
         sessions={sessions}
         activeSession={activeSession}
         onSelectSession={onSelectSession}
         onCreateSession={onCreateSession}
         isLoading={isLoading}
+        open={selectorOpen}
+        onOpenChange={onSelectorOpenChange}
       />
     </div>
   )

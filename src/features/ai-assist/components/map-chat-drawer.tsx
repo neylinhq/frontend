@@ -42,6 +42,7 @@ export const MapChatDrawer = ({ mapId }: MapChatDrawerProps) => {
   const deleteSession = useDeleteChatSession(mapId)
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null)
   const [autoCreateAttempted, setAutoCreateAttempted] = useState(false)
+  const [selectorOpen, setSelectorOpen] = useState(false)
 
   // Auto-select first session or create one if none exist
   useEffect(() => {
@@ -144,6 +145,13 @@ export const MapChatDrawer = ({ mapId }: MapChatDrawerProps) => {
         return
       }
 
+      // Cmd/Ctrl + K — open chat selector (like VS Code command palette)
+      if (isMod && e.key === 'k') {
+        e.preventDefault()
+        setSelectorOpen(true)
+        return
+      }
+
       // Cmd/Ctrl + W — close current tab (only if more than 1 session)
       if (isMod && e.key === 'w' && !e.shiftKey && sessions.length > 1 && activeSessionId) {
         e.preventDefault()
@@ -242,6 +250,8 @@ export const MapChatDrawer = ({ mapId }: MapChatDrawerProps) => {
       onRenameSession={handleRenameSession}
       isLoading={sessionsLoading || createSession.isPending}
       isMobile={isMobile}
+      selectorOpen={selectorOpen}
+      onSelectorOpenChange={setSelectorOpen}
     />
   )
 

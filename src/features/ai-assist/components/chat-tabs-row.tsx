@@ -150,6 +150,7 @@ export const ChatTabsRow = ({
                         e.stopPropagation()
                         onCloseSession(session.id)
                       }}
+                      aria-label={t('ai.chat.closeTab', 'Close tab')}
                     >
                       <X className="h-3 w-3" />
                     </button>
@@ -168,6 +169,7 @@ export const ChatTabsRow = ({
             variant="ghost"
             size="sm"
             className="h-7 w-7 shrink-0 mx-1"
+            aria-label={t('ai.chat.menu', 'Chat options')}
           >
             <MoreHorizontal className="h-4 w-4" />
           </Button>

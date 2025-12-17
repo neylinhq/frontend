@@ -166,7 +166,11 @@ export const ChatMessageList = ({
           >
             {/* Thinking Bubble - shown when AI is processing but no content yet */}
             {isThinking ? (
-              <div className='rounded-lg px-4 py-3 bg-muted'>
+              <div
+                className='rounded-lg px-4 py-3 bg-muted'
+                role='status'
+                aria-label={t('ai.chat.thinking', 'AI is thinking...')}
+              >
                 <LoadingDots />
               </div>
             ) : message.role === 'user' && editingMessageId === message.id ? (
@@ -210,7 +214,11 @@ export const ChatMessageList = ({
                 )}
               >
                 {message.role === 'assistant' ? (
-                  <div className='prose prose-sm max-w-none'>
+                  <div
+                    className='prose prose-sm max-w-none'
+                    aria-live={message.isStreaming ? 'polite' : 'off'}
+                    aria-atomic='false'
+                  >
                     <Markdown remarkPlugins={[remarkGfm]}>
                       {(() => {
                         let content = message.content
@@ -362,6 +370,7 @@ export const ChatMessageList = ({
                           size='icon'
                           className='h-7 w-7 text-muted-foreground hover:text-foreground'
                           onClick={() => handleStartEdit(message.id, message.content)}
+                          aria-label={t('common.edit', 'Edit message')}
                         >
                           <Pencil className='h-3.5 w-3.5' />
                         </Button>
@@ -378,6 +387,7 @@ export const ChatMessageList = ({
                         size='icon'
                         className='h-7 w-7 text-muted-foreground hover:text-foreground'
                         onClick={() => handleCopy(message.content)}
+                        aria-label={t('common.copy', 'Copy message')}
                       >
                         <Copy className='h-3.5 w-3.5' />
                       </Button>
@@ -394,6 +404,7 @@ export const ChatMessageList = ({
                           size='icon'
                           className='h-7 w-7 text-muted-foreground hover:text-foreground'
                           onClick={() => onRegenerate(message.id, 'user')}
+                          aria-label={t('ai.chat.regenerate', 'Regenerate response')}
                         >
                           <RefreshCw className='h-3.5 w-3.5' />
                         </Button>
@@ -420,6 +431,7 @@ export const ChatMessageList = ({
                         size='icon'
                         className='h-7 w-7 text-muted-foreground hover:text-foreground'
                         onClick={() => handleCopy(message.content)}
+                        aria-label={t('common.copy', 'Copy message')}
                       >
                         <Copy className='h-3.5 w-3.5' />
                       </Button>
@@ -436,6 +448,7 @@ export const ChatMessageList = ({
                           size='icon'
                           className='h-7 w-7 text-muted-foreground hover:text-foreground'
                           onClick={() => onRegenerate(message.id, 'assistant')}
+                          aria-label={t('ai.chat.regenerate', 'Regenerate response')}
                         >
                           <RefreshCw className='h-3.5 w-3.5' />
                         </Button>

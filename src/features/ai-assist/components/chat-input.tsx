@@ -1,12 +1,13 @@
 import { ArrowUp, GripHorizontal, Square } from 'lucide-react'
 import { type KeyboardEvent, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { AIModel } from '@/entities/ai'
 import { Button } from '@/shared/components/button'
-import { Select, SelectContent, SelectItem, SelectTrigger } from '@/shared/components/select'
 import { Textarea } from '@/shared/components/textarea'
 import { useResizable } from '@/shared/hooks'
 import { cn } from '@/shared/lib/cn'
 import { CommandPalette, type SlashCommand } from './command-palette'
+import { ModelSelector } from './model-selector'
 
 const MIN_INPUT_HEIGHT = 80
 const MAX_INPUT_HEIGHT = 300
@@ -39,6 +40,7 @@ export const ChatInput = ({
   onModelChange,
   models = []
 }: ChatInputProps) => {
+  const { t } = useTranslation()
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const [showCommands, setShowCommands] = useState(false)
 
@@ -55,11 +57,6 @@ export const ChatInput = ({
     handleSide: 'top',
     storageKey: 'chat-input-height'
   })
-
-  // Find current model name
-  const currentModel = models.find(m => m.id === model)
-  const currentModelName =
-    currentModel?.name || model?.split('/').pop()?.replace(':free', '') || 'Select model'
 
   // Check if we should show command palette
   const shouldShowCommands = value.startsWith('/') && !value.includes(' ')
@@ -144,29 +141,16 @@ export const ChatInput = ({
         )}
       />
 
-      {/* Bottom controls - Model selector and context switch */}
+      {/* Bottom controls - Model selector */}
       <div className='absolute left-3 bottom-2.5 flex items-center gap-2'>
-        {/* Model selector */}
         {onModelChange && models.length > 0 && (
-          <Select value={model} onValueChange={onModelChange} disabled={disabled}>
-            <SelectTrigger className='max-w-36 h-6 text-[10px] border-none bg-muted hover:bg-muted'>
-              <span className='truncate'>{currentModelName}</span>
-            </SelectTrigger>
-            <SelectContent>
-              {models.map(m => (
-                <SelectItem key={m.id} value={m.id} className='text-xs'>
-                  <span className='flex items-center gap-1.5'>
-                    {m.name}
-                    {m.free && (
-                      <span className='text-[9px] text-green-600 dark:text-green-400'>FREE</span>
-                    )}
-                  </span>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <ModelSelector
+            value={model}
+            onChange={onModelChange}
+            models={models}
+            disabled={disabled}
+          />
         )}
-
       </div>
 
       {/* Send/Stop button - bottom right */}
@@ -175,6 +159,7 @@ export const ChatInput = ({
           size='icon'
           variant='destructive'
           onClick={onStop}
+          aria-label={t('ai.chat.stop', 'Stop generating')}
           className='absolute right-3 bottom-2.5 h-8 w-8 flex-shrink-0'
         >
           <Square className='h-3 w-3 fill-current' />
@@ -185,6 +170,7 @@ export const ChatInput = ({
           onClick={handleSend}
           disabled={!value.trim() || disabled}
           className='absolute right-3 bottom-2.5 h-8 w-8 flex-shrink-0'
+          aria-label={t('ai.chat.send', 'Send message')}
         >
           <ArrowUp className='h-4 w-4' />
         </Button>

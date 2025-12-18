@@ -65,17 +65,17 @@ export const NodeOverlay = memo(
         <div
           className={cn(
             'w-full h-full cursor-grab active:cursor-grabbing pointer-events-auto',
-            'rounded-lg border shadow-sm overflow-hidden',
+            'rounded-lg border overflow-hidden',
             // Left border color by node type
             'border-l-[3px]',
             getNodeBorderColor(node.type),
-            'transition-shadow duration-200 hover:shadow-md',
+            'transition-colors duration-200',
             // Dimmed state
             isDimmed && 'opacity-40',
             // Focused state - pulsing glow
             isFocused && 'animate-glow-pulse',
             // Selected state
-            isSelected && !isFocused && 'ring-2 ring-primary shadow-lg'
+            isSelected && !isFocused && 'ring-2 ring-primary'
           )}
           style={{
             backgroundColor: 'oklch(var(--card))',

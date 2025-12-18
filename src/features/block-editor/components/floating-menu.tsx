@@ -782,7 +782,6 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
       border-radius: 8px;
       padding: 8px;
       max-width: 300px;
-      box-shadow: 0 4px 12px oklch(var(--foreground) / 0.15);
     `
 
     // FIX: Use try-finally to guarantee ghost cleanup even if setDragImage throws

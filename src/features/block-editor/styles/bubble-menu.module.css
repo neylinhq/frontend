@@ -1,7 +1,7 @@
 @reference "../../../shared/styles/globals.css";
 
 /* Bubble Menu Styles
- * S+ tier polish: entrance animation, layered shadows, premium interactions
+ * S+ tier polish: entrance animation, premium interactions
  */
 
 /* Menu entrance animation */
@@ -171,7 +171,7 @@
   @apply rounded-md border border-input;
   @apply bg-transparent text-sm;
 
-  transition: border-color 150ms ease, box-shadow 150ms ease;
+  transition: border-color 150ms ease;
 }
 
 .linkInput:focus {

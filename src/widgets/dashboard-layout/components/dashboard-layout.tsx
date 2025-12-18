@@ -1,9 +1,13 @@
 import { Menu } from 'lucide-react'
-import { useState } from 'react'
+import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/shared/components/button'
 import { Sheet, SheetContent, SheetTrigger } from '@/shared/components/sheet'
+import { useLocalStorage } from '@/shared/hooks/use-local-storage'
+import { cn } from '@/shared/lib/cn'
 import { Sidebar } from './sidebar'
+
+const SIDEBAR_STORAGE_KEY = 'neylin-sidebar-expanded'
 
 interface DashboardLayoutProps {
   /** Disable layout-level scroll for pages with their own scroll management (e.g., multi-pane layouts) */
@@ -12,30 +16,24 @@ interface DashboardLayoutProps {
 }
 
 export const DashboardLayout = ({ disableScroll = false, children }: DashboardLayoutProps) => {
-  const [isSidebarExpanded, setIsSidebarExpanded] = useState(false)
+  const [isExpanded, setIsExpanded] = useLocalStorage(SIDEBAR_STORAGE_KEY, true)
   const { t } = useTranslation()
+
+  const toggleSidebar = useCallback(() => {
+    setIsExpanded(prev => !prev)
+  }, [setIsExpanded])
 
   return (
     <div className='h-screen flex overflow-hidden'>
       {/* Desktop Sidebar */}
       <aside
-        className='hidden md:flex flex-col bg-card border-r flex-shrink-0 w-16 z-40'
-        onMouseEnter={() => setIsSidebarExpanded(true)}
-        onMouseLeave={() => setIsSidebarExpanded(false)}
+        className={cn(
+          'hidden md:flex flex-col bg-card border-r flex-shrink-0 transition-[width] duration-200',
+          isExpanded ? 'w-64' : 'w-16'
+        )}
       >
-        <Sidebar isExpanded={false} />
+        <Sidebar isExpanded={isExpanded} onToggle={toggleSidebar} />
       </aside>
-
-      {/* Expanded Sidebar Overlay - fixed position, doesn't affect layout */}
-      {isSidebarExpanded && (
-        <nav
-          className='hidden md:flex flex-col fixed left-0 top-0 h-screen w-64 bg-card border-r z-50'
-          onMouseEnter={() => setIsSidebarExpanded(true)}
-          onMouseLeave={() => setIsSidebarExpanded(false)}
-        >
-          <Sidebar isExpanded={true} />
-        </nav>
-      )}
 
       {/* Main Content */}
       <div className='flex-1 flex flex-col min-w-0'>

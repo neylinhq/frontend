@@ -575,7 +575,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
     return (
       <div
         ref={menuRef}
-        className='absolute z-50 flex items-center gap-0.5 rounded-lg border border-border bg-popover p-1 shadow-lg'
+        className='absolute z-50 flex items-center gap-0.5 rounded-lg border border-border bg-popover p-1'
         style={{
           top: position.top,
           left: position.left,

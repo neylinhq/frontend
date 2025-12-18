@@ -56,16 +56,13 @@ export const UserNav = ({ isExpanded }: UserNavProps) => {
   }
 
   return (
-    <DropdownMenu modal={false}>
+    <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
           variant='ghost'
-          className={cn(
-            'justify-start gap-3 h-10 px-0',
-            isExpanded ? 'w-full' : 'w-10'
-          )}
+          className={cn('justify-start gap-3 h-10 px-0 overflow-hidden', isExpanded ? 'w-full' : 'w-10')}
         >
-          <div className='w-10 flex items-center justify-center shrink-0'>
+          <div className='w-10 h-10 flex items-center justify-center shrink-0'>
             <Avatar className='h-8 w-8'>
               <AvatarImage src={user.avatarUrl} alt={user.email} />
               <AvatarFallback>{user.firstName?.[0] || 'U'}</AvatarFallback>
@@ -73,10 +70,10 @@ export const UserNav = ({ isExpanded }: UserNavProps) => {
           </div>
           {isExpanded && (
             <div className='flex flex-col items-start text-left min-w-0 pr-2'>
-              <span className='text-sm font-medium truncate w-full'>
+              <span className='text-sm font-medium truncate w-full leading-tight'>
                 {user.firstName} {user.lastName}
               </span>
-              <span className='text-xs text-muted-foreground truncate w-full'>
+              <span className='text-xs text-muted-foreground truncate w-full leading-tight'>
                 {user.email}
               </span>
             </div>

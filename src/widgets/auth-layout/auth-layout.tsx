@@ -17,7 +17,7 @@ export const AuthLayout = ({ children }: AuthLayoutProps) => {
       </div>
 
       {/* Logo */}
-      <Logo size='xl' href='/' className='mb-8' />
+      <Logo size='3xl' href='/' className='mb-8' />
 
       {/* Form */}
       <div className='w-full max-w-sm space-y-6'>{children}</div>

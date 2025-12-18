@@ -136,7 +136,7 @@ export const ChatInput = ({
         style={{ height: inputHeight }}
         className={cn(
           'resize-none p-3 pt-5 pb-12',
-          'border-none shadow-none bg-transparent',
+          'border-none bg-transparent',
           'focus-visible:ring-0 focus-visible:ring-offset-0'
         )}
       />

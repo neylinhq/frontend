@@ -1,8 +1,11 @@
 import type { LucideIcon } from 'lucide-react'
+import { PanelLeftClose, PanelLeft } from 'lucide-react'
 import type React from 'react'
 import { useTranslation } from 'react-i18next'
 import { NavLink } from 'react-router'
+import { Button } from '@/shared/components/button'
 import { Logo } from '@/shared/components/logo'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/components/tooltip'
 import { DASHBOARD_ROUTES } from '@/shared/config'
 import { cn } from '@/shared/lib/cn'
 import { UserNav } from '@/widgets/user-nav'
@@ -10,16 +13,56 @@ import { DASHBOARD_SIDEBAR_ITEMS } from '../dashboard-layout.constants'
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   isExpanded?: boolean
+  /** Callback to toggle sidebar */
+  onToggle?: () => void
 }
 
-export const Sidebar = ({ className, isExpanded }: SidebarProps) => {
+export const Sidebar = ({ className, isExpanded, onToggle }: SidebarProps) => {
   const { t } = useTranslation()
 
   return (
     <div className={cn('flex h-full flex-col bg-card', className)}>
-      {/* Logo */}
+      {/* Logo + Toggle */}
       <div className='h-14 flex items-center px-3 border-b'>
-        <Logo size='sm' href={DASHBOARD_ROUTES.overview} />
+        <div className='w-10 h-10 flex items-center justify-center flex-shrink-0 group relative'>
+          <Logo
+            size='xl'
+            href={DASHBOARD_ROUTES.overview}
+            className={!isExpanded ? 'group-hover:scale-0 transition-transform' : ''}
+          />
+          {!isExpanded && onToggle && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant='ghost'
+                  size='icon'
+                  className='h-8 w-8 text-muted-foreground absolute inset-0 m-auto scale-0 group-hover:scale-100 transition-transform'
+                  onClick={onToggle}
+                >
+                  <PanelLeft className='h-4 w-4' />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side='right'>{t('nav.expandSidebar')}</TooltipContent>
+            </Tooltip>
+          )}
+        </div>
+        {isExpanded && onToggle && (
+          <div className='flex-1 flex justify-end'>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant='ghost'
+                  size='icon'
+                  className='h-8 w-8 text-muted-foreground'
+                  onClick={onToggle}
+                >
+                  <PanelLeftClose className='h-4 w-4' />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side='right'>{t('nav.collapseSidebar')}</TooltipContent>
+            </Tooltip>
+          </div>
+        )}
       </div>
 
       {/* Navigation */}
@@ -55,13 +98,13 @@ const NavItem = ({
       to={to}
       className={({ isActive }) =>
         cn(
-          'flex items-center rounded-md py-2 text-sm font-medium transition-all hover:bg-accent hover:text-accent-foreground relative',
+          'flex items-center h-8 rounded-md text-sm font-medium transition-all hover:bg-accent hover:text-accent-foreground relative',
           isActive ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'
         )
       }
     >
       <div className='w-10 flex items-center justify-center flex-shrink-0'>
-        <Icon className='h-5 w-5' />
+        <Icon className='size-5' />
       </div>
       {isExpanded && <span className='whitespace-nowrap pr-3'>{children}</span>}
     </NavLink>

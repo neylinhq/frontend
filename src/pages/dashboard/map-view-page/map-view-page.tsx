@@ -21,7 +21,7 @@ export const MapViewPage = ({ map, mapId }: MapViewPageProps) => {
 
   return (
     <ReactFlowProvider>
-      <div className='h-[calc(100vh-3.5rem)] relative'>
+      <div className='h-full relative'>
         <GraphView
           mapId={mapId}
           initialData={map}

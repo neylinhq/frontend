@@ -92,7 +92,7 @@ export const PaymentMethodCard = ({
       <div
         className={cn(
           'group relative flex items-center gap-3 px-4 py-3 rounded-lg border bg-card transition-all duration-200',
-          'hover:shadow-sm hover:border-border/80',
+          'hover:border-border/80',
           method.isDefault && 'ring-1 ring-primary/20'
         )}
       >

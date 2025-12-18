@@ -127,7 +127,7 @@ export const CommandPalette = ({
     <div
       className={cn(
         'absolute z-50 w-64 max-h-64 overflow-y-auto',
-        'bg-popover border border-border rounded-lg shadow-lg',
+        'bg-popover border border-border rounded-lg',
         'animate-in fade-in-0 zoom-in-95 duration-150'
       )}
       style={

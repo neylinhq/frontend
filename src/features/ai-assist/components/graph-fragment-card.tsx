@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Check, ChevronDown, ChevronRight, Circle, Loader2, X, ArrowRight, GitBranch } from 'lucide-react'
+import { Check, ChevronDown, ChevronRight, Loader2, X, ArrowRight, GitBranch } from 'lucide-react'
 import { Button } from '@/shared/components/button'
 import { Badge } from '@/shared/components/badge'
 import { Checkbox } from '@/shared/components/checkbox'
@@ -297,17 +297,13 @@ const NodeRow = ({ node, selected, onToggle, disabled }: NodeRowProps) => {
       onClick={onToggle}
       disabled={disabled}
       className={cn(
-        'w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-left',
+        'w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-left cursor-pointer',
         'hover:bg-muted/50 transition-colors',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         disabled && 'opacity-50 cursor-not-allowed'
       )}
     >
       <Checkbox checked={selected} />
-      <Circle className={cn(
-        'h-2.5 w-2.5 fill-current flex-shrink-0',
-        NODE_TYPE_COLORS[node.nodeType]?.split(' ')[1] || 'text-muted-foreground'
-      )} />
       <span className="text-xs font-medium flex-1 truncate">{node.label}</span>
       <Badge
         variant="secondary"
@@ -339,7 +335,7 @@ const EdgeRow = ({ edge, selected, canSelect, onToggle, getLabel, disabled }: Ed
       onClick={onToggle}
       disabled={isDisabled}
       className={cn(
-        'w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-left',
+        'w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-left cursor-pointer',
         'hover:bg-muted/50 transition-colors',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         isDisabled && 'opacity-50 cursor-not-allowed'
@@ -361,3 +357,6 @@ const EdgeRow = ({ edge, selected, canSelect, onToggle, getLabel, disabled }: Ed
     </button>
   )
 }
+
+
+// TODO: DRY

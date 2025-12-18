@@ -25,11 +25,9 @@
   0%,
   100% {
     opacity: 0.8;
-    box-shadow: 0 0 8px oklch(var(--brand) / 0.4);
   }
   50% {
     opacity: 1;
-    box-shadow: 0 0 12px oklch(var(--brand) / 0.6);
   }
 }
 
@@ -75,13 +73,14 @@
 @keyframes focusGlow {
   0%,
   100% {
-    box-shadow: 0 0 0 2px oklch(var(--primary) / 0.3);
+    outline: 2px solid oklch(var(--primary) / 0.3);
   }
   50% {
-    box-shadow: 0 0 0 4px oklch(var(--primary) / 0.15);
+    outline: 2px solid oklch(var(--primary) / 0.5);
   }
 }
 
 .focusGlow {
   animation: focusGlow 2s ease-in-out infinite;
+  outline-offset: 2px;
 }

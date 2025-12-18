@@ -19,7 +19,7 @@ export const PublicHeader = () => {
   return (
     <header className='h-14 flex-shrink-0 border-b bg-background'>
       <div className='max-w-5xl mx-auto px-4 md:px-6 h-full flex items-center justify-between'>
-        <Logo size='lg' />
+        <Logo size='xl' />
 
         <nav className='flex items-center gap-2'>
           {/* Desktop theme controls */}
@@ -42,7 +42,7 @@ export const PublicHeader = () => {
             </SheetTrigger>
             <SheetContent side='left' className='w-[280px] p-0 flex flex-col'>
               <div className='py-4 px-6 border-b'>
-                <Logo size='sm' />
+                <Logo size='lg' />
               </div>
 
               {/* Navigation */}

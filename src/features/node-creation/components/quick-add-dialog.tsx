@@ -174,7 +174,7 @@ export const QuickAddDialog = () => {
 
           {/* Type Suggestions */}
           {showSuggestions && suggestions.length > 0 && (
-            <div className='rounded-md border bg-popover p-2 text-sm shadow-md'>
+            <div className='rounded-md border bg-popover p-2 text-sm'>
               <div className='mb-1.5 px-2 text-xs text-muted-foreground'>
                 {t('nodeCreation.quickAdd.typeSuggestions')}
               </div>

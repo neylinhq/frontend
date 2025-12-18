@@ -351,7 +351,7 @@ export const NodeEditPage = ({
                 setMobileSheetOpen(true)
               }
             }}
-            className='fixed bottom-4 z-20 h-12 w-12 rounded-full shadow-lg transition-all right-4'
+            className='fixed bottom-4 z-20 h-12 w-12 rounded-full transition-all right-4'
             style={sidebarOpen ? { right: `calc(${sidebarWidth}px + 1rem)` } : undefined}
           >
             {sidebarOpen ? <PanelRightClose className='h-6 w-6 hidden lg:block' /> : null}

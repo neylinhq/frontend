@@ -47,13 +47,13 @@ const KnowledgeNodeComponent = ({ data }: KnowledgeNodeProps) => {
         'bg-card border-r border-t border-b border-border',
         'border-l-[3px]',
         getNodeBorderColor(data.type),
-        'transition-all duration-200 hover:shadow-sm',
+        'transition-all duration-200',
         // Dimmed state - reduced opacity
         isDimmed && 'opacity-40',
         // Focused state - pulsing glow (indigo on light, white on dark)
         isFocused && 'animate-glow-pulse',
         // Selected state
-        isSelected && !isFocused && 'ring-2 ring-primary shadow-lg'
+        isSelected && !isFocused && 'ring-2 ring-primary'
       )}
     >
       <Handle

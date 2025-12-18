@@ -239,7 +239,7 @@ const ProposalContent = ({ preview }: { preview: ResolvedPreview }) => {
                 {t('ai.graphFragment.nodes', 'Nodes')}
               </div>
               {data.nodes.map((node, i) => (
-                <div key={node.tempId || i} className='flex items-center gap-2 pl-2'>
+                <div key={node.tempId || i} className='flex items-center justify-between gap-2'>
                   <span className='font-medium'>{node.label}</span>
                   <Badge
                     variant='secondary'

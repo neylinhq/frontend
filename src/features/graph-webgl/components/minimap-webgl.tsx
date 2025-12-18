@@ -196,7 +196,7 @@ export const MiniMapWebGL = memo(function MiniMapWebGL({
     <div
       className={cn(
         'absolute bottom-4 right-4',
-        'bg-background/90 border border-border rounded-md shadow-sm',
+        'bg-background/90 border border-border rounded-md',
         'overflow-hidden cursor-pointer',
         className
       )}

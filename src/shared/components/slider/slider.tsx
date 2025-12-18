@@ -4,7 +4,7 @@ import * as React from 'react'
 import { cn } from '@/shared/lib/cn'
 
 const thumbClassName =
-  'block h-4 w-4 cursor-grab rounded-full border border-primary/50 bg-background shadow transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50'
+  'block h-4 w-4 cursor-grab rounded-full border border-primary/50 bg-background transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50'
 
 interface SliderProps extends React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root> {
   /** Number of thumbs to render (1 for single, 2 for range) */

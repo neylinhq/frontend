@@ -160,7 +160,7 @@ export const CodeBlockNodeView = ({ node, updateAttributes, extension: _extensio
 
           {isOpen && (
             <div
-              className='absolute left-0 top-full z-50 mt-1 w-48 rounded-lg border border-border bg-popover shadow-lg animate-menu-in'
+              className='absolute left-0 top-full z-50 mt-1 w-48 rounded-lg border border-border bg-popover animate-menu-in'
               role='listbox'
             >
               <div className='p-2'>

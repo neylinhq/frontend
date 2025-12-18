@@ -39,7 +39,7 @@ export const MapCard = memo(
     const dateLocale = DATE_LOCALES[i18n.language as keyof typeof DATE_LOCALES] || ru
 
     return (
-      <Card className='hover:shadow-md transition-shadow'>
+      <Card className='transition-colors'>
         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2 gap-2'>
           <div className='flex items-center gap-2 min-w-0 flex-1'>
             <CardTitle className='text-sm font-medium truncate'>

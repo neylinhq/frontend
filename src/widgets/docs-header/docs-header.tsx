@@ -29,7 +29,7 @@ export const DocsHeader = ({ mobileNav }: DocsHeaderProps) => {
             </SheetTrigger>
             <SheetContent side='left' className='w-[300px] p-0 flex flex-col h-full'>
               <div className='py-4 px-6 border-b flex-shrink-0'>
-                <Logo size='sm' />
+                <Logo size='md' />
               </div>
               <div className='overflow-y-auto flex-1 py-6 px-4'>{mobileNav}</div>
             </SheetContent>

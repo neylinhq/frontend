@@ -25,7 +25,7 @@ export const ReadOnlyBanner = ({ mapId }: ReadOnlyBannerProps) => {
   }
 
   return (
-    <div className='absolute top-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3 bg-muted/90 backdrop-blur px-4 py-2 rounded-full shadow-sm'>
+    <div className='absolute top-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3 bg-muted/90 backdrop-blur px-4 py-2 rounded-full'>
       <Eye className='h-4 w-4 text-muted-foreground' />
       <span className='text-sm'>{t('mapView.viewOnly')}</span>
       <Button size='sm' variant='secondary' onClick={handleCopy} disabled={copyMap.isPending}>

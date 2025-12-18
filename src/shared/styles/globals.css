@@ -185,6 +185,7 @@
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
   --animate-pulse-subtle: pulse-subtle 3s ease-in-out infinite;
+  --animate-logo-pulse: logo-pulse 1.5s ease-in-out infinite;
 
   @keyframes accordion-down {
     from {
@@ -205,15 +206,18 @@
   @keyframes pulse-subtle {
     0%, 100% {
       transform: scale(1);
-      box-shadow:
-        0 0 0 0 oklch(var(--primary) / 0.4),
-        0 4px 12px -2px oklch(var(--primary) / 0.2);
     }
     50% {
       transform: scale(1.02);
-      box-shadow:
-        0 0 20px 4px oklch(var(--primary) / 0.25),
-        0 8px 24px -4px oklch(var(--primary) / 0.3);
+    }
+  }
+
+  @keyframes logo-pulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.08);
     }
   }
 
@@ -294,8 +298,8 @@
     --warning-foreground: 0.12 0 0;          /* Dark text for yellow */
     --info: 0.58 0.14 230;                   /* Sky blue */
     --info-foreground: 0.99 0 0;
-    --border: 0.91 0 0;
-    --input: 0.91 0 0;
+    --border: 0.93 0 0;
+    --input: 0.93 0 0;
     --ring: 0.53 0.26 263;
     --radius: 0.5rem;
 
@@ -451,8 +455,8 @@
     --warning-foreground: 0.12 0 0;
     --info: 0.62 0.14 230;                   /* Sky blue */
     --info-foreground: 0.99 0 0;
-    --border: 0.26 0 0;                      /* Softer border */
-    --input: 0.30 0 0;
+    --border: 0.18 0 0;                      /* Subtle border */
+    --input: 0.22 0 0;
     --ring: 0.57 0.24 263;
 
     /* Brand: Blue for dark mode #0055FF +0.04L */
@@ -615,8 +619,8 @@
     --warning-foreground: 0.12 0 0;
     --info: 0.58 0.13 230;                   /* Blue (C×0.95) */
     --info-foreground: 0.99 0 0;
-    --border: 0.91 0.003 50;
-    --input: 0.91 0.003 50;
+    --border: 0.93 0.003 50;
+    --input: 0.93 0.003 50;
     --ring: 0.66 0.17 45;
     --brand: 0.66 0.17 45;                   /* Terracotta #E36B2B */
     --brand-foreground: 0.99 0 0;
@@ -714,8 +718,8 @@
     --warning-foreground: 0.12 0 0;
     --info: 0.62 0.13 230;
     --info-foreground: 0.99 0 0;
-    --border: 0.26 0.003 50;                 /* Softer border */
-    --input: 0.30 0.003 50;
+    --border: 0.20 0.003 50;                 /* Subtle border */
+    --input: 0.24 0.003 50;
     --ring: 0.70 0.16 45;
     --brand: 0.70 0.16 45;                   /* Terracotta #E36B2B +0.04L */
     --brand-foreground: 0.99 0 0;
@@ -816,8 +820,8 @@
     --warning-foreground: 0.12 0 0;
     --info: 0.62 0.15 200;              /* Vivid cyan - toned down */
     --info-foreground: 0.99 0 0;
-    --border: 0.91 0.004 250;           /* Cool border - subtle */
-    --input: 0.91 0.004 250;
+    --border: 0.93 0.004 250;           /* Cool border - subtle */
+    --input: 0.93 0.004 250;
     --ring: 0.60 0.20 165;              /* Teal-green - for light mode */
     --brand: 0.60 0.20 165;             /* Teal-green - darker on light bg */
     --brand-foreground: 0.99 0 0;       /* White text */
@@ -915,8 +919,8 @@
     --warning-foreground: 0.12 0 0;
     --info: 0.70 0.15 200;             /* Vivid cyan - toned down */
     --info-foreground: 0.99 0 0;
-    --border: 0.24 0.004 250;          /* Δ0.12 from bg for visibility */
-    --input: 0.24 0.004 250;
+    --border: 0.18 0.004 250;          /* Subtle border */
+    --input: 0.20 0.004 250;
     --ring: 0.78 0.20 165;             /* Teal-green - bright for dark bg */
     --brand: 0.78 0.20 165;            /* Teal-green - bright for dark bg */
     --brand-foreground: 0.12 0 0;      /* Dark text for bright brand */
@@ -1019,8 +1023,8 @@
     --warning-foreground: 0.15 0 0;
     --info: 0.65 0.14 200;             /* Cyan */
     --info-foreground: 0.99 0 0;
-    --border: 0.91 0 0;                /* Gray border - subtle */
-    --input: 0.91 0 0;
+    --border: 0.94 0 0;                /* Gray border - subtle */
+    --input: 0.94 0 0;
     --ring: 0.64 0.25 16;              /* Hot pink #FF0055 */
     --brand: 0.64 0.25 16;             /* Hot pink #FF0055 */
     --brand-foreground: 0.99 0 0;
@@ -1117,8 +1121,8 @@
     --warning-foreground: 0.15 0 0;
     --info: 0.72 0.14 200;             /* Brighter cyan */
     --info-foreground: 0.15 0 0;
-    --border: 0.22 0 0;                /* Δ0.14 from bg for visibility */
-    --input: 0.20 0 0;
+    --border: 0.14 0 0;                /* Subtle border */
+    --input: 0.16 0 0;
     --ring: 0.68 0.24 16;              /* Hot pink #FF0055 +0.04L */
     --brand: 0.68 0.24 16;             /* Hot pink #FF0055 +0.04L */
     --brand-foreground: 0.99 0 0;
@@ -2235,48 +2239,38 @@
   background: oklch(var(--muted) / 0.5);
 }
 
-/* Focus node highlight - ultra-soft diffused glow with subtle breathing
-   Design: Barely perceptible ethereal glow - whisper of light
-   - Dark theme: Very soft white ambient glow
-   - Light theme: Subtle brand color haze
-   Animation: 6s breathing - almost imperceptible, meditative */
+/* Focus node highlight - ring-based highlight without shadows
+   Design: Clean border-based focus indicator
+   Animation: 6s breathing - subtle opacity changes */
 
 @keyframes focus-breathe {
   0%, 100% {
-    box-shadow:
-      0 0 25px oklch(var(--brand) / 0.15),
-      0 0 50px oklch(var(--brand) / 0.08),
-      0 0 90px oklch(var(--brand) / 0.04);
+    opacity: 0.7;
   }
   50% {
-    box-shadow:
-      0 0 30px oklch(var(--brand) / 0.2),
-      0 0 60px oklch(var(--brand) / 0.1),
-      0 0 100px oklch(var(--brand) / 0.05);
+    opacity: 1;
   }
 }
 
 @keyframes focus-breathe-dark {
   0%, 100% {
-    box-shadow:
-      0 0 25px oklch(1 0 0 / 0.1),
-      0 0 50px oklch(1 0 0 / 0.06),
-      0 0 90px oklch(1 0 0 / 0.03);
+    opacity: 0.7;
   }
   50% {
-    box-shadow:
-      0 0 30px oklch(1 0 0 / 0.15),
-      0 0 60px oklch(1 0 0 / 0.08),
-      0 0 100px oklch(1 0 0 / 0.04);
+    opacity: 1;
   }
 }
 
 .animate-glow-pulse {
   animation: focus-breathe 6s ease-in-out infinite;
+  outline: 2px solid oklch(var(--brand) / 0.5);
+  outline-offset: 2px;
 }
 
 .dark .animate-glow-pulse {
   animation: focus-breathe-dark 6s ease-in-out infinite;
+  outline: 2px solid oklch(1 0 0 / 0.3);
+  outline-offset: 2px;
 }
 
 /* Menu fade-in animation class (Design Manifesto compliant) */
@@ -2430,20 +2424,16 @@ html.theme-transition-disabled *::after {
     scroll-behavior: auto !important;
   }
 
-  /* Focus glow - show static ultra-soft state instead of animation */
+  /* Focus glow - show static state instead of animation */
   .animate-glow-pulse {
     animation: none !important;
-    box-shadow:
-      0 0 28px oklch(var(--brand) / 0.17),
-      0 0 55px oklch(var(--brand) / 0.09),
-      0 0 95px oklch(var(--brand) / 0.045) !important;
+    outline: 2px solid oklch(var(--brand) / 0.5) !important;
+    outline-offset: 2px !important;
   }
 
   .dark .animate-glow-pulse {
-    box-shadow:
-      0 0 28px oklch(1 0 0 / 0.12),
-      0 0 55px oklch(1 0 0 / 0.07),
-      0 0 95px oklch(1 0 0 / 0.035) !important;
+    outline: 2px solid oklch(1 0 0 / 0.3) !important;
+    outline-offset: 2px !important;
   }
 }
 

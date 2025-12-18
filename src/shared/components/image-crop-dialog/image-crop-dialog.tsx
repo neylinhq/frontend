@@ -261,7 +261,7 @@ export const ImageCropDialog = ({
               }}
             >
               {/* Resize handle */}
-              <div className='absolute -right-2 -bottom-2 w-5 h-5 bg-white rounded-full border-2 border-primary cursor-se-resize shadow-md pointer-events-auto' />
+              <div className='absolute -right-2 -bottom-2 w-5 h-5 bg-white rounded-full border-2 border-primary cursor-se-resize pointer-events-auto' />
             </div>
           )}
 

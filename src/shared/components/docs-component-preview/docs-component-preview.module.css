@@ -23,8 +23,5 @@
 
 .cardHover:hover {
   transform: translateY(-2px);
-  box-shadow:
-    0 10px 15px -3px oklch(0 0 0 / 0.1),
-    0 4px 6px -4px oklch(0 0 0 / 0.1);
   border-color: oklch(var(--brand) / 0.3);
 }

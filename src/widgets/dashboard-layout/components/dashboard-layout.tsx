@@ -7,16 +7,18 @@ import { useLocalStorage } from '@/shared/hooks/use-local-storage'
 import { cn } from '@/shared/lib/cn'
 import { Sidebar } from './sidebar'
 
-const SIDEBAR_STORAGE_KEY = 'neylin-sidebar-expanded'
+export const SIDEBAR_STORAGE_KEY = 'neylin-sidebar-expanded'
 
 interface DashboardLayoutProps {
   /** Disable layout-level scroll for pages with their own scroll management (e.g., multi-pane layouts) */
   disableScroll?: boolean
+  /** Initial sidebar state from SSR (read from cookie) */
+  defaultExpanded?: boolean
   children: React.ReactNode
 }
 
-export const DashboardLayout = ({ disableScroll = false, children }: DashboardLayoutProps) => {
-  const [isExpanded, setIsExpanded] = useLocalStorage(SIDEBAR_STORAGE_KEY, true)
+export const DashboardLayout = ({ disableScroll = false, defaultExpanded = true, children }: DashboardLayoutProps) => {
+  const [isExpanded, setIsExpanded] = useLocalStorage(SIDEBAR_STORAGE_KEY, defaultExpanded)
   const { t } = useTranslation()
 
   const toggleSidebar = useCallback(() => {

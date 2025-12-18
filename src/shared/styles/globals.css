@@ -1249,9 +1249,9 @@
     --popover-foreground: 0.97 0 0;
     --primary: 0.97 0 0;
     --primary-foreground: 0.08 0 0;
-    --secondary: 0.14 0 0;             /* Dark gray */
+    --secondary: 0.15 0 0;             /* Dark gray */
     --secondary-foreground: 0.97 0 0;
-    --muted: 0.14 0 0;
+    --muted: 0.15 0 0;
     --muted-foreground: 0.65 0 0;      /* Good contrast */
     --accent: 0.16 0 0;
     --accent-foreground: 0.97 0 0;

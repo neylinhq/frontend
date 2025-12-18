@@ -365,6 +365,26 @@
       "rights": "All rights reserved."
     }
   },
+  "footer": {
+    "tagline": "Knowledge mapping for visual thinkers",
+    "navigation": "Footer navigation",
+    "rights": "All rights reserved.",
+    "sections": {
+      "product": "Product",
+      "resources": "Resources",
+      "company": "Company",
+      "legal": "Legal"
+    },
+    "links": {
+      "features": "Features",
+      "pricing": "Pricing",
+      "changelog": "Changelog",
+      "documentation": "Documentation",
+      "helpCenter": "Help Center",
+      "about": "About",
+      "blog": "Blog"
+    }
+  },
   "dashboard": {
     "overview": {
       "title": "Overview",
@@ -1244,13 +1264,14 @@
         "map": "Ask something about this map"
       },
       "suggestions": {
-        "explain": "Explain this concept simply",
-        "connections": "What connections does this concept have?",
-        "exercise": "Generate an exercise to test",
-        "analyze": "Analyze this knowledge map",
-        "gaps": "Find knowledge gaps",
-        "summary": "Summarize this map"
-      }
+        "explain": "Explain simply",
+        "connections": "Show connections",
+        "exercise": "Create exercise",
+        "analyze": "Analyze map",
+        "gaps": "Find gaps",
+        "summary": "Summarize"
+      },
+      "emptyHint": "Type anything or use /commands"
     },
     "preview": {
       "edit": "Edit",
@@ -1319,8 +1340,8 @@
     "saveFailed": "Failed to save changes",
     "undoFailed": "Failed to undo",
     "proposals": {
-      "applied": "Applied: {{summary}}",
-      "dismissed": "Dismissed: {{summary}}",
+      "applied": "Applied",
+      "dismissed": "Dismissed",
       "newEdge": "New connection",
       "newNode": "New node",
       "change": "Change"

@@ -98,7 +98,7 @@ export const AIChatCore = ({
   const updateMessage = useChatHistoryStore(s => s.updateMessage)
   const removePreview = useChatHistoryStore(s => s.removePreview)
   const moveToResolved = useChatHistoryStore(s => s.moveToResolved)
-  const undoResolved = useChatHistoryStore(s => s.undoResolved)
+  const unresolvePreview = useChatHistoryStore(s => s.unresolvePreview)
   const truncateFromMessage = useChatHistoryStore(s => s.truncateFromMessage)
   const clearSession = useChatHistoryStore(s => s.clearSession)
   const setMessages = useChatHistoryStore(s => s.setMessages)
@@ -466,11 +466,21 @@ export const AIChatCore = ({
     moveToResolved(sessionId, messageId, preview.id, 'rejected')
   }
 
-  const handleUndoResolved = async (messageId: string, preview: ResolvedPreview) => {
-    if (onUndoPreview && preview.undoData) {
+  const handleRestorePreview = async (messageId: string, preview: PreviewCard) => {
+    // For approved previews with undo data, we need to undo the action first
+    if (preview.status === 'approved' && onUndoPreview && preview.undoData) {
       try {
-        await onUndoPreview(preview)
-        undoResolved(sessionId, messageId, preview.id)
+        // Convert to ResolvedPreview format for backwards compatibility with onUndoPreview
+        const resolvedPreview: ResolvedPreview = {
+          id: preview.id,
+          type: preview.type,
+          data: preview.data,
+          status: 'approved',
+          resolvedAt: preview.resolvedAt || new Date(),
+          undoData: preview.undoData
+        }
+        await onUndoPreview(resolvedPreview)
+        unresolvePreview(sessionId, messageId, preview.id)
         toast.success(t('common.undone', 'Undone'))
       } catch {
         toast.error(t('common.error'), {
@@ -478,8 +488,8 @@ export const AIChatCore = ({
         })
       }
     } else {
-      // No undo handler or no undo data, just move back to pending
-      undoResolved(sessionId, messageId, preview.id)
+      // No undo handler or no undo data needed, just move back to pending
+      unresolvePreview(sessionId, messageId, preview.id)
     }
   }
 
@@ -549,7 +559,7 @@ export const AIChatCore = ({
             onRemovePreview={handleRemovePreview}
             onSavePreview={handleSavePreview}
             onRejectPreview={handleRejectPreview}
-            onUndoResolved={handleUndoResolved}
+            onRestorePreview={handleRestorePreview}
             onRegenerate={handleRegenerate}
             onEditMessage={handleEditMessage}
           />

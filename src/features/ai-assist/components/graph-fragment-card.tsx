@@ -1,11 +1,11 @@
 import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Check, ChevronDown, ChevronRight, Loader2, X, ArrowRight } from 'lucide-react'
+import { Check, ChevronRight, Loader2, X, ArrowRight, Undo2 } from 'lucide-react'
 import { Button } from '@/shared/components/button'
 import { Badge } from '@/shared/components/badge'
 import { Checkbox } from '@/shared/components/checkbox'
 import { cn } from '@/shared/lib/cn'
-import type { GraphFragmentPreviewData, GraphFragmentNode, GraphFragmentEdge } from '../model/ai-assist.types'
+import type { GraphFragmentPreviewData, GraphFragmentNode, GraphFragmentEdge, PreviewStatus } from '../model/ai-assist.types'
 
 /** Decode HTML entities like &#39; -> ' */
 const decodeHtmlEntities = (text: string): string => {
@@ -49,15 +49,25 @@ interface GraphFragmentCardProps {
   onApply: (selectedNodes: GraphFragmentNode[], selectedEdges: GraphFragmentEdge[]) => void
   onReject: () => void
   isLoading?: boolean
+  /** Preview status - if approved/rejected, shows collapsed resolved state */
+  status?: PreviewStatus
+  /** Handler to restore a resolved preview back to pending */
+  onRestore?: () => void
 }
 
 export const GraphFragmentCard = ({
   data,
   onApply,
   onReject,
-  isLoading = false
+  isLoading = false,
+  status = 'pending',
+  onRestore
 }: GraphFragmentCardProps) => {
   const { t } = useTranslation()
+
+  // Resolved state (approved/rejected) — always collapsed
+  const isResolved = status === 'approved' || status === 'rejected'
+
   // Collapsed by default — progressive disclosure: user sees summary first, can expand if needed
   const [isExpanded, setIsExpanded] = useState(false)
   const [isApplying, setIsApplying] = useState(false)
@@ -175,6 +185,117 @@ export const GraphFragmentCard = ({
     return parts.join(', ')
   }, [data.nodes.length, data.edges.length, t])
 
+  // For resolved state, show a simplified collapsed view
+  if (isResolved) {
+    return (
+      <div className="rounded-lg overflow-hidden group">
+        <button
+          type="button"
+          onClick={() => setIsExpanded(!isExpanded)}
+          className={cn(
+            'w-full px-2.5 py-1.5 rounded-lg',
+            'flex items-center gap-2 text-left transition-colors',
+            'hover:bg-muted/40',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
+            isExpanded && 'bg-muted/30 rounded-b-none'
+          )}
+        >
+          {/* Expand chevron */}
+          <ChevronRight
+            className={cn(
+              'h-3 w-3 text-muted-foreground/50 transition-transform duration-150 flex-shrink-0',
+              'group-hover:text-muted-foreground',
+              isExpanded && 'rotate-90'
+            )}
+          />
+
+          {/* Summary */}
+          <span className="text-xs text-muted-foreground flex-1 truncate">
+            {summary}
+          </span>
+
+          {/* Restore button - appears on hover */}
+          {onRestore && (
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={e => {
+                e.stopPropagation()
+                onRestore()
+              }}
+              className="h-5 px-1.5 text-[10px] text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              <Undo2 className="h-2.5 w-2.5 mr-0.5" />
+              {t('common.restore', 'Restore')}
+            </Button>
+          )}
+        </button>
+
+        {/* Expanded content for resolved state */}
+        {isExpanded && (
+          <div className="px-3 py-2.5 bg-muted/30 rounded-b-lg space-y-2">
+            {/* Nodes */}
+            {data.nodes.length > 0 && (
+              <div className="space-y-1.5">
+                {data.nodes.map(node => (
+                  <div key={node.tempId} className="flex items-center gap-2 text-xs">
+                    <span className="font-medium truncate flex-1">{node.label}</span>
+                    <Badge
+                      variant="secondary"
+                      className={cn('text-[10px] font-medium', NODE_TYPE_COLORS[node.nodeType])}
+                    >
+                      {t(`nodeTypes.${node.nodeType}`, node.nodeType)}
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Separator */}
+            {data.nodes.length > 0 && data.edges.length > 0 && (
+              <div className="h-px bg-border" />
+            )}
+
+            {/* Edges */}
+            {data.edges.length > 0 && (
+              <div className="space-y-1.5">
+                {data.edges.map(edge => {
+                  const fromLabel = edge.fromIsNew
+                    ? data.nodes.find(n => n.tempId === edge.fromRef)?.label || edge.fromRef
+                    : edge.fromRef
+                  const toLabel = edge.toIsNew
+                    ? data.nodes.find(n => n.tempId === edge.toRef)?.label || edge.toRef
+                    : edge.toRef
+                  const edgeColorClasses = EDGE_TYPE_COLORS[edge.relation] ?? 'bg-muted text-muted-foreground'
+
+                  return (
+                    <div key={edge.tempId} className="flex items-center gap-2 text-xs">
+                      <span className="truncate">{fromLabel}</span>
+                      <ArrowRight className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+                      <Badge variant="secondary" className={cn('text-[10px] font-medium flex-shrink-0', edgeColorClasses)}>
+                        {t(`graph.edgeTypes.${edge.relation}`, edge.relation)}
+                      </Badge>
+                      <ArrowRight className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+                      <span className="truncate">{toLabel}</span>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+
+            {/* Reasoning */}
+            {data.reasoning && (
+              <p className="text-xs text-muted-foreground italic border-t border-border pt-2">
+                {decodeHtmlEntities(data.reasoning)}
+              </p>
+            )}
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  // Pending/editing state — full card with actions
   return (
     <div className="border border-border rounded-lg overflow-hidden bg-card">
       {/* Header - collapsible */}
@@ -188,11 +309,12 @@ export const GraphFragmentCard = ({
           isExpanded && 'border-b border-border'
         )}
       >
-        {isExpanded ? (
-          <ChevronDown className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
-        ) : (
-          <ChevronRight className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
-        )}
+        <ChevronRight
+          className={cn(
+            'h-3.5 w-3.5 text-muted-foreground flex-shrink-0 transition-transform duration-150',
+            isExpanded && 'rotate-90'
+          )}
+        />
         <span className="text-xs font-medium flex-1 truncate">
           {data.title || t('ai.graphFragment.title', 'Graph Changes')}
         </span>
@@ -313,9 +435,8 @@ const NodeRow = ({ node, selected, onToggle, disabled }: NodeRowProps) => {
       onClick={onToggle}
       disabled={disabled}
       className={cn(
-        'w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-left cursor-pointer',
-        'hover:bg-muted/50 transition-colors',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+        'w-full flex items-center gap-2 py-0.5 text-left cursor-pointer',
+        'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded-sm',
         disabled && 'opacity-50 cursor-not-allowed'
       )}
     >
@@ -354,9 +475,8 @@ const EdgeRow = ({ edge, selected, canSelect, onToggle, getLabel, disabled }: Ed
       onClick={onToggle}
       disabled={isDisabled}
       className={cn(
-        'w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-left cursor-pointer',
-        'hover:bg-muted/50 transition-colors',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+        'w-full flex items-center gap-2 py-0.5 text-left cursor-pointer',
+        'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded-sm',
         isDisabled && 'opacity-50 cursor-not-allowed'
       )}
       title={!canSelect ? t('ai.graphFragment.edgeRequiresNodes', 'Select the connected nodes first') : undefined}

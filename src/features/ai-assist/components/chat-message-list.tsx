@@ -10,8 +10,7 @@ import { LoadingDots } from '@/shared/components/loading-dots'
 import { Textarea } from '@/shared/components/textarea'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/components/tooltip'
 import { cn } from '@/shared/lib/cn'
-import type { ChatMessage, PreviewCard, ResolvedPreview } from '../model/ai-assist.types'
-import { CollapsibleProposal } from './collapsible-proposal'
+import type { ChatMessage, PreviewCard } from '../model/ai-assist.types'
 import { PreviewCardComponent } from './preview-card'
 
 interface ChatMessageListProps {
@@ -21,7 +20,8 @@ interface ChatMessageListProps {
   onRemovePreview: (messageId: string, previewId: string) => void
   onSavePreview: (messageId: string, preview: PreviewCard) => void
   onRejectPreview: (messageId: string, preview: PreviewCard) => void
-  onUndoResolved: (messageId: string, preview: ResolvedPreview) => void
+  /** Handler to restore a resolved preview back to pending */
+  onRestorePreview: (messageId: string, preview: PreviewCard) => void
   onRegenerate?: (messageId: string, role: 'user' | 'assistant') => void
   onEditMessage?: (messageId: string, newContent: string) => void
 }
@@ -42,7 +42,7 @@ export const ChatMessageList = ({
   onRemovePreview,
   onSavePreview,
   onRejectPreview,
-  onUndoResolved,
+  onRestorePreview,
   onRegenerate,
   onEditMessage
 }: ChatMessageListProps) => {
@@ -166,7 +166,7 @@ export const ChatMessageList = ({
                             <Button
                               variant='ghost'
                               size='icon'
-                              className='h-6 w-6 text-muted-foreground hover:text-foreground transition-colors'
+                              className='h-6 w-6 rounded-md text-muted-foreground hover:text-foreground transition-colors'
                               onClick={() => handleStartEdit(message.id, message.content)}
                             >
                               <Pencil className='h-3.5 w-3.5' />
@@ -181,7 +181,7 @@ export const ChatMessageList = ({
                         value={message.content}
                         label={t('common.copy')}
                         copiedLabel={t('common.copied')}
-                        className='h-6 w-6 text-muted-foreground hover:text-foreground transition-colors'
+                        className='h-6 w-6 rounded-md text-muted-foreground hover:text-foreground transition-colors'
                       />
                       {onRegenerate && !isStreaming && (
                         <Tooltip>
@@ -189,7 +189,7 @@ export const ChatMessageList = ({
                             <Button
                               variant='ghost'
                               size='icon'
-                              className='h-6 w-6 text-muted-foreground hover:text-foreground transition-colors'
+                              className='h-6 w-6 rounded-md text-muted-foreground hover:text-foreground transition-colors'
                               onClick={() => onRegenerate(message.id, 'user')}
                             >
                               <RefreshCw className='h-3.5 w-3.5' />
@@ -271,7 +271,7 @@ export const ChatMessageList = ({
                   </div>
                 )}
 
-                {/* Preview Cards */}
+                {/* Preview Cards — both pending and resolved */}
                 {message.preview && message.preview.length > 0 && (
                   <div className='space-y-2'>
                     {message.preview.map(preview => (
@@ -280,50 +280,40 @@ export const ChatMessageList = ({
                         preview={preview}
                         onRemove={() => onRejectPreview(message.id, preview)}
                         onSave={() => onSavePreview(message.id, preview)}
+                        onRestore={() => onRestorePreview(message.id, preview)}
                         isSaving={isPreviewSaving(message.id, preview.id)}
                       />
                     ))}
 
                     {(() => {
-                      const actionablePreviews = message.preview.filter(p => p.type !== 'exercise')
-                      if (actionablePreviews.length <= 1) return null
+                      // Only show "Apply All" for pending previews
+                      const pendingPreviews = message.preview.filter(
+                        p => p.type !== 'exercise' && (p.status === 'pending' || p.status === 'editing')
+                      )
+                      if (pendingPreviews.length <= 1) return null
 
                       return (
                         <Button
                           className='w-full'
-                          disabled={isAnyPreviewSaving(message.id, actionablePreviews)}
+                          disabled={isAnyPreviewSaving(message.id, pendingPreviews)}
                           onClick={() => {
-                            actionablePreviews.forEach(preview => {
+                            pendingPreviews.forEach(preview => {
                               onSavePreview(message.id, preview)
                             })
                           }}
                         >
-                          {isAnyPreviewSaving(message.id, actionablePreviews) ? (
+                          {isAnyPreviewSaving(message.id, pendingPreviews) ? (
                             <Loader2 className='h-4 w-4 mr-2 animate-spin' />
                           ) : (
                             <Check className='h-4 w-4 mr-2' />
                           )}
                           {t('ai.chat.applyAll', {
-                            count: actionablePreviews.length,
-                            defaultValue: `Apply all (${actionablePreviews.length})`
+                            count: pendingPreviews.length,
+                            defaultValue: `Apply all (${pendingPreviews.length})`
                           })}
                         </Button>
                       )
                     })()}
-                  </div>
-                )}
-
-                {/* Resolved Previews */}
-                {message.resolvedPreviews && message.resolvedPreviews.length > 0 && (
-                  <div className='space-y-1.5'>
-                    {message.resolvedPreviews.map(resolved => (
-                      <CollapsibleProposal
-                        key={resolved.id}
-                        preview={resolved}
-                        canUndo={resolved.status === 'approved' && !!resolved.undoData}
-                        onUndo={() => onUndoResolved(message.id, resolved)}
-                      />
-                    ))}
                   </div>
                 )}
 
@@ -339,7 +329,7 @@ export const ChatMessageList = ({
                       value={message.content}
                       label={t('common.copy')}
                       copiedLabel={t('common.copied')}
-                      className='h-6 w-6 text-muted-foreground hover:text-foreground transition-colors'
+                      className='h-6 w-6 rounded-md text-muted-foreground hover:text-foreground transition-colors'
                     />
                     {onRegenerate && !isStreaming && (
                       <Tooltip>
@@ -347,7 +337,7 @@ export const ChatMessageList = ({
                           <Button
                             variant='ghost'
                             size='icon'
-                            className='h-6 w-6 text-muted-foreground hover:text-foreground transition-colors'
+                            className='h-6 w-6 rounded-md text-muted-foreground hover:text-foreground transition-colors'
                             onClick={() => onRegenerate(message.id, 'assistant')}
                           >
                             <RefreshCw className='h-3.5 w-3.5' />

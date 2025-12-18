@@ -1,11 +1,4 @@
-import { ChevronDown, ChevronRight, Undo2 } from 'lucide-react'
-
-/** Decode HTML entities like &#39; -> ' */
-const decodeHtmlEntities = (text: string): string => {
-  const textarea = document.createElement('textarea')
-  textarea.innerHTML = text
-  return textarea.value
-}
+import { Check, ChevronRight, Undo2, X } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Badge } from '@/shared/components/badge'
@@ -20,6 +13,13 @@ import type {
   ResolvedPreview
 } from '../model/ai-assist.types'
 import { DiffBlock } from './proposal-card'
+
+/** Decode HTML entities like &#39; -> ' */
+const decodeHtmlEntities = (text: string): string => {
+  const textarea = document.createElement('textarea')
+  textarea.innerHTML = text
+  return textarea.value
+}
 
 /** Node type colors - using theme tokens from globals.css */
 const NODE_TYPE_COLORS: Record<string, string> = {
@@ -51,25 +51,25 @@ export const CollapsibleProposal = ({
 
   const isApproved = preview.status === 'approved'
 
-  // Get summary based on preview type (lowercase for parenthetical display)
+  // Get concise summary based on preview type
   const getSummary = (): string => {
     switch (preview.type) {
       case 'enrichment': {
         const data = preview.data as EnrichmentPreviewData
         const field = data.field || 'description'
-        return t(`ai.fields.${field}`, field).toLowerCase()
+        return t(`ai.fields.${field}`, field)
       }
       case 'exercise': {
         const data = preview.data as ExercisePreviewData
-        return (data.exercise?.type || t('ai.exercises.exercise', 'exercise')).toLowerCase()
+        return data.exercise?.type || t('ai.exercises.exercise', 'Exercise')
       }
       case 'new_node': {
         const data = preview.data as NewNodePreviewData
-        return `${t('ai.proposals.newNode', 'node')}: ${data.label}`.toLowerCase()
+        return data.label
       }
       case 'connection': {
         const data = preview.data as ConnectionPreviewData
-        return `${data.fromLabel} → ${data.toLabel}`.toLowerCase()
+        return `${data.fromLabel} → ${data.toLabel}`
       }
       case 'graph_fragment': {
         const data = preview.data as GraphFragmentPreviewData
@@ -80,20 +80,20 @@ export const CollapsibleProposal = ({
         if (data.edges?.length > 0) {
           parts.push(t('ai.graphFragment.edgesCount', '{{count}} edges', { count: data.edges.length }))
         }
-        return parts.join(', ').toLowerCase() || t('ai.proposals.change', 'change').toLowerCase()
+        return parts.join(', ') || t('ai.proposals.change', 'Change')
       }
       case 'edge':
-        return t('ai.proposals.newEdge', 'connection').toLowerCase()
+        return t('ai.proposals.newEdge', 'Connection')
       case 'node':
-        return t('ai.proposals.newNode', 'node').toLowerCase()
+        return t('ai.proposals.newNode', 'Node')
       default:
-        return t('ai.proposals.change', 'change').toLowerCase()
+        return t('ai.proposals.change', 'Change')
     }
   }
 
   return (
-    <div className={cn('border border-border rounded-lg overflow-hidden bg-card/50', className)}>
-      {/* Collapsed header - always visible */}
+    <div className={cn('rounded-lg overflow-hidden', className)}>
+      {/* Header row */}
       <div
         role='button'
         tabIndex={0}
@@ -105,25 +105,42 @@ export const CollapsibleProposal = ({
           }
         }}
         className={cn(
-          'w-full px-3 py-2 flex items-center gap-2 text-left cursor-pointer',
-          'hover:bg-muted/50 transition-colors'
+          'group w-full px-2.5 py-1.5 flex items-center gap-2 text-left cursor-pointer rounded-lg',
+          'hover:bg-muted/40 transition-colors',
+          isExpanded && 'bg-muted/30 rounded-b-none'
         )}
       >
-        {/* Expand/collapse chevron */}
-        {isExpanded ? (
-          <ChevronDown className='h-3.5 w-3.5 text-muted-foreground flex-shrink-0' />
-        ) : (
-          <ChevronRight className='h-3.5 w-3.5 text-muted-foreground flex-shrink-0' />
-        )}
+        {/* Status icon */}
+        <div
+          className={cn(
+            'flex-shrink-0 h-4 w-4 rounded-full flex items-center justify-center',
+            isApproved
+              ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400'
+              : 'bg-muted text-muted-foreground'
+          )}
+        >
+          {isApproved ? (
+            <Check className='h-2.5 w-2.5' strokeWidth={3} />
+          ) : (
+            <X className='h-2.5 w-2.5' strokeWidth={3} />
+          )}
+        </div>
 
         {/* Summary text */}
         <span className='flex-1 text-xs text-muted-foreground truncate'>
-          {isApproved
-            ? t('ai.proposals.applied', 'Applied ({{summary}})', { summary: getSummary() })
-            : t('ai.proposals.dismissed', 'Dismissed ({{summary}})', { summary: getSummary() })}
+          {getSummary()}
         </span>
 
-        {/* Undo/Restore button - only show if canUndo is true or status is rejected (restore) */}
+        {/* Expand chevron */}
+        <ChevronRight
+          className={cn(
+            'h-3 w-3 text-muted-foreground/50 transition-transform duration-150 flex-shrink-0',
+            'group-hover:text-muted-foreground',
+            isExpanded && 'rotate-90'
+          )}
+        />
+
+        {/* Undo/Restore button */}
         {onUndo && (canUndo || !isApproved) && (
           <Button
             size='sm'
@@ -132,9 +149,9 @@ export const CollapsibleProposal = ({
               e.stopPropagation()
               onUndo()
             }}
-            className='h-6 px-2 text-xs text-muted-foreground hover:text-foreground'
+            className='h-5 px-1.5 text-[10px] text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-opacity'
           >
-            <Undo2 className='h-3 w-3 mr-1' />
+            <Undo2 className='h-2.5 w-2.5 mr-0.5' />
             {isApproved ? t('common.undo', 'Undo') : t('common.restore', 'Restore')}
           </Button>
         )}
@@ -142,7 +159,7 @@ export const CollapsibleProposal = ({
 
       {/* Expanded content */}
       {isExpanded && (
-        <div className='px-3 py-2 border-t border-border bg-muted/30'>
+        <div className='px-3 py-2.5 bg-muted/30 rounded-b-lg'>
           <ProposalContent preview={preview} />
         </div>
       )}

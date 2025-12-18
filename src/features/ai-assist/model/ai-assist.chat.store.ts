@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { ChatMessage, ResolvedPreview } from './ai-assist.types'
+import type { ChatMessage, PreviewCard } from './ai-assist.types'
 
 const MAX_MESSAGES_PER_SESSION = 100
 const MAX_SESSIONS = 50
@@ -22,13 +22,25 @@ interface ChatHistoryActions {
   addMessage: (sessionId: string, message: ChatMessage) => void
   updateMessage: (sessionId: string, messageId: string, updates: Partial<ChatMessage>) => void
   removePreview: (sessionId: string, messageId: string, previewId: string) => void
+  /** Update preview status in place (approve/reject without moving to separate list) */
+  resolvePreview: (
+    sessionId: string,
+    messageId: string,
+    previewId: string,
+    status: 'approved' | 'rejected',
+    undoData?: PreviewCard['undoData']
+  ) => void
+  /** Revert a resolved preview back to pending */
+  unresolvePreview: (sessionId: string, messageId: string, previewId: string) => void
+  /** @deprecated Use resolvePreview instead */
   moveToResolved: (
     sessionId: string,
     messageId: string,
     previewId: string,
     status: 'approved' | 'rejected',
-    undoData?: ResolvedPreview['undoData']
+    undoData?: PreviewCard['undoData']
   ) => void
+  /** @deprecated Use unresolvePreview instead */
   undoResolved: (sessionId: string, messageId: string, previewId: string) => void
   truncateFromMessage: (sessionId: string, messageId: string) => void
   clearSession: (sessionId: string) => void
@@ -51,6 +63,15 @@ const customStorage = {
             if (msg.timestamp) {
               msg.timestamp = new Date(msg.timestamp)
             }
+            // Handle resolvedAt in preview cards
+            if (msg.preview) {
+              for (const p of msg.preview) {
+                if (p.resolvedAt) {
+                  p.resolvedAt = new Date(p.resolvedAt)
+                }
+              }
+            }
+            // Legacy: handle resolvedPreviews for backwards compatibility
             if (msg.resolvedPreviews) {
               for (const rp of msg.resolvedPreviews) {
                 if (rp.resolvedAt) {
@@ -168,12 +189,13 @@ export const useChatHistoryStore = create<ChatHistoryState & ChatHistoryActions>
         })
       },
 
-      moveToResolved: (
+      // New unified approach: update status in place
+      resolvePreview: (
         sessionId: string,
         messageId: string,
         previewId: string,
         status: 'approved' | 'rejected',
-        undoData?: ResolvedPreview['undoData']
+        undoData?: PreviewCard['undoData']
       ) => {
         set(state => {
           const session = state.sessions[sessionId]
@@ -191,22 +213,13 @@ export const useChatHistoryStore = create<ChatHistoryState & ChatHistoryActions>
                     return msg
                   }
 
-                  const preview = msg.preview.find(p => p.id === previewId)
-                  if (!preview) {
-                    return msg
-                  }
-
-                  const resolvedPreview: ResolvedPreview = {
-                    ...preview,
-                    status,
-                    resolvedAt: new Date(),
-                    undoData
-                  }
-
                   return {
                     ...msg,
-                    preview: msg.preview.filter(p => p.id !== previewId),
-                    resolvedPreviews: [...(msg.resolvedPreviews || []), resolvedPreview]
+                    preview: msg.preview.map(p =>
+                      p.id === previewId
+                        ? { ...p, status, resolvedAt: new Date(), undoData }
+                        : p
+                    )
                   }
                 }),
                 lastUpdated: Date.now()
@@ -216,7 +229,7 @@ export const useChatHistoryStore = create<ChatHistoryState & ChatHistoryActions>
         })
       },
 
-      undoResolved: (sessionId: string, messageId: string, previewId: string) => {
+      unresolvePreview: (sessionId: string, messageId: string, previewId: string) => {
         set(state => {
           const session = state.sessions[sessionId]
           if (!session) {
@@ -229,66 +242,63 @@ export const useChatHistoryStore = create<ChatHistoryState & ChatHistoryActions>
               [sessionId]: {
                 ...session,
                 messages: session.messages.map(msg => {
-                  if (msg.id !== messageId || !msg.resolvedPreviews) {
+                  if (msg.id !== messageId || !msg.preview) {
                     return msg
-                  }
-
-                  const resolved = msg.resolvedPreviews.find(p => p.id === previewId)
-                  if (!resolved) {
-                    return msg
-                  }
-
-                  // Preserve applied entity IDs in data for duplicate prevention
-                  let dataWithAppliedIds = resolved.data
-                  if (resolved.undoData?.previousState) {
-                    const previousState = resolved.undoData.previousState as {
-                      createdNodeId?: string
-                      createdEdgeIds?: string[]
-                      createdEdgeId?: string
-                      tempIdMapping?: Record<string, string>
-                    }
-                    if (resolved.type === 'new_node' && previousState.createdNodeId) {
-                      dataWithAppliedIds = {
-                        ...resolved.data,
-                        appliedNodeId: previousState.createdNodeId,
-                        appliedEdgeIds: previousState.createdEdgeIds
-                      }
-                    } else if (resolved.type === 'connection' && previousState.createdEdgeId) {
-                      dataWithAppliedIds = {
-                        ...resolved.data,
-                        appliedEdgeId: previousState.createdEdgeId
-                      }
-                    } else if (resolved.type === 'graph_fragment' && (previousState.tempIdMapping || previousState.createdEdgeIds)) {
-                      // For graph_fragment, update each node/edge with its applied ID
-                      const fragmentData = resolved.data as import('./ai-assist.types').GraphFragmentPreviewData
-                      const updatedNodes = fragmentData.nodes.map(node => {
-                        const realId = previousState.tempIdMapping?.[node.tempId]
-                        return realId ? { ...node, appliedNodeId: realId } : node
-                      })
-                      const updatedEdges = fragmentData.edges.map((edge, idx) => {
-                        const edgeId = previousState.createdEdgeIds?.[idx]
-                        return edgeId ? { ...edge, appliedEdgeId: edgeId } : edge
-                      })
-                      dataWithAppliedIds = {
-                        ...fragmentData,
-                        nodes: updatedNodes,
-                        edges: updatedEdges
-                      }
-                    }
-                  }
-
-                  // Move back to pending
-                  const pendingPreview = {
-                    id: resolved.id,
-                    type: resolved.type,
-                    data: dataWithAppliedIds,
-                    status: 'pending' as const
                   }
 
                   return {
                     ...msg,
-                    preview: [...(msg.preview || []), pendingPreview],
-                    resolvedPreviews: msg.resolvedPreviews.filter(p => p.id !== previewId)
+                    preview: msg.preview.map(p => {
+                      if (p.id !== previewId) {
+                        return p
+                      }
+
+                      // Preserve applied entity IDs in data for duplicate prevention
+                      let dataWithAppliedIds = p.data
+                      if (p.undoData?.previousState) {
+                        const previousState = p.undoData.previousState as {
+                          createdNodeId?: string
+                          createdEdgeIds?: string[]
+                          createdEdgeId?: string
+                          tempIdMapping?: Record<string, string>
+                        }
+                        if (p.type === 'new_node' && previousState.createdNodeId) {
+                          dataWithAppliedIds = {
+                            ...p.data,
+                            appliedNodeId: previousState.createdNodeId,
+                            appliedEdgeIds: previousState.createdEdgeIds
+                          }
+                        } else if (p.type === 'connection' && previousState.createdEdgeId) {
+                          dataWithAppliedIds = {
+                            ...p.data,
+                            appliedEdgeId: previousState.createdEdgeId
+                          }
+                        } else if (p.type === 'graph_fragment' && (previousState.tempIdMapping || previousState.createdEdgeIds)) {
+                          const fragmentData = p.data as import('./ai-assist.types').GraphFragmentPreviewData
+                          const updatedNodes = fragmentData.nodes.map(node => {
+                            const realId = previousState.tempIdMapping?.[node.tempId]
+                            return realId ? { ...node, appliedNodeId: realId } : node
+                          })
+                          const updatedEdges = fragmentData.edges.map((edge, idx) => {
+                            const edgeId = previousState.createdEdgeIds?.[idx]
+                            return edgeId ? { ...edge, appliedEdgeId: edgeId } : edge
+                          })
+                          dataWithAppliedIds = {
+                            ...fragmentData,
+                            nodes: updatedNodes,
+                            edges: updatedEdges
+                          }
+                        }
+                      }
+
+                      return {
+                        ...p,
+                        data: dataWithAppliedIds,
+                        status: 'pending' as const,
+                        resolvedAt: undefined,
+                        undoData: undefined
+                      }
+                    })
                   }
                 }),
                 lastUpdated: Date.now()
@@ -296,6 +306,21 @@ export const useChatHistoryStore = create<ChatHistoryState & ChatHistoryActions>
             }
           }
         })
+      },
+
+      // Legacy methods - delegate to new ones for backwards compatibility
+      moveToResolved: (
+        sessionId: string,
+        messageId: string,
+        previewId: string,
+        status: 'approved' | 'rejected',
+        undoData?: PreviewCard['undoData']
+      ) => {
+        get().resolvePreview(sessionId, messageId, previewId, status, undoData)
+      },
+
+      undoResolved: (sessionId: string, messageId: string, previewId: string) => {
+        get().unresolvePreview(sessionId, messageId, previewId)
       },
 
       truncateFromMessage: (sessionId: string, messageId: string) => {
@@ -363,6 +388,8 @@ export const useChatHistory = (sessionId: string) => {
   const addMessage = useChatHistoryStore(s => s.addMessage)
   const updateMessage = useChatHistoryStore(s => s.updateMessage)
   const removePreview = useChatHistoryStore(s => s.removePreview)
+  const resolvePreview = useChatHistoryStore(s => s.resolvePreview)
+  const unresolvePreview = useChatHistoryStore(s => s.unresolvePreview)
   const moveToResolved = useChatHistoryStore(s => s.moveToResolved)
   const undoResolved = useChatHistoryStore(s => s.undoResolved)
   const clearSession = useChatHistoryStore(s => s.clearSession)
@@ -373,12 +400,21 @@ export const useChatHistory = (sessionId: string) => {
     updateMessage: (msgId: string, updates: Partial<ChatMessage>) =>
       updateMessage(sessionId, msgId, updates),
     removePreview: (msgId: string, previewId: string) => removePreview(sessionId, msgId, previewId),
+    resolvePreview: (
+      msgId: string,
+      previewId: string,
+      status: 'approved' | 'rejected',
+      undoData?: PreviewCard['undoData']
+    ) => resolvePreview(sessionId, msgId, previewId, status, undoData),
+    unresolvePreview: (msgId: string, previewId: string) => unresolvePreview(sessionId, msgId, previewId),
+    /** @deprecated Use resolvePreview instead */
     moveToResolved: (
       msgId: string,
       previewId: string,
       status: 'approved' | 'rejected',
-      undoData?: ResolvedPreview['undoData']
+      undoData?: PreviewCard['undoData']
     ) => moveToResolved(sessionId, msgId, previewId, status, undoData),
+    /** @deprecated Use unresolvePreview instead */
     undoResolved: (msgId: string, previewId: string) => undoResolved(sessionId, msgId, previewId),
     clearSession: () => clearSession(sessionId)
   }

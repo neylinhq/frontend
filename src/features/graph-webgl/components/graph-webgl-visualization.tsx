@@ -147,13 +147,14 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
     canvasRef.current?.fitView()
   }, [])
 
-  // Focus on node and pan to it
-  const handleFocusAndPanToNode = useCallback(
+  // Pan to node (for connections panel eye icon)
+  // Does NOT enable focus mode - just centers on the node
+  const handlePanToNodeWithZoom = useCallback(
     (nodeId: string) => {
-      focusNode(nodeId)
       // TODO: Pan to node in WebGL
+      canvasRef.current?.centerOnNode?.(nodeId)
     },
-    [focusNode]
+    []
   )
 
   // Show loading only when fetching client-side (no initialData)
@@ -263,7 +264,7 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
             fullMap.edges,
             fullMap.nodes,
             selectNode,
-            handleFocusAndPanToNode
+            handlePanToNodeWithZoom
           )
         }
       />

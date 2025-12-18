@@ -131,14 +131,15 @@ const GraphVisualizationContent = ({
     skipDuringInteraction: true
   })
 
-  // Pan to a specific node
+  // Pan to a specific node with optional zoom override
   const handlePanToNode = useCallback(
-    (nodeId: string) => {
+    (nodeId: string, zoomOverride?: number) => {
       const node = getNode(nodeId)
       if (node) {
         const x = node.position.x + (node.measured?.width ?? 200) / 2
         const y = node.position.y + (node.measured?.height ?? 100) / 2
-        setCenter(x, y, { zoom: viewportZoom, duration: layoutParamsRef.current.animationDuration })
+        const targetZoom = zoomOverride ?? viewportZoom
+        setCenter(x, y, { zoom: targetZoom, duration: layoutParamsRef.current.animationDuration })
       }
     },
     [getNode, setCenter, viewportZoom]
@@ -148,16 +149,13 @@ const GraphVisualizationContent = ({
   const { viewMode } = useViewMode()
   const { focusedNodeId, focusDepth, focusNode } = useFocusMode()
 
-  // Focus on node and pan to it (for connections panel eye icon)
-  const handleFocusAndPanToNode = useCallback(
+  // Pan to node and zoom in (for connections panel eye icon)
+  // Does NOT enable focus mode - just centers on the node
+  const handlePanToNodeWithZoom = useCallback(
     (nodeId: string) => {
-      focusNode(nodeId)
-      // Pan after state updates and node becomes visible
-      setTimeout(() => {
-        handlePanToNode(nodeId)
-      }, 50)
+      handlePanToNode(nodeId, 1) // Zoom to 100%
     },
-    [focusNode, handlePanToNode]
+    [handlePanToNode]
   )
 
   // Edit edge from connections panel - opens EdgeEditPopover
@@ -897,7 +895,8 @@ const GraphVisualizationContent = ({
         nodes={fullMap?.nodes}
         onNodeSelect={node => {
           selectNode(node.id)
-          handlePanToNode(node.id)
+          // Zoom to 100% when selecting from search for better visibility
+          handlePanToNode(node.id, 1)
         }}
       />
 
@@ -929,7 +928,7 @@ const GraphVisualizationContent = ({
             fullMap.edges,
             fullMap.nodes,
             selectNode,
-            handleFocusAndPanToNode, // Focus on node and pan to it
+            handlePanToNodeWithZoom, // Pan to node and zoom (no focus mode)
             interactive ? handleEditEdge : undefined,
             interactive ? handleDeleteEdge : undefined
           )

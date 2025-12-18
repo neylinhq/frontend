@@ -2,7 +2,10 @@ import type { LucideIcon } from 'lucide-react'
 import type React from 'react'
 import { useTranslation } from 'react-i18next'
 import { NavLink } from 'react-router'
+import { Logo } from '@/shared/components/logo'
+import { DASHBOARD_ROUTES } from '@/shared/config'
 import { cn } from '@/shared/lib/cn'
+import { UserNav } from '@/widgets/user-nav'
 import { DASHBOARD_SIDEBAR_ITEMS } from '../dashboard-layout.constants'
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -14,6 +17,11 @@ export const Sidebar = ({ className, isExpanded }: SidebarProps) => {
 
   return (
     <div className={cn('flex h-full flex-col bg-card', className)}>
+      {/* Logo */}
+      <div className='h-14 flex items-center px-3 border-b'>
+        <Logo size='sm' href={DASHBOARD_ROUTES.overview} />
+      </div>
+
       {/* Navigation */}
       <div className='flex-1 py-4 px-3 space-y-1 overflow-y-auto'>
         {DASHBOARD_SIDEBAR_ITEMS.map(item => (
@@ -21,6 +29,11 @@ export const Sidebar = ({ className, isExpanded }: SidebarProps) => {
             {t(item.title)}
           </NavItem>
         ))}
+      </div>
+
+      {/* User Nav */}
+      <div className='px-3 border-t flex items-center h-14'>
+        <UserNav isExpanded={isExpanded} />
       </div>
     </div>
   )

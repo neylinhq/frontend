@@ -417,6 +417,12 @@
       "focus": "Фокус",
       "path": "Путь"
     },
+    "search": {
+      "title": "Поиск узлов",
+      "placeholder": "Поиск узлов...",
+      "empty": "Узлы не найдены",
+      "button": "Поиск"
+    },
     "toolbar": {
       "aiAnalysis": "AI",
       "center": "Центр",

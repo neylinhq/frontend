@@ -220,6 +220,17 @@ export const ViewControlsPanel = memo(
             {isFullscreen ? <Minimize2 className='w-4 h-4' /> : <Maximize2 className='w-4 h-4' />}
           </Button>
 
+          {/* Center view */}
+          <Button
+            size='sm'
+            variant='ghost'
+            onClick={onCenter}
+            className='h-8 w-8 p-0'
+            title={t('graph.toolbar.centerTooltip')}
+          >
+            <Focus className='w-4 h-4' />
+          </Button>
+
           <div className='h-4 w-px bg-border' />
 
           {/* 4. Zoom controls — rightmost, heaviest visually */}
@@ -245,17 +256,6 @@ export const ViewControlsPanel = memo(
             title={t('graph.toolbar.zoomIn')}
           >
             <ZoomIn className='w-4 h-4' />
-          </Button>
-
-          {/* Center */}
-          <Button
-            size='sm'
-            variant='ghost'
-            onClick={onCenter}
-            className='h-8 w-8 p-0'
-            title={t('graph.toolbar.centerTooltip')}
-          >
-            <Focus className='w-4 h-4' />
           </Button>
         </Card>
       </div>

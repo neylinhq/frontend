@@ -417,6 +417,12 @@
       "focus": "Focus",
       "path": "Path"
     },
+    "search": {
+      "title": "Search nodes",
+      "placeholder": "Search nodes...",
+      "empty": "No nodes found",
+      "button": "Search"
+    },
     "toolbar": {
       "aiAnalysis": "AI",
       "center": "Center",

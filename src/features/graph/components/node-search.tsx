@@ -109,9 +109,9 @@ export const NodeSearch = ({ nodes, open, onOpenChange, onSelect }: NodeSearchPr
         <NodeSearchItemRenderer item={item} isSelected={isSelected} t={t} />
       )}
       onSelect={handleSelect}
-      placeholder={t('graph.search.placeholder', 'Search nodes...')}
-      emptyMessage={t('graph.search.empty', 'No nodes found for')}
-      title={t('graph.search.title', 'Search nodes')}
+      placeholder={t('graph.search.placeholder')}
+      emptyMessage={t('graph.search.empty')}
+      title={t('graph.search.title')}
     />
   )
 }
@@ -141,10 +141,10 @@ export const NodeSearchTrigger = ({
           variant='ghost'
           onClick={() => setOpen(true)}
           className={cn('h-8 px-2.5 gap-1.5', className)}
-          title={t('graph.search.title', 'Search nodes')}
+          title={t('graph.search.title')}
         >
           <Search className='w-4 h-4' />
-          <span className='hidden sm:inline text-xs'>{t('graph.search.button', 'Search')}</span>
+          <span className='hidden sm:inline text-xs'>{t('graph.search.button')}</span>
           <kbd className='hidden md:inline-flex h-5 items-center gap-1 rounded border bg-background px-1.5 font-mono text-[10px] font-medium'>
             {isMac ? '⌘' : 'Ctrl+'}K
           </kbd>
@@ -165,7 +165,7 @@ export const NodeSearchTrigger = ({
         )}
       >
         <Search className='h-4 w-4' />
-        <span>{t('graph.search.button', 'Search')}</span>
+        <span>{t('graph.search.button')}</span>
         <kbd className='hidden md:inline-flex h-5 items-center gap-1 rounded border bg-background px-1.5 font-mono text-[10px] font-medium'>
           {isMac ? '⌘' : 'Ctrl+'}K
         </kbd>

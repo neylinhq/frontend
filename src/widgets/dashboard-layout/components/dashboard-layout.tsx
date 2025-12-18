@@ -1,5 +1,8 @@
+import { Menu } from 'lucide-react'
 import { useState } from 'react'
-import { DashboardHeader } from './dashboard-header'
+import { useTranslation } from 'react-i18next'
+import { Button } from '@/shared/components/button'
+import { Sheet, SheetContent, SheetTrigger } from '@/shared/components/sheet'
 import { Sidebar } from './sidebar'
 
 interface DashboardLayoutProps {
@@ -10,40 +13,53 @@ interface DashboardLayoutProps {
 
 export const DashboardLayout = ({ disableScroll = false, children }: DashboardLayoutProps) => {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false)
+  const { t } = useTranslation()
 
   return (
-    <div className='h-screen flex flex-col overflow-hidden'>
-      {/* Header */}
-      <DashboardHeader />
-      <div className='flex flex-1 min-h-0'>
-        {/* Desktop Sidebar */}
-        <aside
-          className='hidden md:flex flex-col bg-card border-r flex-shrink-0 w-16 z-40'
+    <div className='h-screen flex overflow-hidden'>
+      {/* Desktop Sidebar */}
+      <aside
+        className='hidden md:flex flex-col bg-card border-r flex-shrink-0 w-16 z-40'
+        onMouseEnter={() => setIsSidebarExpanded(true)}
+        onMouseLeave={() => setIsSidebarExpanded(false)}
+      >
+        <Sidebar isExpanded={false} />
+      </aside>
+
+      {/* Expanded Sidebar Overlay - fixed position, doesn't affect layout */}
+      {isSidebarExpanded && (
+        <nav
+          className='hidden md:flex flex-col fixed left-0 top-0 h-screen w-64 bg-card border-r z-50'
           onMouseEnter={() => setIsSidebarExpanded(true)}
           onMouseLeave={() => setIsSidebarExpanded(false)}
         >
-          <Sidebar isExpanded={false} />
-        </aside>
+          <Sidebar isExpanded={true} />
+        </nav>
+      )}
 
-        {/* Expanded Sidebar Overlay - fixed position, doesn't affect layout */}
-        {isSidebarExpanded && (
-          <nav
-            className='hidden md:flex flex-col fixed left-0 top-14 h-[calc(100vh-3.5rem)] w-64 bg-card border-r z-50 shadow-lg'
-            onMouseEnter={() => setIsSidebarExpanded(true)}
-            onMouseLeave={() => setIsSidebarExpanded(false)}
-          >
-            <Sidebar isExpanded={true} />
-          </nav>
-        )}
+      {/* Main Content */}
+      <div className='flex-1 flex flex-col min-w-0'>
+        {/* Mobile Header */}
+        <header className='md:hidden h-14 flex items-center px-4 border-b bg-background'>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant='ghost' size='icon' className='-ml-2'>
+                <Menu className='h-5 w-5' />
+                <span className='sr-only'>{t('nav.menu')}</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side='left' className='p-0 w-64'>
+              <Sidebar className='h-full border-none' isExpanded={true} />
+            </SheetContent>
+          </Sheet>
+        </header>
 
-        {/* Main Content */}
+        {/* Content */}
         {disableScroll ? (
-          // Page manages its own scroll - just pass through height
-          <div className='flex-1 min-w-0 min-h-0'>{children}</div>
+          <div className='flex-1 min-h-0'>{children}</div>
         ) : (
-          // Layout manages scroll
-          <div className='flex-1 min-w-0 overflow-y-auto [scrollbar-gutter:stable]'>
-            <div className='min-h-full border-r'>{children}</div>
+          <div className='flex-1 overflow-y-auto [scrollbar-gutter:stable]'>
+            <div className='min-h-full'>{children}</div>
           </div>
         )}
       </div>

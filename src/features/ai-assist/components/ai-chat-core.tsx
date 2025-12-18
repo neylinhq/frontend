@@ -16,6 +16,7 @@ import { getChatSessionId, useChatHistoryStore } from '../model/ai-assist.chat.s
 import { chatSessionKeys, useChatSession, useAddChatMessage } from '../model/ai-assist.sessions.hooks'
 import type { ChatProposal } from '../model/ai-assist.sessions.types'
 import { ChatInput } from './chat-input'
+import { ChatEmptyState } from './chat-empty-state'
 import { ChatMessageList } from './chat-message-list'
 
 const EMPTY_MESSAGES: ChatMessage[] = []
@@ -528,17 +529,18 @@ export const AIChatCore = ({
     handleSendMessage(newContent)
   }
 
-  const defaultEmptyMessage = t('ai.chat.noMessages')
+  // Determine context type for empty state suggestions
+  const chatContext = nodeContext.nodeId ? 'node' : 'map'
 
   return (
     <div className='flex h-full flex-col'>
       <div className='flex-1 overflow-y-auto [scrollbar-gutter:stable] px-3 py-3'>
         {messages.length === 0 ? (
-          <div className='flex h-full items-center justify-center'>
-            <p className='max-w-xs text-balance text-center text-xs text-muted-foreground'>
-              {emptyStateMessage || defaultEmptyMessage}
-            </p>
-          </div>
+          <ChatEmptyState
+            title={emptyStateMessage}
+            context={chatContext}
+            onSuggestionClick={handleSendMessage}
+          />
         ) : (
           <ChatMessageList
             messages={messages}

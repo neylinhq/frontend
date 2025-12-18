@@ -2,7 +2,7 @@ import { Menu } from 'lucide-react'
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/shared/components/button'
-import { Sheet, SheetContent, SheetTrigger } from '@/shared/components/sheet'
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/shared/components/sheet'
 import { useLocalStorage } from '@/shared/hooks/use-local-storage'
 import { cn } from '@/shared/lib/cn'
 import { Sidebar } from './sidebar'
@@ -47,6 +47,7 @@ export const DashboardLayout = ({ disableScroll = false, children }: DashboardLa
               </Button>
             </SheetTrigger>
             <SheetContent side='left' className='p-0 w-64'>
+              <SheetTitle className='sr-only'>{t('nav.menu')}</SheetTitle>
               <Sidebar className='h-full border-none' isExpanded={true} />
             </SheetContent>
           </Sheet>

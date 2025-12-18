@@ -41,7 +41,6 @@ export const TronWalletConnector = ({ onWalletChange }: TronWalletConnectorProps
     }
 
     // TODO: Implement TRC-20 transfer
-    console.log('Tron subscribe:', { orderId, amount, usdtAddress: usdtAddressRef.current, address: addressRef.current })
     throw new Error('Tron subscription not yet implemented')
   }, [])
 

@@ -38,7 +38,7 @@ import {
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/card'
-import { Sheet, SheetContent, SheetHeader } from '@/shared/components/sheet'
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/shared/components/sheet'
 import { Skeleton } from '@/shared/components/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/components/tabs'
 import { toast } from '@/shared/components/toast'
@@ -556,6 +556,7 @@ export const NodeEditPage = ({
           <Tabs defaultValue='properties' className='flex flex-1 flex-col min-h-0'>
             {/* Tab Header */}
             <SheetHeader className='p-0'>
+              <SheetTitle className='sr-only'>{t('nodeEdit.sidebar', 'Node sidebar')}</SheetTitle>
               <TabsList variant='underline' className='grid grid-cols-3'>
                 <TabsTrigger
                   variant='underline'

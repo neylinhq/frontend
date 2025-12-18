@@ -12,6 +12,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
+  DialogTitle,
   DialogTrigger
 } from '@/shared/components/dialog'
 import {
@@ -224,10 +225,7 @@ export const AddPaymentMethodDialog = ({
       try {
         await wallet.connect()
         // Don't reset state here - let auto-save useEffect handle it
-        console.log('[AddPaymentMethodDialog] Wallet connect() resolved, waiting for connection state...')
       } catch (err) {
-        console.error('[AddPaymentMethodDialog] Wallet connection failed:', err)
-
         // Check error type
         const errorCode = err && typeof err === 'object' && 'code' in err ? err.code : null
         const isUserRejection = errorCode === 4001 || errorCode === 'ACTION_REJECTED'
@@ -235,12 +233,10 @@ export const AddPaymentMethodDialog = ({
 
         if (isAlreadyPending) {
           // MetaMask window is already open, don't reset state
-          console.log('[AddPaymentMethodDialog] Connection request already pending, keeping loading state')
           return
         }
 
         if (isUserRejection) {
-          console.log('[AddPaymentMethodDialog] User rejected connection')
           setIsConnecting(false)
           setSelectedNetwork(null)
         } else {
@@ -266,7 +262,6 @@ export const AddPaymentMethodDialog = ({
     if (walletType === 'evm') {
       const expectedChainId = getEvmChainId(selectedNetwork)
       if (wallet.chainId !== expectedChainId) {
-        console.log('[AddPaymentMethodDialog] ChainId mismatch - waiting for network switch')
         return
       }
     }
@@ -317,9 +312,9 @@ export const AddPaymentMethodDialog = ({
         {step === 'select' && (
           <>
             <DialogHeader>
-              <div className='text-lg font-semibold'>
+              <DialogTitle>
                 {t('billing.addPaymentMethod.selectTitle')}
-              </div>
+              </DialogTitle>
               <DialogDescription>
                 {t('billing.addPaymentMethod.selectDescription')}
               </DialogDescription>
@@ -347,6 +342,7 @@ export const AddPaymentMethodDialog = ({
           <>
             <DialogHeader>
               <Breadcrumb onBack={handleBack} disabled={loadingCard} className='mb-4' />
+              <DialogTitle>{t('billing.addPaymentMethod.title')}</DialogTitle>
               <DialogDescription>{t('billing.addPaymentMethod.description')}</DialogDescription>
             </DialogHeader>
 
@@ -502,11 +498,12 @@ export const AddPaymentMethodDialog = ({
           <>
             <DialogHeader>
               <Breadcrumb onBack={handleBack} disabled={loadingCrypto || isConnecting} className='mb-4' />
+              <DialogTitle>{t('billing.crypto.title')}</DialogTitle>
               <DialogDescription>{t('billing.crypto.description')}</DialogDescription>
             </DialogHeader>
 
             {/* Hidden wallet connector */}
-            {(wallet as any)?._connector && <div className='hidden'>{(wallet as any)._connector}</div>}
+            {wallet._connector && <div className='hidden'>{wallet._connector}</div>}
 
             <div className='py-4'>
               <NetworkConnectButtons

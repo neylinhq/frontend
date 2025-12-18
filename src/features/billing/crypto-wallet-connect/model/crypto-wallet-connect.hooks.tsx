@@ -13,6 +13,10 @@ export interface CryptoWallet {
   subscribe: (orderId: string, amount: bigint) => Promise<string>
 }
 
+export interface CryptoWalletWithConnector extends CryptoWallet {
+  _connector: React.ReactNode
+}
+
 const emptyWallet: CryptoWallet = {
   address: null,
   isConnected: false,
@@ -35,7 +39,7 @@ type WalletConnectorComponent = React.ComponentType<{
  */
 export const useCryptoWallet = (
   network: CryptoNetwork | null
-): CryptoWallet & { _connector: React.ReactNode } => {
+): CryptoWalletWithConnector => {
   const [wallet, setWallet] = useState<CryptoWallet>(emptyWallet)
   const [WalletComponent, setWalletComponent] = useState<WalletConnectorComponent | null>(null)
 

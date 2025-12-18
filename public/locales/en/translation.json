@@ -1238,7 +1238,19 @@
       "yesterday": "Yesterday",
       "thisWeek": "This week",
       "thisMonth": "This month",
-      "older": "Older"
+      "older": "Older",
+      "emptyTitle": {
+        "node": "Ask something about this concept",
+        "map": "Ask something about this map"
+      },
+      "suggestions": {
+        "explain": "Explain this concept simply",
+        "connections": "What connections does this concept have?",
+        "exercise": "Generate an exercise to test",
+        "analyze": "Analyze this knowledge map",
+        "gaps": "Find knowledge gaps",
+        "summary": "Summarize this map"
+      }
     },
     "preview": {
       "edit": "Edit",

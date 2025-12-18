@@ -106,18 +106,12 @@ export const CryptoWalletConnectContent = ({
     if (walletType === 'evm') {
       const expectedChainId = getEvmChainId(network)
       if (wallet.chainId !== expectedChainId) {
-        console.log('[CryptoWalletConnect] ChainId mismatch - waiting for network switch:', {
-          expected: expectedChainId,
-          current: wallet.chainId,
-          network
-        })
         return
       }
     }
 
     // Сохраняем только один раз при подключении
     if (!hasAutoSavedRef.current) {
-      console.log('[CryptoWalletConnect] Auto-saving wallet:', { network, address: wallet.address })
       hasAutoSavedRef.current = true
       onSuccess(network, wallet.address)
     }
@@ -125,7 +119,6 @@ export const CryptoWalletConnectContent = ({
 
   // Кнопка "Add Wallet" - только для повторного вызова окна провайдера
   const handleAddWallet = useCallback(() => {
-    console.log('[CryptoWalletConnect] Manual connect triggered')
     setUserRejected(false)
     setError(null)
     setIsConnectingLocal(true)
@@ -175,8 +168,7 @@ export const CryptoWalletConnectContent = ({
   }, [network, wallet.isConnected, wallet.isConnecting, userRejected, isConnectingLocal])
 
   // Скрытый элемент-коннектор для управления кошельком
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const WalletConnector = (wallet as any)._connector
+  const WalletConnector = wallet._connector
 
   // Before mount, show loading
   if (!mounted) {

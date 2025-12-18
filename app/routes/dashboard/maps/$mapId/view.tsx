@@ -33,7 +33,6 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
       throw redirect(`/auth/sign-in?from=${encodeURIComponent(request.url)}`)
     }
 
-    console.error('getFullMap error:', error)
     throw new Response('Map not found', { status: 404 })
   }
 }

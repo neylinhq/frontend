@@ -2,7 +2,7 @@ import { Menu } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/shared/components/button'
 import { Logo } from '@/shared/components/logo'
-import { Sheet, SheetContent, SheetTrigger } from '@/shared/components/sheet'
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/shared/components/sheet'
 import { DASHBOARD_ROUTES } from '@/shared/config'
 import { UserNav } from '@/widgets/user-nav'
 import { Sidebar } from './sidebar'
@@ -24,6 +24,7 @@ export const DashboardHeader = () => {
               </Button>
             </SheetTrigger>
             <SheetContent side='left' className='p-0 w-64'>
+              <SheetTitle className='sr-only'>{t('nav.menu')}</SheetTitle>
               <Sidebar className='h-full border-none' isExpanded={true} />
             </SheetContent>
           </Sheet>

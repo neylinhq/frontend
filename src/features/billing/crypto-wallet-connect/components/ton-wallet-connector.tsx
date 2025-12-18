@@ -28,8 +28,6 @@ export const TonWalletConnector = ({ onWalletChange }: TonWalletConnectorProps) 
 
       // Listen for modal state changes
       const unsubscribeModal = tonConnectUI.onModalStateChange((state) => {
-        console.log('[TonWalletConnector] Modal state:', state.open)
-
         if (state.open) {
           modalWasOpen = true
         } else if (modalWasOpen && !resolved) {
@@ -38,7 +36,6 @@ export const TonWalletConnector = ({ onWalletChange }: TonWalletConnectorProps) 
             const currentWallet = tonConnectUI.wallet
             if (!currentWallet && !wasConnected) {
               // User closed modal without connecting
-              console.log('[TonWalletConnector] User closed modal without connecting')
               resolved = true
               unsubscribeModal()
               unsubscribeWallet()
@@ -50,7 +47,6 @@ export const TonWalletConnector = ({ onWalletChange }: TonWalletConnectorProps) 
 
       // Listen for wallet status changes
       const unsubscribeWallet = tonConnectUI.onStatusChange((walletInfo) => {
-        console.log('[TonWalletConnector] Wallet status changed:', !!walletInfo)
         if (walletInfo && !resolved) {
           // Wallet connected successfully
           resolved = true

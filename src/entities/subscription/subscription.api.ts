@@ -111,9 +111,7 @@ export const subscriptionApi = {
     network: string
     currency: string
   }): Promise<PaymentMethod> => {
-    console.log('[subscriptionApi] addCryptoPaymentMethod called with:', data)
     const response = await api.post<ApiResponse<PaymentMethod>>('/payments/methods/crypto', data)
-    console.log('[subscriptionApi] addCryptoPaymentMethod response:', response)
     return response.data
   },
 

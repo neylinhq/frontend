@@ -174,10 +174,7 @@ export const AddPaymentMethodContent = ({
       try {
         await wallet.connect()
         // Don't reset state here - let auto-save useEffect handle it
-        console.log('[AddPaymentMethod] Wallet connect() resolved, waiting for connection state...')
       } catch (err) {
-        console.error('[AddPaymentMethod] Wallet connection failed:', err)
-
         // Check error type
         const errorCode = err && typeof err === 'object' && 'code' in err ? err.code : null
         const isUserRejection = errorCode === 4001 || errorCode === 'ACTION_REJECTED'
@@ -185,12 +182,10 @@ export const AddPaymentMethodContent = ({
 
         if (isAlreadyPending) {
           // MetaMask window is already open, don't reset state
-          console.log('[AddPaymentMethod] Connection request already pending, keeping loading state')
           return
         }
 
         if (isUserRejection) {
-          console.log('[AddPaymentMethod] User rejected connection')
           setIsConnecting(false)
           setSelectedNetwork(null)
         } else {
@@ -216,7 +211,6 @@ export const AddPaymentMethodContent = ({
     if (walletType === 'evm') {
       const expectedChainId = getEvmChainId(selectedNetwork)
       if (wallet.chainId !== expectedChainId) {
-        console.log('[AddPaymentMethod] ChainId mismatch - waiting for network switch')
         return
       }
     }
@@ -392,8 +386,7 @@ export const AddPaymentMethodContent = ({
   }
 
   // Crypto step - show network buttons
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const WalletConnector = (wallet as any)?._connector
+  const WalletConnector = wallet._connector
 
   return (
     <>

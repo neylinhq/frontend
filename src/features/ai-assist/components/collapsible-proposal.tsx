@@ -94,11 +94,18 @@ export const CollapsibleProposal = ({
   return (
     <div className={cn('border border-border rounded-lg overflow-hidden bg-card/50', className)}>
       {/* Collapsed header - always visible */}
-      <button
-        type='button'
+      <div
+        role='button'
+        tabIndex={0}
         onClick={() => setIsExpanded(!isExpanded)}
+        onKeyDown={e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            setIsExpanded(!isExpanded)
+          }
+        }}
         className={cn(
-          'w-full px-3 py-2 flex items-center gap-2 text-left',
+          'w-full px-3 py-2 flex items-center gap-2 text-left cursor-pointer',
           'hover:bg-muted/50 transition-colors'
         )}
       >
@@ -131,7 +138,7 @@ export const CollapsibleProposal = ({
             {isApproved ? t('common.undo', 'Undo') : t('common.restore', 'Restore')}
           </Button>
         )}
-      </button>
+      </div>
 
       {/* Expanded content */}
       {isExpanded && (
@@ -235,7 +242,7 @@ const ProposalContent = ({ preview }: { preview: ResolvedPreview }) => {
           {/* Nodes */}
           {data.nodes && data.nodes.length > 0 && (
             <div className='space-y-1'>
-              <div className='text-[10px] font-medium text-muted-foreground uppercase tracking-wide'>
+              <div className='text-[10px] font-medium text-muted-foreground tracking-wide'>
                 {t('ai.graphFragment.nodes', 'Nodes')}
               </div>
               {data.nodes.map((node, i) => (
@@ -254,7 +261,7 @@ const ProposalContent = ({ preview }: { preview: ResolvedPreview }) => {
           {/* Edges */}
           {data.edges && data.edges.length > 0 && (
             <div className='space-y-1'>
-              <div className='text-[10px] font-medium text-muted-foreground uppercase tracking-wide'>
+              <div className='text-[10px] font-medium text-muted-foreground tracking-wide'>
                 {t('ai.graphFragment.edges', 'Connections')}
               </div>
               {data.edges.map((edge, i) => {

@@ -7,7 +7,7 @@ import { Button } from '@/shared/components/button'
 import { DocsSearchTrigger } from '@/shared/components/docs-search'
 import { LanguageSelect } from '@/shared/components/language-switcher'
 import { Logo } from '@/shared/components/logo'
-import { Sheet, SheetContent, SheetTrigger } from '@/shared/components/sheet'
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/shared/components/sheet'
 import { DOCS_ROUTES, ROUTES } from '@/shared/config'
 
 interface DocsHeaderProps {
@@ -28,6 +28,7 @@ export const DocsHeader = ({ mobileNav }: DocsHeaderProps) => {
               </Button>
             </SheetTrigger>
             <SheetContent side='left' className='w-[300px] p-0 flex flex-col h-full'>
+              <SheetTitle className='sr-only'>Navigation menu</SheetTitle>
               <div className='py-4 px-6 border-b flex-shrink-0'>
                 <Logo size='md' />
               </div>

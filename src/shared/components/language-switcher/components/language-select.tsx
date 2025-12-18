@@ -33,7 +33,7 @@ export const LanguageSelect = ({ compact }: LanguageSelectProps) => {
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent align='end' className='w-auto min-w-[140px] p-1'>
+      <PopoverContent align='center' className='w-auto min-w-[140px] p-1'>
         <div className='flex flex-col'>
           {LANGUAGES.map(lang => (
             <button

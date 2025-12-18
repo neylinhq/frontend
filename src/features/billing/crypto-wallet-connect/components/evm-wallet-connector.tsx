@@ -114,17 +114,8 @@ export const EvmWalletConnector = ({ network, onWalletChange }: EvmWalletConnect
       throw new Error('Wallet not connected or contracts not deployed')
     }
 
-    console.log('[EVMWalletConnector] Starting subscription:', {
-      orderId,
-      amount: amount.toString(),
-      usdtAddress: usdtAddressRef.current,
-      subscriptionAddress: subscriptionAddressRef.current,
-      userAddress: addressRef.current
-    })
-
     // Step 1: Approve USDT spending (with extra buffer for gas fluctuations)
     const approveAmount = amount * BigInt(12) // Approve 12 months worth to avoid repeated approvals
-    console.log('[EVMWalletConnector] Approving USDT:', approveAmount.toString())
 
     const approveTxHash = await writeContractAsyncRef.current({
       address: usdtAddressRef.current as `0x${string}`,
@@ -133,16 +124,9 @@ export const EvmWalletConnector = ({ network, onWalletChange }: EvmWalletConnect
       args: [subscriptionAddressRef.current as `0x${string}`, approveAmount]
     })
 
-    console.log('[EVMWalletConnector] Approve transaction sent:', approveTxHash)
-
     // Step 2: Call subscribe on subscription contract
     // Convert orderId (UUID) to bytes32
     const orderIdBytes32 = `0x${orderId.replace(/-/g, '')}` as `0x${string}`
-
-    console.log('[EVMWalletConnector] Calling subscribe:', {
-      orderId: orderIdBytes32,
-      monthlyAmount: amount.toString()
-    })
 
     const subscribeTxHash = await writeContractAsyncRef.current({
       address: subscriptionAddressRef.current as `0x${string}`,
@@ -150,8 +134,6 @@ export const EvmWalletConnector = ({ network, onWalletChange }: EvmWalletConnect
       functionName: 'subscribe',
       args: [orderIdBytes32, amount]
     })
-
-    console.log('[EVMWalletConnector] Subscribe transaction sent:', subscribeTxHash)
 
     // Return the subscribe transaction hash
     return subscribeTxHash

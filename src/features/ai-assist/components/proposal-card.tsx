@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/shared/components/button'
 import { cn } from '@/shared/lib/cn'
+import { sanitizeHtml } from '@/shared/lib/sanitize'
 
 interface ProposalCardProps {
   /** Header title */
@@ -113,7 +114,7 @@ export const DiffBlock = ({ current, proposed, className, renderHtml }: DiffBloc
         {renderHtml ? (
           <div
             className='prose prose-sm dark:prose-invert max-w-none prose-p:my-0.5 prose-headings:my-1 prose-ul:my-0.5 prose-li:my-0'
-            dangerouslySetInnerHTML={{ __html: current }}
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(current) }}
           />
         ) : (
           current
@@ -124,7 +125,7 @@ export const DiffBlock = ({ current, proposed, className, renderHtml }: DiffBloc
       {renderHtml ? (
         <div
           className='prose prose-sm dark:prose-invert max-w-none prose-p:my-0.5 prose-headings:my-1 prose-ul:my-0.5 prose-li:my-0'
-          dangerouslySetInnerHTML={{ __html: proposed }}
+          dangerouslySetInnerHTML={{ __html: sanitizeHtml(proposed) }}
         />
       ) : (
         proposed

@@ -1,6 +1,6 @@
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Check, ChevronDown, ChevronRight, Loader2, X, ArrowRight, GitBranch } from 'lucide-react'
+import { Check, ChevronDown, ChevronRight, Loader2, X, ArrowRight } from 'lucide-react'
 import { Button } from '@/shared/components/button'
 import { Badge } from '@/shared/components/badge'
 import { Checkbox } from '@/shared/components/checkbox'
@@ -25,6 +25,23 @@ const NODE_TYPE_COLORS: Record<string, string> = {
   person: 'bg-node-person-muted text-node-person',
   school: 'bg-node-school-muted text-node-school',
   term: 'bg-muted text-muted-foreground'
+}
+
+/**
+ * Edge type colors - using theme tokens from globals.css
+ * Color serves as mnemonic for relationship semantics
+ */
+const EDGE_TYPE_COLORS: Record<string, string> = {
+  prerequisite: 'bg-edge-prerequisite-muted text-edge-prerequisite',
+  causes: 'bg-edge-causes-muted text-edge-causes',
+  explains: 'bg-edge-explains-muted text-edge-explains',
+  'is-a': 'bg-edge-is-a-muted text-edge-is-a',
+  'has-a': 'bg-edge-has-a-muted text-edge-has-a',
+  'part-of': 'bg-edge-part-of-muted text-edge-part-of',
+  influences: 'bg-edge-influences-muted text-edge-influences',
+  'related-to': 'bg-edge-related-to-muted text-edge-related-to',
+  contradicts: 'bg-edge-contradicts-muted text-edge-contradicts',
+  'similar-to': 'bg-edge-similar-to-muted text-edge-similar-to'
 }
 
 interface GraphFragmentCardProps {
@@ -165,9 +182,10 @@ export const GraphFragmentCard = ({
         type="button"
         onClick={() => setIsExpanded(!isExpanded)}
         className={cn(
-          'w-full px-3 py-2 bg-muted/50 border-b border-border',
+          'w-full px-3 py-2 bg-muted/50',
           'flex items-center gap-2 text-left hover:bg-muted/70 transition-colors',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset'
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
+          isExpanded && 'border-b border-border'
         )}
       >
         {isExpanded ? (
@@ -203,10 +221,7 @@ export const GraphFragmentCard = ({
 
           {/* Nodes section */}
           {data.nodes.length > 0 && (
-            <div className="space-y-1.5">
-              <div className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
-                {t('ai.graphFragment.nodes', 'Nodes')}
-              </div>
+            <div className="space-y-1">
               {data.nodes.map(node => (
                 <NodeRow
                   key={node.tempId}
@@ -219,12 +234,14 @@ export const GraphFragmentCard = ({
             </div>
           )}
 
+          {/* Visual separator between sections */}
+          {data.nodes.length > 0 && data.edges.length > 0 && (
+            <div className="h-px bg-border" />
+          )}
+
           {/* Edges section */}
           {data.edges.length > 0 && (
-            <div className="space-y-1.5">
-              <div className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
-                {t('ai.graphFragment.edges', 'Connections')}
-              </div>
+            <div className="space-y-1">
               {data.edges.map(edge => (
                 <EdgeRow
                   key={edge.tempId}
@@ -328,6 +345,9 @@ const EdgeRow = ({ edge, selected, canSelect, onToggle, getLabel, disabled }: Ed
   const { t } = useTranslation()
   const isDisabled = disabled || !canSelect
 
+  // Get edge color classes with fallback for unknown types
+  const edgeColorClasses = EDGE_TYPE_COLORS[edge.relation] ?? 'bg-muted text-muted-foreground'
+
   return (
     <button
       type="button"
@@ -346,7 +366,10 @@ const EdgeRow = ({ edge, selected, canSelect, onToggle, getLabel, disabled }: Ed
         {getLabel(edge.fromRef, edge.fromIsNew)}
       </span>
       <ArrowRight className="h-3 w-3 text-muted-foreground flex-shrink-0" />
-      <Badge variant="outline" className="text-[10px] flex-shrink-0">
+      <Badge
+        variant="secondary"
+        className={cn('text-[10px] font-medium flex-shrink-0', edgeColorClasses)}
+      >
         {t(`graph.edgeTypes.${edge.relation}`, edge.relation)}
       </Badge>
       <ArrowRight className="h-3 w-3 text-muted-foreground flex-shrink-0" />

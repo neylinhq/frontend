@@ -9,7 +9,7 @@ import { Button } from '@/shared/components/button'
 import { LanguageSelect } from '@/shared/components/language-switcher'
 import { Logo } from '@/shared/components/logo'
 import { Separator } from '@/shared/components/separator'
-import { Sheet, SheetContent, SheetTrigger } from '@/shared/components/sheet'
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/shared/components/sheet'
 import { AUTH_ROUTES, ROUTES } from '@/shared/config'
 import { cn } from '@/shared/lib/cn'
 
@@ -41,6 +41,7 @@ export const PublicHeader = () => {
               </Button>
             </SheetTrigger>
             <SheetContent side='left' className='w-[280px] p-0 flex flex-col'>
+              <SheetTitle className='sr-only'>{t('common.menu', 'Menu')}</SheetTitle>
               <div className='py-4 px-6 border-b'>
                 <Logo size='lg' />
               </div>

@@ -1,5 +1,6 @@
-import { MobileMenuTrigger, Sidebar } from './sidebar'
-import { SidebarProvider } from '../sidebar-context'
+import { useState } from 'react'
+import { DashboardHeader } from './dashboard-header'
+import { Sidebar } from './sidebar'
 
 interface DashboardLayoutProps {
   /** Disable layout-level scroll for pages with their own scroll management (e.g., multi-pane layouts) */
@@ -8,33 +9,44 @@ interface DashboardLayoutProps {
 }
 
 export const DashboardLayout = ({ disableScroll = false, children }: DashboardLayoutProps) => {
+  const [isSidebarExpanded, setIsSidebarExpanded] = useState(false)
+
   return (
-    <SidebarProvider>
-      <div className='h-screen flex overflow-hidden'>
+    <div className='h-screen flex flex-col overflow-hidden'>
+      {/* Header */}
+      <DashboardHeader />
+      <div className='flex flex-1 min-h-0'>
         {/* Desktop Sidebar */}
-        <aside className='hidden md:flex flex-shrink-0'>
-          <Sidebar />
+        <aside
+          className='hidden md:flex flex-col bg-card border-r flex-shrink-0 w-16 z-40'
+          onMouseEnter={() => setIsSidebarExpanded(true)}
+          onMouseLeave={() => setIsSidebarExpanded(false)}
+        >
+          <Sidebar isExpanded={false} />
         </aside>
 
-        {/* Main Content Area */}
-        <div className='flex-1 flex flex-col min-w-0'>
-          {/* Mobile Header - only shows menu trigger */}
-          <header className='md:hidden flex items-center h-14 px-4 border-b bg-background shrink-0'>
-            <MobileMenuTrigger />
-          </header>
+        {/* Expanded Sidebar Overlay - fixed position, doesn't affect layout */}
+        {isSidebarExpanded && (
+          <nav
+            className='hidden md:flex flex-col fixed left-0 top-14 h-[calc(100vh-3.5rem)] w-64 bg-card border-r z-50 shadow-lg'
+            onMouseEnter={() => setIsSidebarExpanded(true)}
+            onMouseLeave={() => setIsSidebarExpanded(false)}
+          >
+            <Sidebar isExpanded={true} />
+          </nav>
+        )}
 
-          {/* Content */}
-          {disableScroll ? (
-            // Page manages its own scroll - just pass through height
-            <main className='flex-1 min-h-0'>{children}</main>
-          ) : (
-            // Layout manages scroll
-            <main className='flex-1 overflow-y-auto [scrollbar-gutter:stable]'>
-              <div className='min-h-full'>{children}</div>
-            </main>
-          )}
-        </div>
+        {/* Main Content */}
+        {disableScroll ? (
+          // Page manages its own scroll - just pass through height
+          <div className='flex-1 min-w-0 min-h-0'>{children}</div>
+        ) : (
+          // Layout manages scroll
+          <div className='flex-1 min-w-0 overflow-y-auto [scrollbar-gutter:stable]'>
+            <div className='min-h-full border-r'>{children}</div>
+          </div>
+        )}
       </div>
-    </SidebarProvider>
+    </div>
   )
 }

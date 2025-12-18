@@ -70,6 +70,7 @@ export const ModelSelector = ({ value, onChange, models, disabled }: ModelSelect
               <div className='text-[10px] text-muted-foreground px-2 py-1 font-medium'>
                 {config.label}
               </div>
+              <div className='flex flex-col gap-0.5'>
               {tierModels.map(model => (
                 <button
                   key={model.id}
@@ -91,6 +92,7 @@ export const ModelSelector = ({ value, onChange, models, disabled }: ModelSelect
                   {value === model.id && <Check className='h-3 w-3 shrink-0' />}
                 </button>
               ))}
+              </div>
             </div>
           )
         })}

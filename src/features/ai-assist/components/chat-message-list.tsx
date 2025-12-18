@@ -1,19 +1,15 @@
-import { Bot, Check, ChevronDown, Copy, Loader2, Pencil, RefreshCw, User } from 'lucide-react'
+import { Check, ChevronDown, Loader2, Pencil, RefreshCw } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import { Avatar, AvatarFallback, AvatarImage } from '@/shared/components/avatar'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
-import { Icon } from '@/shared/components/icon'
-import { aiBrandIcons } from '@/shared/components/icon/icon.constants'
+import { CopyButton } from '@/shared/components/copy-button'
 import { LoadingDots } from '@/shared/components/loading-dots'
 import { Textarea } from '@/shared/components/textarea'
-import { toast } from '@/shared/components/toast'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/components/tooltip'
 import { cn } from '@/shared/lib/cn'
-import { useCopyToClipboard } from '@/shared/lib/use-copy-to-clipboard'
 import type { ChatMessage, PreviewCard, ResolvedPreview } from '../model/ai-assist.types'
 import { CollapsibleProposal } from './collapsible-proposal'
 import { PreviewCardComponent } from './preview-card'
@@ -21,7 +17,6 @@ import { PreviewCardComponent } from './preview-card'
 interface ChatMessageListProps {
   messages: ChatMessage[]
   isStreaming: boolean
-  /** Set of preview keys that are currently being saved (for double-click prevention) */
   savingPreviews?: Set<string>
   onRemovePreview: (messageId: string, previewId: string) => void
   onSavePreview: (messageId: string, preview: PreviewCard) => void
@@ -29,12 +24,17 @@ interface ChatMessageListProps {
   onUndoResolved: (messageId: string, preview: ResolvedPreview) => void
   onRegenerate?: (messageId: string, role: 'user' | 'assistant') => void
   onEditMessage?: (messageId: string, newContent: string) => void
-  /** User avatar URL for user messages */
-  userAvatarUrl?: string
-  /** User display name for avatar fallback */
-  userDisplayName?: string
 }
 
+/**
+ * Chat Message List - S+ Design Pattern
+ *
+ * Design Philosophy (from design-manifesto.md):
+ * - "Интерфейс исчезает, контент сияет" — AI messages without bubble, content first
+ * - User messages: compact muted bubble, right-aligned
+ * - AI messages: clean prose, no avatar (model visible in selector), no background
+ * - Actions appear on hover — progressive disclosure
+ */
 export const ChatMessageList = ({
   messages,
   isStreaming,
@@ -44,61 +44,25 @@ export const ChatMessageList = ({
   onRejectPreview,
   onUndoResolved,
   onRegenerate,
-  onEditMessage,
-  userAvatarUrl,
-  userDisplayName
+  onEditMessage
 }: ChatMessageListProps) => {
   const { t } = useTranslation()
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const [hoveredMessageId, setHoveredMessageId] = useState<string | null>(null)
   const [editingMessageId, setEditingMessageId] = useState<string | null>(null)
   const [expandedSources, setExpandedSources] = useState<Set<string>>(new Set())
-  const { copy } = useCopyToClipboard()
-
-  // Хелпер для проверки, сохраняется ли превью
-  const isPreviewSaving = (messageId: string, previewId: string) =>
-    savingPreviews?.has(`${messageId}:${previewId}`) ?? false
-
-  // Проверяем, сохраняется ли хотя бы один превью из списка
-  const isAnyPreviewSaving = (messageId: string, previews: PreviewCard[]) =>
-    previews.some(p => isPreviewSaving(messageId, p.id))
   const [editValue, setEditValue] = useState('')
   const editTextareaRef = useRef<HTMLTextAreaElement>(null)
 
-  const handleCopy = async (content: string) => {
-    try {
-      // Try modern clipboard API first
-      if (navigator?.clipboard?.writeText) {
-        await navigator.clipboard.writeText(content)
-        toast.success(t('common.copied', 'Copied'))
-        return
-      }
+  const isPreviewSaving = (messageId: string, previewId: string) =>
+    savingPreviews?.has(`${messageId}:${previewId}`) ?? false
 
-      // Fallback to older method
-      const textarea = document.createElement('textarea')
-      textarea.value = content
-      textarea.style.position = 'fixed'
-      textarea.style.opacity = '0'
-      document.body.appendChild(textarea)
-      textarea.select()
-      const success = document.execCommand('copy')
-      document.body.removeChild(textarea)
-
-      if (success) {
-        toast.success(t('common.copied', 'Copied'))
-      } else {
-        toast.error('Failed to copy')
-      }
-    } catch (error) {
-      console.error('Copy failed:', error)
-      toast.error('Failed to copy')
-    }
-  }
+  const isAnyPreviewSaving = (messageId: string, previews: PreviewCard[]) =>
+    previews.some(p => isPreviewSaving(messageId, p.id))
 
   const handleStartEdit = (messageId: string, content: string) => {
     setEditingMessageId(messageId)
     setEditValue(content)
-    // Focus textarea after render
     setTimeout(() => editTextareaRef.current?.focus(), 0)
   }
 
@@ -124,129 +88,154 @@ export const ChatMessageList = ({
     }
   }
 
-  // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [])
 
+  const parseContent = (content: string) => {
+    if (content.startsWith('{"action":')) {
+      try {
+        const parsed = JSON.parse(content)
+        return parsed.message || content
+      } catch {
+        const match = content.match(/"message":\s*"((?:[^"\\]|\\.)*)"/s)
+        if (match) {
+          return match[1].replace(/\\n/g, '\n').replace(/\\"/g, '"')
+        }
+      }
+    }
+    return content
+  }
+
   return (
-    <div className='space-y-4 py-4'>
-      {messages.map((message, index) => {
-        // Check if AI is "thinking" (streaming but no content yet)
+    <div className='flex flex-col gap-4 py-4'>
+      {messages.map((message) => {
         const isThinking = message.role === 'assistant' && message.isStreaming && !message.content
+        const isUser = message.role === 'user'
+        const isEditing = editingMessageId === message.id
 
-        return (
-        <div
-          key={message.id}
-          className={cn(
-            'group flex gap-3',
-            message.role === 'user' ? 'justify-end' : 'justify-start'
-          )}
-          onMouseEnter={() => setHoveredMessageId(message.id)}
-          onMouseLeave={() => setHoveredMessageId(null)}
-        >
-          {/* AI Avatar */}
-          {message.role === 'assistant' && (
-            <div className='flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center'>
-              {message.brand && aiBrandIcons[message.brand] ? (
-                <Icon data={aiBrandIcons[message.brand]} className='w-4 h-4 text-primary' />
-              ) : (
-                <Bot className='w-4 h-4 text-primary' />
-              )}
-            </div>
-          )}
-
-          {/* Message Content */}
-          <div
-            className={cn(
-              'flex flex-col gap-2',
-              editingMessageId === message.id ? 'w-full' : 'max-w-[85%]',
-              message.role === 'user' && 'items-end'
-            )}
-          >
-            {/* Thinking Bubble - shown when AI is processing but no content yet */}
-            {isThinking ? (
-              <div
-                className='rounded-lg px-4 py-3 bg-muted'
-                role='status'
-                aria-label={t('ai.chat.thinking', 'AI is thinking...')}
-              >
-                <LoadingDots />
-              </div>
-            ) : message.role === 'user' && editingMessageId === message.id ? (
-              // Inline edit mode for user message
-              <div className='flex flex-col gap-2 w-full'>
-                <Textarea
-                  ref={editTextareaRef}
-                  value={editValue}
-                  onChange={e => setEditValue(e.target.value)}
-                  onKeyDown={handleEditKeyDown}
-                  className='min-h-[80px] resize-none text-sm w-full'
-                  placeholder={t('ai.chat.placeholder')}
-                />
-                <div className='flex items-center justify-between gap-4'>
-                  <p className='text-xs text-muted-foreground'>{t('ai.chat.editWarning')}</p>
-                  <div className='flex gap-2 flex-shrink-0'>
-                    <Button
-                      variant='ghost'
-                      size='sm'
-                      onClick={handleCancelEdit}
-                      className='h-7 px-3'
-                    >
-                      {t('common.cancel')}
-                    </Button>
-                    <Button
-                      size='sm'
-                      onClick={handleSubmitEdit}
-                      disabled={!editValue.trim()}
-                      className='h-7 px-3'
-                    >
-                      {t('common.send')}
-                    </Button>
+        // User message
+        if (isUser) {
+          return (
+            <div
+              key={message.id}
+              className='group flex justify-end'
+              onMouseEnter={() => setHoveredMessageId(message.id)}
+              onMouseLeave={() => setHoveredMessageId(null)}
+            >
+              <div className={cn('flex flex-col gap-1.5', isEditing ? 'w-full' : 'max-w-[80%]', 'items-end')}>
+                {isEditing ? (
+                  <div className='flex flex-col gap-2 w-full'>
+                    <Textarea
+                      ref={editTextareaRef}
+                      value={editValue}
+                      onChange={e => setEditValue(e.target.value)}
+                      onKeyDown={handleEditKeyDown}
+                      className='min-h-[80px] resize-none text-sm w-full'
+                      placeholder={t('ai.chat.placeholder')}
+                    />
+                    <div className='flex items-center justify-between gap-4'>
+                      <p className='text-xs text-muted-foreground'>{t('ai.chat.editWarning')}</p>
+                      <div className='flex gap-2 flex-shrink-0'>
+                        <Button variant='ghost' size='sm' onClick={handleCancelEdit} className='h-7 px-3'>
+                          {t('common.cancel')}
+                        </Button>
+                        <Button size='sm' onClick={handleSubmitEdit} disabled={!editValue.trim()} className='h-7 px-3'>
+                          {t('common.send')}
+                        </Button>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            ) : (
-              <div
-                className={cn(
-                  'rounded-lg px-4 py-2.5 text-sm',
-                  message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'
+                ) : (
+                  <>
+                    {/* User bubble - compact, muted */}
+                    <div className='rounded-xl bg-muted px-4 py-2.5 text-sm'>
+                      <p className='whitespace-pre-wrap break-words'>{message.content}</p>
+                    </div>
+
+                    {/* Actions on hover */}
+                    <div
+                      className={cn(
+                        'flex items-center gap-1 transition-opacity duration-100 motion-reduce:transition-none',
+                        hoveredMessageId === message.id ? 'opacity-100' : 'opacity-0'
+                      )}
+                    >
+                      {onEditMessage && !isStreaming && (
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant='ghost'
+                              size='icon'
+                              className='h-6 w-6 text-muted-foreground hover:text-foreground transition-colors'
+                              onClick={() => handleStartEdit(message.id, message.content)}
+                            >
+                              <Pencil className='h-3.5 w-3.5' />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent side='bottom'>
+                            <p className='text-xs'>{t('common.edit')}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      )}
+                      <CopyButton
+                        value={message.content}
+                        label={t('common.copy')}
+                        copiedLabel={t('common.copied')}
+                        className='h-6 w-6 text-muted-foreground hover:text-foreground transition-colors'
+                      />
+                      {onRegenerate && !isStreaming && (
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant='ghost'
+                              size='icon'
+                              className='h-6 w-6 text-muted-foreground hover:text-foreground transition-colors'
+                              onClick={() => onRegenerate(message.id, 'user')}
+                            >
+                              <RefreshCw className='h-3.5 w-3.5' />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent side='bottom'>
+                            <p className='text-xs'>{t('ai.chat.regenerate')}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      )}
+                    </div>
+                  </>
                 )}
-              >
-                {message.role === 'assistant' ? (
+              </div>
+            </div>
+          )
+        }
+
+        // AI message - clean, no avatar (model visible in selector)
+        return (
+          <div
+            key={message.id}
+            className='group'
+            onMouseEnter={() => setHoveredMessageId(message.id)}
+            onMouseLeave={() => setHoveredMessageId(null)}
+          >
+            <div className='space-y-3 px-1'>
+                {isThinking ? (
+                  <div className='py-1' role='status' aria-label={t('ai.chat.thinking', 'AI is thinking...')}>
+                    <LoadingDots />
+                  </div>
+                ) : (
                   <div
-                    className='prose prose-sm max-w-none'
+                    className='prose prose-sm max-w-none dark:prose-invert'
                     aria-live={message.isStreaming ? 'polite' : 'off'}
                     aria-atomic='false'
                   >
-                    <Markdown remarkPlugins={[remarkGfm]}>
-                      {(() => {
-                        let content = message.content
-                        // Handle case where AI returned raw JSON
-                        if (content.startsWith('{"action":')) {
-                          try {
-                            const parsed = JSON.parse(content)
-                            content = parsed.message || content
-                          } catch {
-                            // Extract message manually if JSON malformed
-                            const match = content.match(/"message":\s*"((?:[^"\\]|\\.)*)"/s)
-                            if (match) {
-                              content = match[1].replace(/\\n/g, '\n').replace(/\\"/g, '"')
-                            }
-                          }
-                        }
-                        return content
-                      })()}
-                    </Markdown>
+                    <Markdown remarkPlugins={[remarkGfm]}>{parseContent(message.content)}</Markdown>
                   </div>
-                ) : (
-                  <p className='whitespace-pre-wrap break-words'>{message.content}</p>
                 )}
 
-                {/* Source Nodes (RAG references) */}
+                {/* Source Nodes */}
                 {message.sourceNodes && message.sourceNodes.length > 0 && (
-                  <div className='mt-3 pt-3 border-t border-border/50'>
+                  <div className='pt-2'>
                     <button
+                      type='button'
                       onClick={() => {
                         const newExpanded = new Set(expandedSources)
                         if (newExpanded.has(message.id)) {
@@ -256,18 +245,17 @@ export const ChatMessageList = ({
                         }
                         setExpandedSources(newExpanded)
                       }}
-                      className='flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mb-2 w-full'
+                      className='flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1'
                     >
-                      <span>{t('ai.chat.sources', 'Sources')} ({message.sourceNodes.length})</span>
+                      <span>
+                        {t('ai.chat.sources', 'Sources')} ({message.sourceNodes.length})
+                      </span>
                       <ChevronDown
-                        className={cn(
-                          'w-3 h-3 transition-transform ml-auto',
-                          expandedSources.has(message.id) && 'rotate-180'
-                        )}
+                        className={cn('w-3 h-3 transition-transform', expandedSources.has(message.id) && 'rotate-180')}
                       />
                     </button>
                     {expandedSources.has(message.id) && (
-                      <div className='flex flex-wrap gap-1.5'>
+                      <div className='flex flex-wrap gap-1.5 mt-2'>
                         {message.sourceNodes.map(node => (
                           <Badge
                             key={node.id}
@@ -282,201 +270,101 @@ export const ChatMessageList = ({
                     )}
                   </div>
                 )}
-              </div>
-            )}
 
-            {/* Streaming Indicator - temporarily disabled
-            {message.isStreaming && message.content && (
-              <div className='flex items-center gap-2 text-xs text-muted-foreground px-2'>
-                <Loader2 className='w-3 h-3 animate-spin' />
-                <span>{t('ai.chat.streaming')}</span>
-              </div>
-            )}
-            */}
+                {/* Preview Cards */}
+                {message.preview && message.preview.length > 0 && (
+                  <div className='space-y-2'>
+                    {message.preview.map(preview => (
+                      <PreviewCardComponent
+                        key={preview.id}
+                        preview={preview}
+                        onRemove={() => onRejectPreview(message.id, preview)}
+                        onSave={() => onSavePreview(message.id, preview)}
+                        isSaving={isPreviewSaving(message.id, preview.id)}
+                      />
+                    ))}
 
-            {/* Pending Preview Cards */}
-            {message.preview && message.preview.length > 0 && (
-              <div className='space-y-2 w-full'>
-                {message.preview.map(preview => (
-                  <PreviewCardComponent
-                    key={preview.id}
-                    preview={preview}
-                    onRemove={() => onRejectPreview(message.id, preview)}
-                    onSave={() => onSavePreview(message.id, preview)}
-                    isSaving={isPreviewSaving(message.id, preview.id)}
-                  />
-                ))}
+                    {(() => {
+                      const actionablePreviews = message.preview.filter(p => p.type !== 'exercise')
+                      if (actionablePreviews.length <= 1) return null
 
-                {/* Apply All Button (if multiple non-exercise previews) */}
-                {(() => {
-                  // Exercises are auto-displayed with interactive UI, no Accept/Reject
-                  const actionablePreviews = message.preview.filter(p => p.type !== 'exercise')
-                  if (actionablePreviews.length <= 1) return null
-
-                  return (
-                    <Button
-                      className='w-full'
-                      disabled={isAnyPreviewSaving(message.id, actionablePreviews)}
-                      onClick={() => {
-                        actionablePreviews.forEach(preview => {
-                          onSavePreview(message.id, preview)
-                        })
-                      }}
-                    >
-                      {isAnyPreviewSaving(message.id, actionablePreviews) ? (
-                        <Loader2 className='h-4 w-4 mr-2 animate-spin' />
-                      ) : (
-                        <Check className='h-4 w-4 mr-2' />
-                      )}
-                      {t('ai.chat.applyAll', {
-                        count: actionablePreviews.length,
-                        defaultValue: `Apply all (${actionablePreviews.length})`
-                      })}
-                    </Button>
-                  )
-                })()}
-              </div>
-            )}
-
-            {/* Resolved Preview Cards (collapsible) */}
-            {message.resolvedPreviews && message.resolvedPreviews.length > 0 && (
-              <div className='space-y-1.5 w-full'>
-                {message.resolvedPreviews.map(resolved => (
-                  <CollapsibleProposal
-                    key={resolved.id}
-                    preview={resolved}
-                    canUndo={resolved.status === 'approved' && !!resolved.undoData}
-                    onUndo={() => onUndoResolved(message.id, resolved)}
-                  />
-                ))}
-              </div>
-            )}
-
-            {/* Actions */}
-            <div
-              className={cn(
-                'flex items-center gap-0.5 h-7 transition-opacity',
-                hoveredMessageId === message.id ? 'opacity-100' : 'opacity-0'
-              )}
-            >
-              {message.role === 'user' ? (
-                // User message: edit + copy + regenerate (starts new branch)
-                <>
-                  {onEditMessage && !isStreaming && (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
+                      return (
                         <Button
-                          variant='ghost'
-                          size='icon'
-                          className='h-7 w-7 text-muted-foreground hover:text-foreground'
-                          onClick={() => handleStartEdit(message.id, message.content)}
-                          aria-label={t('common.edit', 'Edit message')}
+                          className='w-full'
+                          disabled={isAnyPreviewSaving(message.id, actionablePreviews)}
+                          onClick={() => {
+                            actionablePreviews.forEach(preview => {
+                              onSavePreview(message.id, preview)
+                            })
+                          }}
                         >
-                          <Pencil className='h-3.5 w-3.5' />
+                          {isAnyPreviewSaving(message.id, actionablePreviews) ? (
+                            <Loader2 className='h-4 w-4 mr-2 animate-spin' />
+                          ) : (
+                            <Check className='h-4 w-4 mr-2' />
+                          )}
+                          {t('ai.chat.applyAll', {
+                            count: actionablePreviews.length,
+                            defaultValue: `Apply all (${actionablePreviews.length})`
+                          })}
                         </Button>
-                      </TooltipTrigger>
-                      <TooltipContent side='bottom'>
-                        <p className='text-xs'>{t('common.edit')}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  )}
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant='ghost'
-                        size='icon'
-                        className='h-7 w-7 text-muted-foreground hover:text-foreground'
-                        onClick={() => handleCopy(message.content)}
-                        aria-label={t('common.copy', 'Copy message')}
-                      >
-                        <Copy className='h-3.5 w-3.5' />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side='bottom'>
-                      <p className='text-xs'>{t('common.copy')}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                  {onRegenerate && !isStreaming && (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          variant='ghost'
-                          size='icon'
-                          className='h-7 w-7 text-muted-foreground hover:text-foreground'
-                          onClick={() => onRegenerate(message.id, 'user')}
-                          aria-label={t('ai.chat.regenerate', 'Regenerate response')}
-                        >
-                          <RefreshCw className='h-3.5 w-3.5' />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent side='bottom'>
-                        <p className='text-xs'>{t('ai.chat.regenerate')}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  )}
-                  <span className='text-[10px] text-muted-foreground ml-1'>
-                    {message.timestamp.toLocaleTimeString('en-US', {
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    })}
-                  </span>
-                </>
-              ) : (
-                // Assistant message: copy + regenerate (any message, not just last)
-                <>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant='ghost'
-                        size='icon'
-                        className='h-7 w-7 text-muted-foreground hover:text-foreground'
-                        onClick={() => handleCopy(message.content)}
-                        aria-label={t('common.copy', 'Copy message')}
-                      >
-                        <Copy className='h-3.5 w-3.5' />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side='bottom'>
-                      <p className='text-xs'>{t('common.copy')}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                  {onRegenerate && !isStreaming && (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          variant='ghost'
-                          size='icon'
-                          className='h-7 w-7 text-muted-foreground hover:text-foreground'
-                          onClick={() => onRegenerate(message.id, 'assistant')}
-                          aria-label={t('ai.chat.regenerate', 'Regenerate response')}
-                        >
-                          <RefreshCw className='h-3.5 w-3.5' />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent side='bottom'>
-                        <p className='text-xs'>{t('ai.chat.regenerate')}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  )}
-                </>
-              )}
+                      )
+                    })()}
+                  </div>
+                )}
+
+                {/* Resolved Previews */}
+                {message.resolvedPreviews && message.resolvedPreviews.length > 0 && (
+                  <div className='space-y-1.5'>
+                    {message.resolvedPreviews.map(resolved => (
+                      <CollapsibleProposal
+                        key={resolved.id}
+                        preview={resolved}
+                        canUndo={resolved.status === 'approved' && !!resolved.undoData}
+                        onUndo={() => onUndoResolved(message.id, resolved)}
+                      />
+                    ))}
+                  </div>
+                )}
+
+                {/* Actions on hover — only when AI has content */}
+                {!isThinking && (
+                  <div
+                    className={cn(
+                      'flex items-center gap-1 transition-opacity duration-100 motion-reduce:transition-none',
+                      hoveredMessageId === message.id ? 'opacity-100' : 'opacity-0'
+                    )}
+                  >
+                    <CopyButton
+                      value={message.content}
+                      label={t('common.copy')}
+                      copiedLabel={t('common.copied')}
+                      className='h-6 w-6 text-muted-foreground hover:text-foreground transition-colors'
+                    />
+                    {onRegenerate && !isStreaming && (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant='ghost'
+                            size='icon'
+                            className='h-6 w-6 text-muted-foreground hover:text-foreground transition-colors'
+                            onClick={() => onRegenerate(message.id, 'assistant')}
+                          >
+                            <RefreshCw className='h-3.5 w-3.5' />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side='bottom'>
+                          <p className='text-xs'>{t('ai.chat.regenerate')}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-
-          {/* User Avatar */}
-          {message.role === 'user' && (
-            <Avatar className='flex-shrink-0 w-8 h-8'>
-              {userAvatarUrl && <AvatarImage src={userAvatarUrl} alt={userDisplayName || 'User'} />}
-              <AvatarFallback className='bg-muted text-muted-foreground text-xs'>
-                {userDisplayName ? userDisplayName.charAt(0).toUpperCase() : <User className='w-4 h-4' />}
-              </AvatarFallback>
-            </Avatar>
-          )}
-        </div>
         )
       })}
 
-      {/* Scroll anchor */}
       <div ref={messagesEndRef} />
     </div>
   )

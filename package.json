@@ -9,7 +9,9 @@
     "typecheck": "react-router typegen && tsc",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest --coverage"
+    "test:coverage": "vitest --coverage",
+    "validate:fsd": "npx tsx .dev/tools/validate-fsd.ts",
+    "validate:design": "npx tsx .dev/tools/validate-design-system.ts"
   },
   "dependencies": {
     "@codemirror/autocomplete": "^6.20.0",

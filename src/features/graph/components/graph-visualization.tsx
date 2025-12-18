@@ -14,6 +14,7 @@ import {
 } from '@xyflow/react'
 import { Loader2 } from 'lucide-react'
 import { memo, useCallback, useEffect, useMemo, useRef } from 'react'
+import { getNodeColorHex, cssVarToHex } from '@/features/graph-webgl/lib/theme-bridge'
 import { useTranslation } from 'react-i18next'
 import {
   type Edge,
@@ -864,24 +865,13 @@ const GraphVisualizationContent = ({
         onlyRenderVisibleElements={true}
         proOptions={{ hideAttribution: true }}
       >
-        <Background color={isDark ? '#2e2e2e' : '#e2e8f0'} size={1} />
+        <Background color={cssVarToHex('canvas-grid')} size={1} />
 
         {showMinimap && (
           <MiniMap
-            nodeColor={node => {
-              switch (node.data?.type) {
-                case 'concept':
-                  return '#3b82f6'
-                case 'theory':
-                  return '#8b5cf6'
-                case 'fact':
-                  return '#10b981'
-                default:
-                  return '#64748b'
-              }
-            }}
+            nodeColor={node => getNodeColorHex(node.data?.type ?? 'concept')}
             className='!bg-background border border-border'
-            maskColor={isDark ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.6)'}
+            maskColor={`oklch(var(--${isDark ? 'overlay' : 'overlay-light'}))`}
             pannable
             zoomable
             onClick={(_event, position) =>

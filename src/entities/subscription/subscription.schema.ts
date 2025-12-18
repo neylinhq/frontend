@@ -19,10 +19,18 @@ export const SubscriptionSchema = z.object({
 
 export type Subscription = z.infer<typeof SubscriptionSchema>
 
+// Model tier enum
+export const ModelTierEnum = z.enum(['free', 'fast', 'pro'])
+export type ModelTier = z.infer<typeof ModelTierEnum>
+
 // Plan limits schema
 export const PlanLimitsSchema = z.object({
   maxMaps: z.number().nullable(), // null = unlimited
   maxNodesPerMap: z.number().nullable(), // limit per map
+  // Token-based limits (new)
+  tokensPerMonth: z.number().nullable(), // null = unlimited
+  allowedTiers: z.array(ModelTierEnum), // Which model tiers are allowed
+  // Legacy (deprecated, kept for backwards compat)
   aiModels: z.array(z.string()), // ['gpt-3.5-turbo', 'gpt-4', 'claude-sonnet', 'claude-opus']
   aiRequestsPerMonth: z.number().nullable()
 })
@@ -46,6 +54,9 @@ export type PlanDetails = z.infer<typeof PlanDetailsSchema>
 // Usage statistics schema
 export const UsageStatsSchema = z.object({
   mapsCount: z.number(),
+  // Token-based usage (new)
+  tokensUsedThisMonth: z.number(),
+  // Legacy (deprecated)
   aiRequestsThisMonth: z.number(),
   storageUsedMB: z.number()
 })

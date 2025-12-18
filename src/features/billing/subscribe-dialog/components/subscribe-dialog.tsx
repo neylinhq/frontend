@@ -14,7 +14,7 @@ import {
   DialogTitle
 } from '@/shared/components/dialog'
 import { cn } from '@/shared/lib/cn'
-import { AddPaymentMethodContent } from './components/add-payment-method-content'
+import { AddPaymentMethodContent } from './add-payment-method-content'
 
 type Step = 'add-method' | 'confirm'
 

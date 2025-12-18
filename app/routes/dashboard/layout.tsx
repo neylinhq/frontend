@@ -6,7 +6,7 @@ import {
   useMatches
 } from 'react-router'
 import { API_URL } from '@/shared/config/env'
-import { DashboardLayout } from '@/widgets/dashboard-layout/ui/dashboard-layout'
+import { DashboardLayout } from '@/widgets/dashboard-layout'
 
 // Server-side loader (SSR, initial page load)
 export const loader = async ({ request }: LoaderFunctionArgs) => {

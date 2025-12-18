@@ -7,7 +7,7 @@ import type {
   CreateSessionInput,
   RenameSessionInput,
   AddMessageInput,
-} from './chat-sessions.types'
+} from './ai-assist.sessions.types'
 
 // Response types (API wraps data in { success, data })
 interface ApiResponse<T> {

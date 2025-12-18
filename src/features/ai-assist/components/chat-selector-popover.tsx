@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Search, MessageSquare } from 'lucide-react'
 import { Input } from '@/shared/components/input'
 import { cn } from '@/shared/lib/cn'
-import type { ChatSession } from '../model/chat-sessions.types'
+import type { ChatSession } from '../model/ai-assist.sessions.types'
 
 interface ChatSelectorPopoverProps {
   sessions: ChatSession[]

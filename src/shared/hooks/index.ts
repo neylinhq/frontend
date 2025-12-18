@@ -1,4 +1,5 @@
 export { useAutoSave } from './use-auto-save'
 export { useDarkMode } from './use-dark-mode'
 export { useDebouncedCallback } from './use-debounced-callback'
+export { useLocalStorage } from './use-local-storage'
 export { useResizable } from './use-resizable'

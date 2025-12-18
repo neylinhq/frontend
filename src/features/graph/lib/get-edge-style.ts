@@ -1,12 +1,13 @@
 import { getEdgeStrokeColor, type RelationType } from '@/entities/edge'
+import { cssVarToHex } from '@/features/graph-webgl/lib/theme-bridge'
 
 export const getEdgeStrokeByType = (relationType: RelationType) => {
   return getEdgeStrokeColor(relationType)
 }
 
 export const getEdgeStroke = (confidence: number) => {
-  // Высокая уверенность - синий, низкая - серый
-  return confidence > 0.7 ? '#3b82f6' : '#94a3b8' // blue-500 : slate-400
+  // High confidence - brand color (blue), low - muted (gray)
+  return confidence > 0.7 ? cssVarToHex('confidence-high') : cssVarToHex('confidence-low')
 }
 
 export const getEdgeWidth = (strength: number) => {

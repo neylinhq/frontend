@@ -1,1 +1,1 @@
-export { SubscribeDialog } from './subscribe-dialog'
+export { SubscribeDialog } from './components/subscribe-dialog'

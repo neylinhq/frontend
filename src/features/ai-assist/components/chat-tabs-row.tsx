@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger
 } from '@/shared/components/dropdown-menu'
 import { cn } from '@/shared/lib/cn'
-import type { ChatSession } from '../model/chat-sessions.types'
+import type { ChatSession } from '../model/ai-assist.sessions.types'
 
 interface ChatTabsRowProps {
   sessions: ChatSession[]

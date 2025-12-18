@@ -1,239 +1,280 @@
 # Design Manifesto
 
-This document describes the fundamental design philosophy of our application. It is not a component library or style guide—it is a declaration of principles that guide every design decision we make.
+Фундаментальная философия дизайна Neylin. Не style guide, не component library — декларация принципов.
 
 ---
 
-## Core Philosophy
+## Кто мы и для кого
 
-Great design disappears. The interface should recede, allowing content to take center stage. We believe in **structural minimalism** for the tools we build, and **visual expressiveness** for the content users create.
+Neylin — EdTech платформа для визуального обучения. Карты знаний, AI-ассистент, система упражнений с интервальным повторением. Наши пользователи — студенты, которые хотят понимать, а не зубрить.
 
-### Our Principles
-
-**1. Clarity over Cleverness**
-
-Every element serves a purpose. Decoration without function is noise. We choose straightforward solutions over impressive complexity. Users should never need to decode our interface—clarity is respect for their time and attention.
-
-**2. Interface Disappears, Content Shines**
-
-The application chrome—navigation, toolbars, forms—should be restrained and neutral. It's infrastructure, not the destination. The content canvas—where users think, create, and explore—should be vibrant and expressive. This separation creates focus.
-
-**3. Function Drives Form**
-
-Visual decisions emerge from functional requirements. An element's appearance should communicate its purpose and state. Beauty without utility is distraction; utility without beauty is coldness. We seek the intersection.
-
-**4. Accessibility is Foundation**
-
-Accessible design isn't a checklist—it's a mindset. Keyboard navigation, contrast ratios, semantic HTML, and screen reader support aren't afterthoughts. They improve the experience for everyone and expand who can use our tools.
+Обучение — уязвимый процесс. Студент, который не понимает тему, уже чувствует дискомфорт. Интерфейс не должен добавлять к этому ощущение "здесь всё сложно и серьёзно". Мы строим инструмент, который помогает, а не впечатляет.
 
 ---
 
-## Visual Language
+## Центральный принцип
 
-### Color Philosophy
+**Интерфейс исчезает, контент сияет.**
 
-Color is information. It creates hierarchy, signals relationships, and guides attention. Used carelessly, it creates chaos. Used deliberately, it becomes invisible infrastructure.
+Приложение состоит из двух слоёв:
 
-**Interface Layer: Restrained**
+**Interface layer** — навигация, панели, формы, настройки. Это инфраструктура. Она должна быть нейтральной, сдержанной, невидимой. Пользователь не пришёл смотреть на sidebar.
 
-The application shell uses a neutral, monochromatic palette. Backgrounds fade to white or near-black. Text maintains high contrast for readability. Borders are subtle. Interactive elements use muted tones except for primary actions.
+**Content layer** — граф знаний, ноды, связи, упражнения. Это то, ради чего пользователь здесь. Контент может быть выразительным, цветным, живым. Цвет помогает различать типы, строить иерархии, запоминать структуру.
 
-Why? Because the interface isn't the point. It's the stage, not the performance.
-
-**Content Layer: Expressive**
-
-The working canvas—graphs, nodes, data visualizations—embraces vibrant color. Each node type, relationship, or data category can claim distinct, saturated hues. Color becomes a navigation aid, a mnemonic device, a way to parse complexity at a glance.
-
-Why? Because content is what users came for. Color helps them understand it faster.
-
-**Principles:**
-
-- **Neutral as Default**: Start with no color. Add it only where it serves comprehension or interaction.
-- **Color as Hierarchy**: Use saturation and hue to distinguish importance and relationships.
-- **Contrast is Non-Negotiable**: All text must meet WCAG AA standards (4.5:1 for body, 3:1 for large text).
-- **Consistency Creates Trust**: Once a color represents something, it always represents that thing.
+Когда интерфейс тихий — контент может быть громким без перегрузки. Минимализм и выразительность сосуществуют, когда каждый знает своё место.
 
 ---
 
-## Space & Rhythm
+## Принципы
 
-### The Role of White Space
+### 1. Clarity over Cleverness
 
-White space isn't emptiness—it's breathing room. Cramped layouts create anxiety. Generous spacing creates calm and focus. Every element should have space to exist without crowding its neighbors.
+Каждый элемент служит цели. Декорация без функции — шум. Мы выбираем простые решения вместо впечатляющих. Пользователь не должен расшифровывать интерфейс — ясность это уважение к его времени.
 
-**Principles:**
+Если что-то можно убрать без потери понимания — убирай.
 
-- **Rhythm Through Consistency**: Use a harmonic scale for spacing. Related elements share rhythm; distinct elements break it.
-- **Density Serves Purpose**: Dense layouts for data-heavy views; spacious layouts for focused tasks.
-- **Responsive Breathing**: Spacing should adapt to viewport size, maintaining proportional rhythm rather than fixed values.
-- **Progressive Disclosure**: Use space to reveal structure—closer items are related, distant items are separate.
+### 2. Warmth without Softness
 
-### Grid as Invisible Guide
+Профессионализм не требует холодности. Мы можем быть точными и при этом приветливыми. Neylin — строгий инструмент с тёплым сердцем.
 
-Grids create alignment and predictability. Users don't see the grid, but they feel its absence. Alignment signals intentionality. Misalignment signals carelessness or chaos.
+Это выражается через:
+- Цвет, который не кричит, но и не стерилен
+- Типографику, которая читается, а не впечатляет
+- Микрокопирование, которое объясняет, а не командует
+- Скругления достаточные для мягкости, но не pill-shaped everywhere
 
-Grids aren't rigid—they're guides. Break them when it serves clarity, but break them deliberately, not accidentally.
+MetaMask доказал: оранжевый primary может быть professional. OKX показал: pill buttons не означают несерьёзность. Warmth — не про детские иллюстрации. Это про отсутствие отстранённости.
 
----
+### 3. Progressive Disclosure of Complexity
 
-## Typography as Hierarchy
+Новичок видит простой интерфейс. Эксперт находит глубину когда ищет. Один продукт для всех уровней.
 
-### Information Architecture Through Type
+Три режима:
+- **Learner** — guided experience, tooltips везде, simplified creation
+- **Student** — full features, keyboard hints, collaboration
+- **Expert** — advanced options, API access, bulk operations
 
-Typography doesn't just make text readable—it makes information parseable. Scale, weight, and spacing create visual hierarchy that mirrors content hierarchy.
+Это не три разных приложения. Это layers of depth в одном. Пользователь растёт — интерфейс растёт вместе с ним.
 
-**Principles:**
+### 4. Function Drives Form
 
-- **Fewer Weights, Stronger Hierarchy**: Limit typeface weights to 2-3. Overuse dilutes their power to distinguish.
-- **Scale Creates Rhythm**: Use a typographic scale (e.g., 1.25 ratio). Consistent scale creates harmony; arbitrary sizes create discord.
-- **Line Length Affects Comprehension**: 50-75 characters per line for body text. Too short breaks rhythm; too long strains tracking.
-- **Line Height Balances Density**: Tighter for headings (1.2-1.3), more generous for body (1.5-1.6).
-- **System Fonts for Familiarity**: Native fonts load instantly and feel familiar. Custom fonts are allowed but must justify their cost in performance and learning curve.
+Визуальные решения вытекают из функциональных требований. Как элемент выглядит — отражает что он делает. 
 
-### Readability Over Novelty
+- Кнопка действия выглядит иначе, чем кнопка навигации
+- Опасное действие выглядит иначе, чем безопасное
+- Состояние элемента очевидно без hover
 
-Typography should be invisible infrastructure, not a design statement. Users came to read content, not admire font choices. Maximize legibility, minimize personality.
+Красота без пользы — отвлечение. Польза без красоты — холодность. Мы ищем пересечение.
 
----
+### 5. Accessibility is Foundation
 
-## Motion & Feedback
+Доступность — не чеклист в конце, а мышление с начала. Keyboard navigation везде. Контрасты по WCAG AA. Semantic HTML. Screen reader support. `prefers-reduced-motion`.
 
-### When and Why to Animate
-
-Motion should reveal relationships or provide feedback—nothing more. Animations that exist purely for aesthetic reasons are decorative noise.
-
-**Principles:**
-
-- **Motion Reveals Structure**: Transitions show what changed and why. Elements that appear should grow or fade in; elements that disappear should shrink or fade out.
-- **Feedback for Every Interaction**: Buttons respond to clicks, inputs acknowledge typing, operations confirm completion. Silence creates doubt.
-- **Performance Over Flash**: Smooth is better than elaborate. A simple 200ms fade beats a complex 500ms choreography.
-- **Respect Reduced Motion**: Honor `prefers-reduced-motion`. Users who set this preference need it—respect that.
-
-### Duration & Easing Philosophy
-
-**Micro-interactions** (checkbox toggle, button press): 100-150ms, instant easing. Users shouldn't wait.
-
-**Standard transitions** (hover states, color changes): 200ms, ease-in-out. Smooth but not slow.
-
-**Entrances** (modals, drawers): 250-300ms, ease-out. Deceleration feels welcoming.
-
-**Exits** (closing modals): 200ms, ease-in. Acceleration feels responsive.
-
-Never auto-play animations. Never loop infinitely (except loading indicators). Animation is communication, not entertainment.
+Это не accommodation — это качество. Дизайн, который работает для людей с ограничениями, работает лучше для всех:
+- Клавиатурные shortcuts помогают power users
+- Высокий контраст читается на солнце
+- Ясный язык помогает non-native speakers
+- Субтитры полезны в шумных местах
 
 ---
 
-## Content vs Interface
+## Визуальный язык
 
-This is the core tension that defines our visual philosophy. Reconciling minimalism with expressiveness requires separating where each applies.
+### Цвет
 
-### Interface Layer: The Chrome
+**Interface layer**: Нейтральная палитра. Фон отступает. Текст контрастный. Границы subtle. Интерактивные элементы muted кроме primary actions.
 
-**What it includes**: Navigation bars, sidebars, toolbars, forms, dialogs, settings panels—the application shell.
+**Content layer**: Выразительная палитра. Каждый тип ноды имеет свой hue. Связи цветом показывают отношение. Цвет — мнемоника, навигация, способ парсить сложность.
 
-**How it looks**: Minimalist, restrained, neutral. Monochromatic palette. Subtle borders. Muted backgrounds. Clean typography. Invisible until needed.
+**Семантика неизменна**: Когда цвет что-то значит — он всегда значит это. Красный = danger/error. Зелёный = success. Жёлтый = warning. Синий = info. Не путай пользователя.
 
-**Why**: The interface is infrastructure. It should recede into the background, allowing users to focus on their work. Inspired by technical tools—precise, unobtrusive, efficient.
+**Helmholtz-Kohlrausch**: Мы используем OKLCH и компенсируем perceptual brightness для насыщенных цветов. Цвета одной lightness должны выглядеть одной светлоты.
 
-**Reference aesthetic**: Vercel, Linear, GitHub's interface—technical minimalism that gets out of the way.
+### Типографика
 
-### Content Layer: The Canvas
+Шрифт невидим когда работает. Пользователь пришёл читать контент, не любоваться буквами.
 
-**What it includes**: Graph visualization, nodes, edges, data cards, user-generated content—the working area.
+- Геометричный sans-serif для UI (Geist или подобный)
+- 2-3 веса максимум — больше размывает иерархию
+- Line length 50-75 символов для body text
+- Line height 1.5-1.6 для body, 1.2-1.3 для headings
+- Scale с consistent ratio (1.25 рекомендуется)
 
-**How it looks**: Expressive, colorful, dynamic. Vibrant node colors. Rich data visualization. Clear visual hierarchy through saturation and contrast.
+Размер создаёт иерархию. Вес усиливает. Цвет — почти никогда не используется для различения текста.
 
-**Why**: Content is why users came. It deserves attention. Color, contrast, and visual interest help users parse complexity, remember relationships, and navigate large information spaces.
+### Пространство
 
-**Reference aesthetic**: Recraft, Figma, Obsidian Canvas—modern, vibrant, creativity-friendly tools that make working feel alive.
+White space — не пустота, а breathing room. Cramped layouts создают тревогу. Generous spacing создаёт calm.
 
-### Why This Separation Works
+- Consistent scale (4px или 8px base)
+- Related elements ближе, unrelated — дальше
+- Density адаптируется под контекст: spacious для focus tasks, denser для data views
+- Responsive: пропорции сохраняются, не фиксированные значения
 
-**Cognitive Clarity**: When the interface is quiet, the content can be loud without overwhelming users.
+Grid — невидимый guide. Пользователь не видит сетку, но чувствует её отсутствие. Alignment сигнализирует намерение. Misalignment — небрежность или хаос.
 
-**Focused Attention**: Neutral chrome directs attention to the colorful canvas—users know where to look.
+### Границы и глубина
 
-**Scalability**: Large graphs with many colored nodes remain parseable because they're not competing with colorful UI chrome.
+Мы предпочитаем borders shadows. Тонкая линия разделяет честнее, чем иллюзия высоты.
 
-**Best of Both Worlds**: Technical precision where it matters (controls, inputs) and creative expressiveness where it serves (content, visualization).
+Shadows используются для:
+- Floating elements (modals, popovers, dropdowns)
+- Drag operations (lifted state)
+- Focus на критичных элементах
 
-This isn't compromise—it's intentional layering. Minimalism and expressiveness coexist when each knows its place.
+Shadows НЕ используются для:
+- Cards на одном уровне
+- Разделения секций
+- Декорации
 
----
+Elevation system:
+- Level 0: На поверхности, border only
+- Level 1: Чуть выше (menus, dropdowns) — subtle shadow
+- Level 2: Парит (modals, dialogs) — выраженная shadow
+- Level 3: Временно поднят (drag) — максимальная shadow
 
-## Accessibility Fundamentals
+### Формы
 
-Accessibility isn't accommodation—it's quality. Designs that work for users with disabilities work better for everyone.
+Скругления minimal to moderate (4-8px). Полные pill-shapes только для tags, badges, chips.
 
-### Non-Negotiable Principles
+Primary CTA может быть более rounded (до 12px или pill) для visual distinction и warmth. Но не всё подряд.
 
-**Keyboard Navigation for Everything**: Every interactive element must be reachable and operable via keyboard. Tab order should follow visual order. Focus indicators must always be visible.
-
-**Contrast Ratios Meet Standards**: Text on backgrounds must meet WCAG AA (4.5:1 for normal text, 3:1 for large text). Don't rely solely on color to convey information—use text labels, patterns, or icons too.
-
-**Semantic HTML**: Use native elements when possible. Buttons are `<button>`, links are `<a>`, headings nest properly. Screen readers depend on semantic structure.
-
-**Focus Indicators**: Never hide focus outlines globally. Style them to match your design, but ensure they're always visible for keyboard users.
-
-### Accessibility Improves Experience for Everyone
-
-- Keyboard shortcuts help power users, not just users who can't use mice.
-- High contrast benefits users in bright sunlight, not just users with low vision.
-- Clear language helps non-native speakers, not just users with cognitive disabilities.
-- Captions help people in noisy environments, not just deaf users.
-
-Design for accessibility from the start. Retrofitting is expensive and incomplete.
-
----
-
-## Anti-Patterns & Design Smell
-
-Knowing what to avoid is as important as knowing what to pursue.
-
-### What We Avoid and Why
-
-**Decoration Without Purpose**
-Glitch effects, 3D transforms for decoration, ornamental gradients—these add visual noise without improving comprehension or usability. If removing it doesn't hurt clarity, it shouldn't be there.
-
-**Trends Over Usability**
-Design trends age poorly. Neumorphism, glassmorphism, excessive drop shadows—yesterday's cutting edge is today's dated. Timeless design outlasts trends.
-
-**Complexity Without Need**
-Every layer of abstraction, every custom component, every novel pattern introduces cognitive load. Simple solutions scale better than clever ones.
-
-**Inconsistency**
-Inconsistent spacing, colors, or interaction patterns break trust. Users internalize patterns quickly—violating them feels like a bug.
-
-**Flashiness Over Clarity**
-Excessive animations, auto-playing effects, aggressive gradients—these distract from content and signal inexperience. Confidence is quiet.
-
-### Specific Anti-Patterns
-
-**DO NOT USE:**
-- Glitch/distortion effects (gimmicky, accessibility issues)
-- Excessive animations (distraction, performance cost)
-- Gradient backgrounds on UI (readability problems)
-- Emojis in interface chrome (unprofessional, inconsistent rendering)
-- Backdrop blur on large areas (performance issues on low-end devices). Exception: small floating elements (menus, popovers, tooltips) where blur adds depth without significant cost.
-- Auto-playing animations or videos (accessibility violation, annoying)
-
-### Design Smell Detection
-
-When reviewing a design, ask:
-
-- **"Is this serving the user or the designer's ego?"** — If it's showing off, remove it.
-- **"Will this age well?"** — If it's chasing a trend, reconsider.
-- **"Does this add clarity or complexity?"** — If complexity, justify it or simplify.
-- **"Would I want to use this every day?"** — If novelty wears off quickly, it's decoration.
+Consistency важнее novelty. Если cards имеют 8px radius — все cards имеют 8px radius.
 
 ---
 
-## Closing
+## Движение и feedback
 
-Design is decision-making. Every choice about color, spacing, motion, or hierarchy is a decision about what matters and what doesn't.
+### Когда анимировать
 
-Our philosophy is simple: **Let the interface disappear so the content can shine.** Be minimalist where it serves focus. Be expressive where it serves understanding. Be consistent to build trust. Be accessible to respect all users.
+Анимация — коммуникация, не развлечение. Движение должно:
+- Показывать связь между состояниями
+- Давать feedback на действие
+- Направлять внимание
 
-This manifesto isn't a rulebook—it's a lens. Use it to evaluate decisions. When in doubt, return to these principles. Clarity, purpose, balance, and respect will guide you to the right answer.
+Движение НЕ должно:
+- Впечатлять само по себе
+- Задерживать пользователя
+- Отвлекать от контента
 
-Build tools that get out of the way. Build canvases that invite creation. Build experiences that last.
+### Timing
+
+- **Instant (50-100ms)**: Hover states, micro-feedback
+- **Fast (100-150ms)**: Button press, toggle, checkbox
+- **Normal (200ms)**: Color transitions, fade in/out
+- **Slow (300ms)**: Modals, drawers, significant changes
+
+Ничего > 300ms кроме page transitions. Пользователь не должен ждать анимацию.
+
+### Easing
+
+- **ease-out** для появления (deceleration feels welcoming)
+- **ease-in** для исчезновения (acceleration feels responsive)
+- **ease-in-out** для изменения состояния
+- **linear** почти никогда (выглядит mechanical)
+
+### Feedback обязателен
+
+Каждое действие — ответ. Молчание создаёт сомнение.
+
+- Клик на кнопку → visual response немедленно
+- Отправка формы → loading state
+- Завершение операции → success confirmation
+- Ошибка → понятное сообщение
+
+Loading states появляются через 150-300ms — избегаем flicker для быстрых операций.
+
+### Respect reduced motion
+
+`prefers-reduced-motion: reduce` — не отключение, а упрощение. Fade вместо slide. Instant вместо animated. Но feedback остаётся.
+
+---
+
+## Adaptive Complexity
+
+Neylin обслуживает разные уровни пользователей одним интерфейсом.
+
+### Learner Mode 🌱
+
+Первое знакомство с платформой. Guided experience.
+
+- Onboarding tooltips на каждом элементе
+- Simplified node creation (меньше типов, очевидные defaults)
+- AI-ассистент prominent и proactive
+- Gamification видна (streaks, progress)
+- Keyboard shortcuts скрыты
+
+### Student Mode 📚
+
+Уверенное использование. Full features.
+
+- Все типы нод и связей
+- Exercise generation из любого контента
+- Spaced repetition настраивается
+- Keyboard shortcuts показываются
+- Collaboration features
+
+### Expert Mode 🎓
+
+Power users. Maximum control.
+
+- Custom node types и templates
+- API access для интеграций
+- Bulk operations
+- Advanced analytics
+- Minimal hand-holding
+
+Переключение — явное, в settings. Но система может suggest upgrade когда видит ready patterns.
+
+---
+
+## Что мы не делаем
+
+### Decoration without Purpose
+
+Glitch effects, 3D transforms ради красоты, ornamental gradients — шум. Если удаление не вредит пониманию, этого не должно быть.
+
+### Trends over Usability
+
+Trends устаревают. Neumorphism, glassmorphism everywhere, excessive blur — вчерашний cutting edge, сегодняшний dated. Timeless > trendy.
+
+### Complexity without Need
+
+Каждый слой абстракции, каждый custom component, каждый novel pattern — cognitive load. Simple scales better than clever.
+
+### Inconsistency
+
+Inconsistent spacing, colors, interaction patterns — broken trust. Пользователь internalize patterns быстро. Нарушение ощущается как bug.
+
+### Конкретные anti-patterns
+
+**НЕ использовать:**
+- Glitch/distortion effects
+- Анимации > 300ms без причины
+- Gradient backgrounds на UI
+- Emojis в interface chrome (кроме content)
+- Backdrop blur на больших областях (performance)
+- Auto-playing content
+
+**Вопросы для review:**
+- "Это для пользователя или для ego дизайнера?"
+- "Будет ли это выглядеть хорошо через 2 года?"
+- "Добавляет clarity или complexity?"
+- "Захочу ли я использовать это каждый день?"
+
+---
+
+## Закрытие
+
+Дизайн — это решения. Каждый выбор о цвете, spacing, motion, hierarchy — это решение о том, что важно, а что нет.
+
+Наша философия простая:
+
+**Пусть интерфейс исчезает, чтобы контент сиял.**
+
+Минимализм где он служит фокусу. Выразительность где она служит пониманию. Consistency для доверия. Accessibility для всех. Warmth для human connection.
+
+Это не rulebook. Это lens. Используй для оценки решений. Когда сомневаешься — возвращайся к принципам.
+
+Строй инструменты, которые уходят с пути. Строй canvas, который приглашает к созданию. Строй опыт, который помогает учиться.

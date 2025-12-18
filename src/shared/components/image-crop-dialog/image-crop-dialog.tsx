@@ -257,7 +257,7 @@ export const ImageCropDialog = ({
                 top: `calc(50% - ${imageDimensions.height / 2}px + ${cropArea.y}px)`,
                 width: cropArea.size,
                 height: cropArea.size,
-                boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.6)'
+                boxShadow: '0 0 0 9999px oklch(var(--overlay))'
               }}
             >
               {/* Resize handle */}

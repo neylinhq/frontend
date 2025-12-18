@@ -161,7 +161,7 @@ export const MapSettingsDrawer = memo(
     const handleDeleteMap = useCallback(async () => {
       try {
         await deleteMapMutation.mutateAsync(mapId)
-        toast.success(t('mapSettings.dangerZone.deleted'))
+        // No toast - redirect to dashboard = obvious feedback
         handleClose()
         navigate('/dashboard')
       } catch {

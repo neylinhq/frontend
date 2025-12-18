@@ -111,7 +111,12 @@
     "myMaps": "Maps",
     "aiLab": "AI Lab",
     "knowledgeBase": "Knowledge",
-    "support": "Support"
+    "support": "Support",
+    "expandSidebar": "Expand sidebar",
+    "collapseSidebar": "Collapse sidebar",
+    "upgrade": "Upgrade",
+    "collapse": "Collapse",
+    "expand": "Expand"
   },
   "userNav": {
     "dashboard": "Dashboard",
@@ -163,7 +168,8 @@
     "copy": "Copy",
     "send": "Send",
     "true": "True",
-    "false": "False"
+    "false": "False",
+    "optional": "optional"
   },
   "imageCrop": {
     "title": "Crop image",
@@ -230,8 +236,10 @@
     "tips": {
       "title": "Tips",
       "keyboard": "Press {{shortcut}} to create",
-      "description": "Good descriptions help organize your maps"
-    }
+      "description": "Good descriptions help organize your maps",
+      "toCreate": "to create"
+    },
+    "addDescription": "Add description"
   },
   "home": {
     "tagline": "Visualize and structure your knowledge with interactive cognitive maps. Create, connect, and explore your ideas in an intuitive graph-based workspace.",

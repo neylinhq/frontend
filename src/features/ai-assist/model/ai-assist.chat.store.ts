@@ -241,17 +241,38 @@ export const useChatHistoryStore = create<ChatHistoryState & ChatHistoryActions>
                   // Preserve applied entity IDs in data for duplicate prevention
                   let dataWithAppliedIds = resolved.data
                   if (resolved.undoData?.previousState) {
-                    const { createdNodeId, createdEdgeIds, createdEdgeId } = resolved.undoData.previousState
-                    if (resolved.type === 'new_node' && createdNodeId) {
+                    const previousState = resolved.undoData.previousState as {
+                      createdNodeId?: string
+                      createdEdgeIds?: string[]
+                      createdEdgeId?: string
+                      tempIdMapping?: Record<string, string>
+                    }
+                    if (resolved.type === 'new_node' && previousState.createdNodeId) {
                       dataWithAppliedIds = {
                         ...resolved.data,
-                        appliedNodeId: createdNodeId as string,
-                        appliedEdgeIds: createdEdgeIds as string[] | undefined
+                        appliedNodeId: previousState.createdNodeId,
+                        appliedEdgeIds: previousState.createdEdgeIds
                       }
-                    } else if (resolved.type === 'connection' && createdEdgeId) {
+                    } else if (resolved.type === 'connection' && previousState.createdEdgeId) {
                       dataWithAppliedIds = {
                         ...resolved.data,
-                        appliedEdgeId: createdEdgeId as string
+                        appliedEdgeId: previousState.createdEdgeId
+                      }
+                    } else if (resolved.type === 'graph_fragment' && (previousState.tempIdMapping || previousState.createdEdgeIds)) {
+                      // For graph_fragment, update each node/edge with its applied ID
+                      const fragmentData = resolved.data as import('./ai-assist.types').GraphFragmentPreviewData
+                      const updatedNodes = fragmentData.nodes.map(node => {
+                        const realId = previousState.tempIdMapping?.[node.tempId]
+                        return realId ? { ...node, appliedNodeId: realId } : node
+                      })
+                      const updatedEdges = fragmentData.edges.map((edge, idx) => {
+                        const edgeId = previousState.createdEdgeIds?.[idx]
+                        return edgeId ? { ...edge, appliedEdgeId: edgeId } : edge
+                      })
+                      dataWithAppliedIds = {
+                        ...fragmentData,
+                        nodes: updatedNodes,
+                        edges: updatedEdges
                       }
                     }
                   }

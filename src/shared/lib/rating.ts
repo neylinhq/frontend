@@ -3,6 +3,8 @@
  * Provides functions to work with node complexity ratings and user preferences
  */
 
+import { cssVarToHex } from '@/features/graph-webgl/lib/theme-bridge'
+
 // ============================================================================
 // Types and Enums
 // ============================================================================
@@ -66,7 +68,22 @@ export const RATING_TIER_COLORS: Record<RatingTier, string> = {
 }
 
 /**
- * Rating tier hex colors for inline styles
+ * Get rating tier hex color from CSS variables - adapts to current theme
+ * SSR-safe: returns fallback color from RATING_TIER_HEX_COLORS in SSR
+ */
+export const getRatingTierHexColor = (tier: RatingTier): string => {
+  const tierKey = tier.toLowerCase()
+  const color = cssVarToHex(`rating-${tierKey}`)
+  // cssVarToHex returns #808080 in SSR - use static fallback instead
+  if (color === '#808080') {
+    return RATING_TIER_HEX_COLORS[tier] ?? '#808080'
+  }
+  return color
+}
+
+/**
+ * @deprecated Use getRatingTierHexColor(tier) instead for theme-aware colors
+ * Rating tier hex colors for inline styles (static fallback)
  */
 export const RATING_TIER_HEX_COLORS: Record<RatingTier, string> = {
   Novice: '#6b7280',
@@ -118,7 +135,7 @@ export const getComplexityTier = (complexity: number | null | undefined): TierIn
       const tier = tierName as RatingTier
       return {
         name: tier,
-        color: RATING_TIER_HEX_COLORS[tier],
+        color: getRatingTierHexColor(tier),
         colorClass: RATING_TIER_COLORS[tier]
       }
     }

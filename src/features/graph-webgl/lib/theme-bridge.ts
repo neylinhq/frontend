@@ -26,6 +26,32 @@ export interface ThemeColors {
 }
 
 /**
+ * Check if running in browser environment
+ */
+const isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined'
+
+/**
+ * Default theme colors for SSR fallback (dark mode defaults)
+ */
+const SSR_FALLBACK_COLORS: ThemeColors = {
+  card_bg: [0.19, 0.19, 0.19, 1],
+  card_fg: [0.93, 0.93, 0.93, 1],
+  border: [0.28, 0.28, 0.28, 1],
+  background: [0.16, 0.16, 0.16, 1],
+  concept: [0.35, 0.52, 0.87, 1],
+  theory: [0.45, 0.38, 0.82, 1],
+  fact: [0.38, 0.78, 0.45, 1],
+  example: [0.92, 0.68, 0.25, 1],
+  question: [0.68, 0.35, 0.85, 1],
+  hypothesis: [0.82, 0.38, 0.68, 1],
+  person: [0.88, 0.48, 0.35, 1],
+  school: [0.35, 0.72, 0.78, 1],
+  knowledge: [0.35, 0.52, 0.87, 1],
+  primary: [0.95, 0.95, 0.95, 1],
+  glow: [0.95, 0.95, 0.95, 0.5]
+}
+
+/**
  * Convert OKLCH string to RGBA array
  * Input format: "0.55 0.17 250" (L C H without units)
  */
@@ -75,16 +101,22 @@ function oklchToRgba(oklchString: string, alpha = 1): [number, number, number, n
 
 /**
  * Get CSS variable value from document
+ * Returns empty string in SSR environment
  */
 function getCssVar(name: string): string {
+  if (!isBrowser) return ''
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim()
 }
 
 /**
  * Extract theme colors from CSS variables
  * Call this when the page loads and when theme changes
+ * Returns fallback colors in SSR environment
  */
 export function extractThemeColors(): ThemeColors {
+  // SSR protection - return fallback colors
+  if (!isBrowser) return SSR_FALLBACK_COLORS
+
   // Check if dark mode is active
   const isDark = document.documentElement.classList.contains('dark')
 
@@ -133,7 +165,57 @@ export function extractThemeColors(): ThemeColors {
 
 /**
  * Convert theme to JSON for WASM
+ * SSR-safe: returns fallback colors JSON in SSR environment
  */
 export function themeToJson(): string {
-  return JSON.stringify(extractThemeColors())
+  return JSON.stringify(extractThemeColors()) // SSR-safe
 }
+
+/**
+ * Convert RGBA array [0-1] to hex string
+ */
+export function rgbaToHex(rgba: [number, number, number, number]): string {
+  const r = Math.round(rgba[0] * 255)
+  const g = Math.round(rgba[1] * 255)
+  const b = Math.round(rgba[2] * 255)
+  return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`
+}
+
+/**
+ * Get node color as HEX string for use in React Flow MiniMap
+ * SSR-safe: returns fallback color in SSR environment
+ * @param nodeType - The node type (concept, theory, fact, etc.)
+ * @returns HEX color string
+ */
+export function getNodeColorHex(nodeType: string): string {
+  const colors = extractThemeColors() // SSR-safe
+  const rgba = colors[nodeType as keyof ThemeColors] ?? colors.concept
+  return rgbaToHex(rgba as [number, number, number, number])
+}
+
+
+/**
+ * Get CSS variable as computed value
+ * Useful for getting canvas grid color, overlay color, etc.
+ * Returns empty string in SSR environment
+ */
+export function getCssVarValue(name: string): string {
+  if (!isBrowser) return ''
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim()
+}
+
+/**
+ * Convert OKLCH CSS variable to HEX
+ * @param varName - CSS variable name without -- prefix
+ * @returns HEX color string (returns fallback gray in SSR)
+ */
+export function cssVarToHex(varName: string): string {
+  if (!isBrowser) return '#808080'
+  const oklchStr = getCssVarValue(`--${varName}`)
+  if (!oklchStr) return '#808080'
+  const rgba = oklchToRgba(oklchStr)
+  return rgbaToHex(rgba)
+}
+
+// Export for use in other modules
+export { oklchToRgba, getCssVar }

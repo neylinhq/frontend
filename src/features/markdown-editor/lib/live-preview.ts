@@ -322,6 +322,7 @@ const livePreviewPlugin = ViewPlugin.fromClass(
 
 /**
  * Base styles for Live Preview
+ * Uses CSS variables for theme-aware colors
  */
 const livePreviewStyles = EditorView.baseTheme({
   // Hidden marks (fade out instead of hide for smooth transitions)
@@ -339,7 +340,7 @@ const livePreviewStyles = EditorView.baseTheme({
     opacity: '0.4',
     fontSize: 'inherit',
     width: 'auto',
-    color: '#999'
+    color: 'oklch(var(--muted-foreground))'
   },
 
   // Headings
@@ -362,7 +363,7 @@ const livePreviewStyles = EditorView.baseTheme({
     fontSize: '1.1em'
   },
   '.cm-heading-mark': {
-    color: '#999'
+    color: 'oklch(var(--muted-foreground))'
   },
 
   // Bold & Italic
@@ -374,13 +375,13 @@ const livePreviewStyles = EditorView.baseTheme({
   },
   '.cm-strikethrough': {
     textDecoration: 'line-through',
-    color: '#888'
+    color: 'oklch(var(--muted-foreground))'
   },
 
   // Inline code
   '.cm-inline-code': {
     fontFamily: 'ui-monospace, monospace',
-    backgroundColor: 'rgba(128, 128, 128, 0.1)',
+    backgroundColor: 'oklch(var(--muted) / 0.5)',
     padding: '1px 4px',
     borderRadius: '3px',
     fontSize: '0.9em'
@@ -388,33 +389,33 @@ const livePreviewStyles = EditorView.baseTheme({
 
   // Links
   '.cm-link': {
-    color: '#0066cc',
+    color: 'oklch(var(--brand))',
     textDecoration: 'underline',
     cursor: 'pointer'
   },
   '.cm-link-url': {
-    color: '#888',
+    color: 'oklch(var(--muted-foreground))',
     fontSize: '0.9em'
   },
 
   // Blockquotes
   '.cm-blockquote': {
-    borderLeft: '3px solid #ddd',
+    borderLeft: '3px solid oklch(var(--border))',
     paddingLeft: '12px',
-    color: '#666',
+    color: 'oklch(var(--muted-foreground))',
     fontStyle: 'italic'
   },
 
   // Highlights
   '.cm-highlight': {
-    backgroundColor: 'rgba(255, 235, 59, 0.4)',
+    backgroundColor: 'oklch(var(--editor-highlight-yellow))',
     borderRadius: '2px',
     padding: '0 2px'
   },
 
   // List bullets
   '.cm-list-bullet': {
-    color: '#0066cc',
+    color: 'oklch(var(--brand))',
     fontWeight: '600'
   },
 
@@ -440,7 +441,7 @@ const livePreviewStyles = EditorView.baseTheme({
 
   // Horizontal rule
   '.cm-hr-line': {
-    borderBottom: '2px solid #ddd',
+    borderBottom: '2px solid oklch(var(--border))',
     margin: '16px 0'
   }
 })

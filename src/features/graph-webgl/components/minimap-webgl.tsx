@@ -9,6 +9,7 @@
 import { memo, useMemo } from 'react'
 import type { Node } from '@/entities/map'
 import { cn } from '@/shared/lib/cn'
+import { getNodeColorHex } from '../lib/theme-bridge'
 
 interface ViewportState {
   x: number // Camera center X in world coords
@@ -33,18 +34,6 @@ interface MiniMapWebGLProps {
   className?: string
   onNavigate?: (x: number, y: number) => void
 }
-
-// Colors for node types (matching React Flow minimap)
-const NODE_COLORS: Record<string, string> = {
-  concept: '#3b82f6', // blue
-  theory: '#8b5cf6', // purple
-  fact: '#10b981', // green
-  example: '#f59e0b', // amber
-  definition: '#ef4444', // red
-  question: '#ec4899' // pink
-}
-
-const DEFAULT_NODE_COLOR = '#64748b' // slate
 
 // Minimap dimensions
 const MAP_WIDTH = 150
@@ -126,7 +115,7 @@ export const MiniMapWebGL = memo(function MiniMapWebGL({
         id: node.id,
         x: (x - minX) * scale,
         y: (y - minY) * scale,
-        color: NODE_COLORS[node.type] || DEFAULT_NODE_COLOR
+        color: getNodeColorHex(node.type)
       }
     })
 

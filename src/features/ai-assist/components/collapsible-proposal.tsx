@@ -1,4 +1,11 @@
 import { ChevronDown, ChevronRight, Undo2 } from 'lucide-react'
+
+/** Decode HTML entities like &#39; -> ' */
+const decodeHtmlEntities = (text: string): string => {
+  const textarea = document.createElement('textarea')
+  textarea.innerHTML = text
+  return textarea.value
+}
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Badge } from '@/shared/components/badge'
@@ -272,7 +279,7 @@ const ProposalContent = ({ preview }: { preview: ResolvedPreview }) => {
             </div>
           )}
           {data.reasoning && (
-            <p className='text-muted-foreground italic border-t border-border pt-2'>{data.reasoning}</p>
+            <p className='text-muted-foreground italic border-t border-border pt-2'>{decodeHtmlEntities(data.reasoning)}</p>
           )}
         </div>
       )

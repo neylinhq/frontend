@@ -21,4 +21,4 @@ export type {
   ConversionResult,
   HtmlToMarkdownOptions,
   MarkdownToHtmlOptions
-} from './model/converter.types'
+} from './model/editor-converter.types'

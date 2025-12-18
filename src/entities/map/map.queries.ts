@@ -63,8 +63,41 @@ export const useDeleteMap = () => {
 
   return useMutation({
     mutationFn: mapApi.deleteMap,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: mapKeys.lists() })
+    onMutate: async (mapId: string) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: mapKeys.all })
+
+      // Snapshot previous data for rollback
+      const previousQueries = queryClient.getQueriesData<MapDiscoverResponse>({
+        queryKey: mapKeys.all
+      })
+
+      // Optimistically remove from all cached lists
+      queryClient.setQueriesData<MapDiscoverResponse>(
+        { queryKey: mapKeys.all },
+        old => {
+          if (!old?.maps) return old
+          const filtered = old.maps.filter(m => m.id !== mapId)
+          return {
+            ...old,
+            maps: filtered,
+            totalCount: Math.max(0, old.totalCount - 1),
+            ownedCount: Math.max(0, old.ownedCount - 1)
+          }
+        }
+      )
+
+      return { previousQueries }
+    },
+    onError: (_err, _mapId, context) => {
+      // Rollback on error
+      context?.previousQueries?.forEach(([key, data]) => {
+        queryClient.setQueryData(key, data)
+      })
+    },
+    onSettled: () => {
+      // Sync with server after mutation
+      queryClient.invalidateQueries({ queryKey: mapKeys.all })
     }
   })
 }

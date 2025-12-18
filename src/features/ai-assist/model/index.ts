@@ -13,7 +13,7 @@ export type {
   ChatProposal,
   CreateSessionInput,
   RenameSessionInput,
-} from './chat-sessions.types'
+} from './ai-assist.sessions.types'
 export {
   chatSessionKeys,
   useChatSessions,
@@ -21,4 +21,4 @@ export {
   useCreateChatSession,
   useRenameChatSession,
   useDeleteChatSession,
-} from './chat-sessions.api'
+} from './ai-assist.sessions.hooks'

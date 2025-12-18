@@ -83,7 +83,7 @@ export const OverviewPage = () => {
   const handleDelete = async (mapId: string) => {
     try {
       await deleteMap.mutateAsync(mapId)
-      toast.success(t('dashboard.mapCard.deleteSuccess'))
+      // No toast - card disappears instantly = obvious feedback
     } catch {
       toast.error(t('dashboard.mapCard.deleteError'))
     }

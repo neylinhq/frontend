@@ -32,8 +32,8 @@ import {
   useState
 } from 'react'
 import { useTranslation } from 'react-i18next'
+import { cssVarToHex } from '@/features/graph-webgl/lib/theme-bridge'
 import { Button } from '@/shared/components/button'
-import { toast } from '@/shared/components/toast'
 import { cn } from '@/shared/lib/cn'
 import { copyAsMarkdown } from '../lib/markdown-serializer'
 import { MENU } from '../model/block-editor.constants'
@@ -185,29 +185,31 @@ const BLOCK_TYPES = [
   }
 ]
 
-const TEXT_COLORS = [
+/** Get text colors from CSS variables - adapts to current theme */
+const getTextColors = () => [
   { key: 'default', color: null, label: 'Default' },
-  { key: 'gray', color: '#6b7280', label: 'Gray' },
-  { key: 'brown', color: '#92400e', label: 'Brown' },
-  { key: 'orange', color: '#ea580c', label: 'Orange' },
-  { key: 'yellow', color: '#ca8a04', label: 'Yellow' },
-  { key: 'green', color: '#16a34a', label: 'Green' },
-  { key: 'blue', color: '#2563eb', label: 'Blue' },
-  { key: 'purple', color: '#9333ea', label: 'Purple' },
-  { key: 'pink', color: '#db2777', label: 'Pink' },
-  { key: 'red', color: '#dc2626', label: 'Red' }
+  { key: 'gray', color: cssVarToHex('editor-text-gray'), label: 'Gray' },
+  { key: 'brown', color: cssVarToHex('editor-text-brown'), label: 'Brown' },
+  { key: 'orange', color: cssVarToHex('editor-text-orange'), label: 'Orange' },
+  { key: 'yellow', color: cssVarToHex('editor-text-yellow'), label: 'Yellow' },
+  { key: 'green', color: cssVarToHex('editor-text-green'), label: 'Green' },
+  { key: 'blue', color: cssVarToHex('editor-text-blue'), label: 'Blue' },
+  { key: 'purple', color: cssVarToHex('editor-text-purple'), label: 'Purple' },
+  { key: 'pink', color: cssVarToHex('editor-text-pink'), label: 'Pink' },
+  { key: 'red', color: cssVarToHex('editor-text-red'), label: 'Red' }
 ]
 
-const HIGHLIGHT_COLORS = [
+/** Get highlight colors from CSS variables - adapts to current theme */
+const getHighlightColors = () => [
   { key: 'default', color: null, label: 'Default' },
-  { key: 'gray', color: '#e5e7eb', label: 'Gray' },
-  { key: 'yellow', color: '#fef9c3', label: 'Yellow' },
-  { key: 'green', color: '#dcfce7', label: 'Green' },
-  { key: 'blue', color: '#dbeafe', label: 'Blue' },
-  { key: 'purple', color: '#f3e8ff', label: 'Purple' },
-  { key: 'pink', color: '#fce7f3', label: 'Pink' },
-  { key: 'orange', color: '#ffedd5', label: 'Orange' },
-  { key: 'red', color: '#fee2e2', label: 'Red' }
+  { key: 'gray', color: cssVarToHex('editor-highlight-gray'), label: 'Gray' },
+  { key: 'yellow', color: cssVarToHex('editor-highlight-yellow'), label: 'Yellow' },
+  { key: 'green', color: cssVarToHex('editor-highlight-green'), label: 'Green' },
+  { key: 'blue', color: cssVarToHex('editor-highlight-blue'), label: 'Blue' },
+  { key: 'purple', color: cssVarToHex('editor-highlight-purple'), label: 'Purple' },
+  { key: 'pink', color: cssVarToHex('editor-highlight-pink'), label: 'Pink' },
+  { key: 'orange', color: cssVarToHex('editor-highlight-orange'), label: 'Orange' },
+  { key: 'red', color: cssVarToHex('editor-highlight-red'), label: 'Red' }
 ]
 
 interface EditorBubbleMenuProps {
@@ -274,22 +276,12 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
         case 'copy': {
           const { from, to } = editor.state.selection
           const text = editor.state.doc.textBetween(from, to, ' ')
-          try {
-            await navigator.clipboard.writeText(text)
-            toast.success(t('editor.bubble.more.copied'))
-          } catch {
-            toast.error(t('editor.bubble.more.copyFailed'))
-          }
+          await navigator.clipboard.writeText(text).catch(() => {})
           break
         }
         case 'copyMarkdown': {
           const json = editor.getJSON()
-          const success = await copyAsMarkdown(json)
-          if (success) {
-            toast.success(t('editor.bubble.more.copiedMarkdown'))
-          } else {
-            toast.error(t('editor.bubble.more.copyFailed'))
-          }
+          await copyAsMarkdown(json)
           break
         }
         case 'delete':
@@ -298,7 +290,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
       }
       dispatch({ type: 'CLOSE_ALL' })
     },
-    [editor, t]
+    [editor]
   )
 
   const { selectedIndex: moreMenuSelectedIndex } = useDropdownKeyboard(
@@ -753,7 +745,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
             aria-label={t('editor.bubble.textColor')}
           >
             <ColorSection title={t('editor.bubble.textColor')}>
-              {TEXT_COLORS.map(item => {
+              {getTextColors().map(item => {
                 const currentColor = editor.getAttributes('textStyle').color || null
                 const isActive = item.color === currentColor
                 return (
@@ -788,7 +780,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
             <div className='h-px bg-border my-1.5' />
 
             <ColorSection title={t('editor.bubble.highlight')}>
-              {HIGHLIGHT_COLORS.map(item => {
+              {getHighlightColors().map(item => {
                 const currentHighlight = editor.getAttributes('highlight').color || null
                 const isActive = item.color === currentHighlight
                 return (

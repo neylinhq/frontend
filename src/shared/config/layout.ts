@@ -3,6 +3,18 @@
  * Centralized dimensions for consistent layouts across the app
  */
 export const LAYOUT = {
+  // Dashboard sidebar
+  sidebar: {
+    collapsed: {
+      width: 64,
+      class: 'w-16'
+    },
+    expanded: {
+      width: 256,
+      class: 'w-64'
+    }
+  },
+
   // Header height - consistent across all layouts
   header: {
     height: 56,

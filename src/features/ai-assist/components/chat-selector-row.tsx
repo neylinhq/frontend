@@ -3,7 +3,7 @@ import { ChevronDown, Plus } from 'lucide-react'
 import { Button } from '@/shared/components/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/components/popover'
 import { cn } from '@/shared/lib/cn'
-import type { ChatSession } from '../model/chat-sessions.types'
+import type { ChatSession } from '../model/ai-assist.sessions.types'
 import { ChatSelectorPopover } from './chat-selector-popover'
 import { useState } from 'react'
 

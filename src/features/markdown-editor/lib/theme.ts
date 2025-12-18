@@ -2,11 +2,13 @@
  * CodeMirror Theme Configuration
  *
  * Clean, minimal theme that inherits from the application.
+ * Reads colors from CSS variables and recreates on theme/palette change.
  */
 
 import { EditorView } from '@codemirror/view'
 import { HighlightStyle, syntaxHighlighting } from '@codemirror/language'
 import { tags } from '@lezer/highlight'
+import { cssVarToHex } from '@/features/graph-webgl/lib/theme-bridge'
 
 /**
  * Base editor theme - minimal, clean
@@ -50,60 +52,69 @@ export const editorTheme = EditorView.theme({
 })
 
 /**
- * Syntax highlighting for Markdown - minimal colors
+ * Create syntax highlighting for Markdown with theme-aware colors
+ * Call this when theme/palette changes to recreate with updated colors
  */
-export const markdownHighlighting = HighlightStyle.define([
+export const createMarkdownHighlighting = () => HighlightStyle.define([
   // Headings
   { tag: tags.heading1, fontWeight: '700', fontSize: '1.75em' },
   { tag: tags.heading2, fontWeight: '600', fontSize: '1.5em' },
   { tag: tags.heading3, fontWeight: '600', fontSize: '1.25em' },
   { tag: tags.heading4, fontWeight: '600', fontSize: '1.1em' },
   { tag: tags.heading5, fontWeight: '600' },
-  { tag: tags.heading6, fontWeight: '600', color: '#888' },
+  { tag: tags.heading6, fontWeight: '600', color: cssVarToHex('syntax-comment') },
 
   // Emphasis
   { tag: tags.strong, fontWeight: '600' },
   { tag: tags.emphasis, fontStyle: 'italic' },
-  { tag: tags.strikethrough, textDecoration: 'line-through', color: '#888' },
+  { tag: tags.strikethrough, textDecoration: 'line-through', color: cssVarToHex('syntax-comment') },
 
   // Code
   { tag: tags.monospace, fontFamily: 'ui-monospace, monospace', backgroundColor: 'rgba(128, 128, 128, 0.1)', padding: '1px 4px', borderRadius: '3px' },
 
   // Links
-  { tag: tags.link, color: '#0066cc', textDecoration: 'underline' },
-  { tag: tags.url, color: '#0066cc', textDecoration: 'underline' },
+  { tag: tags.link, color: cssVarToHex('brand'), textDecoration: 'underline' },
+  { tag: tags.url, color: cssVarToHex('brand'), textDecoration: 'underline' },
 
   // Quotes
-  { tag: tags.quote, color: '#666', fontStyle: 'italic' },
+  { tag: tags.quote, color: cssVarToHex('muted-foreground'), fontStyle: 'italic' },
 
   // Meta (markdown syntax characters like #, *, -, etc.)
-  { tag: tags.meta, color: '#999' },
-  { tag: tags.processingInstruction, color: '#999' },
+  { tag: tags.meta, color: cssVarToHex('syntax-punctuation') },
+  { tag: tags.processingInstruction, color: cssVarToHex('syntax-punctuation') },
 
   // Comments
-  { tag: tags.comment, color: '#888', fontStyle: 'italic' },
+  { tag: tags.comment, color: cssVarToHex('syntax-comment'), fontStyle: 'italic' },
 
   // Keywords (for code blocks)
-  { tag: tags.keyword, color: '#9333ea' },
-  { tag: tags.string, color: '#16a34a' },
-  { tag: tags.number, color: '#ea580c' },
-  { tag: tags.bool, color: '#0891b2' },
-  { tag: tags.null, color: '#0891b2' },
-  { tag: tags.function(tags.variableName), color: '#2563eb' },
-  { tag: tags.typeName, color: '#ca8a04' },
-  { tag: tags.className, color: '#ca8a04' },
-  { tag: tags.propertyName, color: '#2563eb' },
-  { tag: tags.attributeName, color: '#ca8a04' },
-  { tag: tags.attributeValue, color: '#16a34a' },
+  { tag: tags.keyword, color: cssVarToHex('syntax-keyword') },
+  { tag: tags.string, color: cssVarToHex('syntax-string') },
+  { tag: tags.number, color: cssVarToHex('syntax-number') },
+  { tag: tags.bool, color: cssVarToHex('syntax-variable') },
+  { tag: tags.null, color: cssVarToHex('syntax-variable') },
+  { tag: tags.function(tags.variableName), color: cssVarToHex('syntax-function') },
+  { tag: tags.typeName, color: cssVarToHex('syntax-type') },
+  { tag: tags.className, color: cssVarToHex('syntax-type') },
+  { tag: tags.propertyName, color: cssVarToHex('syntax-property') },
+  { tag: tags.attributeName, color: cssVarToHex('syntax-type') },
+  { tag: tags.attributeValue, color: cssVarToHex('syntax-string') },
 
   // Invalid
-  { tag: tags.invalid, color: '#dc2626' }
+  { tag: tags.invalid, color: cssVarToHex('destructive') }
 ])
 
 /**
- * Combined theme extension for the editor
+ * Create combined theme extension with current CSS colors
+ * Call this to recreate theme when palette/mode changes
  */
-export const theme = [
+export const createTheme = () => [
   editorTheme,
-  syntaxHighlighting(markdownHighlighting)
+  syntaxHighlighting(createMarkdownHighlighting())
 ]
+
+/**
+ * Combined theme extension for the editor
+ * Uses base theme only - syntax highlighting is applied via createTheme() at runtime
+ * This avoids SSR issues with CSS variable resolution
+ */
+export const theme = [editorTheme]

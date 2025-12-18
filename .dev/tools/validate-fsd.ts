@@ -91,7 +91,7 @@ type Layer = (typeof LAYERS)[number]
 const ALLOWED_SEGMENTS = ['components', 'model', 'lib', 'api', 'styles'] as const
 
 // Special directories that are allowed but not FSD segments
-const SPECIAL_DIRS = ['__mocks__', '__tests__', 'pkg', 'wasm', 'ui'] as const
+const SPECIAL_DIRS = ['__mocks__', '__tests__', 'pkg', 'wasm'] as const
 
 // Infrastructure directories in shared/ - NOT modules, skip FSD validation
 // Each has its own simple structure (documented in 02-modules.md):

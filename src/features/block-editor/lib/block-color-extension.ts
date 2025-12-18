@@ -1,4 +1,5 @@
 import { Extension } from '@tiptap/core'
+import { cssVarToHex } from '@/features/graph-webgl/lib/theme-bridge'
 
 export interface BlockColorOptions {
   types: string[]
@@ -20,14 +21,16 @@ export const BlockColor = Extension.create<BlockColorOptions>({
   addOptions() {
     return {
       types: ['paragraph', 'heading', 'blockquote'],
+      // Colors are resolved at runtime via getBlockBackgroundColors()
+      // These are fallback values for SSR compatibility
       colors: [
-        '#f3f4f6', // gray-100
-        '#fef3c7', // amber-100
-        '#dcfce7', // green-100
-        '#dbeafe', // blue-100
-        '#f3e8ff', // purple-100
-        '#fce7f3', // pink-100
-        '#fee2e2' // red-100
+        '#e5e7eb', // gray
+        '#fef3c7', // yellow
+        '#dcfce7', // green
+        '#dbeafe', // blue
+        '#f3e8ff', // purple
+        '#fce7f3', // pink
+        '#fee2e2' // red
       ]
     }
   },
@@ -75,13 +78,34 @@ export const BlockColor = Extension.create<BlockColorOptions>({
   }
 })
 
-export const BLOCK_BACKGROUND_COLORS = [
-  { name: 'Default', color: null },
-  { name: 'Gray', color: '#f3f4f6' },
-  { name: 'Yellow', color: '#fef3c7' },
-  { name: 'Green', color: '#dcfce7' },
-  { name: 'Blue', color: '#dbeafe' },
-  { name: 'Purple', color: '#f3e8ff' },
-  { name: 'Pink', color: '#fce7f3' },
-  { name: 'Red', color: '#fee2e2' }
-]
+/** SSR fallback colors for block backgrounds */
+const BLOCK_COLOR_FALLBACKS: Record<string, string> = {
+  gray: '#e5e7eb',
+  yellow: '#fef3c7',
+  green: '#dcfce7',
+  blue: '#dbeafe',
+  purple: '#f3e8ff',
+  pink: '#fce7f3',
+  red: '#fee2e2'
+}
+
+/** Get block background colors from CSS variables - adapts to current theme */
+export const getBlockBackgroundColors = () => {
+  const getColor = (name: string) => {
+    const color = cssVarToHex(`editor-highlight-${name}`)
+    // cssVarToHex returns #808080 in SSR - use fallback
+    return color === '#808080' ? BLOCK_COLOR_FALLBACKS[name] : color
+  }
+
+  return [
+    { name: 'Default', color: null },
+    { name: 'Gray', color: getColor('gray') },
+    { name: 'Yellow', color: getColor('yellow') },
+    { name: 'Green', color: getColor('green') },
+    { name: 'Blue', color: getColor('blue') },
+    { name: 'Purple', color: getColor('purple') },
+    { name: 'Pink', color: getColor('pink') },
+    { name: 'Red', color: getColor('red') }
+  ]
+}
+

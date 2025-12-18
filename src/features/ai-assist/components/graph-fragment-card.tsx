@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Check, ChevronDown, ChevronRight, Circle, Loader2, X, ArrowRight, GitBranch } from 'lucide-react'
 import { Button } from '@/shared/components/button'
@@ -6,6 +6,13 @@ import { Badge } from '@/shared/components/badge'
 import { Checkbox } from '@/shared/components/checkbox'
 import { cn } from '@/shared/lib/cn'
 import type { GraphFragmentPreviewData, GraphFragmentNode, GraphFragmentEdge } from '../model/ai-assist.types'
+
+/** Decode HTML entities like &#39; -> ' */
+const decodeHtmlEntities = (text: string): string => {
+  const textarea = document.createElement('textarea')
+  textarea.innerHTML = text
+  return textarea.value
+}
 
 /** Node type colors - using theme tokens from globals.css */
 const NODE_TYPE_COLORS: Record<string, string> = {
@@ -34,7 +41,8 @@ export const GraphFragmentCard = ({
   isLoading = false
 }: GraphFragmentCardProps) => {
   const { t } = useTranslation()
-  const [isExpanded, setIsExpanded] = useState(true)
+  // Collapsed by default — progressive disclosure: user sees summary first, can expand if needed
+  const [isExpanded, setIsExpanded] = useState(false)
   const [isApplying, setIsApplying] = useState(false)
 
   // Combined loading state (external + internal)
@@ -158,7 +166,8 @@ export const GraphFragmentCard = ({
         onClick={() => setIsExpanded(!isExpanded)}
         className={cn(
           'w-full px-3 py-2 bg-muted/50 border-b border-border',
-          'flex items-center gap-2 text-left hover:bg-muted/70 transition-colors'
+          'flex items-center gap-2 text-left hover:bg-muted/70 transition-colors',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset'
         )}
       >
         {isExpanded ? (
@@ -183,7 +192,7 @@ export const GraphFragmentCard = ({
             <button
               type="button"
               onClick={toggleAll}
-              className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
+              className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <Checkbox checked={allSelected} />
               <span>{t('ai.graphFragment.selectAll', 'Select all')}</span>
@@ -234,7 +243,7 @@ export const GraphFragmentCard = ({
           {/* Reasoning */}
           {data.reasoning && (
             <div className="text-xs text-muted-foreground italic border-t border-border pt-2">
-              {data.reasoning}
+              {decodeHtmlEntities(data.reasoning)}
             </div>
           )}
         </div>
@@ -290,6 +299,7 @@ const NodeRow = ({ node, selected, onToggle, disabled }: NodeRowProps) => {
       className={cn(
         'w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-left',
         'hover:bg-muted/50 transition-colors',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         disabled && 'opacity-50 cursor-not-allowed'
       )}
     >
@@ -331,6 +341,7 @@ const EdgeRow = ({ edge, selected, canSelect, onToggle, getLabel, disabled }: Ed
       className={cn(
         'w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-left',
         'hover:bg-muted/50 transition-colors',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         isDisabled && 'opacity-50 cursor-not-allowed'
       )}
       title={!canSelect ? t('ai.graphFragment.edgeRequiresNodes', 'Select the connected nodes first') : undefined}

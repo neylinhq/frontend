@@ -22,6 +22,22 @@ export const UsageProgress = ({ usage, limits }: UsageProgressProps) => {
     return limit === null ? t('billing.unlimited') : limit.toString()
   }
 
+  // Format token count with K/M suffix
+  const formatTokens = (tokens: number): string => {
+    if (tokens >= 1_000_000) {
+      return `${(tokens / 1_000_000).toFixed(1)}M`
+    }
+    if (tokens >= 1_000) {
+      return `${(tokens / 1_000).toFixed(0)}K`
+    }
+    return tokens.toString()
+  }
+
+  const formatTokenLimit = (limit: number | null): string => {
+    if (limit === null) return t('billing.unlimited')
+    return formatTokens(limit)
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -48,18 +64,30 @@ export const UsageProgress = ({ usage, limits }: UsageProgressProps) => {
           </div>
         </div>
 
-        {/* AI requests usage */}
+        {/* AI Tokens usage (new, primary metric) */}
         <div className='space-y-2'>
           <div className='flex justify-between text-sm'>
-            <span>{t('billing.usage.aiRequests')}</span>
+            <span>{t('billing.usage.aiTokens', 'AI Tokens')}</span>
             <span className='text-muted-foreground'>
-              {usage.aiRequestsThisMonth} / {formatLimit(limits.aiRequestsPerMonth)}
+              {formatTokens(usage.tokensUsedThisMonth)} / {formatTokenLimit(limits.tokensPerMonth)}
             </span>
           </div>
           <Progress
-            value={calculatePercentage(usage.aiRequestsThisMonth, limits.aiRequestsPerMonth)}
+            value={calculatePercentage(usage.tokensUsedThisMonth, limits.tokensPerMonth)}
           />
         </div>
+
+        {/* Model tiers info */}
+        {limits.allowedTiers && limits.allowedTiers.length > 0 && (
+          <div className='space-y-2'>
+            <div className='flex justify-between text-sm'>
+              <span>{t('billing.usage.modelTiers', 'Model Tiers')}</span>
+              <span className='text-muted-foreground capitalize'>
+                {limits.allowedTiers.join(', ')}
+              </span>
+            </div>
+          </div>
+        )}
 
         {/* Storage usage (info only, no limit) */}
         <div className='space-y-2'>

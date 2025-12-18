@@ -1,4 +1,4 @@
-import type { ChatSession } from '../model/chat-sessions.types'
+import type { ChatSession } from '../model/ai-assist.sessions.types'
 import { ChatTabsRow } from './chat-tabs-row'
 import { ChatSelectorRow } from './chat-selector-row'
 

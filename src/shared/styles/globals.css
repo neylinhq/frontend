@@ -122,6 +122,60 @@
   --color-edge-similar-to: oklch(var(--edge-similar-to));
   --color-edge-similar-to-muted: oklch(var(--edge-similar-to-muted));
 
+  /* Overlay/Scrim colors */
+  --color-overlay: oklch(var(--overlay));
+  --color-overlay-light: oklch(var(--overlay-light));
+
+  /* Canvas/Grid colors */
+  --color-canvas-grid: oklch(var(--canvas-grid));
+
+  /* Confidence colors (for edge stroke by confidence level) */
+  --color-confidence-high: oklch(var(--confidence-high));
+  --color-confidence-low: oklch(var(--confidence-low));
+
+  /* Editor text colors - for rich text formatting */
+  --color-editor-text-gray: oklch(var(--editor-text-gray));
+  --color-editor-text-brown: oklch(var(--editor-text-brown));
+  --color-editor-text-orange: oklch(var(--editor-text-orange));
+  --color-editor-text-yellow: oklch(var(--editor-text-yellow));
+  --color-editor-text-green: oklch(var(--editor-text-green));
+  --color-editor-text-blue: oklch(var(--editor-text-blue));
+  --color-editor-text-purple: oklch(var(--editor-text-purple));
+  --color-editor-text-pink: oklch(var(--editor-text-pink));
+  --color-editor-text-red: oklch(var(--editor-text-red));
+
+  /* Editor highlight colors - for text background */
+  --color-editor-highlight-gray: oklch(var(--editor-highlight-gray));
+  --color-editor-highlight-yellow: oklch(var(--editor-highlight-yellow));
+  --color-editor-highlight-green: oklch(var(--editor-highlight-green));
+  --color-editor-highlight-blue: oklch(var(--editor-highlight-blue));
+  --color-editor-highlight-purple: oklch(var(--editor-highlight-purple));
+  --color-editor-highlight-pink: oklch(var(--editor-highlight-pink));
+  --color-editor-highlight-orange: oklch(var(--editor-highlight-orange));
+  --color-editor-highlight-red: oklch(var(--editor-highlight-red));
+
+  /* Rating tier colors - for gamification */
+  --color-rating-novice: oklch(var(--rating-novice));
+  --color-rating-apprentice: oklch(var(--rating-apprentice));
+  --color-rating-journeyman: oklch(var(--rating-journeyman));
+  --color-rating-expert: oklch(var(--rating-expert));
+  --color-rating-master: oklch(var(--rating-master));
+  --color-rating-grandmaster: oklch(var(--rating-grandmaster));
+  --color-rating-legend: oklch(var(--rating-legend));
+  --color-rating-mythic: oklch(var(--rating-mythic));
+
+  /* Syntax highlighting colors - for code blocks */
+  --color-syntax-keyword: oklch(var(--syntax-keyword));
+  --color-syntax-string: oklch(var(--syntax-string));
+  --color-syntax-number: oklch(var(--syntax-number));
+  --color-syntax-comment: oklch(var(--syntax-comment));
+  --color-syntax-function: oklch(var(--syntax-function));
+  --color-syntax-variable: oklch(var(--syntax-variable));
+  --color-syntax-type: oklch(var(--syntax-type));
+  --color-syntax-operator: oklch(var(--syntax-operator));
+  --color-syntax-property: oklch(var(--syntax-property));
+  --color-syntax-punctuation: oklch(var(--syntax-punctuation));
+
   /* Radii */
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
@@ -313,6 +367,64 @@
     --edge-explains-muted: 0.94 0.04 290;
     --edge-causes: 0.60 0.20 340;            /* Pink */
     --edge-causes-muted: 0.94 0.04 340;
+
+    /* Overlay/Scrim - for modals and minimap mask */
+    --overlay: 0 0 0 / 0.6;                  /* Black 60% */
+    --overlay-light: 1 0 0 / 0.6;            /* White 60% */
+
+    /* Canvas grid - for graph background */
+    --canvas-grid: 0.89 0 0;                 /* Light gray grid */
+
+    /* Confidence colors - for edge stroke by confidence */
+    --confidence-high: 0.53 0.26 263;        /* Brand blue */
+    --confidence-low: 0.60 0 0;              /* Muted gray */
+
+    /* Editor text colors - vibrant for readability
+       Based on Tailwind palette, converted to OKLCH */
+    --editor-text-gray: 0.45 0 0;            /* gray-600 */
+    --editor-text-brown: 0.45 0.10 55;       /* amber-800 */
+    --editor-text-orange: 0.58 0.18 45;      /* orange-600 */
+    --editor-text-yellow: 0.68 0.16 85;      /* yellow-600 */
+    --editor-text-green: 0.55 0.16 145;      /* green-600 */
+    --editor-text-blue: 0.50 0.18 260;       /* blue-600 */
+    --editor-text-purple: 0.50 0.20 290;     /* purple-600 */
+    --editor-text-pink: 0.55 0.20 340;       /* pink-600 */
+    --editor-text-red: 0.55 0.22 25;         /* red-600 */
+
+    /* Editor highlight colors - soft pastel backgrounds
+       Light mode: high L, low C for subtle tints */
+    --editor-highlight-gray: 0.92 0 0;       /* gray-200 */
+    --editor-highlight-yellow: 0.96 0.08 95; /* yellow-100 */
+    --editor-highlight-green: 0.94 0.06 145; /* green-100 */
+    --editor-highlight-blue: 0.94 0.06 250;  /* blue-100 */
+    --editor-highlight-purple: 0.94 0.06 290;/* purple-100 */
+    --editor-highlight-pink: 0.94 0.06 340;  /* pink-100 */
+    --editor-highlight-orange: 0.94 0.06 55; /* orange-100 */
+    --editor-highlight-red: 0.94 0.06 25;    /* red-100 */
+
+    /* Rating tier colors - gamification progression
+       From neutral (Novice) to vibrant (Mythic) */
+    --rating-novice: 0.45 0 0;               /* Gray - starting point */
+    --rating-apprentice: 0.55 0.17 240;      /* Blue - learning */
+    --rating-journeyman: 0.58 0.17 145;      /* Green - progress */
+    --rating-expert: 0.72 0.16 85;           /* Yellow - competent */
+    --rating-master: 0.62 0.18 55;           /* Orange - skilled */
+    --rating-grandmaster: 0.58 0.22 25;      /* Red - elite */
+    --rating-legend: 0.55 0.20 290;          /* Purple - exceptional */
+    --rating-mythic: 0.58 0.22 340;          /* Pink - legendary */
+
+    /* Syntax highlighting - for code blocks
+       Designed for readability on light backgrounds */
+    --syntax-keyword: 0.50 0.20 290;         /* Purple - control flow */
+    --syntax-string: 0.52 0.16 145;          /* Green - strings */
+    --syntax-number: 0.58 0.18 45;           /* Orange - numbers */
+    --syntax-comment: 0.55 0 0;              /* Gray - comments */
+    --syntax-function: 0.50 0.18 260;        /* Blue - functions */
+    --syntax-variable: 0.58 0.16 55;         /* Amber - variables */
+    --syntax-type: 0.60 0.16 85;             /* Yellow - types */
+    --syntax-operator: 0.50 0.20 290;        /* Purple - operators */
+    --syntax-property: 0.50 0.18 260;        /* Blue - properties */
+    --syntax-punctuation: 0.50 0 0;          /* Gray - punctuation */
   }
 
   .dark {
@@ -396,25 +508,81 @@
 
     /* Edge type colors - same as light mode (universal) */
     --edge-contradicts: 0.60 0.22 25;
-    --edge-contradicts-muted: 0.20 0.05 25;
+    --edge-contradicts-muted: 0.22 0.05 25;
     --edge-prerequisite: 0.68 0.18 55;
-    --edge-prerequisite-muted: 0.20 0.05 55;
+    --edge-prerequisite-muted: 0.22 0.05 55;
     --edge-influences: 0.72 0.16 75;
-    --edge-influences-muted: 0.20 0.05 75;
+    --edge-influences-muted: 0.22 0.05 75;
     --edge-similar-to: 0.60 0.18 130;
-    --edge-similar-to-muted: 0.20 0.05 130;
+    --edge-similar-to-muted: 0.22 0.05 130;
     --edge-has-a: 0.58 0.16 160;
-    --edge-has-a-muted: 0.20 0.05 160;
+    --edge-has-a-muted: 0.22 0.05 160;
     --edge-part-of: 0.60 0.14 195;
-    --edge-part-of-muted: 0.20 0.05 195;
+    --edge-part-of-muted: 0.22 0.05 195;
     --edge-related-to: 0.55 0.16 230;
-    --edge-related-to-muted: 0.20 0.05 230;
+    --edge-related-to-muted: 0.22 0.05 230;
     --edge-is-a: 0.52 0.18 265;
-    --edge-is-a-muted: 0.20 0.05 265;
+    --edge-is-a-muted: 0.22 0.05 265;
     --edge-explains: 0.55 0.19 290;
-    --edge-explains-muted: 0.20 0.05 290;
+    --edge-explains-muted: 0.22 0.05 290;
     --edge-causes: 0.60 0.20 340;
-    --edge-causes-muted: 0.20 0.05 340;
+    --edge-causes-muted: 0.22 0.05 340;
+
+    /* Overlay/Scrim - for modals and minimap mask */
+    --overlay: 0 0 0 / 0.6;                  /* Black 60% - same as light */
+    --overlay-light: 1 0 0 / 0.6;            /* White 60% - for contrast */
+
+    /* Canvas grid - for graph background */
+    --canvas-grid: 0.22 0 0;                 /* Dark gray grid */
+
+    /* Confidence colors - for edge stroke by confidence */
+    --confidence-high: 0.57 0.24 263;        /* Brand blue (dark mode) */
+    --confidence-low: 0.50 0 0;              /* Muted gray */
+
+    /* Editor text colors - slightly brighter for dark mode
+       Increased L for readability on dark backgrounds */
+    --editor-text-gray: 0.60 0 0;
+    --editor-text-brown: 0.60 0.10 55;
+    --editor-text-orange: 0.68 0.18 45;
+    --editor-text-yellow: 0.78 0.16 85;
+    --editor-text-green: 0.65 0.16 145;
+    --editor-text-blue: 0.65 0.18 260;
+    --editor-text-purple: 0.65 0.20 290;
+    --editor-text-pink: 0.68 0.20 340;
+    --editor-text-red: 0.65 0.22 25;
+
+    /* Editor highlight colors - darker backgrounds for dark mode
+       Lower L for visible tints on dark backgrounds */
+    --editor-highlight-gray: 0.25 0 0;
+    --editor-highlight-yellow: 0.30 0.08 95;
+    --editor-highlight-green: 0.25 0.06 145;
+    --editor-highlight-blue: 0.25 0.06 250;
+    --editor-highlight-purple: 0.25 0.06 290;
+    --editor-highlight-pink: 0.25 0.06 340;
+    --editor-highlight-orange: 0.28 0.06 55;
+    --editor-highlight-red: 0.25 0.06 25;
+
+    /* Rating tier colors - same hues, adjusted L for dark mode */
+    --rating-novice: 0.55 0 0;
+    --rating-apprentice: 0.60 0.17 240;
+    --rating-journeyman: 0.65 0.17 145;
+    --rating-expert: 0.78 0.16 85;
+    --rating-master: 0.70 0.18 55;
+    --rating-grandmaster: 0.65 0.22 25;
+    --rating-legend: 0.65 0.20 290;
+    --rating-mythic: 0.68 0.22 340;
+
+    /* Syntax highlighting - brighter for dark mode */
+    --syntax-keyword: 0.70 0.18 290;
+    --syntax-string: 0.68 0.14 145;
+    --syntax-number: 0.72 0.16 45;
+    --syntax-comment: 0.55 0 0;
+    --syntax-function: 0.70 0.14 260;
+    --syntax-variable: 0.72 0.14 55;
+    --syntax-type: 0.75 0.14 85;
+    --syntax-operator: 0.70 0.18 290;
+    --syntax-property: 0.70 0.14 260;
+    --syntax-punctuation: 0.60 0 0;
   }
 
   /* ========================================
@@ -515,6 +683,12 @@
     --edge-explains-muted: 0.94 0.04 290;
     --edge-causes: 0.60 0.19 340;
     --edge-causes-muted: 0.94 0.04 340;
+
+    /* Canvas grid - warm tint for Vanilla */
+    --canvas-grid: 0.89 0.003 50;
+
+    /* Confidence uses brand (terracotta) */
+    --confidence-high: 0.66 0.17 45;
   }
   [data-palette="vanilla"].dark {
     /* Base UI - Dark with barely noticeable warm tint (H=50°, minimal C) - cozy */
@@ -587,27 +761,33 @@
     --complexity-advanced: 0.60 0.21 25;
     --complexity-advanced-bg: 0.18 0.04 25;
 
-    /* Edge type colors - C×0.95 */
+    /* Edge type colors - C×0.95, L=0.22 for consistency with node-muted */
     --edge-contradicts: 0.60 0.21 25;
-    --edge-contradicts-muted: 0.18 0.04 25;
+    --edge-contradicts-muted: 0.22 0.04 25;
     --edge-prerequisite: 0.68 0.17 55;
-    --edge-prerequisite-muted: 0.18 0.04 55;
+    --edge-prerequisite-muted: 0.22 0.04 55;
     --edge-influences: 0.72 0.15 75;
-    --edge-influences-muted: 0.18 0.04 75;
+    --edge-influences-muted: 0.22 0.04 75;
     --edge-similar-to: 0.60 0.17 130;
-    --edge-similar-to-muted: 0.18 0.04 130;
+    --edge-similar-to-muted: 0.22 0.04 130;
     --edge-has-a: 0.58 0.15 160;
-    --edge-has-a-muted: 0.18 0.04 160;
+    --edge-has-a-muted: 0.22 0.04 160;
     --edge-part-of: 0.60 0.13 195;
-    --edge-part-of-muted: 0.18 0.04 195;
+    --edge-part-of-muted: 0.22 0.04 195;
     --edge-related-to: 0.55 0.15 230;
-    --edge-related-to-muted: 0.18 0.04 230;
+    --edge-related-to-muted: 0.22 0.04 230;
     --edge-is-a: 0.52 0.17 265;
-    --edge-is-a-muted: 0.18 0.04 265;
+    --edge-is-a-muted: 0.22 0.04 265;
     --edge-explains: 0.55 0.18 290;
-    --edge-explains-muted: 0.18 0.04 290;
+    --edge-explains-muted: 0.22 0.04 290;
     --edge-causes: 0.60 0.19 340;
-    --edge-causes-muted: 0.18 0.04 340;
+    --edge-causes-muted: 0.22 0.04 340;
+
+    /* Canvas grid - warm tint for Vanilla dark */
+    --canvas-grid: 0.22 0.003 50;
+
+    /* Confidence uses brand (terracotta dark) */
+    --confidence-high: 0.70 0.16 45;
   }
 
   /* Vivid Theme - cool, modern, energetic
@@ -704,6 +884,12 @@
     --edge-explains-muted: 0.94 0.04 290;
     --edge-causes: 0.60 0.21 340;            /* Pink */
     --edge-causes-muted: 0.94 0.04 340;
+
+    /* Canvas grid - cool tint for Vivid */
+    --canvas-grid: 0.89 0.004 250;
+
+    /* Confidence uses brand (teal-green) */
+    --confidence-high: 0.60 0.20 165;
   }
   [data-palette="vivid"].dark {
     /* Dark with barely noticeable cool tint (C=0.005-0.006) - energetic */
@@ -797,6 +983,12 @@
     --edge-explains-muted: 0.18 0.05 290;
     --edge-causes: 0.62 0.21 340;            /* Pink */
     --edge-causes-muted: 0.18 0.05 340;
+
+    /* Canvas grid - cool tint for Vivid dark */
+    --canvas-grid: 0.18 0.004 250;
+
+    /* Confidence uses brand (teal-green bright) */
+    --confidence-high: 0.78 0.20 165;
   }
 
   /* ========================================
@@ -895,6 +1087,12 @@
     --edge-explains-muted: 0.94 0.04 290;
     --edge-causes: 0.60 0.20 340;            /* Pink */
     --edge-causes-muted: 0.94 0.04 340;
+
+    /* Canvas grid - pure neutral for Mono */
+    --canvas-grid: 0.91 0 0;
+
+    /* Confidence uses brand (hot pink) */
+    --confidence-high: 0.64 0.25 16;
   }
   [data-palette="mono"].dark {
     --background: 0.08 0 0;            /* Near black ~#141414 - slightly softer */
@@ -968,27 +1166,33 @@
     --complexity-advanced: 0.65 0.22 25;
     --complexity-advanced-bg: 0.22 0.05 25;
 
-    /* Edge type colors - same hues as Classic, L adjusted per hue for dark */
+    /* Edge type colors - same hues as Classic, L=0.16 for consistency with node-muted */
     --edge-contradicts: 0.65 0.22 25;        /* Red */
-    --edge-contradicts-muted: 0.22 0.05 25;
+    --edge-contradicts-muted: 0.16 0.05 25;
     --edge-prerequisite: 0.72 0.18 55;       /* Orange */
-    --edge-prerequisite-muted: 0.22 0.05 55;
+    --edge-prerequisite-muted: 0.16 0.05 55;
     --edge-influences: 0.78 0.16 75;         /* Amber - high L */
-    --edge-influences-muted: 0.22 0.05 75;
+    --edge-influences-muted: 0.16 0.05 75;
     --edge-similar-to: 0.68 0.18 130;        /* Lime */
-    --edge-similar-to-muted: 0.22 0.05 130;
+    --edge-similar-to-muted: 0.16 0.05 130;
     --edge-has-a: 0.65 0.16 160;             /* Teal */
-    --edge-has-a-muted: 0.22 0.05 160;
+    --edge-has-a-muted: 0.16 0.05 160;
     --edge-part-of: 0.68 0.14 195;           /* Cyan */
-    --edge-part-of-muted: 0.22 0.05 195;
+    --edge-part-of-muted: 0.16 0.05 195;
     --edge-related-to: 0.65 0.16 230;        /* Blue */
-    --edge-related-to-muted: 0.22 0.05 230;
+    --edge-related-to-muted: 0.16 0.05 230;
     --edge-is-a: 0.62 0.18 265;              /* Indigo */
-    --edge-is-a-muted: 0.22 0.05 265;
+    --edge-is-a-muted: 0.16 0.05 265;
     --edge-explains: 0.65 0.19 290;          /* Purple */
-    --edge-explains-muted: 0.22 0.05 290;
+    --edge-explains-muted: 0.16 0.05 290;
     --edge-causes: 0.68 0.20 340;            /* Pink */
-    --edge-causes-muted: 0.22 0.05 340;
+    --edge-causes-muted: 0.16 0.05 340;
+
+    /* Canvas grid - pure neutral for Mono dark */
+    --canvas-grid: 0.16 0 0;
+
+    /* Confidence uses brand (hot pink bright) */
+    --confidence-high: 0.68 0.24 16;
   }
 
   * {

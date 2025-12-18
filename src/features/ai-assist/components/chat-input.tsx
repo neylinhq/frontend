@@ -157,12 +157,12 @@ export const ChatInput = ({
       {isLoading ? (
         <Button
           size='icon'
-          variant='destructive'
+          variant='secondary'
           onClick={onStop}
           aria-label={t('ai.chat.stop', 'Stop generating')}
           className='absolute right-3 bottom-2.5 h-8 w-8 flex-shrink-0'
         >
-          <Square className='h-3 w-3 fill-current' />
+          <Square className='h-3 w-3 fill-current text-destructive' />
         </Button>
       ) : (
         <Button

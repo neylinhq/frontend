@@ -277,7 +277,7 @@ export const MathInputDialog = ({
       katex.render(latex, previewRef.current, {
         displayMode: mode === 'block',
         throwOnError: true,
-        errorColor: '#ef4444'
+        errorColor: 'oklch(var(--destructive))'
       })
       if (isMounted) {
         setError(null)

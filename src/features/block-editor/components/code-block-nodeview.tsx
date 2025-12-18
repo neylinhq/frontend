@@ -2,9 +2,8 @@ import { NodeViewContent, type NodeViewProps, NodeViewWrapper } from '@tiptap/re
 import { Check, ChevronDown, Copy } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { toast } from '@/shared/components/toast'
-
 import { cn } from '@/shared/lib/cn'
+import { useCopyToClipboard } from '@/shared/lib/use-copy-to-clipboard'
 
 /**
  * Language keys for the selector (labels are fetched from i18n)
@@ -45,7 +44,7 @@ export const CodeBlockNodeView = ({ node, updateAttributes, extension: _extensio
   const [isOpen, setIsOpen] = useState(false)
   const [search, setSearch] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(0)
-  const [copied, setCopied] = useState(false)
+  const { copied, copy } = useCopyToClipboard()
   const dropdownRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -77,17 +76,9 @@ export const CodeBlockNodeView = ({ node, updateAttributes, extension: _extensio
     [updateAttributes]
   )
 
-  const handleCopy = useCallback(async () => {
-    const code = node.textContent
-    try {
-      await navigator.clipboard.writeText(code)
-      setCopied(true)
-      toast.success(t('editor.codeBlock.copied'))
-      setTimeout(() => setCopied(false), 2000)
-    } catch {
-      toast.error(t('editor.bubble.more.copyFailed'))
-    }
-  }, [node.textContent, t])
+  const handleCopy = useCallback(() => {
+    copy(node.textContent)
+  }, [node.textContent, copy])
 
   // Close dropdown on outside click
   useEffect(() => {

@@ -88,6 +88,17 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
         <Meta />
         <Links />
 
+        {/* <script 
+          dangerouslySetInnerHTML={{ 
+            __html: `
+              window.ExpertiserAssistant = {
+                apiKey: 'test_123',
+                baseUrl: 'http://localhost:5188'
+              };
+            `
+          }} />
+        <script src="http://localhost:5188/embed.js"></script> */}
+
         {/* Theme & Locale Script: синхронизация темы и предотвращение мигания */}
         <script
           dangerouslySetInnerHTML={{

@@ -13,8 +13,8 @@ import type {
   ResolvedPreview
 } from '../model/ai-assist.types'
 import { getChatSessionId, useChatHistoryStore } from '../model/ai-assist.chat.store'
-import { chatSessionKeys, useChatSession, useAddChatMessage } from '../model/chat-sessions.api'
-import type { ChatProposal } from '../model/chat-sessions.types'
+import { chatSessionKeys, useChatSession, useAddChatMessage } from '../model/ai-assist.sessions.hooks'
+import type { ChatProposal } from '../model/ai-assist.sessions.types'
 import { ChatInput } from './chat-input'
 import { ChatMessageList } from './chat-message-list'
 
@@ -299,10 +299,6 @@ export const AIChatCore = ({
         isStreaming: false
       })
 
-      console.log({
-        error
-      })
-
       toast.error(t('ai.chat.error'), {
         description: error instanceof Error ? error.message : 'An error occurred'
       })
@@ -411,10 +407,7 @@ export const AIChatCore = ({
 
     try {
       if (onSavePreview) {
-        console.log('[AI Chat] Calling onSavePreview...')
         const result = await onSavePreview(messageId, previewCard)
-        console.log('[AI Chat] onSavePreview returned:', result)
-        // Move to resolved with undo data if available
         moveToResolved(
           sessionId,
           messageId,
@@ -422,14 +415,11 @@ export const AIChatCore = ({
           'approved',
           result ? { previousState: result.previousState, actionId: result.actionId } : undefined
         )
-        console.log('[AI Chat] moveToResolved completed')
       } else {
         // No save handler, just mark as resolved
         moveToResolved(sessionId, messageId, previewCard.id, 'approved')
       }
     } catch (error) {
-      console.error('[AI Chat] Save preview failed:', error)
-      console.error('[AI Chat] Error stack:', (error as Error).stack)
       // Extract error message from API response
       const apiError = error as { data?: { error?: { message?: string } } }
       const errorMessage = apiError.data?.error?.message || (error as Error).message || t('ai.saveFailed')
@@ -449,8 +439,19 @@ export const AIChatCore = ({
   const handleRejectPreview = async (messageId: string, preview: PreviewCard) => {
     // If preview has applied entity IDs, delete them first
     if (onRejectAppliedPreview) {
-      const data = preview.data as { appliedNodeId?: string; appliedEdgeId?: string }
-      if (data.appliedNodeId || data.appliedEdgeId) {
+      let hasAppliedEntities = false
+
+      if (preview.type === 'graph_fragment') {
+        // For graph_fragment, check if any nodes/edges have been applied
+        const data = preview.data as import('../model/ai-assist.types').GraphFragmentPreviewData
+        hasAppliedEntities = data.nodes.some(n => n.appliedNodeId) || data.edges.some(e => e.appliedEdgeId)
+      } else {
+        // For other types, check appliedNodeId/appliedEdgeId on the data object
+        const data = preview.data as { appliedNodeId?: string; appliedEdgeId?: string }
+        hasAppliedEntities = !!(data.appliedNodeId || data.appliedEdgeId)
+      }
+
+      if (hasAppliedEntities) {
         try {
           await onRejectAppliedPreview(preview)
         } catch {
@@ -549,8 +550,6 @@ export const AIChatCore = ({
             onUndoResolved={handleUndoResolved}
             onRegenerate={handleRegenerate}
             onEditMessage={handleEditMessage}
-            userAvatarUrl={user?.avatarUrl}
-            userDisplayName={user?.displayName || user?.firstName}
           />
         )}
       </div>

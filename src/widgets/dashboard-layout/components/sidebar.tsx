@@ -66,7 +66,7 @@ export const Sidebar = ({ className, isExpanded, onToggle }: SidebarProps) => {
       </div>
 
       {/* Navigation */}
-      <div className='flex-1 py-4 px-3 space-y-1 overflow-y-auto'>
+      <div className='flex-1 py-4 px-3 space-y-1 overflow-y-auto overflow-x-hidden'>
         {DASHBOARD_SIDEBAR_ITEMS.map(item => (
           <NavItem key={item.href} to={item.href} icon={item.icon} isExpanded={isExpanded}>
             {t(item.title)}

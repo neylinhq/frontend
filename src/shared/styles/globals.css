@@ -1,30 +1,172 @@
 @import "tailwindcss";
 @import "katex/dist/katex.min.css";
 
-/* Geist Font - Vercel's modern typeface (loaded from CDN) */
+/* Söhne - Klim Type Foundry's modern grotesque typeface */
+/* Regular weights */
 @font-face {
-  font-family: "Geist";
-  src: url("https://cdn.jsdelivr.net/npm/geist@1.5.1/dist/fonts/geist-sans/Geist-Variable.woff2") format("woff2");
-  font-weight: 100 900;
+  font-family: "Söhne";
+  src: url("/fonts/Söhne/soehne-extraleicht.woff2") format("woff2");
+  font-weight: 200;
   font-style: normal;
   font-display: swap;
 }
-
 @font-face {
-  font-family: "Geist Mono";
-  src: url("https://cdn.jsdelivr.net/npm/geist@1.5.1/dist/fonts/geist-mono/GeistMono-Variable.woff2") format("woff2");
-  font-weight: 100 900;
+  font-family: "Söhne";
+  src: url("/fonts/Söhne/soehne-extraleicht-kursiv.woff2") format("woff2");
+  font-weight: 200;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Söhne";
+  src: url("/fonts/Söhne/soehne-leicht.woff2") format("woff2");
+  font-weight: 300;
   font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Söhne";
+  src: url("/fonts/Söhne/soehne-leicht-kursiv.woff2") format("woff2");
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Söhne";
+  src: url("/fonts/Söhne/soehne-buch.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Söhne";
+  src: url("/fonts/Söhne/soehne-buch-kursiv.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Söhne";
+  src: url("/fonts/Söhne/soehne-kraftig.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Söhne";
+  src: url("/fonts/Söhne/soehne-kraftig-kursiv.woff2") format("woff2");
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Söhne";
+  src: url("/fonts/Söhne/soehne-halbfett.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Söhne";
+  src: url("/fonts/Söhne/soehne-halbfett-kursiv.woff2") format("woff2");
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Söhne";
+  src: url("/fonts/Söhne/soehne-dreiviertelfett.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Söhne";
+  src: url("/fonts/Söhne/soehne-dreiviertelfett-kursiv.woff2") format("woff2");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Söhne";
+  src: url("/fonts/Söhne/soehne-fett.woff2") format("woff2");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Söhne";
+  src: url("/fonts/Söhne/soehne-fett-kursiv.woff2") format("woff2");
+  font-weight: 800;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Söhne";
+  src: url("/fonts/Söhne/soehne-extrafett.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Söhne";
+  src: url("/fonts/Söhne/soehne-extrafett-kursiv.woff2") format("woff2");
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Söhne Mono */
+@font-face {
+  font-family: "Söhne Mono";
+  src: url("/fonts/SöhneMono/soehne-mono-buch.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Söhne Mono";
+  src: url("/fonts/SöhneMono/soehne-mono-buch-kursiv.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Söhne Mono";
+  src: url("/fonts/SöhneMono/soehne-mono-halbfett.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Söhne Mono";
+  src: url("/fonts/SöhneMono/soehne-mono-halbfett-kursiv.woff2") format("woff2");
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Söhne Mono";
+  src: url("/fonts/SöhneMono/soehne-mono-dreiviertelfett.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Söhne Mono";
+  src: url("/fonts/SöhneMono/soehne-mono-dreiviertelfett-kursiv.woff2") format("woff2");
+  font-weight: 700;
+  font-style: italic;
   font-display: swap;
 }
 
 @theme {
-  /* Main font: Geist - Vercel's modern geometric typeface */
-  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+  /* Main font: Söhne - Klim's modern grotesque typeface */
+  --font-sans: "Söhne", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
     "Segoe UI Symbol", "Noto Color Emoji";
 
-  /* Code font: Geist Mono - matching monospace from Vercel */
-  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  /* Code font: Söhne Mono - matching monospace from Klim */
+  --font-mono: "Söhne Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 
   /* Colors Mapping - OKLCH format: L C H */
   --color-background: oklch(var(--background));
@@ -455,8 +597,8 @@
     --warning-foreground: 0.12 0 0;
     --info: 0.62 0.14 230;                   /* Sky blue */
     --info-foreground: 0.99 0 0;
-    --border: 0.18 0 0;                      /* Subtle border */
-    --input: 0.22 0 0;
+    --border: 0.28 0 0;                      /* Subtle border - must be lighter than bg (0.20) */
+    --input: 0.32 0 0;                       /* Input border - slightly more prominent */
     --ring: 0.57 0.24 263;
 
     /* Brand: Blue for dark mode #0055FF +0.04L */
@@ -718,8 +860,8 @@
     --warning-foreground: 0.12 0 0;
     --info: 0.62 0.13 230;
     --info-foreground: 0.99 0 0;
-    --border: 0.20 0.003 50;                 /* Subtle border */
-    --input: 0.24 0.003 50;
+    --border: 0.26 0.003 50;                 /* Subtle border - lighter than bg (0.18) */
+    --input: 0.30 0.003 50;                  /* Input border - more prominent */
     --ring: 0.70 0.16 45;
     --brand: 0.70 0.16 45;                   /* Terracotta #E36B2B +0.04L */
     --brand-foreground: 0.99 0 0;
@@ -919,8 +1061,8 @@
     --warning-foreground: 0.12 0 0;
     --info: 0.70 0.15 200;             /* Vivid cyan - toned down */
     --info-foreground: 0.99 0 0;
-    --border: 0.18 0.004 250;          /* Subtle border */
-    --input: 0.20 0.004 250;
+    --border: 0.22 0.004 250;          /* Subtle border - lighter than bg (0.12) */
+    --input: 0.26 0.004 250;           /* Input border - more prominent */
     --ring: 0.78 0.20 165;             /* Teal-green - bright for dark bg */
     --brand: 0.78 0.20 165;            /* Teal-green - bright for dark bg */
     --brand-foreground: 0.12 0 0;      /* Dark text for bright brand */
@@ -1121,8 +1263,8 @@
     --warning-foreground: 0.15 0 0;
     --info: 0.72 0.14 200;             /* Brighter cyan */
     --info-foreground: 0.15 0 0;
-    --border: 0.14 0 0;                /* Subtle border */
-    --input: 0.16 0 0;
+    --border: 0.18 0 0;                /* Subtle border - lighter than bg (0.08) */
+    --input: 0.22 0 0;                 /* Input border - more prominent */
     --ring: 0.68 0.24 16;              /* Hot pink #FF0055 +0.04L */
     --brand: 0.68 0.24 16;             /* Hot pink #FF0055 +0.04L */
     --brand-foreground: 0.99 0 0;

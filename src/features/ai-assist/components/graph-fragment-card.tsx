@@ -175,7 +175,6 @@ export const GraphFragmentCard = ({
         ) : (
           <ChevronRight className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
         )}
-        <GitBranch className="h-3.5 w-3.5 text-primary flex-shrink-0" />
         <span className="text-xs font-medium flex-1 truncate">
           {data.title || t('ai.graphFragment.title', 'Graph Changes')}
         </span>

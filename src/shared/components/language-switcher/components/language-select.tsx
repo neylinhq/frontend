@@ -26,7 +26,7 @@ export const LanguageSelect = ({ compact }: LanguageSelectProps) => {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant='outline' size='sm' className={compact ? 'px-2' : undefined}>
+        <Button variant='ghost' size='sm' className={compact ? 'px-2' : undefined}>
           <Globe className='h-4 w-4' />
           {!compact && (
             <span className='ml-1.5'>{LANGUAGES.find(l => l.id === i18n.language)?.label}</span>

@@ -82,6 +82,7 @@
     "@tronweb3/tronwallet-adapter-react-hooks": "^1.1.10",
     "@tronweb3/tronwallet-adapters": "^1.2.16",
     "@types/turndown": "^5.0.6",
+    "@untitledui/icons-react": "^0.3.0",
     "@xyflow/react": "^12.9.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

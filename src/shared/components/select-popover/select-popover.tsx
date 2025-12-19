@@ -47,7 +47,7 @@ export const SelectPopover = <T extends string = string>({
     if (item.color) {
       return (
         <span
-          className='h-4 w-4 rounded-full border border-border flex-shrink-0'
+          className='h-4 w-4 rounded-full flex-shrink-0'
           style={{ backgroundColor: item.color }}
         />
       )
@@ -63,7 +63,7 @@ export const SelectPopover = <T extends string = string>({
       <PopoverTrigger asChild>
         {trigger || (
           <Button
-            variant='outline'
+            variant='ghost'
             size='sm'
             className={cn(compact ? 'px-2' : 'min-w-[100px]', className)}
           >

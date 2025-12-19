@@ -1,7 +1,8 @@
+import { useInfiniteQuery } from '@tanstack/react-query'
 import { Bot, History, Link2, Loader2, Plus, Trash2, User } from 'lucide-react'
-import { memo, useCallback, useMemo, useState } from 'react'
+import { memo, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { type MapEvent, useMapHistory } from '@/entities/map'
+import { type MapEvent, mapApi, mapKeys } from '@/entities/map'
 import { Button } from '@/shared/components/button'
 import { cn } from '@/shared/lib/cn'
 
@@ -14,18 +15,28 @@ const ITEMS_PER_PAGE = 20
 
 export const MapHistoryList = memo(({ mapId, className }: MapHistoryListProps) => {
   const { t } = useTranslation()
-  const [offset, setOffset] = useState(0)
 
-  const { data, isLoading, isFetching } = useMapHistory(mapId, {
-    limit: ITEMS_PER_PAGE,
-    offset
+  const {
+    data,
+    isLoading,
+    isFetchingNextPage,
+    hasNextPage,
+    fetchNextPage
+  } = useInfiniteQuery({
+    queryKey: [...mapKeys.history(mapId), 'infinite'],
+    queryFn: ({ pageParam = 0 }) =>
+      mapApi.getMapHistory(mapId, { limit: ITEMS_PER_PAGE, offset: pageParam }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages) => {
+      const loadedCount = allPages.reduce((sum, page) => sum + page.events.length, 0)
+      return loadedCount < lastPage.totalCount ? loadedCount : undefined
+    },
+    enabled: !!mapId
   })
 
-  const handleLoadMore = useCallback(() => {
-    setOffset(prev => prev + ITEMS_PER_PAGE)
-  }, [])
-
-  const hasMore = data && data.total > offset + ITEMS_PER_PAGE
+  const allEvents = useMemo(() => {
+    return data?.pages.flatMap(page => page.events) ?? []
+  }, [data])
 
   if (isLoading) {
     return (
@@ -35,7 +46,7 @@ export const MapHistoryList = memo(({ mapId, className }: MapHistoryListProps) =
     )
   }
 
-  if (!data?.events?.length) {
+  if (!allEvents.length) {
     return (
       <div className='flex flex-col items-center justify-center py-12 text-center'>
         <History className='h-10 w-10 text-muted-foreground/30 mb-3' />
@@ -51,22 +62,22 @@ export const MapHistoryList = memo(({ mapId, className }: MapHistoryListProps) =
 
   return (
     <div className={cn('space-y-1', className)}>
-      {data.events.map(event => (
+      {allEvents.map(event => (
         <HistoryEventItem key={event.id} event={event} />
       ))}
 
-      {hasMore && (
+      {hasNextPage && (
         <div className='pt-3'>
           <Button
             variant='ghost'
             size='sm'
             className='w-full'
-            onClick={handleLoadMore}
-            disabled={isFetching}
+            onClick={() => fetchNextPage()}
+            disabled={isFetchingNextPage}
           >
-            {isFetching ? (
+            {isFetchingNextPage && (
               <Loader2 className='h-4 w-4 animate-spin mr-2' />
-            ) : null}
+            )}
             {t('mapSettings.history.loadMore')}
           </Button>
         </div>
@@ -105,20 +116,32 @@ const HistoryEventItem = memo(({ event }: HistoryEventItemProps) => {
   const SourceIcon = event.source === 'ai' ? Bot : User
 
   const iconColorClass = useMemo(() => {
-    if (event.eventType.includes('deleted')) return 'text-destructive/70'
-    if (event.eventType.includes('created')) return 'text-emerald-500/70'
+    if (event.eventType.includes('deleted')) {
+      return 'text-destructive/70'
+    }
+    if (event.eventType.includes('created')) {
+      return 'text-emerald-500/70'
+    }
     return 'text-blue-500/70'
   }, [event.eventType])
 
   // Extract label from changes if available
   const entityLabel = useMemo(() => {
     const after = event.changes?.after as Record<string, unknown> | undefined
-    if (after?.label) return String(after.label)
-    if (after?.Label) return String(after.Label)
+    if (after?.label) {
+      return String(after.label)
+    }
+    if (after?.Label) {
+      return String(after.Label)
+    }
 
     const before = event.changes?.before as Record<string, unknown> | undefined
-    if (before?.label) return String(before.label)
-    if (before?.Label) return String(before.Label)
+    if (before?.label) {
+      return String(before.label)
+    }
+    if (before?.Label) {
+      return String(before.Label)
+    }
 
     return null
   }, [event.changes])

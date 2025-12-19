@@ -120,22 +120,23 @@ export type MapEvent = z.infer<typeof MapEventSchema>
 
 export const MapHistoryResponseSchema = z.object({
   events: z.array(MapEventSchema),
-  total: z.number(),
-  limit: z.number(),
-  offset: z.number()
+  totalCount: z.number()
 })
 
 export type MapHistoryResponse = z.infer<typeof MapHistoryResponseSchema>
 
 export const MapHistorySummarySchema = z.object({
-  mapId: z.string(),
   totalEvents: z.number(),
-  nodeCreated: z.number(),
-  nodeUpdated: z.number(),
-  nodeDeleted: z.number(),
-  edgeCreated: z.number(),
-  edgeDeleted: z.number(),
-  lastEventAt: z.string().nullable()
+  latestVersion: z.number(),
+  firstEventAt: z.string().optional(),
+  lastEventAt: z.string().optional(),
+  nodesCreated: z.number(),
+  nodesUpdated: z.number(),
+  nodesDeleted: z.number(),
+  edgesCreated: z.number(),
+  edgesDeleted: z.number(),
+  aiChangesCount: z.number(),
+  userChangesCount: z.number()
 })
 
 export type MapHistorySummary = z.infer<typeof MapHistorySummarySchema>

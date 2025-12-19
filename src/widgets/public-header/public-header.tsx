@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { Link, NavLink } from 'react-router'
 import { ModeSelect } from '@/features/theme/mode-select'
 import { PaletteSelect } from '@/features/theme/palette-select'
-import { AuthNav } from '@/widgets/auth-nav'
 import { Button } from '@/shared/components/button'
 import { LanguageSelect } from '@/shared/components/language-switcher'
 import { Logo } from '@/shared/components/logo'
@@ -12,6 +11,7 @@ import { Separator } from '@/shared/components/separator'
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/shared/components/sheet'
 import { AUTH_ROUTES, ROUTES } from '@/shared/config'
 import { cn } from '@/shared/lib/cn'
+import { AuthNav } from '@/widgets/auth-nav'
 
 export const PublicHeader = () => {
   const { t } = useTranslation()
@@ -23,7 +23,7 @@ export const PublicHeader = () => {
 
         <nav className='flex items-center gap-2'>
           {/* Desktop theme controls */}
-          <div className='hidden md:flex items-center gap-2'>
+          <div className='hidden md:flex items-center gap-0.5'>
             <LanguageSelect compact />
             <PaletteSelect compact />
             <ModeSelect compact />

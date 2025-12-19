@@ -1,4 +1,12 @@
-import { AlertCircle, History, Info, SlidersHorizontal, Trash2, TrendingUp, X } from 'lucide-react'
+import {
+  AlertCircleIcon,
+  ClockRewindIcon,
+  InfoCircleIcon,
+  Sliders04Icon,
+  Trash01Icon,
+  TrendUp01Icon,
+  XCloseIcon
+} from '@untitledui/icons-react/outline'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
@@ -192,13 +200,8 @@ export const MapSettingsDrawer = memo(
                     <span className='text-xs text-muted-foreground'>{t('common.saving')}</span>
                   )}
                 </div>
-                <Button
-                  variant='ghost'
-                  size='icon'
-                  className='h-7 w-7 -mr-1'
-                  onClick={handleClose}
-                >
-                  <X className='h-4 w-4' />
+                <Button variant='ghost' size='icon' className='h-7 w-7 -mr-1' onClick={handleClose}>
+                  <XCloseIcon className='h-4 w-4' />
                 </Button>
               </div>
             </DrawerHeader>
@@ -207,19 +210,19 @@ export const MapSettingsDrawer = memo(
             <Tabs defaultValue='overview' className='flex flex-col flex-1 min-h-0'>
               <TabsList variant='underline' className='grid grid-cols-4 shrink-0'>
                 <TabsTrigger variant='underline' value='overview' className='gap-1.5'>
-                  <Info className='h-3.5 w-3.5' />
+                  <InfoCircleIcon className='h-3.5 w-3.5' />
                   <span className='text-xs'>{t('mapSettings.tabs.overview')}</span>
                 </TabsTrigger>
                 <TabsTrigger variant='underline' value='progress' className='gap-1.5'>
-                  <TrendingUp className='h-3.5 w-3.5' />
+                  <TrendUp01Icon className='h-3.5 w-3.5' />
                   <span className='text-xs'>{t('mapSettings.tabs.progress')}</span>
                 </TabsTrigger>
                 <TabsTrigger variant='underline' value='history' className='gap-1.5'>
-                  <History className='h-3.5 w-3.5' />
+                  <ClockRewindIcon className='h-3.5 w-3.5' />
                   <span className='text-xs'>{t('mapSettings.tabs.history')}</span>
                 </TabsTrigger>
                 <TabsTrigger variant='underline' value='settings' className='gap-1.5'>
-                  <SlidersHorizontal className='h-3.5 w-3.5' />
+                  <Sliders04Icon className='h-3.5 w-3.5' />
                   <span className='text-xs'>{t('mapSettings.tabs.settings')}</span>
                 </TabsTrigger>
               </TabsList>
@@ -231,13 +234,9 @@ export const MapSettingsDrawer = memo(
                   {isOwner && (
                     <div className='flex items-center justify-between'>
                       {map?.isPublic ? (
-                        <Badge variant='info'>
-                          {t('mapSettings.visibility.public')}
-                        </Badge>
+                        <Badge variant='info'>{t('mapSettings.visibility.public')}</Badge>
                       ) : (
-                        <Badge variant='secondary'>
-                          {t('mapSettings.visibility.private')}
-                        </Badge>
+                        <Badge variant='secondary'>{t('mapSettings.visibility.private')}</Badge>
                       )}
                       <Switch
                         checked={map?.isPublic ?? false}
@@ -365,7 +364,7 @@ export const MapSettingsDrawer = memo(
                       <Card className='border-destructive/30'>
                         <CardHeader className='pb-2 pt-3 px-3'>
                           <CardTitle className='text-xs font-medium text-destructive flex items-center gap-1.5'>
-                            <AlertCircle className='h-3.5 w-3.5' />
+                            <AlertCircleIcon className='h-3.5 w-3.5' />
                             {t('mapSettings.dangerZone.title')}
                           </CardTitle>
                         </CardHeader>
@@ -379,7 +378,7 @@ export const MapSettingsDrawer = memo(
                             className='text-muted-foreground hover:text-destructive hover:bg-destructive/10'
                             onClick={() => setDeleteDialogOpen(true)}
                           >
-                            <Trash2 className='mr-1.5 h-3.5 w-3.5' />
+                            <Trash01Icon className='mr-1.5 h-3.5 w-3.5' />
                             {t('mapSettings.dangerZone.delete')}
                           </Button>
                         </CardContent>
@@ -411,7 +410,7 @@ export const MapSettingsDrawer = memo(
                 disabled={deleteMapMutation.isPending}
                 className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
               >
-                <Trash2 className='mr-1.5 h-3.5 w-3.5' />
+                <Trash01Icon className='mr-1.5 h-3.5 w-3.5' />
                 {t('mapSettings.dangerZone.delete')}
               </AlertDialogAction>
             </AlertDialogFooter>

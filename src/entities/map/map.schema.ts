@@ -79,6 +79,23 @@ export type MapSearchResponse = z.infer<typeof MapSearchResponseSchema>
 export type MapFilter = 'all' | 'owned' | 'public'
 export type MapSearchMode = 'maps' | 'nodes' | 'all'
 
+// Dashboard group with pagination
+export const DashboardGroupSchema = z.object({
+  maps: z.array(MapEntitySchema),
+  total: z.number(),
+  hasMore: z.boolean()
+})
+
+export type DashboardGroup = z.infer<typeof DashboardGroupSchema>
+
+// Dashboard response - initial load with both groups
+export const DashboardMapsResponseSchema = z.object({
+  owned: DashboardGroupSchema,
+  public: DashboardGroupSchema
+})
+
+export type DashboardMapsResponse = z.infer<typeof DashboardMapsResponseSchema>
+
 // Map History types
 export const MapEventTypeEnum = z.enum([
   'node_created',

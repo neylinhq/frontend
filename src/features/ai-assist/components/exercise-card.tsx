@@ -1,4 +1,4 @@
-import { Check, ChevronDown, ChevronRight, X } from 'lucide-react'
+import { CheckIcon, ChevronDownIcon, ChevronRightIcon, XCloseIcon } from '@untitledui/icons-react/outline'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Markdown from 'react-markdown'
@@ -148,10 +148,10 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
                 >
                   <div className='flex items-center gap-2'>
                     {showResult && isThisCorrect && (
-                      <Check className='h-4 w-4 text-success flex-shrink-0' aria-hidden='true' />
+                      <CheckIcon className='h-4 w-4 text-success flex-shrink-0' aria-hidden='true' />
                     )}
                     {showResult && isSelected && !isThisCorrect && (
-                      <X className='h-4 w-4 text-destructive flex-shrink-0' aria-hidden='true' />
+                      <XCloseIcon className='h-4 w-4 text-destructive flex-shrink-0' aria-hidden='true' />
                     )}
                     <span><InlineMarkdown>{optionContent}</InlineMarkdown></span>
                   </div>
@@ -321,7 +321,7 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
             onClick={() => setShowExplanation(!showExplanation)}
             className='mt-2 flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground'
           >
-            {showExplanation ? <ChevronDown className='h-3 w-3' /> : <ChevronRight className='h-3 w-3' />}
+            {showExplanation ? <ChevronDownIcon className='h-3 w-3' /> : <ChevronRightIcon className='h-3 w-3' />}
             {t('ai.exercises.explanation', 'Explanation')}
           </button>
         )}

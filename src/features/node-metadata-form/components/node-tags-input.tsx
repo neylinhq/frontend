@@ -1,4 +1,4 @@
-import { X } from 'lucide-react'
+import { XCloseIcon } from '@untitledui/icons-react/outline'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Badge } from '@/shared/components/badge'
@@ -59,7 +59,7 @@ export const NodeTagsInput = ({ value, onChange }: NodeTagsInputProps) => {
                 onClick={() => handleRemoveTag(tag)}
                 className='ml-1 rounded-full hover:bg-muted'
               >
-                <X className='h-3 w-3' />
+                <XCloseIcon className='h-3 w-3' />
               </button>
             </Badge>
           ))}

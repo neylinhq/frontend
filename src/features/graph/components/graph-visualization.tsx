@@ -1,5 +1,7 @@
 import '@xyflow/react/dist/style.css'
+
 import { useQueryClient } from '@tanstack/react-query'
+import { Loading03Icon } from '@untitledui/icons-react/outline'
 import {
   addEdge,
   Background,
@@ -12,9 +14,7 @@ import {
   useNodesState,
   useReactFlow
 } from '@xyflow/react'
-import { Loader2 } from 'lucide-react'
 import { memo, useCallback, useEffect, useMemo, useRef } from 'react'
-import { getNodeColorHex, cssVarToHex } from '@/features/graph-webgl/lib/theme-bridge'
 import { useTranslation } from 'react-i18next'
 import {
   type Edge,
@@ -27,6 +27,7 @@ import {
   useUpdateNodePosition,
   useUpdateNodePositions
 } from '@/entities/map'
+import { cssVarToHex, getNodeColorHex } from '@/features/graph-webgl/lib/theme-bridge'
 import { Card } from '@/shared/components/card'
 import { useDarkMode } from '@/shared/hooks'
 import { cn } from '@/shared/lib/cn'

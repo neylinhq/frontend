@@ -1,6 +1,6 @@
 'use client'
 
-import { Loader2 } from 'lucide-react'
+import { Loading02Icon } from '@untitledui/icons-react/outline'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/shared/components/button'
@@ -267,7 +267,7 @@ export const ImageCropDialog = ({
 
           {!imageLoaded && (
             <div className='absolute inset-0 flex items-center justify-center'>
-              <Loader2 className='h-8 w-8 animate-spin text-muted-foreground' />
+              <Loading02Icon className='h-8 w-8 animate-spin text-muted-foreground' />
             </div>
           )}
         </div>
@@ -279,7 +279,7 @@ export const ImageCropDialog = ({
           <Button onClick={handleSave} disabled={isProcessing || !imageLoaded}>
             {isProcessing ? (
               <>
-                <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                <Loading02Icon className='mr-2 h-4 w-4 animate-spin' />
                 {t('common.processing')}
               </>
             ) : (

@@ -1,4 +1,4 @@
-import { Menu } from 'lucide-react'
+import { Menu01Icon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/shared/components/button'
 import { Logo } from '@/shared/components/logo'
@@ -19,7 +19,7 @@ export const DashboardHeader = () => {
           <Sheet>
             <SheetTrigger asChild>
               <Button variant='ghost' size='icon' className='md:hidden -ml-2'>
-                <Menu className='h-5 w-5' />
+                <Menu01Icon className='h-5 w-5' />
                 <span className='sr-only'>{t('nav.menu')}</span>
               </Button>
             </SheetTrigger>

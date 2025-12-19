@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { mapApi } from './map.api'
 import type {
   CreateEdgeRequest,
+  DashboardMapsResponse,
   Edge,
   FullMap,
   MapDiscoverResponse,
@@ -28,6 +29,7 @@ export const mapKeys = {
   lightweightMap: (mapId: string) => [...mapKeys.detail(mapId), 'lightweight'] as const,
   analysis: (mapId: string) => [...mapKeys.detail(mapId), 'analysis'] as const,
   discover: (filter: MapFilter) => [...mapKeys.all, 'discover', filter] as const,
+  dashboard: () => [...mapKeys.all, 'dashboard'] as const,
   search: (query: string, mode: MapSearchMode) => [...mapKeys.all, 'search', query, mode] as const,
   history: (mapId: string) => [...mapKeys.detail(mapId), 'history'] as const,
   historySummary: (mapId: string) => [...mapKeys.detail(mapId), 'history-summary'] as const
@@ -320,6 +322,24 @@ export const useApplyGraphFragment = (mapId: string) => {
       queryClient.invalidateQueries({ queryKey: mapKeys.fullMap(mapId) })
       queryClient.invalidateQueries({ queryKey: mapKeys.lightweightMap(mapId) })
     }
+  })
+}
+
+// ====== Dashboard hook ======
+
+export interface UseDashboardMapsOptions {
+  ownedLimit?: number
+  publicLimit?: number
+  initialData?: DashboardMapsResponse
+}
+
+export const useDashboardMaps = (options: UseDashboardMapsOptions = {}) => {
+  const { initialData, ...params } = options
+  return useQuery({
+    queryKey: mapKeys.dashboard(),
+    queryFn: () => mapApi.getDashboardMaps(params),
+    initialData,
+    staleTime: 0 // Always fetch fresh data on mount
   })
 }
 

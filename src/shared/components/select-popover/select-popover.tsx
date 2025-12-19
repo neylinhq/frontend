@@ -1,4 +1,4 @@
-import { Check } from 'lucide-react'
+import { CheckIcon } from '@untitledui/icons-react/outline'
 import { useState } from 'react'
 import { Button } from '@/shared/components/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/components/popover'
@@ -96,7 +96,7 @@ export const SelectPopover = <T extends string = string>({
             >
               {renderIcon(item)}
               <span className='flex-1 text-left'>{item.label}</span>
-              {value === item.value && <Check className='h-4 w-4 text-brand flex-shrink-0' />}
+              {value === item.value && <CheckIcon className='h-4 w-4 text-brand flex-shrink-0' />}
             </button>
           ))}
         </div>

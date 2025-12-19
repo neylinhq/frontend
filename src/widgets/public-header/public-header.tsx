@@ -1,5 +1,5 @@
-import type { LucideIcon } from 'lucide-react'
-import { Home, LogIn, Menu, Rocket, Wallet } from 'lucide-react'
+import { Home01Icon, LogIn01Icon, Menu01Icon, Rocket01Icon, Wallet01Icon } from '@untitledui/icons-react/outline'
+import type { ComponentType, SVGProps } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, NavLink } from 'react-router'
 import { ModeSelect } from '@/features/theme/mode-select'
@@ -36,7 +36,7 @@ export const PublicHeader = () => {
           <Sheet>
             <SheetTrigger asChild>
               <Button variant='ghost' size='icon' className='md:hidden'>
-                <Menu className='h-5 w-5' />
+                <Menu01Icon className='h-5 w-5' />
                 <span className='sr-only'>{t('common.menu', 'Menu')}</span>
               </Button>
             </SheetTrigger>
@@ -48,18 +48,18 @@ export const PublicHeader = () => {
 
               {/* Navigation */}
               <div className='flex-1 py-4 px-3 space-y-1'>
-                <MobileNavItem to={ROUTES.home} icon={Home}>
+                <MobileNavItem to={ROUTES.home} icon={Home01Icon}>
                   {t('home.nav.home')}
                 </MobileNavItem>
-                <MobileNavItem to={ROUTES.pricing} icon={Wallet}>
+                <MobileNavItem to={ROUTES.pricing} icon={Wallet01Icon}>
                   {t('home.nav.pricing')}
                 </MobileNavItem>
 
                 <Separator className='my-3' />
-                <MobileNavItem to={AUTH_ROUTES.signIn} icon={LogIn}>
+                <MobileNavItem to={AUTH_ROUTES.signIn} icon={LogIn01Icon}>
                   {t('home.cta.signIn', 'Sign in')}
                 </MobileNavItem>
-                <MobileNavItem to={AUTH_ROUTES.signUp} icon={Rocket}>
+                <MobileNavItem to={AUTH_ROUTES.signUp} icon={Rocket01Icon}>
                   {t('home.cta.getStarted', 'Get Started')}
                 </MobileNavItem>
               </div>
@@ -84,7 +84,7 @@ const MobileNavItem = ({
   children
 }: {
   to: string
-  icon: LucideIcon
+  icon: ComponentType<SVGProps<SVGSVGElement>>
   children: React.ReactNode
 }) => {
   return (

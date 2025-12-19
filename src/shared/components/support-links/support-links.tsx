@@ -1,4 +1,4 @@
-import { Mail, Send } from 'lucide-react'
+import { Mail01Icon, Send01Icon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/shared/components/button'
 import { SUPPORT_CONTACTS } from '@/shared/config'
@@ -24,12 +24,12 @@ export const SupportLinks = ({ variant = 'buttons', className }: SupportLinksPro
             rel='noopener noreferrer'
             aria-label={SUPPORT_CONTACTS.telegram.label}
           >
-            <Send className='h-4 w-4' />
+            <Send01Icon className='h-4 w-4' />
           </a>
         </Button>
         <Button variant='ghost' size='icon' asChild>
           <a href={SUPPORT_CONTACTS.email.url} aria-label={SUPPORT_CONTACTS.email.label}>
-            <Mail className='h-4 w-4' />
+            <Mail01Icon className='h-4 w-4' />
           </a>
         </Button>
       </div>
@@ -58,13 +58,13 @@ export const SupportLinks = ({ variant = 'buttons', className }: SupportLinksPro
     <div className={cn('flex flex-col gap-2', className)}>
       <Button variant='outline' className='justify-start' asChild>
         <a href={SUPPORT_CONTACTS.telegram.url} target='_blank' rel='noopener noreferrer'>
-          <Send className='mr-2 h-4 w-4' />
+          <Send01Icon className='mr-2 h-4 w-4' />
           {t('support.telegram')}
         </a>
       </Button>
       <Button variant='outline' className='justify-start' asChild>
         <a href={SUPPORT_CONTACTS.email.url}>
-          <Mail className='mr-2 h-4 w-4' />
+          <Mail01Icon className='mr-2 h-4 w-4' />
           {t('support.email')}
         </a>
       </Button>

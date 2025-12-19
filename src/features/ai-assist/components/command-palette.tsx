@@ -1,4 +1,4 @@
-import { BookOpen, GraduationCap, Link2, Sparkles, Trash2 } from 'lucide-react'
+import { BookOpen01Icon, GraduationHat01Icon, Link01Icon, Stars01Icon, Trash01Icon } from '@untitledui/icons-react/outline'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/shared/lib/cn'
@@ -35,31 +35,31 @@ export const CommandPalette = ({
       id: 'clear',
       label: 'clear',
       description: t('ai.commands.clearDesc', 'Clear chat history'),
-      icon: <Trash2 className='h-4 w-4' />
+      icon: <Trash01Icon className='h-4 w-4' />
     },
     {
       id: 'enrich',
       label: 'enrich',
       description: t('ai.commands.enrichDesc', 'Improve node description'),
-      icon: <Sparkles className='h-4 w-4' />
+      icon: <Stars01Icon className='h-4 w-4' />
     },
     {
       id: 'examples',
       label: 'examples',
       description: t('ai.commands.examplesDesc', 'Generate examples'),
-      icon: <BookOpen className='h-4 w-4' />
+      icon: <BookOpen01Icon className='h-4 w-4' />
     },
     {
       id: 'sources',
       label: 'sources',
       description: t('ai.commands.sourcesDesc', 'Find related sources'),
-      icon: <Link2 className='h-4 w-4' />
+      icon: <Link01Icon className='h-4 w-4' />
     },
     {
       id: 'exercises',
       label: 'exercises',
       description: t('ai.commands.exercisesDesc', 'Generate practice exercises'),
-      icon: <GraduationCap className='h-4 w-4' />
+      icon: <GraduationHat01Icon className='h-4 w-4' />
     }
   ]
 

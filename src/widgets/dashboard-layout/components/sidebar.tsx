@@ -1,5 +1,5 @@
-import type { LucideIcon } from 'lucide-react'
-import { PanelLeftClose, PanelLeft } from 'lucide-react'
+import { LayoutLeftIcon } from '@untitledui/icons-react/outline'
+import type { ComponentType, SVGProps } from 'react'
 import type React from 'react'
 import { useTranslation } from 'react-i18next'
 import { NavLink } from 'react-router'
@@ -39,7 +39,7 @@ export const Sidebar = ({ className, isExpanded, onToggle }: SidebarProps) => {
                   className='h-8 w-8 text-muted-foreground absolute inset-0 m-auto scale-0 group-hover:scale-100 transition-transform'
                   onClick={onToggle}
                 >
-                  <PanelLeft className='h-4 w-4' />
+                  <LayoutLeftIcon className='h-4 w-4' />
                 </Button>
               </TooltipTrigger>
               <TooltipContent side='right'>{t('nav.expandSidebar')}</TooltipContent>
@@ -56,7 +56,7 @@ export const Sidebar = ({ className, isExpanded, onToggle }: SidebarProps) => {
                   className='h-8 w-8 text-muted-foreground'
                   onClick={onToggle}
                 >
-                  <PanelLeftClose className='h-4 w-4' />
+                  <LayoutLeftIcon className='h-4 w-4' />
                 </Button>
               </TooltipTrigger>
               <TooltipContent side='right'>{t('nav.collapseSidebar')}</TooltipContent>
@@ -89,7 +89,7 @@ const NavItem = ({
   isExpanded
 }: {
   to: string
-  icon: LucideIcon
+  icon: ComponentType<SVGProps<SVGSVGElement>>
   children: React.ReactNode
   isExpanded?: boolean
 }) => {

@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CreditCard, Eye, EyeOff, Lock, Wallet } from 'lucide-react'
+import { CreditCard01Icon, EyeIcon, EyeOffIcon, Lock01Icon, Wallet01Icon } from '@untitledui/icons-react/outline'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -242,13 +242,13 @@ export const AddPaymentMethodContent = ({
     return (
       <div className='grid grid-cols-2 gap-4 py-4'>
         <SelectionCard
-          icon={<CreditCard className='h-12 w-12' />}
+          icon={<CreditCard01Icon className='h-12 w-12' />}
           title={t('billing.addPaymentMethod.cardOption.title')}
           description={t('billing.addPaymentMethod.cardOption.description')}
           onClick={() => setStep('card')}
         />
         <SelectionCard
-          icon={<Wallet className='h-12 w-12' />}
+          icon={<Wallet01Icon className='h-12 w-12' />}
           title={t('billing.addPaymentMethod.cryptoOption.title')}
           description={t('billing.addPaymentMethod.cryptoOption.description')}
           onClick={() => setStep('crypto')}
@@ -353,9 +353,9 @@ export const AddPaymentMethodContent = ({
                           onClick={() => setShowCvc(!showCvc)}
                         >
                           {showCvc ? (
-                            <EyeOff className='h-4 w-4 text-muted-foreground' />
+                            <EyeOffIcon className='h-4 w-4 text-muted-foreground' />
                           ) : (
-                            <Eye className='h-4 w-4 text-muted-foreground' />
+                            <EyeIcon className='h-4 w-4 text-muted-foreground' />
                           )}
                         </Button>
                       </div>
@@ -367,7 +367,7 @@ export const AddPaymentMethodContent = ({
             </div>
 
             <div className='flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 p-3 rounded-lg'>
-              <Lock className='h-4 w-4 flex-shrink-0' />
+              <Lock01Icon className='h-4 w-4 flex-shrink-0' />
               <span>{t('billing.addPaymentMethod.securityNotice')}</span>
             </div>
 

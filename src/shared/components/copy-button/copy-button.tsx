@@ -1,4 +1,4 @@
-import { Check, Copy } from 'lucide-react'
+import { CheckIcon, Copy01Icon } from '@untitledui/icons-react/outline'
 import { Button, type ButtonProps } from '@/shared/components/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/components/tooltip'
 import { cn } from '@/shared/lib/cn'
@@ -42,7 +42,7 @@ export const CopyButton = ({
             aria-label={copied ? copiedLabel : label}
             {...props}
           >
-            {copied ? <Check style={iconStyle} /> : <Copy style={iconStyle} />}
+            {copied ? <CheckIcon style={iconStyle} /> : <Copy01Icon style={iconStyle} />}
           </Button>
         </TooltipTrigger>
         <TooltipContent side='bottom'>
@@ -63,7 +63,7 @@ export const CopyButton = ({
       onClick={() => copy(value)}
       {...props}
     >
-      {copied ? <Check style={iconStyle} /> : <Copy style={iconStyle} />}
+      {copied ? <CheckIcon style={iconStyle} /> : <Copy01Icon style={iconStyle} />}
       <span>{copied ? copiedLabel : label}</span>
     </Button>
   )

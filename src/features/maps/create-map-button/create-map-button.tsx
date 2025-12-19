@@ -1,4 +1,4 @@
-import { Plus } from 'lucide-react'
+import { PlusIcon } from '@untitledui/icons-react/outline'
 import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
@@ -24,7 +24,7 @@ export const CreateMapCard = memo(({ className }: CreateMapCardProps) => {
     >
       <Link to={MAPS_ROUTES.new}>
         <div className='h-10 w-10 rounded-full bg-muted flex items-center justify-center'>
-          <Plus className='h-6 w-6 text-muted-foreground' />
+          <PlusIcon className='h-6 w-6 text-muted-foreground' />
         </div>
         <span className='font-semibold text-lg'>{t('dashboard.createMap.title')}</span>
         <span className='text-xs text-muted-foreground font-normal text-center px-4'>

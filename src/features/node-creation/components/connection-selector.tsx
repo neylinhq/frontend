@@ -1,4 +1,4 @@
-import { Link2, Plus, X } from 'lucide-react'
+import { Link01Icon, PlusIcon, XCloseIcon } from '@untitledui/icons-react/outline'
 import { memo, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
@@ -65,14 +65,14 @@ export const ConnectionSelector = memo(() => {
       {/* Header */}
       <div className='flex items-center justify-between'>
         <span className='flex items-center gap-1.5 text-sm font-medium text-muted-foreground'>
-          <Link2 className='h-3.5 w-3.5' />
+          <Link01Icon className='h-3.5 w-3.5' />
           {t('nodeCreation.connections.label', 'Connect to')}
         </span>
 
         <Popover open={isOpen} onOpenChange={setIsOpen}>
           <PopoverTrigger asChild>
             <Button variant='ghost' size='sm' className='h-7 px-2'>
-              <Plus className='mr-1 h-3.5 w-3.5' />
+              <PlusIcon className='mr-1 h-3.5 w-3.5' />
               {t('nodeCreation.connections.add', 'Add')}
             </Button>
           </PopoverTrigger>
@@ -106,7 +106,7 @@ export const ConnectionSelector = memo(() => {
                     >
                       <Icon className='h-4 w-4 shrink-0 text-muted-foreground' />
                       <span className='flex-1 truncate'>{node.label}</span>
-                      <Plus className='h-3.5 w-3.5 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100' />
+                      <PlusIcon className='h-3.5 w-3.5 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100' />
                     </button>
                   )
                 })
@@ -162,7 +162,7 @@ const ConnectionRow = memo(({ connection, onRemove, onTypeChange }: ConnectionRo
       </Select>
 
       <Button variant='ghost' size='sm' className='h-7 w-7 p-0' onClick={onRemove}>
-        <X className='h-3.5 w-3.5' />
+        <XCloseIcon className='h-3.5 w-3.5' />
       </Button>
     </div>
   )

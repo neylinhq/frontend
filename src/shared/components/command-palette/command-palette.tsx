@@ -1,6 +1,6 @@
 'use client'
 
-import { Hash, Search } from 'lucide-react'
+import { Hash01Icon, SearchMdIcon } from '@untitledui/icons-react/outline'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Dialog, DialogContent, DialogTitle } from '@/shared/components/dialog'
 import { cn } from '@/shared/lib/cn'
@@ -118,7 +118,7 @@ export const CommandPalette = <T extends CommandPaletteItem>({
 
         {/* Search Input */}
         <div className='flex items-center border-b px-4'>
-          <Search className='h-4 w-4 text-muted-foreground shrink-0' />
+          <SearchMdIcon className='h-4 w-4 text-muted-foreground shrink-0' />
           <input
             type='text'
             placeholder={placeholder}
@@ -211,7 +211,7 @@ export const CommandPalette = <T extends CommandPaletteItem>({
               </span>
             </div>
             <div className='flex items-center gap-1'>
-              <Hash className='h-3 w-3' />
+              <Hash01Icon className='h-3 w-3' />
               <span>{results.length} results</span>
             </div>
           </div>

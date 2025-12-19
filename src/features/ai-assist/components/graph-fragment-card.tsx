@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Check, ChevronRight, Loader2, X, ArrowRight } from 'lucide-react'
+import { CheckIcon, ChevronRightIcon, Loading02Icon, XCloseIcon, ArrowRightIcon } from '@untitledui/icons-react/outline'
 import { Button } from '@/shared/components/button'
 import { Badge } from '@/shared/components/badge'
 import { Checkbox } from '@/shared/components/checkbox'
@@ -198,7 +198,7 @@ export const GraphFragmentCard = ({
           )}
         >
           {/* Expand chevron */}
-          <ChevronRight
+          <ChevronRightIcon
             className={cn(
               'h-3 w-3 text-muted-foreground/50 transition-transform duration-150 flex-shrink-0',
               'group-hover:text-muted-foreground',
@@ -260,11 +260,11 @@ export const GraphFragmentCard = ({
                   return (
                     <div key={edge.tempId} className="flex items-center gap-2 text-xs">
                       <span className="truncate">{fromLabel}</span>
-                      <ArrowRight className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+                      <ArrowRightIcon className="h-3 w-3 text-muted-foreground flex-shrink-0" />
                       <Badge variant="secondary" className={cn('text-[10px] font-medium flex-shrink-0', edgeColorClasses)}>
                         {t(`graph.edgeTypes.${edge.relation}`, edge.relation)}
                       </Badge>
-                      <ArrowRight className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+                      <ArrowRightIcon className="h-3 w-3 text-muted-foreground flex-shrink-0" />
                       <span className="truncate">{toLabel}</span>
                     </div>
                   )
@@ -298,7 +298,7 @@ export const GraphFragmentCard = ({
           isExpanded && 'border-b border-border'
         )}
       >
-        <ChevronRight
+        <ChevronRightIcon
           className={cn(
             'h-3.5 w-3.5 text-muted-foreground flex-shrink-0 transition-transform duration-150',
             isExpanded && 'rotate-90'
@@ -385,7 +385,7 @@ export const GraphFragmentCard = ({
           className="text-muted-foreground"
           disabled={isDisabled}
         >
-          <X className="h-3.5 w-3.5 mr-1" />
+          <XCloseIcon className="h-3.5 w-3.5 mr-1" />
           {t('common.dismiss', 'Dismiss')}
         </Button>
         <Button
@@ -394,9 +394,9 @@ export const GraphFragmentCard = ({
           disabled={isDisabled || noneSelected}
         >
           {isDisabled ? (
-            <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" />
+            <Loading02Icon className="h-3.5 w-3.5 mr-1 animate-spin" />
           ) : (
-            <Check className="h-3.5 w-3.5 mr-1" />
+            <CheckIcon className="h-3.5 w-3.5 mr-1" />
           )}
           {selectedCount === totalCount
             ? t('ai.graphFragment.applyAll', 'Apply All')
@@ -474,14 +474,14 @@ const EdgeRow = ({ edge, selected, canSelect, onToggle, getLabel, disabled }: Ed
       <span className={cn('text-xs truncate', edge.fromIsNew && 'text-primary')}>
         {getLabel(edge.fromRef, edge.fromIsNew)}
       </span>
-      <ArrowRight className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+      <ArrowRightIcon className="h-3 w-3 text-muted-foreground flex-shrink-0" />
       <Badge
         variant="secondary"
         className={cn('text-[10px] font-medium flex-shrink-0', edgeColorClasses)}
       >
         {t(`graph.edgeTypes.${edge.relation}`, edge.relation)}
       </Badge>
-      <ArrowRight className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+      <ArrowRightIcon className="h-3 w-3 text-muted-foreground flex-shrink-0" />
       <span className={cn('text-xs truncate', edge.toIsNew && 'text-primary')}>
         {getLabel(edge.toRef, edge.toIsNew)}
       </span>

@@ -8,6 +8,7 @@ export {
   useCreateEdge,
   useCreateMap,
   useCreateNode,
+  useDashboardMaps,
   useDeleteEdge,
   useDeleteMap,
   useDeleteNode,
@@ -31,6 +32,8 @@ export {
   useUpdateNodePositions
 } from './map.queries'
 export type {
+  DashboardGroup,
+  DashboardMapsResponse,
   Edge,
   EntityType,
   EventSource,
@@ -50,6 +53,8 @@ export type {
   RelationType
 } from './map.schema'
 export {
+  DashboardGroupSchema,
+  DashboardMapsResponseSchema,
   EdgeSchema,
   EntityTypeEnum,
   EventSourceEnum,

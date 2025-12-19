@@ -1,15 +1,16 @@
-import {
-  Focus,
-  MapIcon,
-  Maximize2,
-  Minimize2,
-  Search,
-  SlidersHorizontal,
-  ZoomIn,
-  ZoomOut
-} from 'lucide-react'
 import { memo, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
+import {
+  Map01Icon,
+  Maximize01Icon,
+  Minimize01Icon,
+  SearchMdIcon,
+  Sliders04Icon,
+  Target01Icon,
+  ZoomInIcon,
+  ZoomOutIcon
+} from '@untitledui/icons-react/outline'
 import type { LightweightNode } from '@/entities/node'
 import { MapSettingsDrawer } from '@/features/map-settings'
 import { Button } from '@/shared/components/button'
@@ -107,7 +108,7 @@ export const ViewControlsPanel = memo(
                 className='h-8 w-8 p-0'
                 title={`${t('graph.search.title', 'Search nodes')} (${isMac ? '⌘' : 'Ctrl+'}K)`}
               >
-                <Search className='w-4 h-4' />
+                <SearchMdIcon className='w-4 h-4' />
               </Button>
               <NodeSearch
                 nodes={nodes}
@@ -129,7 +130,7 @@ export const ViewControlsPanel = memo(
             className='h-8 w-8 p-0'
             title={showMinimap ? t('graph.toolbar.hideMinimap') : t('graph.toolbar.showMinimap')}
           >
-            <MapIcon className='w-4 h-4' />
+            <Map01Icon className='w-4 h-4' />
           </Button>
 
           {/* Layout settings dropdown */}
@@ -141,7 +142,7 @@ export const ViewControlsPanel = memo(
                 className='h-8 w-8 p-0'
                 title={t('graph.toolbar.layoutSettings')}
               >
-                <SlidersHorizontal className='w-4 h-4' />
+                <Sliders04Icon className='w-4 h-4' />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align='start' className='w-52 p-3'>
@@ -217,7 +218,7 @@ export const ViewControlsPanel = memo(
             className='h-8 w-8 p-0'
             title={isFullscreen ? t('graph.toolbar.exitFullscreen') : t('graph.toolbar.fullscreen')}
           >
-            {isFullscreen ? <Minimize2 className='w-4 h-4' /> : <Maximize2 className='w-4 h-4' />}
+            {isFullscreen ? <Minimize01Icon className='w-4 h-4' /> : <Maximize01Icon className='w-4 h-4' />}
           </Button>
 
           {/* Center view */}
@@ -228,7 +229,7 @@ export const ViewControlsPanel = memo(
             className='h-8 w-8 p-0'
             title={t('graph.toolbar.centerTooltip')}
           >
-            <Focus className='w-4 h-4' />
+            <Target01Icon className='w-4 h-4' />
           </Button>
 
           <div className='h-4 w-px bg-border' />
@@ -241,7 +242,7 @@ export const ViewControlsPanel = memo(
             className='h-8 w-8 p-0'
             title={t('graph.toolbar.zoomOut')}
           >
-            <ZoomOut className='w-4 h-4' />
+            <ZoomOutIcon className='w-4 h-4' />
           </Button>
 
           <span className='text-xs font-medium text-muted-foreground min-w-[3rem] text-center'>
@@ -255,7 +256,7 @@ export const ViewControlsPanel = memo(
             className='h-8 w-8 p-0'
             title={t('graph.toolbar.zoomIn')}
           >
-            <ZoomIn className='w-4 h-4' />
+            <ZoomInIcon className='w-4 h-4' />
           </Button>
         </Card>
       </div>

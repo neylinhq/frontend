@@ -1,4 +1,4 @@
-import { Check, Copy, Loader2 } from 'lucide-react'
+import { CheckIcon, Copy01Icon, Loading02Icon } from '@untitledui/icons-react/outline'
 import { QRCodeSVG } from 'qrcode.react'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -84,7 +84,7 @@ export const TotpSetupDialog = ({ open, onOpenChange, onSuccess }: TotpSetupDial
 
         {setupTOTP.isPending ? (
           <div className='flex justify-center py-8'>
-            <Loader2 className='h-6 w-6 animate-spin text-muted-foreground' />
+            <Loading02Icon className='h-6 w-6 animate-spin text-muted-foreground' />
           </div>
         ) : step === 'qr' ? (
           <div className='space-y-4'>
@@ -108,9 +108,9 @@ export const TotpSetupDialog = ({ open, onOpenChange, onSuccess }: TotpSetupDial
                 />
                 <Button variant='ghost' size='icon' onClick={copySecret}>
                   {copied ? (
-                    <Check className='h-4 w-4 text-success' />
+                    <CheckIcon className='h-4 w-4 text-success' />
                   ) : (
-                    <Copy className='h-4 w-4' />
+                    <Copy01Icon className='h-4 w-4' />
                   )}
                 </Button>
               </div>
@@ -131,7 +131,7 @@ export const TotpSetupDialog = ({ open, onOpenChange, onSuccess }: TotpSetupDial
             </div>
             {enableTOTP.isPending && (
               <div className='flex justify-center'>
-                <Loader2 className='h-5 w-5 animate-spin text-muted-foreground' />
+                <Loading02Icon className='h-5 w-5 animate-spin text-muted-foreground' />
               </div>
             )}
           </div>

@@ -1,4 +1,4 @@
-import { Check, Globe } from 'lucide-react'
+import { CheckIcon, Globe01Icon } from '@untitledui/icons-react/outline'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { changeLanguage } from '@/app/i18n'
@@ -27,7 +27,7 @@ export const LanguageSelect = ({ compact }: LanguageSelectProps) => {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant='ghost' size='sm' className={compact ? 'px-2' : undefined}>
-          <Globe className='h-4 w-4' />
+          <Globe01Icon className='h-4 w-4' />
           {!compact && (
             <span className='ml-1.5'>{LANGUAGES.find(l => l.id === i18n.language)?.label}</span>
           )}
@@ -48,7 +48,7 @@ export const LanguageSelect = ({ compact }: LanguageSelectProps) => {
               )}
             >
               <span className='flex-1 text-left'>{lang.label}</span>
-              {i18n.language === lang.id && <Check className='h-4 w-4 text-brand flex-shrink-0' />}
+              {i18n.language === lang.id && <CheckIcon className='h-4 w-4 text-brand flex-shrink-0' />}
             </button>
           ))}
         </div>

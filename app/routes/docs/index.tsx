@@ -1,4 +1,4 @@
-import { ArrowRight, Keyboard, Moon, Package, Palette, Sparkles, Type, Zap } from 'lucide-react'
+import { ArrowRightIcon, Keyboard01Icon, Moon01Icon, PackageIcon, PaletteIcon, Stars01Icon, Type01Icon, ZapIcon } from '@untitledui/icons-react/outline'
 import { Link } from 'react-router'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
@@ -32,7 +32,7 @@ const UiIndexPage = () => {
           <Button asChild>
             <Link to={DOCS_ROUTES.button}>
               Get Started
-              <ArrowRight className='ml-2 h-4 w-4' />
+              <ArrowRightIcon className='ml-2 h-4 w-4' />
             </Link>
           </Button>
           <Button variant='outline' asChild>
@@ -46,21 +46,21 @@ const UiIndexPage = () => {
         <Typography variant='h2'>Explore</Typography>
         <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
           <QuickLinkCard
-            icon={<Palette className='h-5 w-5' />}
+            icon={<PaletteIcon className='h-5 w-5' />}
             title='Colors'
             description='Color palette and semantic tokens for all themes'
             href={DOCS_ROUTES.colors}
             badge='Foundation'
           />
           <QuickLinkCard
-            icon={<Type className='h-5 w-5' />}
+            icon={<Type01Icon className='h-5 w-5' />}
             title='Typography'
             description='Type scale and text formatting styles'
             href={DOCS_ROUTES.typography}
             badge='Foundation'
           />
           <QuickLinkCard
-            icon={<Package className='h-5 w-5' />}
+            icon={<PackageIcon className='h-5 w-5' />}
             title='Components'
             description='25+ production-ready UI components'
             href={DOCS_ROUTES.button}
@@ -74,22 +74,22 @@ const UiIndexPage = () => {
         <Typography variant='h2'>Features</Typography>
         <div className='grid gap-6 sm:grid-cols-2'>
           <FeatureCard
-            icon={<Sparkles className='h-5 w-5 text-brand' />}
+            icon={<Stars01Icon className='h-5 w-5 text-brand' />}
             title='3 Color Themes'
             description='Classic, Vanilla, and Vivid themes with consistent semantic tokens across all components.'
           />
           <FeatureCard
-            icon={<Moon className='h-5 w-5 text-brand' />}
+            icon={<Moon01Icon className='h-5 w-5 text-brand' />}
             title='Dark Mode'
             description='First-class dark mode support with smooth transitions and proper contrast ratios.'
           />
           <FeatureCard
-            icon={<Keyboard className='h-5 w-5 text-brand' />}
+            icon={<Keyboard01Icon className='h-5 w-5 text-brand' />}
             title='Accessibility'
             description='Built on Radix UI primitives with full keyboard navigation and ARIA support.'
           />
           <FeatureCard
-            icon={<Zap className='h-5 w-5 text-brand' />}
+            icon={<ZapIcon className='h-5 w-5 text-brand' />}
             title='TypeScript'
             description='Fully typed components with IntelliSense support and compile-time safety.'
           />

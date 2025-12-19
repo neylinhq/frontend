@@ -1,5 +1,5 @@
 'use client'
-import { ChevronRight, Home } from 'lucide-react'
+import { ChevronRightIcon, Home01Icon } from '@untitledui/icons-react/outline'
 import { Link, useMatches } from 'react-router'
 
 import { DOCS_ROUTES } from '@/shared/config'
@@ -33,7 +33,7 @@ export const DocsBreadcrumbs = ({ items, className }: DocsBreadcrumbsProps) => {
             to={DOCS_ROUTES.ui}
             className='text-muted-foreground hover:text-foreground transition-colors'
           >
-            <Home className='h-4 w-4' />
+            <Home01Icon className='h-4 w-4' />
             <span className='sr-only'>Docs Home</span>
           </Link>
         </li>
@@ -43,7 +43,7 @@ export const DocsBreadcrumbs = ({ items, className }: DocsBreadcrumbsProps) => {
 
           return (
             <li key={item.label} className='flex items-center gap-1.5'>
-              <ChevronRight className='h-3.5 w-3.5 text-muted-foreground/50' />
+              <ChevronRightIcon className='h-3.5 w-3.5 text-muted-foreground/50' />
               {isLast || !item.href ? (
                 <span
                   className={cn(

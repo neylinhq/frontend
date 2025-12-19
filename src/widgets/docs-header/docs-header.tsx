@@ -1,4 +1,4 @@
-import { Menu } from 'lucide-react'
+import { Menu01Icon } from '@untitledui/icons-react/outline'
 import { Link } from 'react-router'
 import { ModeSelect } from '@/features/theme/mode-select'
 import { PaletteSelect } from '@/features/theme/palette-select'
@@ -23,7 +23,7 @@ export const DocsHeader = ({ mobileNav }: DocsHeaderProps) => {
           <Sheet>
             <SheetTrigger asChild>
               <Button variant='ghost' size='icon' className='lg:hidden'>
-                <Menu className='h-5 w-5' />
+                <Menu01Icon className='h-5 w-5' />
                 <span className='sr-only'>Toggle menu</span>
               </Button>
             </SheetTrigger>

@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CreditCard, Eye, EyeOff, Lock, Plus, Wallet } from 'lucide-react'
+import { CreditCard01Icon, EyeIcon, EyeOffIcon, Lock01Icon, PlusIcon, Wallet01Icon } from '@untitledui/icons-react/outline'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -95,7 +95,7 @@ const SelectionCard = ({
 const SecurityNotice = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className='flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 p-3 rounded-lg'>
-      <Lock className='h-4 w-4 flex-shrink-0' />
+      <Lock01Icon className='h-4 w-4 flex-shrink-0' />
       <span>{children}</span>
     </div>
   )
@@ -301,7 +301,7 @@ export const AddPaymentMethodDialog = ({
       <DialogTrigger asChild>
         {trigger || (
           <Button size='sm'>
-            <Plus className='h-4 w-4 mr-2' />
+            <PlusIcon className='h-4 w-4 mr-2' />
             {t('settings.billing.paymentMethods.add')}
           </Button>
         )}
@@ -322,13 +322,13 @@ export const AddPaymentMethodDialog = ({
 
             <div className='grid grid-cols-2 gap-4 py-4'>
               <SelectionCard
-                icon={<CreditCard className='h-12 w-12' />}
+                icon={<CreditCard01Icon className='h-12 w-12' />}
                 title={t('billing.addPaymentMethod.cardOption.title')}
                 description={t('billing.addPaymentMethod.cardOption.description')}
                 onClick={() => setStep('card')}
               />
               <SelectionCard
-                icon={<Wallet className='h-12 w-12' />}
+                icon={<Wallet01Icon className='h-12 w-12' />}
                 title={t('billing.addPaymentMethod.cryptoOption.title')}
                 description='USDT (TRC-20, TON, BSC, ETH)'
                 onClick={() => setStep('crypto')}
@@ -425,7 +425,7 @@ export const AddPaymentMethodDialog = ({
                       <FormItem>
                         <FormLabel className='flex items-center gap-1'>
                           {t('billing.addPaymentMethod.cvc')}
-                          <Lock className='h-3 w-3 text-muted-foreground' />
+                          <Lock01Icon className='h-3 w-3 text-muted-foreground' />
                         </FormLabel>
                         <FormControl>
                           <div className='relative'>
@@ -446,9 +446,9 @@ export const AddPaymentMethodDialog = ({
                               onClick={() => setShowCvc(!showCvc)}
                             >
                               {showCvc ? (
-                                <EyeOff className='h-4 w-4 text-muted-foreground' />
+                                <EyeOffIcon className='h-4 w-4 text-muted-foreground' />
                               ) : (
-                                <Eye className='h-4 w-4 text-muted-foreground' />
+                                <EyeIcon className='h-4 w-4 text-muted-foreground' />
                               )}
                             </Button>
                           </div>
@@ -482,7 +482,7 @@ export const AddPaymentMethodDialog = ({
                       </>
                     ) : (
                       <>
-                        <CreditCard className='h-4 w-4 mr-2' />
+                        <CreditCard01Icon className='h-4 w-4 mr-2' />
                         {t('billing.addPaymentMethod.submit')}
                       </>
                     )}

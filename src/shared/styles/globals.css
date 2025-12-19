@@ -2381,46 +2381,50 @@
   background: oklch(var(--muted) / 0.5);
 }
 
-/* Focus node highlight - glow effect
-   Design: Soft glow with multiple blur layers
-   Animation: 6s breathing - subtle intensity changes */
+/* Focus node highlight - subtle breathing glow
+   Design Manifesto exception for Content layer:
+   - "Content может быть выразительным, цветным, живым"
+   - "Направлять внимание" - legitimate animation purpose
+   - Graph is visual tool where static ring may get lost among nodes
+
+   Parameters: 2.5s cycle, 20-30px spread, minimal intensity change */
 
 @keyframes focus-breathe {
   0%, 100% {
     box-shadow:
-      0 0 25px oklch(var(--brand) / 0.15),
-      0 0 50px oklch(var(--brand) / 0.08),
-      0 0 90px oklch(var(--brand) / 0.04);
+      0 0 0 2px oklch(var(--primary)),
+      0 0 12px oklch(var(--brand) / 0.25),
+      0 0 24px oklch(var(--brand) / 0.1);
   }
   50% {
     box-shadow:
-      0 0 30px oklch(var(--brand) / 0.2),
-      0 0 60px oklch(var(--brand) / 0.1),
-      0 0 100px oklch(var(--brand) / 0.05);
+      0 0 0 2px oklch(var(--primary)),
+      0 0 16px oklch(var(--brand) / 0.35),
+      0 0 32px oklch(var(--brand) / 0.15);
   }
 }
 
 @keyframes focus-breathe-dark {
   0%, 100% {
     box-shadow:
-      0 0 25px #ffffff1a,
-      0 0 50px #ffffff0f,
-      0 0 90px #ffffff08;
+      0 0 0 2px oklch(var(--primary)),
+      0 0 12px rgba(255, 255, 255, 0.15),
+      0 0 24px rgba(255, 255, 255, 0.08);
   }
   50% {
     box-shadow:
-      0 0 30px #ffffff26,
-      0 0 60px #ffffff14,
-      0 0 100px #ffffff0a;
+      0 0 0 2px oklch(var(--primary)),
+      0 0 16px rgba(255, 255, 255, 0.25),
+      0 0 32px rgba(255, 255, 255, 0.12);
   }
 }
 
-.animate-glow-pulse {
-  animation: focus-breathe 6s ease-in-out infinite;
+.animate-focus-glow {
+  animation: focus-breathe 2.5s ease-in-out infinite;
 }
 
-.dark .animate-glow-pulse {
-  animation: focus-breathe-dark 6s ease-in-out infinite;
+.dark .animate-focus-glow {
+  animation: focus-breathe-dark 2.5s ease-in-out infinite;
 }
 
 /* Menu fade-in animation class (Design Manifesto compliant) */
@@ -2574,18 +2578,10 @@ html.theme-transition-disabled *::after {
     scroll-behavior: auto !important;
   }
 
-  /* Focus glow - show static state instead of animation */
-  .animate-glow-pulse {
+  /* Focus glow - static ring instead of animation */
+  .animate-focus-glow {
     animation: none !important;
-    box-shadow:
-      0 0 25px oklch(var(--brand) / 0.15),
-      0 0 50px oklch(var(--brand) / 0.08) !important;
-  }
-
-  .dark .animate-glow-pulse {
-    box-shadow:
-      0 0 25px #ffffff1a,
-      0 0 50px #ffffff0f !important;
+    box-shadow: 0 0 0 2px oklch(var(--primary)) !important;
   }
 }
 

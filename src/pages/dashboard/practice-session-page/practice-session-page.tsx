@@ -1,4 +1,4 @@
-import { ArrowLeft, Loader2, Sparkles } from 'lucide-react'
+import { ArrowLeftIcon, Loading02Icon, Stars01Icon } from '@untitledui/icons-react/outline'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams, useSearchParams } from 'react-router'
@@ -65,7 +65,7 @@ export const PracticeSessionPage = () => {
   if (isLoading) {
     return (
       <div className='flex min-h-screen items-center justify-center'>
-        <Loader2 className='h-8 w-8 animate-spin text-muted-foreground' />
+        <Loading02Icon className='h-8 w-8 animate-spin text-muted-foreground' />
       </div>
     )
   }
@@ -83,7 +83,7 @@ export const PracticeSessionPage = () => {
         <div className='flex gap-3'>
           <Button asChild variant='outline'>
             <Link to={`/dashboard/maps/${mapId}/view`}>
-              <ArrowLeft className='mr-2 h-4 w-4' />
+              <ArrowLeftIcon className='mr-2 h-4 w-4' />
               {t('common.back')}
             </Link>
           </Button>
@@ -91,12 +91,12 @@ export const PracticeSessionPage = () => {
           <Button onClick={handleGenerateExercises} disabled={generateExercisesMutation.isPending}>
             {generateExercisesMutation.isPending ? (
               <>
-                <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                <Loading02Icon className='mr-2 h-4 w-4 animate-spin' />
                 {t('practice.generating')}
               </>
             ) : (
               <>
-                <Sparkles className='mr-2 h-4 w-4' />
+                <Stars01Icon className='mr-2 h-4 w-4' />
                 {t('practice.generateExercises')}
               </>
             )}
@@ -112,7 +112,7 @@ export const PracticeSessionPage = () => {
       <header className='flex items-center justify-between border-b border-border px-6 py-4'>
         <Button variant='ghost' size='sm' asChild>
           <Link to={`/dashboard/maps/${mapId}/view`}>
-            <ArrowLeft className='mr-2 h-4 w-4' />
+            <ArrowLeftIcon className='mr-2 h-4 w-4' />
             {t('common.back')}
           </Link>
         </Button>
@@ -164,7 +164,7 @@ export const PracticeSessionPage = () => {
               >
                 {submitAnswerMutation.isPending ? (
                   <>
-                    <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                    <Loading02Icon className='mr-2 h-4 w-4 animate-spin' />
                     {t('common.submitting')}
                   </>
                 ) : (

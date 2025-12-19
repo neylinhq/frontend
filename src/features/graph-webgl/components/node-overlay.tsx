@@ -10,6 +10,7 @@ import type { Node } from '@/entities/map'
 import { getComplexityColor, getNodeBorderColor, getNodeIcon } from '@/entities/node'
 import { Badge } from '@/shared/components/badge'
 import { cn } from '@/shared/lib/cn'
+import styles from './node-overlay.module.css'
 
 interface NodeOverlayProps {
   node: Node
@@ -65,16 +66,16 @@ export const NodeOverlay = memo(
         <div
           className={cn(
             'w-full h-full cursor-grab active:cursor-grabbing pointer-events-auto',
-            'rounded-lg border overflow-hidden',
+            'rounded-lg border',
             // Left border color by node type
             'border-l-[3px]',
             getNodeBorderColor(node.type),
             'transition-colors duration-200',
             // Dimmed state
             isDimmed && 'opacity-40',
-            // Focused state - pulsing glow
-            isFocused && 'animate-glow-pulse',
-            // Selected state
+            // Focused state - breathing glow (Content layer exception per Design Manifesto)
+            isFocused && styles.focusGlow,
+            // Selected state - standard ring
             isSelected && !isFocused && 'ring-2 ring-primary'
           )}
           style={{
@@ -83,7 +84,7 @@ export const NodeOverlay = memo(
             borderColor: 'oklch(var(--border))'
           }}
         >
-          <div className='p-4 flex flex-col h-full overflow-hidden'>
+          <div className='p-4 flex flex-col h-full overflow-hidden rounded-lg'>
             {/* Icon + Title */}
             <div className='flex items-start gap-2'>
               <Icon className='w-5 h-5 flex-shrink-0 text-muted-foreground mt-0.5' />

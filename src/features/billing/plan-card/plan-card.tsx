@@ -1,4 +1,4 @@
-import { Check } from 'lucide-react'
+import { CheckIcon } from '@untitledui/icons-react/outline'
 import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -74,7 +74,7 @@ export const PlanCard = memo(
         <ul className='space-y-3 flex-1'>
           {plan.features.map(feature => (
             <li key={feature} className='flex gap-3 items-start text-sm'>
-              <Check className='h-4 w-4 text-muted-foreground flex-shrink-0 mt-0.5' />
+              <CheckIcon className='h-4 w-4 text-muted-foreground flex-shrink-0 mt-0.5' />
               <span className='text-muted-foreground'>{feature}</span>
             </li>
           ))}

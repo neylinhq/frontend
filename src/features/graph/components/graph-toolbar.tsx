@@ -1,6 +1,13 @@
-import { Filter, Minus, Plus, Sparkles } from 'lucide-react'
 import { memo, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
+import {
+  FilterFunnel01Icon,
+  MinusIcon,
+  PlusIcon,
+  Stars01Icon
+} from '@untitledui/icons-react/outline'
+
 import type { RelationType } from '@/entities/edge'
 import type { NodeType } from '@/entities/node'
 import { useAIPanelStore } from '@/features/ai-assist'
@@ -17,6 +24,7 @@ import {
 } from '@/shared/components/dropdown-menu'
 import { Slider } from '@/shared/components/slider'
 import { cn } from '@/shared/lib/cn'
+
 import type { ConnectionStats } from '../model/graph.data.hooks'
 import {
   ALL_EDGE_TYPES,
@@ -138,7 +146,7 @@ export const GraphToolbar = memo(
                 className='h-8 px-3'
                 title={t('graph.toolbar.aiAnalysis')}
               >
-                <Sparkles className='w-4 h-4 sm:mr-1' />
+                <Stars01Icon className='w-4 h-4 sm:mr-1' />
                 <span className='hidden sm:inline'>AI</span>
               </Button>
 
@@ -190,7 +198,7 @@ export const GraphToolbar = memo(
                   disabled={focusDepth <= 1}
                   className='h-6 w-6 p-0'
                 >
-                  <Minus className='w-3 h-3' />
+                  <MinusIcon className='w-3 h-3' />
                 </Button>
                 <span className='text-xs font-medium min-w-[4rem] text-center'>
                   {t('graph.toolbar.depth')}: {focusDepth}
@@ -202,7 +210,7 @@ export const GraphToolbar = memo(
                   disabled={focusDepth >= 5}
                   className='h-6 w-6 p-0'
                 >
-                  <Plus className='w-3 h-3' />
+                  <PlusIcon className='w-3 h-3' />
                 </Button>
                 <Button size='sm' variant='ghost' onClick={clearFocus} className='h-6 px-2 text-xs'>
                   {t('graph.toolbar.clearFocus')}
@@ -231,7 +239,7 @@ export const GraphToolbar = memo(
                 variant={activeFiltersCount > 0 ? 'secondary' : 'ghost'}
                 className='h-8 px-2.5 gap-1.5'
               >
-                <Filter className='w-4 h-4' />
+                <FilterFunnel01Icon className='w-4 h-4' />
                 <span className='hidden sm:inline text-xs'>{t('graph.toolbar.filters')}</span>
                 {activeFiltersCount > 0 && (
                   <Badge

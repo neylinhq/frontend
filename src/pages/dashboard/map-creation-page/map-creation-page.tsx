@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
-import { Lightbulb } from 'lucide-react'
+import { Lightbulb01Icon } from '@untitledui/icons-react/outline'
 import { useCreateMapMutation } from '@/features/map-creation'
 import { MAP_CREATION_CONFIG } from '@/features/map-creation/model/map-creation.constants'
 import { ApiError } from '@/shared/api/client'
@@ -184,7 +184,7 @@ export const MapCreationPage = () => {
 
             {/* Hint — subtle, helpful */}
             <p className='text-xs text-muted-foreground text-center pt-2 flex items-center justify-center gap-1.5'>
-              <Lightbulb className='h-3 w-3' />
+              <Lightbulb01Icon className='h-3 w-3' />
               {getShortcut({ mac: '⌘↵', win: 'Ctrl+Enter' })} {t('mapCreation.tips.toCreate')}
             </p>
           </CardContent>

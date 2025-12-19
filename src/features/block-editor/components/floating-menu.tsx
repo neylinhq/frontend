@@ -1,5 +1,5 @@
 import type { Editor } from '@tiptap/react'
-import { GripVertical, Plus } from 'lucide-react'
+import { DotsVerticalIcon, PlusIcon } from '@untitledui/icons-react/outline'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { UI_DELAYS } from '@/shared/config/api-delays'
@@ -858,7 +858,7 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
         className={styles.addButton}
         title={t('editor.floating.addBlock')}
       >
-        <Plus className='h-4 w-4' />
+        <PlusIcon className='h-4 w-4' />
       </button>
       <button
         type='button'
@@ -869,7 +869,7 @@ export const EditorFloatingMenu = ({ editor, onAddClick, containerRef }: Floatin
         className={cn(styles.dragButton, isDragging && styles.dragButtonDragging)}
         title={t('editor.floating.dragToMove')}
       >
-        <GripVertical className='h-4 w-4' />
+        <DotsVerticalIcon className='h-4 w-4' />
       </button>
     </div>
   )

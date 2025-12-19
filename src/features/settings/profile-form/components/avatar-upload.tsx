@@ -1,4 +1,4 @@
-import { Loader2, Trash2 } from 'lucide-react'
+import { Loading02Icon, Trash01Icon } from '@untitledui/icons-react/outline'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/components/avatar'
@@ -89,7 +89,7 @@ export const AvatarUpload = ({
             >
               {isPending ? (
                 <>
-                  <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                  <Loading02Icon className='mr-2 h-4 w-4 animate-spin' />
                   {t('common.uploading')}
                 </>
               ) : (
@@ -105,9 +105,9 @@ export const AvatarUpload = ({
                 className='h-8 w-8'
               >
                 {isDeleting ? (
-                  <Loader2 className='h-4 w-4 animate-spin' />
+                  <Loading02Icon className='h-4 w-4 animate-spin' />
                 ) : (
-                  <Trash2 className='h-4 w-4' />
+                  <Trash01Icon className='h-4 w-4' />
                 )}
               </Button>
             )}

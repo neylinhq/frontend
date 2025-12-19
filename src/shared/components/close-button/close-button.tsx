@@ -1,4 +1,4 @@
-import { X } from 'lucide-react'
+import { XCloseIcon } from '@untitledui/icons-react/outline'
 import { forwardRef } from 'react'
 import { cn } from '@/shared/lib/cn'
 
@@ -31,7 +31,7 @@ export const CloseButton = forwardRef<HTMLButtonElement, CloseButtonProps>(
       )}
       {...props}
     >
-      <X />
+      <XCloseIcon />
       <span className='sr-only'>Close</span>
     </button>
   )

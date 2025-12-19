@@ -1,31 +1,32 @@
-import { CreditCard, type LucideIcon, Settings2, UserCog, User as UserIcon } from 'lucide-react'
+import { CreditCard01Icon, Sliders01Icon, UserEditIcon, User01Icon } from '@untitledui/icons-react/outline'
+import type { ComponentType, SVGProps } from 'react'
 import { SETTINGS_ROUTES } from './routes'
 
 export interface SettingsNavItem {
   title: string
   href: string
-  icon: LucideIcon
+  icon: ComponentType<SVGProps<SVGSVGElement>>
 }
 
 export const SETTINGS_NAV_ITEMS: SettingsNavItem[] = [
   {
     title: 'settings.nav.profile',
     href: SETTINGS_ROUTES.profile,
-    icon: UserIcon
+    icon: User01Icon
   },
   {
     title: 'settings.nav.preferences',
     href: SETTINGS_ROUTES.preferences,
-    icon: Settings2
+    icon: Sliders01Icon
   },
   {
     title: 'settings.nav.account',
     href: SETTINGS_ROUTES.account,
-    icon: UserCog
+    icon: UserEditIcon
   },
   {
     title: 'settings.nav.billing',
     href: SETTINGS_ROUTES.billing,
-    icon: CreditCard
+    icon: CreditCard01Icon
   }
 ]

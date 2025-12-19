@@ -1,9 +1,9 @@
-import type { LucideIcon } from 'lucide-react'
+import type { ComponentType, SVGProps } from 'react'
 
 export interface UserNavItem {
   title: string
   href?: string
-  icon: LucideIcon
+  icon: ComponentType<SVGProps<SVGSVGElement>>
   shortcut?: {
     mac: string
     win: string
@@ -21,7 +21,7 @@ export const USER_NAV_ITEMS: UserNavItem[] = [
 ]
 
 // Для примера разделим как в макете
-import { LayoutDashboard, LogOut, Settings, Wallet } from 'lucide-react'
+import { LayoutGrid01Icon, LogOut01Icon, Settings01Icon, Wallet01Icon } from '@untitledui/icons-react/outline'
 import { DASHBOARD_ROUTES, ROUTES, SETTINGS_ROUTES } from '@/shared/config'
 
 export const getUserNavMainSection = (isDashboard: boolean): UserNavItem[] => {
@@ -32,7 +32,7 @@ export const getUserNavMainSection = (isDashboard: boolean): UserNavItem[] => {
     items.push({
       title: 'userNav.dashboard',
       href: DASHBOARD_ROUTES.overview,
-      icon: LayoutDashboard
+      icon: LayoutGrid01Icon
     })
   }
 
@@ -40,7 +40,7 @@ export const getUserNavMainSection = (isDashboard: boolean): UserNavItem[] => {
   items.push({
     title: 'userNav.pricing',
     href: ROUTES.pricing,
-    icon: Wallet,
+    icon: Wallet01Icon,
     shortcut: {
       mac: '⌘P',
       win: 'Ctrl+P'
@@ -51,7 +51,7 @@ export const getUserNavMainSection = (isDashboard: boolean): UserNavItem[] => {
   items.push({
     title: 'nav.settings',
     href: SETTINGS_ROUTES.profile,
-    icon: Settings,
+    icon: Settings01Icon,
     shortcut: {
       mac: '⌘S',
       win: 'Ctrl+S'
@@ -63,7 +63,7 @@ export const getUserNavMainSection = (isDashboard: boolean): UserNavItem[] => {
 
 export const USER_NAV_LOGOUT_ITEM: UserNavItem = {
   title: 'nav.logout',
-  icon: LogOut,
+  icon: LogOut01Icon,
   action: 'logout',
   shortcut: {
     mac: '⇧⌘Q',

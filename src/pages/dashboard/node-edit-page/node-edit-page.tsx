@@ -1,14 +1,13 @@
 import {
-  AlertCircle,
-  ArrowLeft,
-  GraduationCap,
-  Loader2,
-  PanelRightClose,
-  PanelRightOpen,
-  SlidersHorizontal,
-  Sparkles,
-  Trash2
-} from 'lucide-react'
+  AlertCircleIcon,
+  ArrowLeftIcon,
+  GraduationHat01Icon,
+  Loading02Icon,
+  LayoutRightIcon,
+  Sliders04Icon,
+  Stars01Icon,
+  Trash01Icon
+} from '@untitledui/icons-react/outline'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router'
@@ -354,8 +353,8 @@ export const NodeEditPage = ({
             className='fixed bottom-4 z-20 h-12 w-12 rounded-full transition-all right-4'
             style={sidebarOpen ? { right: `calc(${sidebarWidth}px + 1rem)` } : undefined}
           >
-            {sidebarOpen ? <PanelRightClose className='h-6 w-6 hidden lg:block' /> : null}
-            <PanelRightOpen className={cn('h-6 w-6', sidebarOpen && 'lg:hidden')} />
+            {sidebarOpen ? <LayoutRightIcon className='h-6 w-6 hidden lg:block' /> : null}
+            <LayoutRightIcon className={cn('h-6 w-6', sidebarOpen && 'lg:hidden')} />
           </Button>
         )}
 
@@ -366,7 +365,7 @@ export const NodeEditPage = ({
             <div className='flex items-center gap-3'>
               <Button variant='ghost' size='sm' asChild className='h-8 px-2'>
                 <Link to={`/dashboard/maps/${mapId}/view`}>
-                  <ArrowLeft className='h-4 w-4' />
+                  <ArrowLeftIcon className='h-4 w-4' />
                 </Link>
               </Button>
               <Badge
@@ -380,7 +379,7 @@ export const NodeEditPage = ({
               </Badge>
               {updateNodeMutation.isPending && (
                 <span className='flex items-center gap-1.5 text-xs text-muted-foreground'>
-                  <Loader2 className='h-3 w-3 animate-spin' />
+                  <Loading02Icon className='h-3 w-3 animate-spin' />
                   {t('errors.saving')}
                 </span>
               )}
@@ -399,8 +398,8 @@ export const NodeEditPage = ({
                 }}
                 className='h-8 w-8 p-0'
               >
-                {sidebarOpen ? <PanelRightClose className='h-4 w-4 hidden lg:block' /> : null}
-                <PanelRightOpen className={cn('h-4 w-4', sidebarOpen && 'lg:hidden')} />
+                {sidebarOpen ? <LayoutRightIcon className='h-4 w-4 hidden lg:block' /> : null}
+                <LayoutRightIcon className={cn('h-4 w-4', sidebarOpen && 'lg:hidden')} />
               </Button>
             )}
           </div>
@@ -458,17 +457,17 @@ export const NodeEditPage = ({
                   value='properties'
                   title={t('nodeEdit.tabs.properties')}
                 >
-                  <SlidersHorizontal className='h-4 w-4' />
+                  <Sliders04Icon className='h-4 w-4' />
                 </TabsTrigger>
                 <TabsTrigger
                   variant='underline'
                   value='practice'
                   title={t('nodeEdit.tabs.practice')}
                 >
-                  <GraduationCap className='h-4 w-4' />
+                  <GraduationHat01Icon className='h-4 w-4' />
                 </TabsTrigger>
                 <TabsTrigger variant='underline' value='ai' title={t('nodeEdit.tabs.ai')}>
-                  <Sparkles className='h-4 w-4' />
+                  <Stars01Icon className='h-4 w-4' />
                 </TabsTrigger>
               </TabsList>
 
@@ -506,7 +505,7 @@ export const NodeEditPage = ({
                     <Card className='border-destructive/30'>
                       <CardHeader className='pb-2 pt-3 px-3'>
                         <CardTitle className='text-xs font-medium text-destructive flex items-center gap-1.5'>
-                          <AlertCircle className='h-3.5 w-3.5' />
+                          <AlertCircleIcon className='h-3.5 w-3.5' />
                           {t('nodeEdit.dangerZone', 'Danger zone')}
                         </CardTitle>
                       </CardHeader>
@@ -523,7 +522,7 @@ export const NodeEditPage = ({
                           className='text-muted-foreground hover:text-destructive hover:bg-destructive/10'
                           onClick={() => setDeleteDialogOpen(true)}
                         >
-                          <Trash2 className='mr-1.5 h-3.5 w-3.5' />
+                          <Trash01Icon className='mr-1.5 h-3.5 w-3.5' />
                           {t('nodeEdit.deleteNode', 'Delete node')}
                         </Button>
                       </CardContent>
@@ -563,17 +562,17 @@ export const NodeEditPage = ({
                   value='properties'
                   title={t('nodeEdit.tabs.properties')}
                 >
-                  <SlidersHorizontal className='h-4 w-4' />
+                  <Sliders04Icon className='h-4 w-4' />
                 </TabsTrigger>
                 <TabsTrigger
                   variant='underline'
                   value='practice'
                   title={t('nodeEdit.tabs.practice')}
                 >
-                  <GraduationCap className='h-4 w-4' />
+                  <GraduationHat01Icon className='h-4 w-4' />
                 </TabsTrigger>
                 <TabsTrigger variant='underline' value='ai' title={t('nodeEdit.tabs.ai')}>
-                  <Sparkles className='h-4 w-4' />
+                  <Stars01Icon className='h-4 w-4' />
                 </TabsTrigger>
               </TabsList>
             </SheetHeader>
@@ -612,7 +611,7 @@ export const NodeEditPage = ({
                   <Card className='border-destructive/30'>
                     <CardHeader className='pb-2 pt-3 px-3'>
                       <CardTitle className='text-xs font-medium text-destructive flex items-center gap-1.5'>
-                        <AlertCircle className='h-3.5 w-3.5' />
+                        <AlertCircleIcon className='h-3.5 w-3.5' />
                         {t('nodeEdit.dangerZone', 'Danger zone')}
                       </CardTitle>
                     </CardHeader>
@@ -629,7 +628,7 @@ export const NodeEditPage = ({
                         className='text-muted-foreground hover:text-destructive hover:bg-destructive/10'
                         onClick={() => setDeleteDialogOpen(true)}
                       >
-                        <Trash2 className='mr-1.5 h-3.5 w-3.5' />
+                        <Trash01Icon className='mr-1.5 h-3.5 w-3.5' />
                         {t('nodeEdit.deleteNode', 'Delete node')}
                       </Button>
                     </CardContent>
@@ -672,9 +671,9 @@ export const NodeEditPage = ({
               className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
             >
               {deleteNodeMutation.isPending ? (
-                <Loader2 className='mr-1.5 h-3.5 w-3.5 animate-spin' />
+                <Loading02Icon className='mr-1.5 h-3.5 w-3.5 animate-spin' />
               ) : (
-                <Trash2 className='mr-1.5 h-3.5 w-3.5' />
+                <Trash01Icon className='mr-1.5 h-3.5 w-3.5' />
               )}
               {t('nodeEdit.deleteNode', 'Delete node')}
             </AlertDialogAction>

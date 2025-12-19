@@ -1,4 +1,4 @@
-import { Check, Loader2, Pencil, X } from 'lucide-react'
+import { CheckIcon, Loading02Icon, Pencil01Icon, XCloseIcon } from '@untitledui/icons-react/outline'
 import type { ReactNode } from 'react'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -58,20 +58,20 @@ export const ProposalCard = ({
       {/* Actions */}
       <div className='px-3 py-2 border-t border-border flex justify-end gap-2'>
         <Button size='sm' variant='ghost' onClick={onReject} className='text-muted-foreground' disabled={isLoading}>
-          <X className='h-3.5 w-3.5 mr-1' />
+          <XCloseIcon className='h-3.5 w-3.5 mr-1' />
           {t('common.dismiss', 'Dismiss')}
         </Button>
         {onEdit && (
           <Button size='sm' variant='outline' onClick={onEdit} disabled={isLoading}>
-            <Pencil className='h-3.5 w-3.5 mr-1' />
+            <Pencil01Icon className='h-3.5 w-3.5 mr-1' />
             {t('common.edit', 'Edit')}
           </Button>
         )}
         <Button size='sm' onClick={onAccept} disabled={isLoading}>
           {isLoading ? (
-            <Loader2 className='h-3.5 w-3.5 mr-1 animate-spin' />
+            <Loading02Icon className='h-3.5 w-3.5 mr-1 animate-spin' />
           ) : (
-            <Check className='h-3.5 w-3.5 mr-1' />
+            <CheckIcon className='h-3.5 w-3.5 mr-1' />
           )}
           {t('common.apply', 'Apply')}
         </Button>

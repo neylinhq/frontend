@@ -1,13 +1,19 @@
 import { NodeViewContent, type NodeViewProps, NodeViewWrapper } from '@tiptap/react'
-import { AlertTriangle, CheckCircle, Info, Lightbulb, XCircle } from 'lucide-react'
+import {
+  AlertTriangleIcon,
+  CheckCircleIcon,
+  InfoCircleIcon,
+  Lightbulb01Icon,
+  XCircleIcon
+} from '@untitledui/icons-react/outline'
 import type { CalloutType } from '../lib/callout-extension'
 
 const CALLOUT_ICONS: Record<CalloutType, React.ComponentType<{ className?: string }>> = {
-  info: Info,
-  warning: AlertTriangle,
-  success: CheckCircle,
-  error: XCircle,
-  tip: Lightbulb
+  info: InfoCircleIcon,
+  warning: AlertTriangleIcon,
+  success: CheckCircleIcon,
+  error: XCircleIcon,
+  tip: Lightbulb01Icon
 }
 
 export const CalloutNodeView = ({ node }: NodeViewProps) => {

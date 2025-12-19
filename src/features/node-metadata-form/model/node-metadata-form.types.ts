@@ -5,4 +5,5 @@ export interface NodeMetadataFormProps {
   node: Node
   onSubmit: (values: NodeMetadataFormValues) => void
   isPending?: boolean
+  disabled?: boolean
 }

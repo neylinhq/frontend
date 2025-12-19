@@ -1,13 +1,13 @@
-import { Monitor, Moon, Sun } from 'lucide-react'
+import { Monitor01Icon, Moon01Icon, SunIcon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
 import { SelectPopover } from '@/shared/components/select-popover'
 import type { Mode } from '@/shared/core/theme'
 import { useTheme } from '@/shared/core/theme'
 
 const MODE_ICONS: Record<Mode, React.ReactNode> = {
-  light: <Sun className='h-4 w-4' />,
-  dark: <Moon className='h-4 w-4' />,
-  system: <Monitor className='h-4 w-4' />
+  light: <SunIcon className='h-4 w-4' />,
+  dark: <Moon01Icon className='h-4 w-4' />,
+  system: <Monitor01Icon className='h-4 w-4' />
 }
 
 type ModeSelectProps = {

@@ -1,10 +1,13 @@
-import { ArrowRight, Check, X } from 'lucide-react'
 import { memo, useCallback, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+
+import { ArrowRightIcon, CheckIcon, XCloseIcon } from '@untitledui/icons-react/outline'
+
 import { RelationTypeEnum } from '@/entities/edge'
 import { useCreateEdge } from '@/entities/map'
 import { Button } from '@/shared/components/button'
 import { EdgeTypeButton } from '@/shared/components/edge-type-button'
+
 import { useEdgeManagementStore } from '../model/graph.edge.store'
 
 const ALL_RELATION_TYPES = RelationTypeEnum.options
@@ -104,7 +107,7 @@ export const EdgeTypeSelector = memo(({ mapId, onComplete, onCancel }: EdgeTypeS
       {/* Header */}
       <div className='mb-3 flex items-center gap-2 text-sm'>
         <span className='max-w-[80px] truncate font-medium'>{pendingEdge.sourceLabel}</span>
-        <ArrowRight className='h-3 w-3 shrink-0 text-muted-foreground' />
+        <ArrowRightIcon className='h-3 w-3 shrink-0 text-muted-foreground' />
         <span className='max-w-[80px] truncate font-medium'>{pendingEdge.targetLabel}</span>
       </div>
 
@@ -124,11 +127,11 @@ export const EdgeTypeSelector = memo(({ mapId, onComplete, onCancel }: EdgeTypeS
       {/* Actions */}
       <div className='flex justify-end gap-2'>
         <Button variant='ghost' size='sm' onClick={handleCancel}>
-          <X className='mr-1 h-3.5 w-3.5' />
+          <XCloseIcon className='mr-1 h-3.5 w-3.5' />
           {t('common.cancel')}
         </Button>
         <Button size='sm' onClick={handleConfirm} disabled={createEdge.isPending}>
-          <Check className='mr-1 h-3.5 w-3.5' />
+          <CheckIcon className='mr-1 h-3.5 w-3.5' />
           {t('common.create')}
         </Button>
       </div>

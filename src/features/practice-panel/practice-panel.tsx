@@ -1,4 +1,4 @@
-import { GraduationCap, Loader2, Play, Sparkles } from 'lucide-react'
+import { GraduationHat01Icon, Loading02Icon, PlayIcon, Stars01Icon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { useGenerateExercises, useNextExercise } from '@/entities/exercise'
@@ -42,7 +42,7 @@ export const PracticePanel = ({ nodeId, mapId }: PracticePanelProps) => {
   if (isLoading) {
     return (
       <div className='flex h-full items-center justify-center p-4'>
-        <Loader2 className='h-6 w-6 animate-spin text-muted-foreground' />
+        <Loading02Icon className='h-6 w-6 animate-spin text-muted-foreground' />
       </div>
     )
   }
@@ -52,7 +52,7 @@ export const PracticePanel = ({ nodeId, mapId }: PracticePanelProps) => {
     return (
       <div className='flex h-full flex-col items-center justify-center gap-4 p-6 text-center'>
         <div className='rounded-full bg-muted p-4'>
-          <GraduationCap className='h-8 w-8 text-muted-foreground' />
+          <GraduationHat01Icon className='h-8 w-8 text-muted-foreground' />
         </div>
         <div className='space-y-1'>
           <h3 className='font-medium'>{t('practice.panel.noExercises')}</h3>
@@ -67,12 +67,12 @@ export const PracticePanel = ({ nodeId, mapId }: PracticePanelProps) => {
         >
           {generateExercisesMutation.isPending ? (
             <>
-              <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+              <Loading02Icon className='mr-2 h-4 w-4 animate-spin' />
               {t('practice.generating')}
             </>
           ) : (
             <>
-              <Sparkles className='mr-2 h-4 w-4' />
+              <Stars01Icon className='mr-2 h-4 w-4' />
               {t('practice.generateExercises')}
             </>
           )}
@@ -98,7 +98,7 @@ export const PracticePanel = ({ nodeId, mapId }: PracticePanelProps) => {
       <div className='mt-4 space-y-2'>
         <Button asChild className='w-full'>
           <Link to={`${MAPS_ROUTES.practice(mapId)}?nodeId=${nodeId}`}>
-            <Play className='mr-2 h-4 w-4' />
+            <PlayIcon className='mr-2 h-4 w-4' />
             {t('practice.panel.startPractice')}
           </Link>
         </Button>
@@ -110,12 +110,12 @@ export const PracticePanel = ({ nodeId, mapId }: PracticePanelProps) => {
         >
           {generateExercisesMutation.isPending ? (
             <>
-              <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+              <Loading02Icon className='mr-2 h-4 w-4 animate-spin' />
               {t('practice.generating')}
             </>
           ) : (
             <>
-              <Sparkles className='mr-2 h-4 w-4' />
+              <Stars01Icon className='mr-2 h-4 w-4' />
               {t('practice.panel.generateMore')}
             </>
           )}

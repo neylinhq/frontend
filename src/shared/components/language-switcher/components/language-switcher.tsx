@@ -1,4 +1,4 @@
-import { Globe } from 'lucide-react'
+import { Globe01Icon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
 import { changeLanguage } from '@/app/i18n'
 import { Button } from '@/shared/components/button'
@@ -24,7 +24,7 @@ export const LanguageSwitcher = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant='ghost' size='icon' className='h-9 w-9'>
-          <Globe className='h-4 w-4' />
+          <Globe01Icon className='h-4 w-4' />
           <span className='sr-only'>Toggle language</span>
         </Button>
       </DropdownMenuTrigger>

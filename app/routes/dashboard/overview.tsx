@@ -11,7 +11,7 @@ export const meta = () => {
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const cookies = getCookies(request)
-  const initialData = await mapApi.discoverMaps({ filter: 'all' }, { cookies })
+  const initialData = await mapApi.getDashboardMaps({}, { cookies })
   return { initialData }
 }
 

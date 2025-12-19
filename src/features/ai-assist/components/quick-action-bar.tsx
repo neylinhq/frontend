@@ -1,4 +1,4 @@
-import { BookOpen, ChevronDown, Lightbulb, Link2, Sparkles } from 'lucide-react'
+import { BookOpen01Icon, ChevronDownIcon, Lightbulb01Icon, Link01Icon, Stars01Icon } from '@untitledui/icons-react/outline'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/shared/components/button'
@@ -17,11 +17,11 @@ interface QuickActionBarProps {
   defaultOpen?: boolean
 }
 
-const actionConfig: Record<QuickActionType, { icon: typeof Sparkles; labelKey: string }> = {
-  enrich: { icon: Sparkles, labelKey: 'ai.improveDescription' },
-  examples: { icon: Lightbulb, labelKey: 'ai.generateExamples' },
-  sources: { icon: Link2, labelKey: 'ai.findSources' },
-  exercises: { icon: BookOpen, labelKey: 'ai.generateExercises' }
+const actionConfig: Record<QuickActionType, { icon: typeof Stars01Icon; labelKey: string }> = {
+  enrich: { icon: Stars01Icon, labelKey: 'ai.improveDescription' },
+  examples: { icon: Lightbulb01Icon, labelKey: 'ai.generateExamples' },
+  sources: { icon: Link01Icon, labelKey: 'ai.findSources' },
+  exercises: { icon: BookOpen01Icon, labelKey: 'ai.generateExercises' }
 }
 
 export const QuickActionBar = ({
@@ -39,7 +39,7 @@ export const QuickActionBar = ({
         <CollapsibleTrigger asChild>
           <button type='button' className='flex items-center justify-between w-full py-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors'>
             <span>{t('ai.chat.quickActions')}</span>
-            <ChevronDown
+            <ChevronDownIcon
               className={cn('h-4 w-4 transition-transform duration-200', isOpen && 'rotate-180')}
             />
           </button>

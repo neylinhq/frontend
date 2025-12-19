@@ -1,6 +1,6 @@
+import { SearchMdIcon } from '@untitledui/icons-react/outline'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Search } from 'lucide-react'
 import { Input } from '@/shared/components/input'
 import { cn } from '@/shared/lib/cn'
 import type { ChatSession } from '../model/ai-assist.sessions.types'
@@ -57,9 +57,7 @@ export const ChatSelectorPopover = ({
   const filteredSessions = useMemo(() => {
     if (!search.trim()) return sessions
     const query = search.toLowerCase()
-    return sessions.filter(
-      s => (s.title || '').toLowerCase().includes(query)
-    )
+    return sessions.filter(s => (s.title || '').toLowerCase().includes(query))
   }, [sessions, search])
 
   // Group sessions by date
@@ -110,25 +108,25 @@ export const ChatSelectorPopover = ({
   }
 
   return (
-    <div className="flex flex-col max-h-[320px]">
+    <div className='flex flex-col max-h-[320px]'>
       {/* Search input */}
-      <div className="p-1.5 border-b border-border">
-        <div className="relative">
-          <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+      <div className='p-1.5 border-b border-border'>
+        <div className='relative'>
+          <SearchMdIcon className='absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground' />
           <Input
-            type="text"
+            type='text'
             placeholder={t('ai.chat.searchChats', 'Search chats...')}
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="h-7 pl-7 text-xs"
+            className='h-7 pl-7 text-xs'
           />
         </div>
       </div>
 
       {/* Sessions list */}
-      <div className="flex-1 overflow-y-auto">
+      <div className='flex-1 overflow-y-auto'>
         {groupedSessions.length === 0 ? (
-          <div className="p-3 text-center text-xs text-muted-foreground">
+          <div className='p-3 text-center text-xs text-muted-foreground'>
             {search
               ? t('ai.chat.noSearchResults', 'No chats found')
               : t('ai.chat.noChats', 'No chats yet')}
@@ -137,7 +135,7 @@ export const ChatSelectorPopover = ({
           groupedSessions.map(group => (
             <div key={group.label}>
               {/* Group header */}
-              <div className="px-2 py-1 text-[10px] font-medium text-muted-foreground bg-muted/30">
+              <div className='px-2 py-1 text-[10px] font-medium text-muted-foreground bg-muted/30'>
                 {group.label}
               </div>
               {/* Group items */}
@@ -149,9 +147,7 @@ export const ChatSelectorPopover = ({
                     className={cn(
                       'w-full px-2 py-1.5 text-xs text-left truncate',
                       'hover:bg-muted/50 transition-colors',
-                      isActive
-                        ? 'bg-muted text-foreground font-medium'
-                        : 'text-muted-foreground'
+                      isActive ? 'bg-muted text-foreground font-medium' : 'text-muted-foreground'
                     )}
                     onClick={() => onSelectSession(session.id)}
                   >

@@ -1,12 +1,15 @@
-import { Trash2 } from 'lucide-react'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
+import { Trash01Icon } from '@untitledui/icons-react/outline'
+
 import { type RelationType, RelationTypeEnum } from '@/entities/edge'
 import { useDeleteEdge, useUpdateEdge } from '@/entities/map'
 import { Button } from '@/shared/components/button'
 import { EdgeTypeButton } from '@/shared/components/edge-type-button'
 import { Input } from '@/shared/components/input'
 import { Popover, SmartPopoverContent } from '@/shared/components/smart-popover'
+
 import { useEdgeManagementStore } from '../model/graph.edge.store'
 
 const ALL_RELATION_TYPES = RelationTypeEnum.options
@@ -171,7 +174,7 @@ export const EdgeEditPopover = memo(({ mapId }: EdgeEditPopoverProps) => {
             onClick={handleDelete}
             disabled={deleteEdge.isPending}
           >
-            <Trash2 className='mr-1.5 h-3.5 w-3.5' />
+            <Trash01Icon className='mr-1.5 h-3.5 w-3.5' />
             {t('common.remove', 'Remove')}
           </Button>
         </div>

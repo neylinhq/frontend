@@ -1,5 +1,5 @@
 import { NodeViewContent, type NodeViewProps, NodeViewWrapper } from '@tiptap/react'
-import { Check, ChevronDown, Copy } from 'lucide-react'
+import { CheckIcon, ChevronDownIcon, Copy01Icon } from '@untitledui/icons-react/outline'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/shared/lib/cn'
@@ -155,7 +155,7 @@ export const CodeBlockNodeView = ({ node, updateAttributes, extension: _extensio
             aria-expanded={isOpen}
           >
             <span>{currentLabel}</span>
-            <ChevronDown className='h-3 w-3' />
+            <ChevronDownIcon className='h-3 w-3' />
           </button>
 
           {isOpen && (
@@ -189,7 +189,7 @@ export const CodeBlockNodeView = ({ node, updateAttributes, extension: _extensio
                     )}
                   >
                     <span>{lang.label}</span>
-                    {lang.value === currentLanguage && <Check className='h-3 w-3' />}
+                    {lang.value === currentLanguage && <CheckIcon className='h-3 w-3' />}
                   </button>
                 ))}
                 {filteredLanguages.length === 0 && (
@@ -214,7 +214,7 @@ export const CodeBlockNodeView = ({ node, updateAttributes, extension: _extensio
           )}
           aria-label={t('editor.codeBlock.copy')}
         >
-          {copied ? <Check className='h-3 w-3' /> : <Copy className='h-3 w-3' />}
+          {copied ? <CheckIcon className='h-3 w-3' /> : <Copy01Icon className='h-3 w-3' />}
           <span>{copied ? t('editor.codeBlock.copied') : t('editor.codeBlock.copy')}</span>
         </button>
       </div>

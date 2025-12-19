@@ -1,4 +1,4 @@
-import { Loader2, Mail, RefreshCw } from 'lucide-react'
+import { Loading02Icon, Mail01Icon, RefreshCw01Icon } from '@untitledui/icons-react/outline'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
@@ -101,7 +101,7 @@ export const VerifyEmailForm = ({ email }: VerifyEmailFormProps) => {
     <div className='grid gap-6'>
       <div className='flex flex-col items-center gap-4 text-center'>
         <div className='flex h-16 w-16 items-center justify-center rounded-full bg-primary/10'>
-          <Mail className='h-8 w-8 text-primary' />
+          <Mail01Icon className='h-8 w-8 text-primary' />
         </div>
         <div className='space-y-2'>
           <h1 className='text-2xl font-semibold tracking-tight'>{t('auth.verifyEmail.title')}</h1>
@@ -126,7 +126,7 @@ export const VerifyEmailForm = ({ email }: VerifyEmailFormProps) => {
           disabled={code.length !== 6 || isSubmitting}
           onClick={handleSubmit}
         >
-          {isSubmitting && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
+          {isSubmitting && <Loading02Icon className='mr-2 h-4 w-4 animate-spin' />}
           {t('auth.verifyEmail.submitButton')}
         </Button>
 
@@ -145,7 +145,7 @@ export const VerifyEmailForm = ({ email }: VerifyEmailFormProps) => {
               </span>
             ) : (
               <>
-                <RefreshCw className='mr-1 h-3 w-3' />
+                <RefreshCw01Icon className='mr-1 h-3 w-3' />
                 {t('auth.verifyEmail.resendButton')}
               </>
             )}

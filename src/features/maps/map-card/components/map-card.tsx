@@ -1,6 +1,6 @@
 import { formatDistanceToNow } from 'date-fns'
 import { de, enUS, ru } from 'date-fns/locale'
-import { Copy, GitBranch, Globe, Lock, MoreHorizontal, User } from 'lucide-react'
+import { Copy01Icon, GitBranch01Icon, Globe01Icon, Lock01Icon, DotsHorizontalIcon, User01Icon } from '@untitledui/icons-react/outline'
 import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
@@ -49,7 +49,7 @@ export const MapCard = memo(
             </CardTitle>
             {map.isPublic && (
               <Badge variant='info' className='shrink-0 gap-1'>
-                <Globe className='h-3 w-3' />
+                <Globe01Icon className='h-3 w-3' />
                 {t('dashboard.mapCard.public')}
               </Badge>
             )}
@@ -58,7 +58,7 @@ export const MapCard = memo(
             <DropdownMenuTrigger asChild>
               <Button variant='ghost' className='h-8 w-8 p-0 shrink-0'>
                 <span className='sr-only'>{t('dashboard.mapCard.menu')}</span>
-                <MoreHorizontal className='h-4 w-4' />
+                <DotsHorizontalIcon className='h-4 w-4' />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align='end'>
@@ -71,12 +71,12 @@ export const MapCard = memo(
                     <DropdownMenuItem onClick={onToggleVisibility}>
                       {map.isPublic ? (
                         <>
-                          <Lock className='h-4 w-4 mr-2' />
+                          <Lock01Icon className='h-4 w-4 mr-2' />
                           {t('dashboard.mapCard.makePrivate')}
                         </>
                       ) : (
                         <>
-                          <Globe className='h-4 w-4 mr-2' />
+                          <Globe01Icon className='h-4 w-4 mr-2' />
                           {t('dashboard.mapCard.makePublic')}
                         </>
                       )}
@@ -96,7 +96,7 @@ export const MapCard = memo(
                   </DropdownMenuItem>
                   {onCopy && (
                     <DropdownMenuItem onClick={onCopy}>
-                      <Copy className='h-4 w-4 mr-2' />
+                      <Copy01Icon className='h-4 w-4 mr-2' />
                       {t('dashboard.mapCard.copyToMyMaps')}
                     </DropdownMenuItem>
                   )}
@@ -113,7 +113,7 @@ export const MapCard = memo(
           {/* Author for public maps */}
           {!isOwned && map.authorName && (
             <div className='mt-2 flex items-center gap-1.5 text-xs text-muted-foreground'>
-              <User className='h-3 w-3' />
+              <User01Icon className='h-3 w-3' />
               <span>{map.authorName}</span>
             </div>
           )}
@@ -137,7 +137,7 @@ export const MapCard = memo(
           )}
 
           <div className='mt-4 flex items-center gap-2 text-xs text-muted-foreground'>
-            <GitBranch className='h-3 w-3' />
+            <GitBranch01Icon className='h-3 w-3' />
             <span>{pluralizeItems(map.nodesCount, i18n.language)}</span>
           </div>
         </CardContent>

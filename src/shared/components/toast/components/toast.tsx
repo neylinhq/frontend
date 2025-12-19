@@ -1,5 +1,5 @@
 import * as ToastPrimitives from '@radix-ui/react-toast'
-import { X } from 'lucide-react'
+import { XCloseIcon } from '@untitledui/icons-react/outline'
 import * as React from 'react'
 import { cn } from '@/shared/lib/cn'
 
@@ -76,7 +76,7 @@ const ToastClose = React.forwardRef<
     toast-close=''
     {...props}
   >
-    <X className='h-3.5 w-3.5' />
+    <XCloseIcon className='h-3.5 w-3.5' />
   </ToastPrimitives.Close>
 ))
 ToastClose.displayName = ToastPrimitives.Close.displayName

@@ -1,5 +1,13 @@
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { Bot, History, Link2, Loader2, Plus, Trash2, User } from 'lucide-react'
+import {
+  ClockRewindIcon,
+  Link01Icon,
+  Loading02Icon,
+  MessageChatCircleIcon,
+  PlusIcon,
+  Trash01Icon,
+  User01Icon
+} from '@untitledui/icons-react/outline'
 import { memo, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { type MapEvent, mapApi, mapKeys } from '@/entities/map'
@@ -41,7 +49,7 @@ export const MapHistoryList = memo(({ mapId, className }: MapHistoryListProps) =
   if (isLoading) {
     return (
       <div className='flex items-center justify-center py-12'>
-        <Loader2 className='h-5 w-5 animate-spin text-muted-foreground' />
+        <Loading02Icon className='h-5 w-5 animate-spin text-muted-foreground' />
       </div>
     )
   }
@@ -49,7 +57,7 @@ export const MapHistoryList = memo(({ mapId, className }: MapHistoryListProps) =
   if (!allEvents.length) {
     return (
       <div className='flex flex-col items-center justify-center py-12 text-center'>
-        <History className='h-10 w-10 text-muted-foreground/30 mb-3' />
+        <ClockRewindIcon className='h-10 w-10 text-muted-foreground/30 mb-3' />
         <p className='text-sm font-medium text-muted-foreground'>
           {t('mapSettings.history.empty')}
         </p>
@@ -76,7 +84,7 @@ export const MapHistoryList = memo(({ mapId, className }: MapHistoryListProps) =
             disabled={isFetchingNextPage}
           >
             {isFetchingNextPage && (
-              <Loader2 className='h-4 w-4 animate-spin mr-2' />
+              <Loading02Icon className='h-4 w-4 animate-spin mr-2' />
             )}
             {t('mapSettings.history.loadMore')}
           </Button>
@@ -102,18 +110,18 @@ const HistoryEventItem = memo(({ event }: HistoryEventItemProps) => {
   const Icon = useMemo(() => {
     switch (event.eventType) {
       case 'node_created':
-        return Plus
+        return PlusIcon
       case 'node_deleted':
-        return Trash2
+        return Trash01Icon
       case 'edge_created':
       case 'edge_deleted':
-        return Link2
+        return Link01Icon
       default:
-        return History
+        return ClockRewindIcon
     }
   }, [event.eventType])
 
-  const SourceIcon = event.source === 'ai' ? Bot : User
+  const SourceIcon = event.source === 'ai' ? MessageChatCircleIcon : User01Icon
 
   const iconColorClass = useMemo(() => {
     if (event.eventType.includes('deleted')) {

@@ -1,4 +1,4 @@
-import { Home, LayoutDashboard, Search } from 'lucide-react'
+import { Home01Icon, LayoutGrid01Icon, SearchMdIcon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { Button } from '@/shared/components/button'
@@ -17,7 +17,7 @@ export const NotFoundPage = () => {
         </div>
         <div className='absolute inset-0 flex items-center justify-center'>
           <div className='h-32 w-32 rounded-full bg-primary/10 flex items-center justify-center'>
-            <Search className='h-16 w-16 text-primary' />
+            <SearchMdIcon className='h-16 w-16 text-primary' />
           </div>
         </div>
       </div>
@@ -34,13 +34,13 @@ export const NotFoundPage = () => {
       <div className='flex flex-col sm:flex-row gap-3 justify-center items-center pt-4'>
         <Button asChild size='lg' className='w-full sm:w-auto'>
           <Link to={ROUTES.home}>
-            <Home className='mr-2 h-4 w-4' />
+            <Home01Icon className='mr-2 h-4 w-4' />
             {t('notFound.backToHome')}
           </Link>
         </Button>
         <Button asChild size='lg' variant='outline' className='w-full sm:w-auto'>
           <Link to={DASHBOARD_ROUTES.overview}>
-            <LayoutDashboard className='mr-2 h-4 w-4' />
+            <LayoutGrid01Icon className='mr-2 h-4 w-4' />
             {t('notFound.goToDashboard')}
           </Link>
         </Button>

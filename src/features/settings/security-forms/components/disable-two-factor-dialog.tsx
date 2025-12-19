@@ -1,4 +1,4 @@
-import { Loader2 } from 'lucide-react'
+import { Loading02Icon } from '@untitledui/icons-react/outline'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDisableTwoFactor, useSendEmailCode, useTwoFactorStatus } from '@/entities/two-factor'
@@ -95,7 +95,7 @@ export const DisableTwoFactorDialog = ({ open, onOpenChange }: DisableTwoFactorD
 
         {disable.isPending && (
           <div className='flex justify-center'>
-            <Loader2 className='h-5 w-5 animate-spin text-muted-foreground' />
+            <Loading02Icon className='h-5 w-5 animate-spin text-muted-foreground' />
           </div>
         )}
       </DialogContent>

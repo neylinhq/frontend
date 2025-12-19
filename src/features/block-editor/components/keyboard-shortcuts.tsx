@@ -1,4 +1,4 @@
-import { Keyboard } from 'lucide-react'
+import { Keyboard01Icon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
 
 import { cn } from '@/shared/lib/cn'
@@ -50,7 +50,7 @@ export const KeyboardShortcuts = ({ className }: KeyboardShortcutsProps) => {
   return (
     <div className={cn('space-y-4', className)}>
       <div className='flex items-center gap-2 text-sm font-medium'>
-        <Keyboard className='h-4 w-4' />
+        <Keyboard01Icon className='h-4 w-4' />
         <span>{t('editor.shortcuts.title')}</span>
       </div>
 

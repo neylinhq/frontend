@@ -1,4 +1,4 @@
-import { Loader2 } from 'lucide-react'
+import { Loading02Icon } from '@untitledui/icons-react/outline'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { CryptoNetwork } from '@/entities/subscription'
@@ -48,7 +48,7 @@ export const CryptoWalletConnectDialog = (props: CryptoWalletConnectDialogProps)
             <DialogDescription>{t('billing.crypto.description')}</DialogDescription>
           </DialogHeader>
           <div className='py-8 flex items-center justify-center'>
-            <Loader2 className='h-8 w-8 animate-spin text-muted-foreground' />
+            <Loading02Icon className='h-8 w-8 animate-spin text-muted-foreground' />
           </div>
         </DialogContent>
       </Dialog>
@@ -174,7 +174,7 @@ export const CryptoWalletConnectContent = ({
   if (!mounted) {
     return (
       <div className='py-8 flex items-center justify-center'>
-        <Loader2 className='h-8 w-8 animate-spin text-muted-foreground' />
+        <Loading02Icon className='h-8 w-8 animate-spin text-muted-foreground' />
       </div>
     )
   }

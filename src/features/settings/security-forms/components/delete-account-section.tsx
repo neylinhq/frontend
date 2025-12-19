@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { AlertCircle } from 'lucide-react'
+import { AlertCircleIcon } from '@untitledui/icons-react/outline'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -57,7 +57,7 @@ export const DeleteAccountSection = () => {
       <Card className='border-destructive'>
         <CardHeader>
           <div className='flex items-center gap-2'>
-            <AlertCircle className='h-5 w-5 text-destructive' />
+            <AlertCircleIcon className='h-5 w-5 text-destructive' />
             <CardTitle className='text-destructive'>
               {t('settings.security.danger.title')}
             </CardTitle>

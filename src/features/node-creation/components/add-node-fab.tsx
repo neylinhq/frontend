@@ -1,4 +1,4 @@
-import { Plus } from 'lucide-react'
+import { PlusIcon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/shared/components/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/components/tooltip'
@@ -20,7 +20,7 @@ export const AddNodeFab = () => {
           className='fixed bottom-6 right-6 h-14 w-14 rounded-full z-50'
           aria-label={t('nodeCreation.addNode')}
         >
-          <Plus className='h-6 w-6' />
+          <PlusIcon className='h-6 w-6' />
         </Button>
       </TooltipTrigger>
       <TooltipContent side='left' className='flex items-center gap-2'>

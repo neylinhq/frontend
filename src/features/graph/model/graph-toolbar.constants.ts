@@ -1,13 +1,17 @@
-import { Focus, Network, Route } from 'lucide-react'
+import type { ComponentType, SVGProps } from 'react'
+
+import { Dataflow03Icon, RouteIcon, Target01Icon } from '@untitledui/icons-react/outline'
+
 import type { RelationType } from '@/entities/edge'
 import type { NodeType } from '@/entities/node'
+
 import type { ViewMode } from './graph.store'
 
 // View mode icons and labels
-export const VIEW_MODE_CONFIG: Record<ViewMode, { icon: typeof Network; labelKey: string }> = {
-  overview: { icon: Network, labelKey: 'graph.viewModes.overview' },
-  focus: { icon: Focus, labelKey: 'graph.viewModes.focus' },
-  path: { icon: Route, labelKey: 'graph.viewModes.path' }
+export const VIEW_MODE_CONFIG: Record<ViewMode, { icon: ComponentType<SVGProps<SVGSVGElement>>; labelKey: string }> = {
+  overview: { icon: Dataflow03Icon, labelKey: 'graph.viewModes.overview' },
+  focus: { icon: Target01Icon, labelKey: 'graph.viewModes.focus' },
+  path: { icon: RouteIcon, labelKey: 'graph.viewModes.path' }
 }
 
 // Node type display names

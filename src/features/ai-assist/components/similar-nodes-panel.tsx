@@ -1,4 +1,4 @@
-import { ExternalLink, Sparkles } from 'lucide-react'
+import { LinkExternal01Icon, Stars01Icon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { useSimilarNodes } from '@/entities/node'
@@ -44,7 +44,7 @@ export const SimilarNodesPanel = ({ mapId, nodeId, onNodeClick }: SimilarNodesPa
   return (
     <div className='space-y-3'>
       <div className='flex items-center gap-2'>
-        <Sparkles className='w-4 h-4 text-primary' />
+        <Stars01Icon className='w-4 h-4 text-primary' />
         <h4 className='text-sm font-medium'>{t('ai.similarNodes')}</h4>
       </div>
 
@@ -85,7 +85,7 @@ export const SimilarNodesPanel = ({ mapId, nodeId, onNodeClick }: SimilarNodesPa
                   onClick={e => e.stopPropagation()}
                 >
                   {t('ai.view')}
-                  <ExternalLink className='w-3 h-3' />
+                  <LinkExternal01Icon className='w-3 h-3' />
                 </Link>
               </div>
             </CardContent>

@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { ChevronDown, Plus } from 'lucide-react'
+import { ChevronDownIcon, PlusIcon } from '@untitledui/icons-react/outline'
 import { Button } from '@/shared/components/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/components/popover'
 import { cn } from '@/shared/lib/cn'
@@ -64,7 +64,7 @@ export const ChatSelectorRow = ({
             disabled={isLoading}
           >
             <span className="truncate text-left">{activeTitle}</span>
-            <ChevronDown className={cn(
+            <ChevronDownIcon className={cn(
               'h-3 w-3 shrink-0 ml-1 text-muted-foreground transition-transform',
               isOpen && 'rotate-180'
             )} />
@@ -92,7 +92,7 @@ export const ChatSelectorRow = ({
         disabled={isLoading}
         aria-label={t('ai.chat.newChat', 'New chat')}
       >
-        <Plus className="h-3 w-3" />
+        <PlusIcon className="h-3 w-3" />
       </Button>
     </div>
   )

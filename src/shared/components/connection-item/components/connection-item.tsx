@@ -1,4 +1,4 @@
-import { ExternalLink, Eye, Pencil, Trash2 } from 'lucide-react'
+import { LinkExternal01Icon, EyeIcon, Pencil01Icon, Trash01Icon } from '@untitledui/icons-react/outline'
 import { memo } from 'react'
 import { cn } from '@/shared/lib/cn'
 
@@ -96,7 +96,7 @@ export const ConnectionItem = memo(
                       )}
                       title={panToTitle}
                     >
-                      <Eye className='w-3.5 h-3.5' />
+                      <EyeIcon className='w-3.5 h-3.5' />
                     </button>
                   )}
                   {onOpen && (
@@ -112,7 +112,7 @@ export const ConnectionItem = memo(
                       )}
                       title={openTitle}
                     >
-                      <ExternalLink className='w-3.5 h-3.5' />
+                      <LinkExternal01Icon className='w-3.5 h-3.5' />
                     </button>
                   )}
                 </div>
@@ -131,7 +131,7 @@ export const ConnectionItem = memo(
                   )}
                   title={editTitle}
                 >
-                  <Pencil className='w-3.5 h-3.5' />
+                  <Pencil01Icon className='w-3.5 h-3.5' />
                 </button>
               )}
               {onDelete && (
@@ -147,7 +147,7 @@ export const ConnectionItem = memo(
                   )}
                   title={deleteTitle}
                 >
-                  <Trash2 className='w-3.5 h-3.5' />
+                  <Trash01Icon className='w-3.5 h-3.5' />
                 </button>
               )}
             </div>

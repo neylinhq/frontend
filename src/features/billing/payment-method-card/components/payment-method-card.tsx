@@ -1,4 +1,4 @@
-import { Eye, MoreVertical, Star, Trash2 } from 'lucide-react'
+import { EyeIcon, DotsVerticalIcon, Star01Icon, Trash01Icon } from '@untitledui/icons-react/outline'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { PaymentMethod } from '@/entities/subscription'
@@ -103,7 +103,7 @@ export const PaymentMethodCard = ({
 
           {method.isDefault && (
             <span className='inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-muted text-muted-foreground whitespace-nowrap'>
-              <Star className='h-3 w-3 fill-current' />
+              <Star01Icon className='h-3 w-3 fill-current' />
               {t('billing.defaultPaymentMethod')}
             </span>
           )}
@@ -118,7 +118,7 @@ export const PaymentMethodCard = ({
               className='h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0'
               disabled={loading}
             >
-              <MoreVertical className='h-4 w-4' />
+              <DotsVerticalIcon className='h-4 w-4' />
               <span className='sr-only'>Actions</span>
             </Button>
           </DropdownMenuTrigger>
@@ -126,7 +126,7 @@ export const PaymentMethodCard = ({
             {onEdit && (
               <>
                 <DropdownMenuItem onClick={() => onEdit(method)} disabled={loading}>
-                  <Eye className='h-4 w-4 mr-2' />
+                  <EyeIcon className='h-4 w-4 mr-2' />
                   {t('common.view')}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
@@ -134,7 +134,7 @@ export const PaymentMethodCard = ({
             )}
             {!method.isDefault && (
               <DropdownMenuItem onClick={() => onSetDefault(method.id)} disabled={loading}>
-                <Star className='h-4 w-4 mr-2' />
+                <Star01Icon className='h-4 w-4 mr-2' />
                 {t('billing.setAsDefault')}
               </DropdownMenuItem>
             )}
@@ -143,7 +143,7 @@ export const PaymentMethodCard = ({
               disabled={loading}
               className='text-destructive focus:text-destructive'
             >
-              <Trash2 className='h-4 w-4 mr-2' />
+              <Trash01Icon className='h-4 w-4 mr-2' />
               {t('billing.removePaymentMethod.confirm')}
             </DropdownMenuItem>
           </DropdownMenuContent>

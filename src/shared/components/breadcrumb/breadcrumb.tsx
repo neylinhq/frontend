@@ -1,4 +1,4 @@
-import { ChevronLeft } from 'lucide-react'
+import { ChevronLeftIcon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/shared/lib/cn'
 
@@ -21,7 +21,7 @@ export const Breadcrumb = ({ onBack, disabled, className }: BreadcrumbProps) => 
         className
       )}
     >
-      <ChevronLeft className='h-3.5 w-3.5' />
+      <ChevronLeftIcon className='h-3.5 w-3.5' />
       <span>{t('common.back')}</span>
     </button>
   )

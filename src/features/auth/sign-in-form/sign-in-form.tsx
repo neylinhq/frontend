@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
-import { Loader2 } from 'lucide-react'
+import { Loading02Icon } from '@untitledui/icons-react/outline'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -137,7 +137,7 @@ export const SignInForm = () => {
           />
 
           <Button type='submit' className='w-full' disabled={isLoading}>
-            {isLoading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
+            {isLoading && <Loading02Icon className='mr-2 h-4 w-4 animate-spin' />}
             {t('auth.signIn.submitButton')}
           </Button>
 

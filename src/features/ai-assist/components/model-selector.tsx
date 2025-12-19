@@ -1,4 +1,4 @@
-import { Check } from 'lucide-react'
+import { CheckIcon } from '@untitledui/icons-react/outline'
 import { useMemo } from 'react'
 import type { AIModel, AIModelTier } from '@/entities/ai'
 import { Button } from '@/shared/components/button'
@@ -88,7 +88,7 @@ export const ModelSelector = ({ value, onChange, models, disabled }: ModelSelect
                     <div className='w-3.5 h-3.5 shrink-0' />
                   )}
                   <span className='flex-1 text-left truncate'>{model.name}</span>
-                  {value === model.id && <Check className='h-3 w-3 shrink-0' />}
+                  {value === model.id && <CheckIcon className='h-3 w-3 shrink-0' />}
                 </button>
               ))}
               </div>

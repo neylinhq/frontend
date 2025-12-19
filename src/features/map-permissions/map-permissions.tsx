@@ -1,4 +1,4 @@
-import { Copy, Eye } from 'lucide-react'
+import { Copy01Icon, EyeIcon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import { useCopyMap } from '@/entities/map'
@@ -26,10 +26,10 @@ export const ReadOnlyBanner = ({ mapId }: ReadOnlyBannerProps) => {
 
   return (
     <div className='absolute top-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3 bg-muted/90 backdrop-blur px-4 py-2 rounded-full'>
-      <Eye className='h-4 w-4 text-muted-foreground' />
+      <EyeIcon className='h-4 w-4 text-muted-foreground' />
       <span className='text-sm'>{t('mapView.viewOnly')}</span>
       <Button size='sm' variant='secondary' onClick={handleCopy} disabled={copyMap.isPending}>
-        <Copy className='h-3 w-3 mr-1.5' />
+        <Copy01Icon className='h-3 w-3 mr-1.5' />
         {t('dashboard.mapCard.copyToMyMaps')}
       </Button>
     </div>

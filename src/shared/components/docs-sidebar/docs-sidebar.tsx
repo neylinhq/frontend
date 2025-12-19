@@ -1,4 +1,5 @@
-import { ChevronRight, type LucideIcon } from 'lucide-react'
+import { ChevronRightIcon } from '@untitledui/icons-react/outline'
+import type { ComponentType, SVGProps } from 'react'
 import * as React from 'react'
 import { NavLink } from 'react-router'
 import { Badge } from '@/shared/components/badge'
@@ -22,7 +23,7 @@ export interface DocsSidebarItem {
 
 export interface DocsSidebarSection {
   title: string
-  icon?: LucideIcon
+  icon?: ComponentType<SVGProps<SVGSVGElement>>
   items: DocsSidebarItem[]
   defaultOpen?: boolean
 }
@@ -82,7 +83,7 @@ const DocsSidebarSectionComponent = ({ section }: { section: DocsSidebarSection 
           {Icon && <Icon className='h-4 w-4 opacity-70' />}
           <span>{section.title}</span>
         </div>
-        <ChevronRight
+        <ChevronRightIcon
           className={cn(
             'h-4 w-4 opacity-50 transition-transform duration-200',
             isOpen && 'rotate-90'

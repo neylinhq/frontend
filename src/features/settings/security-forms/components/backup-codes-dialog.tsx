@@ -1,4 +1,4 @@
-import { Check, Copy, Download, Loader2 } from 'lucide-react'
+import { CheckIcon, Copy01Icon, Download01Icon, Loading02Icon } from '@untitledui/icons-react/outline'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
@@ -149,7 +149,7 @@ export const BackupCodesDialog = ({
             </div>
             {regenerate.isPending && (
               <div className='flex justify-center'>
-                <Loader2 className='h-5 w-5 animate-spin text-muted-foreground' />
+                <Loading02Icon className='h-5 w-5 animate-spin text-muted-foreground' />
               </div>
             )}
           </div>
@@ -173,14 +173,14 @@ export const BackupCodesDialog = ({
             <div className='flex gap-2'>
               <Button variant='outline' size='sm' className='flex-1' onClick={copyAllCodes}>
                 {copied ? (
-                  <Check className='mr-2 h-4 w-4 text-success' />
+                  <CheckIcon className='mr-2 h-4 w-4 text-success' />
                 ) : (
-                  <Copy className='mr-2 h-4 w-4' />
+                  <Copy01Icon className='mr-2 h-4 w-4' />
                 )}
                 {copied ? t('common.copied') : t('settings.security.twoFactor.backup.copy')}
               </Button>
               <Button variant='outline' size='sm' className='flex-1' onClick={downloadCodes}>
-                <Download className='mr-2 h-4 w-4' />
+                <Download01Icon className='mr-2 h-4 w-4' />
                 {t('settings.security.twoFactor.backup.download')}
               </Button>
             </div>

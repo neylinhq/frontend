@@ -1,4 +1,4 @@
-import { BellRing, Check } from 'lucide-react'
+import { BellRinging01Icon, CheckIcon } from '@untitledui/icons-react/outline'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import {
@@ -88,7 +88,7 @@ const CardPage = () => {
           </CardHeader>
           <CardContent className='grid gap-4'>
             <div className='flex items-center space-x-4 rounded-md border p-4'>
-              <BellRing />
+              <BellRinging01Icon />
               <div className='flex-1 space-y-1'>
                 <Typography variant='small'>Push Notifications</Typography>
                 <p className='text-xs text-muted-foreground'>Send notifications to device</p>
@@ -111,7 +111,7 @@ const CardPage = () => {
           </CardContent>
           <CardFooter>
             <Button className='w-full'>
-              <Check className='mr-2 h-4 w-4' /> Mark all as read
+              <CheckIcon className='mr-2 h-4 w-4' /> Mark all as read
             </Button>
           </CardFooter>
         </Card>

@@ -1,4 +1,4 @@
-import { Puzzle } from 'lucide-react'
+import { PuzzlePiece01Icon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
 
@@ -19,7 +19,7 @@ const IntegrationsPage = () => {
       <Card>
         <CardHeader>
           <CardTitle className='flex items-center gap-2'>
-            <Puzzle className='h-5 w-5' />
+            <PuzzlePiece01Icon className='h-5 w-5' />
             {t('common.comingSoon')}
           </CardTitle>
           <CardDescription>{t('settings.integrations.comingSoonDescription')}</CardDescription>

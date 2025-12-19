@@ -1,4 +1,4 @@
-import { Loader2 } from 'lucide-react'
+import { Loading02Icon } from '@untitledui/icons-react/outline'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useSearchParams } from 'react-router'
@@ -145,7 +145,7 @@ export const TelegramLoginButton = ({ className }: TelegramLoginButtonProps) => 
       onClick={openTelegramLogin}
     >
       {isLoading ? (
-        <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+        <Loading02Icon className='mr-2 h-4 w-4 animate-spin' />
       ) : (
         <Icon data={telegramIcon} size={16} className='mr-2' />
       )}

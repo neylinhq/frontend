@@ -1,5 +1,10 @@
 import { useQueryClient } from '@tanstack/react-query'
-import { HelpCircle, LogOut, Mail, Send } from 'lucide-react'
+import {
+  HelpCircleIcon,
+  LogOut01Icon,
+  Mail01Icon,
+  Send01Icon
+} from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router'
 import { sessionApi } from '@/entities/session'
@@ -23,8 +28,8 @@ import {
 } from '@/shared/components/dropdown-menu'
 import { LanguageSelect } from '@/shared/components/language-switcher'
 import { SUPPORT_CONTACTS } from '@/shared/config'
-import { getShortcut } from '@/shared/lib/platform'
 import { cn } from '@/shared/lib/cn'
+import { getShortcut } from '@/shared/lib/platform'
 import { getUserNavMainSection, USER_NAV_LOGOUT_ITEM } from './user-nav.constants'
 
 interface UserNavProps {
@@ -60,7 +65,10 @@ export const UserNav = ({ isExpanded }: UserNavProps) => {
       <DropdownMenuTrigger asChild>
         <Button
           variant='ghost'
-          className={cn('justify-start gap-3 h-10 px-0 overflow-hidden', isExpanded ? 'w-full' : 'w-10')}
+          className={cn(
+            'justify-start gap-3 h-10 px-0 overflow-hidden',
+            isExpanded ? 'w-full' : 'w-10'
+          )}
         >
           <div className='w-10 h-10 flex items-center justify-center shrink-0'>
             <Avatar className='h-8 w-8'>
@@ -99,7 +107,7 @@ export const UserNav = ({ isExpanded }: UserNavProps) => {
               return (
                 <DropdownMenuItem key={item.title} asChild>
                   <Link to={item.href}>
-                    <Icon className='mr-2 h-4 w-4' />
+                    {/* <Icon className='mr-2 h-4 w-4' /> */}
                     <span>{t(item.title)}</span>
                     {shortcut && <DropdownMenuShortcut>{shortcut}</DropdownMenuShortcut>}
                   </Link>
@@ -119,19 +127,19 @@ export const UserNav = ({ isExpanded }: UserNavProps) => {
 
         <DropdownMenuSub>
           <DropdownMenuSubTrigger>
-            <HelpCircle className='mr-2 h-4 w-4' />
+            {/* <HelpCircleIcon className='mr-2 h-4 w-4' /> */}
             <span>{t('nav.support')}</span>
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
             <DropdownMenuItem asChild>
               <a href={SUPPORT_CONTACTS.telegram.url} target='_blank' rel='noopener noreferrer'>
-                <Send className='mr-2 h-4 w-4' />
+                {/* <Send01Icon className='mr-2 h-4 w-4' /> */}
                 <span>{t('support.telegram')}</span>
               </a>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <a href={SUPPORT_CONTACTS.email.url}>
-                <Mail className='mr-2 h-4 w-4' />
+                {/* <Mail01Icon className='mr-2 h-4 w-4' /> */}
                 <span>{t('support.email')}</span>
               </a>
             </DropdownMenuItem>
@@ -148,7 +156,7 @@ export const UserNav = ({ isExpanded }: UserNavProps) => {
 
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout}>
-          <LogOut className='mr-2 h-4 w-4' />
+          {/* <LogOut01Icon className='mr-2 h-4 w-4' /> */}
           <span>{t(USER_NAV_LOGOUT_ITEM.title)}</span>
           <DropdownMenuShortcut>{getShortcut(USER_NAV_LOGOUT_ITEM.shortcut)}</DropdownMenuShortcut>
         </DropdownMenuItem>

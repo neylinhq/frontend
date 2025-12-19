@@ -1,27 +1,29 @@
 import type { Editor } from '@tiptap/react'
 import {
-  Bold,
-  Check,
+  Bold01Icon,
+  CheckIcon,
+  ChevronDownIcon,
+  Code01Icon,
+  Copy01Icon,
+  DotsHorizontalIcon,
+  Italic01Icon,
+  Strikethrough01Icon,
+  Trash01Icon,
+  Type01Icon
+} from '@untitledui/icons-react/outline'
+import {
   CheckSquare,
-  ChevronDown,
-  Code,
-  Copy,
   FileText,
-  Heading1,
-  Heading2,
-  Heading3,
-  Italic,
   Link,
   List,
-  ListOrdered,
-  MoreHorizontal,
-  Quote,
-  Sigma,
-  Strikethrough,
-  Trash2,
-  Type,
-  Underline
-} from 'lucide-react'
+  ListNumbers,
+  MathOperations,
+  Quotes,
+  TextHOne,
+  TextHThree,
+  TextHTwo,
+  TextUnderline
+} from '@phosphor-icons/react'
 import {
   type RefObject,
   useCallback,
@@ -145,22 +147,22 @@ const useDropdownKeyboard = <T,>(
 const BLOCK_TYPES = [
   {
     name: 'text',
-    icon: Type,
+    icon: Type01Icon,
     command: (editor: Editor) => editor.chain().focus().setParagraph().run()
   },
   {
     name: 'heading1',
-    icon: Heading1,
+    icon: TextHOne,
     command: (editor: Editor) => editor.chain().focus().toggleHeading({ level: 1 }).run()
   },
   {
     name: 'heading2',
-    icon: Heading2,
+    icon: TextHTwo,
     command: (editor: Editor) => editor.chain().focus().toggleHeading({ level: 2 }).run()
   },
   {
     name: 'heading3',
-    icon: Heading3,
+    icon: TextHThree,
     command: (editor: Editor) => editor.chain().focus().toggleHeading({ level: 3 }).run()
   },
   {
@@ -170,7 +172,7 @@ const BLOCK_TYPES = [
   },
   {
     name: 'numberedList',
-    icon: ListOrdered,
+    icon: ListNumbers,
     command: (editor: Editor) => editor.chain().focus().toggleOrderedList().run()
   },
   {
@@ -180,7 +182,7 @@ const BLOCK_TYPES = [
   },
   {
     name: 'quote',
-    icon: Quote,
+    icon: Quotes,
     command: (editor: Editor) => editor.chain().focus().toggleBlockquote().run()
   }
 ]
@@ -388,7 +390,8 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
     lastNonEmptyTimeRef.current = Date.now()
 
     const lastSelection = lastSelectionRef.current
-    const selectionChanged = !lastSelection || lastSelection.from !== from || lastSelection.to !== to
+    const selectionChanged =
+      !lastSelection || lastSelection.from !== from || lastSelection.to !== to
     lastSelectionRef.current = { from, to }
 
     if (!selectionChanged && isVisible) {
@@ -565,7 +568,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
     return BLOCK_TYPES[0]
   }
   const currentBlockType = getCurrentBlockType()
-  const CurrentBlockIcon = currentBlockType?.icon || Type
+  const CurrentBlockIcon = currentBlockType?.icon || Type01Icon
 
   if (!isVisible) {
     return null
@@ -630,7 +633,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
           <span className='text-[11px]'>
             {t(`editor.bubble.blockTypes.${currentBlockType?.name || 'text'}`)}
           </span>
-          <ChevronDown className='h-2.5 w-2.5 shrink-0' />
+          <ChevronDownIcon className='h-2.5 w-2.5 shrink-0' />
         </button>
 
         {isTurnIntoOpen && (
@@ -662,7 +665,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
                     <Icon className='h-4 w-4 text-muted-foreground' />
                     <span>{t(`editor.bubble.blockTypes.${blockType.name}`)}</span>
                   </div>
-                  {isActive && <Check className='h-4 w-4 text-foreground' />}
+                  {isActive && <CheckIcon className='h-4 w-4 text-foreground' />}
                 </button>
               )
             })}
@@ -678,7 +681,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
         isToggle
         aria-label={t('editor.bubble.bold')}
       >
-        <Bold className='h-3.5 w-3.5' />
+        <Bold01Icon className='h-3.5 w-3.5' />
       </ToolbarButton>
 
       <ToolbarButton
@@ -687,7 +690,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
         isToggle
         aria-label={t('editor.bubble.italic')}
       >
-        <Italic className='h-3.5 w-3.5' />
+        <Italic01Icon className='h-3.5 w-3.5' />
       </ToolbarButton>
 
       <ToolbarButton
@@ -696,7 +699,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
         isToggle
         aria-label={t('editor.bubble.underline')}
       >
-        <Underline className='h-3.5 w-3.5' />
+        <TextUnderline className='h-3.5 w-3.5' />
       </ToolbarButton>
 
       <ToolbarButton
@@ -705,7 +708,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
         isToggle
         aria-label={t('editor.bubble.strikethrough')}
       >
-        <Strikethrough className='h-3.5 w-3.5' />
+        <Strikethrough01Icon className='h-3.5 w-3.5' />
       </ToolbarButton>
 
       <ToolbarButton
@@ -714,7 +717,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
         isToggle
         aria-label={t('editor.bubble.code')}
       >
-        <Code className='h-3.5 w-3.5' />
+        <Code01Icon className='h-3.5 w-3.5' />
       </ToolbarButton>
 
       <div className={styles.separator} />
@@ -834,7 +837,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
         isActive={editor.isActive('mathInline')}
         aria-label={t('editor.bubble.math')}
       >
-        <Sigma className='h-3.5 w-3.5' />
+        <MathOperations className='h-3.5 w-3.5' />
       </ToolbarButton>
 
       <div className={styles.separator} />
@@ -849,7 +852,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
           aria-expanded={isMoreMenuOpen}
           aria-label={t('editor.bubble.moreOptions')}
         >
-          <MoreHorizontal className='h-3.5 w-3.5' />
+          <DotsHorizontalIcon className='h-3.5 w-3.5' />
         </ToolbarButton>
 
         {isMoreMenuOpen && (
@@ -874,7 +877,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
               )}
             >
               <span>{t('editor.bubble.more.copy')}</span>
-              <Copy className='h-4 w-4 text-muted-foreground' />
+              <Copy01Icon className='h-4 w-4 text-muted-foreground' />
             </button>
             <button
               type='button'
@@ -902,7 +905,7 @@ export const EditorBubbleMenu = ({ editor, onOpenMathDialog }: EditorBubbleMenuP
               )}
             >
               <span>{t('editor.bubble.more.delete')}</span>
-              <Trash2 className='h-4 w-4' />
+              <Trash01Icon className='h-4 w-4' />
             </button>
           </div>
         )}
@@ -983,6 +986,6 @@ const ColorButton = ({
       {preview}
       <span className='text-[13px]'>{label}</span>
     </div>
-    {isActive && <Check className='h-4 w-4 text-foreground' />}
+    {isActive && <CheckIcon className='h-4 w-4 text-foreground' />}
   </button>
 )

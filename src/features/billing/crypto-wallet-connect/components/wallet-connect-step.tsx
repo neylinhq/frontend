@@ -1,4 +1,4 @@
-import { AlertCircle, Loader2, Wallet } from 'lucide-react'
+import { AlertCircleIcon, Loading02Icon, Wallet01Icon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
 import type { CryptoNetwork } from '@/entities/subscription'
 import { getNetworkDisplayName, shortenWalletAddress } from '@/entities/subscription'
@@ -46,7 +46,7 @@ export const WalletConnectStep = ({
         </div>
         <p className='text-sm text-muted-foreground'>{getNetworkDisplayName(network)}</p>
         <Button onClick={onAddWallet} className='w-full' size='lg'>
-          <Wallet className='h-4 w-4 mr-2' />
+          <Wallet01Icon className='h-4 w-4 mr-2' />
           {t('billing.crypto.wallet.add')}
         </Button>
       </div>
@@ -66,12 +66,12 @@ export const WalletConnectStep = ({
       >
         {isConnecting ? (
           <>
-            <Loader2 className='h-4 w-4 mr-2 animate-spin' />
+            <Loading02Icon className='h-4 w-4 mr-2 animate-spin' />
             {t('billing.crypto.wallet.connecting')}
           </>
         ) : (
           <>
-            <Wallet className='h-4 w-4 mr-2' />
+            <Wallet01Icon className='h-4 w-4 mr-2' />
             {t('billing.crypto.wallet.connect')}
           </>
         )}

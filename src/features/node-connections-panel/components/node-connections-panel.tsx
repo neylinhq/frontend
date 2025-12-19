@@ -1,4 +1,4 @@
-import { ArrowDownLeft, ArrowUpRight } from 'lucide-react'
+import { ArrowDownLeftIcon, ArrowUpRightIcon } from '@untitledui/icons-react/outline'
 import { memo, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Edge } from '@/entities/edge'
@@ -96,7 +96,7 @@ export const NodeConnectionsPanel = memo(
             <ConnectionSection
               title={t('nodeDrawer.connections.incoming')}
               count={incomingEdges.length}
-              icon={<ArrowDownLeft className='h-3.5 w-3.5' />}
+              icon={<ArrowDownLeftIcon className='h-3.5 w-3.5' />}
               color='blue'
               showHeader={filter === 'all'}
             >
@@ -134,7 +134,7 @@ export const NodeConnectionsPanel = memo(
             <ConnectionSection
               title={t('nodeDrawer.connections.outgoing')}
               count={outgoingEdges.length}
-              icon={<ArrowUpRight className='h-3.5 w-3.5' />}
+              icon={<ArrowUpRightIcon className='h-3.5 w-3.5' />}
               color='emerald'
               showHeader={filter === 'all'}
             >

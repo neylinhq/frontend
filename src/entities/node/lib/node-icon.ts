@@ -1,26 +1,26 @@
+import type { ComponentType, SVGProps } from 'react'
 import {
-  Brain,
-  FileText,
-  GraduationCap,
-  HelpCircle,
-  Lightbulb,
-  type LucideIcon,
-  Target,
-  User,
-  Zap
-} from 'lucide-react'
+  Atom01Icon,
+  File01Icon,
+  GraduationHat01Icon,
+  HelpCircleIcon,
+  Lightbulb01Icon,
+  Target01Icon,
+  User01Icon,
+  ZapIcon
+} from '@untitledui/icons-react/outline'
 import type { NodeType } from '../node.schema'
 
-export const getNodeIcon = (type: NodeType): LucideIcon => {
-  const icons: Record<NodeType, LucideIcon> = {
-    concept: Brain,
-    fact: FileText,
-    theory: Lightbulb,
-    example: Target,
-    question: HelpCircle,
-    hypothesis: Zap,
-    person: User,
-    school: GraduationCap
+export const getNodeIcon = (type: NodeType): ComponentType<SVGProps<SVGSVGElement>> => {
+  const icons: Record<NodeType, ComponentType<SVGProps<SVGSVGElement>>> = {
+    concept: Atom01Icon,
+    fact: File01Icon,
+    theory: Lightbulb01Icon,
+    example: Target01Icon,
+    question: HelpCircleIcon,
+    hypothesis: ZapIcon,
+    person: User01Icon,
+    school: GraduationHat01Icon
   }
-  return icons[type] || Brain
+  return icons[type] || Atom01Icon
 }

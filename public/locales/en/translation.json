@@ -169,7 +169,8 @@
     "send": "Send",
     "true": "True",
     "false": "False",
-    "optional": "optional"
+    "optional": "optional",
+    "loadMore": "Load more"
   },
   "imageCrop": {
     "title": "Crop image",
@@ -633,6 +634,10 @@
         "daysAgo": "{{count}}d ago"
       }
     }
+  },
+  "mapSidebar": {
+    "open": "Open sidebar",
+    "close": "Close sidebar"
   },
   "mapView": {
     "navigationError": "Navigation error",

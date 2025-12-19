@@ -1,5 +1,5 @@
 'use client'
-import { ChevronsUpDown } from 'lucide-react'
+import { ChevronSelectorVerticalIcon } from '@untitledui/icons-react/outline'
 import { useState } from 'react'
 import { Button } from '@/shared/components/button'
 import {
@@ -37,7 +37,7 @@ const CollapsibleDemo = () => {
         <h4 className='text-sm font-semibold'>@radix-ui/primitives</h4>
         <CollapsibleTrigger asChild>
           <Button variant='ghost' size='sm' className='w-9 p-0'>
-            <ChevronsUpDown className='h-4 w-4' />
+            <ChevronSelectorVerticalIcon className='h-4 w-4' />
             <span className='sr-only'>Toggle</span>
           </Button>
         </CollapsibleTrigger>

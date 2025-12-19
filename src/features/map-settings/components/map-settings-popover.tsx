@@ -1,4 +1,4 @@
-import { Settings } from 'lucide-react'
+import { Settings01Icon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
 import { type RatingSystem, useMapProgress } from '@/entities/progress'
 import { Button } from '@/shared/components/button'
@@ -32,7 +32,7 @@ export const MapSettingsPopover = ({ mapId }: MapSettingsPopoverProps) => {
           className='h-8 w-8 p-0'
           title={t('mapSettings.title')}
         >
-          <Settings className='w-4 h-4' />
+          <Settings01Icon className='w-4 h-4' />
         </Button>
       </PopoverTrigger>
       <PopoverContent className='w-80' align='start'>

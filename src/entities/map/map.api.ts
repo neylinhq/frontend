@@ -2,6 +2,7 @@ import { api } from '@/shared/api/client'
 import type { Edge } from '../edge'
 import type { LightweightNode, Node } from '../node'
 import type {
+  DashboardMapsResponse,
   FullMap,
   MapDiscoverResponse,
   MapEntity,
@@ -87,6 +88,30 @@ export const mapApi = {
 
   deleteMap: async (id: string): Promise<void> => {
     await api.delete(`/maps/${id}`)
+  },
+
+  // Dashboard - initial load with both owned and public maps
+  getDashboardMaps: async (
+    params: {
+      ownedLimit?: number
+      publicLimit?: number
+    } = {},
+    options?: { cookies?: string }
+  ): Promise<DashboardMapsResponse> => {
+    const searchParams = new URLSearchParams()
+    if (params.ownedLimit) {
+      searchParams.set('ownedLimit', String(params.ownedLimit))
+    }
+    if (params.publicLimit) {
+      searchParams.set('publicLimit', String(params.publicLimit))
+    }
+
+    const query = searchParams.toString()
+    const response = await api.get<ApiResponse<DashboardMapsResponse>>(
+      `/maps/dashboard${query ? `?${query}` : ''}`,
+      { cookies: options?.cookies }
+    )
+    return response.data
   },
 
   // Public maps discovery

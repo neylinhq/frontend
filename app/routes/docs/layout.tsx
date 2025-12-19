@@ -1,5 +1,5 @@
 import type { LoaderFunctionArgs } from 'react-router'
-import { BookOpen, Package } from 'lucide-react'
+import { BookOpen01Icon, PackageIcon } from '@untitledui/icons-react/outline'
 import { useState } from 'react'
 import { Outlet } from 'react-router'
 import { API_URL } from '@/shared/config/env'
@@ -57,7 +57,7 @@ clientLoader.hydrate = true
 const NAV_SECTIONS: DocsSidebarSection[] = [
   {
     title: 'Getting Started',
-    icon: BookOpen,
+    icon: BookOpen01Icon,
     defaultOpen: true,
     items: [
       { title: 'Introduction', href: '/docs/ui' },
@@ -67,7 +67,7 @@ const NAV_SECTIONS: DocsSidebarSection[] = [
   },
   {
     title: 'Components',
-    icon: Package,
+    icon: PackageIcon,
     defaultOpen: true,
     items: [
       { title: 'Alert Dialog', href: '/docs/ui/alert-dialog' },

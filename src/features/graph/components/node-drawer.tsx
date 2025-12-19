@@ -1,13 +1,13 @@
 import {
-  AlertCircle,
-  Eye,
-  Focus,
-  Maximize2,
-  Network,
-  SlidersHorizontal,
-  Trash2,
-  X
-} from 'lucide-react'
+  AlertCircleIcon,
+  Dataflow03Icon,
+  EyeIcon,
+  Maximize01Icon,
+  Sliders04Icon,
+  Target01Icon,
+  Trash01Icon,
+  XCloseIcon
+} from '@untitledui/icons-react/outline'
 import { memo, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
@@ -171,7 +171,7 @@ export const NodeDrawer = memo(
                         : t('graph.nodeControls.focusMode')
                     }
                   >
-                    <Focus className='h-4 w-4' />
+                    <Target01Icon className='h-4 w-4' />
                   </Button>
                   <Button
                     variant='ghost'
@@ -181,7 +181,7 @@ export const NodeDrawer = memo(
                     title={t('nodeDrawer.openFullEditor')}
                   >
                     <Link to={`/dashboard/maps/${displayNode.mapId}/node/${displayNode.id}`}>
-                      <Maximize2 className='h-4 w-4' />
+                      <Maximize01Icon className='h-4 w-4' />
                     </Link>
                   </Button>
                   <Button
@@ -191,7 +191,7 @@ export const NodeDrawer = memo(
                     onClick={handleClose}
                     title={t('common.close')}
                   >
-                    <X className='h-4 w-4' />
+                    <XCloseIcon className='h-4 w-4' />
                   </Button>
                 </div>
               </div>
@@ -213,17 +213,17 @@ export const NodeDrawer = memo(
               <TabsList variant='underline' className='grid grid-cols-2'>
                 {isReadOnly ? (
                   <TabsTrigger variant='underline' value='overview' className='gap-1.5'>
-                    <Eye className='h-3.5 w-3.5' />
+                    <Eye01Icon className='h-3.5 w-3.5' />
                     <span className='text-xs'>{t('nodeDrawer.tabs.overview')}</span>
                   </TabsTrigger>
                 ) : (
                   <TabsTrigger variant='underline' value='properties' className='gap-1.5'>
-                    <SlidersHorizontal className='h-3.5 w-3.5' />
+                    <Sliders04Icon className='h-3.5 w-3.5' />
                     <span className='text-xs'>{t('nodeDrawer.tabs.properties')}</span>
                   </TabsTrigger>
                 )}
                 <TabsTrigger variant='underline' value='connections' className='gap-1.5'>
-                  <Network className='h-3.5 w-3.5' />
+                  <Dataflow03Icon className='h-3.5 w-3.5' />
                   <span className='text-xs'>{t('nodeDrawer.tabs.connections')}</span>
                 </TabsTrigger>
               </TabsList>
@@ -253,7 +253,7 @@ export const NodeDrawer = memo(
                       <Card className='border-destructive/30'>
                         <CardHeader className='pb-2 pt-3 px-3'>
                           <CardTitle className='text-xs font-medium text-destructive flex items-center gap-1.5'>
-                            <AlertCircle className='h-3.5 w-3.5' />
+                            <AlertCircleIcon className='h-3.5 w-3.5' />
                             {t('nodeEdit.dangerZone', 'Danger zone')}
                           </CardTitle>
                         </CardHeader>
@@ -270,7 +270,7 @@ export const NodeDrawer = memo(
                             className='text-muted-foreground hover:text-destructive hover:bg-destructive/10'
                             onClick={() => setDeleteDialogOpen(true)}
                           >
-                            <Trash2 className='mr-1.5 h-3.5 w-3.5' />
+                            <Trash01Icon className='mr-1.5 h-3.5 w-3.5' />
                             {t('nodeEdit.deleteNode', 'Delete node')}
                           </Button>
                         </CardContent>
@@ -310,7 +310,7 @@ export const NodeDrawer = memo(
                 disabled={deleteNodeMutation.isPending}
                 className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
               >
-                <Trash2 className='mr-1.5 h-3.5 w-3.5' />
+                <Trash01Icon className='mr-1.5 h-3.5 w-3.5' />
                 {t('nodeEdit.deleteNode', 'Delete node')}
               </AlertDialogAction>
             </AlertDialogFooter>

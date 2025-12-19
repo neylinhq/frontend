@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { MoreHorizontal, X } from 'lucide-react'
+import { DotsHorizontalIcon, XCloseIcon } from '@untitledui/icons-react/outline'
 import { Button } from '@/shared/components/button'
 import {
   DropdownMenu,
@@ -152,7 +152,7 @@ export const ChatTabsRow = ({
                       }}
                       aria-label={t('ai.chat.closeTab', 'Close tab')}
                     >
-                      <X className="h-3 w-3" />
+                      <XCloseIcon className="h-3 w-3" />
                     </button>
                   )}
                 </>
@@ -171,7 +171,7 @@ export const ChatTabsRow = ({
             className="h-7 w-7 shrink-0 mx-1"
             aria-label={t('ai.chat.menu', 'Chat options')}
           >
-            <MoreHorizontal className="h-4 w-4" />
+            <DotsHorizontalIcon className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-40 text-xs">

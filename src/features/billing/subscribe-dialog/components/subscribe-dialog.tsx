@@ -1,4 +1,4 @@
-import { CreditCard, Loader2, Wallet } from 'lucide-react'
+import { CreditCard01Icon, Loading02Icon, Wallet01Icon } from '@untitledui/icons-react/outline'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { CryptoNetwork, PaymentMethod, PlanDetails } from '@/entities/subscription'
@@ -206,7 +206,7 @@ export const SubscribeDialog = ({
                 className='mt-3 w-full'
                 onClick={() => setStep('add-method')}
               >
-                <CreditCard className='h-4 w-4 mr-2' />
+                <CreditCard01Icon className='h-4 w-4 mr-2' />
                 {t('billing.subscribe.addNewMethod')}
               </Button>
             </div>
@@ -225,7 +225,7 @@ export const SubscribeDialog = ({
             >
               {isSubscribing ? (
                 <>
-                  <Loader2 className='h-4 w-4 mr-2 animate-spin' />
+                  <Loading02Icon className='h-4 w-4 mr-2 animate-spin' />
                   {t('common.loading')}
                 </>
               ) : (

@@ -1,8 +1,9 @@
 'use client'
 
-import { ArrowRight, Search } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
+import { ArrowRightIcon, SearchMdIcon } from '@untitledui/icons-react/outline'
 
 import type { LightweightNode } from '@/entities/node'
 import { getNodeIcon } from '@/entities/node/lib/node-icon'
@@ -68,7 +69,7 @@ const NodeSearchItemRenderer = ({
           <div className='text-xs text-muted-foreground truncate'>{item.node.description}</div>
         )}
       </div>
-      {isSelected && <ArrowRight className='h-4 w-4 text-muted-foreground shrink-0' />}
+      {isSelected && <ArrowRightIcon className='h-4 w-4 text-muted-foreground shrink-0' />}
     </div>
   )
 }
@@ -143,7 +144,7 @@ export const NodeSearchTrigger = ({
           className={cn('h-8 px-2.5 gap-1.5', className)}
           title={t('graph.search.title')}
         >
-          <Search className='w-4 h-4' />
+          <SearchMdIcon className='w-4 h-4' />
           <span className='hidden sm:inline text-xs'>{t('graph.search.button')}</span>
           <kbd className='hidden md:inline-flex h-5 items-center gap-1 rounded border bg-background px-1.5 font-mono text-[10px] font-medium'>
             {isMac ? '⌘' : 'Ctrl+'}K
@@ -164,7 +165,7 @@ export const NodeSearchTrigger = ({
           className
         )}
       >
-        <Search className='h-4 w-4' />
+        <SearchMdIcon className='h-4 w-4' />
         <span>{t('graph.search.button')}</span>
         <kbd className='hidden md:inline-flex h-5 items-center gap-1 rounded border bg-background px-1.5 font-mono text-[10px] font-medium'>
           {isMac ? '⌘' : 'Ctrl+'}K

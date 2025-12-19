@@ -11,16 +11,17 @@ import {
 interface NodeTypeSelectProps {
   value: NodeType
   onChange: (value: NodeType) => void
+  disabled?: boolean
 }
 
-export const NodeTypeSelect = ({ value, onChange }: NodeTypeSelectProps) => {
+export const NodeTypeSelect = ({ value, onChange, disabled }: NodeTypeSelectProps) => {
   const { t } = useTranslation()
 
   const selectedConfig = NODE_TYPE_CONFIGS.find(c => c.type === value)
   const SelectedIcon = selectedConfig?.icon
 
   return (
-    <Select value={value} onValueChange={onChange}>
+    <Select value={value} onValueChange={onChange} disabled={disabled}>
       <SelectTrigger className='w-full'>
         <SelectValue>
           {selectedConfig && (

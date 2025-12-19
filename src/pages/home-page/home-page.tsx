@@ -1,4 +1,4 @@
-import { ArrowRight } from 'lucide-react'
+import { ArrowRightIcon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { Button } from '@/shared/components/button'
@@ -34,7 +34,7 @@ export const HomePage = () => {
               <Button asChild>
                 <Link to={AUTH_ROUTES.signUp}>
                   {t('home.cta.getStartedFree', 'Get Started Free')}
-                  <ArrowRight className='ml-2 h-4 w-4' />
+                  <ArrowRightIcon className='ml-2 h-4 w-4' />
                 </Link>
               </Button>
             </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { Check, ChevronDown, ChevronUp, Copy } from 'lucide-react'
+import { CheckIcon, ChevronDownIcon, ChevronUpIcon, Copy01Icon } from '@untitledui/icons-react/outline'
 import * as React from 'react'
 import { Button } from '@/shared/components/button'
 import {
@@ -54,7 +54,7 @@ export const DocsCodeBlock = ({
           className={styles.copy}
           aria-label={copied ? 'Copied!' : 'Copy code'}
         >
-          {copied ? <Check className='h-4 w-4 text-success' /> : <Copy className='h-4 w-4' />}
+          {copied ? <CheckIcon className='h-4 w-4 text-success' /> : <Copy01Icon className='h-4 w-4' />}
         </button>
       </div>
       <pre className={styles.pre}>
@@ -76,7 +76,7 @@ export const DocsCodeBlock = ({
               <span className='text-xs text-muted-foreground'>
                 {filename || `${language} code`}
               </span>
-              {isOpen ? <ChevronUp className='h-4 w-4' /> : <ChevronDown className='h-4 w-4' />}
+              {isOpen ? <ChevronUpIcon className='h-4 w-4' /> : <ChevronDownIcon className='h-4 w-4' />}
             </Button>
           </CollapsibleTrigger>
           <CollapsibleContent>

@@ -1,4 +1,4 @@
-import { Check, Copy, Pencil, Star, Trash2 } from 'lucide-react'
+import { CheckIcon, Copy01Icon, Pencil01Icon, Star01Icon, Trash01Icon } from '@untitledui/icons-react/outline'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { PaymentMethod, UpdatePaymentMethodInput } from '@/entities/subscription'
@@ -249,9 +249,9 @@ export const PaymentMethodDetailsDialog = ({
             </span>
             <Button variant='ghost' size='sm' onClick={handleCopyAddress} className='h-8'>
               {copied ? (
-                <Check className='h-4 w-4 mr-2 text-success' />
+                <CheckIcon className='h-4 w-4 mr-2 text-success' />
               ) : (
-                <Copy className='h-4 w-4 mr-2' />
+                <Copy01Icon className='h-4 w-4 mr-2' />
               )}
               {copied ? t('common.copied') : t('billing.copyAddress')}
             </Button>
@@ -324,7 +324,7 @@ export const PaymentMethodDetailsDialog = ({
                     onClick={handleStartEdit}
                     disabled={loading}
                   >
-                    <Pencil className='h-4 w-4 mr-2' />
+                    <Pencil01Icon className='h-4 w-4 mr-2' />
                     {t('common.edit')}
                   </Button>
                 )}
@@ -335,7 +335,7 @@ export const PaymentMethodDetailsDialog = ({
                     onClick={handleSetDefault}
                     disabled={loading}
                   >
-                    <Star className='h-4 w-4 mr-2' />
+                    <Star01Icon className='h-4 w-4 mr-2' />
                     {t('billing.setAsDefault')}
                   </Button>
                 )}
@@ -345,7 +345,7 @@ export const PaymentMethodDetailsDialog = ({
                   onClick={() => setIsDeleteOpen(true)}
                   disabled={loading}
                 >
-                  <Trash2 className='h-4 w-4 mr-2' />
+                  <Trash01Icon className='h-4 w-4 mr-2' />
                   {t('common.remove')}
                 </Button>
               </div>

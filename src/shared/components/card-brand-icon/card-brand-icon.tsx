@@ -1,4 +1,4 @@
-import { CreditCard } from 'lucide-react'
+import { CreditCard01Icon } from '@untitledui/icons-react/outline'
 import { Icon, paymentBrandIcons } from '@/shared/components/icon'
 import type { CardBrand } from '@/shared/lib/card-utils'
 import { cn } from '@/shared/lib/cn'
@@ -28,7 +28,7 @@ export const CardBrandIcon = ({ brand, className, size = 'md' }: CardBrandIconPr
   // Fallback to generic card icon
   return (
     <div className={cn('flex items-center justify-center bg-muted rounded border', className)}>
-      <CreditCard className='h-4 w-4 text-muted-foreground' />
+      <CreditCard01Icon className='h-4 w-4 text-muted-foreground' />
     </div>
   )
 }

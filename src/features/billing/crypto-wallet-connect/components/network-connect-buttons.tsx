@@ -1,4 +1,4 @@
-import { Loader2 } from 'lucide-react'
+import { Loading02Icon } from '@untitledui/icons-react/outline'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { CryptoNetwork } from '@/entities/subscription'
@@ -43,7 +43,7 @@ export const NetworkConnectButtons = ({ onNetworkClick, loadingNetwork, disabled
             )}
           >
             {isLoading ? (
-              <Loader2 className='h-8 w-8 animate-spin text-brand' />
+              <Loading02Icon className='h-8 w-8 animate-spin text-brand' />
             ) : (
               iconData && <Icon data={iconData} size={32} className='text-foreground' />
             )}

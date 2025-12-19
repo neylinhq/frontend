@@ -1,4 +1,4 @@
-import { Check, ChevronRight, X } from 'lucide-react'
+import { CheckIcon, ChevronRightIcon, XCloseIcon } from '@untitledui/icons-react/outline'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Badge } from '@/shared/components/badge'
@@ -115,9 +115,9 @@ export const CollapsibleProposal = ({
           )}
         >
           {isApproved ? (
-            <Check className='h-2.5 w-2.5' strokeWidth={3} />
+            <CheckIcon className='h-2.5 w-2.5' strokeWidth={3} />
           ) : (
-            <X className='h-2.5 w-2.5' strokeWidth={3} />
+            <XCloseIcon className='h-2.5 w-2.5' strokeWidth={3} />
           )}
         </div>
 
@@ -135,7 +135,7 @@ export const CollapsibleProposal = ({
         </span>
 
         {/* Expand chevron */}
-        <ChevronRight
+        <ChevronRightIcon
           className={cn(
             'h-3 w-3 text-muted-foreground/50 transition-transform duration-150 flex-shrink-0',
             'group-hover:text-muted-foreground',

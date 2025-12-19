@@ -1,6 +1,6 @@
 'use client'
 
-import { ArrowRight, BookOpen, FileText, Package, Palette, Search, Type } from 'lucide-react'
+import { ArrowRightIcon, BookOpen01Icon, File01Icon, PackageIcon, PaletteIcon, SearchMdIcon, Type01Icon } from '@untitledui/icons-react/outline'
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { CommandPalette, type CommandPaletteItem } from '@/shared/components/command-palette'
@@ -25,7 +25,7 @@ const SEARCH_INDEX: SearchItem[] = [
     description: 'Getting started with the design system',
     href: '/docs/ui',
     section: 'Getting Started',
-    icon: BookOpen,
+    icon: BookOpen01Icon,
     keywords: ['start', 'begin', 'overview', 'introduction']
   },
   {
@@ -34,7 +34,7 @@ const SEARCH_INDEX: SearchItem[] = [
     description: 'How to install and set up',
     href: '/docs/ui/installation',
     section: 'Getting Started',
-    icon: FileText,
+    icon: File01Icon,
     keywords: ['install', 'setup', 'npm', 'yarn']
   },
   // Foundations
@@ -44,7 +44,7 @@ const SEARCH_INDEX: SearchItem[] = [
     description: 'Color palette and theming',
     href: '/docs/ui/colors',
     section: 'Foundations',
-    icon: Palette,
+    icon: PaletteIcon,
     keywords: ['color', 'palette', 'theme', 'brand', 'primary', 'secondary']
   },
   {
@@ -53,7 +53,7 @@ const SEARCH_INDEX: SearchItem[] = [
     description: 'Font styles and text formatting',
     href: '/docs/ui/typography',
     section: 'Foundations',
-    icon: Type,
+    icon: Type01Icon,
     keywords: ['font', 'text', 'heading', 'paragraph', 'size']
   },
   // Components
@@ -63,7 +63,7 @@ const SEARCH_INDEX: SearchItem[] = [
     description: 'Interactive button component',
     href: '/docs/ui/button',
     section: 'Components',
-    icon: Package,
+    icon: PackageIcon,
     keywords: ['button', 'click', 'action', 'submit', 'cta']
   },
   {
@@ -72,7 +72,7 @@ const SEARCH_INDEX: SearchItem[] = [
     description: 'Text input field component',
     href: '/docs/ui/input',
     section: 'Components',
-    icon: Package,
+    icon: PackageIcon,
     keywords: ['input', 'text', 'field', 'form']
   },
   {
@@ -81,7 +81,7 @@ const SEARCH_INDEX: SearchItem[] = [
     description: 'Container for content',
     href: '/docs/ui/card',
     section: 'Components',
-    icon: Package,
+    icon: PackageIcon,
     keywords: ['card', 'container', 'box', 'panel']
   },
   {
@@ -90,7 +90,7 @@ const SEARCH_INDEX: SearchItem[] = [
     description: 'Status and label indicators',
     href: '/docs/ui/badge',
     section: 'Components',
-    icon: Package,
+    icon: PackageIcon,
     keywords: ['badge', 'tag', 'label', 'status', 'indicator']
   },
   {
@@ -99,7 +99,7 @@ const SEARCH_INDEX: SearchItem[] = [
     description: 'User profile images',
     href: '/docs/ui/avatar',
     section: 'Components',
-    icon: Package,
+    icon: PackageIcon,
     keywords: ['avatar', 'user', 'profile', 'image', 'photo']
   },
   {
@@ -108,7 +108,7 @@ const SEARCH_INDEX: SearchItem[] = [
     description: 'Modal dialog component',
     href: '/docs/ui/dialog',
     section: 'Components',
-    icon: Package,
+    icon: PackageIcon,
     keywords: ['dialog', 'modal', 'popup', 'overlay']
   },
   {
@@ -117,7 +117,7 @@ const SEARCH_INDEX: SearchItem[] = [
     description: 'Tabbed navigation component',
     href: '/docs/ui/tabs',
     section: 'Components',
-    icon: Package,
+    icon: PackageIcon,
     keywords: ['tabs', 'navigation', 'switch', 'panel']
   }
 ]
@@ -155,7 +155,7 @@ const renderSearchItem = (item: SearchItem, isSelected: boolean) => {
           <div className='text-xs text-muted-foreground truncate'>{item.description}</div>
         )}
       </div>
-      {isSelected && <ArrowRight className='h-4 w-4 text-muted-foreground shrink-0' />}
+      {isSelected && <ArrowRightIcon className='h-4 w-4 text-muted-foreground shrink-0' />}
     </div>
   )
 }
@@ -211,7 +211,7 @@ export const DocsSearchTrigger = ({ className }: DocsSearchTriggerProps) => {
           className
         )}
       >
-        <Search className='h-4 w-4' />
+        <SearchMdIcon className='h-4 w-4' />
         <span className='hidden sm:inline'>Search docs...</span>
         <kbd className='hidden md:inline-flex h-5 items-center gap-1 rounded border bg-background px-1.5 font-mono text-[10px] font-medium'>
           {isMac ? '⌘' : 'Ctrl+'}K

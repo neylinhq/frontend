@@ -1,4 +1,4 @@
-import { Palette } from 'lucide-react'
+import { PaletteIcon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/shared/components/button'
 import {
@@ -17,7 +17,7 @@ export const PaletteToggle = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant='outline' size='icon'>
-          <Palette className='h-[1.2rem] w-[1.2rem]' />
+          <PaletteIcon className='h-[1.2rem] w-[1.2rem]' />
           <span className='sr-only'>{t('settings.theme.appearance.palette')}</span>
         </Button>
       </DropdownMenuTrigger>

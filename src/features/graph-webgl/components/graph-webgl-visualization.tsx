@@ -7,7 +7,7 @@
  * - UI components: Same as React Flow version (Toolbar, Drawer, ViewControls)
  */
 
-import { Loader2 } from 'lucide-react'
+import { Loading02Icon } from '@untitledui/icons-react/outline'
 import { memo, useCallback, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Edge, FullMap, Node } from '@/entities/map'
@@ -41,6 +41,8 @@ interface GraphWebGLVisualizationProps {
   className?: string
   interactive?: boolean
   initialData?: FullMap
+  /** Callback when node is selected - when provided, internal NodeDrawer is hidden */
+  onNodeSelect?: (node: Node | null) => void
   renderConnectionsPanel?: (
     node: Node,
     edges: Edge[],
@@ -57,6 +59,7 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
   className,
   interactive: _interactive = true,
   initialData,
+  onNodeSelect,
   renderConnectionsPanel
 }: GraphWebGLVisualizationProps) {
   const { t } = useTranslation()
@@ -109,14 +112,19 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
     (nodeId: string | null) => {
       if (!nodeId) {
         clearSelection()
+        // Notify parent if callback provided
+        onNodeSelect?.(null)
         return
       }
       if (viewMode === 'focus') {
         focusNode(nodeId)
       }
       selectNode(nodeId)
+      // Notify parent if callback provided
+      const node = fullMap?.nodes.find(n => n.id === nodeId) || null
+      onNodeSelect?.(node)
     },
-    [viewMode, focusNode, selectNode, clearSelection]
+    [viewMode, focusNode, selectNode, clearSelection, onNodeSelect, fullMap?.nodes]
   )
 
   // Handle viewport change
@@ -162,7 +170,7 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
     return (
       <div className={cn('flex items-center justify-center h-[600px]', className)}>
         <div className='text-center space-y-3'>
-          <Loader2 className='h-8 w-8 animate-spin mx-auto text-primary' />
+          <Loading02Icon className='h-8 w-8 animate-spin mx-auto text-primary' />
           <p className='text-sm text-muted-foreground'>{t('graph.loading')}</p>
         </div>
       </div>
@@ -246,28 +254,30 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
         selectedNodeId={selectedNodeId}
       />
 
-      {/* Node drawer */}
-      <NodeDrawer
-        node={selectedNode}
-        onClose={clearSelection}
-        connectionsCount={
-          selectedNode
-            ? fullMap.edges.filter(
-                e => e.sourceNodeId === selectedNode.id || e.targetNodeId === selectedNode.id
-              ).length
-            : 0
-        }
-        connectionsTab={
-          selectedNode &&
-          renderConnectionsPanel?.(
-            selectedNode,
-            fullMap.edges,
-            fullMap.nodes,
-            selectNode,
-            handlePanToNodeWithZoom
-          )
-        }
-      />
+      {/* Node drawer - only shown when onNodeSelect is NOT provided (internal mode) */}
+      {!onNodeSelect && (
+        <NodeDrawer
+          node={selectedNode}
+          onClose={clearSelection}
+          connectionsCount={
+            selectedNode
+              ? fullMap.edges.filter(
+                  e => e.sourceNodeId === selectedNode.id || e.targetNodeId === selectedNode.id
+                ).length
+              : 0
+          }
+          connectionsTab={
+            selectedNode &&
+            renderConnectionsPanel?.(
+              selectedNode,
+              fullMap.edges,
+              fullMap.nodes,
+              selectNode,
+              handlePanToNodeWithZoom
+            )
+          }
+        />
+      )}
 
       {/* WebGL indicator */}
       <div className='absolute bottom-2 left-2 bg-background/80 border rounded px-2 py-1 text-xs font-mono'>

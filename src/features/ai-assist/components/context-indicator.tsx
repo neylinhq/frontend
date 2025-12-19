@@ -1,4 +1,4 @@
-import { Brain, ChevronDown } from 'lucide-react'
+import { Atom01Icon, ChevronDownIcon } from '@untitledui/icons-react/outline'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNode } from '@/entities/node'
@@ -31,13 +31,13 @@ export const ContextIndicator = ({ nodeId, mapId }: ContextIndicatorProps) => {
       <CollapsibleTrigger asChild>
         <button type='button' className='flex items-center gap-2 w-full px-3 py-2 bg-muted/30 rounded-md border border-border/50 hover:bg-muted/50 transition-colors'>
           <Badge variant='secondary' className='flex items-center gap-1 text-xs'>
-            <Brain className='h-3 w-3' />
+            <Atom01Icon className='h-3 w-3' />
             {t('ai.chat.contextLabel')}
           </Badge>
           <span className='text-xs text-muted-foreground truncate flex-1 text-left'>
             {contextLabel}
           </span>
-          <ChevronDown
+          <ChevronDownIcon
             className={cn(
               'h-3 w-3 text-muted-foreground transition-transform duration-200',
               isExpanded && 'rotate-180'

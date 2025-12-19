@@ -1,29 +1,30 @@
 import {
-  AlertCircle,
-  AlertTriangle,
-  CheckCircle,
+  AlertCircleIcon,
+  AlertTriangleIcon,
+  CheckCircleIcon,
+  ChevronRightIcon,
+  Code01Icon,
+  InfoCircleIcon,
+  Lightbulb01Icon,
+  MinusIcon,
+  Type01Icon
+} from '@untitledui/icons-react/outline'
+import {
   CheckSquare,
-  ChevronRight,
-  Code,
   Columns,
   FileImage,
-  Heading1,
-  Heading2,
-  Heading3,
   Image,
-  Info,
-  Lightbulb,
   List,
-  ListOrdered,
-  ListTree,
-  Minus,
-  Quote,
-  Sigma,
-  SquareSigma,
+  ListNumbers,
+  MathOperations,
+  Quotes,
   Table,
-  Type,
-  Youtube
-} from 'lucide-react'
+  TextHOne,
+  TextHThree,
+  TextHTwo,
+  TreeStructure,
+  YoutubeLogo
+} from '@phosphor-icons/react'
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import type { useTranslation } from 'react-i18next'
 
@@ -157,9 +158,7 @@ export const SlashMenu = forwardRef<SlashMenuRef, SlashMenuProps>(({ items, comm
         const categoryItems = groupedItems[category]
         return (
           <div key={category} className={styles.category}>
-            <div className={styles.categoryTitle}>
-              {category}
-            </div>
+            <div className={styles.categoryTitle}>{category}</div>
             {categoryItems.map(item => {
               const currentIndex = globalIndex++
               return (
@@ -167,19 +166,12 @@ export const SlashMenu = forwardRef<SlashMenuRef, SlashMenuProps>(({ items, comm
                   type='button'
                   key={`${category}-${item.title}`}
                   onClick={() => selectItem(currentIndex)}
-                  className={cn(
-                    styles.item,
-                    currentIndex === selectedIndex && styles.itemSelected
-                  )}
+                  className={cn(styles.item, currentIndex === selectedIndex && styles.itemSelected)}
                 >
-                  <div className={styles.iconContainer}>
-                    {item.icon}
-                  </div>
+                  <div className={styles.iconContainer}>{item.icon}</div>
                   <div className={styles.itemContent}>
                     <span className={styles.itemTitle}>{item.title}</span>
-                    <span className={styles.itemDescription}>
-                      {item.description}
-                    </span>
+                    <span className={styles.itemDescription}>{item.description}</span>
                   </div>
                 </button>
               )
@@ -212,42 +204,42 @@ export const getSlashMenuItems = (
     {
       title: t('editor.slash.text.title'),
       description: t('editor.slash.text.description'),
-      icon: <Type className='h-5 w-5' />,
+      icon: <Type01Icon className='h-5 w-5' />,
       command: () => editor.chain().focus().setParagraph().run(),
       category: t('editor.slash.categories.basic')
     },
     {
       title: t('editor.slash.heading1.title'),
       description: t('editor.slash.heading1.description'),
-      icon: <Heading1 className='h-5 w-5' />,
+      icon: <TextHOne className='h-5 w-5' />,
       command: () => editor.chain().focus().toggleHeading({ level: 1 }).run(),
       category: t('editor.slash.categories.basic')
     },
     {
       title: t('editor.slash.heading2.title'),
       description: t('editor.slash.heading2.description'),
-      icon: <Heading2 className='h-5 w-5' />,
+      icon: <TextHTwo className='h-5 w-5' />,
       command: () => editor.chain().focus().toggleHeading({ level: 2 }).run(),
       category: t('editor.slash.categories.basic')
     },
     {
       title: t('editor.slash.heading3.title'),
       description: t('editor.slash.heading3.description'),
-      icon: <Heading3 className='h-5 w-5' />,
+      icon: <TextHThree className='h-5 w-5' />,
       command: () => editor.chain().focus().toggleHeading({ level: 3 }).run(),
       category: t('editor.slash.categories.basic')
     },
     {
       title: t('editor.slash.quote.title'),
       description: t('editor.slash.quote.description'),
-      icon: <Quote className='h-5 w-5' />,
+      icon: <Quotes className='h-5 w-5' />,
       command: () => editor.chain().focus().toggleBlockquote().run(),
       category: t('editor.slash.categories.basic')
     },
     {
       title: t('editor.slash.divider.title'),
       description: t('editor.slash.divider.description'),
-      icon: <Minus className='h-5 w-5' />,
+      icon: <MinusIcon className='h-5 w-5' />,
       command: () => editor.chain().focus().setHorizontalRule().run(),
       category: t('editor.slash.categories.basic')
     },
@@ -256,14 +248,14 @@ export const getSlashMenuItems = (
     {
       title: t('editor.slash.bulletList.title'),
       description: t('editor.slash.bulletList.description'),
-      icon: <List className='h-5 w-5' />,
+      icon: <List01Icon className='h-5 w-5' />,
       command: () => editor.chain().focus().toggleBulletList().run(),
       category: t('editor.slash.categories.lists')
     },
     {
       title: t('editor.slash.numberedList.title'),
       description: t('editor.slash.numberedList.description'),
-      icon: <ListOrdered className='h-5 w-5' />,
+      icon: <ListIcon className='h-5 w-5' />,
       command: () => editor.chain().focus().toggleOrderedList().run(),
       category: t('editor.slash.categories.lists')
     },
@@ -277,7 +269,7 @@ export const getSlashMenuItems = (
     {
       title: t('editor.slash.toggle.title'),
       description: t('editor.slash.toggle.description'),
-      icon: <ChevronRight className='h-5 w-5' />,
+      icon: <ChevronRightIcon className='h-5 w-5' />,
       command: () => editor.chain().focus().setDetails().run(),
       category: t('editor.slash.categories.lists')
     },
@@ -302,7 +294,7 @@ export const getSlashMenuItems = (
     {
       title: t('editor.slash.video.title'),
       description: t('editor.slash.video.description'),
-      icon: <Youtube className='h-5 w-5' />,
+      icon: <YoutubeLogo className='h-5 w-5' />,
       // UX-1: Use dialog instead of window.prompt
       command: () => openMediaDialog?.('video'),
       category: t('editor.slash.categories.media')
@@ -310,7 +302,7 @@ export const getSlashMenuItems = (
     {
       title: t('editor.slash.code.title'),
       description: t('editor.slash.code.description'),
-      icon: <Code className='h-5 w-5' />,
+      icon: <Code01Icon className='h-5 w-5' />,
       command: () => editor.chain().focus().toggleCodeBlock().run(),
       category: t('editor.slash.categories.media')
     },
@@ -325,14 +317,14 @@ export const getSlashMenuItems = (
     {
       title: t('editor.slash.mathBlock.title'),
       description: t('editor.slash.mathBlock.description'),
-      icon: <SquareSigma className='h-5 w-5' />,
+      icon: <MathOperations className='h-5 w-5' weight='bold' />,
       command: () => openMathDialog?.('block'),
       category: t('editor.slash.categories.media')
     },
     {
       title: t('editor.slash.mathInline.title'),
       description: t('editor.slash.mathInline.description'),
-      icon: <Sigma className='h-5 w-5' />,
+      icon: <MathOperations className='h-5 w-5' />,
       command: () => openMathDialog?.('inline'),
       category: t('editor.slash.categories.media')
     },
@@ -341,35 +333,35 @@ export const getSlashMenuItems = (
     {
       title: t('editor.slash.calloutInfo.title'),
       description: t('editor.slash.calloutInfo.description'),
-      icon: <Info className='h-5 w-5' />,
+      icon: <InfoCircleIcon className='h-5 w-5' />,
       command: () => editor.chain().focus().setCallout({ type: 'info' }).run(),
       category: t('editor.slash.categories.advanced')
     },
     {
       title: t('editor.slash.calloutWarning.title'),
       description: t('editor.slash.calloutWarning.description'),
-      icon: <AlertTriangle className='h-5 w-5' />,
+      icon: <AlertTriangleIcon className='h-5 w-5' />,
       command: () => editor.chain().focus().setCallout({ type: 'warning' }).run(),
       category: t('editor.slash.categories.advanced')
     },
     {
       title: t('editor.slash.calloutSuccess.title'),
       description: t('editor.slash.calloutSuccess.description'),
-      icon: <CheckCircle className='h-5 w-5' />,
+      icon: <CheckCircleIcon className='h-5 w-5' />,
       command: () => editor.chain().focus().setCallout({ type: 'success' }).run(),
       category: t('editor.slash.categories.advanced')
     },
     {
       title: t('editor.slash.calloutError.title'),
       description: t('editor.slash.calloutError.description'),
-      icon: <AlertCircle className='h-5 w-5' />,
+      icon: <AlertCircleIcon className='h-5 w-5' />,
       command: () => editor.chain().focus().setCallout({ type: 'error' }).run(),
       category: t('editor.slash.categories.advanced')
     },
     {
       title: t('editor.slash.calloutTip.title'),
       description: t('editor.slash.calloutTip.description'),
-      icon: <Lightbulb className='h-5 w-5' />,
+      icon: <Lightbulb01Icon className='h-5 w-5' />,
       command: () => editor.chain().focus().setCallout({ type: 'tip' }).run(),
       category: t('editor.slash.categories.advanced')
     },
@@ -390,7 +382,7 @@ export const getSlashMenuItems = (
     {
       title: t('editor.slash.toc.title'),
       description: t('editor.slash.toc.description'),
-      icon: <ListTree className='h-5 w-5' />,
+      icon: <TreeStructure className='h-5 w-5' />,
       command: () => editor.chain().focus().insertTableOfContents().run(),
       category: t('editor.slash.categories.advanced')
     }

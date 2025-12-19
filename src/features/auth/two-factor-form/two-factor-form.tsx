@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query'
-import { KeyRound, Loader2, Mail, RefreshCw, Shield } from 'lucide-react'
+import { Key01Icon, Loading02Icon, Mail01Icon, RefreshCw01Icon, Shield01Icon } from '@untitledui/icons-react/outline'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
@@ -135,11 +135,11 @@ export const TwoFactorForm = ({
   const getIcon = () => {
     switch (method) {
       case 'totp':
-        return <Shield className='h-8 w-8 text-primary' />
+        return <Shield01Icon className='h-8 w-8 text-primary' />
       case 'email':
-        return <Mail className='h-8 w-8 text-primary' />
+        return <Mail01Icon className='h-8 w-8 text-primary' />
       case 'backup':
-        return <KeyRound className='h-8 w-8 text-primary' />
+        return <Key01Icon className='h-8 w-8 text-primary' />
     }
   }
 
@@ -173,19 +173,19 @@ export const TwoFactorForm = ({
           >
             {twoFactorMethods.includes('totp') && (
               <TabsTrigger value='totp'>
-                <Shield className='mr-2 h-4 w-4' />
+                <Shield01Icon className='mr-2 h-4 w-4' />
                 {t('auth.twoFactor.totpTab')}
               </TabsTrigger>
             )}
             {twoFactorMethods.includes('email') && (
               <TabsTrigger value='email'>
-                <Mail className='mr-2 h-4 w-4' />
+                <Mail01Icon className='mr-2 h-4 w-4' />
                 {t('auth.twoFactor.emailTab')}
               </TabsTrigger>
             )}
             {twoFactorMethods.includes('backup') && (
               <TabsTrigger value='backup'>
-                <KeyRound className='mr-2 h-4 w-4' />
+                <Key01Icon className='mr-2 h-4 w-4' />
                 {t('auth.twoFactor.backupTab')}
               </TabsTrigger>
             )}
@@ -222,13 +222,13 @@ export const TwoFactorForm = ({
             disabled={backupCode.length < 8 || isSubmitting}
             onClick={() => handleSubmit()}
           >
-            {isSubmitting && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
+            {isSubmitting && <Loading02Icon className='mr-2 h-4 w-4 animate-spin' />}
             {t('auth.twoFactor.submitButton')}
           </Button>
         ) : (
           isSubmitting && (
             <div className='flex justify-center'>
-              <Loader2 className='h-5 w-5 animate-spin text-muted-foreground' />
+              <Loading02Icon className='h-5 w-5 animate-spin text-muted-foreground' />
             </div>
           )
         )}
@@ -249,7 +249,7 @@ export const TwoFactorForm = ({
                 </span>
               ) : (
                 <>
-                  <RefreshCw className='mr-1 h-3 w-3' />
+                  <RefreshCw01Icon className='mr-1 h-3 w-3' />
                   {t('auth.twoFactor.resendButton')}
                 </>
               )}

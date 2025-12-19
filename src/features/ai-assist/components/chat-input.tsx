@@ -1,4 +1,4 @@
-import { ArrowUp, GripHorizontal, Square } from 'lucide-react'
+import { ArrowUpIcon, DotsHorizontalIcon, SquareIcon } from '@untitledui/icons-react/outline'
 import { type KeyboardEvent, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { AIModel } from '@/entities/ai'
@@ -110,7 +110,7 @@ export const ChatInput = ({
           'hover:bg-muted/50 transition-colors group'
         )}
       >
-        <GripHorizontal
+        <DotsHorizontalIcon
           className={cn(
             'h-3 w-6 text-muted-foreground/30 group-hover:text-muted-foreground/60 transition-colors',
             isResizing && 'text-muted-foreground/60'
@@ -162,7 +162,7 @@ export const ChatInput = ({
           aria-label={t('ai.chat.stop', 'Stop generating')}
           className='absolute right-3 bottom-2.5 h-7 w-7 flex-shrink-0 rounded-md'
         >
-          <Square className='!size-2.5 fill-current text-destructive' />
+          <SquareIcon className='!size-2.5 fill-current text-destructive' />
         </Button>
       ) : (
         <Button
@@ -172,7 +172,7 @@ export const ChatInput = ({
           className='absolute right-3 bottom-2.5 h-7 w-7 flex-shrink-0 rounded-md'
           aria-label={t('ai.chat.send', 'Send message')}
         >
-          <ArrowUp className='h-4 w-4' />
+          <ArrowUpIcon className='h-4 w-4' />
         </Button>
       )}
     </div>

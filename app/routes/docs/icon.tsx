@@ -1,4 +1,4 @@
-import { Bot } from 'lucide-react'
+import { MessageChatCircleIcon } from '@untitledui/icons-react/outline'
 import { DocsApiTable } from '@/shared/components/docs-api-table'
 import { DocsCodeBlock } from '@/shared/components/docs-code-block'
 import { DocsComponentPreview, DocsPreview } from '@/shared/components/docs-component-preview'
@@ -76,7 +76,7 @@ import { aiBrandIcons } from '@/shared/components/icon/icon.constants'
                   {aiBrandIcons[key] ? (
                     <Icon data={aiBrandIcons[key]} className='w-6 h-6' />
                   ) : (
-                    <Bot className='w-6 h-6' />
+                    <MessageChatCircleIcon className='w-6 h-6' />
                   )}
                 </div>
                 <span className='text-xs text-muted-foreground'>{key}</span>
@@ -184,7 +184,7 @@ import { aiBrandIcons } from '@/shared/components/icon/icon.constants'
           language='tsx'
           code={`import { Icon } from '@/shared/components/icon'
 import { aiBrandIcons } from '@/shared/components/icon/icon.constants'
-import { Bot } from 'lucide-react'
+import { MessageChatCircleIcon } from '@untitledui/icons-react/outline'
 
 function ChatAvatar({ brand }: { brand?: string }) {
   return (
@@ -192,7 +192,7 @@ function ChatAvatar({ brand }: { brand?: string }) {
       {brand && aiBrandIcons[brand] ? (
         <Icon data={aiBrandIcons[brand]} className='w-4 h-4 text-primary' />
       ) : (
-        <Bot className='w-4 h-4 text-primary' />
+        <MessageChatCircleIcon className='w-4 h-4 text-primary' />
       )}
     </div>
   )

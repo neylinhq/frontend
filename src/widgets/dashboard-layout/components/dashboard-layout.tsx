@@ -1,4 +1,4 @@
-import { Menu } from 'lucide-react'
+import { Menu01Icon } from '@untitledui/icons-react/outline'
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/shared/components/button'
@@ -44,7 +44,7 @@ export const DashboardLayout = ({ disableScroll = false, defaultExpanded = true,
           <Sheet>
             <SheetTrigger asChild>
               <Button variant='ghost' size='icon' className='-ml-2'>
-                <Menu className='h-5 w-5' />
+                <Menu01Icon className='h-5 w-5' />
                 <span className='sr-only'>{t('nav.menu')}</span>
               </Button>
             </SheetTrigger>

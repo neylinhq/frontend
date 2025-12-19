@@ -1,4 +1,4 @@
-import { Loader2 } from 'lucide-react'
+import { Loading02Icon } from '@untitledui/icons-react/outline'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { type TwoFactorStatus, useEnableEmailOTP, useTwoFactorStatus } from '@/entities/two-factor'
@@ -119,7 +119,7 @@ export const TwoFactorSection = ({ initialStatus }: TwoFactorSectionProps) => {
                 onClick={handleEnableEmailOTP}
                 disabled={enableEmailOTP.isPending}
               >
-                {enableEmailOTP.isPending && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
+                {enableEmailOTP.isPending && <Loading02Icon className='mr-2 h-4 w-4 animate-spin' />}
                 {t('settings.security.twoFactor.enable')}
               </Button>
             )}

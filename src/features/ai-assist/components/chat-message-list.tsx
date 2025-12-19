@@ -1,4 +1,4 @@
-import { Check, ChevronDown, Loader2, Pencil, RefreshCw } from 'lucide-react'
+import { CheckIcon, ChevronDownIcon, Loading02Icon, Pencil01Icon, RefreshCw01Icon } from '@untitledui/icons-react/outline'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Markdown from 'react-markdown'
@@ -166,7 +166,7 @@ export const ChatMessageList = ({
                               className='h-6 w-6 rounded-md text-muted-foreground hover:text-foreground transition-colors'
                               onClick={() => handleStartEdit(message.id, message.content)}
                             >
-                              <Pencil className='h-3.5 w-3.5' />
+                              <Pencil01Icon className='h-3.5 w-3.5' />
                             </Button>
                           </TooltipTrigger>
                           <TooltipContent side='bottom'>
@@ -189,7 +189,7 @@ export const ChatMessageList = ({
                               className='h-6 w-6 rounded-md text-muted-foreground hover:text-foreground transition-colors'
                               onClick={() => onRegenerate(message.id, 'user')}
                             >
-                              <RefreshCw className='h-3.5 w-3.5' />
+                              <RefreshCw01Icon className='h-3.5 w-3.5' />
                             </Button>
                           </TooltipTrigger>
                           <TooltipContent side='bottom'>
@@ -247,7 +247,7 @@ export const ChatMessageList = ({
                       <span>
                         {t('ai.chat.sources', 'Sources')} ({message.sourceNodes.length})
                       </span>
-                      <ChevronDown
+                      <ChevronDownIcon
                         className={cn('w-3 h-3 transition-transform', expandedSources.has(message.id) && 'rotate-180')}
                       />
                     </button>
@@ -299,9 +299,9 @@ export const ChatMessageList = ({
                           }}
                         >
                           {isAnyPreviewSaving(message.id, pendingPreviews) ? (
-                            <Loader2 className='h-4 w-4 mr-2 animate-spin' />
+                            <Loading02Icon className='h-4 w-4 mr-2 animate-spin' />
                           ) : (
-                            <Check className='h-4 w-4 mr-2' />
+                            <CheckIcon className='h-4 w-4 mr-2' />
                           )}
                           {t('ai.chat.applyAll', {
                             count: pendingPreviews.length,
@@ -336,7 +336,7 @@ export const ChatMessageList = ({
                             className='h-6 w-6 rounded-md text-muted-foreground hover:text-foreground transition-colors'
                             onClick={() => onRegenerate(message.id, 'assistant')}
                           >
-                            <RefreshCw className='h-3.5 w-3.5' />
+                            <RefreshCw01Icon className='h-3.5 w-3.5' />
                           </Button>
                         </TooltipTrigger>
                         <TooltipContent side='bottom'>

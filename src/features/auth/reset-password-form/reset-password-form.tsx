@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { KeyRound, Loader2, RefreshCw } from 'lucide-react'
+import { Key01Icon, Loading02Icon, RefreshCw01Icon } from '@untitledui/icons-react/outline'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -147,7 +147,7 @@ export const ResetPasswordForm = () => {
     return (
       <div className='text-center space-y-4 flex flex-col items-center'>
         <div className='h-16 w-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-4'>
-          <KeyRound className='h-8 w-8 text-green-600 dark:text-green-400' />
+          <Key01Icon className='h-8 w-8 text-green-600 dark:text-green-400' />
         </div>
         <h3 className='text-xl font-semibold'>{t('auth.resetPassword.successTitle')}</h3>
         <p className='text-sm text-muted-foreground'>
@@ -166,7 +166,7 @@ export const ResetPasswordForm = () => {
       <div className='space-y-6'>
         <div className='flex flex-col items-center gap-4 text-center'>
           <div className='flex h-16 w-16 items-center justify-center rounded-full bg-primary/10'>
-            <KeyRound className='h-8 w-8 text-primary' />
+            <Key01Icon className='h-8 w-8 text-primary' />
           </div>
           <div className='space-y-2'>
             <h1 className='text-xl font-semibold'>{t('auth.resetPassword.codeTitle')}</h1>
@@ -218,7 +218,7 @@ export const ResetPasswordForm = () => {
               />
 
               <Button type='submit' className='w-full' disabled={code.length !== 6 || isLoading}>
-                {isLoading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
+                {isLoading && <Loading02Icon className='mr-2 h-4 w-4 animate-spin' />}
                 {t('auth.resetPassword.resetButton')}
               </Button>
             </form>
@@ -239,7 +239,7 @@ export const ResetPasswordForm = () => {
                 </span>
               ) : (
                 <>
-                  <RefreshCw className='mr-1 h-3 w-3' />
+                  <RefreshCw01Icon className='mr-1 h-3 w-3' />
                   {t('auth.resetPassword.resendButton')}
                 </>
               )}
@@ -268,7 +268,7 @@ export const ResetPasswordForm = () => {
           )}
         />
         <Button type='submit' className='w-full' disabled={isLoading}>
-          {isLoading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
+          {isLoading && <Loading02Icon className='mr-2 h-4 w-4 animate-spin' />}
           {t('auth.resetPassword.submitButton')}
         </Button>
       </form>

@@ -1,4 +1,4 @@
-import { ChevronRight, Loader2, Mail } from 'lucide-react'
+import { ChevronRightIcon, Loading02Icon, Mail01Icon } from '@untitledui/icons-react/outline'
 import { Button } from '@/shared/components/button'
 import { DocsApiTable } from '@/shared/components/docs-api-table'
 import { DocsCodeBlock } from '@/shared/components/docs-code-block'
@@ -65,7 +65,7 @@ const ButtonPage = () => {
           <DocsPreview className='flex items-center flex-wrap gap-4'>
             {BUTTON_SIZES.map(({ size, label, content }) => (
               <Button key={size} size={size}>
-                {content ?? <ChevronRight className='h-4 w-4' />}
+                {content ?? <ChevronRightIcon className='h-4 w-4' />}
               </Button>
             ))}
           </DocsPreview>
@@ -91,16 +91,16 @@ const ButtonPage = () => {
         >
           <DocsPreview className='flex flex-wrap gap-4'>
             <Button>
-              <Mail className='mr-2 h-4 w-4' />
+              <Mail01Icon className='mr-2 h-4 w-4' />
               Login with Email
             </Button>
             <Button variant='secondary'>
-              <Mail className='mr-2 h-4 w-4' />
+              <Mail01Icon className='mr-2 h-4 w-4' />
               Send Email
             </Button>
             <Button variant='outline'>
               Continue
-              <ChevronRight className='ml-2 h-4 w-4' />
+              <ChevronRightIcon className='ml-2 h-4 w-4' />
             </Button>
           </DocsPreview>
         </DocsComponentPreview>
@@ -141,11 +141,11 @@ const ButtonPage = () => {
             >
               <DocsPreview className='flex flex-wrap gap-4'>
                 <Button disabled>
-                  <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                  <Loading02Icon className='mr-2 h-4 w-4 animate-spin' />
                   Please wait
                 </Button>
                 <Button variant='secondary' disabled>
-                  <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                  <Loading02Icon className='mr-2 h-4 w-4 animate-spin' />
                   Loading
                 </Button>
               </DocsPreview>

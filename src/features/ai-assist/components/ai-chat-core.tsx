@@ -559,7 +559,6 @@ export const AIChatCore = ({
             onRemovePreview={handleRemovePreview}
             onSavePreview={handleSavePreview}
             onRejectPreview={handleRejectPreview}
-            onRestorePreview={handleRestorePreview}
             onRegenerate={handleRegenerate}
             onEditMessage={handleEditMessage}
           />

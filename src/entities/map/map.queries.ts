@@ -28,7 +28,9 @@ export const mapKeys = {
   lightweightMap: (mapId: string) => [...mapKeys.detail(mapId), 'lightweight'] as const,
   analysis: (mapId: string) => [...mapKeys.detail(mapId), 'analysis'] as const,
   discover: (filter: MapFilter) => [...mapKeys.all, 'discover', filter] as const,
-  search: (query: string, mode: MapSearchMode) => [...mapKeys.all, 'search', query, mode] as const
+  search: (query: string, mode: MapSearchMode) => [...mapKeys.all, 'search', query, mode] as const,
+  history: (mapId: string) => [...mapKeys.detail(mapId), 'history'] as const,
+  historySummary: (mapId: string) => [...mapKeys.detail(mapId), 'history-summary'] as const
 }
 
 // ====== Хуки для карт ======
@@ -395,5 +397,22 @@ export const useSetVisibility = () => {
       queryClient.invalidateQueries({ queryKey: mapKeys.discover('owned') })
       queryClient.invalidateQueries({ queryKey: mapKeys.discover('public') })
     }
+  })
+}
+
+// ====== Map History ======
+export const useMapHistory = (mapId: string, options?: { limit?: number; offset?: number }) => {
+  return useQuery({
+    queryKey: [...mapKeys.history(mapId), options?.limit, options?.offset],
+    queryFn: () => mapApi.getMapHistory(mapId, options),
+    enabled: !!mapId
+  })
+}
+
+export const useMapHistorySummary = (mapId: string) => {
+  return useQuery({
+    queryKey: mapKeys.historySummary(mapId),
+    queryFn: () => mapApi.getMapHistorySummary(mapId),
+    enabled: !!mapId
   })
 }

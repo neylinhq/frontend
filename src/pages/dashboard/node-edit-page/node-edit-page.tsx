@@ -17,7 +17,7 @@ import type { FullMap, Node } from '@/entities/map'
 import { useDeleteEdge, useDeleteNode, useFullMap, useNodeWithContent, useUpdateNode } from '@/entities/map'
 import type { NodeType } from '@/entities/node'
 import { AISuggestionsPanel } from '@/features/ai-assist/components/ai-suggestions-panel'
-import { GUTTER, htmlToPlainText } from '@/features/block-editor'
+import { GUTTER, markdownToPlainText } from '@/features/block-editor'
 import { UnifiedEditor } from '@/features/unified-editor'
 import { isCodeMirrorEnabled } from '@/shared/config'
 import { EdgeEditPopover } from '@/features/graph/components/edge-edit-popover'
@@ -227,16 +227,16 @@ export const NodeEditPage = ({
     }
   }, 1000)
 
-  // Auto-save for editor content (now receives HTML directly from UnifiedEditor)
-  const debouncedContentSave = useAutoSave((html: string) => {
+  // Auto-save for editor content (now receives Markdown directly from UnifiedEditor)
+  const debouncedContentSave = useAutoSave((markdown: string) => {
     if (!nodeId) {
       return
     }
 
-    const description = htmlToPlainText(html, 200)
+    const description = markdownToPlainText(markdown, 200)
 
     updateNodeMutation.mutate(
-      { id: nodeId, data: { content: html, description } },
+      { id: nodeId, data: { content: markdown, description } },
       { onError: () => toast.error(t('errors.failedSave')) }
     )
   }, 2000)

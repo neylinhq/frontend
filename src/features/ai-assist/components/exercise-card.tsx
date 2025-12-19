@@ -1,10 +1,25 @@
 import { Check, ChevronDown, ChevronRight, X } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import Markdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import { cn } from '@/shared/lib/cn'
 import type { ExercisePreviewData } from '../model/ai-assist.types'
+
+/** Inline markdown renderer for exercise text */
+const InlineMarkdown = ({ children }: { children: string }) => (
+  <Markdown
+    remarkPlugins={[remarkGfm]}
+    components={{
+      // Override block elements to inline
+      p: ({ children }) => <span>{children}</span>
+    }}
+  >
+    {children}
+  </Markdown>
+)
 
 interface ExerciseCardProps {
   data: ExercisePreviewData
@@ -102,7 +117,9 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
 
         {/* Question */}
         <div className='px-3 py-3'>
-          <p className='text-sm font-medium mb-3'>{exercise.question}</p>
+          <div className='text-sm font-medium mb-3'>
+            <InlineMarkdown>{exercise.question}</InlineMarkdown>
+          </div>
 
           {/* Options */}
           <div className='space-y-2'>
@@ -120,10 +137,12 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
                   disabled={isSubmitted}
                   className={cn(
                     'w-full text-left px-3 py-2 rounded-md border text-sm transition-colors',
-                    !isSubmitted && isSelected && 'border-primary bg-primary/5',
-                    !isSubmitted && !isSelected && 'border-border hover:border-primary/50',
-                    isSubmitted && isThisCorrect && 'border-success bg-success/10',
-                    isSubmitted && isSelected && !isThisCorrect && 'border-destructive bg-destructive/10',
+                    // Not submitted: subtle selection via background only
+                    !isSubmitted && isSelected && 'border-border bg-muted',
+                    !isSubmitted && !isSelected && 'border-border hover:bg-muted/50',
+                    // Submitted: semantic colors for feedback (muted borders)
+                    isSubmitted && isThisCorrect && 'border-success/50 bg-success/10',
+                    isSubmitted && isSelected && !isThisCorrect && 'border-destructive/50 bg-destructive/10',
                     isSubmitted && 'cursor-default'
                   )}
                 >
@@ -134,7 +153,7 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
                     {showResult && isSelected && !isThisCorrect && (
                       <X className='h-4 w-4 text-destructive flex-shrink-0' aria-hidden='true' />
                     )}
-                    <span>{optionContent}</span>
+                    <span><InlineMarkdown>{optionContent}</InlineMarkdown></span>
                   </div>
                 </button>
               )
@@ -147,7 +166,7 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
               <div className='font-medium mb-1'>
                 {isCorrect ? t('ai.exercises.correct', 'Correct!') : t('ai.exercises.incorrect', 'Incorrect')}
               </div>
-              {exercise.explanation}
+              <InlineMarkdown>{exercise.explanation}</InlineMarkdown>
             </div>
           )}
 
@@ -187,7 +206,9 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
         </div>
 
         <div className='px-3 py-3'>
-          <p className='text-sm font-medium mb-3'>{statement}</p>
+          <div className='text-sm font-medium mb-3'>
+            <InlineMarkdown>{statement}</InlineMarkdown>
+          </div>
 
           <div className='flex gap-2'>
             {[true, false].map(value => {
@@ -203,10 +224,12 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
                   disabled={isSubmitted}
                   className={cn(
                     'flex-1 px-3 py-2 rounded-md border text-sm font-medium transition-colors',
-                    !isSubmitted && isSelected && 'border-primary bg-primary/5',
-                    !isSubmitted && !isSelected && 'border-border hover:border-primary/50',
-                    showResult && isThisCorrect && 'border-success bg-success/10',
-                    showResult && isSelected && !isThisCorrect && 'border-destructive bg-destructive/10',
+                    // Not submitted: subtle selection via background only
+                    !isSubmitted && isSelected && 'border-border bg-muted',
+                    !isSubmitted && !isSelected && 'border-border hover:bg-muted/50',
+                    // Submitted: semantic colors for feedback (muted borders)
+                    showResult && isThisCorrect && 'border-success/50 bg-success/10',
+                    showResult && isSelected && !isThisCorrect && 'border-destructive/50 bg-destructive/10',
                     isSubmitted && 'cursor-default'
                   )}
                 >
@@ -218,7 +241,7 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
 
           {showExplanation && exercise.explanation && (
             <div className='mt-3 p-3 rounded-md bg-muted/50 text-xs text-muted-foreground'>
-              {exercise.explanation}
+              <InlineMarkdown>{exercise.explanation}</InlineMarkdown>
             </div>
           )}
 
@@ -253,11 +276,13 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
         </div>
 
         <div className='px-3 py-3'>
-          <p className='text-sm font-medium mb-3'>{front}</p>
+          <div className='text-sm font-medium mb-3'>
+            <InlineMarkdown>{front}</InlineMarkdown>
+          </div>
 
           {showExplanation ? (
             <div className='p-3 rounded-md bg-muted/30 text-sm'>
-              {back}
+              <InlineMarkdown>{back}</InlineMarkdown>
             </div>
           ) : (
             <Button size='sm' variant='outline' onClick={() => setShowExplanation(true)}>
@@ -287,7 +312,9 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
         </Badge>
       </div>
       <div className='px-3 py-3'>
-        <p className='text-sm'>{exercise.question}</p>
+        <div className='text-sm'>
+          <InlineMarkdown>{exercise.question}</InlineMarkdown>
+        </div>
         {exercise.explanation && (
           <button
             type='button'
@@ -300,7 +327,7 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
         )}
         {showExplanation && exercise.explanation && (
           <div className='mt-2 p-2 rounded bg-muted/30 text-xs'>
-            {exercise.explanation}
+            <InlineMarkdown>{exercise.explanation}</InlineMarkdown>
           </div>
         )}
       </div>

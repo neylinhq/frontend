@@ -20,8 +20,6 @@ interface ChatMessageListProps {
   onRemovePreview: (messageId: string, previewId: string) => void
   onSavePreview: (messageId: string, preview: PreviewCard) => void
   onRejectPreview: (messageId: string, preview: PreviewCard) => void
-  /** Handler to restore a resolved preview back to pending */
-  onRestorePreview: (messageId: string, preview: PreviewCard) => void
   onRegenerate?: (messageId: string, role: 'user' | 'assistant') => void
   onEditMessage?: (messageId: string, newContent: string) => void
 }
@@ -42,7 +40,6 @@ export const ChatMessageList = ({
   onRemovePreview,
   onSavePreview,
   onRejectPreview,
-  onRestorePreview,
   onRegenerate,
   onEditMessage
 }: ChatMessageListProps) => {
@@ -280,7 +277,6 @@ export const ChatMessageList = ({
                         preview={preview}
                         onRemove={() => onRejectPreview(message.id, preview)}
                         onSave={() => onSavePreview(message.id, preview)}
-                        onRestore={() => onRestorePreview(message.id, preview)}
                         isSaving={isPreviewSaving(message.id, preview.id)}
                       />
                     ))}

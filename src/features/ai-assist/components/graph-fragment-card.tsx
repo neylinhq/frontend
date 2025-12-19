@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Check, ChevronRight, Loader2, X, ArrowRight, Undo2 } from 'lucide-react'
+import { Check, ChevronRight, Loader2, X, ArrowRight } from 'lucide-react'
 import { Button } from '@/shared/components/button'
 import { Badge } from '@/shared/components/badge'
 import { Checkbox } from '@/shared/components/checkbox'
@@ -51,8 +51,6 @@ interface GraphFragmentCardProps {
   isLoading?: boolean
   /** Preview status - if approved/rejected, shows collapsed resolved state */
   status?: PreviewStatus
-  /** Handler to restore a resolved preview back to pending */
-  onRestore?: () => void
 }
 
 export const GraphFragmentCard = ({
@@ -60,8 +58,7 @@ export const GraphFragmentCard = ({
   onApply,
   onReject,
   isLoading = false,
-  status = 'pending',
-  onRestore
+  status = 'pending'
 }: GraphFragmentCardProps) => {
   const { t } = useTranslation()
 
@@ -214,21 +211,13 @@ export const GraphFragmentCard = ({
             {summary}
           </span>
 
-          {/* Restore button - appears on hover */}
-          {onRestore && (
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={e => {
-                e.stopPropagation()
-                onRestore()
-              }}
-              className="h-5 px-1.5 text-[10px] text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-opacity"
-            >
-              <Undo2 className="h-2.5 w-2.5 mr-0.5" />
-              {t('common.restore', 'Restore')}
-            </Button>
-          )}
+          {/* Status text */}
+          <span className={cn(
+            'text-[10px] flex-shrink-0',
+            status === 'approved' ? 'text-muted-foreground/60' : 'text-muted-foreground/50'
+          )}>
+            {status === 'approved' ? t('ai.status.applied', 'Applied') : t('ai.status.skipped', 'Skipped')}
+          </span>
         </button>
 
         {/* Expanded content for resolved state */}

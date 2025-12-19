@@ -1,4 +1,4 @@
-import { AlertCircle, Info, SlidersHorizontal, Trash2, TrendingUp, X } from 'lucide-react'
+import { AlertCircle, History, Info, SlidersHorizontal, Trash2, TrendingUp, X } from 'lucide-react'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
@@ -27,6 +27,7 @@ import { toast } from '@/shared/components/toast'
 import { useAutoSave } from '@/shared/hooks'
 import { cn } from '@/shared/lib/cn'
 import { getComplexityTier } from '@/shared/lib/rating'
+import { MapHistoryList } from './map-history-list'
 import { RatingSystemSelector } from './rating-system-selector'
 
 interface MapSettingsDrawerProps {
@@ -204,7 +205,7 @@ export const MapSettingsDrawer = memo(
 
             {/* Tabs with underline variant */}
             <Tabs defaultValue='overview' className='flex flex-col flex-1 min-h-0'>
-              <TabsList variant='underline' className='grid grid-cols-3 shrink-0'>
+              <TabsList variant='underline' className='grid grid-cols-4 shrink-0'>
                 <TabsTrigger variant='underline' value='overview' className='gap-1.5'>
                   <Info className='h-3.5 w-3.5' />
                   <span className='text-xs'>{t('mapSettings.tabs.overview')}</span>
@@ -212,6 +213,10 @@ export const MapSettingsDrawer = memo(
                 <TabsTrigger variant='underline' value='progress' className='gap-1.5'>
                   <TrendingUp className='h-3.5 w-3.5' />
                   <span className='text-xs'>{t('mapSettings.tabs.progress')}</span>
+                </TabsTrigger>
+                <TabsTrigger variant='underline' value='history' className='gap-1.5'>
+                  <History className='h-3.5 w-3.5' />
+                  <span className='text-xs'>{t('mapSettings.tabs.history')}</span>
                 </TabsTrigger>
                 <TabsTrigger variant='underline' value='settings' className='gap-1.5'>
                   <SlidersHorizontal className='h-3.5 w-3.5' />
@@ -340,6 +345,11 @@ export const MapSettingsDrawer = memo(
                     </div>
                   </div>
                 </div>
+              </TabsContent>
+
+              {/* History Tab - Change history */}
+              <TabsContent value='history' className='flex-1 overflow-y-auto mt-0 p-4'>
+                <MapHistoryList mapId={mapId} />
               </TabsContent>
 
               {/* Settings Tab - Rating System + Danger Zone */}

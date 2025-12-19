@@ -18,10 +18,9 @@ import {
   closeBracketsKeymap,
   completionKeymap
 } from '@codemirror/autocomplete'
-import { highlightSelectionMatches, searchKeymap } from '@codemirror/search'
+import { searchKeymap } from '@codemirror/search'
 import {
   bracketMatching,
-  foldGutter,
   foldKeymap,
   indentOnInput
 } from '@codemirror/language'
@@ -30,8 +29,7 @@ import {
   dropCursor,
   EditorView,
   keymap,
-  placeholder as placeholderExtension,
-  rectangularSelection
+  placeholder as placeholderExtension
 } from '@codemirror/view'
 import { EditorState, type Extension } from '@codemirror/state'
 
@@ -51,14 +49,10 @@ export const createExtensions = (options: {
   const extensions: Extension[] = [
     // Core editing
     history(),
-    drawSelection(),
     dropCursor(),
-    EditorState.allowMultipleSelections.of(true),
     indentOnInput(),
     bracketMatching(),
     closeBrackets(),
-    rectangularSelection(),
-    highlightSelectionMatches(),
 
     // Line wrapping - essential for prose editing
     EditorView.lineWrapping,

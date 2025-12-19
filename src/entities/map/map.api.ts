@@ -6,6 +6,8 @@ import type {
   MapDiscoverResponse,
   MapEntity,
   MapFilter,
+  MapHistoryResponse,
+  MapHistorySummary,
   MapSearchMode,
   MapSearchResponse
 } from './map.schema'
@@ -262,6 +264,28 @@ export const mapApi = {
 
   deleteEdge: async (mapId: string, edgeId: string): Promise<void> => {
     await api.delete(`/maps/${mapId}/edges/${edgeId}`)
+  },
+
+  // ====== Map History ======
+  getMapHistory: async (
+    mapId: string,
+    params?: { limit?: number; offset?: number }
+  ): Promise<MapHistoryResponse> => {
+    const searchParams = new URLSearchParams()
+    if (params?.limit) searchParams.set('limit', String(params.limit))
+    if (params?.offset) searchParams.set('offset', String(params.offset))
+    const query = searchParams.toString()
+    const response = await api.get<ApiResponse<MapHistoryResponse>>(
+      `/maps/${mapId}/history${query ? `?${query}` : ''}`
+    )
+    return response.data
+  },
+
+  getMapHistorySummary: async (mapId: string): Promise<MapHistorySummary> => {
+    const response = await api.get<ApiResponse<MapHistorySummary>>(
+      `/maps/${mapId}/history/summary`
+    )
+    return response.data
   },
 
   // ====== Graph Fragment (Batch) ======

@@ -554,7 +554,8 @@
     "tabs": {
       "overview": "Обзор",
       "progress": "Прогресс",
-      "settings": "Настройки"
+      "settings": "Настройки",
+      "history": "История"
     },
     "overview": {
       "mapTitle": "Название",
@@ -595,6 +596,42 @@
       "deleted": "Карта удалена",
       "confirmTitle": "Удалить карту?",
       "confirmDescription": "«{{title}}» и {{nodesCount}} узлов будут удалены навсегда. Это действие нельзя отменить."
+    },
+    "history": {
+      "title": "История изменений",
+      "empty": "Пока нет изменений",
+      "emptyDescription": "Изменения узлов и связей будут отображаться здесь",
+      "loadMore": "Загрузить ещё",
+      "events": {
+        "node_created": "Узел создан",
+        "node_updated": "Узел изменён",
+        "node_deleted": "Узел удалён",
+        "edge_created": "Связь создана",
+        "edge_updated": "Связь изменена",
+        "edge_deleted": "Связь удалена",
+        "map_updated": "Карта изменена",
+        "ai_proposal_applied": "Применено предложение AI"
+      },
+      "source": {
+        "user": "Пользователь",
+        "ai": "AI",
+        "import": "Импорт",
+        "system": "Система"
+      },
+      "summary": {
+        "totalEvents": "Всего изменений",
+        "nodesCreated": "Узлов создано",
+        "nodesUpdated": "Узлов изменено",
+        "nodesDeleted": "Узлов удалено",
+        "edgesCreated": "Связей создано",
+        "edgesDeleted": "Связей удалено"
+      },
+      "timeAgo": {
+        "justNow": "Только что",
+        "minutesAgo": "{{count}} мин назад",
+        "hoursAgo": "{{count}}ч назад",
+        "daysAgo": "{{count}}д назад"
+      }
     }
   },
   "mapView": {
@@ -1368,6 +1405,10 @@
     },
     "saveFailed": "Не удалось сохранить изменения",
     "undoFailed": "Не удалось отменить",
+    "status": {
+      "applied": "Применено",
+      "skipped": "Пропущено"
+    },
     "proposals": {
       "applied": "Применено",
       "dismissed": "Отклонено",

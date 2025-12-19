@@ -78,3 +78,64 @@ export type MapSearchResponse = z.infer<typeof MapSearchResponseSchema>
 // Filter types
 export type MapFilter = 'all' | 'owned' | 'public'
 export type MapSearchMode = 'maps' | 'nodes' | 'all'
+
+// Map History types
+export const MapEventTypeEnum = z.enum([
+  'node_created',
+  'node_updated',
+  'node_deleted',
+  'edge_created',
+  'edge_updated',
+  'edge_deleted',
+  'map_updated',
+  'ai_proposal_applied'
+])
+
+export type MapEventType = z.infer<typeof MapEventTypeEnum>
+
+export const EntityTypeEnum = z.enum(['node', 'edge', 'map'])
+export type EntityType = z.infer<typeof EntityTypeEnum>
+
+export const EventSourceEnum = z.enum(['user', 'ai', 'import', 'system'])
+export type EventSource = z.infer<typeof EventSourceEnum>
+
+export const MapEventSchema = z.object({
+  id: z.string(),
+  mapId: z.string(),
+  userId: z.string(),
+  eventType: MapEventTypeEnum,
+  entityType: EntityTypeEnum,
+  entityId: z.string().nullable(),
+  changes: z.object({
+    before: z.unknown().optional(),
+    after: z.unknown().optional(),
+    data: z.unknown().optional()
+  }),
+  source: EventSourceEnum,
+  version: z.number(),
+  createdAt: z.string()
+})
+
+export type MapEvent = z.infer<typeof MapEventSchema>
+
+export const MapHistoryResponseSchema = z.object({
+  events: z.array(MapEventSchema),
+  total: z.number(),
+  limit: z.number(),
+  offset: z.number()
+})
+
+export type MapHistoryResponse = z.infer<typeof MapHistoryResponseSchema>
+
+export const MapHistorySummarySchema = z.object({
+  mapId: z.string(),
+  totalEvents: z.number(),
+  nodeCreated: z.number(),
+  nodeUpdated: z.number(),
+  nodeDeleted: z.number(),
+  edgeCreated: z.number(),
+  edgeDeleted: z.number(),
+  lastEventAt: z.string().nullable()
+})
+
+export type MapHistorySummary = z.infer<typeof MapHistorySummarySchema>

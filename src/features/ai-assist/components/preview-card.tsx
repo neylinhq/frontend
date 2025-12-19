@@ -16,8 +16,6 @@ interface PreviewCardComponentProps {
   isSaving?: boolean
   /** Handler for graph_fragment apply with selected items */
   onApplyFragment?: (data: GraphFragmentPreviewData) => void
-  /** Handler to restore a resolved preview back to pending */
-  onRestore?: () => void
 }
 
 export const PreviewCardComponent = ({
@@ -26,8 +24,7 @@ export const PreviewCardComponent = ({
   onSave,
   onEdit,
   isSaving = false,
-  onApplyFragment,
-  onRestore
+  onApplyFragment
 }: PreviewCardComponentProps) => {
   const { t } = useTranslation()
 
@@ -57,7 +54,6 @@ export const PreviewCardComponent = ({
             }
           }}
           onReject={onRemove}
-          onRestore={onRestore}
           isLoading={isSaving}
         />
       )

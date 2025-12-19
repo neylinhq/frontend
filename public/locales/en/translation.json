@@ -554,7 +554,8 @@
     "tabs": {
       "overview": "Overview",
       "progress": "Progress",
-      "settings": "Settings"
+      "settings": "Settings",
+      "history": "History"
     },
     "overview": {
       "mapTitle": "Title",
@@ -595,6 +596,42 @@
       "deleted": "Map deleted",
       "confirmTitle": "Delete map?",
       "confirmDescription": "\"{{title}}\" and {{nodesCount}} nodes will be permanently deleted. This action cannot be undone."
+    },
+    "history": {
+      "title": "Change History",
+      "empty": "No changes yet",
+      "emptyDescription": "Changes to nodes and connections will appear here",
+      "loadMore": "Load more",
+      "events": {
+        "node_created": "Node created",
+        "node_updated": "Node updated",
+        "node_deleted": "Node deleted",
+        "edge_created": "Connection created",
+        "edge_updated": "Connection updated",
+        "edge_deleted": "Connection deleted",
+        "map_updated": "Map updated",
+        "ai_proposal_applied": "AI suggestion applied"
+      },
+      "source": {
+        "user": "User",
+        "ai": "AI",
+        "import": "Import",
+        "system": "System"
+      },
+      "summary": {
+        "totalEvents": "Total changes",
+        "nodesCreated": "Nodes created",
+        "nodesUpdated": "Nodes updated",
+        "nodesDeleted": "Nodes deleted",
+        "edgesCreated": "Connections created",
+        "edgesDeleted": "Connections deleted"
+      },
+      "timeAgo": {
+        "justNow": "Just now",
+        "minutesAgo": "{{count}} min ago",
+        "hoursAgo": "{{count}}h ago",
+        "daysAgo": "{{count}}d ago"
+      }
     }
   },
   "mapView": {
@@ -1340,6 +1377,10 @@
     },
     "saveFailed": "Failed to save changes",
     "undoFailed": "Failed to undo",
+    "status": {
+      "applied": "Applied",
+      "skipped": "Skipped"
+    },
     "proposals": {
       "applied": "Applied",
       "dismissed": "Dismissed",

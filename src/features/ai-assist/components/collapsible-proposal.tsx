@@ -1,8 +1,7 @@
-import { Check, ChevronRight, Undo2, X } from 'lucide-react'
+import { Check, ChevronRight, X } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Badge } from '@/shared/components/badge'
-import { Button } from '@/shared/components/button'
 import { cn } from '@/shared/lib/cn'
 import type {
   ConnectionPreviewData,
@@ -35,15 +34,11 @@ const NODE_TYPE_COLORS: Record<string, string> = {
 
 interface CollapsibleProposalProps {
   preview: ResolvedPreview
-  canUndo?: boolean
-  onUndo?: () => void
   className?: string
 }
 
 export const CollapsibleProposal = ({
   preview,
-  canUndo,
-  onUndo,
   className
 }: CollapsibleProposalProps) => {
   const { t } = useTranslation()
@@ -131,6 +126,14 @@ export const CollapsibleProposal = ({
           {getSummary()}
         </span>
 
+        {/* Status text */}
+        <span className={cn(
+          'text-[10px] flex-shrink-0',
+          isApproved ? 'text-muted-foreground/60' : 'text-muted-foreground/50'
+        )}>
+          {isApproved ? t('ai.status.applied', 'Applied') : t('ai.status.skipped', 'Skipped')}
+        </span>
+
         {/* Expand chevron */}
         <ChevronRight
           className={cn(
@@ -139,22 +142,6 @@ export const CollapsibleProposal = ({
             isExpanded && 'rotate-90'
           )}
         />
-
-        {/* Undo/Restore button */}
-        {onUndo && (canUndo || !isApproved) && (
-          <Button
-            size='sm'
-            variant='ghost'
-            onClick={e => {
-              e.stopPropagation()
-              onUndo()
-            }}
-            className='h-5 px-1.5 text-[10px] text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-opacity'
-          >
-            <Undo2 className='h-2.5 w-2.5 mr-0.5' />
-            {isApproved ? t('common.undo', 'Undo') : t('common.restore', 'Restore')}
-          </Button>
-        )}
       </div>
 
       {/* Expanded content */}

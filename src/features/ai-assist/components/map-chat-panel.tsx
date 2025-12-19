@@ -4,7 +4,7 @@ import { mapKeys, useApplyGraphFragment, useCreateEdge, useCreateNode, useDelete
 import type { Node, NodeType } from '@/entities/node'
 import { useNodes } from '@/entities/node'
 import type { RelationType } from '@/entities/edge'
-import { toHtml } from '@/features/editor-converter'
+// Storage format is now Markdown — no conversion needed
 import { toast } from '@/shared/components/toast'
 import type {
   ConnectionPreviewData,
@@ -93,12 +93,11 @@ export const MapChatPanel = ({ mapId, sessionId }: MapChatPanelProps) => {
       }
 
       // 1. Create node (with random position near center)
-      // AI returns markdown for content — convert to HTML for storage
       const newNode = await createNodeMutation.mutateAsync({
         label: data.label,
         type: data.nodeType as NodeType,
         description: data.description,
-        content: data.content ? toHtml(data.content) : '',
+        content: data.content ?? '',
         position: {
           x: Math.random() * 200 - 100,
           y: Math.random() * 200 - 100
@@ -199,7 +198,6 @@ export const MapChatPanel = ({ mapId, sessionId }: MapChatPanelProps) => {
     const jitter = 30 // Random offset for natural look
 
     // Convert to API format with grid positions
-    // AI returns markdown for content — convert to HTML for storage
     const nodes = data.nodes.map((node, idx) => {
       const col = idx % cols
       const row = Math.floor(idx / cols)
@@ -211,7 +209,7 @@ export const MapChatPanel = ({ mapId, sessionId }: MapChatPanelProps) => {
         label: node.label,
         type: node.nodeType,
         description: node.description,
-        content: node.content ? toHtml(node.content) : '',
+        content: node.content ?? '',
         positionX: col * spacing - offsetX + (Math.random() * jitter * 2 - jitter),
         positionY: row * spacing - offsetY + (Math.random() * jitter * 2 - jitter)
       }

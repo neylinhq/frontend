@@ -160,16 +160,16 @@ export const ChatInput = ({
           variant='secondary'
           onClick={onStop}
           aria-label={t('ai.chat.stop', 'Stop generating')}
-          className='absolute right-3 bottom-2.5 h-8 w-8 flex-shrink-0 rounded-lg'
+          className='absolute right-3 bottom-2.5 h-7 w-7 flex-shrink-0 rounded-md'
         >
-          <Square className='h-2 w-2 fill-current text-destructive' />
+          <Square className='!size-2.5 fill-current text-destructive' />
         </Button>
       ) : (
         <Button
           size='icon'
           onClick={handleSend}
           disabled={!value.trim() || disabled}
-          className='absolute right-3 bottom-2.5 h-8 w-8 flex-shrink-0 rounded-lg'
+          className='absolute right-3 bottom-2.5 h-7 w-7 flex-shrink-0 rounded-md'
           aria-label={t('ai.chat.send', 'Send message')}
         >
           <ArrowUp className='h-4 w-4' />

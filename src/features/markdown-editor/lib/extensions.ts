@@ -40,10 +40,12 @@ import { livePreview } from './live-preview'
 
 /**
  * Create all editor extensions
+ *
+ * Note: Editable state is managed via Compartment in the component
+ * to allow dynamic reconfiguration without recreating the editor.
  */
 export const createExtensions = (options: {
   placeholder?: string
-  editable?: boolean
   onChange?: (content: string) => void
 }): Extension[] => {
   const extensions: Extension[] = [
@@ -57,6 +59,9 @@ export const createExtensions = (options: {
     closeBrackets(),
     rectangularSelection(),
     highlightSelectionMatches(),
+
+    // Line wrapping - essential for prose editing
+    EditorView.lineWrapping,
 
     // Markdown language support with code block highlighting
     markdown({
@@ -91,12 +96,6 @@ export const createExtensions = (options: {
   // Placeholder
   if (options.placeholder) {
     extensions.push(placeholderExtension(options.placeholder))
-  }
-
-  // Editable state
-  if (options.editable === false) {
-    extensions.push(EditorView.editable.of(false))
-    extensions.push(EditorState.readOnly.of(true))
   }
 
   // Change listener

@@ -1,7 +1,7 @@
 import { cva, type VariantProps } from 'class-variance-authority'
 import { Link } from 'react-router'
 import { cn } from '@/shared/lib/cn'
-import { NeylinSymbol } from './components/neylin-symbol'
+import { NeylinSymbol } from './neylin-symbol'
 
 const logoVariants = cva('flex items-center select-none', {
   variants: {

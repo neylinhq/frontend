@@ -16,6 +16,8 @@ export interface MarkdownEditorProps {
   onChange?: (markdown: string) => void
   /** Callback with editor view instance for advanced use cases */
   onEditorUpdate?: (view: EditorView) => void
+  /** Callback when editor initialization fails */
+  onError?: (error: Error) => void
   /** Whether the editor is editable */
   editable?: boolean
   /** Additional CSS class */

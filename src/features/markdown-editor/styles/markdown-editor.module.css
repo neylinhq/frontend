@@ -1,13 +1,15 @@
 /**
  * Markdown Editor Styles
  *
- * Minimal styles for the CodeMirror-based editor.
- * Most styling is handled by the theme and live-preview extensions.
+ * Following Design Manifesto:
+ * - "Interface disappears, content shines"
+ * - Minimal chrome, maximum content
+ * - Uses OKLCH colors via CSS variables
  */
 
-.editor-wrapper {
+.editorWrapper {
   position: relative;
-  min-height: 200px;
+  width: 100%;
 }
 
 .editor {
@@ -17,75 +19,130 @@
   outline: none;
 }
 
-/* Loading skeleton */
-.skeleton {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
+/* ============================================
+   CODEMIRROR OVERRIDES
+   ============================================ */
 
-.skeleton-line {
-  height: 1em;
-  background: oklch(var(--muted) / 0.5);
-  border-radius: 4px;
-  margin-bottom: 0.75em;
-}
-
-.skeleton-line:nth-child(1) { width: 75%; }
-.skeleton-line:nth-child(2) { width: 100%; }
-.skeleton-line:nth-child(3) { width: 85%; }
-.skeleton-line:nth-child(4) { width: 80%; }
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-}
-
-/* Base CodeMirror container */
-.editor-wrapper :global(.cm-editor) {
-  height: 100%;
+/* Main editor container */
+.editorWrapper :global(.cm-editor) {
+  height: auto;
+  width: 100%;
   font-family: inherit;
   background: transparent;
+  outline: none;
 }
 
-.editor-wrapper :global(.cm-scroller) {
-  overflow: auto;
+/* Scroller - NO SCROLL */
+.editorWrapper :global(.cm-scroller) {
+  overflow: visible !important;
   font-family: inherit;
 }
 
-.editor-wrapper :global(.cm-content) {
+/* Content area */
+.editorWrapper :global(.cm-content) {
   padding: 0;
   font-family: inherit;
+  min-height: auto;
+  caret-color: currentColor;
 }
 
-.editor-wrapper :global(.cm-line) {
+/* Lines */
+.editorWrapper :global(.cm-line) {
   padding: 2px 0;
 }
 
-/* Focus styles - remove outline */
-.editor-wrapper :global(.cm-editor.cm-focused) {
+/* Focus - no outline */
+.editorWrapper :global(.cm-editor.cm-focused) {
   outline: none;
 }
 
 /* Selection */
-.editor-wrapper :global(.cm-selectionBackground) {
+.editorWrapper :global(.cm-selectionBackground) {
   background: oklch(var(--muted-foreground) / 0.2) !important;
 }
 
-.editor-wrapper :global(.cm-editor.cm-focused .cm-selectionBackground) {
+.editorWrapper :global(.cm-editor.cm-focused .cm-selectionBackground) {
   background: oklch(var(--muted-foreground) / 0.3) !important;
 }
 
 /* Cursor */
-.editor-wrapper :global(.cm-cursor) {
+.editorWrapper :global(.cm-cursor) {
   border-left-color: currentColor;
   border-left-width: 2px;
 }
 
 /* Placeholder */
-.editor-wrapper :global(.cm-placeholder) {
+.editorWrapper :global(.cm-placeholder) {
   color: oklch(var(--muted-foreground) / 0.6);
   font-style: italic;
+}
+
+/* Hide gutters */
+.editorWrapper :global(.cm-gutters) {
+  display: none;
+}
+
+/* ============================================
+   LOADING SKELETON
+   ============================================ */
+
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 4px 0;
+}
+
+.skeletonLine {
+  height: 1em;
+  background: oklch(var(--muted) / 0.3);
+  border-radius: 4px;
+}
+
+.skeletonLine:nth-child(1) { width: 75%; }
+.skeletonLine:nth-child(2) { width: 100%; }
+.skeletonLine:nth-child(3) { width: 85%; }
+.skeletonLine:nth-child(4) { width: 60%; }
+
+/* Pulse animation */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.skeleton {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* ============================================
+   FALLBACK TEXTAREA
+   ============================================ */
+
+.fallbackTextarea {
+  width: 100%;
+  min-height: 200px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  resize: vertical;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 1.6;
+  color: inherit;
+  outline: none;
+}
+
+.fallbackTextarea::placeholder {
+  color: oklch(var(--muted-foreground) / 0.6);
+  font-style: italic;
+}
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
 }

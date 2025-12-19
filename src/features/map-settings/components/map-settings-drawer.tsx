@@ -1,13 +1,4 @@
-import {
-  AlertCircle,
-  Globe,
-  Info,
-  Lock,
-  SlidersHorizontal,
-  Trash2,
-  TrendingUp,
-  X
-} from 'lucide-react'
+import { AlertCircle, Info, SlidersHorizontal, Trash2, TrendingUp, X } from 'lucide-react'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
@@ -235,13 +226,11 @@ export const MapSettingsDrawer = memo(
                   {isOwner && (
                     <div className='flex items-center justify-between'>
                       {map?.isPublic ? (
-                        <Badge variant='info' className='gap-1'>
-                          <Globe className='h-3 w-3' />
+                        <Badge variant='info'>
                           {t('mapSettings.visibility.public')}
                         </Badge>
                       ) : (
-                        <Badge variant='secondary' className='gap-1'>
-                          <Lock className='h-3 w-3' />
+                        <Badge variant='secondary'>
                           {t('mapSettings.visibility.private')}
                         </Badge>
                       )}
@@ -309,7 +298,7 @@ export const MapSettingsDrawer = memo(
                     </div>
                     <div className='flex items-baseline gap-2'>
                       <span className='text-3xl font-bold tabular-nums'>
-                        {currentRating ?? '—'}
+                        {currentRating ?? '?'}
                       </span>
                       <span className='text-xs text-muted-foreground'>
                         {currentRatingSystem.toUpperCase()}

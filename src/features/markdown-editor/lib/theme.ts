@@ -1,19 +1,22 @@
 /**
  * CodeMirror Theme Configuration
  *
- * Clean, minimal theme that inherits from the application.
- * Reads colors from CSS variables and recreates on theme/palette change.
+ * Clean, minimal theme following Design Manifesto:
+ * - "Interface disappears, content shines"
+ * - Uses OKLCH colors via CSS variables
+ * - Proper syntax highlighting for code blocks
  */
 
 import { EditorView } from '@codemirror/view'
 import { HighlightStyle, syntaxHighlighting } from '@codemirror/language'
 import { tags } from '@lezer/highlight'
-import { cssVarToHex } from '@/features/graph-webgl/lib/theme-bridge'
+import type { Extension } from '@codemirror/state'
 
 /**
  * Base editor theme - minimal, clean
+ * Uses OKLCH colors via CSS variables for theme consistency
  */
-export const editorTheme = EditorView.theme({
+const editorTheme = EditorView.theme({
   '&': {
     backgroundColor: 'transparent',
     color: 'inherit',
@@ -30,91 +33,135 @@ export const editorTheme = EditorView.theme({
     borderLeftWidth: '2px'
   },
   '.cm-selectionBackground, ::selection': {
-    backgroundColor: 'rgba(100, 100, 100, 0.2) !important'
+    backgroundColor: 'oklch(var(--muted-foreground) / 0.2) !important'
   },
   '&.cm-focused .cm-selectionBackground': {
-    backgroundColor: 'rgba(100, 100, 100, 0.3) !important'
+    backgroundColor: 'oklch(var(--muted-foreground) / 0.3) !important'
   },
   '.cm-scroller': {
-    overflow: 'auto',
-    fontFamily: 'inherit'
+    fontFamily: 'inherit',
+    overflow: 'visible !important'
   },
   '.cm-line': {
     padding: '0'
   },
   '.cm-placeholder': {
-    color: 'rgba(128, 128, 128, 0.6)',
+    color: 'oklch(var(--muted-foreground) / 0.6)',
     fontStyle: 'italic'
   },
   '&.cm-focused': {
     outline: 'none'
+  },
+  // Remove default gutters to prevent scroll issues
+  '.cm-gutters': {
+    display: 'none'
   }
 })
 
 /**
- * Create syntax highlighting for Markdown with theme-aware colors
- * Call this when theme/palette changes to recreate with updated colors
+ * Syntax highlighting styles
+ * Synced with .prose from globals.css
  */
-export const createMarkdownHighlighting = () => HighlightStyle.define([
-  // Headings
-  { tag: tags.heading1, fontWeight: '700', fontSize: '1.75em' },
-  { tag: tags.heading2, fontWeight: '600', fontSize: '1.5em' },
-  { tag: tags.heading3, fontWeight: '600', fontSize: '1.25em' },
-  { tag: tags.heading4, fontWeight: '600', fontSize: '1.1em' },
+const syntaxHighlightStyle = HighlightStyle.define([
+  // Headings (synced with .prose)
+  { tag: tags.heading1, fontWeight: '600', fontSize: '1.5em' },
+  { tag: tags.heading2, fontWeight: '600', fontSize: '1.25em' },
+  { tag: tags.heading3, fontWeight: '600', fontSize: '1.125em' },
+  { tag: tags.heading4, fontWeight: '600', fontSize: '1em' },
   { tag: tags.heading5, fontWeight: '600' },
-  { tag: tags.heading6, fontWeight: '600', color: cssVarToHex('syntax-comment') },
+  { tag: tags.heading6, fontWeight: '600' },
 
   // Emphasis
   { tag: tags.strong, fontWeight: '600' },
   { tag: tags.emphasis, fontStyle: 'italic' },
-  { tag: tags.strikethrough, textDecoration: 'line-through', color: cssVarToHex('syntax-comment') },
+  { tag: tags.strikethrough, textDecoration: 'line-through' },
 
   // Code
-  { tag: tags.monospace, fontFamily: 'ui-monospace, monospace', backgroundColor: 'rgba(128, 128, 128, 0.1)', padding: '1px 4px', borderRadius: '3px' },
+  { tag: tags.monospace, fontFamily: 'var(--font-mono, "Söhne Mono", ui-monospace, monospace)' },
 
-  // Links
-  { tag: tags.link, color: cssVarToHex('brand'), textDecoration: 'underline' },
-  { tag: tags.url, color: cssVarToHex('brand'), textDecoration: 'underline' },
+  // Links & URLs
+  { tag: tags.link, textDecoration: 'underline' },
+  { tag: tags.url, textDecoration: 'underline' },
 
   // Quotes
-  { tag: tags.quote, color: cssVarToHex('muted-foreground'), fontStyle: 'italic' },
+  { tag: tags.quote, fontStyle: 'italic' },
 
-  // Meta (markdown syntax characters like #, *, -, etc.)
-  { tag: tags.meta, color: cssVarToHex('syntax-punctuation') },
-  { tag: tags.processingInstruction, color: cssVarToHex('syntax-punctuation') },
+  // Meta & punctuation (markdown syntax)
+  { tag: tags.meta, opacity: '0.6' },
+  { tag: tags.processingInstruction, opacity: '0.6' },
 
+  // === CODE BLOCK SYNTAX HIGHLIGHTING ===
   // Comments
-  { tag: tags.comment, color: cssVarToHex('syntax-comment'), fontStyle: 'italic' },
+  { tag: tags.comment, color: '#6b7280', fontStyle: 'italic' },
+  { tag: tags.lineComment, color: '#6b7280', fontStyle: 'italic' },
+  { tag: tags.blockComment, color: '#6b7280', fontStyle: 'italic' },
 
-  // Keywords (for code blocks)
-  { tag: tags.keyword, color: cssVarToHex('syntax-keyword') },
-  { tag: tags.string, color: cssVarToHex('syntax-string') },
-  { tag: tags.number, color: cssVarToHex('syntax-number') },
-  { tag: tags.bool, color: cssVarToHex('syntax-variable') },
-  { tag: tags.null, color: cssVarToHex('syntax-variable') },
-  { tag: tags.function(tags.variableName), color: cssVarToHex('syntax-function') },
-  { tag: tags.typeName, color: cssVarToHex('syntax-type') },
-  { tag: tags.className, color: cssVarToHex('syntax-type') },
-  { tag: tags.propertyName, color: cssVarToHex('syntax-property') },
-  { tag: tags.attributeName, color: cssVarToHex('syntax-type') },
-  { tag: tags.attributeValue, color: cssVarToHex('syntax-string') },
+  // Keywords
+  { tag: tags.keyword, color: '#c084fc' },
+  { tag: tags.controlKeyword, color: '#c084fc' },
+  { tag: tags.moduleKeyword, color: '#c084fc' },
+  { tag: tags.operatorKeyword, color: '#c084fc' },
+
+  // Strings
+  { tag: tags.string, color: '#4ade80' },
+  { tag: tags.special(tags.string), color: '#4ade80' },
+
+  // Numbers
+  { tag: tags.number, color: '#fb923c' },
+  { tag: tags.integer, color: '#fb923c' },
+  { tag: tags.float, color: '#fb923c' },
+
+  // Boolean & null
+  { tag: tags.bool, color: '#fb923c' },
+  { tag: tags.null, color: '#fb923c' },
+
+  // Functions
+  { tag: tags.function(tags.variableName), color: '#60a5fa' },
+  { tag: tags.function(tags.propertyName), color: '#60a5fa' },
+
+  // Types & classes
+  { tag: tags.typeName, color: '#fbbf24' },
+  { tag: tags.className, color: '#fbbf24' },
+  { tag: tags.namespace, color: '#fbbf24' },
+
+  // Properties
+  { tag: tags.propertyName, color: '#60a5fa' },
+  { tag: tags.attributeName, color: '#fbbf24' },
+  { tag: tags.attributeValue, color: '#4ade80' },
+
+  // Variables
+  { tag: tags.variableName, color: '#f472b6' },
+  { tag: tags.definition(tags.variableName), color: '#f472b6' },
+  { tag: tags.local(tags.variableName), color: '#f472b6' },
+  { tag: tags.special(tags.variableName), color: '#f472b6' },
+
+  // Operators & punctuation
+  { tag: tags.operator, color: '#94a3b8' },
+  { tag: tags.punctuation, color: '#94a3b8' },
+  { tag: tags.bracket, color: '#94a3b8' },
+  { tag: tags.separator, color: '#94a3b8' },
+
+  // Tags (HTML/JSX)
+  { tag: tags.tagName, color: '#f87171' },
+  { tag: tags.angleBracket, color: '#94a3b8' },
+
+  // Regex
+  { tag: tags.regexp, color: '#fb923c' },
 
   // Invalid
-  { tag: tags.invalid, color: cssVarToHex('destructive') }
+  { tag: tags.invalid, color: '#ef4444', textDecoration: 'underline wavy' }
 ])
 
 /**
- * Create combined theme extension with current CSS colors
- * Call this to recreate theme when palette/mode changes
+ * Combined theme extension with syntax highlighting
+ * Use this in extensions.ts
  */
-export const createTheme = () => [
+export const theme: Extension[] = [
   editorTheme,
-  syntaxHighlighting(createMarkdownHighlighting())
+  syntaxHighlighting(syntaxHighlightStyle)
 ]
 
 /**
- * Combined theme extension for the editor
- * Uses base theme only - syntax highlighting is applied via createTheme() at runtime
- * This avoids SSR issues with CSS variable resolution
+ * Export individual parts for custom configurations
  */
-export const theme = [editorTheme]
+export { editorTheme, syntaxHighlightStyle }

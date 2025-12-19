@@ -11,7 +11,7 @@
  * - Syntax highlighting for code blocks
  */
 
-import { useEffect, useRef, useCallback, useMemo } from 'react'
+import { useEffect, useRef, useCallback, useMemo, useState } from 'react'
 import { Compartment, EditorState } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
 import { cn } from '@/shared/lib/cn'
@@ -24,6 +24,7 @@ export const MarkdownEditor = ({
   initialContent = '',
   onChange,
   onEditorUpdate,
+  onError,
   editable = true,
   className,
   placeholder
@@ -31,19 +32,22 @@ export const MarkdownEditor = ({
   const containerRef = useRef<HTMLDivElement>(null)
   const viewRef = useRef<EditorView | null>(null)
   const isInitialized = useRef(false)
+  const [hasError, setHasError] = useState(false)
 
   // Compartments for dynamic reconfiguration
   const editableCompartment = useMemo(() => new Compartment(), [])
   const editableCompartmentRef = useRef(editableCompartment)
 
-  // Stable callback ref to avoid recreating editor on every render
+  // Stable callback refs to avoid recreating editor on every render
   const onChangeRef = useRef(onChange)
   const onEditorUpdateRef = useRef(onEditorUpdate)
+  const onErrorRef = useRef(onError)
 
   useEffect(() => {
     onChangeRef.current = onChange
     onEditorUpdateRef.current = onEditorUpdate
-  }, [onChange, onEditorUpdate])
+    onErrorRef.current = onError
+  }, [onChange, onEditorUpdate, onError])
 
   // Handle content changes
   const handleChange = useCallback((content: string) => {
@@ -52,43 +56,53 @@ export const MarkdownEditor = ({
     }
   }, [])
 
-  // Initialize editor
+  // Initialize editor with error handling
   useEffect(() => {
-    if (!containerRef.current || isInitialized.current) return
+    if (!containerRef.current || isInitialized.current || hasError) return
 
-    const extensions = createExtensions({
-      placeholder: placeholder || "Type '/' for commands, or start writing...",
-      editable,
-      onChange: handleChange
-    })
+    try {
+      const extensions = createExtensions({
+        placeholder: placeholder || "Type '/' for commands, or start writing...",
+        onChange: handleChange
+      })
 
-    const state = EditorState.create({
-      doc: initialContent,
-      extensions: [
-        ...extensions,
-        editableCompartmentRef.current.of(EditorView.editable.of(editable))
-      ]
-    })
+      const state = EditorState.create({
+        doc: initialContent,
+        extensions: [
+          ...extensions,
+          editableCompartmentRef.current.of(EditorView.editable.of(editable))
+        ]
+      })
 
-    const view = new EditorView({
-      state,
-      parent: containerRef.current
-    })
+      const view = new EditorView({
+        state,
+        parent: containerRef.current
+      })
 
-    viewRef.current = view
-    isInitialized.current = true
+      viewRef.current = view
+      isInitialized.current = true
 
-    // Notify parent about editor instance
-    if (onEditorUpdateRef.current) {
-      onEditorUpdateRef.current(view)
+      // Notify parent about editor instance
+      if (onEditorUpdateRef.current) {
+        onEditorUpdateRef.current(view)
+      }
+    } catch (error) {
+      console.error('Failed to initialize markdown editor:', error)
+      setHasError(true)
+
+      if (onErrorRef.current) {
+        onErrorRef.current(error instanceof Error ? error : new Error(String(error)))
+      }
     }
 
     return () => {
-      view.destroy()
-      viewRef.current = null
+      if (viewRef.current) {
+        viewRef.current.destroy()
+        viewRef.current = null
+      }
       isInitialized.current = false
     }
-  }, []) // Only run once on mount
+  }, [hasError]) // Only run once on mount, or retry after error state changes
 
   // Update editable state
   useEffect(() => {
@@ -126,7 +140,7 @@ export const MarkdownEditor = ({
     lastInitialContentRef.current = initialContent
   }, [initialContent])
 
-  // Loading skeleton
+  // Loading skeleton for SSR
   if (typeof window === 'undefined') {
     return (
       <div className={cn(styles.editorWrapper, className)}>
@@ -140,12 +154,30 @@ export const MarkdownEditor = ({
     )
   }
 
+  // Fallback textarea when editor fails to initialize
+  if (hasError) {
+    return (
+      <div className={cn(styles.editorWrapper, className)}>
+        <textarea
+          className={cn(styles.editor, styles.fallbackTextarea)}
+          defaultValue={initialContent}
+          onChange={(e) => onChange?.(e.target.value)}
+          placeholder={placeholder || "Type '/' for commands, or start writing..."}
+          readOnly={!editable}
+          data-testid="markdown-editor-fallback"
+        />
+      </div>
+    )
+  }
+
   return (
     <div
       ref={containerRef}
       className={cn(
         styles.editorWrapper,
         styles.editor,
+        // Use prose styles for consistent typography with AI responses
+        'prose prose-sm max-w-none dark:prose-invert',
         'focus-within:outline-none',
         className
       )}

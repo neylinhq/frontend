@@ -25,7 +25,9 @@ export const chatSessionKeys = {
 // API functions
 const chatSessionsApi = {
   list: async (mapId: string, nodeId?: string): Promise<ChatSession[]> => {
-    const query = nodeId ? `?nodeId=${nodeId}` : ''
+    // nodeId=undefined means map-level chats only (contextType=map)
+    // nodeId=<id> means node-level chats for that specific node
+    const query = nodeId ? `?nodeId=${nodeId}` : '?contextType=map'
     const response = await api.get<ApiResponse<ChatSession[]>>(`/maps/${mapId}/chat-sessions${query}`)
     return response.data
   },

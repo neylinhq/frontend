@@ -22,6 +22,10 @@ const createTurndownService = (options: HtmlToMarkdownOptions = {}): TurndownSer
     preformattedCode: true
   })
 
+  // Don't escape markdown characters - we want clean output for CodeMirror
+  // This prevents \* \[ \] etc from appearing in the output
+  turndown.escape = (text: string) => text
+
   // Custom rule for task lists
   turndown.addRule('taskListItem', {
     filter: (node) => {

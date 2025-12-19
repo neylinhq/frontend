@@ -163,7 +163,7 @@ export const NodeDrawer = memo(
                   <Button
                     variant={isFocused ? 'default' : 'ghost'}
                     size='icon'
-                    className='h-8 w-8'
+                    className='h-8 w-8 rounded-lg'
                     onClick={() => (isFocused ? clearFocus() : focusNode(displayNode.id))}
                     title={
                       isFocused
@@ -176,7 +176,7 @@ export const NodeDrawer = memo(
                   <Button
                     variant='ghost'
                     size='icon'
-                    className='h-8 w-8'
+                    className='h-8 w-8 rounded-lg'
                     asChild
                     title={t('nodeDrawer.openFullEditor')}
                   >
@@ -187,7 +187,7 @@ export const NodeDrawer = memo(
                   <Button
                     variant='ghost'
                     size='icon'
-                    className='h-8 w-8'
+                    className='h-8 w-8 rounded-lg'
                     onClick={handleClose}
                     title={t('common.close')}
                   >

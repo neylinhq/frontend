@@ -13,8 +13,8 @@ import { ChatHeader } from './chat-header'
 import { MapChatPanel } from './map-chat-panel'
 
 const STORAGE_KEY = 'ai-panel-width'
-const MIN_WIDTH = 300
-const MAX_WIDTH = 900
+const MIN_WIDTH = 440
+const MAX_WIDTH = 800
 const DEFAULT_WIDTH = 400
 
 interface MapChatDrawerProps {

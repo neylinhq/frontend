@@ -1,4 +1,4 @@
-import { ChevronDown, Check } from 'lucide-react'
+import { Check } from 'lucide-react'
 import { useMemo } from 'react'
 import type { AIModel, AIModelTier } from '@/entities/ai'
 import { Button } from '@/shared/components/button'
@@ -49,12 +49,11 @@ export const ModelSelector = ({ value, onChange, models, disabled }: ModelSelect
           className='h-6 px-2 text-[10px] gap-1.5 bg-muted hover:bg-muted/80'
         >
           {currentModel && aiBrandIcons[currentModel.provider] && (
-            <Icon data={aiBrandIcons[currentModel.provider]} size={12} className='opacity-70' />
+            <Icon data={aiBrandIcons[currentModel.provider]} size={12} />
           )}
           <span className='truncate max-w-24'>
             {currentModel?.name || 'Select model'}
           </span>
-          <ChevronDown className='h-3 w-3 opacity-50' />
         </Button>
       </PopoverTrigger>
       <PopoverContent className='w-56 p-1' align='start'>
@@ -84,7 +83,7 @@ export const ModelSelector = ({ value, onChange, models, disabled }: ModelSelect
                   )}
                 >
                   {aiBrandIcons[model.provider] ? (
-                    <Icon data={aiBrandIcons[model.provider]} size={14} className='opacity-70 shrink-0' />
+                    <Icon data={aiBrandIcons[model.provider]} size={14} className='shrink-0' />
                   ) : (
                     <div className='w-3.5 h-3.5 shrink-0' />
                   )}

@@ -10,6 +10,7 @@ import {
 } from '@/entities/map'
 import type { Node } from '@/entities/node'
 import { useNodes } from '@/entities/node'
+import { toHtml } from '@/features/editor-converter'
 import {
   calculatePositionNearConnections,
   calculateSmartPosition
@@ -96,19 +97,22 @@ export const NodeChatPanel = ({ nodeId, mapId, sessionId: externalSessionId }: N
       }
 
       // Map field to node property
+      // AI returns markdown, storage expects HTML — convert before saving
       const updatePayload: Record<string, string> = {}
       switch (data.field) {
         case 'description':
+          // Description is plain text, no conversion needed
           updatePayload.description = data.proposed
           break
         case 'content':
-          updatePayload.content = data.proposed
+          // Content is rich text — convert markdown to HTML
+          updatePayload.content = toHtml(data.proposed)
           break
         default:
-          // For examples/sources, append to content
+          // For examples/sources, append to content (both as HTML)
           updatePayload.content = node?.content
-            ? `${node.content}\n\n---\n\n${data.proposed}`
-            : data.proposed
+            ? `${node.content}\n\n<hr>\n\n${toHtml(data.proposed)}`
+            : toHtml(data.proposed)
           break
       }
 
@@ -182,11 +186,12 @@ export const NodeChatPanel = ({ nodeId, mapId, sessionId: externalSessionId }: N
       }
 
       // 2. Create node with calculated position
+      // AI returns markdown for content — convert to HTML for storage
       const newNode = await createNodeMutation.mutateAsync({
         label: data.label,
         type: data.nodeType as Node['type'],
         description: data.description,
-        content: data.content || '',
+        content: data.content ? toHtml(data.content) : '',
         position
       })
 

@@ -45,8 +45,8 @@ export const ChatEmptyState = ({
 
   return (
     <div className="flex h-full flex-col items-center justify-center gap-3 px-4">
-      {/* Tags */}
-      <div className="flex flex-wrap items-center justify-center gap-2">
+      {/* Tags - hidden on mobile */}
+      <div className="hidden md:flex flex-wrap items-center justify-center gap-2">
         {suggestions.map(suggestion => (
           <button
             key={suggestion.key}
@@ -67,7 +67,7 @@ export const ChatEmptyState = ({
       </div>
 
       {/* Hint text */}
-      <p className="text-base text-muted-foreground/60">
+      <p className="text-base text-center text-balance text-muted-foreground/60">
         {t('ai.chat.emptyHint', 'Type anything or use /commands')}
       </p>
     </div>

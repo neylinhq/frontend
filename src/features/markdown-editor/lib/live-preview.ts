@@ -1,17 +1,14 @@
 /**
  * Obsidian-style Live Preview
  *
- * Implements decorations that hide markdown syntax when the cursor is not
- * on the same line, creating a WYSIWYG-like experience while preserving
- * the underlying markdown source.
+ * Creates a WYSIWYG-like experience while preserving markdown source.
+ * Follows Design Manifesto: "Interface disappears, content shines"
  *
  * Key behaviors:
- * - Headings: Hide # markers, show styled heading
- * - Bold/Italic: Hide ** and * markers, show styled text
- * - Links: Hide [](url) syntax, show clickable link
- * - Code: Style inline code with background
- * - Lists: Style bullets and checkboxes
- * - Blockquotes: Hide > prefix, show styled quote
+ * - Hide markdown syntax when cursor is not on the line
+ * - Show raw markdown when editing (cursor on line)
+ * - Smooth transitions respecting prefers-reduced-motion
+ * - Full syntax highlighting for code blocks
  */
 
 import {
@@ -25,30 +22,100 @@ import {
 import { syntaxTree } from '@codemirror/language'
 import { Range } from '@codemirror/state'
 
+// ============================================================================
+// WIDGETS
+// ============================================================================
+
 /**
- * Widget for rendering checkboxes in task lists
+ * Interactive checkbox for task lists
+ * Toggles between [ ] and [x] on click
  */
 class CheckboxWidget extends WidgetType {
-  constructor(readonly checked: boolean) {
+  constructor(
+    readonly checked: boolean,
+    readonly pos: number
+  ) {
     super()
   }
 
-  toDOM() {
+  toDOM(view: EditorView) {
     const checkbox = document.createElement('input')
     checkbox.type = 'checkbox'
     checkbox.checked = this.checked
-    checkbox.className = 'cm-task-checkbox'
+    checkbox.className = 'cm-checkbox'
     checkbox.setAttribute('aria-label', this.checked ? 'Completed task' : 'Incomplete task')
+
+    checkbox.addEventListener('click', (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+
+      const { state } = view
+      const line = state.doc.lineAt(this.pos)
+      const lineText = line.text
+
+      const newText = this.checked
+        ? lineText.replace(/\[x\]/i, '[ ]')
+        : lineText.replace(/\[ \]/, '[x]')
+
+      if (newText !== lineText) {
+        view.dispatch({
+          changes: { from: line.from, to: line.to, insert: newText }
+        })
+      }
+    })
+
     return checkbox
   }
 
   eq(other: CheckboxWidget) {
-    return other.checked === this.checked
+    return other.checked === this.checked && other.pos === this.pos
+  }
+
+  ignoreEvent() {
+    return false
   }
 }
 
 /**
- * Widget for rendering images inline
+ * Bullet point widget - replaces -, *, + with styled bullet
+ */
+class BulletWidget extends WidgetType {
+  toDOM() {
+    const span = document.createElement('span')
+    span.className = 'cm-bullet'
+    span.textContent = '•'
+    span.setAttribute('aria-hidden', 'true')
+    return span
+  }
+
+  eq() {
+    return true
+  }
+}
+
+/**
+ * Language badge for code blocks - appears in top-right corner
+ */
+class CodeLanguageWidget extends WidgetType {
+  constructor(readonly language: string) {
+    super()
+  }
+
+  toDOM() {
+    const badge = document.createElement('span')
+    badge.className = 'cm-code-lang'
+    badge.textContent = this.language.toLowerCase()
+    badge.setAttribute('aria-label', `Code language: ${this.language}`)
+    return badge
+  }
+
+  eq(other: CodeLanguageWidget) {
+    return other.language === this.language
+  }
+}
+
+/**
+ * Image widget with URL validation
  */
 class ImageWidget extends WidgetType {
   constructor(
@@ -60,15 +127,37 @@ class ImageWidget extends WidgetType {
 
   toDOM() {
     const container = document.createElement('span')
-    container.className = 'cm-image-widget'
+    container.className = 'cm-image-container'
 
-    const img = document.createElement('img')
-    img.src = this.src
-    img.alt = this.alt
-    img.className = 'cm-inline-image'
-    img.loading = 'lazy'
+    // Validate URL
+    try {
+      const url = new URL(this.src, window.location.origin)
+      if (!['http:', 'https:', 'data:'].includes(url.protocol)) {
+        throw new Error('Invalid protocol')
+      }
 
-    container.appendChild(img)
+      const img = document.createElement('img')
+      img.src = url.href
+      img.alt = this.alt
+      img.className = 'cm-image'
+      img.loading = 'lazy'
+
+      img.onerror = () => {
+        img.style.display = 'none'
+        const error = document.createElement('span')
+        error.className = 'cm-image-error'
+        error.textContent = `[Failed to load: ${this.alt || 'image'}]`
+        container.appendChild(error)
+      }
+
+      container.appendChild(img)
+    } catch {
+      const placeholder = document.createElement('span')
+      placeholder.className = 'cm-image-error'
+      placeholder.textContent = `[Invalid image: ${this.alt || 'unknown'}]`
+      container.appendChild(placeholder)
+    }
+
     return container
   }
 
@@ -77,62 +166,62 @@ class ImageWidget extends WidgetType {
   }
 }
 
-/**
- * Decoration styles for different markdown elements
- */
-const hiddenMark = Decoration.mark({ class: 'cm-hidden-mark' })
-const headingMark = Decoration.mark({ class: 'cm-heading-mark' })
-const boldMark = Decoration.mark({ class: 'cm-bold' })
-const italicMark = Decoration.mark({ class: 'cm-italic' })
-const strikeMark = Decoration.mark({ class: 'cm-strikethrough' })
-const codeMark = Decoration.mark({ class: 'cm-inline-code' })
-const linkMark = Decoration.mark({ class: 'cm-link' })
-const linkUrlMark = Decoration.mark({ class: 'cm-link-url' })
-const quoteMark = Decoration.mark({ class: 'cm-blockquote' })
-const highlightMark = Decoration.mark({ class: 'cm-highlight' })
-const listBulletMark = Decoration.mark({ class: 'cm-list-bullet' })
+// ============================================================================
+// DECORATIONS
+// ============================================================================
 
-// Heading level decorations
-const headingDecorations: Record<number, Decoration> = {
-  1: Decoration.mark({ class: 'cm-heading cm-heading-1' }),
-  2: Decoration.mark({ class: 'cm-heading cm-heading-2' }),
-  3: Decoration.mark({ class: 'cm-heading cm-heading-3' }),
-  4: Decoration.mark({ class: 'cm-heading cm-heading-4' }),
-  5: Decoration.mark({ class: 'cm-heading cm-heading-5' }),
-  6: Decoration.mark({ class: 'cm-heading cm-heading-6' })
+const hiddenMark = Decoration.mark({ class: 'cm-hidden' })
+const fadedMark = Decoration.mark({ class: 'cm-faded' })
+
+const headingDecos: Record<number, Decoration> = {
+  1: Decoration.mark({ class: 'cm-h1' }),
+  2: Decoration.mark({ class: 'cm-h2' }),
+  3: Decoration.mark({ class: 'cm-h3' }),
+  4: Decoration.mark({ class: 'cm-h4' }),
+  5: Decoration.mark({ class: 'cm-h5' }),
+  6: Decoration.mark({ class: 'cm-h6' })
 }
 
-/**
- * Check if position is on the active line (cursor line)
- */
-const isOnActiveLine = (view: EditorView, from: number, to: number): boolean => {
-  const { state } = view
-  const selection = state.selection.main
+// ============================================================================
+// HELPERS
+// ============================================================================
 
-  // Get line numbers
+/**
+ * Check if position is on active line or within selection
+ */
+const isActive = (view: EditorView, from: number, to: number): boolean => {
+  const { state } = view
+  const sel = state.selection.main
+
   const fromLine = state.doc.lineAt(from).number
   const toLine = state.doc.lineAt(to).number
-  const cursorLine = state.doc.lineAt(selection.head).number
+  const cursorLine = state.doc.lineAt(sel.head).number
 
-  return cursorLine >= fromLine && cursorLine <= toLine
+  const onCursorLine = cursorLine >= fromLine && cursorLine <= toLine
+  const hasSelection = sel.from !== sel.to
+  const overlapsSelection = hasSelection && !(sel.to < from || sel.from > to)
+
+  return onCursorLine || overlapsSelection
 }
 
-/**
- * Build decorations for the current document
- */
+// ============================================================================
+// DECORATION BUILDER
+// ============================================================================
+
 const buildDecorations = (view: EditorView): DecorationSet => {
   const decorations: Range<Decoration>[] = []
   const { state } = view
 
+  // Track code blocks for language badges
+  const codeBlocks: { from: number; lang: string }[] = []
+
   syntaxTree(state).iterate({
     enter: (node) => {
       const { from, to, name } = node
-
-      // Skip if cursor is on this line (show raw markdown)
-      const onActiveLine = isOnActiveLine(view, from, to)
+      const active = isActive(view, from, to)
 
       switch (name) {
-        // Headings (ATXHeading1, ATXHeading2, etc.)
+        // ====== HEADINGS ======
         case 'ATXHeading1':
         case 'ATXHeading2':
         case 'ATXHeading3':
@@ -140,151 +229,227 @@ const buildDecorations = (view: EditorView): DecorationSet => {
         case 'ATXHeading5':
         case 'ATXHeading6': {
           const level = parseInt(name.slice(-1))
-          const headingDeco = headingDecorations[level]
-          if (headingDeco) {
-            decorations.push(headingDeco.range(from, to))
-          }
+          decorations.push(headingDecos[level].range(from, to))
 
-          // Hide # marks when not on active line
-          if (!onActiveLine) {
-            const lineText = state.doc.sliceString(from, to)
-            const hashMatch = lineText.match(/^(#{1,6})\s/)
-            if (hashMatch) {
-              decorations.push(hiddenMark.range(from, from + hashMatch[1].length + 1))
+          if (!active) {
+            const text = state.doc.sliceString(from, to)
+            const match = text.match(/^(#{1,6})\s/)
+            if (match) {
+              decorations.push(hiddenMark.range(from, from + match[0].length))
             }
           }
           break
         }
 
-        // Emphasis (bold)
+        // ====== EMPHASIS ======
         case 'StrongEmphasis': {
-          decorations.push(boldMark.range(from, to))
-
-          // Hide ** or __ markers when not on active line
-          if (!onActiveLine) {
-            const text = state.doc.sliceString(from, to)
-            const marker = text.startsWith('**') ? '**' : '__'
+          decorations.push(Decoration.mark({ class: 'cm-bold' }).range(from, to))
+          if (!active) {
             decorations.push(hiddenMark.range(from, from + 2))
             decorations.push(hiddenMark.range(to - 2, to))
           }
           break
         }
 
-        // Emphasis (italic)
         case 'Emphasis': {
-          decorations.push(italicMark.range(from, to))
-
-          // Hide * or _ markers when not on active line
-          if (!onActiveLine) {
+          decorations.push(Decoration.mark({ class: 'cm-italic' }).range(from, to))
+          if (!active) {
             decorations.push(hiddenMark.range(from, from + 1))
             decorations.push(hiddenMark.range(to - 1, to))
           }
           break
         }
 
-        // Strikethrough
         case 'Strikethrough': {
-          decorations.push(strikeMark.range(from, to))
-
-          // Hide ~~ markers when not on active line
-          if (!onActiveLine) {
+          decorations.push(Decoration.mark({ class: 'cm-strike' }).range(from, to))
+          if (!active) {
             decorations.push(hiddenMark.range(from, from + 2))
             decorations.push(hiddenMark.range(to - 2, to))
           }
           break
         }
 
-        // Inline code
-        case 'InlineCode': {
-          decorations.push(codeMark.range(from, to))
+        // Emphasis marks (**, *, __, _) - hide them when not active
+        case 'EmphasisMark': {
+          if (!active) {
+            decorations.push(hiddenMark.range(from, to))
+          } else {
+            decorations.push(fadedMark.range(from, to))
+          }
+          break
+        }
 
-          // Hide backticks when not on active line
-          if (!onActiveLine) {
+        // ====== INLINE CODE ======
+        case 'InlineCode': {
+          decorations.push(Decoration.mark({ class: 'cm-code' }).range(from, to))
+          if (!active) {
             decorations.push(hiddenMark.range(from, from + 1))
             decorations.push(hiddenMark.range(to - 1, to))
           }
           break
         }
 
-        // Links
+        // ====== LINKS ======
         case 'Link': {
-          decorations.push(linkMark.range(from, to))
-
-          // Parse link structure: [text](url)
-          if (!onActiveLine) {
+          decorations.push(Decoration.mark({ class: 'cm-link' }).range(from, to))
+          if (!active) {
             const text = state.doc.sliceString(from, to)
-            const linkMatch = text.match(/^\[([^\]]*)\]\(([^)]*)\)$/)
-            if (linkMatch) {
-              // Hide [ and ]( and url and )
+            const match = text.match(/^\[([^\]]*)\]\(([^)]*)\)$/)
+            if (match) {
               decorations.push(hiddenMark.range(from, from + 1)) // [
-              const textEnd = from + 1 + linkMatch[1].length
+              const textEnd = from + 1 + match[1].length
               decorations.push(hiddenMark.range(textEnd, to)) // ](url)
             }
           }
           break
         }
 
-        // Images
+        // ====== IMAGES ======
         case 'Image': {
           const text = state.doc.sliceString(from, to)
-          const imgMatch = text.match(/^!\[([^\]]*)\]\(([^)]*)\)$/)
-
-          if (imgMatch && !onActiveLine) {
-            const [, alt, src] = imgMatch
-            // Replace entire image syntax with widget
+          const match = text.match(/^!\[([^\]]*)\]\(([^)]*)\)$/)
+          if (match && !active) {
             decorations.push(
               Decoration.replace({
-                widget: new ImageWidget(src, alt)
+                widget: new ImageWidget(match[2], match[1])
               }).range(from, to)
             )
           }
           break
         }
 
-        // Blockquote
+        // ====== BLOCKQUOTES ======
         case 'Blockquote': {
-          decorations.push(quoteMark.range(from, to))
+          decorations.push(Decoration.mark({ class: 'cm-quote' }).range(from, to))
           break
         }
 
-        // Quote mark (>)
         case 'QuoteMark': {
-          if (!onActiveLine) {
+          if (!active) {
             decorations.push(hiddenMark.range(from, to))
           } else {
-            decorations.push(headingMark.range(from, to))
+            decorations.push(fadedMark.range(from, to))
           }
           break
         }
 
-        // Task list items
+        // ====== TASK LISTS ======
         case 'TaskMarker': {
           const text = state.doc.sliceString(from, to)
-          const isChecked = text.includes('x') || text.includes('X')
-
-          if (!onActiveLine) {
-            // Replace [ ] or [x] with checkbox widget
+          const isChecked = /x/i.test(text)
+          if (!active) {
             decorations.push(
               Decoration.replace({
-                widget: new CheckboxWidget(isChecked)
+                widget: new CheckboxWidget(isChecked, from)
               }).range(from, to)
             )
           }
           break
         }
 
-        // List markers (-, *, +, 1.)
+        // ====== LIST MARKERS ======
         case 'ListMark': {
-          decorations.push(listBulletMark.range(from, to))
+          const text = state.doc.sliceString(from, to).trim()
+
+          if (/^[-*+]$/.test(text)) {
+            if (!active) {
+              // Replace marker with bullet, consuming trailing space
+              const nextChar = state.doc.sliceString(to, to + 1)
+              const endPos = nextChar === ' ' ? to + 1 : to
+              decorations.push(
+                Decoration.replace({
+                  widget: new BulletWidget()
+                }).range(from, endPos)
+              )
+            } else {
+              decorations.push(fadedMark.range(from, to))
+            }
+          } else {
+            // Ordered list numbers - style them
+            decorations.push(Decoration.mark({ class: 'cm-list-num' }).range(from, to))
+          }
           break
         }
 
-        // Horizontal rule
+        // ====== CODE BLOCKS ======
+        case 'FencedCode': {
+          const startLine = state.doc.lineAt(from)
+          const endLine = state.doc.lineAt(to)
+
+          for (let i = startLine.number; i <= endLine.number; i++) {
+            const line = state.doc.line(i)
+            const isFirst = i === startLine.number
+            const isLast = i === endLine.number
+
+            let cls = 'cm-codeblock'
+            if (isFirst) cls += ' cm-codeblock-first'
+            if (isLast) cls += ' cm-codeblock-last'
+
+            decorations.push(Decoration.line({ class: cls }).range(line.from))
+          }
+          break
+        }
+
+        case 'CodeInfo': {
+          const lang = state.doc.sliceString(from, to).trim()
+          if (lang) {
+            // Store for later - we add widget at line level
+            const line = state.doc.lineAt(from)
+            codeBlocks.push({ from: line.from, lang })
+          }
+
+          // Hide the language info line content when not active
+          if (!active) {
+            decorations.push(hiddenMark.range(from, to))
+          } else {
+            decorations.push(fadedMark.range(from, to))
+          }
+          break
+        }
+
+        case 'CodeMark': {
+          if (!active) {
+            decorations.push(hiddenMark.range(from, to))
+          } else {
+            decorations.push(fadedMark.range(from, to))
+          }
+          break
+        }
+
+        // ====== TABLES ======
+        case 'Table': {
+          const startLine = state.doc.lineAt(from)
+          const endLine = state.doc.lineAt(to)
+          for (let i = startLine.number; i <= endLine.number; i++) {
+            const line = state.doc.line(i)
+            decorations.push(Decoration.line({ class: 'cm-table' }).range(line.from))
+          }
+          break
+        }
+
+        case 'TableHeader': {
+          decorations.push(Decoration.mark({ class: 'cm-table-header' }).range(from, to))
+          break
+        }
+
+        case 'TableDelimiter': {
+          if (!active) {
+            decorations.push(Decoration.mark({ class: 'cm-table-delim' }).range(from, to))
+          }
+          break
+        }
+
+        // ====== HORIZONTAL RULE ======
         case 'HorizontalRule': {
-          if (!onActiveLine) {
-            decorations.push(
-              Decoration.line({ class: 'cm-hr-line' }).range(from)
-            )
+          if (!active) {
+            decorations.push(Decoration.line({ class: 'cm-hr' }).range(from))
+            // Hide the actual --- or *** text
+            const text = state.doc.sliceString(from, to)
+            const chars = text.match(/^[\s]*?([-*_][\s]*[-*_][\s]*[-*_]+)/)
+            if (chars) {
+              const start = from + text.indexOf(chars[1])
+              decorations.push(hiddenMark.range(start, start + chars[1].length))
+            }
           }
           break
         }
@@ -292,15 +457,24 @@ const buildDecorations = (view: EditorView): DecorationSet => {
     }
   })
 
-  // Sort decorations by from position
-  decorations.sort((a, b) => a.from - b.from)
+  // Add language badge widgets for code blocks
+  for (const block of codeBlocks) {
+    decorations.push(
+      Decoration.widget({
+        widget: new CodeLanguageWidget(block.lang),
+        side: 1
+      }).range(block.from)
+    )
+  }
 
+  decorations.sort((a, b) => a.from - b.from)
   return Decoration.set(decorations, true)
 }
 
-/**
- * ViewPlugin for Live Preview decorations
- */
+// ============================================================================
+// PLUGIN
+// ============================================================================
+
 const livePreviewPlugin = ViewPlugin.fromClass(
   class {
     decorations: DecorationSet
@@ -320,133 +494,143 @@ const livePreviewPlugin = ViewPlugin.fromClass(
   }
 )
 
-/**
- * Base styles for Live Preview
- * Uses CSS variables for theme-aware colors
- */
+// ============================================================================
+// STYLES
+// Minimal - typography from .prose class on container (globals.css)
+// These are only for Live Preview decorations (hidden syntax, widgets)
+// ============================================================================
+
 const livePreviewStyles = EditorView.baseTheme({
-  // Hidden marks (fade out instead of hide for smooth transitions)
-  '.cm-hidden-mark': {
+  // === HIDDEN/FADED (for syntax hiding) ===
+  '.cm-hidden': {
     opacity: '0',
     fontSize: '0',
     width: '0',
-    display: 'inline-block',
-    overflow: 'hidden',
-    transition: 'opacity 0.15s, font-size 0.15s'
+    display: 'inline',
+    overflow: 'hidden'
+  },
+  '.cm-faded': {
+    opacity: '0.4'
   },
 
-  // When line is active, show marks faded
-  '.cm-activeLine .cm-hidden-mark': {
-    opacity: '0.4',
-    fontSize: 'inherit',
-    width: 'auto',
-    color: 'oklch(var(--muted-foreground))'
+  // === HEADINGS (match .prose-sm from globals.css) ===
+  '.cm-h1, .cm-h2, .cm-h3, .cm-h4': {
+    fontWeight: '600',
+    lineHeight: '1.35',
+    marginTop: '1.25em',
+    marginBottom: '0.5em'
   },
+  '.cm-h1': { fontSize: '1.375em' },
+  '.cm-h2': { fontSize: '1.125em' },
+  '.cm-h3': { fontSize: '1em' },
+  '.cm-h4, .cm-h5, .cm-h6': { fontSize: '1em' },
 
-  // Headings
-  '.cm-heading': {
-    fontWeight: '600'
-  },
-  '.cm-heading-1': {
-    fontSize: '1.75em',
-    lineHeight: '1.3'
-  },
-  '.cm-heading-2': {
-    fontSize: '1.5em',
-    lineHeight: '1.35'
-  },
-  '.cm-heading-3': {
-    fontSize: '1.25em',
-    lineHeight: '1.4'
-  },
-  '.cm-heading-4': {
-    fontSize: '1.1em'
-  },
-  '.cm-heading-mark': {
-    color: 'oklch(var(--muted-foreground))'
-  },
+  // === TEXT FORMATTING ===
+  '.cm-bold': { fontWeight: '600' },
+  '.cm-italic': { fontStyle: 'italic' },
+  '.cm-strike': { textDecoration: 'line-through' },
 
-  // Bold & Italic
-  '.cm-bold': {
-    fontWeight: '600'
-  },
-  '.cm-italic': {
-    fontStyle: 'italic'
-  },
-  '.cm-strikethrough': {
-    textDecoration: 'line-through',
-    color: 'oklch(var(--muted-foreground))'
-  },
-
-  // Inline code
-  '.cm-inline-code': {
-    fontFamily: 'ui-monospace, monospace',
+  // === INLINE CODE ===
+  '.cm-code': {
+    fontFamily: 'var(--font-mono)',
+    fontSize: '0.875em',
     backgroundColor: 'oklch(var(--muted) / 0.5)',
-    padding: '1px 4px',
-    borderRadius: '3px',
-    fontSize: '0.9em'
+    padding: '0.125em 0.25em',
+    borderRadius: '0.25rem'
   },
 
-  // Links
+  // === LINKS ===
   '.cm-link': {
     color: 'oklch(var(--brand))',
     textDecoration: 'underline',
-    cursor: 'pointer'
-  },
-  '.cm-link-url': {
-    color: 'oklch(var(--muted-foreground))',
-    fontSize: '0.9em'
+    textUnderlineOffset: '2px'
   },
 
-  // Blockquotes
-  '.cm-blockquote': {
+  // === BLOCKQUOTES ===
+  '.cm-quote': {
     borderLeft: '3px solid oklch(var(--border))',
-    paddingLeft: '12px',
-    color: 'oklch(var(--muted-foreground))',
+    paddingLeft: '1em',
     fontStyle: 'italic'
   },
 
-  // Highlights
-  '.cm-highlight': {
-    backgroundColor: 'oklch(var(--editor-highlight-yellow))',
-    borderRadius: '2px',
-    padding: '0 2px'
-  },
+  // === LISTS (widgets) ===
+  '.cm-bullet': { display: 'inline' },
+  '.cm-list-num': { fontVariantNumeric: 'tabular-nums' },
 
-  // List bullets
-  '.cm-list-bullet': {
-    color: 'oklch(var(--brand))',
-    fontWeight: '600'
-  },
-
-  // Task checkboxes
-  '.cm-task-checkbox': {
-    marginRight: '6px',
+  // === CHECKBOXES (widget) ===
+  '.cm-checkbox': {
+    marginRight: '0.5em',
     cursor: 'pointer',
-    width: '16px',
-    height: '16px',
-    verticalAlign: 'middle'
+    verticalAlign: 'middle',
+    accentColor: 'oklch(var(--brand))'
   },
 
-  // Images
-  '.cm-image-widget': {
-    display: 'block',
-    margin: '8px 0'
+  // === CODE BLOCKS ===
+  '.cm-codeblock': {
+    backgroundColor: 'oklch(var(--muted) / 0.5)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '0.875em',
+    paddingLeft: '1em',
+    paddingRight: '1em'
   },
-  '.cm-inline-image': {
-    maxWidth: '100%',
-    height: 'auto',
-    borderRadius: '4px'
+  '.cm-codeblock-first': {
+    borderRadius: '0.375rem 0.375rem 0 0',
+    paddingTop: '0.75em',
+    position: 'relative'
+  },
+  '.cm-codeblock-last': {
+    borderRadius: '0 0 0.375rem 0.375rem',
+    paddingBottom: '0.75em'
+  },
+  '.cm-codeblock-first.cm-codeblock-last': {
+    borderRadius: '0.375rem'
   },
 
-  // Horizontal rule
-  '.cm-hr-line': {
-    borderBottom: '2px solid oklch(var(--border))',
-    margin: '16px 0'
-  }
+  // === LANGUAGE BADGE (widget) ===
+  '.cm-code-lang': {
+    position: 'absolute',
+    top: '0.5em',
+    right: '0.75em',
+    fontSize: '0.75em',
+    fontFamily: 'var(--font-mono)',
+    color: 'oklch(var(--muted-foreground))',
+    backgroundColor: 'oklch(var(--muted) / 0.6)',
+    padding: '0.125em 0.5em',
+    borderRadius: '0.25rem',
+    textTransform: 'lowercase',
+    pointerEvents: 'none'
+  },
+
+  // === IMAGES (widget) ===
+  '.cm-image-container': { display: 'block', margin: '1em 0' },
+  '.cm-image': { maxWidth: '100%', borderRadius: '0.375rem' },
+  '.cm-image-error': {
+    padding: '0.5em 1em',
+    backgroundColor: 'oklch(var(--muted) / 0.5)',
+    borderRadius: '0.375rem',
+    fontStyle: 'italic'
+  },
+
+  // === HORIZONTAL RULE ===
+  '.cm-hr': { position: 'relative', height: '3em' },
+  '.cm-hr::after': {
+    content: '""',
+    position: 'absolute',
+    left: '0',
+    right: '0',
+    top: '50%',
+    height: '1px',
+    backgroundColor: 'oklch(var(--border))'
+  },
+
+  // === TABLES ===
+  '.cm-table': { fontFamily: 'var(--font-mono)', fontSize: '0.875em' },
+  '.cm-table-header': { fontWeight: '600' },
+  '.cm-table-delim': { opacity: '0.3' }
 })
 
-/**
- * Export Live Preview extension
- */
+// ============================================================================
+// EXPORT
+// ============================================================================
+
 export const livePreview = () => [livePreviewPlugin, livePreviewStyles]

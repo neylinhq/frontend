@@ -1,9 +1,16 @@
 import { Check, Loader2, Pencil, X } from 'lucide-react'
 import type { ReactNode } from 'react'
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import Markdown from 'react-markdown'
+import rehypeRaw from 'rehype-raw'
+import remarkGfm from 'remark-gfm'
 import { Button } from '@/shared/components/button'
 import { cn } from '@/shared/lib/cn'
 import { sanitizeHtml } from '@/shared/lib/sanitize'
+
+/** Prose styles for consistent markdown rendering */
+const proseClasses = 'prose prose-sm dark:prose-invert max-w-none prose-p:my-0.5 prose-headings:my-1 prose-ul:my-0.5 prose-li:my-0'
 
 interface ProposalCardProps {
   /** Header title */
@@ -103,33 +110,42 @@ interface DiffBlockProps {
   current?: string | null
   proposed: string
   className?: string
-  /** Render content as HTML/Markdown */
+  /** Render content as rich text (parses markdown to HTML) */
   renderHtml?: boolean
 }
 
-export const DiffBlock = ({ current, proposed, className, renderHtml }: DiffBlockProps) => (
-  <div className={cn('space-y-1', className)}>
-    {current && (
-      <DiffLine type='remove'>
+export const DiffBlock = ({ current, proposed, className, renderHtml }: DiffBlockProps) => {
+  // Sanitize current HTML (from storage) for safe rendering
+  const currentHtml = useMemo(
+    () => (current && renderHtml ? sanitizeHtml(current) : null),
+    [current, renderHtml]
+  )
+
+  return (
+    <div className={cn('space-y-1', className)}>
+      {current && (
+        <DiffLine type='remove'>
+          {currentHtml ? (
+            <div
+              className={proseClasses}
+              dangerouslySetInnerHTML={{ __html: currentHtml }}
+            />
+          ) : (
+            current
+          )}
+        </DiffLine>
+      )}
+      <DiffLine type='add'>
         {renderHtml ? (
-          <div
-            className='prose prose-sm dark:prose-invert max-w-none prose-p:my-0.5 prose-headings:my-1 prose-ul:my-0.5 prose-li:my-0'
-            dangerouslySetInnerHTML={{ __html: sanitizeHtml(current) }}
-          />
+          <div className={proseClasses}>
+            <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
+              {proposed}
+            </Markdown>
+          </div>
         ) : (
-          current
+          proposed
         )}
       </DiffLine>
-    )}
-    <DiffLine type='add'>
-      {renderHtml ? (
-        <div
-          className='prose prose-sm dark:prose-invert max-w-none prose-p:my-0.5 prose-headings:my-1 prose-ul:my-0.5 prose-li:my-0'
-          dangerouslySetInnerHTML={{ __html: sanitizeHtml(proposed) }}
-        />
-      ) : (
-        proposed
-      )}
-    </DiffLine>
-  </div>
-)
+    </div>
+  )
+}

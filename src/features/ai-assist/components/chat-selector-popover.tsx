@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Search, MessageSquare } from 'lucide-react'
+import { Search } from 'lucide-react'
 import { Input } from '@/shared/components/input'
 import { cn } from '@/shared/lib/cn'
 import type { ChatSession } from '../model/ai-assist.sessions.types'
@@ -147,22 +147,15 @@ export const ChatSelectorPopover = ({
                   <button
                     key={session.id}
                     className={cn(
-                      'w-full flex items-center gap-1.5 px-2 py-1.5 text-xs text-left',
+                      'w-full px-2 py-1.5 text-xs text-left truncate',
                       'hover:bg-muted/50 transition-colors',
-                      isActive && 'bg-muted'
+                      isActive
+                        ? 'bg-muted text-foreground font-medium'
+                        : 'text-muted-foreground'
                     )}
                     onClick={() => onSelectSession(session.id)}
                   >
-                    <MessageSquare className={cn(
-                      'h-3 w-3 shrink-0',
-                      isActive ? 'text-primary' : 'text-muted-foreground'
-                    )} />
-                    <span className={cn(
-                      'truncate',
-                      isActive ? 'text-foreground font-medium' : 'text-muted-foreground'
-                    )}>
-                      {getSessionTitle(session)}
-                    </span>
+                    {getSessionTitle(session)}
                   </button>
                 )
               })}

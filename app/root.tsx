@@ -22,7 +22,10 @@ import { MODE_COOKIE_KEY, PALETTE_COOKIE_KEY } from '@/shared/core/theme'
 import type { Route } from './+types/root'
 
 export const links: Route.LinksFunction = () => [
-  // Geist fonts loaded from npm package via CSS @font-face in globals.css
+  // Favicon
+  { rel: 'icon', type: 'image/svg+xml', href: '/favicon/favicon.svg' },
+  { rel: 'icon', type: 'image/x-icon', href: '/favicon/favicon.ico', sizes: '32x32' },
+  { rel: 'apple-touch-icon', href: '/favicon/apple-touch-icon.png', sizes: '180x180' }
 ]
 
 export const loader = async ({ request }: Route.LoaderArgs) => {

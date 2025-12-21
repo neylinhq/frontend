@@ -23,7 +23,3 @@ export { SETTINGS_NAV_ITEMS } from './settings-nav'
 // Support
 export type { SupportChannel } from './support'
 export { SUPPORT_CONTACTS } from './support'
-
-// Editor
-export type { EditorType } from './editor'
-export { EDITOR_TYPE, isCodeMirrorEnabled, isTiptapEnabled } from './editor'

@@ -16,9 +16,8 @@ import type { FullMap, Node } from '@/entities/map'
 import { useDeleteEdge, useDeleteNode, useFullMap, useNodeWithContent, useUpdateNode } from '@/entities/map'
 import type { NodeType } from '@/entities/node'
 import { AISuggestionsPanel } from '@/features/ai-assist/components/ai-suggestions-panel'
-import { GUTTER, markdownToPlainText } from '@/features/block-editor'
+import { markdownToPlainText } from '@/shared/lib/markdown'
 import { UnifiedEditor } from '@/features/unified-editor'
-import { isCodeMirrorEnabled } from '@/shared/config'
 import { EdgeEditPopover } from '@/features/graph/components/edge-edit-popover'
 import { useEdgeManagementStore } from '@/features/graph/model/graph.edge.store'
 import { NodeConnectionsPanel } from '@/features/node-connections-panel'
@@ -121,10 +120,6 @@ export const NodeEditPage = ({
 }: NodeEditPageProps) => {
   const { t } = useTranslation()
   const navigate = useNavigate()
-
-  // Gutter padding only needed for Tiptap (floating menu), not for CodeMirror
-  const useCodeMirror = isCodeMirrorEnabled()
-  const gutterClass = useCodeMirror ? '' : GUTTER.PADDING_CLASS
 
   // Use React Query for map data to get automatic updates after mutations
   const { data: mapData } = useFullMap(mapId)
@@ -259,7 +254,7 @@ export const NodeEditPage = ({
     }
   }, [])
 
-  // Handler for editor content change (receives HTML from UnifiedEditor)
+  // Handler for editor content change (receives Markdown from UnifiedEditor)
   const handleEditorChange = useCallback(
     (html: string) => {
       debouncedContentSave(html)
@@ -360,8 +355,8 @@ export const NodeEditPage = ({
 
         {/* Editor Content */}
         <div ref={contentRef} className='mx-auto max-w-3xl px-4 md:px-8 py-6 md:py-8'>
-          {/* Breadcrumb & Actions - with gutter matching editor (only for Tiptap) */}
-          <div className={cn('mb-8 flex items-center justify-between', gutterClass)}>
+          {/* Breadcrumb & Actions */}
+          <div className='mb-8 flex items-center justify-between'>
             <div className='flex items-center gap-3'>
               <Button variant='ghost' size='sm' asChild className='h-8 px-2'>
                 <Link to={`/dashboard/maps/${mapId}/view`}>
@@ -403,8 +398,8 @@ export const NodeEditPage = ({
               </Button>
             )}
           </div>
-          {/* Editable Title - with gutter matching editor (only for Tiptap) */}
-          <div className={cn('mb-2', gutterClass)}>
+          {/* Editable Title */}
+          <div className='mb-2'>
             <textarea
               ref={titleInputRef}
               value={title}

@@ -1,6 +1,0 @@
-export { BlockEditor } from './components/block-editor'
-export { KeyboardShortcuts, KeyboardShortcutsCompact } from './components/keyboard-shortcuts'
-export { editorToHTML, htmlToEditor, htmlToPlainText, markdownToPlainText } from './lib/html-serializer'
-export { copyAsMarkdown, jsonToMarkdown } from './lib/markdown-serializer'
-export { GUTTER } from './model/block-editor.constants'
-export type { BlockEditorProps } from './model/block-editor.types'

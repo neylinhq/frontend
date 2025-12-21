@@ -1,15 +1,14 @@
 /**
  * Unified Editor Feature
  *
- * Wrapper that switches between Tiptap and CodeMirror editors
- * based on the EDITOR_TYPE configuration.
+ * Wrapper around the CodeMirror editor.
  *
  * @example
  * import { UnifiedEditor } from '@/features/unified-editor'
  *
  * <UnifiedEditor
- *   initialContent={htmlFromServer}
- *   onChange={(html) => saveToServer(html)}
+ *   initialContent={markdownFromServer}
+ *   onChange={(markdown) => saveToServer(markdown)}
  *   placeholder="Start writing..."
  * />
  */

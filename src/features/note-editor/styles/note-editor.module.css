@@ -1,0 +1,126 @@
+/**
+ * Note Editor Styles
+ */
+
+.editorWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.editor {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 1.6;
+  outline: none;
+}
+
+/* CodeMirror overrides */
+.editorWrapper :global(.cm-editor) {
+  height: auto !important;
+  width: 100%;
+  font-family: inherit;
+  background: transparent;
+  outline: none;
+  display: block;
+}
+
+.editorWrapper :global(.cm-scroller) {
+  overflow: visible !important;
+  height: auto !important;
+  max-height: none !important;
+  min-height: 0 !important;
+  display: block;
+  font-family: inherit;
+}
+
+.editorWrapper :global(.cm-content) {
+  padding: 0;
+  font-family: inherit;
+  min-height: 0 !important;
+  caret-color: currentColor;
+}
+
+.editorWrapper :global(.cm-line) {
+  padding: 2px 0;
+}
+
+.editorWrapper :global(.cm-line.cm-codeblock-line) {
+  padding: 0.35rem 0.85rem;
+}
+
+.editorWrapper :global(.cm-editor.cm-focused) {
+  outline: none;
+}
+
+.editorWrapper :global(.cm-selectionBackground) {
+  background: oklch(var(--muted-foreground) / 0.2) !important;
+}
+
+.editorWrapper :global(.cm-editor.cm-focused .cm-selectionBackground) {
+  background: oklch(var(--muted-foreground) / 0.3) !important;
+}
+
+.editorWrapper :global(.cm-cursor) {
+  border-left-color: currentColor;
+  border-left-width: 2px;
+}
+
+.editorWrapper :global(.cm-placeholder) {
+  color: oklch(var(--muted-foreground) / 0.6);
+  font-style: italic;
+}
+
+.editorWrapper :global(.cm-gutters) {
+  display: none;
+}
+
+/* Loading skeleton */
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 4px 0;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.skeletonLine {
+  height: 1em;
+  background: oklch(var(--muted) / 0.3);
+  border-radius: 4px;
+}
+
+.skeletonLine:nth-child(1) { width: 75%; }
+.skeletonLine:nth-child(2) { width: 100%; }
+.skeletonLine:nth-child(3) { width: 85%; }
+.skeletonLine:nth-child(4) { width: 60%; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Fallback textarea */
+.fallbackTextarea {
+  width: 100%;
+  min-height: 200px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  resize: none;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 1.6;
+  color: inherit;
+  outline: none;
+}
+
+.fallbackTextarea::placeholder {
+  color: oklch(var(--muted-foreground) / 0.6);
+  font-style: italic;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}

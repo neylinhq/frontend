@@ -2534,6 +2534,52 @@
   contain: layout style paint;
 }
 
+/* Focused node - slow ambient breathing glow
+   Design Manifesto exception for Content layer:
+   - Applied to wrapper so glow isn't clipped by card overflow
+   - Subtle, diffuse, slow - gentle vibe
+   - Always brand color, stronger opacity on dark theme */
+
+@keyframes node-focus-breathe {
+  0%, 100% {
+    filter: drop-shadow(0 0 20px oklch(var(--brand) / 0.12))
+            drop-shadow(0 0 40px oklch(var(--brand) / 0.06));
+  }
+  50% {
+    filter: drop-shadow(0 0 28px oklch(var(--brand) / 0.18))
+            drop-shadow(0 0 56px oklch(var(--brand) / 0.09));
+  }
+}
+
+@keyframes node-focus-breathe-dark {
+  0%, 100% {
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.04))
+            drop-shadow(0 0 12px rgba(255, 255, 255, 0.02));
+  }
+  50% {
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.06))
+            drop-shadow(0 0 18px rgba(255, 255, 255, 0.03));
+  }
+}
+
+.react-flow__node-knowledgeNode.focused {
+  animation: node-focus-breathe 4s ease-in-out infinite;
+}
+
+.dark .react-flow__node-knowledgeNode.focused {
+  animation: node-focus-breathe-dark 4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .react-flow__node-knowledgeNode.focused {
+    animation: none !important;
+    filter: drop-shadow(0 0 24px oklch(var(--brand) / 0.15)) !important;
+  }
+  .dark .react-flow__node-knowledgeNode.focused {
+    filter: drop-shadow(0 0 24px oklch(var(--brand) / 0.06)) !important;
+  }
+}
+
 /* React Flow edges - optimize SVG rendering */
 .react-flow__edge {
   contain: layout style;

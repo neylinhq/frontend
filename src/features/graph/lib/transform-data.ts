@@ -22,20 +22,25 @@ export const transformNodesToFlow = (nodes: Node[], options: TransformNodesOptio
   // Convert to Set for O(1) lookup if array passed
   const selectedSet = selectedNodeIds instanceof Set ? selectedNodeIds : new Set(selectedNodeIds)
 
-  return nodes.map(node => ({
-    id: node.id,
-    type: 'knowledgeNode',
-    position: node.position,
-    data: {
-      ...node,
-      selected: selectedSet.has(node.id),
-      isFocused: focusedNodeId === node.id,
-      onSelect,
-      zoom
-    },
-    // Smooth transition when layout changes
-    style: animated ? { transition: 'transform 0.3s ease-out' } : undefined
-  }))
+  return nodes.map(node => {
+    const isFocused = focusedNodeId === node.id
+    return {
+      id: node.id,
+      type: 'knowledgeNode',
+      position: node.position,
+      // Add 'focused' class to wrapper for CSS animation
+      className: isFocused ? 'focused' : undefined,
+      data: {
+        ...node,
+        selected: selectedSet.has(node.id),
+        isFocused,
+        onSelect,
+        zoom
+      },
+      // Smooth transition when layout changes
+      style: animated ? { transition: 'transform 0.3s ease-out' } : undefined
+    }
+  })
 }
 
 interface TransformEdgesOptions {

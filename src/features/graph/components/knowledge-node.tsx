@@ -50,10 +50,8 @@ const KnowledgeNodeComponent = ({ data }: KnowledgeNodeProps) => {
         'transition-all duration-200',
         // Dimmed state - reduced opacity
         isDimmed && 'opacity-40',
-        // Focused state - pulsing glow (indigo on light, white on dark)
-        isFocused && 'animate-glow-pulse',
-        // Selected state
-        isSelected && !isFocused && 'ring-2 ring-primary'
+        // Dimmed removes focus/select visuals
+        !isDimmed && !isFocused && isSelected && 'ring-2 ring-primary'
       )}
     >
       <Handle

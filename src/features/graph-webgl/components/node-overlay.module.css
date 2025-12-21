@@ -1,53 +1,50 @@
-/* Focus node highlight - subtle breathing glow
+/* Focus node highlight - slow ambient breathing glow
    Design Manifesto exception for Content layer:
-   - "Content может быть выразительным, цветным, живым"
-   - "Направлять внимание" - legitimate animation purpose
-   - Graph is visual tool where static ring may get lost among nodes
-
-   Parameters: 2.5s cycle, 20-30px spread, minimal intensity change */
+   - Subtle, diffuse, slow - gentle vibe
+   - Brand color on light, white on dark
+   - Same opacity for both themes */
 
 @keyframes focus-breathe {
   0%, 100% {
     box-shadow:
-      0 0 0 2px oklch(var(--primary)),
-      0 0 12px oklch(var(--brand) / 0.25),
-      0 0 24px oklch(var(--brand) / 0.1);
+      0 0 20px oklch(var(--brand) / 0.12),
+      0 0 40px oklch(var(--brand) / 0.06);
   }
   50% {
     box-shadow:
-      0 0 0 2px oklch(var(--primary)),
-      0 0 16px oklch(var(--brand) / 0.35),
-      0 0 32px oklch(var(--brand) / 0.15);
+      0 0 28px oklch(var(--brand) / 0.18),
+      0 0 56px oklch(var(--brand) / 0.09);
   }
 }
 
 @keyframes focus-breathe-dark {
   0%, 100% {
     box-shadow:
-      0 0 0 2px oklch(var(--primary)),
-      0 0 12px rgba(255, 255, 255, 0.15),
-      0 0 24px rgba(255, 255, 255, 0.08);
+      0 0 6px rgba(255, 255, 255, 0.04),
+      0 0 12px rgba(255, 255, 255, 0.02);
   }
   50% {
     box-shadow:
-      0 0 0 2px oklch(var(--primary)),
-      0 0 16px rgba(255, 255, 255, 0.25),
-      0 0 32px rgba(255, 255, 255, 0.12);
+      0 0 10px rgba(255, 255, 255, 0.06),
+      0 0 18px rgba(255, 255, 255, 0.03);
   }
 }
 
 .focusGlow {
-  animation: focus-breathe 2.5s ease-in-out infinite;
+  animation: focus-breathe 4s ease-in-out infinite;
 }
 
 :global(.dark) .focusGlow {
-  animation: focus-breathe-dark 2.5s ease-in-out infinite;
+  animation: focus-breathe-dark 4s ease-in-out infinite;
 }
 
-/* Reduced motion - static ring */
+/* Reduced motion - static subtle glow */
 @media (prefers-reduced-motion: reduce) {
   .focusGlow {
     animation: none !important;
-    box-shadow: 0 0 0 2px oklch(var(--primary)) !important;
+    box-shadow: 0 0 24px oklch(var(--brand) / 0.15) !important;
+  }
+  :global(.dark) .focusGlow {
+    box-shadow: 0 0 24px oklch(var(--brand) / 0.06) !important;
   }
 }

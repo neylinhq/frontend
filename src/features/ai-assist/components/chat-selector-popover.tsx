@@ -108,9 +108,9 @@ export const ChatSelectorPopover = ({
   }
 
   return (
-    <div className='flex flex-col max-h-[320px]'>
+    <div className='flex flex-col max-h-[320px] bg-background p-2'>
       {/* Search input */}
-      <div className='p-1.5 border-b border-border'>
+      <div className='pb-2'>
         <div className='relative'>
           <SearchMdIcon className='absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground' />
           <Input
@@ -118,43 +118,45 @@ export const ChatSelectorPopover = ({
             placeholder={t('ai.chat.searchChats', 'Search chats...')}
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className='h-7 pl-7 text-xs'
+            className='h-8 pl-7 text-xs bg-muted/30 border-border/60 rounded-sm'
           />
         </div>
       </div>
 
       {/* Sessions list */}
-      <div className='flex-1 overflow-y-auto'>
+      <div className='flex-1 overflow-y-auto space-y-1'>
         {groupedSessions.length === 0 ? (
-          <div className='p-3 text-center text-xs text-muted-foreground'>
+          <div className='px-2 py-3 text-center text-xs text-muted-foreground'>
             {search
               ? t('ai.chat.noSearchResults', 'No chats found')
               : t('ai.chat.noChats', 'No chats yet')}
           </div>
         ) : (
           groupedSessions.map(group => (
-            <div key={group.label}>
+            <div key={group.label} className='space-y-0'>
               {/* Group header */}
-              <div className='px-2 py-1 text-[10px] font-medium text-muted-foreground bg-muted/30'>
+              <div className='px-2 mb-0.5 text-[10px] font-medium tracking-wider text-muted-foreground uppercase'>
                 {group.label}
               </div>
               {/* Group items */}
-              {group.sessions.map(session => {
-                const isActive = session.id === activeSessionId
-                return (
-                  <button
-                    key={session.id}
-                    className={cn(
-                      'w-full px-2 py-1.5 text-xs text-left truncate',
-                      'hover:bg-muted/50 transition-colors',
-                      isActive ? 'bg-muted text-foreground font-medium' : 'text-muted-foreground'
-                    )}
-                    onClick={() => onSelectSession(session.id)}
-                  >
-                    {getSessionTitle(session)}
-                  </button>
-                )
-              })}
+              <div className='space-y-0.5'>
+                {group.sessions.map(session => {
+                  const isActive = session.id === activeSessionId
+                  return (
+                    <button
+                      key={session.id}
+                      className={cn(
+                        'w-full px-2 py-1 text-xs text-left truncate rounded-sm',
+                        'hover:bg-[var(--surface-hover)] transition-colors',
+                        isActive ? 'bg-muted/60 text-foreground font-medium' : 'text-muted-foreground'
+                      )}
+                      onClick={() => onSelectSession(session.id)}
+                    >
+                      {getSessionTitle(session)}
+                    </button>
+                  )
+                })}
+              </div>
             </div>
           ))
         )}

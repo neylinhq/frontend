@@ -20,7 +20,7 @@ export const CloseButton = forwardRef<HTMLButtonElement, CloseButtonProps>(
       ref={ref}
       type='button'
       className={cn(
-        'inline-flex items-center justify-center rounded-sm',
+        'inline-flex items-center justify-center rounded-md',
         'cursor-pointer',
         'opacity-70 hover:opacity-100',
         'transition-opacity',

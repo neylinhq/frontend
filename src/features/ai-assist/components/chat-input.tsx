@@ -1,4 +1,4 @@
-import { ArrowUpIcon, DotsHorizontalIcon, SquareIcon } from '@untitledui/icons-react/outline'
+import { ArrowUpIcon, DotsHorizontalIcon } from '@untitledui/icons-react/outline'
 import { type KeyboardEvent, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { AIModel } from '@/entities/ai'
@@ -107,7 +107,7 @@ export const ChatInput = ({
         onMouseDown={handleResizeMouseDown}
         className={cn(
           'absolute left-0 right-0 top-0 h-3 cursor-row-resize z-10 flex items-center justify-center',
-          'hover:bg-muted/50 transition-colors group'
+          'transition-colors group'
         )}
       >
         <DotsHorizontalIcon
@@ -135,14 +135,14 @@ export const ChatInput = ({
         disabled={disabled}
         style={{ height: inputHeight }}
         className={cn(
-          'resize-none p-3 pt-5 pb-12',
-          'border-none bg-transparent',
-          'focus-visible:ring-0 focus-visible:ring-offset-0'
+          'resize-none w-full rounded-2xl border border-border/60 bg-transparent',
+          'pl-4 pr-12 pt-4 pb-11 text-sm leading-relaxed',
+          'focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0'
         )}
       />
 
       {/* Bottom controls - Model selector */}
-      <div className='absolute left-3 bottom-2.5 flex items-center gap-2'>
+      <div className='absolute left-4 bottom-3 flex items-center gap-2'>
         {onModelChange && models.length > 0 && (
           <ModelSelector
             value={model}
@@ -157,22 +157,22 @@ export const ChatInput = ({
       {isLoading ? (
         <Button
           size='icon'
-          variant='secondary'
+          variant='ghost'
           onClick={onStop}
           aria-label={t('ai.chat.stop', 'Stop generating')}
-          className='absolute right-3 bottom-2.5 h-7 w-7 flex-shrink-0 rounded-md'
+          className='absolute right-3 bottom-3 h-7 w-7 flex-shrink-0 rounded-full bg-foreground text-background hover:bg-foreground/90'
         >
-          <SquareIcon className='!size-2.5 fill-current text-destructive' />
+          <span className='h-2.5 w-2.5 rounded-none bg-background' />
         </Button>
       ) : (
         <Button
           size='icon'
           onClick={handleSend}
           disabled={!value.trim() || disabled}
-          className='absolute right-3 bottom-2.5 h-7 w-7 flex-shrink-0 rounded-md'
+          className='absolute right-3 bottom-3 h-7 w-7 flex-shrink-0 rounded-full'
           aria-label={t('ai.chat.send', 'Send message')}
         >
-          <ArrowUpIcon className='h-4 w-4' />
+          <ArrowUpIcon className='h-3.5 w-3.5' />
         </Button>
       )}
     </div>

@@ -127,7 +127,7 @@ export const EdgeEditPopover = memo(({ mapId }: EdgeEditPopoverProps) => {
   return (
     <Popover open={true} onOpenChange={open => !open && cancelEdgeEditing()}>
       <SmartPopoverContent
-        className='w-[300px] p-4'
+        className='w-[300px] p-2'
         mode='fixed'
         position={editPosition}
         offset={{ y: 8 }}
@@ -161,7 +161,7 @@ export const EdgeEditPopover = memo(({ mapId }: EdgeEditPopoverProps) => {
             value={localLabel}
             onChange={e => handleLabelChange(e.target.value)}
             placeholder={t('edgeEdit.labelPlaceholder')}
-            className='h-8 text-sm'
+            className='h-8 text-sm rounded-md'
           />
         </div>
 

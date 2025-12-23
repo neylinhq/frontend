@@ -103,11 +103,11 @@ export const ChatTabsRow = ({
   }
 
   return (
-    <div className="flex h-10 items-center justify-between border-b border-border/60 bg-muted/50 px-2">
+    <div className="flex h-11 items-center justify-between bg-muted/30 px-2.5">
       {/* Scrollable tabs - hidden scrollbar */}
       <div
         ref={scrollRef}
-        className="flex items-center gap-1 overflow-x-auto"
+        className="flex items-center gap-1.5 overflow-x-auto"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {sessions.map((session, index) => {
@@ -121,11 +121,12 @@ export const ChatTabsRow = ({
               title={getSessionTitle(session)}
               aria-label={getSessionTitle(session)}
               className={cn(
-                'group relative flex h-8 w-8 shrink-0 items-center justify-center rounded-md cursor-pointer transition-colors',
-                isEditing && 'w-40 justify-start px-2',
+                'group relative flex h-8 w-8 shrink-0 items-center justify-center rounded-md cursor-pointer',
+                'border border-transparent transition-colors',
+                isEditing && 'w-40 justify-start px-2 border-border/60 bg-background',
                 isActive
-                  ? 'bg-muted text-foreground'
-                  : 'text-muted-foreground hover:bg-muted/70 hover:text-foreground'
+                  ? 'bg-background text-foreground border-border/60'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-background/60'
               )}
               onClick={() => !isEditing && onSelectSession(session.id)}
             >
@@ -154,7 +155,7 @@ export const ChatTabsRow = ({
                     <button
                       className={cn(
                         'absolute -top-1 -right-1 rounded-full p-0.5',
-                        'border border-border bg-background',
+                        'border border-border/60 bg-background',
                         'text-muted-foreground hover:text-foreground',
                         'opacity-0 group-hover:opacity-100 transition-opacity'
                       )}
@@ -180,36 +181,36 @@ export const ChatTabsRow = ({
           <Button
             variant="ghost"
             size="sm"
-            className="h-8 w-8 shrink-0 mx-1 rounded-md"
+            className={cn(
+              'h-8 w-8 shrink-0 mx-1 rounded-md',
+              'text-muted-foreground hover:text-foreground hover:bg-background/60'
+            )}
             aria-label={t('ai.chat.menu', 'Chat options')}
           >
             <DotsHorizontalIcon className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-40 text-xs">
+        <DropdownMenuContent align="end" className="w-40">
           <DropdownMenuItem
             onClick={() => activeSessionId && onCloseSession(activeSessionId)}
             disabled={sessions.length <= 1 || !activeSessionId}
-            className="text-xs py-1.5"
           >
             {t('ai.chat.closeTab', 'Close tab')}
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={onCloseOthers}
             disabled={sessions.length <= 1}
-            className="text-xs py-1.5"
           >
             {t('ai.chat.closeOthers', 'Close other tabs')}
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={onCloseAll}
             disabled={sessions.length === 0}
-            className="text-xs py-1.5"
           >
             {t('ai.chat.closeAll', 'Close all tabs')}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem disabled className="text-xs py-1.5">
+          <DropdownMenuItem disabled>
             {t('ai.chat.exportChat', 'Export chat')}
           </DropdownMenuItem>
         </DropdownMenuContent>

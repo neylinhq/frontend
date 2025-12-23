@@ -31,6 +31,20 @@ const NODE_TYPE_COLORS: Record<string, string> = {
   person: 'bg-node-person-muted text-node-person',
   school: 'bg-node-school-muted text-node-school'
 }
+const EDGE_TYPE_COLORS: Record<string, string> = {
+  prerequisite: 'bg-edge-prerequisite-muted text-edge-prerequisite',
+  causes: 'bg-edge-causes-muted text-edge-causes',
+  explains: 'bg-edge-explains-muted text-edge-explains',
+  'is-a': 'bg-edge-is-a-muted text-edge-is-a',
+  'has-a': 'bg-edge-has-a-muted text-edge-has-a',
+  'part-of': 'bg-edge-part-of-muted text-edge-part-of',
+  influences: 'bg-edge-influences-muted text-edge-influences',
+  'related-to': 'bg-edge-related-to-muted text-edge-related-to',
+  contradicts: 'bg-edge-contradicts-muted text-edge-contradicts',
+  'similar-to': 'bg-edge-similar-to-muted text-edge-similar-to'
+}
+
+const TAG_BASE_CLASSES = 'text-[10px] font-medium lowercase rounded-sm px-2 py-0.5'
 
 interface CollapsibleProposalProps {
   preview: ResolvedPreview
@@ -87,7 +101,7 @@ export const CollapsibleProposal = ({
   }
 
   return (
-    <div className={cn('rounded-lg overflow-hidden', className)}>
+    <div className={cn('rounded-lg overflow-hidden border border-border/60 bg-muted/20', className)}>
       {/* Header row */}
       <div
         role='button'
@@ -100,9 +114,10 @@ export const CollapsibleProposal = ({
           }
         }}
         className={cn(
-          'group w-full px-2.5 py-1.5 flex items-center gap-2 text-left cursor-pointer rounded-lg',
-          'hover:bg-muted/40 transition-colors',
-          isExpanded && 'bg-muted/30 rounded-b-none'
+          'group w-full px-3 py-2 flex items-center gap-2 text-left cursor-pointer',
+          'bg-muted/30 hover:bg-muted/40 transition-colors',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
+          isExpanded && 'border-b border-border/60'
         )}
       >
         {/* Status icon */}
@@ -146,7 +161,7 @@ export const CollapsibleProposal = ({
 
       {/* Expanded content */}
       {isExpanded && (
-        <div className='px-3 py-2.5 bg-muted/30 rounded-b-lg'>
+        <div className='px-3 py-2.5'>
           <ProposalContent preview={preview} />
         </div>
       )}
@@ -241,6 +256,29 @@ const ProposalContent = ({ preview }: { preview: ResolvedPreview }) => {
 
     case 'graph_fragment': {
       const data = preview.data as GraphFragmentPreviewData
+      const getEdgeLabel = (ref: string, isNew: boolean) => {
+        if (isNew) {
+          return data.nodes?.find(n => n.tempId === ref)?.label || ref
+        }
+        return ref
+      }
+      const groupedEdges = (() => {
+        const groups = new Map<
+          string,
+          { key: string; label: string; isNew: boolean; edges: GraphFragmentPreviewData['edges'] }
+        >()
+        for (const edge of data.edges ?? []) {
+          const label = getEdgeLabel(edge.fromRef, edge.fromIsNew)
+          const key = `${edge.fromIsNew ? 'new' : 'existing'}:${label}`
+          const group = groups.get(key)
+          if (group) {
+            group.edges.push(edge)
+          } else {
+            groups.set(key, { key, label, isNew: edge.fromIsNew, edges: [edge] })
+          }
+        }
+        return Array.from(groups.values())
+      })()
       return (
         <div className='space-y-2 text-xs'>
           {/* Nodes */}
@@ -268,25 +306,39 @@ const ProposalContent = ({ preview }: { preview: ResolvedPreview }) => {
               <div className='text-[10px] font-medium text-muted-foreground tracking-wide'>
                 {t('ai.graphFragment.edges', 'Connections')}
               </div>
-              {data.edges.map((edge, i) => {
-                const fromLabel = edge.fromIsNew
-                  ? data.nodes?.find(n => n.tempId === edge.fromRef)?.label || edge.fromRef
-                  : edge.fromRef
-                const toLabel = edge.toIsNew
-                  ? data.nodes?.find(n => n.tempId === edge.toRef)?.label || edge.toRef
-                  : edge.toRef
-                return (
-                  <div key={edge.tempId || i} className='flex items-center gap-2 pl-2'>
-                    <span>{fromLabel}</span>
-                    <span className='text-muted-foreground'>→</span>
-                    <Badge variant='outline' className='text-[10px]'>
-                      {t(`graph.edgeTypes.${edge.relation}`, edge.relation)}
-                    </Badge>
-                    <span className='text-muted-foreground'>→</span>
-                    <span>{toLabel}</span>
+              <div className='space-y-3'>
+                {groupedEdges.map(group => (
+                  <div key={group.key} className='space-y-1'>
+                    <div className={cn(
+                      'text-[11px] font-medium',
+                      group.isNew ? 'text-primary' : 'text-foreground/80'
+                    )}>
+                      {group.label}
+                    </div>
+                    <div className='space-y-1'>
+                      {group.edges.map((edge, index) => {
+                        const toLabel = getEdgeLabel(edge.toRef, edge.toIsNew)
+                        const edgeColorClasses = EDGE_TYPE_COLORS[edge.relation] ?? 'bg-muted text-muted-foreground'
+                        const edgeKey = edge.tempId || `${edge.fromRef}-${edge.toRef}-${edge.relation}-${index}`
+
+                        return (
+                          <div key={edgeKey} className='flex items-center gap-2 text-xs'>
+                            <span className={cn('truncate flex-1', edge.toIsNew && 'text-primary')}>
+                              {toLabel}
+                            </span>
+                            <Badge
+                              variant='secondary'
+                              className={cn(TAG_BASE_CLASSES, 'flex-shrink-0', edgeColorClasses)}
+                            >
+                              {t(`graph.edgeTypes.${edge.relation}`, edge.relation)}
+                            </Badge>
+                          </div>
+                        )
+                      })}
+                    </div>
                   </div>
-                )
-              })}
+                ))}
+              </div>
             </div>
           )}
           {data.reasoning && (

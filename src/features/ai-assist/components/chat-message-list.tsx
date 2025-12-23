@@ -10,7 +10,8 @@ import { LoadingDots } from '@/shared/components/loading-dots'
 import { Textarea } from '@/shared/components/textarea'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/components/tooltip'
 import { cn } from '@/shared/lib/cn'
-import type { ChatMessage, PreviewCard } from '../model/ai-assist.types'
+import type { ChatMessage, PreviewCard, ResolvedPreview } from '../model/ai-assist.types'
+import { CollapsibleProposal } from './collapsible-proposal'
 import { PreviewCardComponent } from './preview-card'
 
 interface ChatMessageListProps {
@@ -105,7 +106,7 @@ export const ChatMessageList = ({
   }
 
   return (
-    <div className='flex flex-col gap-4 py-4'>
+    <div className='flex flex-col gap-5 py-4'>
       {messages.map((message) => {
         const isThinking = message.role === 'assistant' && message.isStreaming && !message.content
         const isUser = message.role === 'user'
@@ -120,17 +121,17 @@ export const ChatMessageList = ({
               onMouseEnter={() => setHoveredMessageId(message.id)}
               onMouseLeave={() => setHoveredMessageId(null)}
             >
-              <div className={cn('flex flex-col gap-1.5', isEditing ? 'w-full' : 'max-w-[80%]', 'items-end')}>
+              <div className={cn('flex flex-col gap-1.5', isEditing ? 'w-full' : 'max-w-[82%]', 'items-end')}>
                 {isEditing ? (
                   <div className='flex flex-col gap-2 w-full'>
-                    <Textarea
-                      ref={editTextareaRef}
-                      value={editValue}
-                      onChange={e => setEditValue(e.target.value)}
-                      onKeyDown={handleEditKeyDown}
-                      className='min-h-[80px] resize-none text-sm w-full'
-                      placeholder={t('ai.chat.placeholder')}
-                    />
+                      <Textarea
+                        ref={editTextareaRef}
+                        value={editValue}
+                        onChange={e => setEditValue(e.target.value)}
+                        onKeyDown={handleEditKeyDown}
+                        className='min-h-[96px] resize-none text-sm w-full rounded-2xl border-border/60 bg-background'
+                        placeholder={t('ai.chat.placeholder')}
+                      />
                     <div className='flex items-center justify-between gap-4'>
                       <p className='text-xs text-muted-foreground'>{t('ai.chat.editWarning')}</p>
                       <div className='flex gap-2 flex-shrink-0'>
@@ -146,14 +147,14 @@ export const ChatMessageList = ({
                 ) : (
                   <>
                     {/* User bubble - compact, muted */}
-                    <div className='rounded-xl bg-muted px-4 py-2.5 text-sm'>
+                    <div className='rounded-2xl border border-border/60 bg-muted/60 px-3 py-2 text-sm leading-relaxed'>
                       <p className='whitespace-pre-wrap break-words'>{message.content}</p>
                     </div>
 
                     {/* Actions on hover */}
                     <div
                       className={cn(
-                        'flex items-center gap-1 transition-opacity duration-100 motion-reduce:transition-none',
+                        'flex items-center gap-2 transition-opacity duration-100 motion-reduce:transition-none',
                         hoveredMessageId === message.id ? 'opacity-100' : 'opacity-0'
                       )}
                     >
@@ -163,7 +164,7 @@ export const ChatMessageList = ({
                             <Button
                               variant='ghost'
                               size='icon'
-                              className='h-6 w-6 rounded-md text-muted-foreground hover:text-foreground transition-colors'
+                              className='h-6 w-6 rounded-[6px] text-muted-foreground hover:text-foreground transition-colors'
                               onClick={() => handleStartEdit(message.id, message.content)}
                             >
                               <Pencil01Icon className='h-3.5 w-3.5' />
@@ -178,7 +179,7 @@ export const ChatMessageList = ({
                         value={message.content}
                         label={t('common.copy')}
                         copiedLabel={t('common.copied')}
-                        className='h-6 w-6 rounded-md text-muted-foreground hover:text-foreground transition-colors'
+                        className='h-6 w-6 rounded-[6px] text-muted-foreground hover:text-foreground transition-colors'
                       />
                       {onRegenerate && !isStreaming && (
                         <Tooltip>
@@ -186,7 +187,7 @@ export const ChatMessageList = ({
                             <Button
                               variant='ghost'
                               size='icon'
-                              className='h-6 w-6 rounded-md text-muted-foreground hover:text-foreground transition-colors'
+                              className='h-6 w-6 rounded-[6px] text-muted-foreground hover:text-foreground transition-colors'
                               onClick={() => onRegenerate(message.id, 'user')}
                             >
                               <RefreshCw01Icon className='h-3.5 w-3.5' />
@@ -213,7 +214,7 @@ export const ChatMessageList = ({
             onMouseEnter={() => setHoveredMessageId(message.id)}
             onMouseLeave={() => setHoveredMessageId(null)}
           >
-            <div className='space-y-3 px-1'>
+            <div className='pl-3 space-y-3'>
                 {isThinking ? (
                   <div className='py-1' role='status' aria-label={t('ai.chat.thinking', 'AI is thinking...')}>
                     <LoadingDots />
@@ -242,7 +243,7 @@ export const ChatMessageList = ({
                         }
                         setExpandedSources(newExpanded)
                       }}
-                      className='flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1'
+                      className='flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors rounded-[6px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1'
                     >
                       <span>
                         {t('ai.chat.sources', 'Sources')} ({message.sourceNodes.length})
@@ -257,7 +258,7 @@ export const ChatMessageList = ({
                           <Badge
                             key={node.id}
                             variant='secondary'
-                            className='text-xs font-normal cursor-default'
+                            className='text-[10px] font-normal cursor-default'
                             title={`${node.label} (${node.type})`}
                           >
                             {node.label}
@@ -268,17 +269,41 @@ export const ChatMessageList = ({
                   </div>
                 )}
 
-                {/* Preview Cards — both pending and resolved */}
+                {/* Preview Cards - both pending and resolved */}
                 {message.preview && message.preview.length > 0 && (
                   <div className='space-y-2'>
+                    <div className='text-[10px] uppercase tracking-wider text-muted-foreground'>
+                      {t('ai.chat.suggestionsTitle', 'Suggestions')}
+                    </div>
                     {message.preview.map(preview => (
-                      <PreviewCardComponent
-                        key={preview.id}
-                        preview={preview}
-                        onRemove={() => onRejectPreview(message.id, preview)}
-                        onSave={() => onSavePreview(message.id, preview)}
-                        isSaving={isPreviewSaving(message.id, preview.id)}
-                      />
+                      preview.status === 'approved' || preview.status === 'rejected' ? (
+                        preview.type === 'exercise' ? (
+                          <PreviewCardComponent
+                            key={preview.id}
+                            preview={preview}
+                            onRemove={() => onRejectPreview(message.id, preview)}
+                            onSave={() => onSavePreview(message.id, preview)}
+                            isSaving={isPreviewSaving(message.id, preview.id)}
+                          />
+                        ) : (
+                          <CollapsibleProposal
+                            key={preview.id}
+                            preview={{
+                              ...(preview as ResolvedPreview),
+                              status: preview.status,
+                              resolvedAt: preview.resolvedAt ?? new Date()
+                            }}
+                          />
+                        )
+                      ) : (
+                        <PreviewCardComponent
+                          key={preview.id}
+                          preview={preview}
+                          onRemove={() => onRejectPreview(message.id, preview)}
+                          onSave={() => onSavePreview(message.id, preview)}
+                          isSaving={isPreviewSaving(message.id, preview.id)}
+                        />
+                      )
                     ))}
 
                     {(() => {
@@ -290,6 +315,7 @@ export const ChatMessageList = ({
 
                       return (
                         <Button
+                          size='sm'
                           className='w-full'
                           disabled={isAnyPreviewSaving(message.id, pendingPreviews)}
                           onClick={() => {
@@ -317,7 +343,7 @@ export const ChatMessageList = ({
                 {!isThinking && (
                   <div
                     className={cn(
-                      'flex items-center gap-1 transition-opacity duration-100 motion-reduce:transition-none',
+                      'flex items-center gap-2 transition-opacity duration-100 motion-reduce:transition-none',
                       hoveredMessageId === message.id ? 'opacity-100' : 'opacity-0'
                     )}
                   >
@@ -325,7 +351,7 @@ export const ChatMessageList = ({
                       value={message.content}
                       label={t('common.copy')}
                       copiedLabel={t('common.copied')}
-                      className='h-6 w-6 rounded-md text-muted-foreground hover:text-foreground transition-colors'
+                      className='h-6 w-6 rounded-[6px] text-muted-foreground hover:text-foreground transition-colors'
                     />
                     {onRegenerate && !isStreaming && (
                       <Tooltip>
@@ -333,7 +359,7 @@ export const ChatMessageList = ({
                           <Button
                             variant='ghost'
                             size='icon'
-                            className='h-6 w-6 rounded-md text-muted-foreground hover:text-foreground transition-colors'
+                            className='h-6 w-6 rounded-[6px] text-muted-foreground hover:text-foreground transition-colors'
                             onClick={() => onRegenerate(message.id, 'assistant')}
                           >
                             <RefreshCw01Icon className='h-3.5 w-3.5' />

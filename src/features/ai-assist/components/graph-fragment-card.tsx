@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { CheckIcon, ChevronRightIcon, Loading02Icon, XCloseIcon, ArrowRightIcon } from '@untitledui/icons-react/outline'
+import { CheckIcon, ChevronRightIcon, Loading02Icon, XCloseIcon } from '@untitledui/icons-react/outline'
 import { Button } from '@/shared/components/button'
 import { Badge } from '@/shared/components/badge'
 import { Checkbox } from '@/shared/components/checkbox'
@@ -43,6 +43,9 @@ const EDGE_TYPE_COLORS: Record<string, string> = {
   contradicts: 'bg-edge-contradicts-muted text-edge-contradicts',
   'similar-to': 'bg-edge-similar-to-muted text-edge-similar-to'
 }
+
+const TAG_BASE_CLASSES = 'text-[10px] font-medium lowercase rounded-sm px-2 py-0.5'
+type EdgeGroup = { key: string; label: string; isNew: boolean; edges: GraphFragmentEdge[] }
 
 interface GraphFragmentCardProps {
   data: GraphFragmentPreviewData
@@ -158,6 +161,21 @@ export const GraphFragmentCard = ({
     return ref // Existing node label
   }
 
+  const groupedEdges: EdgeGroup[] = (() => {
+    const groups = new Map<string, EdgeGroup>()
+    for (const edge of data.edges) {
+      const label = getEdgeLabel(edge.fromRef, edge.fromIsNew)
+      const key = `${edge.fromIsNew ? 'new' : 'existing'}:${label}`
+      const group = groups.get(key)
+      if (group) {
+        group.edges.push(edge)
+      } else {
+        groups.set(key, { key, label, isNew: edge.fromIsNew, edges: [edge] })
+      }
+    }
+    return Array.from(groups.values())
+  })()
+
   // Handle apply with selected items
   const handleApply = () => {
     // Prevent double-click
@@ -185,16 +203,16 @@ export const GraphFragmentCard = ({
   // For resolved state, show a simplified collapsed view
   if (isResolved) {
     return (
-      <div className="rounded-lg overflow-hidden group">
+      <div className="rounded-lg overflow-hidden border border-border/60 bg-muted/20 group">
         <button
           type="button"
           onClick={() => setIsExpanded(!isExpanded)}
           className={cn(
-            'w-full px-2.5 py-1.5 rounded-lg',
+            'w-full px-3 py-2',
             'flex items-center gap-2 text-left transition-colors',
-            'hover:bg-muted/40',
+            'bg-muted/30 hover:bg-muted/40',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
-            isExpanded && 'bg-muted/30 rounded-b-none'
+            isExpanded && 'border-b border-border/60'
           )}
         >
           {/* Expand chevron */}
@@ -207,7 +225,7 @@ export const GraphFragmentCard = ({
           />
 
           {/* Summary */}
-          <span className="text-xs text-muted-foreground flex-1 truncate">
+          <span className="text-[10px] text-muted-foreground flex-1 truncate">
             {summary}
           </span>
 
@@ -222,16 +240,16 @@ export const GraphFragmentCard = ({
 
         {/* Expanded content for resolved state */}
         {isExpanded && (
-          <div className="px-3 py-2.5 bg-muted/30 rounded-b-lg space-y-2">
+          <div className="px-3 py-2.5 bg-background/60 rounded-b-lg space-y-2">
             {/* Nodes */}
             {data.nodes.length > 0 && (
               <div className="space-y-1.5">
                 {data.nodes.map(node => (
-                  <div key={node.tempId} className="flex items-center gap-2 text-xs">
+                  <div key={node.tempId} className="flex items-center gap-1.5 text-xs">
                     <span className="font-medium truncate flex-1">{node.label}</span>
                     <Badge
                       variant="secondary"
-                      className={cn('text-[10px] font-medium', NODE_TYPE_COLORS[node.nodeType])}
+                      className={cn(TAG_BASE_CLASSES, NODE_TYPE_COLORS[node.nodeType])}
                     >
                       {t(`nodeTypes.${node.nodeType}`, node.nodeType)}
                     </Badge>
@@ -247,37 +265,46 @@ export const GraphFragmentCard = ({
 
             {/* Edges */}
             {data.edges.length > 0 && (
-              <div className="space-y-1.5">
-                {data.edges.map(edge => {
-                  const fromLabel = edge.fromIsNew
-                    ? data.nodes.find(n => n.tempId === edge.fromRef)?.label || edge.fromRef
-                    : edge.fromRef
-                  const toLabel = edge.toIsNew
-                    ? data.nodes.find(n => n.tempId === edge.toRef)?.label || edge.toRef
-                    : edge.toRef
-                  const edgeColorClasses = EDGE_TYPE_COLORS[edge.relation] ?? 'bg-muted text-muted-foreground'
-
-                  return (
-                    <div key={edge.tempId} className="flex items-center gap-2 text-xs">
-                      <span className="truncate">{fromLabel}</span>
-                      <ArrowRightIcon className="h-3 w-3 text-muted-foreground flex-shrink-0" />
-                      <Badge variant="secondary" className={cn('text-[10px] font-medium flex-shrink-0', edgeColorClasses)}>
-                        {t(`graph.edgeTypes.${edge.relation}`, edge.relation)}
-                      </Badge>
-                      <ArrowRightIcon className="h-3 w-3 text-muted-foreground flex-shrink-0" />
-                      <span className="truncate">{toLabel}</span>
+              <div className="space-y-3">
+                {groupedEdges.map(group => (
+                  <div key={group.key} className="space-y-1">
+                    <div className={cn(
+                      'text-[11px] font-medium',
+                      group.isNew ? 'text-primary' : 'text-foreground/80'
+                    )}>
+                      {group.label}
                     </div>
-                  )
-                })}
+                    <div className="space-y-1">
+                      {group.edges.map(edge => {
+                        const toLabel = getEdgeLabel(edge.toRef, edge.toIsNew)
+                        const edgeColorClasses = EDGE_TYPE_COLORS[edge.relation] ?? 'bg-muted text-muted-foreground'
+
+                        return (
+                          <div key={edge.tempId} className="flex items-center gap-2 text-xs">
+                            <span className={cn('truncate flex-1', edge.toIsNew && 'text-primary')}>
+                              {toLabel}
+                            </span>
+                            <Badge
+                              variant="secondary"
+                              className={cn(TAG_BASE_CLASSES, 'flex-shrink-0', edgeColorClasses)}
+                            >
+                              {t(`graph.edgeTypes.${edge.relation}`, edge.relation)}
+                            </Badge>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
 
             {/* Reasoning */}
-            {data.reasoning && (
-              <p className="text-xs text-muted-foreground italic border-t border-border pt-2">
-                {decodeHtmlEntities(data.reasoning)}
-              </p>
-            )}
+          {data.reasoning && (
+            <p className="text-xs text-muted-foreground italic border-t border-border/60 pt-2">
+              {decodeHtmlEntities(data.reasoning)}
+            </p>
+          )}
           </div>
         )}
       </div>
@@ -286,16 +313,16 @@ export const GraphFragmentCard = ({
 
   // Pending/editing state — full card with actions
   return (
-    <div className="border border-border rounded-lg overflow-hidden bg-card">
+    <div className="border border-border/60 rounded-lg overflow-hidden bg-card">
       {/* Header - collapsible */}
       <button
         type="button"
         onClick={() => setIsExpanded(!isExpanded)}
         className={cn(
-          'w-full px-3 py-2 bg-muted/50',
-          'flex items-center gap-2 text-left hover:bg-muted/70 transition-colors',
+          'w-full px-3 py-2 bg-muted/30',
+          'flex items-center gap-2 text-left hover:bg-muted/50 transition-colors',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
-          isExpanded && 'border-b border-border'
+          isExpanded && 'border-b border-border/60'
         )}
       >
         <ChevronRightIcon
@@ -304,10 +331,10 @@ export const GraphFragmentCard = ({
             isExpanded && 'rotate-90'
           )}
         />
-        <span className="text-xs font-medium flex-1 truncate">
+        <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground flex-1 truncate">
           {data.title || t('ai.graphFragment.title', 'Graph Changes')}
         </span>
-        <span className="text-xs text-muted-foreground">
+        <span className="text-[10px] text-muted-foreground">
           {summary}
         </span>
       </button>
@@ -320,7 +347,7 @@ export const GraphFragmentCard = ({
             <button
               type="button"
               onClick={toggleAll}
-              className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <Checkbox checked={allSelected} />
               <span>{t('ai.graphFragment.selectAll', 'Select all')}</span>
@@ -352,24 +379,36 @@ export const GraphFragmentCard = ({
 
           {/* Edges section */}
           {data.edges.length > 0 && (
-            <div className="space-y-1">
-              {data.edges.map(edge => (
-                <EdgeRow
-                  key={edge.tempId}
-                  edge={edge}
-                  selected={selectedEdges.has(edge.tempId)}
-                  canSelect={canSelectEdge(edge)}
-                  onToggle={() => toggleEdge(edge.tempId)}
-                  getLabel={getEdgeLabel}
-                  disabled={isDisabled}
-                />
+            <div className="space-y-3">
+              {groupedEdges.map(group => (
+                <div key={group.key} className="space-y-1">
+                  <div className={cn(
+                    'text-[11px] font-medium',
+                    group.isNew ? 'text-primary' : 'text-foreground/80'
+                  )}>
+                    {group.label}
+                  </div>
+                  <div className="space-y-1">
+                    {group.edges.map(edge => (
+                      <EdgeRow
+                        key={edge.tempId}
+                        edge={edge}
+                        selected={selectedEdges.has(edge.tempId)}
+                        canSelect={canSelectEdge(edge)}
+                        onToggle={() => toggleEdge(edge.tempId)}
+                        getLabel={getEdgeLabel}
+                        disabled={isDisabled}
+                      />
+                    ))}
+                  </div>
+                </div>
               ))}
             </div>
           )}
 
           {/* Reasoning */}
           {data.reasoning && (
-            <div className="text-xs text-muted-foreground italic border-t border-border pt-2">
+            <div className="text-xs text-muted-foreground italic border-t border-border/60 pt-2">
               {decodeHtmlEntities(data.reasoning)}
             </div>
           )}
@@ -377,7 +416,7 @@ export const GraphFragmentCard = ({
       )}
 
       {/* Actions */}
-      <div className="px-3 py-2 border-t border-border flex justify-end gap-2">
+      <div className="px-3 py-2 border-t border-border/60 bg-muted/20 flex justify-end gap-2">
         <Button
           size="sm"
           variant="ghost"
@@ -424,17 +463,14 @@ const NodeRow = ({ node, selected, onToggle, disabled }: NodeRowProps) => {
       onClick={onToggle}
       disabled={disabled}
       className={cn(
-        'w-full flex items-center gap-2 py-0.5 text-left cursor-pointer',
-        'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded-sm',
+        'w-full flex items-center gap-1.5 py-0.5 text-left cursor-pointer',
+        'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded-md',
         disabled && 'opacity-50 cursor-not-allowed'
       )}
     >
       <Checkbox checked={selected} />
       <span className="text-xs font-medium flex-1 truncate">{node.label}</span>
-      <Badge
-        variant="secondary"
-        className={cn('text-[10px] font-medium', NODE_TYPE_COLORS[node.nodeType])}
-      >
+      <Badge variant="secondary" className={cn(TAG_BASE_CLASSES, NODE_TYPE_COLORS[node.nodeType])}>
         {t(`nodeTypes.${node.nodeType}`, node.nodeType)}
       </Badge>
     </button>
@@ -457,6 +493,7 @@ const EdgeRow = ({ edge, selected, canSelect, onToggle, getLabel, disabled }: Ed
 
   // Get edge color classes with fallback for unknown types
   const edgeColorClasses = EDGE_TYPE_COLORS[edge.relation] ?? 'bg-muted text-muted-foreground'
+  const toLabel = getLabel(edge.toRef, edge.toIsNew)
 
   return (
     <button
@@ -464,27 +501,22 @@ const EdgeRow = ({ edge, selected, canSelect, onToggle, getLabel, disabled }: Ed
       onClick={onToggle}
       disabled={isDisabled}
       className={cn(
-        'w-full flex items-center gap-2 py-0.5 text-left cursor-pointer',
-        'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded-sm',
+        'w-full flex items-center gap-1.5 py-0.5 text-left cursor-pointer',
+        'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded-md',
         isDisabled && 'opacity-50 cursor-not-allowed'
       )}
       title={!canSelect ? t('ai.graphFragment.edgeRequiresNodes', 'Select the connected nodes first') : undefined}
     >
       <Checkbox checked={selected && canSelect} />
-      <span className={cn('text-xs truncate', edge.fromIsNew && 'text-primary')}>
-        {getLabel(edge.fromRef, edge.fromIsNew)}
+      <span className={cn('text-xs truncate flex-1', edge.toIsNew && 'text-primary')}>
+        {toLabel}
       </span>
-      <ArrowRightIcon className="h-3 w-3 text-muted-foreground flex-shrink-0" />
       <Badge
         variant="secondary"
-        className={cn('text-[10px] font-medium flex-shrink-0', edgeColorClasses)}
+        className={cn(TAG_BASE_CLASSES, 'flex-shrink-0', edgeColorClasses)}
       >
         {t(`graph.edgeTypes.${edge.relation}`, edge.relation)}
       </Badge>
-      <ArrowRightIcon className="h-3 w-3 text-muted-foreground flex-shrink-0" />
-      <span className={cn('text-xs truncate', edge.toIsNew && 'text-primary')}>
-        {getLabel(edge.toRef, edge.toIsNew)}
-      </span>
     </button>
   )
 }

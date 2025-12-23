@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams, useSearchParams } from 'react-router'
 import { useGenerateExercises, useNextExercise, useSubmitAnswer } from '@/entities/exercise'
+import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import { cn } from '@/shared/lib/cn'
 
@@ -72,23 +73,26 @@ export const PracticeSessionPage = () => {
 
   if (error || !exercise) {
     return (
-      <div className='flex min-h-screen flex-col items-center justify-center gap-6 p-4'>
-        <div className='text-center space-y-2'>
-          <h2 className='text-xl font-semibold text-balance'>{t('practice.noExercises')}</h2>
-          <p className='text-sm text-muted-foreground max-w-xs text-balance'>
+      <div className='flex min-h-screen flex-col items-center justify-center gap-4 p-6 text-center'>
+        <div className='rounded-lg border border-border/60 bg-muted/30 p-3'>
+          <Stars01Icon className='h-6 w-6 text-muted-foreground' />
+        </div>
+        <div className='space-y-1'>
+          <h2 className='text-sm font-medium text-balance'>{t('practice.noExercises')}</h2>
+          <p className='text-xs text-muted-foreground max-w-xs text-balance'>
             {t('practice.noExercisesDescription')}
           </p>
         </div>
 
-        <div className='flex gap-3'>
-          <Button asChild variant='outline'>
+        <div className='flex flex-wrap justify-center gap-2'>
+          <Button asChild variant='outline' size='sm'>
             <Link to={`/dashboard/maps/${mapId}/view`}>
               <ArrowLeftIcon className='mr-2 h-4 w-4' />
               {t('common.back')}
             </Link>
           </Button>
 
-          <Button onClick={handleGenerateExercises} disabled={generateExercisesMutation.isPending}>
+          <Button onClick={handleGenerateExercises} disabled={generateExercisesMutation.isPending} size='sm'>
             {generateExercisesMutation.isPending ? (
               <>
                 <Loading02Icon className='mr-2 h-4 w-4 animate-spin' />
@@ -109,56 +113,71 @@ export const PracticeSessionPage = () => {
   return (
     <div className='flex h-screen flex-col'>
       {/* Header */}
-      <header className='flex items-center justify-between border-b border-border px-6 py-4'>
+      <header className='flex items-center justify-between border-b border-border/60 px-6 py-3'>
         <Button variant='ghost' size='sm' asChild>
           <Link to={`/dashboard/maps/${mapId}/view`}>
             <ArrowLeftIcon className='mr-2 h-4 w-4' />
             {t('common.back')}
           </Link>
         </Button>
-        <div className='text-sm text-muted-foreground'>{t('practice.session')}</div>
+        <span className='text-[10px] uppercase tracking-wider text-muted-foreground'>
+          {t('practice.session')}
+        </span>
       </header>
 
       {/* Exercise Content */}
-      <main className='flex flex-1 items-center justify-center p-8'>
-        <div className='w-full max-w-2xl space-y-8'>
-          {/* Question */}
-          <div className='space-y-4'>
-            <h1 className='text-3xl font-bold'>{exercise.question}</h1>
-            {exercise.type === 'quiz' && exercise.options && (
-              <div className='space-y-3'>
-                {exercise.options.map(option => (
-                  <button
-                    type='button'
-                    key={option.id}
-                    onClick={() => setSelectedAnswer(option.id)}
-                    disabled={showFeedback}
-                    className={cn(
-                      'w-full rounded-lg border-2 p-4 text-left transition-colors',
-                      selectedAnswer === option.id
-                        ? 'border-primary bg-primary/5'
-                        : 'border-border hover:border-primary/50',
-                      showFeedback && 'cursor-not-allowed opacity-60'
-                    )}
-                  >
-                    {option.content}
-                  </button>
-                ))}
-              </div>
-            )}
+      <main className='flex flex-1 items-center justify-center px-6 py-6'>
+        <div className='w-full max-w-2xl space-y-5'>
+          <div className='rounded-lg border border-border/60 bg-card overflow-hidden'>
+            <div className='flex items-center justify-between border-b border-border/60 bg-muted/30 px-4 py-2'>
+              <span className='text-[10px] font-medium uppercase tracking-wider text-muted-foreground'>
+                {t('practice.exercise', 'Exercise')}
+              </span>
+              <Badge variant='secondary' className='text-[10px] font-medium'>
+                {t(`practice.types.${exercise.type}`, exercise.type)}
+              </Badge>
+            </div>
+            <div className='px-4 py-4 space-y-4'>
+              <h1 className='text-xl font-semibold leading-snug text-balance'>{exercise.question}</h1>
+              {exercise.type === 'quiz' && exercise.options && (
+                <div className='space-y-2'>
+                  {exercise.options.map(option => (
+                    <button
+                      type='button'
+                      key={option.id}
+                      onClick={() => setSelectedAnswer(option.id)}
+                      disabled={showFeedback}
+                      className={cn(
+                        'w-full rounded-lg border border-border/60 bg-background px-4 py-3 text-left text-sm transition-colors',
+                        selectedAnswer === option.id
+                          ? 'border-border bg-muted/60'
+                          : 'hover:bg-muted/30',
+                        showFeedback && 'cursor-not-allowed opacity-60'
+                      )}
+                    >
+                      {option.content}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Feedback */}
           {showFeedback && exercise.explanation && (
-            <div className='rounded-lg border border-border bg-muted/30 p-4'>
-              <p className='text-sm'>{exercise.explanation}</p>
+            <div className='rounded-lg border border-border/60 bg-muted/30 p-4 space-y-2'>
+              <div className='text-[10px] uppercase tracking-wider text-muted-foreground'>
+                {t('practice.explanation', 'Explanation')}
+              </div>
+              <p className='text-sm text-muted-foreground'>{exercise.explanation}</p>
             </div>
           )}
 
           {/* Actions */}
-          <div className='flex justify-end gap-3'>
+          <div className='flex justify-end gap-2'>
             {!showFeedback ? (
               <Button
+                size='sm'
                 onClick={handleSubmit}
                 disabled={!selectedAnswer || submitAnswerMutation.isPending}
               >
@@ -172,7 +191,7 @@ export const PracticeSessionPage = () => {
                 )}
               </Button>
             ) : (
-              <Button onClick={handleNext}>{t('practice.next')}</Button>
+              <Button size='sm' onClick={handleNext}>{t('practice.next')}</Button>
             )}
           </div>
         </div>

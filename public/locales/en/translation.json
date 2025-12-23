@@ -1306,6 +1306,7 @@
         "node": "Ask something about this concept",
         "map": "Ask something about this map"
       },
+      "suggestionsTitle": "Suggestions",
       "suggestions": {
         "explain": "Explain simply",
         "connections": "Show connections",

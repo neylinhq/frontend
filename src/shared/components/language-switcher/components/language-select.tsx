@@ -41,9 +41,9 @@ export const LanguageSelect = ({ compact }: LanguageSelectProps) => {
               key={lang.id}
               onClick={() => handleSelect(lang.id)}
               className={cn(
-                'flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none',
-                'hover:bg-accent hover:text-accent-foreground',
-                'focus-visible:bg-accent focus-visible:text-accent-foreground',
+                'flex items-center gap-2 rounded-md px-2 py-1.5 text-sm outline-none',
+                'hover:bg-[var(--surface-hover)] hover:text-foreground',
+                'focus-visible:bg-[var(--surface-hover)] focus-visible:text-foreground',
                 'cursor-pointer transition-colors'
               )}
             >

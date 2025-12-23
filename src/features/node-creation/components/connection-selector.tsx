@@ -76,41 +76,43 @@ export const ConnectionSelector = memo(() => {
               {t('nodeCreation.connections.add', 'Add')}
             </Button>
           </PopoverTrigger>
-          <PopoverContent className='w-[280px] p-2' align='end'>
-            <Input
-              placeholder={t('nodeCreation.connections.searchPlaceholder', 'Search nodes...')}
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              className='mb-2 h-8'
-              autoFocus
-            />
-            <div className='max-h-[200px] overflow-y-auto'>
-              {availableNodes.length === 0 ? (
-                <div className='py-4 text-center text-xs text-muted-foreground'>
-                  {t('nodeCreation.connections.noResults', 'No nodes found')}
-                </div>
-              ) : (
-                availableNodes.map(node => {
-                  const Icon = getNodeIcon(node.type)
-                  return (
-                    <button
-                      key={node.id}
-                      type='button'
-                      onClick={() => handleSelectNode(node.id, node.label)}
-                      className={cn(
-                        'group flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm',
-                        'cursor-pointer transition-colors',
-                        'hover:bg-accent hover:text-accent-foreground',
-                        'focus:bg-accent focus:text-accent-foreground focus:outline-none'
-                      )}
-                    >
-                      <Icon className='h-4 w-4 shrink-0 text-muted-foreground' />
-                      <span className='flex-1 truncate'>{node.label}</span>
-                      <PlusIcon className='h-3.5 w-3.5 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100' />
-                    </button>
-                  )
-                })
-              )}
+          <PopoverContent className='w-[280px] p-0' align='end'>
+            <div className='p-2'>
+              <Input
+                placeholder={t('nodeCreation.connections.searchPlaceholder', 'Search nodes...')}
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className='mb-2 h-8 text-xs'
+                autoFocus
+              />
+              <div className='max-h-[200px] overflow-y-auto'>
+                {availableNodes.length === 0 ? (
+                  <div className='py-4 text-center text-xs text-muted-foreground'>
+                    {t('nodeCreation.connections.noResults', 'No nodes found')}
+                  </div>
+                ) : (
+                  availableNodes.map(node => {
+                    const Icon = getNodeIcon(node.type)
+                    return (
+                      <button
+                        key={node.id}
+                        type='button'
+                        onClick={() => handleSelectNode(node.id, node.label)}
+                        className={cn(
+                          'group flex w-full items-center gap-2 rounded-sm px-2 py-1 text-left text-xs',
+                          'cursor-pointer transition-colors',
+                          'hover:bg-[var(--surface-hover)] hover:text-foreground',
+                          'focus:bg-[var(--surface-hover)] focus:text-foreground focus:outline-none'
+                        )}
+                      >
+                        <Icon className='h-4 w-4 shrink-0 text-muted-foreground' />
+                        <span className='flex-1 truncate'>{node.label}</span>
+                        <PlusIcon className='h-3.5 w-3.5 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100' />
+                      </button>
+                    )
+                  })
+                )}
+              </div>
             </div>
           </PopoverContent>
         </Popover>

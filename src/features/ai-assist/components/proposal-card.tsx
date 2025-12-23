@@ -44,19 +44,21 @@ export const ProposalCard = ({
   const { t } = useTranslation()
 
   return (
-    <div className={cn('border border-border rounded-lg overflow-hidden bg-card', className)}>
+    <div className={cn('border border-border/60 rounded-lg overflow-hidden bg-card', className)}>
       {/* Header */}
-      <div className='px-3 py-2 bg-muted/50 border-b border-border'>
-        <span className='text-xs font-medium text-muted-foreground'>{title}</span>
+      <div className='px-3 py-2 bg-muted/30 border-b border-border/60'>
+        <span className='text-[10px] font-medium uppercase tracking-wider text-muted-foreground'>
+          {title}
+        </span>
       </div>
 
       {/* Content */}
-      <div className={cn('text-sm', variant === 'compact' ? 'px-3 py-2' : 'px-3 py-3')}>
+      <div className={cn('text-sm leading-relaxed', variant === 'compact' ? 'px-3 py-2.5' : 'px-3 py-3')}>
         {children}
       </div>
 
       {/* Actions */}
-      <div className='px-3 py-2 border-t border-border flex justify-end gap-2'>
+      <div className='px-3 py-2 border-t border-border/60 bg-muted/20 flex justify-end gap-2'>
         <Button size='sm' variant='ghost' onClick={onReject} className='text-muted-foreground' disabled={isLoading}>
           <XCloseIcon className='h-3.5 w-3.5 mr-1' />
           {t('common.dismiss', 'Dismiss')}

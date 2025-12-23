@@ -44,7 +44,7 @@ export const ChatEmptyState = ({
   const suggestions = customSuggestions ?? (context === 'map' ? defaultMapSuggestions : defaultNodeSuggestions)
 
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-3 px-4">
+    <div className="flex h-full flex-col items-center justify-center gap-4 px-5 text-center">
       {/* Tags - hidden on mobile */}
       <div className="hidden md:flex flex-wrap items-center justify-center gap-2">
         {suggestions.map(suggestion => (
@@ -54,9 +54,9 @@ export const ChatEmptyState = ({
             onClick={() => onSuggestionClick(suggestion.text)}
             className={cn(
               'px-3 py-1.5 rounded-full cursor-pointer',
-              'text-xs text-muted-foreground',
-              'border border-border/60',
-              'hover:border-border hover:text-foreground hover:bg-muted/30',
+              'text-xs font-medium text-muted-foreground',
+              'border border-border/60 bg-background',
+              'hover:border-border hover:text-foreground hover:bg-[var(--surface-hover)]',
               'transition-colors duration-100',
               'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring'
             )}
@@ -67,7 +67,7 @@ export const ChatEmptyState = ({
       </div>
 
       {/* Hint text */}
-      <p className="text-base text-center text-balance text-muted-foreground/60">
+      <p className="text-sm text-center text-balance text-muted-foreground/70">
         {t('ai.chat.emptyHint', 'Type anything or use /commands')}
       </p>
     </div>

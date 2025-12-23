@@ -82,7 +82,7 @@ export const ViewControlsPanel = memo(
 
     return (
       <div className={cn('absolute top-4 left-4 z-10', className)}>
-        <Card className='flex items-center gap-1 p-1.5 border'>
+        <Card className='flex items-center gap-1 p-1.5 border rounded-xl'>
           {/* 1. Map Title — context first */}
           <Button
             size='sm'

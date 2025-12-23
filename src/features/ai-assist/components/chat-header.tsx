@@ -1,5 +1,4 @@
 import type { ChatSession } from '../model/ai-assist.sessions.types'
-import { ChatTabsRow } from './chat-tabs-row'
 import { ChatSelectorRow } from './chat-selector-row'
 
 interface ChatHeaderProps {
@@ -25,41 +24,23 @@ export const ChatHeader = ({
   activeSessionId,
   onSelectSession,
   onCreateSession,
-  onCloseSession,
   onCloseAll,
   onCloseOthers,
-  onRenameSession,
   isLoading,
-  isMobile,
   selectorOpen,
   onSelectorOpenChange
 }: ChatHeaderProps) => {
   const activeSession = sessions.find(s => s.id === activeSessionId) || null
 
-  // Smart Tabs: show tabs only when multiple chats exist (Progressive Disclosure)
-  const showTabs = !isMobile && sessions.length > 1
-
   return (
-    <div className="flex flex-col shrink-0">
-      {/* Row 1: Tabs - shown only when >1 chat exists */}
-      {showTabs && (
-        <ChatTabsRow
-          sessions={sessions}
-          activeSessionId={activeSessionId}
-          onSelectSession={onSelectSession}
-          onCloseSession={onCloseSession}
-          onCloseAll={onCloseAll}
-          onCloseOthers={onCloseOthers}
-          onRenameSession={onRenameSession}
-        />
-      )}
-
-      {/* Row 2: Selector + New button (always visible) */}
+    <div className="flex flex-col shrink-0 bg-background border-b border-border/60">
       <ChatSelectorRow
         sessions={sessions}
         activeSession={activeSession}
         onSelectSession={onSelectSession}
         onCreateSession={onCreateSession}
+        onCloseAll={onCloseAll}
+        onCloseOthers={onCloseOthers}
         isLoading={isLoading}
         open={selectorOpen}
         onOpenChange={onSelectorOpenChange}

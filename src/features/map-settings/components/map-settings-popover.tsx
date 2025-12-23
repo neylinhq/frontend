@@ -36,7 +36,7 @@ export const MapSettingsPopover = ({ mapId }: MapSettingsPopoverProps) => {
         </Button>
       </PopoverTrigger>
       <PopoverContent className='w-80' align='start'>
-        <div className='space-y-4'>
+        <div className='space-y-3 p-2'>
           <div>
             <h4 className='font-medium text-sm mb-1'>{t('mapSettings.title')}</h4>
             <p className='text-xs text-muted-foreground'>{t('mapSettings.description')}</p>

@@ -544,7 +544,7 @@ export const AIChatCore = ({
 
   return (
     <div className='flex h-full flex-col'>
-      <div className='flex-1 overflow-y-auto [scrollbar-gutter:stable] px-3 py-3'>
+      <div className='flex-1 overflow-y-auto [scrollbar-gutter:stable] px-4 py-4'>
         {messages.length === 0 ? (
           <ChatEmptyState
             title={emptyStateMessage}
@@ -565,7 +565,7 @@ export const AIChatCore = ({
         )}
       </div>
 
-      <div className='border-t border-border'>
+      <div className='px-3.5 pb-4'>
         <ChatInput
           value={inputValue}
           onChange={setInputValue}

@@ -14,7 +14,7 @@ Tabs.displayName = 'Tabs'
 const tabsListVariants = cva('inline-flex items-center justify-center text-muted-foreground', {
   variants: {
     variant: {
-      default: 'h-10 rounded-md bg-muted p-1',
+      default: 'h-10 rounded-lg bg-muted p-1',
       underline: 'h-10 w-full rounded-none border-b border-border/50 bg-transparent p-0 px-2',
       iconbar: 'h-10 w-full rounded-none border-b border-border/60 bg-muted/50 px-2 justify-center gap-2'
     }
@@ -45,11 +45,11 @@ const tabsTriggerVariants = cva(
     variants: {
       variant: {
         default:
-          'rounded-sm px-3 py-1.5 data-[state=inactive]:text-muted-foreground data-[state=inactive]:hover:text-foreground data-[state=active]:bg-background data-[state=active]:text-primary',
+          'rounded-md px-3 py-1.5 data-[state=inactive]:text-muted-foreground data-[state=inactive]:hover:text-foreground data-[state=active]:bg-background data-[state=active]:text-primary',
         underline:
           'h-full rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent',
         iconbar:
-          'h-8 w-8 rounded-md text-muted-foreground data-[state=inactive]:hover:bg-muted/80 data-[state=inactive]:hover:text-foreground data-[state=active]:bg-muted data-[state=active]:text-foreground'
+          'h-8 w-8 rounded-lg text-muted-foreground data-[state=inactive]:hover:bg-muted/80 data-[state=inactive]:hover:text-foreground data-[state=active]:bg-muted data-[state=active]:text-foreground'
       }
     },
     defaultVariants: {

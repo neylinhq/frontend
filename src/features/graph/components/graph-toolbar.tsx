@@ -135,7 +135,7 @@ export const GraphToolbar = memo(
           className
         )}
       >
-        <Card className='flex items-center gap-1 p-1.5 border-2 pointer-events-auto'>
+        <Card className='flex items-center gap-1 p-1.5 border pointer-events-auto rounded-xl'>
           {/* AI Button - only show for owners */}
           {canEdit && (
             <>

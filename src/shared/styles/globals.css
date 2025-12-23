@@ -320,8 +320,11 @@
 
   /* Radii */
   --radius-lg: var(--radius);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: 0.75rem;
+  --radius-sm: 0.5rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+  --radius-3xl: 1.5rem;
 
   /* Animations */
   --animate-accordion-down: accordion-down 0.2s ease-out;
@@ -410,6 +413,11 @@
   :root {
     /* Selection opacity - used globally and in editor */
     --selection-opacity: 0.3;
+    --surface-hover: color-mix(
+      in oklch,
+      color-mix(in oklch, oklch(var(--muted)) 75%, oklch(var(--background)) 25%) 88%,
+      transparent
+    );
 
     /* Theme preview colors (don't change with theme) */
     --preview-classic: 0.53 0.26 263;        /* Blue #0055FF */
@@ -443,7 +451,7 @@
     --border: 0.93 0 0;
     --input: 0.93 0 0;
     --ring: 0.53 0.26 263;
-    --radius: 0.5rem;
+    --radius: 0.875rem;
 
     /* Brand: Pure Blue #0055FF */
     --brand: 0.53 0.26 263;
@@ -574,6 +582,11 @@
   }
 
   .dark {
+    --surface-hover: color-mix(
+      in oklch,
+      color-mix(in oklch, oklch(var(--muted)) 96%, oklch(var(--foreground)) 4%) 60%,
+      transparent
+    );
     /* Base UI - Pure neutral dark (C=0), comfortable */
     --background: 0.20 0 0;                  /* Dark gray */
     --foreground: 0.93 0 0;                  /* Near white */
@@ -1434,7 +1447,7 @@
   margin: 1.5rem 0;
   padding: 1.5rem;
   background: oklch(var(--muted) / 0.3);
-  border-radius: 0.75rem;
+  border-radius: var(--radius-md);
   border: 1px solid oklch(var(--border) / 0.5);
   text-align: center;
   cursor: pointer;
@@ -1459,7 +1472,7 @@
   padding: 0.125rem 0.25rem;
   margin: 0 0.125rem;
   background: oklch(var(--muted) / 0.4);
-  border-radius: 0.25rem;
+  border-radius: calc(var(--radius-sm) - 4px);
   cursor: pointer;
   transition: background 0.15s ease;
 }
@@ -1479,7 +1492,7 @@
   font-size: 0.875em;
   padding: 0.25rem 0.5rem;
   background: oklch(var(--destructive) / 0.1);
-  border-radius: 0.25rem;
+  border-radius: calc(var(--radius-sm) - 4px);
 }
 
 /* Dark mode adjustments for math */
@@ -1828,7 +1841,7 @@ html.theme-transition-disabled *::after {
   margin-top: 1em;
   margin-bottom: 1em;
   padding: 0.75em 1em;
-  border-radius: 0.5rem;
+  border-radius: var(--radius-sm);
   background-color: oklch(var(--muted));
   overflow-x: auto;
 }
@@ -1838,7 +1851,7 @@ html.theme-transition-disabled *::after {
   font-size: 0.875em;
   padding: 0.125em 0.25em;
   background-color: oklch(var(--muted) / 0.5);
-  border-radius: 0.25rem;
+  border-radius: calc(var(--radius-sm) - 4px);
 }
 
 .prose pre code {

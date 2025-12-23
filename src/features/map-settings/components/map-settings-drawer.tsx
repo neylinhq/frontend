@@ -206,24 +206,20 @@ export const MapSettingsDrawer = memo(
               </div>
             </DrawerHeader>
 
-            {/* Tabs with underline variant */}
+            {/* Tabs */}
             <Tabs defaultValue='overview' className='flex flex-col flex-1 min-h-0'>
-              <TabsList variant='underline' className='grid grid-cols-4 shrink-0'>
-                <TabsTrigger variant='underline' value='overview' className='gap-1.5'>
-                  <InfoCircleIcon className='h-3.5 w-3.5' />
-                  <span className='text-xs'>{t('mapSettings.tabs.overview')}</span>
+              <TabsList variant='iconbar' className='shrink-0'>
+                <TabsTrigger variant='iconbar' value='overview' title={t('mapSettings.tabs.overview')}>
+                  <InfoCircleIcon className='h-4 w-4' />
                 </TabsTrigger>
-                <TabsTrigger variant='underline' value='progress' className='gap-1.5'>
-                  <TrendUp01Icon className='h-3.5 w-3.5' />
-                  <span className='text-xs'>{t('mapSettings.tabs.progress')}</span>
+                <TabsTrigger variant='iconbar' value='progress' title={t('mapSettings.tabs.progress')}>
+                  <TrendUp01Icon className='h-4 w-4' />
                 </TabsTrigger>
-                <TabsTrigger variant='underline' value='history' className='gap-1.5'>
-                  <ClockRewindIcon className='h-3.5 w-3.5' />
-                  <span className='text-xs'>{t('mapSettings.tabs.history')}</span>
+                <TabsTrigger variant='iconbar' value='history' title={t('mapSettings.tabs.history')}>
+                  <ClockRewindIcon className='h-4 w-4' />
                 </TabsTrigger>
-                <TabsTrigger variant='underline' value='settings' className='gap-1.5'>
-                  <Sliders04Icon className='h-3.5 w-3.5' />
-                  <span className='text-xs'>{t('mapSettings.tabs.settings')}</span>
+                <TabsTrigger variant='iconbar' value='settings' title={t('mapSettings.tabs.settings')}>
+                  <Sliders04Icon className='h-4 w-4' />
                 </TabsTrigger>
               </TabsList>
 

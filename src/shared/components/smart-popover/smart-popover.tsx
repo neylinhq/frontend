@@ -70,7 +70,7 @@ const SmartPopoverContent = React.forwardRef<HTMLDivElement, SmartPopoverContent
           ref={ref}
           collisionPadding={viewportPadding}
           className={cn(
-            'z-50 rounded-md border bg-popover p-4 text-popover-foreground outline-none',
+            'z-50 rounded-xl border border-border/60 bg-background p-0 text-foreground outline-none overflow-hidden',
             'data-[state=open]:animate-in data-[state=closed]:animate-out',
             'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
             'data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
@@ -94,7 +94,7 @@ const SmartPopoverContent = React.forwardRef<HTMLDivElement, SmartPopoverContent
           contentRef.current = node
         }}
         className={cn(
-          'z-50 rounded-md border bg-popover p-4 text-popover-foreground outline-none',
+          'z-50 rounded-xl border border-border/60 bg-background p-0 text-foreground outline-none overflow-hidden',
           'data-[state=open]:animate-in data-[state=closed]:animate-out',
           'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
           className

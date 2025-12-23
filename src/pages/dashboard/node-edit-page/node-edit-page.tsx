@@ -64,10 +64,10 @@ const SidebarSkeleton = ({ width }: { width: number }) => (
   >
     <div className='flex flex-1 flex-col min-h-0 overflow-hidden'>
       {/* Tab Header Skeleton */}
-      <div className='h-10 grid grid-cols-3 border-b border-border/50'>
-        <Skeleton className='h-full rounded-none' />
-        <Skeleton className='h-full rounded-none' />
-        <Skeleton className='h-full rounded-none' />
+      <div className='h-10 flex items-center justify-center gap-2 border-b border-border/50 px-2'>
+        <Skeleton className='h-8 w-8 rounded-md' />
+        <Skeleton className='h-8 w-8 rounded-md' />
+        <Skeleton className='h-8 w-8 rounded-md' />
       </div>
 
       {/* Content Skeleton */}
@@ -150,6 +150,12 @@ export const NodeEditPage = ({
     storageKey: 'node-edit-sidebar-width'
   })
   const [isHydrated, setIsHydrated] = useState(false)
+  const [isDesktop, setIsDesktop] = useState(() => {
+    if (typeof window === 'undefined') {
+      return false
+    }
+    return window.innerWidth >= SIDEBAR_BREAKPOINT
+  })
   const [title, setTitle] = useState('')
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const titleInputRef = useRef<HTMLTextAreaElement>(null)
@@ -160,6 +166,18 @@ export const NodeEditPage = ({
   // Mark as hydrated after mount (CSS is loaded by then)
   useEffect(() => {
     setIsHydrated(true)
+  }, [])
+
+  useEffect(() => {
+    const media = window.matchMedia(`(min-width: ${SIDEBAR_BREAKPOINT}px)`)
+    const handleChange = () => setIsDesktop(media.matches)
+    handleChange()
+    if (media.addEventListener) {
+      media.addEventListener('change', handleChange)
+      return () => media.removeEventListener('change', handleChange)
+    }
+    media.addListener(handleChange)
+    return () => media.removeListener(handleChange)
   }, [])
 
   // Persist sidebar state to cookie
@@ -346,7 +364,9 @@ export const NodeEditPage = ({
               }
             }}
             className='fixed bottom-4 z-20 h-12 w-12 rounded-full transition-all right-4'
-            style={sidebarOpen ? { right: `calc(${sidebarWidth}px + 1rem)` } : undefined}
+            style={
+              sidebarOpen && isDesktop ? { right: `calc(${sidebarWidth}px + 1rem)` } : undefined
+            }
           >
             {sidebarOpen ? <LayoutRightIcon className='h-6 w-6 hidden lg:block' /> : null}
             <LayoutRightIcon className={cn('h-6 w-6', sidebarOpen && 'lg:hidden')} />
@@ -446,22 +466,22 @@ export const NodeEditPage = ({
           <div className='flex flex-1 flex-col min-h-0 overflow-hidden'>
             <Tabs defaultValue='properties' className='flex flex-1 flex-col min-h-0'>
               {/* Tab Header */}
-              <TabsList variant='underline' className='grid grid-cols-3'>
+              <TabsList variant='iconbar'>
                 <TabsTrigger
-                  variant='underline'
+                  variant='iconbar'
                   value='properties'
                   title={t('nodeEdit.tabs.properties')}
                 >
                   <Sliders04Icon className='h-4 w-4' />
                 </TabsTrigger>
                 <TabsTrigger
-                  variant='underline'
+                  variant='iconbar'
                   value='practice'
                   title={t('nodeEdit.tabs.practice')}
                 >
                   <GraduationHat01Icon className='h-4 w-4' />
                 </TabsTrigger>
-                <TabsTrigger variant='underline' value='ai' title={t('nodeEdit.tabs.ai')}>
+                <TabsTrigger variant='iconbar' value='ai' title={t('nodeEdit.tabs.ai')}>
                   <Stars01Icon className='h-4 w-4' />
                 </TabsTrigger>
               </TabsList>
@@ -551,22 +571,22 @@ export const NodeEditPage = ({
             {/* Tab Header */}
             <SheetHeader className='p-0'>
               <SheetTitle className='sr-only'>{t('nodeEdit.sidebar', 'Node sidebar')}</SheetTitle>
-              <TabsList variant='underline' className='grid grid-cols-3'>
+              <TabsList variant='iconbar'>
                 <TabsTrigger
-                  variant='underline'
+                  variant='iconbar'
                   value='properties'
                   title={t('nodeEdit.tabs.properties')}
                 >
                   <Sliders04Icon className='h-4 w-4' />
                 </TabsTrigger>
                 <TabsTrigger
-                  variant='underline'
+                  variant='iconbar'
                   value='practice'
                   title={t('nodeEdit.tabs.practice')}
                 >
                   <GraduationHat01Icon className='h-4 w-4' />
                 </TabsTrigger>
-                <TabsTrigger variant='underline' value='ai' title={t('nodeEdit.tabs.ai')}>
+                <TabsTrigger variant='iconbar' value='ai' title={t('nodeEdit.tabs.ai')}>
                   <Stars01Icon className='h-4 w-4' />
                 </TabsTrigger>
               </TabsList>

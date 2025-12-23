@@ -84,19 +84,33 @@ export const ChatTabsRow = ({
     return session.title || t('ai.chat.newChat', 'New chat')
   }
 
+  const getSessionShortLabel = (session: ChatSession, index: number) => {
+    const title = getSessionTitle(session)
+    const initials = title
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .map(word => word[0])
+      .join('')
+      .slice(0, 2)
+      .toUpperCase()
+
+    return initials || String(index + 1)
+  }
+
   if (sessions.length === 0) {
     return null
   }
 
   return (
-    <div className="flex items-center justify-between border-b border-border bg-muted/30">
+    <div className="flex h-10 items-center justify-between border-b border-border/60 bg-muted/50 px-2">
       {/* Scrollable tabs - hidden scrollbar */}
       <div
         ref={scrollRef}
-        className="flex overflow-x-auto"
+        className="flex items-center gap-1 overflow-x-auto"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
-        {sessions.map(session => {
+        {sessions.map((session, index) => {
           const isActive = session.id === activeSessionId
           const isEditing = editing?.sessionId === session.id
 
@@ -104,13 +118,14 @@ export const ChatTabsRow = ({
             <div
               key={session.id}
               data-session-id={session.id}
+              title={getSessionTitle(session)}
+              aria-label={getSessionTitle(session)}
               className={cn(
-                'group relative flex items-center gap-1 px-3 py-1.5 text-xs cursor-pointer',
-                'border-r border-border/50 min-w-[80px] max-w-[160px]',
-                'transition-all',
+                'group relative flex h-8 w-8 shrink-0 items-center justify-center rounded-md cursor-pointer transition-colors',
+                isEditing && 'w-40 justify-start px-2',
                 isActive
-                  ? 'bg-background opacity-100'
-                  : 'opacity-60 hover:opacity-80 hover:bg-muted/30'
+                  ? 'bg-muted text-foreground'
+                  : 'text-muted-foreground hover:bg-muted/70 hover:text-foreground'
               )}
               onClick={() => !isEditing && onSelectSession(session.id)}
             >
@@ -122,28 +137,25 @@ export const ChatTabsRow = ({
                   onChange={e => setEditing({ ...editing, value: e.target.value })}
                   onBlur={handleEditBlur}
                   onKeyDown={handleEditKeyDown}
-                  className="w-full bg-transparent outline-none text-xs"
+                  className="w-full bg-transparent text-xs font-medium outline-none"
                   onClick={e => e.stopPropagation()}
                 />
               ) : (
                 <>
                   <span
-                    className={cn(
-                      'truncate flex-1',
-                      isActive ? 'text-foreground' : 'text-muted-foreground'
-                    )}
+                    className="text-[10px] font-semibold tracking-wide"
                     onDoubleClick={() => handleDoubleClick(session)}
-                    title={getSessionTitle(session)}
                   >
-                    {getSessionTitle(session)}
+                    {getSessionShortLabel(session, index)}
                   </span>
 
                   {/* Close button - appears on hover */}
                   {sessions.length > 1 && (
                     <button
                       className={cn(
-                        'shrink-0 p-0.5 rounded-sm',
-                        'text-muted-foreground hover:text-foreground hover:bg-muted',
+                        'absolute -top-1 -right-1 rounded-full p-0.5',
+                        'border border-border bg-background',
+                        'text-muted-foreground hover:text-foreground',
                         'opacity-0 group-hover:opacity-100 transition-opacity'
                       )}
                       onClick={e => {
@@ -168,7 +180,7 @@ export const ChatTabsRow = ({
           <Button
             variant="ghost"
             size="sm"
-            className="h-7 w-7 shrink-0 mx-1"
+            className="h-8 w-8 shrink-0 mx-1 rounded-md"
             aria-label={t('ai.chat.menu', 'Chat options')}
           >
             <DotsHorizontalIcon className="h-4 w-4" />

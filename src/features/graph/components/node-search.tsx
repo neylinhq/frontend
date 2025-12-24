@@ -161,7 +161,7 @@ export const NodeSearchTrigger = ({
         type='button'
         onClick={() => setOpen(true)}
         className={cn(
-          'inline-flex items-center gap-2 rounded-lg border bg-muted/40 px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground',
+          'inline-flex items-center gap-2 rounded-md border bg-muted/40 px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground',
           className
         )}
       >

@@ -152,7 +152,6 @@ export const NodeDrawer = memo(
             showClose={false}
             className={cn('p-0', className)}
             onInteractOutside={e => e.preventDefault()}
-            onPointerDownOutside={e => e.preventDefault()}
           >
             <DrawerHeader className='px-4 py-3'>
               <div className='flex items-center justify-between gap-2'>
@@ -163,7 +162,7 @@ export const NodeDrawer = memo(
                   <Button
                     variant={isFocused ? 'default' : 'ghost'}
                     size='icon'
-                    className='h-8 w-8 rounded-lg'
+                    className='h-8 w-8 rounded-sm'
                     onClick={() => (isFocused ? clearFocus() : focusNode(displayNode.id))}
                     title={
                       isFocused
@@ -176,7 +175,7 @@ export const NodeDrawer = memo(
                   <Button
                     variant='ghost'
                     size='icon'
-                    className='h-8 w-8 rounded-lg'
+                    className='h-8 w-8 rounded-sm'
                     asChild
                     title={t('nodeDrawer.openFullEditor')}
                   >
@@ -187,7 +186,7 @@ export const NodeDrawer = memo(
                   <Button
                     variant='ghost'
                     size='icon'
-                    className='h-8 w-8 rounded-lg'
+                    className='h-8 w-8 rounded-sm'
                     onClick={handleClose}
                     title={t('common.close')}
                   >
@@ -213,7 +212,7 @@ export const NodeDrawer = memo(
               <TabsList variant='underline' className='grid grid-cols-2'>
                 {isReadOnly ? (
                   <TabsTrigger variant='underline' value='overview' className='gap-1.5'>
-                    <Eye01Icon className='h-3.5 w-3.5' />
+                    <EyeIcon className='h-3.5 w-3.5' />
                     <span className='text-xs'>{t('nodeDrawer.tabs.overview')}</span>
                   </TabsTrigger>
                 ) : (

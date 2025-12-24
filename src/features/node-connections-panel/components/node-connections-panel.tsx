@@ -201,7 +201,7 @@ const ConnectionSection = ({
         <div className='mb-2 flex items-center gap-2 px-1'>
           <span
             className={cn(
-              'flex h-5 w-5 items-center justify-center rounded',
+              'flex h-5 w-5 items-center justify-center rounded-sm',
               color === 'blue'
                 ? 'bg-blue-500/10 text-blue-500'
                 : 'bg-emerald-500/10 text-emerald-500'

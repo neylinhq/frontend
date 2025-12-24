@@ -14,7 +14,7 @@ import {
   useNodesState,
   useReactFlow
 } from '@xyflow/react'
-import { memo, useCallback, useEffect, useMemo, useRef } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   type Edge,
@@ -28,6 +28,7 @@ import {
   useUpdateNodePositions
 } from '@/entities/map'
 import { cssVarToHex, getNodeColorHex } from '@/features/graph-webgl/lib/theme-bridge'
+import { useAIPanelStore } from '@/features/ai-assist'
 import { Card } from '@/shared/components/card'
 import { useDarkMode } from '@/shared/hooks'
 import { cn } from '@/shared/lib/cn'
@@ -183,9 +184,32 @@ const GraphVisualizationContent = ({
   const { nodeSpacing, directionStrength, animationDuration } = useNodeSpacing()
   const { animateToPositions } = useAnimatedLayout()
   const { saveSnapshot, undo, redo } = useLayoutHistory()
+  const { isOpen: isAIPanelOpen, close: closeAIPanel } = useAIPanelStore()
+  const [settingsOpen, setSettingsOpen] = useState(false)
 
   // Track dark mode for theme-aware styling
   const isDark = useDarkMode()
+
+  useEffect(() => {
+    if (settingsOpen) {
+      clearSelection()
+      closeAIPanel()
+    }
+  }, [settingsOpen, clearSelection, closeAIPanel])
+
+  useEffect(() => {
+    if (isAIPanelOpen) {
+      setSettingsOpen(false)
+      clearSelection()
+    }
+  }, [isAIPanelOpen, clearSelection])
+
+  useEffect(() => {
+    if (selectedNodeId) {
+      setSettingsOpen(false)
+      closeAIPanel()
+    }
+  }, [selectedNodeId, closeAIPanel])
 
   // Use refs for layout params to avoid stale closures when triggerLayout fires
   const layoutParamsRef = useRef({
@@ -805,7 +829,7 @@ const GraphVisualizationContent = ({
     return (
       <div className={cn('flex items-center justify-center h-[600px]', className)}>
         <div className='text-center space-y-3'>
-          <Loader2 className='h-8 w-8 animate-spin mx-auto text-primary' />
+          <Loading03Icon className='h-8 w-8 animate-spin mx-auto text-primary' />
           <p className='text-sm text-muted-foreground'>{t('graph.loading')}</p>
         </div>
       </div>
@@ -899,6 +923,8 @@ const GraphVisualizationContent = ({
           // Zoom to 100% when selecting from search for better visibility
           handlePanToNode(node.id, 1)
         }}
+        settingsOpen={settingsOpen}
+        onSettingsOpenChange={setSettingsOpen}
       />
 
       {/* Toolbar - view modes, focus controls, filters */}

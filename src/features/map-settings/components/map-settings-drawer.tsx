@@ -187,7 +187,6 @@ export const MapSettingsDrawer = memo(
             showClose={false}
             className={cn('p-0 flex flex-col', className)}
             onInteractOutside={e => e.preventDefault()}
-            onPointerDownOutside={e => e.preventDefault()}
           >
             {/* Minimal header */}
             <DrawerHeader className='px-4 py-3 shrink-0'>
@@ -282,14 +281,14 @@ export const MapSettingsDrawer = memo(
               <TabsContent value='progress' className='flex-1 overflow-y-auto mt-0 p-4'>
                 <div className='space-y-6'>
                   {/* Your Rating - prominent display */}
-                  <div className='p-4 rounded-lg bg-muted/30 border'>
+                  <div className='p-4 rounded-md bg-muted/30 border'>
                     <div className='flex items-center justify-between mb-2'>
                       <span className='text-xs text-muted-foreground'>
                         {t('mapSettings.progress.yourRating')}
                       </span>
                       {tier && (
                         <span
-                          className='text-xs font-medium px-2 py-0.5 rounded'
+                          className='text-xs font-medium px-2 py-0.5 rounded-xs'
                           style={{ backgroundColor: `${tier.color}15`, color: tier.color }}
                         >
                           {tier.name}
@@ -308,13 +307,13 @@ export const MapSettingsDrawer = memo(
 
                   {/* Stats Grid */}
                   <div className='grid grid-cols-2 gap-3'>
-                    <div className='p-3 rounded-lg bg-muted/30'>
+                    <div className='p-3 rounded-md bg-muted/30'>
                       <p className='text-xs text-muted-foreground mb-1'>
                         {t('mapSettings.progress.nodesTotal')}
                       </p>
                       <p className='text-xl font-semibold tabular-nums'>{map?.nodesCount ?? 0}</p>
                     </div>
-                    <div className='p-3 rounded-lg bg-muted/30'>
+                    <div className='p-3 rounded-md bg-muted/30'>
                       <p className='text-xs text-muted-foreground mb-1'>
                         {t('mapSettings.progress.overallProgress')}
                       </p>
@@ -322,7 +321,7 @@ export const MapSettingsDrawer = memo(
                         {Math.round((mapProgress?.overallProgress ?? 0) * 100)}%
                       </p>
                     </div>
-                    <div className='p-3 rounded-lg bg-muted/30'>
+                    <div className='p-3 rounded-md bg-muted/30'>
                       <p className='text-xs text-muted-foreground mb-1'>
                         {t('mapSettings.progress.nodesMastered')}
                       </p>
@@ -330,7 +329,7 @@ export const MapSettingsDrawer = memo(
                         {mapProgress?.nodesMastered ?? 0}
                       </p>
                     </div>
-                    <div className='p-3 rounded-lg bg-muted/30'>
+                    <div className='p-3 rounded-md bg-muted/30'>
                       <p className='text-xs text-muted-foreground mb-1'>
                         {t('mapSettings.progress.nodesLearning')}
                       </p>

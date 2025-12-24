@@ -37,6 +37,8 @@ interface ViewControlsPanelProps {
   onToggleFullscreen: () => void
   nodes?: LightweightNode[]
   onNodeSelect?: (node: LightweightNode) => void
+  settingsOpen?: boolean
+  onSettingsOpenChange?: (open: boolean) => void
   className?: string
 }
 
@@ -52,12 +54,17 @@ export const ViewControlsPanel = memo(
     onToggleFullscreen,
     nodes,
     onNodeSelect,
+    settingsOpen,
+    onSettingsOpenChange,
     className
   }: ViewControlsPanelProps) => {
     const { t } = useTranslation()
     const { showMinimap, toggleMinimap } = useGraphUI()
     const [searchOpen, setSearchOpen] = useState(false)
-    const [settingsOpen, setSettingsOpen] = useState(false)
+    const [internalSettingsOpen, setInternalSettingsOpen] = useState(false)
+    const isSettingsControlled = settingsOpen !== undefined
+    const resolvedSettingsOpen = isSettingsControlled ? settingsOpen : internalSettingsOpen
+    const setSettingsOpen = isSettingsControlled && onSettingsOpenChange ? onSettingsOpenChange : setInternalSettingsOpen
     const {
       nodeSpacing,
       setNodeSpacing,
@@ -95,7 +102,7 @@ export const ViewControlsPanel = memo(
               {mapTitle || t('common.untitled')}
             </span>
           </Button>
-          <MapSettingsDrawer mapId={mapId} open={settingsOpen} onOpenChange={setSettingsOpen} />
+          <MapSettingsDrawer mapId={mapId} open={resolvedSettingsOpen} onOpenChange={setSettingsOpen} />
 
           {/* 2. Search — high frequency action */}
           {nodes && nodes.length > 0 && onNodeSelect && (

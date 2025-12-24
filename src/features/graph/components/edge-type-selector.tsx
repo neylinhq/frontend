@@ -97,7 +97,7 @@ export const EdgeTypeSelector = memo(({ mapId, onComplete, onCancel }: EdgeTypeS
     <div
       ref={containerRef}
       onKeyDown={handleKeyDown}
-      className='fixed z-50 w-[280px] rounded-lg border bg-popover p-3'
+      className='fixed z-50 w-[280px] rounded-xl border bg-popover p-3'
       style={{
         left: pendingEdge.position.x,
         top: pendingEdge.position.y,

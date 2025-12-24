@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import { useCopyMap } from '@/entities/map'
 import { Button } from '@/shared/components/button'
+import { MAPS_ROUTES } from '@/shared/config'
 import { toast } from '@/shared/components/toast'
 
 interface ReadOnlyBannerProps {
@@ -18,14 +19,14 @@ export const ReadOnlyBanner = ({ mapId }: ReadOnlyBannerProps) => {
     try {
       const newMap = await copyMap.mutateAsync(mapId)
       toast.success(t('dashboard.mapCard.copySuccess'))
-      navigate(`/dashboard/maps/${newMap.id}`)
+      navigate(MAPS_ROUTES.view(newMap.id))
     } catch {
       toast.error(t('dashboard.mapCard.copyError'))
     }
   }
 
   return (
-    <div className='absolute top-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3 bg-muted/90 backdrop-blur px-4 py-2 rounded-full'>
+    <div className='absolute top-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3 bg-muted/90 backdrop-blur px-4 py-2 rounded-lg'>
       <EyeIcon className='h-4 w-4 text-muted-foreground' />
       <span className='text-sm'>{t('mapView.viewOnly')}</span>
       <Button size='sm' variant='secondary' onClick={handleCopy} disabled={copyMap.isPending}>

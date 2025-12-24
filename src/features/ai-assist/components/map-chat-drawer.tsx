@@ -15,7 +15,7 @@ import { MapChatPanel } from './map-chat-panel'
 const STORAGE_KEY = 'ai-panel-width'
 const MIN_WIDTH = 440
 const MAX_WIDTH = 800
-const DEFAULT_WIDTH = 400
+const DEFAULT_WIDTH = MIN_WIDTH
 
 interface MapChatDrawerProps {
   mapId: string
@@ -281,7 +281,6 @@ export const MapChatDrawer = ({ mapId }: MapChatDrawerProps) => {
         showOverlay={false}
         showClose={false}
         onInteractOutside={e => e.preventDefault()}
-        onPointerDownOutside={e => e.preventDefault()}
       >
         {/* Resize handle */}
         <div

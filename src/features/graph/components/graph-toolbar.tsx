@@ -155,7 +155,7 @@ export const GraphToolbar = memo(
           )}
 
           {/* View Mode Selector */}
-          <div className='flex items-center gap-1 bg-muted/60 rounded-lg p-1'>
+          <div className='flex items-center gap-1 bg-muted/60 rounded-md p-1'>
             {(Object.keys(VIEW_MODE_CONFIG) as ViewMode[]).map(mode => {
               const config = VIEW_MODE_CONFIG[mode]
               const Icon = config.icon

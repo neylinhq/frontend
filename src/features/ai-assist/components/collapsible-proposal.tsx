@@ -44,7 +44,7 @@ const EDGE_TYPE_COLORS: Record<string, string> = {
   'similar-to': 'bg-edge-similar-to-muted text-edge-similar-to'
 }
 
-const TAG_BASE_CLASSES = 'text-[10px] font-medium lowercase rounded-sm px-2 py-0.5'
+const TAG_BASE_CLASSES = 'text-[10px] font-medium lowercase rounded-xs px-2 py-0.5'
 
 interface CollapsibleProposalProps {
   preview: ResolvedPreview
@@ -306,16 +306,18 @@ const ProposalContent = ({ preview }: { preview: ResolvedPreview }) => {
               <div className='text-[10px] font-medium text-muted-foreground tracking-wide'>
                 {t('ai.graphFragment.edges', 'Connections')}
               </div>
-              <div className='space-y-3'>
+              <div className='space-y-4'>
                 {groupedEdges.map(group => (
-                  <div key={group.key} className='space-y-1'>
-                    <div className={cn(
-                      'text-[11px] font-medium',
-                      group.isNew ? 'text-primary' : 'text-foreground/80'
-                    )}>
+                  <div key={group.key} className='space-y-2'>
+                    <div
+                      className={cn(
+                        'inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[11px] font-medium',
+                        group.isNew ? 'bg-primary/15 text-primary' : 'bg-muted/30 text-foreground/80'
+                      )}
+                    >
                       {group.label}
                     </div>
-                    <div className='space-y-1'>
+                    <div className='space-y-1 pl-3 border-l border-border/60'>
                       {group.edges.map((edge, index) => {
                         const toLabel = getEdgeLabel(edge.toRef, edge.toIsNew)
                         const edgeColorClasses = EDGE_TYPE_COLORS[edge.relation] ?? 'bg-muted text-muted-foreground'

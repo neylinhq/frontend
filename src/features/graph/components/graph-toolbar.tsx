@@ -135,7 +135,7 @@ export const GraphToolbar = memo(
           className
         )}
       >
-        <Card className='flex items-center gap-1 p-1.5 border pointer-events-auto rounded-xl'>
+        <Card className='flex items-center gap-1.5 px-1.5 py-1 border border-border/60 pointer-events-auto rounded-xl'>
           {/* AI Button - only show for owners */}
           {canEdit && (
             <>
@@ -143,19 +143,19 @@ export const GraphToolbar = memo(
                 size='sm'
                 variant={isAIPanelOpen ? 'secondary' : 'ghost'}
                 onClick={toggleAIPanel}
-                className='h-8 px-3'
+                className='h-7 px-2.5'
                 title={t('graph.toolbar.aiAnalysis')}
               >
                 <Stars01Icon className='w-4 h-4 sm:mr-1' />
                 <span className='hidden sm:inline'>AI</span>
               </Button>
 
-              <div className='h-4 w-px bg-border' />
+              <div className='h-5 w-px bg-border/60' />
             </>
           )}
 
           {/* View Mode Selector */}
-          <div className='flex items-center gap-0.5 bg-muted rounded-md p-0.5'>
+          <div className='flex items-center gap-0.5 bg-muted/60 rounded-lg p-1'>
             {(Object.keys(VIEW_MODE_CONFIG) as ViewMode[]).map(mode => {
               const config = VIEW_MODE_CONFIG[mode]
               const Icon = config.icon
@@ -176,7 +176,7 @@ export const GraphToolbar = memo(
                   size='sm'
                   variant={isActive ? 'default' : 'ghost'}
                   onClick={handleClick}
-                  className='h-7 px-2.5 gap-1.5'
+                  className='h-7 px-2.5 gap-1'
                   title={t(config.labelKey)}
                 >
                   <Icon className='w-3.5 h-3.5' />
@@ -189,7 +189,7 @@ export const GraphToolbar = memo(
           {/* Focus Depth Control - only visible in focus mode with focused node */}
           {viewMode === 'focus' && focusedNodeId && (
             <>
-              <div className='h-4 w-px bg-border' />
+              <div className='h-5 w-px bg-border/60' />
               <div className='flex items-center gap-2 px-2'>
                 <Button
                   size='sm'
@@ -212,7 +212,12 @@ export const GraphToolbar = memo(
                 >
                   <PlusIcon className='w-3 h-3' />
                 </Button>
-                <Button size='sm' variant='ghost' onClick={clearFocus} className='h-6 px-2 text-xs'>
+                <Button
+                  size='sm'
+                  variant='ghost'
+                  onClick={clearFocus}
+                  className='h-6 px-2 text-xs'
+                >
                   {t('graph.toolbar.clearFocus')}
                 </Button>
               </div>
@@ -222,14 +227,14 @@ export const GraphToolbar = memo(
           {/* Focus mode hint - show when in focus mode but no node focused */}
           {viewMode === 'focus' && !focusedNodeId && (
             <>
-              <div className='h-4 w-px bg-border' />
+              <div className='h-5 w-px bg-border/60' />
               <span className='text-xs text-muted-foreground px-2'>
                 {t('graph.toolbar.focusHint')}
               </span>
             </>
           )}
 
-          <div className='h-4 w-px bg-border' />
+          <div className='h-5 w-px bg-border/60' />
 
           {/* Filters Dropdown */}
           <DropdownMenu>
@@ -237,14 +242,14 @@ export const GraphToolbar = memo(
               <Button
                 size='sm'
                 variant={activeFiltersCount > 0 ? 'secondary' : 'ghost'}
-                className='h-8 px-2.5 gap-1.5'
+                className='h-7 px-2.5 gap-1'
               >
                 <FilterFunnel01Icon className='w-4 h-4' />
                 <span className='hidden sm:inline text-xs'>{t('graph.toolbar.filters')}</span>
                 {activeFiltersCount > 0 && (
                   <Badge
                     variant='destructive'
-                    className='h-4 px-1 text-[10px] ml-0.5'
+                    className='h-4 px-1 text-[10px] ml-0.5 rounded-xs'
                     suppressHydrationWarning
                   >
                     {activeFiltersCount}
@@ -266,7 +271,7 @@ export const GraphToolbar = memo(
                   >
                     <span className='flex-1'>{t(NODE_TYPE_LABELS[type])}</span>
                     {count > 0 && (
-                      <Badge variant='secondary' className='ml-2 h-5 px-1.5 text-[10px]'>
+                      <Badge variant='secondary' className='ml-2 h-5 px-1.5 text-[10px] rounded-xs'>
                         {count}
                       </Badge>
                     )}
@@ -289,7 +294,7 @@ export const GraphToolbar = memo(
                   >
                     <span className='flex-1'>{t(EDGE_TYPE_LABELS[type])}</span>
                     {count > 0 && (
-                      <Badge variant='secondary' className='ml-2 h-5 px-1.5 text-[10px]'>
+                      <Badge variant='secondary' className='ml-2 h-5 px-1.5 text-[10px] rounded-xs'>
                         {count}
                       </Badge>
                     )}

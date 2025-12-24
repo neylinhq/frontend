@@ -108,7 +108,7 @@ export const ChatSelectorRow = ({
           variant="ghost"
           size="sm"
           className={cn(
-            'h-5 w-5 shrink-0 rounded-sm',
+            'h-5 w-5 shrink-0 rounded-xs',
             'text-muted-foreground',
             'hover:text-foreground hover:bg-[var(--surface-hover)]',
             'focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0'
@@ -126,7 +126,7 @@ export const ChatSelectorRow = ({
               variant="ghost"
               size="sm"
               className={cn(
-                'h-5 w-5 shrink-0 rounded-sm',
+                'h-5 w-5 shrink-0 rounded-xs',
                 'text-muted-foreground',
                 'hover:text-foreground hover:bg-[var(--surface-hover)]',
                 'focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0'

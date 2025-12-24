@@ -31,7 +31,7 @@ export const EdgeTypeButton = memo(
         type='button'
         onClick={onClick}
         className={cn(
-          'rounded-sm px-2 py-1 text-left text-xs transition-colors',
+          'rounded-xs px-2 py-1 text-left text-xs transition-colors',
           textClass,
           className
         )}

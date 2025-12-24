@@ -129,7 +129,7 @@ export const KnowledgeEdge = memo(
                 backgroundColor: `oklch(${edgeColor} / ${isSelected ? 0.3 : 0.2})`
               }}
               className={cn(
-                'nodrag nopan cursor-pointer rounded-sm px-2.5 py-0.5 text-xs font-medium transition-colors',
+                'nodrag nopan cursor-pointer rounded-xs px-2.5 py-0.5 text-xs font-medium transition-colors',
                 getEdgeTextClass(data.relationType)
               )}
               onClick={handleClick}

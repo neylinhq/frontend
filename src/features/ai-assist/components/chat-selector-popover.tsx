@@ -118,7 +118,7 @@ export const ChatSelectorPopover = ({
             placeholder={t('ai.chat.searchChats', 'Search chats...')}
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className='h-8 pl-7 text-xs bg-muted/30 border-border/60 rounded-sm'
+            className='h-8 pl-7 text-xs bg-muted/30 border-border/60 rounded-xs'
           />
         </div>
       </div>
@@ -146,7 +146,7 @@ export const ChatSelectorPopover = ({
                     <button
                       key={session.id}
                       className={cn(
-                        'w-full px-2 py-1 text-xs text-left truncate rounded-sm',
+                        'w-full px-2 py-1 text-xs text-left truncate rounded-xs',
                         'hover:bg-[var(--surface-hover)] transition-colors',
                         isActive ? 'bg-muted/60 text-foreground font-medium' : 'text-muted-foreground'
                       )}

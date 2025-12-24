@@ -99,7 +99,7 @@ export const ConnectionSelector = memo(() => {
                         type='button'
                         onClick={() => handleSelectNode(node.id, node.label)}
                         className={cn(
-                          'group flex w-full items-center gap-2 rounded-sm px-2 py-1 text-left text-xs',
+                          'group flex w-full items-center gap-2 rounded-xs px-2 py-1 text-left text-xs',
                           'cursor-pointer transition-colors',
                           'hover:bg-[var(--surface-hover)] hover:text-foreground',
                           'focus:bg-[var(--surface-hover)] focus:text-foreground focus:outline-none'

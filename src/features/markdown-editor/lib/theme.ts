@@ -58,22 +58,22 @@ const editorTheme = EditorView.theme({
  */
 const syntaxStyle = HighlightStyle.define([
   // Code syntax
-  { tag: tags.comment, color: '#6b7280', fontStyle: 'italic' },
-  { tag: tags.keyword, color: '#c084fc' },
-  { tag: tags.string, color: '#4ade80' },
-  { tag: tags.number, color: '#fb923c' },
-  { tag: tags.bool, color: '#fb923c' },
-  { tag: tags.null, color: '#fb923c' },
-  { tag: tags.function(tags.variableName), color: '#60a5fa' },
-  { tag: tags.typeName, color: '#fbbf24' },
-  { tag: tags.className, color: '#fbbf24' },
-  { tag: tags.propertyName, color: '#60a5fa' },
-  { tag: tags.variableName, color: '#f472b6' },
-  { tag: tags.operator, color: '#94a3b8' },
-  { tag: tags.punctuation, color: '#94a3b8' },
-  { tag: tags.tagName, color: '#f87171' },
-  { tag: tags.attributeName, color: '#fbbf24' },
-  { tag: tags.attributeValue, color: '#4ade80' }
+  { tag: tags.comment, color: 'oklch(var(--syntax-comment))', fontStyle: 'italic' },
+  { tag: tags.keyword, color: 'oklch(var(--syntax-keyword))' },
+  { tag: tags.string, color: 'oklch(var(--syntax-string))' },
+  { tag: tags.number, color: 'oklch(var(--syntax-number))' },
+  { tag: tags.bool, color: 'oklch(var(--syntax-number))' },
+  { tag: tags.null, color: 'oklch(var(--syntax-number))' },
+  { tag: tags.function(tags.variableName), color: 'oklch(var(--syntax-function))' },
+  { tag: tags.typeName, color: 'oklch(var(--syntax-type))' },
+  { tag: tags.className, color: 'oklch(var(--syntax-type))' },
+  { tag: tags.propertyName, color: 'oklch(var(--syntax-property))' },
+  { tag: tags.variableName, color: 'oklch(var(--syntax-variable))' },
+  { tag: tags.operator, color: 'oklch(var(--syntax-operator))' },
+  { tag: tags.punctuation, color: 'oklch(var(--syntax-punctuation))' },
+  { tag: tags.tagName, color: 'oklch(var(--syntax-keyword))' },
+  { tag: tags.attributeName, color: 'oklch(var(--syntax-property))' },
+  { tag: tags.attributeValue, color: 'oklch(var(--syntax-string))' }
 ])
 
 /**

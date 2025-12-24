@@ -1,9 +1,6 @@
 import {
   AlertCircleIcon,
-  Dataflow03Icon,
-  EyeIcon,
   Maximize01Icon,
-  Sliders04Icon,
   Target01Icon,
   Trash01Icon,
   XCloseIcon
@@ -153,7 +150,7 @@ export const NodeDrawer = memo(
             className={cn('p-0', className)}
             onInteractOutside={e => e.preventDefault()}
           >
-            <DrawerHeader className='px-4 py-3'>
+            <DrawerHeader className='px-4 py-2.5'>
               <div className='flex items-center justify-between gap-2'>
                 <DrawerTitle className='text-base font-medium truncate'>
                   {displayNode.label}
@@ -209,34 +206,49 @@ export const NodeDrawer = memo(
               onValueChange={value => switchTab(value as 'overview' | 'properties' | 'connections')}
               className='flex flex-col flex-1 min-h-0'
             >
-              <TabsList variant='underline' className='grid grid-cols-2'>
-                {isReadOnly ? (
-                  <TabsTrigger variant='underline' value='overview' className='gap-1.5'>
-                    <EyeIcon className='h-3.5 w-3.5' />
-                    <span className='text-xs'>{t('nodeDrawer.tabs.overview')}</span>
-                  </TabsTrigger>
-                ) : (
-                  <TabsTrigger variant='underline' value='properties' className='gap-1.5'>
-                    <Sliders04Icon className='h-3.5 w-3.5' />
-                    <span className='text-xs'>{t('nodeDrawer.tabs.properties')}</span>
-                  </TabsTrigger>
-                )}
-                <TabsTrigger variant='underline' value='connections' className='gap-1.5'>
-                  <Dataflow03Icon className='h-3.5 w-3.5' />
-                  <span className='text-xs'>{t('nodeDrawer.tabs.connections')}</span>
+            <TabsList variant='underline' className='grid grid-cols-2 px-4'>
+              {isReadOnly ? (
+                <TabsTrigger
+                  variant='underline'
+                  value='overview'
+                  className='text-xs'
+                >
+                  {t('nodeDrawer.tabs.overview')}
                 </TabsTrigger>
-              </TabsList>
+              ) : (
+                <TabsTrigger
+                  variant='underline'
+                  value='properties'
+                  className='text-xs'
+                >
+                  {t('nodeDrawer.tabs.properties')}
+                </TabsTrigger>
+              )}
+              <TabsTrigger
+                variant='underline'
+                value='connections'
+                className='text-xs'
+              >
+                {t('nodeDrawer.tabs.connections')}
+              </TabsTrigger>
+            </TabsList>
 
               {/* Read-only: Overview tab */}
               {isReadOnly && (
-                <TabsContent value='overview' className='flex-1 overflow-y-auto mt-0 p-4'>
+                <TabsContent
+                  value='overview'
+                  className='flex-1 overflow-y-auto [scrollbar-gutter:stable] mt-0 p-4'
+                >
                   <DrawerOverviewTab node={displayNode} />
                 </TabsContent>
               )}
 
               {/* Editable: Properties tab with form and danger zone */}
               {!isReadOnly && (
-                <TabsContent value='properties' className='flex-1 overflow-y-auto mt-0'>
+                <TabsContent
+                  value='properties'
+                  className='flex-1 overflow-y-auto [scrollbar-gutter:stable] mt-0'
+                >
                   <div className='flex flex-col min-h-full'>
                     {/* Node Metadata Form */}
                     <div className='p-4 border-b'>
@@ -249,14 +261,14 @@ export const NodeDrawer = memo(
 
                     {/* Danger Zone - mt-auto pushes to bottom when space available */}
                     <div className='p-4 mt-auto'>
-                      <Card className='border-destructive/30'>
-                        <CardHeader className='pb-2 pt-3 px-3'>
+                      <Card className='border-destructive/30 rounded-md'>
+                        <CardHeader className='py-2.5 px-3'>
                           <CardTitle className='text-xs font-medium text-destructive flex items-center gap-1.5'>
                             <AlertCircleIcon className='h-3.5 w-3.5' />
                             {t('nodeEdit.dangerZone', 'Danger zone')}
                           </CardTitle>
                         </CardHeader>
-                        <CardContent className='px-3 pb-3'>
+                        <CardContent className='px-3 pb-2.5'>
                           <p className='text-xs text-muted-foreground mb-3'>
                             {t(
                               'nodeEdit.deleteWarning',
@@ -279,7 +291,10 @@ export const NodeDrawer = memo(
                 </TabsContent>
               )}
 
-              <TabsContent value='connections' className='flex-1 overflow-y-auto mt-0 p-4'>
+              <TabsContent
+                value='connections'
+                className='flex-1 overflow-y-auto [scrollbar-gutter:stable] mt-0 p-4'
+              >
                 {connectionsTab}
               </TabsContent>
             </Tabs>

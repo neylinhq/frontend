@@ -82,7 +82,7 @@ export const TwoFactorSection = ({ initialStatus }: TwoFactorSectionProps) => {
               </p>
             </div>
             {status?.totpEnabled ? (
-              <Badge variant='outline' className='text-green-600 border-green-600'>
+              <Badge variant='outline' className='text-success border-success'>
                 {t('settings.security.twoFactor.active')}
               </Badge>
             ) : activeMethod === 'email' ? (
@@ -105,7 +105,7 @@ export const TwoFactorSection = ({ initialStatus }: TwoFactorSectionProps) => {
               </p>
             </div>
             {status?.emailOtpEnabled ? (
-              <Badge variant='outline' className='text-green-600 border-green-600'>
+              <Badge variant='outline' className='text-success border-success'>
                 {t('settings.security.twoFactor.active')}
               </Badge>
             ) : activeMethod === 'totp' ? (

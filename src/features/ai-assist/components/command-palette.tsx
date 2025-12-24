@@ -144,7 +144,7 @@ export const CommandPalette = ({
             className={cn(
               'w-full flex items-center gap-3 px-3 py-2 text-left',
               'text-sm transition-colors',
-              index === selectedIndex ? 'bg-accent text-accent-foreground' : 'hover:bg-[var(--surface-hover)]'
+              index === selectedIndex ? 'bg-accent text-accent-foreground' : ''
             )}
             onClick={() => onSelect(command)}
             onMouseEnter={() => setSelectedIndex(index)}

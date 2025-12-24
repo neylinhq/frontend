@@ -189,7 +189,7 @@ export const MapSettingsDrawer = memo(
             onInteractOutside={e => e.preventDefault()}
           >
             {/* Minimal header */}
-            <DrawerHeader className='px-4 py-3 shrink-0'>
+            <DrawerHeader className='px-4 py-2.5 shrink-0'>
               <div className='flex items-center justify-between'>
                 <div className='flex items-center gap-2'>
                   <DrawerTitle className='text-sm font-medium'>
@@ -199,7 +199,12 @@ export const MapSettingsDrawer = memo(
                     <span className='text-xs text-muted-foreground'>{t('common.saving')}</span>
                   )}
                 </div>
-                <Button variant='ghost' size='icon' className='h-7 w-7 -mr-1' onClick={handleClose}>
+                <Button
+                  variant='ghost'
+                  size='icon'
+                  className='h-7 w-7 rounded-sm -mr-1'
+                  onClick={handleClose}
+                >
                   <XCloseIcon className='h-4 w-4' />
                 </Button>
               </div>
@@ -207,17 +212,40 @@ export const MapSettingsDrawer = memo(
 
             {/* Tabs */}
             <Tabs defaultValue='overview' className='flex flex-col flex-1 min-h-0'>
-              <TabsList variant='iconbar' className='shrink-0'>
-                <TabsTrigger variant='iconbar' value='overview' title={t('mapSettings.tabs.overview')}>
+              <TabsList
+                variant='underline'
+                className='shrink-0 grid grid-cols-4 bg-background px-4'
+              >
+                <TabsTrigger
+                  variant='underline'
+                  value='overview'
+                  title={t('mapSettings.tabs.overview')}
+                  className='h-10 w-full text-muted-foreground data-[state=active]:text-foreground'
+                >
                   <InfoCircleIcon className='h-4 w-4' />
                 </TabsTrigger>
-                <TabsTrigger variant='iconbar' value='progress' title={t('mapSettings.tabs.progress')}>
+                <TabsTrigger
+                  variant='underline'
+                  value='progress'
+                  title={t('mapSettings.tabs.progress')}
+                  className='h-10 w-full text-muted-foreground data-[state=active]:text-foreground'
+                >
                   <TrendUp01Icon className='h-4 w-4' />
                 </TabsTrigger>
-                <TabsTrigger variant='iconbar' value='history' title={t('mapSettings.tabs.history')}>
+                <TabsTrigger
+                  variant='underline'
+                  value='history'
+                  title={t('mapSettings.tabs.history')}
+                  className='h-10 w-full text-muted-foreground data-[state=active]:text-foreground'
+                >
                   <ClockRewindIcon className='h-4 w-4' />
                 </TabsTrigger>
-                <TabsTrigger variant='iconbar' value='settings' title={t('mapSettings.tabs.settings')}>
+                <TabsTrigger
+                  variant='underline'
+                  value='settings'
+                  title={t('mapSettings.tabs.settings')}
+                  className='h-10 w-full text-muted-foreground data-[state=active]:text-foreground'
+                >
                   <Sliders04Icon className='h-4 w-4' />
                 </TabsTrigger>
               </TabsList>
@@ -356,14 +384,14 @@ export const MapSettingsDrawer = memo(
                   {/* Danger Zone - mt-auto pushes to bottom (only for owners) */}
                   {isOwner && (
                     <div className='p-4 mt-auto'>
-                      <Card className='border-destructive/30'>
-                        <CardHeader className='pb-2 pt-3 px-3'>
+                      <Card className='border-destructive/30 rounded-md'>
+                        <CardHeader className='py-2.5 px-3'>
                           <CardTitle className='text-xs font-medium text-destructive flex items-center gap-1.5'>
                             <AlertCircleIcon className='h-3.5 w-3.5' />
                             {t('mapSettings.dangerZone.title')}
                           </CardTitle>
                         </CardHeader>
-                        <CardContent className='px-3 pb-3'>
+                        <CardContent className='px-3 pb-2.5'>
                           <p className='text-xs text-muted-foreground mb-3'>
                             {t('mapSettings.dangerZone.warning')}
                           </p>

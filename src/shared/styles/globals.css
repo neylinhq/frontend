@@ -436,11 +436,11 @@
     --popover-foreground: 0.12 0 0;
     --primary: 0.12 0 0;
     --primary-foreground: 0.99 0 0;
-    --secondary: 0.96 0 0;
+    --secondary: 0.975 0 0;
     --secondary-foreground: 0.12 0 0;
-    --muted: 0.96 0 0;
+    --muted: 0.975 0 0;
     --muted-foreground: 0.42 0 0;            /* Good contrast */
-    --accent: 0.95 0 0;
+    --accent: 0.97 0 0;
     --accent-foreground: 0.12 0 0;
     --destructive: 0.58 0.22 25;             /* Red */
     --destructive-foreground: 0.99 0 0;
@@ -602,7 +602,7 @@
     --secondary-foreground: 0.93 0 0;
     --muted: 0.23 0 0;
     --muted-foreground: 0.65 0 0;            /* Increased for readability */
-    --accent: 0.25 0 0;
+    --accent: 0.24 0 0;
     --accent-foreground: 0.93 0 0;
     --destructive: 0.58 0.22 25;             /* Red */
     --destructive-foreground: 0.99 0 0;
@@ -762,11 +762,11 @@
     --popover-foreground: 0.12 0.004 50;
     --primary: 0.12 0.004 50;
     --primary-foreground: 0.99 0.003 50;
-    --secondary: 0.96 0.003 50;
+    --secondary: 0.975 0.002 50;
     --secondary-foreground: 0.12 0.004 50;
-    --muted: 0.96 0.003 50;
+    --muted: 0.975 0.002 50;
     --muted-foreground: 0.42 0.003 50;
-    --accent: 0.95 0 0;
+    --accent: 0.97 0.002 50;
     --accent-foreground: 0.12 0 0;
     --destructive: 0.58 0.21 25;             /* Red (C×0.95) */
     --destructive-foreground: 0.99 0 0;
@@ -865,7 +865,7 @@
     --secondary-foreground: 0.93 0.003 50;
     --muted: 0.23 0.003 50;
     --muted-foreground: 0.65 0.003 50;       /* Increased for readability */
-    --accent: 0.25 0.004 50;
+    --accent: 0.24 0.004 50;
     --accent-foreground: 0.93 0.003 50;
     --destructive: 0.58 0.21 25;             /* C×0.95 */
     --destructive-foreground: 0.99 0 0;
@@ -963,11 +963,11 @@
     --popover-foreground: 0.12 0.006 250;
     --primary: 0.12 0.006 250;
     --primary-foreground: 0.99 0.005 250;
-    --secondary: 0.96 0.004 250;        /* Cool gray */
+    --secondary: 0.975 0.003 250;        /* Cool gray */
     --secondary-foreground: 0.14 0.006 250;
-    --muted: 0.96 0.004 250;
+    --muted: 0.975 0.003 250;
     --muted-foreground: 0.42 0.005 250; /* Good contrast */
-    --accent: 0.95 0 0;
+    --accent: 0.97 0.003 250;
     --accent-foreground: 0.12 0 0;
     --destructive: 0.58 0.23 25;        /* Vivid red, C×1.05 */
     --destructive-foreground: 0.99 0 0;
@@ -1062,11 +1062,11 @@
     --popover-foreground: 0.95 0.004 250;
     --primary: 0.95 0.004 250;
     --primary-foreground: 0.12 0.006 250;
-    --secondary: 0.17 0.005 250;        /* Cool dark gray */
+    --secondary: 0.16 0.005 250;        /* Cool dark gray */
     --secondary-foreground: 0.94 0.004 250;
-    --muted: 0.17 0.005 250;
+    --muted: 0.16 0.005 250;
     --muted-foreground: 0.65 0.005 250; /* Increased for readability */
-    --accent: 0.19 0.006 250;
+    --accent: 0.17 0.006 250;
     --accent-foreground: 0.93 0.005 250;
     --destructive: 0.60 0.23 25;       /* Vivid red - toned down */
     --destructive-foreground: 0.99 0 0;
@@ -1166,11 +1166,11 @@
     --popover-foreground: 0 0 0;
     --primary: 0 0 0;
     --primary-foreground: 1 0 0;
-    --secondary: 0.96 0 0;             /* Light gray */
+    --secondary: 0.975 0 0;             /* Light gray */
     --secondary-foreground: 0 0 0;
-    --muted: 0.96 0 0;
+    --muted: 0.975 0 0;
     --muted-foreground: 0.40 0 0;      /* Good contrast */
-    --accent: 0.96 0 0;
+    --accent: 0.97 0 0;
     --accent-foreground: 0 0 0;
     --destructive: 0.55 0.22 25;       /* Same as Classic */
     --destructive-foreground: 0.99 0 0;
@@ -1264,11 +1264,11 @@
     --popover-foreground: 0.97 0 0;
     --primary: 0.97 0 0;
     --primary-foreground: 0.08 0 0;
-    --secondary: 0.15 0 0;             /* Dark gray */
+    --secondary: 0.135 0 0;             /* Dark gray */
     --secondary-foreground: 0.97 0 0;
-    --muted: 0.15 0 0;
+    --muted: 0.135 0 0;
     --muted-foreground: 0.65 0 0;      /* Good contrast */
-    --accent: 0.16 0 0;
+    --accent: 0.14 0 0;
     --accent-foreground: 0.97 0 0;
     --destructive: 0.62 0.22 25;       /* Same as Classic dark */
     --destructive-foreground: 0.99 0 0;

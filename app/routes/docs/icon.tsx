@@ -188,7 +188,7 @@ import { MessageChatCircleIcon } from '@untitledui/icons-react/outline'
 
 function ChatAvatar({ brand }: { brand?: string }) {
   return (
-    <div className='w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center'>
+    <div className='w-8 h-8 rounded-full bg-primary/5 flex items-center justify-center'>
       {brand && aiBrandIcons[brand] ? (
         <Icon data={aiBrandIcons[brand]} className='w-4 h-4 text-primary' />
       ) : (

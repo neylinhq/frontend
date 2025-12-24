@@ -4,6 +4,7 @@ import { cn } from '@/shared/lib/cn'
 
 interface ConnectionItemProps {
   icon: React.ReactNode
+  iconContainerClassName?: string
   label: string
   subtitle?: React.ReactNode
   direction?: 'incoming' | 'outgoing'
@@ -27,6 +28,7 @@ export const ConnectionItem = memo(
     direction,
     showDirectionHint = true,
     className,
+    iconContainerClassName,
     onOpen,
     onPanTo,
     onEdit,
@@ -40,18 +42,17 @@ export const ConnectionItem = memo(
       <button
         type='button'
         className={cn(
-          'group w-full text-left rounded-md transition-all duration-150',
-          'hover:bg-muted/60',
+          'group w-full text-left rounded-sm transition-colors duration-150 cursor-pointer',
           className
         )}
         onClick={onOpen}
       >
-        <div className='flex items-center gap-3 px-3 py-2.5'>
+        <div className='flex items-center gap-3'>
           {/* Icon */}
           <div
             className={cn(
               'flex items-center justify-center w-8 h-8 rounded-sm flex-shrink-0',
-              'bg-muted/60 group-hover:bg-muted transition-colors'
+              iconContainerClassName ?? 'bg-muted'
             )}
           >
             {icon}
@@ -61,12 +62,12 @@ export const ConnectionItem = memo(
           <div className='flex-1 min-w-0'>
             <p className='font-medium text-sm truncate'>{label}</p>
             {(subtitle || (showDirectionHint && direction)) && (
-              <p className='text-xs text-muted-foreground mt-0.5 flex items-center gap-1 min-w-0'>
+              <p className='text-xs text-muted-foreground mt-0.25 flex items-center gap-1 min-w-0'>
                 {showDirectionHint && direction && (
                   <span
                     className={cn(
                       'shrink-0 w-4 text-center',
-                      direction === 'incoming' ? 'text-blue-500' : 'text-emerald-500'
+                      direction === 'incoming' ? 'text-info' : 'text-success'
                     )}
                   >
                     {direction === 'incoming' ? '←' : '→'}
@@ -91,8 +92,8 @@ export const ConnectionItem = memo(
                         onPanTo()
                       }}
                       className={cn(
-                        'p-1.5 rounded-sm transition-colors',
-                        'text-muted-foreground hover:text-foreground hover:bg-background'
+                        'p-1.5 rounded-sm transition-colors cursor-pointer',
+                        'text-muted-foreground hover:text-foreground hover:bg-[var(--surface-hover)]'
                       )}
                       title={panToTitle}
                     >
@@ -107,8 +108,8 @@ export const ConnectionItem = memo(
                         onOpen()
                       }}
                       className={cn(
-                        'p-1.5 rounded-sm transition-colors',
-                        'text-muted-foreground hover:text-foreground hover:bg-background'
+                        'p-1.5 rounded-sm transition-colors cursor-pointer',
+                        'text-muted-foreground hover:text-foreground hover:bg-[var(--surface-hover)]'
                       )}
                       title={openTitle}
                     >
@@ -126,8 +127,8 @@ export const ConnectionItem = memo(
                     onEdit()
                   }}
                   className={cn(
-                    'p-1.5 rounded-sm transition-colors',
-                    'text-muted-foreground hover:text-foreground hover:bg-background'
+                    'p-1.5 rounded-sm transition-colors cursor-pointer',
+                    'text-muted-foreground hover:text-foreground hover:bg-[var(--surface-hover)]'
                   )}
                   title={editTitle}
                 >
@@ -142,7 +143,7 @@ export const ConnectionItem = memo(
                     onDelete()
                   }}
                   className={cn(
-                    'p-1.5 rounded-sm transition-colors',
+                    'p-1.5 rounded-sm transition-colors cursor-pointer',
                     'text-muted-foreground hover:text-destructive hover:bg-destructive/10'
                   )}
                   title={deleteTitle}

@@ -146,8 +146,8 @@ export const ResetPasswordForm = () => {
   if (step === 'complete') {
     return (
       <div className='text-center space-y-4 flex flex-col items-center'>
-        <div className='h-16 w-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-4'>
-          <Key01Icon className='h-8 w-8 text-green-600 dark:text-green-400' />
+        <div className='h-16 w-16 bg-success/10 rounded-full flex items-center justify-center mb-4'>
+          <Key01Icon className='h-8 w-8 text-success' />
         </div>
         <h3 className='text-xl font-semibold'>{t('auth.resetPassword.successTitle')}</h3>
         <p className='text-sm text-muted-foreground'>
@@ -165,7 +165,7 @@ export const ResetPasswordForm = () => {
     return (
       <div className='space-y-6'>
         <div className='flex flex-col items-center gap-4 text-center'>
-          <div className='flex h-16 w-16 items-center justify-center rounded-full bg-primary/10'>
+          <div className='flex h-16 w-16 items-center justify-center rounded-full bg-primary/5'>
             <Key01Icon className='h-8 w-8 text-primary' />
           </div>
           <div className='space-y-2'>

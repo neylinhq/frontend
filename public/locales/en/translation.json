@@ -197,7 +197,7 @@
   "edgeEdit": {
     "relationType": "Relation type",
     "label": "Label",
-    "labelPlaceholder": "e.g. inspires, develops...",
+    "labelPlaceholder": "label, e.g. inspires, develops",
     "strength": "Strength",
     "bidirectional": "Bidirectional",
     "delete": "Delete connection"

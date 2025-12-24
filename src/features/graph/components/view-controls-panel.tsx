@@ -89,7 +89,7 @@ export const ViewControlsPanel = memo(
 
     return (
       <div className={cn('absolute top-4 left-4 z-10', className)}>
-        <Card className='flex items-center gap-1 p-1.5 border rounded-xl'>
+        <Card className='flex items-center gap-2 px-2 py-1.5 border border-border rounded-xl'>
           {/* 1. Map Title — context first */}
           <Button
             size='sm'
@@ -107,7 +107,7 @@ export const ViewControlsPanel = memo(
           {/* 2. Search — high frequency action */}
           {nodes && nodes.length > 0 && onNodeSelect && (
             <>
-              <div className='h-4 w-px bg-border' />
+              <div className='h-5 w-px bg-border/60' />
               <Button
                 size='sm'
                 variant='ghost'
@@ -126,7 +126,7 @@ export const ViewControlsPanel = memo(
             </>
           )}
 
-          <div className='h-4 w-px bg-border' />
+          <div className='h-5 w-px bg-border/60' />
 
           {/* 3. View settings */}
           {/* Minimap toggle */}
@@ -152,8 +152,8 @@ export const ViewControlsPanel = memo(
                 <Sliders04Icon className='w-4 h-4' />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align='start' className='w-52 p-3'>
-              <div className='space-y-4'>
+            <DropdownMenuContent align='start' className='w-56 p-3'>
+              <div className='space-y-3'>
                 {/* Spacing slider */}
                 <div className='space-y-2'>
                   <div className='flex items-center justify-between'>
@@ -239,7 +239,7 @@ export const ViewControlsPanel = memo(
             <Target01Icon className='w-4 h-4' />
           </Button>
 
-          <div className='h-4 w-px bg-border' />
+          <div className='h-5 w-px bg-border/60' />
 
           {/* 4. Zoom controls — rightmost, heaviest visually */}
           <Button

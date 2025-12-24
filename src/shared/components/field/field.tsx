@@ -9,16 +9,22 @@ interface FieldProps {
   required?: boolean
   htmlFor?: string
   children: React.ReactElement
+  size?: 'sm' | 'md' | 'lg'
   className?: string
   /** Custom classes for the label element */
   labelClassName?: string
 }
 
 const Field = React.forwardRef<HTMLDivElement, FieldProps>(
-  ({ label, error, description, required, htmlFor, children, className, labelClassName }, ref) => {
+  (
+    { label, error, description, required, htmlFor, children, size = 'md', className, labelClassName },
+    ref
+  ) => {
     const generatedId = React.useId()
     const id = htmlFor ?? generatedId
     const isInvalid = Boolean(error)
+    const spacingClass =
+      size === 'sm' ? 'space-y-1' : size === 'lg' ? 'space-y-2' : 'space-y-1.5'
 
     // Clone child element to inject id and validation state
     const childWithProps = React.isValidElement(children)
@@ -29,7 +35,7 @@ const Field = React.forwardRef<HTMLDivElement, FieldProps>(
       : children
 
     return (
-      <div ref={ref} className={cn('space-y-1.5', className)}>
+      <div ref={ref} className={cn(spacingClass, className)}>
         <Label htmlFor={id} className={cn(isInvalid && 'text-destructive', labelClassName)}>
           {label}
           {required && <span className='text-destructive ml-1'>*</span>}

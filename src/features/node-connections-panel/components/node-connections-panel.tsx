@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import type { Edge } from '@/entities/edge'
 import { useConnectionFilter } from '@/entities/edge'
 import type { Node } from '@/entities/node'
-import { getNodeIcon } from '@/entities/node'
+import { getNodeBgColor, getNodeIcon, getNodeTextColor } from '@/entities/node'
 import { ConnectionItem } from '@/shared/components/connection-item'
 import { SegmentedControl } from '@/shared/components/segmented-control'
 import { cn } from '@/shared/lib/cn'
@@ -87,33 +87,40 @@ export const NodeConnectionsPanel = memo(
             },
             { value: 'outgoing', label: t('nodeDrawer.connections.outgoing'), count: outgoingCount }
           ]}
+          stretch
         />
 
         {/* Grouped connections list */}
-        <div className='space-y-4'>
+        <div className='space-y-6'>
           {/* Incoming Section */}
           {incomingEdges.length > 0 && (
             <ConnectionSection
               title={t('nodeDrawer.connections.incoming')}
               count={incomingEdges.length}
               icon={<ArrowDownLeftIcon className='h-3.5 w-3.5' />}
-              color='blue'
+              tone='info'
               showHeader={filter === 'all'}
             >
               {incomingEdges.map(({ edge, node: connectedNode }) => {
                 const NodeIcon = getNodeIcon(connectedNode.type)
+                const iconColor = getNodeTextColor(connectedNode.type)
+                const iconBg = getNodeBgColor(connectedNode.type)
                 return (
                   <ConnectionItem
                     key={edge.id}
-                    icon={<NodeIcon className='w-4 h-4 text-muted-foreground' />}
+                    icon={<NodeIcon className={cn('w-4 h-4', iconColor)} />}
+                    iconContainerClassName={iconBg}
                     label={connectedNode.label}
                     subtitle={
-                      <>
+                      <div className='flex min-w-0 items-center gap-1.5'>
                         <span className='shrink-0'>
                           {t(`graph.edgeTypes.${edge.relationType}`)}
                         </span>
-                        {edge.label && <span className='opacity-60 truncate'>· {edge.label}</span>}
-                      </>
+                        {edge.label && <span className='shrink-0'>·</span>}
+                        {edge.label && (
+                          <span className='min-w-0 flex-1 truncate opacity-60'>{edge.label}</span>
+                        )}
+                      </div>
                     }
                     direction='incoming'
                     showDirectionHint={filter === 'all'}
@@ -135,23 +142,29 @@ export const NodeConnectionsPanel = memo(
               title={t('nodeDrawer.connections.outgoing')}
               count={outgoingEdges.length}
               icon={<ArrowUpRightIcon className='h-3.5 w-3.5' />}
-              color='emerald'
+              tone='success'
               showHeader={filter === 'all'}
             >
               {outgoingEdges.map(({ edge, node: connectedNode }) => {
                 const NodeIcon = getNodeIcon(connectedNode.type)
+                const iconColor = getNodeTextColor(connectedNode.type)
+                const iconBg = getNodeBgColor(connectedNode.type)
                 return (
                   <ConnectionItem
                     key={edge.id}
-                    icon={<NodeIcon className='w-4 h-4 text-muted-foreground' />}
+                    icon={<NodeIcon className={cn('w-4 h-4', iconColor)} />}
+                    iconContainerClassName={iconBg}
                     label={connectedNode.label}
                     subtitle={
-                      <>
+                      <div className='flex min-w-0 items-center gap-1.5'>
                         <span className='shrink-0'>
                           {t(`graph.edgeTypes.${edge.relationType}`)}
                         </span>
-                        {edge.label && <span className='opacity-60 truncate'>· {edge.label}</span>}
-                      </>
+                        {edge.label && <span className='shrink-0'>·</span>}
+                        {edge.label && (
+                          <span className='min-w-0 flex-1 truncate opacity-60'>{edge.label}</span>
+                        )}
+                      </div>
                     }
                     direction='outgoing'
                     showDirectionHint={filter === 'all'}
@@ -182,7 +195,7 @@ interface ConnectionSectionProps {
   title: string
   count: number
   icon: React.ReactNode
-  color: 'blue' | 'emerald'
+  tone?: 'info' | 'success'
   showHeader: boolean
   children: React.ReactNode
 }
@@ -191,29 +204,36 @@ const ConnectionSection = ({
   title,
   count,
   icon,
-  color,
+  tone,
   showHeader,
   children
 }: ConnectionSectionProps) => {
+  const toneClasses =
+    tone === 'info'
+      ? 'bg-info/10 text-info'
+      : tone === 'success'
+        ? 'bg-success/10 text-success'
+        : 'bg-muted-foreground/10 text-muted-foreground'
+
   return (
     <div>
       {showHeader && (
-        <div className='mb-2 flex items-center gap-2 px-1'>
+        <div className='mb-3.5 flex items-center gap-2.5'>
           <span
             className={cn(
-              'flex h-5 w-5 items-center justify-center rounded-sm',
-              color === 'blue'
-                ? 'bg-blue-500/10 text-blue-500'
-                : 'bg-emerald-500/10 text-emerald-500'
+              'flex h-5.5 w-5.5 items-center justify-center rounded-xs',
+              toneClasses
             )}
           >
             {icon}
           </span>
-          <span className='text-xs font-medium text-muted-foreground'>{title}</span>
-          <span className='tabular-nums text-xs text-muted-foreground/60'>({count})</span>
+          <div className='flex items-center gap-1.5'>
+            <span className='text-xs font-medium text-muted-foreground'>{title}</span>
+            <span className='tabular-nums text-xs text-muted-foreground/60'>({count})</span>
+          </div>
         </div>
       )}
-      <div className='space-y-0.5'>{children}</div>
+      <div className='space-y-3.5'>{children}</div>
     </div>
   )
 }

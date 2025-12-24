@@ -36,16 +36,34 @@ export const getNodeBorderColor = (type: NodeType): string => {
  */
 export const getNodeBgColor = (type: NodeType): string => {
   const colors: Record<NodeType, string> = {
-    concept: 'bg-node-concept-muted',
-    theory: 'bg-node-theory-muted',
-    fact: 'bg-node-fact-muted',
-    example: 'bg-node-example-muted',
-    question: 'bg-node-question-muted',
-    hypothesis: 'bg-node-hypothesis-muted',
-    person: 'bg-node-person-muted',
-    school: 'bg-node-school-muted'
+    concept: 'bg-node-concept-muted/40',
+    theory: 'bg-node-theory-muted/40',
+    fact: 'bg-node-fact-muted/40',
+    example: 'bg-node-example-muted/40',
+    question: 'bg-node-question-muted/40',
+    hypothesis: 'bg-node-hypothesis-muted/40',
+    person: 'bg-node-person-muted/40',
+    school: 'bg-node-school-muted/40'
   }
-  return colors[type] || 'bg-semantic-neutral-muted'
+
+  return colors[type] || 'bg-semantic-neutral-muted/40'
+}
+
+/**
+ * Text color for node type icons/labels
+ */
+export const getNodeTextColor = (type: NodeType): string => {
+  const colors: Record<NodeType, string> = {
+    concept: 'text-node-concept',
+    theory: 'text-node-theory',
+    fact: 'text-node-fact',
+    example: 'text-node-example',
+    question: 'text-node-question',
+    hypothesis: 'text-node-hypothesis',
+    person: 'text-node-person',
+    school: 'text-node-school'
+  }
+  return colors[type] || 'text-muted-foreground'
 }
 
 /**

@@ -35,7 +35,7 @@ export const CopyButton = ({
             variant={variant}
             size={size}
             className={cn(
-              copied && 'text-emerald-600 dark:text-emerald-400',
+              copied && 'text-success',
               className
             )}
             onClick={() => copy(value)}
@@ -57,7 +57,7 @@ export const CopyButton = ({
       variant={variant}
       size={size}
       className={cn(
-        copied && 'text-emerald-600 dark:text-emerald-400',
+        copied && 'text-success',
         className
       )}
       onClick={() => copy(value)}

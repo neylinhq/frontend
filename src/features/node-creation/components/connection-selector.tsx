@@ -82,7 +82,7 @@ export const ConnectionSelector = memo(() => {
                 placeholder={t('nodeCreation.connections.searchPlaceholder', 'Search nodes...')}
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className='mb-2 h-8 text-xs'
+                className='mb-2 h-8 text-xs rounded-sm'
                 autoFocus
               />
               <div className='max-h-[200px] overflow-y-auto'>

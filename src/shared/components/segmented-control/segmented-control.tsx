@@ -10,6 +10,7 @@ interface SegmentedControlProps<T extends string> {
   value: T
   onChange: (value: T) => void
   options: SegmentedControlOption<T>[]
+  stretch?: boolean
   className?: string
 }
 
@@ -17,17 +18,25 @@ export const SegmentedControl = <T extends string>({
   value,
   onChange,
   options,
+  stretch = false,
   className
 }: SegmentedControlProps<T>) => {
   return (
-    <div className={cn('flex gap-1.5 rounded-lg bg-muted/50 p-1 w-fit', className)}>
+    <div
+      className={cn(
+        stretch ? 'flex w-full' : 'inline-flex',
+        'gap-1.5 rounded-md bg-foreground/3 p-1',
+        className
+      )}
+    >
       {options.map(option => (
         <button
           key={option.value}
           type='button'
           onClick={() => onChange(option.value)}
           className={cn(
-            'rounded-sm px-3 py-1.5 text-xs font-medium transition-all duration-150 cursor-pointer',
+            'rounded-sm px-3 py-1.5 text-xs font-medium transition-all duration-150 cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap',
+            stretch ? 'flex-1' : 'shrink-0',
             value === option.value
               ? 'bg-background text-foreground'
               : 'text-muted-foreground hover:text-foreground'

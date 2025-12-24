@@ -43,6 +43,7 @@ const KnowledgeNodeComponent = ({ data }: KnowledgeNodeProps) => {
   return (
     <Card
       className={cn(
+        'rounded-md',
         'min-w-[220px] max-w-[280px] cursor-grab active:cursor-grabbing',
         'bg-card border-r border-t border-b border-border',
         'border-l-[3px]',
@@ -75,7 +76,7 @@ const KnowledgeNodeComponent = ({ data }: KnowledgeNodeProps) => {
 
         {/* Tags - under title, LOD: hidden at low zoom */}
         {showDetails && data.metadata.tags?.length > 0 && (
-          <div className='flex flex-wrap gap-1.5 mt-2'>
+          <div className='flex flex-wrap gap-1 mt-2'>
             {data.metadata.tags.slice(0, 3).map(tag => (
               <Badge key={tag} variant='outline' className='text-xs pointer-events-none'>
                 {tag}

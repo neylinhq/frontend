@@ -3,6 +3,7 @@ export {
   getComplexityColor,
   getNodeBgColor,
   getNodeBorderColor,
+  getNodeTextColor,
   getRatingColor,
   getRatingBorderColor
 } from './lib/node-style'

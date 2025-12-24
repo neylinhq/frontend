@@ -16,7 +16,7 @@ export const NotFoundPage = () => {
           404
         </div>
         <div className='absolute inset-0 flex items-center justify-center'>
-          <div className='h-32 w-32 rounded-full bg-primary/10 flex items-center justify-center'>
+          <div className='h-32 w-32 rounded-full bg-primary/5 flex items-center justify-center'>
             <SearchMdIcon className='h-16 w-16 text-primary' />
           </div>
         </div>

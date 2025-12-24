@@ -172,5 +172,5 @@ export const getMeta = (key: MetaKey) => {
   const translations = META_TRANSLATIONS[lang]
   const { title, description } = translations[key]
 
-  return [{ title: `${APP_NAME} – ${title}` }, { name: 'description', content: description }]
+  return [{ title: `${title} | ${APP_NAME}` }, { name: 'description', content: description }]
 }

@@ -259,7 +259,7 @@ export const MapChatDrawer = ({ mapId }: MapChatDrawerProps) => {
     return (
       <VaulDrawer.Root open={isOpen} onOpenChange={open => !open && close()}>
         <VaulDrawer.Portal>
-          <VaulDrawer.Overlay className='fixed inset-0 z-40 bg-black/40' />
+          <VaulDrawer.Overlay className='fixed inset-0 z-40 bg-overlay' />
           <VaulDrawer.Content className='fixed inset-x-0 bottom-0 z-50 flex h-[85vh] flex-col rounded-t-xl bg-background'>
             {/* Drag handle for swipe-to-close */}
             <div className='mx-auto mt-3 h-1 w-12 shrink-0 rounded-full bg-muted-foreground/30' />

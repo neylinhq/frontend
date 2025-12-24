@@ -12,7 +12,7 @@ export const meta = (_args: Route.MetaArgs) => {
  * Color Data
  * ───────────────────────────────────────────────────────────────────────────── */
 
-type ColorItem = { name: string; var: string; desc: string }
+type ColorItem = { name: string; var: string; desc: string; isRaw?: boolean }
 
 type ColorSectionData = {
   id: string
@@ -41,6 +41,7 @@ const COLOR_SECTIONS: ColorSectionData[] = [
       { name: 'Warning', var: '--warning', desc: 'Warning states' },
       { name: 'Info', var: '--info', desc: 'Information' },
       { name: 'Border', var: '--border', desc: 'Borders' },
+      { name: 'Input', var: '--input', desc: 'Input borders' },
       { name: 'Ring', var: '--ring', desc: 'Focus rings' }
     ]
   },
@@ -92,9 +93,90 @@ const COLOR_SECTIONS: ColorSectionData[] = [
       { name: 'Has-A', var: '--edge-has-a', desc: 'Emerald - composition' },
       { name: 'Part-Of', var: '--edge-part-of', desc: 'Teal - aggregation' },
       { name: 'Influences', var: '--edge-influences', desc: 'Amber - influence' },
-      { name: 'Related-To', var: '--edge-related-to', desc: 'Gray - weak link' },
+      { name: 'Related-To', var: '--edge-related-to', desc: 'Blue - weak link' },
       { name: 'Contradicts', var: '--edge-contradicts', desc: 'Dark red - contradiction' },
       { name: 'Similar-To', var: '--edge-similar-to', desc: 'Lime - similarity' }
+    ]
+  },
+  {
+    id: 'rating',
+    title: 'Rating Colors',
+    description: 'Tier colors for gamification and ratings',
+    columns: 4,
+    colors: [
+      { name: 'Novice', var: '--rating-novice', desc: 'Neutral - starting tier' },
+      { name: 'Apprentice', var: '--rating-apprentice', desc: 'Blue - learning' },
+      { name: 'Journeyman', var: '--rating-journeyman', desc: 'Green - progress' },
+      { name: 'Expert', var: '--rating-expert', desc: 'Yellow - competent' },
+      { name: 'Master', var: '--rating-master', desc: 'Orange - skilled' },
+      { name: 'Grandmaster', var: '--rating-grandmaster', desc: 'Red - elite' },
+      { name: 'Legend', var: '--rating-legend', desc: 'Purple - exceptional' },
+      { name: 'Mythic', var: '--rating-mythic', desc: 'Pink - legendary' }
+    ]
+  },
+  {
+    id: 'editor-text',
+    title: 'Editor Text Colors',
+    description: 'Inline text colors for rich text editor',
+    columns: 3,
+    colors: [
+      { name: 'Gray', var: '--editor-text-gray', desc: 'Neutral text' },
+      { name: 'Brown', var: '--editor-text-brown', desc: 'Warm emphasis' },
+      { name: 'Orange', var: '--editor-text-orange', desc: 'Highlight text' },
+      { name: 'Yellow', var: '--editor-text-yellow', desc: 'Attention text' },
+      { name: 'Green', var: '--editor-text-green', desc: 'Positive text' },
+      { name: 'Blue', var: '--editor-text-blue', desc: 'Informative text' },
+      { name: 'Purple', var: '--editor-text-purple', desc: 'Conceptual text' },
+      { name: 'Pink', var: '--editor-text-pink', desc: 'Emphasis text' },
+      { name: 'Red', var: '--editor-text-red', desc: 'Critical text' }
+    ]
+  },
+  {
+    id: 'editor-highlight',
+    title: 'Editor Highlight Colors',
+    description: 'Background tints for editor highlights',
+    columns: 4,
+    colors: [
+      { name: 'Gray', var: '--editor-highlight-gray', desc: 'Neutral highlight' },
+      { name: 'Yellow', var: '--editor-highlight-yellow', desc: 'Attention highlight' },
+      { name: 'Green', var: '--editor-highlight-green', desc: 'Positive highlight' },
+      { name: 'Blue', var: '--editor-highlight-blue', desc: 'Informative highlight' },
+      { name: 'Purple', var: '--editor-highlight-purple', desc: 'Conceptual highlight' },
+      { name: 'Pink', var: '--editor-highlight-pink', desc: 'Emphasis highlight' },
+      { name: 'Orange', var: '--editor-highlight-orange', desc: 'Warm highlight' },
+      { name: 'Red', var: '--editor-highlight-red', desc: 'Critical highlight' }
+    ]
+  },
+  {
+    id: 'syntax',
+    title: 'Syntax Highlighting Colors',
+    description: 'Code block syntax colors',
+    columns: 4,
+    colors: [
+      { name: 'Keyword', var: '--syntax-keyword', desc: 'Keywords' },
+      { name: 'String', var: '--syntax-string', desc: 'Strings' },
+      { name: 'Number', var: '--syntax-number', desc: 'Numbers' },
+      { name: 'Comment', var: '--syntax-comment', desc: 'Comments' },
+      { name: 'Function', var: '--syntax-function', desc: 'Functions' },
+      { name: 'Variable', var: '--syntax-variable', desc: 'Variables' },
+      { name: 'Type', var: '--syntax-type', desc: 'Types' },
+      { name: 'Operator', var: '--syntax-operator', desc: 'Operators' },
+      { name: 'Property', var: '--syntax-property', desc: 'Properties' },
+      { name: 'Punctuation', var: '--syntax-punctuation', desc: 'Punctuation' }
+    ]
+  },
+  {
+    id: 'utility',
+    title: 'Utility Colors',
+    description: 'Overlays and system accents',
+    columns: 3,
+    colors: [
+      { name: 'Surface Hover', var: '--surface-hover', desc: 'Hover surface fill', isRaw: true },
+      { name: 'Overlay', var: '--overlay', desc: 'Modal scrim' },
+      { name: 'Overlay Light', var: '--overlay-light', desc: 'Light scrim' },
+      { name: 'Canvas Grid', var: '--canvas-grid', desc: 'Graph grid' },
+      { name: 'Confidence High', var: '--confidence-high', desc: 'High confidence' },
+      { name: 'Confidence Low', var: '--confidence-low', desc: 'Low confidence' }
     ]
   }
 ]
@@ -103,23 +185,24 @@ const COLOR_SECTIONS: ColorSectionData[] = [
  * Components
  * ───────────────────────────────────────────────────────────────────────────── */
 
-const ColorCard = ({ name, var: cssVar, desc }: ColorItem) => (
-  <Card>
-    <CardHeader className='pb-3'>
-      <div
-        className='h-16 border-b mb-3 -mx-6 -mt-6'
-        style={{ backgroundColor: `oklch(var(${cssVar}))` }}
-      />
-      <CardTitle className='text-sm'>{name}</CardTitle>
-      <CardDescription className='text-xs'>
-        <code>{cssVar}</code>
-      </CardDescription>
-    </CardHeader>
-    <CardContent>
-      <p className='text-xs text-muted-foreground'>{desc}</p>
-    </CardContent>
-  </Card>
-)
+const ColorCard = ({ name, var: cssVar, desc, isRaw }: ColorItem) => {
+  const backgroundColor = isRaw ? `var(${cssVar})` : `oklch(var(${cssVar}))`
+
+  return (
+    <Card>
+      <CardHeader className='pb-3'>
+        <div className='h-16 border-b mb-3 -mx-6 -mt-6' style={{ backgroundColor }} />
+        <CardTitle className='text-sm'>{name}</CardTitle>
+        <CardDescription className='text-xs'>
+          <code>{cssVar}</code>
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <p className='text-xs text-muted-foreground'>{desc}</p>
+      </CardContent>
+    </Card>
+  )
+}
 
 const ColorSection = ({
   title,

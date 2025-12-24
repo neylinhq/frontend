@@ -281,7 +281,7 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
 
       {/* WebGL indicator */}
       <div className='absolute bottom-2 left-2 bg-background/80 border rounded px-2 py-1 text-xs font-mono'>
-        <span className='text-green-500'>WebGL</span>
+        <span className='text-success'>WebGL</span>
         <span className='text-muted-foreground ml-2'>{Math.round(viewport.zoom * 100)}%</span>
       </div>
     </div>

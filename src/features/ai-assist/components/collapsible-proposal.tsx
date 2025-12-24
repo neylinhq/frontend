@@ -125,7 +125,7 @@ export const CollapsibleProposal = ({
           className={cn(
             'flex-shrink-0 h-4 w-4 rounded-full flex items-center justify-center',
             isApproved
-              ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400'
+              ? 'bg-success/15 text-success'
               : 'bg-muted text-muted-foreground'
           )}
         >

@@ -224,7 +224,7 @@ export const MiniMapWebGL = memo(function MiniMapWebGL({
 
       {/* Viewport indicator */}
       <div
-        className='absolute border-2 border-primary/70 bg-primary/10 rounded-md pointer-events-none'
+        className='absolute border-2 border-primary/70 bg-primary/5 rounded-md pointer-events-none'
         style={{
           left: viewportRect.left,
           top: viewportRect.top,

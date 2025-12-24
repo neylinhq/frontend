@@ -49,7 +49,7 @@ export const ActiveSessions = () => {
                   <div className='flex items-center gap-2'>
                     <p className='text-sm font-medium'>{session.device}</p>
                     {session.current && (
-                      <span className='text-xs text-green-600 dark:text-green-400'>
+                      <span className='text-xs text-success'>
                         {t('settings.security.sessions.current')}
                       </span>
                     )}

@@ -135,7 +135,7 @@ export const GraphToolbar = memo(
           className
         )}
       >
-        <Card className='flex items-center gap-1.5 px-1.5 py-1 border border-border/60 pointer-events-auto rounded-xl'>
+        <Card className='flex items-center gap-2 px-2 py-1.5 border border-border pointer-events-auto rounded-xl'>
           {/* AI Button - only show for owners */}
           {canEdit && (
             <>
@@ -143,7 +143,7 @@ export const GraphToolbar = memo(
                 size='sm'
                 variant={isAIPanelOpen ? 'secondary' : 'ghost'}
                 onClick={toggleAIPanel}
-                className='h-7 px-2.5'
+                className='h-8 px-2.5'
                 title={t('graph.toolbar.aiAnalysis')}
               >
                 <Stars01Icon className='w-4 h-4 sm:mr-1' />
@@ -155,7 +155,7 @@ export const GraphToolbar = memo(
           )}
 
           {/* View Mode Selector */}
-          <div className='flex items-center gap-1 bg-muted/60 rounded-md p-1'>
+          <div className='flex items-center gap-1 rounded-lg bg-muted/60 p-0.5'>
             {(Object.keys(VIEW_MODE_CONFIG) as ViewMode[]).map(mode => {
               const config = VIEW_MODE_CONFIG[mode]
               const Icon = config.icon
@@ -176,7 +176,7 @@ export const GraphToolbar = memo(
                   size='sm'
                   variant={isActive ? 'default' : 'ghost'}
                   onClick={handleClick}
-                  className='h-7 px-2.5 gap-1'
+                  className='h-8 px-2.5 gap-1'
                   title={t(config.labelKey)}
                 >
                   <Icon className='w-3.5 h-3.5' />
@@ -190,13 +190,13 @@ export const GraphToolbar = memo(
           {viewMode === 'focus' && focusedNodeId && (
             <>
               <div className='h-5 w-px bg-border/60' />
-              <div className='flex items-center gap-2 px-2'>
+              <div className='flex items-center gap-1.5 px-2'>
                 <Button
                   size='sm'
                   variant='ghost'
                   onClick={() => setFocusDepth(focusDepth - 1)}
                   disabled={focusDepth <= 1}
-                  className='h-6 w-6 p-0'
+                  className='h-7 w-7 p-0'
                 >
                   <MinusIcon className='w-3 h-3' />
                 </Button>
@@ -208,7 +208,7 @@ export const GraphToolbar = memo(
                   variant='ghost'
                   onClick={() => setFocusDepth(focusDepth + 1)}
                   disabled={focusDepth >= 5}
-                  className='h-6 w-6 p-0'
+                  className='h-7 w-7 p-0'
                 >
                   <PlusIcon className='w-3 h-3' />
                 </Button>
@@ -216,7 +216,7 @@ export const GraphToolbar = memo(
                   size='sm'
                   variant='ghost'
                   onClick={clearFocus}
-                  className='h-6 px-2 text-xs'
+                  className='h-7 px-2.5 text-xs'
                 >
                   {t('graph.toolbar.clearFocus')}
                 </Button>
@@ -242,7 +242,7 @@ export const GraphToolbar = memo(
               <Button
                 size='sm'
                 variant={activeFiltersCount > 0 ? 'secondary' : 'ghost'}
-                className='h-7 px-2.5 gap-1'
+                className='h-8 px-2.5 gap-1'
               >
                 <FilterFunnel01Icon className='w-4 h-4' />
                 <span className='hidden sm:inline text-xs'>{t('graph.toolbar.filters')}</span>
@@ -257,8 +257,10 @@ export const GraphToolbar = memo(
                 )}
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align='center' className='w-56'>
-              <DropdownMenuLabel>{t('graph.filters.nodeTypes')}</DropdownMenuLabel>
+            <DropdownMenuContent align='center' className='w-60 p-2'>
+              <DropdownMenuLabel className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
+                {t('graph.filters.nodeTypes')}
+              </DropdownMenuLabel>
               {ALL_NODE_TYPES.map(type => {
                 const count = nodeCountsByType?.[type] ?? 0
                 return (
@@ -268,6 +270,7 @@ export const GraphToolbar = memo(
                     onCheckedChange={() => toggleNodeType(type)}
                     onSelect={e => e.preventDefault()}
                     disabled={count === 0}
+                    className='text-xs'
                   >
                     <span className='flex-1'>{t(NODE_TYPE_LABELS[type])}</span>
                     {count > 0 && (
@@ -279,9 +282,11 @@ export const GraphToolbar = memo(
                 )
               })}
 
-              <DropdownMenuSeparator />
+              <DropdownMenuSeparator className='my-1.5' />
 
-              <DropdownMenuLabel>{t('graph.filters.edgeTypes')}</DropdownMenuLabel>
+              <DropdownMenuLabel className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
+                {t('graph.filters.edgeTypes')}
+              </DropdownMenuLabel>
               {ALL_EDGE_TYPES.map(type => {
                 const count = edgeCountsByType?.[type] ?? 0
                 return (
@@ -291,6 +296,7 @@ export const GraphToolbar = memo(
                     onCheckedChange={() => toggleEdgeType(type)}
                     onSelect={e => e.preventDefault()}
                     disabled={count === 0}
+                    className='text-xs'
                   >
                     <span className='flex-1'>{t(EDGE_TYPE_LABELS[type])}</span>
                     {count > 0 && (
@@ -302,19 +308,21 @@ export const GraphToolbar = memo(
                 )
               })}
 
-              <DropdownMenuSeparator />
+              <DropdownMenuSeparator className='my-1.5' />
 
               {/* Connection count filter */}
-              <DropdownMenuLabel>{t('graph.filters.connections')}</DropdownMenuLabel>
+              <DropdownMenuLabel className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
+                {t('graph.filters.connections')}
+              </DropdownMenuLabel>
 
               {/* Presets */}
-              <div className='flex gap-1 px-2 py-1.5'>
+              <div className='flex gap-1.5 px-2 py-1'>
                 {CONNECTION_PRESET_ORDER.map(preset => (
                   <Button
                     key={preset}
                     size='sm'
                     variant={activePreset === preset ? 'secondary' : 'ghost'}
-                    className='h-6 px-2 text-xs flex-1 rounded-xs'
+                    className='h-7 px-2 text-xs flex-1 rounded-xs'
                     onClick={() => setConnectionPreset(preset)}
                   >
                     {t(`graph.filters.preset.${preset}`)}
@@ -323,7 +331,7 @@ export const GraphToolbar = memo(
               </div>
 
               {/* Range slider */}
-              <div className='px-2 py-2'>
+              <div className='px-2.5 py-2'>
                 <div className='flex items-center justify-between text-xs text-muted-foreground mb-2'>
                   <span>{String(localRange[0])}</span>
                   <span>
@@ -345,7 +353,7 @@ export const GraphToolbar = memo(
                   <Button
                     size='sm'
                     variant='ghost'
-                    className='h-6 px-2 text-xs w-full text-muted-foreground rounded-xs'
+                    className='h-7 px-2.5 text-xs w-full text-muted-foreground rounded-xs'
                     onClick={() => setConnectionPreset('all')}
                   >
                     {t('graph.filters.resetConnections')}

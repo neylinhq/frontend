@@ -92,14 +92,14 @@ const SidebarSkeleton = ({ width }: { width: number }) => (
 )
 
 const NODE_TYPE_CONFIG: Record<NodeType, { color: string; label: string }> = {
-  concept: { color: 'bg-blue-500/10 text-blue-600 dark:text-blue-400', label: 'Concept' },
-  fact: { color: 'bg-green-500/10 text-green-600 dark:text-green-400', label: 'Fact' },
-  theory: { color: 'bg-purple-500/10 text-purple-600 dark:text-purple-400', label: 'Theory' },
-  example: { color: 'bg-orange-500/10 text-orange-600 dark:text-orange-400', label: 'Example' },
-  question: { color: 'bg-yellow-500/10 text-yellow-600 dark:text-yellow-400', label: 'Question' },
-  hypothesis: { color: 'bg-pink-500/10 text-pink-600 dark:text-pink-400', label: 'Hypothesis' },
-  person: { color: 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400', label: 'Person' },
-  school: { color: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400', label: 'School' }
+  concept: { color: 'bg-node-concept-muted text-node-concept', label: 'Concept' },
+  fact: { color: 'bg-node-fact-muted text-node-fact', label: 'Fact' },
+  theory: { color: 'bg-node-theory-muted text-node-theory', label: 'Theory' },
+  example: { color: 'bg-node-example-muted text-node-example', label: 'Example' },
+  question: { color: 'bg-node-question-muted text-node-question', label: 'Question' },
+  hypothesis: { color: 'bg-node-hypothesis-muted text-node-hypothesis', label: 'Hypothesis' },
+  person: { color: 'bg-node-person-muted text-node-person', label: 'Person' },
+  school: { color: 'bg-node-school-muted text-node-school', label: 'School' }
 }
 
 interface NodeEditPageProps {

@@ -1,7 +1,6 @@
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { Trash01Icon } from '@untitledui/icons-react/outline'
 
 import { type RelationType, RelationTypeEnum } from '@/entities/edge'
 import { useDeleteEdge, useUpdateEdge } from '@/entities/map'
@@ -126,8 +125,8 @@ export const EdgeEditPopover = memo(({ mapId }: EdgeEditPopoverProps) => {
 
   return (
     <Popover open={true} onOpenChange={open => !open && cancelEdgeEditing()}>
-      <SmartPopoverContent
-        className='w-[300px] p-2'
+        <SmartPopoverContent
+          className='w-[280px] p-3'
         mode='fixed'
         position={editPosition}
         offset={{ y: 8 }}
@@ -137,10 +136,7 @@ export const EdgeEditPopover = memo(({ mapId }: EdgeEditPopoverProps) => {
         onEscapeKeyDown={cancelEdgeEditing}
       >
         {/* Relation Type */}
-        <div className='mb-4 space-y-2'>
-          <span className='text-xs font-medium text-muted-foreground'>
-            {t('edgeEdit.relationType', 'Relation type')}
-          </span>
+        <div className='mb-3'>
           <div className='grid grid-cols-2 gap-1'>
             {ALL_RELATION_TYPES.map(type => (
               <EdgeTypeButton
@@ -155,13 +151,13 @@ export const EdgeEditPopover = memo(({ mapId }: EdgeEditPopoverProps) => {
         </div>
 
         {/* Label */}
-        <div className='mb-4 space-y-2'>
-          <span className='text-xs font-medium text-muted-foreground'>{t('edgeEdit.label')}</span>
+        <div className='mb-3'>
           <Input
             value={localLabel}
             onChange={e => handleLabelChange(e.target.value)}
             placeholder={t('edgeEdit.labelPlaceholder')}
-            className='h-8 text-sm rounded-md'
+            aria-label={t('edgeEdit.label', 'Label')}
+            className='h-8 text-sm rounded-sm'
           />
         </div>
 
@@ -170,11 +166,10 @@ export const EdgeEditPopover = memo(({ mapId }: EdgeEditPopoverProps) => {
           <Button
             variant='ghost'
             size='sm'
-            className='text-muted-foreground hover:text-destructive hover:bg-destructive/10'
+            className='h-7 px-2.5 text-[11px] text-muted-foreground rounded-xs hover:text-destructive hover:bg-destructive/10'
             onClick={handleDelete}
             disabled={deleteEdge.isPending}
           >
-            <Trash01Icon className='mr-1.5 h-3.5 w-3.5' />
             {t('common.remove', 'Remove')}
           </Button>
         </div>

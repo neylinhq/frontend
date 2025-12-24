@@ -128,9 +128,9 @@ const HistoryEventItem = memo(({ event }: HistoryEventItemProps) => {
       return 'text-destructive/70'
     }
     if (event.eventType.includes('created')) {
-      return 'text-emerald-500/70'
+      return 'text-success/70'
     }
-    return 'text-blue-500/70'
+    return 'text-info/70'
   }, [event.eventType])
 
   // Extract label from changes if available

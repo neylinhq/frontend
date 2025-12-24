@@ -137,10 +137,11 @@ export const ChatSelectorRow = ({
               <DotsHorizontalIcon className="h-2.5 w-2.5" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="rounded-xl p-1">
+          <DropdownMenuContent align="end" className="rounded-xl p-1.5">
             <DropdownMenuItem
               onClick={onCreateSession}
               disabled={isLoading}
+              className="text-xs"
             >
               {t('ai.chat.newChat', 'New chat')}
             </DropdownMenuItem>
@@ -148,13 +149,14 @@ export const ChatSelectorRow = ({
             <DropdownMenuItem
               onClick={onCloseOthers}
               disabled={!canCloseOthers}
+              className="text-xs"
             >
               {t('ai.chat.closeOthers', 'Close others')}
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={onCloseAll}
               disabled={!canCloseAll}
-              className="text-destructive data-[highlighted]:text-destructive focus:text-destructive"
+              className="text-xs text-destructive data-[highlighted]:text-destructive focus:text-destructive"
             >
               {t('ai.chat.closeAll', 'Delete all chats')}
             </DropdownMenuItem>

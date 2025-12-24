@@ -105,7 +105,7 @@ export const EdgeTypeSelector = memo(({ mapId, onComplete, onCancel }: EdgeTypeS
       }}
     >
       {/* Header */}
-      <div className='mb-3 flex items-center gap-2 text-sm'>
+      <div className='mb-2.5 flex items-center gap-2 text-xs'>
         <span className='max-w-[80px] truncate font-medium'>{pendingEdge.sourceLabel}</span>
         <ArrowRightIcon className='h-3 w-3 shrink-0 text-muted-foreground' />
         <span className='max-w-[80px] truncate font-medium'>{pendingEdge.targetLabel}</span>
@@ -126,11 +126,16 @@ export const EdgeTypeSelector = memo(({ mapId, onComplete, onCancel }: EdgeTypeS
 
       {/* Actions */}
       <div className='flex justify-end gap-2'>
-        <Button variant='ghost' size='sm' onClick={handleCancel}>
+        <Button variant='ghost' size='sm' className='h-7 px-2.5 text-xs' onClick={handleCancel}>
           <XCloseIcon className='mr-1 h-3.5 w-3.5' />
           {t('common.cancel')}
         </Button>
-        <Button size='sm' onClick={handleConfirm} disabled={createEdge.isPending}>
+        <Button
+          size='sm'
+          className='h-7 px-2.5 text-xs'
+          onClick={handleConfirm}
+          disabled={createEdge.isPending}
+        >
           <CheckIcon className='mr-1 h-3.5 w-3.5' />
           {t('common.create')}
         </Button>

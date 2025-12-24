@@ -197,7 +197,7 @@
   "edgeEdit": {
     "relationType": "Тип связи",
     "label": "Подпись",
-    "labelPlaceholder": "напр. вдохновляет, развивает...",
+    "labelPlaceholder": "подпись, напр. вдохновляет, развивает",
     "strength": "Сила",
     "bidirectional": "Двунаправленная",
     "delete": "Удалить связь"

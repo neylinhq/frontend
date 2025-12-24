@@ -114,7 +114,7 @@ export const OtpInput = ({
             'focus:outline-none focus:ring-2 focus:ring-offset-1',
             'disabled:cursor-not-allowed disabled:opacity-50',
             error
-              ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20'
+              ? 'border-destructive focus:border-destructive focus:ring-destructive/20'
               : 'border-border focus:border-primary focus:ring-primary/20',
             'bg-background text-foreground'
           )}

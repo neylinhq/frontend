@@ -57,7 +57,7 @@ export const NodeTagsInput = ({ value, onChange }: NodeTagsInputProps) => {
               <button
                 type='button'
                 onClick={() => handleRemoveTag(tag)}
-                className='ml-1 rounded-full hover:bg-muted'
+                className='ml-1 rounded-xs p-0.5 hover:bg-muted'
               >
                 <XCloseIcon className='h-3 w-3' />
               </button>

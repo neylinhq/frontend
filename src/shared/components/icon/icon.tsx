@@ -16,7 +16,7 @@ export interface IconProps extends Omit<SVGProps<SVGSVGElement>, 'viewBox' | 'ch
 /**
  * Universal Icon component that adapts to currentColor
  * @example
- * <Icon data={visaIcon} size={24} className="text-blue-600" />
+ * <Icon data={visaIcon} size={24} className="text-brand" />
  */
 export const Icon = ({ data, size = 24, className, ...props }: IconProps) => {
   const sizeValue = typeof size === 'number' ? `${size}px` : size

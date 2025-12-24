@@ -148,7 +148,7 @@ export const TwoFactorForm = ({
   return (
     <div className='grid gap-6'>
       <div className='flex flex-col items-center gap-4 text-center'>
-        <div className='flex h-16 w-16 items-center justify-center rounded-full bg-primary/10'>
+        <div className='flex h-16 w-16 items-center justify-center rounded-full bg-primary/5'>
           {getIcon()}
         </div>
         <div className='space-y-2'>

@@ -57,14 +57,14 @@ export const RATING_SEGMENTS = {
  * Using Tailwind CSS custom properties
  */
 export const RATING_TIER_COLORS: Record<RatingTier, string> = {
-  Novice: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300',
-  Apprentice: 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300',
-  Journeyman: 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300',
-  Expert: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300',
-  Master: 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300',
-  Grandmaster: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300',
-  Legend: 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300',
-  Mythic: 'bg-pink-100 text-pink-700 dark:bg-pink-900 dark:text-pink-300'
+  Novice: 'bg-rating-novice/10 text-rating-novice',
+  Apprentice: 'bg-rating-apprentice/10 text-rating-apprentice',
+  Journeyman: 'bg-rating-journeyman/10 text-rating-journeyman',
+  Expert: 'bg-rating-expert/10 text-rating-expert',
+  Master: 'bg-rating-master/10 text-rating-master',
+  Grandmaster: 'bg-rating-grandmaster/10 text-rating-grandmaster',
+  Legend: 'bg-rating-legend/10 text-rating-legend',
+  Mythic: 'bg-rating-mythic/10 text-rating-mythic'
 }
 
 /**
@@ -106,14 +106,14 @@ export interface TierInfo {
  * Rating tier border colors for nodes
  */
 export const RATING_TIER_BORDER_COLORS: Record<RatingTier, string> = {
-  Novice: 'border-gray-400',
-  Apprentice: 'border-blue-500',
-  Journeyman: 'border-green-500',
-  Expert: 'border-yellow-500',
-  Master: 'border-orange-500',
-  Grandmaster: 'border-red-500',
-  Legend: 'border-purple-500',
-  Mythic: 'border-pink-500'
+  Novice: 'border-rating-novice',
+  Apprentice: 'border-rating-apprentice',
+  Journeyman: 'border-rating-journeyman',
+  Expert: 'border-rating-expert',
+  Master: 'border-rating-master',
+  Grandmaster: 'border-rating-grandmaster',
+  Legend: 'border-rating-legend',
+  Mythic: 'border-rating-mythic'
 }
 
 // ============================================================================

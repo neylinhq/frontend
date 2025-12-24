@@ -85,7 +85,7 @@ export const NodeMetadataForm = ({ node, onSubmit, isPending, disabled }: NodeMe
               <button
                 type='button'
                 onClick={() => handleRemoveTag(tag)}
-                className='ml-0.5 rounded-full hover:bg-muted-foreground/20'
+                className='ml-0.5 rounded-xs p-0.5 hover:bg-muted-foreground/20'
                 disabled={disabled}
               >
                 <XCloseIcon className='h-3 w-3' />
@@ -98,7 +98,7 @@ export const NodeMetadataForm = ({ node, onSubmit, isPending, disabled }: NodeMe
             onKeyDown={handleTagKeyDown}
             onBlur={handleAddTag}
             placeholder={tags.length === 0 ? t('form.tags.placeholder') : '+'}
-            className='h-6 min-w-[60px] max-w-[120px] flex-1 border-dashed text-xs px-2'
+            className='h-6 min-w-[60px] max-w-[120px] flex-1 border-dashed text-xs px-2 rounded-sm'
             disabled={disabled}
           />
         </div>

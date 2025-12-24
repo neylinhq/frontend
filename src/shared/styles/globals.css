@@ -414,11 +414,12 @@
   :root {
     /* Selection opacity - used globally and in editor */
     --selection-opacity: 0.3;
-    --surface-hover: color-mix(
+    /* --surface-hover: color-mix(
       in oklch,
       color-mix(in oklch, oklch(var(--muted)) 75%, oklch(var(--background)) 25%) 88%,
       transparent
-    );
+    ); */
+    --surface-hover: oklch(var(--accent));
 
     /* Theme preview colors (don't change with theme) */
     --preview-classic: 0.53 0.26 263;        /* Blue #0055FF */
@@ -765,8 +766,8 @@
     --secondary-foreground: 0.12 0.004 50;
     --muted: 0.96 0.003 50;
     --muted-foreground: 0.42 0.003 50;
-    --accent: 0.95 0.004 50;
-    --accent-foreground: 0.12 0.004 50;
+    --accent: 0.95 0 0;
+    --accent-foreground: 0.12 0 0;
     --destructive: 0.58 0.21 25;             /* Red (C×0.95) */
     --destructive-foreground: 0.99 0 0;
     --success: 0.55 0.16 145;                /* Green (C×0.95) */
@@ -966,8 +967,8 @@
     --secondary-foreground: 0.14 0.006 250;
     --muted: 0.96 0.004 250;
     --muted-foreground: 0.42 0.005 250; /* Good contrast */
-    --accent: 0.95 0.005 250;
-    --accent-foreground: 0.12 0.006 250;
+    --accent: 0.95 0 0;
+    --accent-foreground: 0.12 0 0;
     --destructive: 0.58 0.23 25;        /* Vivid red, C×1.05 */
     --destructive-foreground: 0.99 0 0;
     --success: 0.58 0.18 160;           /* Vivid teal-green */

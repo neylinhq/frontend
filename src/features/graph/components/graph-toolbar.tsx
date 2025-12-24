@@ -155,7 +155,7 @@ export const GraphToolbar = memo(
           )}
 
           {/* View Mode Selector */}
-          <div className='flex items-center gap-0.5 bg-muted/60 rounded-lg p-1'>
+          <div className='flex items-center gap-1 bg-muted/60 rounded-lg p-1'>
             {(Object.keys(VIEW_MODE_CONFIG) as ViewMode[]).map(mode => {
               const config = VIEW_MODE_CONFIG[mode]
               const Icon = config.icon
@@ -314,7 +314,7 @@ export const GraphToolbar = memo(
                     key={preset}
                     size='sm'
                     variant={activePreset === preset ? 'secondary' : 'ghost'}
-                    className='h-6 px-2 text-xs flex-1'
+                    className='h-6 px-2 text-xs flex-1 rounded-xs'
                     onClick={() => setConnectionPreset(preset)}
                   >
                     {t(`graph.filters.preset.${preset}`)}
@@ -345,7 +345,7 @@ export const GraphToolbar = memo(
                   <Button
                     size='sm'
                     variant='ghost'
-                    className='h-6 px-2 text-xs w-full text-muted-foreground'
+                    className='h-6 px-2 text-xs w-full text-muted-foreground rounded-xs'
                     onClick={() => setConnectionPreset('all')}
                   >
                     {t('graph.filters.resetConnections')}

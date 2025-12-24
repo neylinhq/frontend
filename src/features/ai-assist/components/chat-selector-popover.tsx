@@ -118,7 +118,7 @@ export const ChatSelectorPopover = ({
             placeholder={t('ai.chat.searchChats', 'Search chats...')}
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className='h-8 pl-7 text-xs bg-muted/30 border-border/60 rounded-xs'
+            className='h-8 pl-7 text-xs bg-muted/30 border-border/60 rounded-sm'
           />
         </div>
       </div>

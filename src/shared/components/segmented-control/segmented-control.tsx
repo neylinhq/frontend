@@ -20,14 +20,14 @@ export const SegmentedControl = <T extends string>({
   className
 }: SegmentedControlProps<T>) => {
   return (
-    <div className={cn('flex gap-1.5 rounded-xl bg-muted/50 p-1 w-fit', className)}>
+    <div className={cn('flex gap-1.5 rounded-md bg-muted/50 p-1 w-fit', className)}>
       {options.map(option => (
         <button
           key={option.value}
           type='button'
           onClick={() => onChange(option.value)}
           className={cn(
-            'rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-150 cursor-pointer',
+            'rounded-sm px-3 py-1.5 text-xs font-medium transition-all duration-150 cursor-pointer',
             value === option.value
               ? 'bg-background text-foreground'
               : 'text-muted-foreground hover:text-foreground'

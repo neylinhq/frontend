@@ -44,7 +44,7 @@ const EDGE_TYPE_COLORS: Record<string, string> = {
   'similar-to': 'bg-edge-similar-to-muted text-edge-similar-to'
 }
 
-const TAG_BASE_CLASSES = 'text-[10px] font-medium lowercase rounded-xs px-2 py-0.5'
+const TAG_BASE_CLASSES = 'text-[10px] font-medium lowercase rounded-xs px-2 py-[3px] leading-[1.45]'
 type EdgeGroup = { key: string; label: string; isNew: boolean; edges: GraphFragmentEdge[] }
 
 interface GraphFragmentCardProps {
@@ -265,18 +265,13 @@ export const GraphFragmentCard = ({
 
             {/* Edges */}
             {data.edges.length > 0 && (
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {groupedEdges.map(group => (
-                  <div key={group.key} className="space-y-2">
-                    <div
-                      className={cn(
-                        'inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[11px] font-medium',
-                        group.isNew ? 'bg-primary/15 text-primary' : 'bg-muted/30 text-foreground/80'
-                      )}
-                    >
+                  <div key={group.key} className="space-y-1.5">
+                    <div className="text-[11px] font-medium text-foreground/70">
                       {group.label}
                     </div>
-                    <div className="space-y-1 pl-3 border-l border-border/60">
+                    <div className="space-y-1">
                       {group.edges.map(edge => {
                         const toLabel = getEdgeLabel(edge.toRef, edge.toIsNew)
                         const edgeColorClasses = EDGE_TYPE_COLORS[edge.relation] ?? 'bg-muted text-muted-foreground'
@@ -380,19 +375,14 @@ export const GraphFragmentCard = ({
           )}
 
           {/* Edges section */}
-          {data.edges.length > 0 && (
-            <div className="space-y-4">
+            {data.edges.length > 0 && (
+            <div className="space-y-3">
               {groupedEdges.map(group => (
-                <div key={group.key} className="space-y-2">
-                  <div
-                    className={cn(
-                      'inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[11px] font-medium',
-                      group.isNew ? 'bg-primary/15 text-primary' : 'bg-muted/30 text-foreground/80'
-                    )}
-                  >
+                <div key={group.key} className="space-y-1.5">
+                  <div className="text-[11px] font-medium text-foreground/70">
                     {group.label}
                   </div>
-                  <div className="space-y-1 pl-3 border-l border-border/60">
+                  <div className="space-y-1">
                     {group.edges.map(edge => (
                       <EdgeRow
                         key={edge.tempId}

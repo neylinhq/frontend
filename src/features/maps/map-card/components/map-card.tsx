@@ -56,7 +56,7 @@ export const MapCard = memo(
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant='ghost' className='h-8 w-8 p-0 shrink-0'>
+              <Button variant='ghost' className='h-8 w-8 p-0 shrink-0 rounded-sm'>
                 <span className='sr-only'>{t('dashboard.mapCard.menu')}</span>
                 <DotsHorizontalIcon className='h-4 w-4' />
               </Button>
@@ -123,12 +123,12 @@ export const MapCard = memo(
             <div className='mt-2'>
               <div className='flex flex-wrap gap-1'>
                 {matchedNodes.slice(0, 3).map(node => (
-                  <Badge key={node.id} variant='outline' className='text-[10px] px-1.5 py-0'>
+                  <Badge key={node.id} variant='outline' className='text-[10px] px-2 py-0.5'>
                     {node.label}
                   </Badge>
                 ))}
                 {matchedNodes.length > 3 && (
-                  <Badge variant='outline' className='text-[10px] px-1.5 py-0'>
+                  <Badge variant='outline' className='text-[10px] px-2 py-0.5'>
                     +{matchedNodes.length - 3}
                   </Badge>
                 )}

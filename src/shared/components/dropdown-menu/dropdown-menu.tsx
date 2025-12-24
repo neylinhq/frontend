@@ -25,7 +25,7 @@ const DropdownMenuSubTrigger = React.forwardRef<
   <DropdownMenuPrimitive.SubTrigger
     ref={ref}
     className={cn(
-      'flex cursor-pointer select-none items-center rounded-md px-2 py-1.5 text-sm outline-none',
+      'flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none',
       'data-[highlighted]:bg-[var(--surface-hover)] data-[highlighted]:text-foreground',
       'data-[state=open]:bg-[var(--surface-hover)] data-[state=open]:text-foreground',
       'focus:bg-[var(--surface-hover)] focus:text-foreground',
@@ -83,7 +83,7 @@ const DropdownMenuItem = React.forwardRef<
   <DropdownMenuPrimitive.Item
     ref={ref}
     className={cn(
-      'relative flex cursor-pointer select-none items-center rounded-md px-2 py-1.5 text-sm outline-none transition-colors',
+      'relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors',
       'data-[highlighted]:bg-[var(--surface-hover)] data-[highlighted]:text-foreground',
       'focus:bg-[var(--surface-hover)] focus:text-foreground',
       'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
@@ -102,7 +102,7 @@ const DropdownMenuCheckboxItem = React.forwardRef<
   <DropdownMenuPrimitive.CheckboxItem
     ref={ref}
     className={cn(
-      'relative flex cursor-pointer select-none items-center rounded-md py-1.5 pl-8 pr-2 text-sm outline-none transition-colors',
+      'relative flex cursor-pointer select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none transition-colors',
       'data-[highlighted]:bg-[var(--surface-hover)] data-[highlighted]:text-foreground',
       'focus:bg-[var(--surface-hover)] focus:text-foreground',
       'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
@@ -128,7 +128,7 @@ const DropdownMenuRadioItem = React.forwardRef<
   <DropdownMenuPrimitive.RadioItem
     ref={ref}
     className={cn(
-      'relative flex cursor-pointer select-none items-center rounded-md py-1.5 pl-8 pr-2 text-sm outline-none transition-colors',
+      'relative flex cursor-pointer select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none transition-colors',
       'data-[highlighted]:bg-[var(--surface-hover)] data-[highlighted]:text-foreground',
       'focus:bg-[var(--surface-hover)] focus:text-foreground',
       'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',

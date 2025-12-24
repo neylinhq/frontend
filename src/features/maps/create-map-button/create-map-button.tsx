@@ -23,7 +23,7 @@ export const CreateMapCard = memo(({ className }: CreateMapCardProps) => {
       asChild
     >
       <Link to={MAPS_ROUTES.new}>
-        <div className='h-10 w-10 rounded-full bg-muted flex items-center justify-center'>
+        <div className='h-10 w-10 rounded-lg bg-muted flex items-center justify-center'>
           <PlusIcon className='h-6 w-6 text-muted-foreground' />
         </div>
         <span className='font-semibold text-lg'>{t('dashboard.createMap.title')}</span>

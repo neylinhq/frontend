@@ -88,7 +88,7 @@ export const SelectPopover = <T extends string = string>({
                   key={item.value}
                   onClick={() => handleSelect(item.value)}
               className={cn(
-                'flex items-center gap-2 rounded-md px-2 py-1.5 text-sm outline-none',
+                'flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none',
                 'hover:bg-[var(--surface-hover)] hover:text-foreground',
                 'focus-visible:bg-[var(--surface-hover)] focus-visible:text-foreground',
                 'cursor-pointer transition-colors'

@@ -214,7 +214,7 @@ export const OverviewPage = () => {
             placeholder={t('dashboard.overview.searchPlaceholder')}
             value={searchInput}
             onChange={e => handleSearchChange(e.target.value)}
-            className='pl-9'
+            className='pl-9 text-sm'
           />
         </div>
       </div>

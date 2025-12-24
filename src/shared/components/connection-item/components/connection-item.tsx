@@ -40,7 +40,7 @@ export const ConnectionItem = memo(
       <button
         type='button'
         className={cn(
-          'group w-full text-left rounded-lg transition-all duration-150',
+          'group w-full text-left rounded-md transition-all duration-150',
           'hover:bg-muted/60',
           className
         )}
@@ -50,7 +50,7 @@ export const ConnectionItem = memo(
           {/* Icon */}
           <div
             className={cn(
-              'flex items-center justify-center w-8 h-8 rounded-md flex-shrink-0',
+              'flex items-center justify-center w-8 h-8 rounded-sm flex-shrink-0',
               'bg-muted/60 group-hover:bg-muted transition-colors'
             )}
           >
@@ -91,7 +91,7 @@ export const ConnectionItem = memo(
                         onPanTo()
                       }}
                       className={cn(
-                        'p-1.5 rounded-md transition-colors',
+                        'p-1.5 rounded-sm transition-colors',
                         'text-muted-foreground hover:text-foreground hover:bg-background'
                       )}
                       title={panToTitle}
@@ -107,7 +107,7 @@ export const ConnectionItem = memo(
                         onOpen()
                       }}
                       className={cn(
-                        'p-1.5 rounded-md transition-colors',
+                        'p-1.5 rounded-sm transition-colors',
                         'text-muted-foreground hover:text-foreground hover:bg-background'
                       )}
                       title={openTitle}
@@ -126,7 +126,7 @@ export const ConnectionItem = memo(
                     onEdit()
                   }}
                   className={cn(
-                    'p-1.5 rounded-md transition-colors',
+                    'p-1.5 rounded-sm transition-colors',
                     'text-muted-foreground hover:text-foreground hover:bg-background'
                   )}
                   title={editTitle}
@@ -142,7 +142,7 @@ export const ConnectionItem = memo(
                     onDelete()
                   }}
                   className={cn(
-                    'p-1.5 rounded-md transition-colors',
+                    'p-1.5 rounded-sm transition-colors',
                     'text-muted-foreground hover:text-destructive hover:bg-destructive/10'
                   )}
                   title={deleteTitle}

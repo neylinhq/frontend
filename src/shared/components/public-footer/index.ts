@@ -1,1 +1,1 @@
-export { PublicFooter } from './public-footer'
+export { PublicFooter } from './components/public-footer'

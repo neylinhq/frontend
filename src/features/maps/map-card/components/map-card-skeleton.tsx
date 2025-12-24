@@ -10,7 +10,7 @@ export function MapCardSkeleton() {
           <Skeleton className='h-4 w-32' />
         </div>
         {/* Menu button */}
-        <Skeleton className='h-8 w-8 rounded-md shrink-0' />
+        <Skeleton className='h-8 w-8 rounded-sm shrink-0' />
       </CardHeader>
       <CardContent>
         {/* Description - 2 lines */}

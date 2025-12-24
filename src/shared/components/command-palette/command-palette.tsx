@@ -157,7 +157,7 @@ export const CommandPalette = <T extends CommandPaletteItem>({
                       onClick={() => handleSelect(item)}
                       onMouseEnter={() => setSelectedIndex(globalIndex)}
                       className={cn(
-                        'w-full rounded-lg transition-colors',
+                        'w-full rounded-md transition-colors',
                         isSelected ? 'bg-accent' : 'hover:bg-accent/50'
                       )}
                     >
@@ -179,7 +179,7 @@ export const CommandPalette = <T extends CommandPaletteItem>({
                   onClick={() => handleSelect(item)}
                   onMouseEnter={() => setSelectedIndex(index)}
                   className={cn(
-                    'w-full rounded-lg transition-colors',
+                    'w-full rounded-md transition-colors',
                     isSelected ? 'bg-accent' : 'hover:bg-accent/50'
                   )}
                 >

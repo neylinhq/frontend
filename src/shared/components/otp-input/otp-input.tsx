@@ -110,7 +110,7 @@ export const OtpInput = ({
           onFocus={() => handleFocus(index)}
           disabled={disabled}
           className={cn(
-            'w-12 h-14 text-center text-2xl font-semibold rounded-lg border-2 transition-all duration-200',
+            'w-12 h-14 text-center text-2xl font-semibold rounded-md border-2 transition-all duration-200',
             'focus:outline-none focus:ring-2 focus:ring-offset-1',
             'disabled:cursor-not-allowed disabled:opacity-50',
             error

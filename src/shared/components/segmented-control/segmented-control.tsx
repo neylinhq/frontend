@@ -20,7 +20,7 @@ export const SegmentedControl = <T extends string>({
   className
 }: SegmentedControlProps<T>) => {
   return (
-    <div className={cn('flex gap-1.5 rounded-md bg-muted/50 p-1 w-fit', className)}>
+    <div className={cn('flex gap-1.5 rounded-lg bg-muted/50 p-1 w-fit', className)}>
       {options.map(option => (
         <button
           key={option.value}

@@ -49,7 +49,7 @@ const tabsTriggerVariants = cva(
         underline:
           'h-full rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent',
         iconbar:
-          'h-8 w-8 rounded-lg text-muted-foreground data-[state=inactive]:hover:bg-muted/80 data-[state=inactive]:hover:text-foreground data-[state=active]:bg-muted data-[state=active]:text-foreground'
+          'h-8 w-8 rounded-md text-muted-foreground data-[state=inactive]:hover:bg-muted/80 data-[state=inactive]:hover:text-foreground data-[state=active]:bg-muted data-[state=active]:text-foreground'
       }
     },
     defaultVariants: {

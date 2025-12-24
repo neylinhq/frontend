@@ -1,2 +1,2 @@
-export { ErrorBoundary, type ErrorBoundaryLevel } from './error-boundary'
-export { ErrorFallback } from './error-fallback'
+export { ErrorBoundary, type ErrorBoundaryLevel } from './components/error-boundary'
+export { ErrorFallback } from './components/error-fallback'

@@ -134,7 +134,7 @@ export function LoginForm() {
   })
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+    // handle submit
   }
 
   return (

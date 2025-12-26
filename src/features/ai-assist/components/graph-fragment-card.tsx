@@ -44,7 +44,7 @@ const EDGE_TYPE_COLORS: Record<string, string> = {
   'similar-to': 'bg-edge-similar-to-muted text-edge-similar-to'
 }
 
-const TAG_BASE_CLASSES = 'text-[10px] font-medium lowercase rounded-xs px-2 py-[3px] leading-[1.45]'
+const TAG_BASE_CLASSES = 'text-xs font-medium lowercase rounded-xs px-2 py-0.5 leading-tight'
 type EdgeGroup = { key: string; label: string; isNew: boolean; edges: GraphFragmentEdge[] }
 
 interface GraphFragmentCardProps {
@@ -225,15 +225,17 @@ export const GraphFragmentCard = ({
           />
 
           {/* Summary */}
-          <span className="text-[10px] text-muted-foreground flex-1 truncate">
+          <span className="text-xs text-muted-foreground flex-1 truncate">
             {summary}
           </span>
 
           {/* Status text */}
-          <span className={cn(
-            'text-[10px] flex-shrink-0',
-            status === 'approved' ? 'text-muted-foreground/60' : 'text-muted-foreground/50'
-          )}>
+          <span
+            className={cn(
+              'text-xs flex-shrink-0',
+              status === 'approved' ? 'text-muted-foreground/60' : 'text-muted-foreground/50'
+            )}
+          >
             {status === 'approved' ? t('ai.status.applied', 'Applied') : t('ai.status.skipped', 'Skipped')}
           </span>
         </button>
@@ -268,7 +270,7 @@ export const GraphFragmentCard = ({
               <div className="space-y-3">
                 {groupedEdges.map(group => (
                   <div key={group.key} className="space-y-1.5">
-                    <div className="text-[11px] font-medium text-foreground/70">
+                    <div className="text-xs font-medium text-foreground/70">
                       {group.label}
                     </div>
                     <div className="space-y-1">
@@ -328,10 +330,10 @@ export const GraphFragmentCard = ({
             isExpanded && 'rotate-90'
           )}
         />
-        <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground flex-1 truncate">
+        <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground flex-1 truncate">
           {data.title || t('ai.graphFragment.title', 'Graph Changes')}
         </span>
-        <span className="text-[10px] text-muted-foreground">
+        <span className="text-xs text-muted-foreground">
           {summary}
         </span>
       </button>
@@ -379,7 +381,7 @@ export const GraphFragmentCard = ({
             <div className="space-y-3">
               {groupedEdges.map(group => (
                 <div key={group.key} className="space-y-1.5">
-                  <div className="text-[11px] font-medium text-foreground/70">
+                  <div className="text-xs font-medium text-foreground/70">
                     {group.label}
                   </div>
                   <div className="space-y-1">

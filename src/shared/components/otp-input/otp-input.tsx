@@ -111,11 +111,11 @@ export const OtpInput = ({
           disabled={disabled}
           className={cn(
             'w-12 h-14 text-center text-2xl font-semibold rounded-md border-2 transition-all duration-200',
-            'focus:outline-none focus:ring-2 focus:ring-offset-1',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1',
             'disabled:cursor-not-allowed disabled:opacity-50',
             error
-              ? 'border-destructive focus:border-destructive focus:ring-destructive/20'
-              : 'border-border focus:border-primary focus:ring-primary/20',
+              ? 'border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20'
+              : 'border-border focus-visible:border-primary focus-visible:ring-primary/20',
             'bg-background text-foreground'
           )}
           aria-label={`Digit ${index + 1} of ${length}`}

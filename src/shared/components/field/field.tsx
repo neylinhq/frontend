@@ -3,7 +3,7 @@ import { Label } from '@/shared/components/label'
 import { cn } from '@/shared/lib/cn'
 
 interface FieldProps {
-  label: string
+  label: React.ReactNode
   error?: string
   description?: string
   required?: boolean

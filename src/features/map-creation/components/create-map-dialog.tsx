@@ -11,8 +11,8 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/shared/components/dialog'
+import { Field } from '@/shared/components/field'
 import { Input } from '@/shared/components/input'
-import { Label } from '@/shared/components/label'
 import { Textarea } from '@/shared/components/textarea'
 import { toast } from '@/shared/components/toast'
 import { MAPS_ROUTES } from '@/shared/config'
@@ -105,7 +105,7 @@ export const CreateMapDialog = () => {
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={open => !open && closeDialog()}>
-      <DialogContent className='sm:max-w-[500px]'>
+      <DialogContent className='sm:max-w-lg'>
         <DialogHeader>
           <DialogTitle>{t('mapCreation.dialog.title')}</DialogTitle>
           <DialogDescription>{t('mapCreation.dialog.description')}</DialogDescription>
@@ -114,20 +114,18 @@ export const CreateMapDialog = () => {
         <div className='space-y-4 py-4'>
           {/* Title Input */}
           <div className='space-y-2'>
-            <Label htmlFor='map-title'>
-              {t('mapCreation.form.title.label')} <span className='text-destructive'>*</span>
-            </Label>
-            <Input
-              id='map-title'
-              ref={titleInputRef}
-              value={title}
-              onChange={e => setTitle(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder={t('mapCreation.form.title.placeholder')}
-              maxLength={MAP_CREATION_CONFIG.TITLE_MAX_LENGTH}
-              aria-required='true'
-              aria-invalid={!isTitleValid && title.length > 0}
-            />
+            <Field label={t('mapCreation.form.title.label')} required htmlFor='map-title'>
+              <Input
+                id='map-title'
+                ref={titleInputRef}
+                value={title}
+                onChange={e => setTitle(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder={t('mapCreation.form.title.placeholder')}
+                maxLength={MAP_CREATION_CONFIG.TITLE_MAX_LENGTH}
+                aria-required='true'
+              />
+            </Field>
             <p className='text-xs text-muted-foreground'>
               {title.length}/{MAP_CREATION_CONFIG.TITLE_MAX_LENGTH}
             </p>
@@ -135,17 +133,17 @@ export const CreateMapDialog = () => {
 
           {/* Description Textarea */}
           <div className='space-y-2'>
-            <Label htmlFor='map-description'>{t('mapCreation.form.description.label')}</Label>
-            <Textarea
-              id='map-description'
-              value={description}
-              onChange={e => setDescription(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder={t('mapCreation.form.description.placeholder')}
-              maxLength={MAP_CREATION_CONFIG.DESCRIPTION_MAX_LENGTH}
-              rows={4}
-              aria-invalid={!isDescriptionValid}
-            />
+            <Field label={t('mapCreation.form.description.label')} htmlFor='map-description'>
+              <Textarea
+                id='map-description'
+                value={description}
+                onChange={e => setDescription(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder={t('mapCreation.form.description.placeholder')}
+                maxLength={MAP_CREATION_CONFIG.DESCRIPTION_MAX_LENGTH}
+                rows={4}
+              />
+            </Field>
             <p className='text-xs text-muted-foreground'>
               {description.length}/{MAP_CREATION_CONFIG.DESCRIPTION_MAX_LENGTH}
             </p>

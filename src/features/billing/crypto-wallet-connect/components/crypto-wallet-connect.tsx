@@ -42,7 +42,7 @@ export const CryptoWalletConnectDialog = (props: CryptoWalletConnectDialogProps)
   if (!mounted) {
     return (
       <Dialog open={props.open} onOpenChange={props.onOpenChange}>
-        <DialogContent className='sm:max-w-[480px]'>
+        <DialogContent className='sm:max-w-lg'>
           <DialogHeader>
             <DialogTitle>{t('billing.crypto.title')}</DialogTitle>
             <DialogDescription>{t('billing.crypto.description')}</DialogDescription>
@@ -57,7 +57,7 @@ export const CryptoWalletConnectDialog = (props: CryptoWalletConnectDialogProps)
 
   return (
     <Dialog open={props.open} onOpenChange={props.onOpenChange}>
-      <DialogContent className='sm:max-w-[480px]'>
+      <DialogContent className='sm:max-w-lg'>
         <DialogHeader>
           <DialogTitle>{t('billing.crypto.title')}</DialogTitle>
           <DialogDescription>{t('billing.crypto.description')}</DialogDescription>

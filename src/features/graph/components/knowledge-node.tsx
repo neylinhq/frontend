@@ -43,10 +43,10 @@ const KnowledgeNodeComponent = ({ data }: KnowledgeNodeProps) => {
   return (
     <Card
       className={cn(
-        'rounded-md',
-        'min-w-[220px] max-w-[280px] cursor-grab active:cursor-grabbing',
-        'bg-card border-r border-t border-b border-border',
-        'border-l-[3px]',
+        'rounded-lg',
+        'min-w-56 max-w-72 cursor-grab active:cursor-grabbing',
+        'bg-card border border-border',
+        'border-l-2',
         getNodeBorderColor(data.type),
         'transition-all duration-200',
         // Dimmed state - reduced opacity
@@ -67,11 +67,11 @@ const KnowledgeNodeComponent = ({ data }: KnowledgeNodeProps) => {
         className='w-3 h-3 bg-border border-2 border-background'
       />
 
-      <div className='py-4 px-6 flex flex-col'>
+      <div className='py-4 px-5 flex flex-col'>
         {/* Icon + Title (always visible) */}
         <div className='flex items-start gap-3'>
           <Icon className='w-5 h-5 flex-shrink-0 text-muted-foreground' />
-          <h3 className='text-lg font-semibold leading-tight break-words'>{data.label}</h3>
+          <h3 className='text-base font-semibold leading-snug break-words'>{data.label}</h3>
         </div>
 
         {/* Tags - under title, LOD: hidden at low zoom */}

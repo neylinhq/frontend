@@ -2,6 +2,7 @@ import { GraduationHat01Icon, Loading02Icon, PlayIcon, Stars01Icon } from '@unti
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { useGenerateExercises, useNextExercise } from '@/entities/exercise'
+import { ApiError } from '@/shared/api/client'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import { toast } from '@/shared/components/toast'
@@ -28,10 +29,15 @@ export const PracticePanel = ({ nodeId, mapId }: PracticePanelProps) => {
         }
       },
       {
-        onError: (error: any) => {
+        onError: (error: unknown) => {
           // ApiError has data property directly (not response.data like axios)
-          const message = error?.data?.error?.message || t('errors.failedGenerateExercises')
-          toast.error(message)
+          const message =
+            error instanceof ApiError &&
+            typeof error.data === 'object' &&
+            error.data !== null
+              ? (error.data as { error?: { message?: string } }).error?.message
+              : null
+          toast.error(message ?? t('errors.failedGenerateExercises'))
         }
       }
     )
@@ -87,10 +93,10 @@ export const PracticePanel = ({ nodeId, mapId }: PracticePanelProps) => {
     <div className='flex h-full flex-col gap-4 p-4'>
       <div className='rounded-lg border border-border/60 bg-muted/20 p-3 space-y-2'>
         <div className='flex items-center justify-between gap-2'>
-          <span className='text-[10px] font-medium uppercase tracking-wider text-muted-foreground'>
+          <span className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
             {t('practice.panel.nextUp', 'Next up')}
           </span>
-          <Badge variant='secondary' className='text-[10px] font-medium'>
+          <Badge variant='secondary' className='text-xs font-medium'>
             {t(`practice.types.${exercise.type}`, exercise.type)}
           </Badge>
         </div>

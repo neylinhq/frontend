@@ -8,15 +8,16 @@
  */
 
 import { Loading02Icon } from '@untitledui/icons-react/outline'
-import { memo, useCallback, useRef, useState } from 'react'
+import { memo, useCallback, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Edge, FullMap, Node } from '@/entities/map'
-import { useFullMap } from '@/entities/map'
+import { useFullMap, useUpdateNodePosition } from '@/entities/map'
 import { GraphToolbar } from '@/features/graph/components/graph-toolbar'
 import { NodeDrawer } from '@/features/graph/components/node-drawer'
 import { ViewControlsPanel } from '@/features/graph/components/view-controls-panel'
 import { useGraphControls } from '@/features/graph/model/graph.controls.hooks'
 import { useFilteredGraphData } from '@/features/graph/model/graph.data.hooks'
+import { useGraphKeyboard } from '@/features/graph/model/graph.keyboard.hooks'
 import { useNodeSelection } from '@/features/graph/model/graph.selection.hooks'
 import {
   useFilters,
@@ -43,6 +44,8 @@ interface GraphWebGLVisualizationProps {
   initialData?: FullMap
   /** Callback when node is selected - when provided, internal NodeDrawer is hidden */
   onNodeSelect?: (node: Node | null) => void
+  /** Callback when viewport changes (pan/zoom) */
+  onViewportChange?: (viewport: ViewportState) => void
   renderConnectionsPanel?: (
     node: Node,
     edges: Edge[],
@@ -60,6 +63,7 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
   interactive: _interactive = true,
   initialData,
   onNodeSelect,
+  onViewportChange,
   renderConnectionsPanel
 }: GraphWebGLVisualizationProps) {
   const { t } = useTranslation()
@@ -68,16 +72,34 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
   const { data: fetchedMap, isLoading, isError } = useFullMap(mapId)
   const fullMap = fetchedMap ?? initialData
 
+  const updatePositionMutation = useUpdateNodePosition(mapId)
+
   // Selection state
-  const { clearSelection, selectedNodeId, selectNode } = useNodeSelection()
+  const {
+    selectedElements,
+    setSelection,
+    setDrawerNodeId,
+    clearSelection,
+    selectedNodeId
+  } = useNodeSelection()
   const { controls, toggleFullscreen } = useGraphControls()
 
   // Store hooks for view settings
   const { viewMode } = useViewMode()
   const { focusedNodeId, focusDepth, focusNode } = useFocusMode()
-  const { visibleNodeTypes, visibleEdgeTypes } = useFilters()
+  const { visibleNodeTypes, visibleEdgeTypes, connectionRange } = useFilters()
   const { showMinimap } = useGraphUI()
   const { nodeSpacing, directionStrength } = useNodeSpacing()
+
+  const layoutOptions = useMemo(
+    () => ({
+      viewMode,
+      spacingPercent: nodeSpacing,
+      directionStrength,
+      focusedNodeId: focusedNodeId ?? undefined
+    }),
+    [viewMode, nodeSpacing, directionStrength, focusedNodeId]
+  )
 
   // Track dark mode for theme-aware styling
   const isDark = useDarkMode()
@@ -102,6 +124,7 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
     fullMap,
     visibleNodeTypes,
     visibleEdgeTypes,
+    connectionRange,
     viewMode,
     focusedNodeId,
     focusDepth
@@ -111,7 +134,6 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
   const handleNodeClick = useCallback(
     (nodeId: string | null) => {
       if (!nodeId) {
-        clearSelection()
         // Notify parent if callback provided
         onNodeSelect?.(null)
         return
@@ -119,23 +141,58 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
       if (viewMode === 'focus') {
         focusNode(nodeId)
       }
-      selectNode(nodeId)
       // Notify parent if callback provided
       const node = fullMap?.nodes.find(n => n.id === nodeId) || null
       onNodeSelect?.(node)
     },
-    [viewMode, focusNode, selectNode, clearSelection, onNodeSelect, fullMap?.nodes]
+    [viewMode, focusNode, onNodeSelect, fullMap?.nodes]
+  )
+
+  const handleSelectionChange = useCallback(
+    (selection: { nodes: string[]; edges: string[] }) => {
+      setSelection(selection.nodes, selection.edges)
+      if (selection.nodes.length === 1) {
+        setDrawerNodeId(selection.nodes[0])
+      } else {
+        setDrawerNodeId(null)
+      }
+    },
+    [setDrawerNodeId, setSelection]
+  )
+
+  const handleSelectNode = useCallback(
+    (nodeId: string) => {
+      setSelection([nodeId], [])
+      setDrawerNodeId(nodeId)
+      const node = fullMap?.nodes.find(n => n.id === nodeId) || null
+      onNodeSelect?.(node)
+    },
+    [fullMap?.nodes, onNodeSelect, setDrawerNodeId, setSelection]
   )
 
   // Handle viewport change
-  const handleViewportChange = useCallback((newViewport: ViewportState) => {
-    setViewport(newViewport)
-  }, [])
+  const handleViewportChange = useCallback(
+    (newViewport: ViewportState) => {
+      setViewport(newViewport)
+      onViewportChange?.(newViewport)
+    },
+    [onViewportChange]
+  )
 
   // Handle layout complete - get positions from WASM for minimap
   const handleLayoutComplete = useCallback((positions: LayoutPosition[]) => {
     setLayoutPositions(positions)
   }, [])
+
+  const handleNodeDragEnd = useCallback(
+    (nodeId: string, x: number, y: number) => {
+      updatePositionMutation.mutate({
+        id: nodeId,
+        position: { x: Math.round(x), y: Math.round(y) }
+      })
+    },
+    [updatePositionMutation]
+  )
 
   // Handle minimap navigation (click to pan)
   const handleMinimapNavigate = useCallback((worldX: number, worldY: number) => {
@@ -155,6 +212,14 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
     canvasRef.current?.fitView()
   }, [])
 
+  useGraphKeyboard({
+    selectedNodeId,
+    onFitView: handleCenter,
+    onZoomIn: handleZoomIn,
+    onZoomOut: handleZoomOut,
+    enabled: _interactive
+  })
+
   // Pan to node (for connections panel eye icon)
   // Does NOT enable focus mode - just centers on the node
   const handlePanToNodeWithZoom = useCallback(
@@ -168,7 +233,7 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
   // Show loading only when fetching client-side (no initialData)
   if (!initialData && isLoading) {
     return (
-      <div className={cn('flex items-center justify-center h-[600px]', className)}>
+      <div className={cn('flex items-center justify-center min-h-96', className)}>
         <div className='text-center space-y-3'>
           <Loading02Icon className='h-8 w-8 animate-spin mx-auto text-primary' />
           <p className='text-sm text-muted-foreground'>{t('graph.loading')}</p>
@@ -179,7 +244,7 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
 
   if (!initialData && (isError || !fullMap)) {
     return (
-      <div className={cn('flex items-center justify-center h-[600px]', className)}>
+      <div className={cn('flex items-center justify-center min-h-96', className)}>
         <Card className='p-8 text-center'>
           <p className='text-lg font-semibold text-destructive mb-2'>{t('graph.loadingError')}</p>
           <p className='text-muted-foreground'>{t('graph.loadingErrorMessage')}</p>
@@ -207,17 +272,15 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
         ref={canvasRef}
         nodes={filteredData.nodes}
         edges={filteredData.edges}
+        selectedNodeIds={selectedElements.nodes}
         selectedNodeId={selectedNodeId}
         focusedNodeId={focusedNodeId}
         onNodeClick={handleNodeClick}
+        onSelectionChange={handleSelectionChange}
+        onNodeDragEnd={handleNodeDragEnd}
         onViewportChange={handleViewportChange}
         onLayoutComplete={handleLayoutComplete}
-        layoutOptions={{
-          viewMode,
-          spacingPercent: nodeSpacing,
-          directionStrength,
-          focusedNodeId: focusedNodeId ?? undefined
-        }}
+        layoutOptions={layoutOptions}
         className='h-full w-full'
       />
 
@@ -242,7 +305,7 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
         onToggleFullscreen={toggleFullscreen}
         nodes={fullMap?.nodes}
         onNodeSelect={node => {
-          selectNode(node.id)
+          handleSelectNode(node.id)
           // TODO: Pan to node
         }}
       />
@@ -272,7 +335,7 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
               selectedNode,
               fullMap.edges,
               fullMap.nodes,
-              selectNode,
+              handleSelectNode,
               handlePanToNodeWithZoom
             )
           }

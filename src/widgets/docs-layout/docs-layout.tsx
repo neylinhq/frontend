@@ -17,7 +17,7 @@ export const DocsLayout = ({ children, sidebar, toc, className }: DocsLayoutProp
       <div className='flex-1 min-h-0 overflow-hidden flex'>
         {/* Left Sidebar - Navigation */}
         {sidebar && (
-          <aside className='hidden lg:flex w-[260px] flex-shrink-0 border-r flex-col overflow-y-auto py-6 px-4'>
+          <aside className='hidden lg:flex w-64 flex-shrink-0 border-r flex-col overflow-y-auto py-6 px-4'>
             {sidebar}
           </aside>
         )}

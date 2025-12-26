@@ -32,7 +32,7 @@ const TabsPage = () => {
     >
       <DocsSection id='basic' title='Basic' description='Simple tab navigation with content panels'>
         <DocsComponentPreview
-          code={`<Tabs defaultValue="account" className="w-[400px]">
+          code={`<Tabs defaultValue="account" className="w-96">
   <TabsList>
     <TabsTrigger value="account">Account</TabsTrigger>
     <TabsTrigger value="password">Password</TabsTrigger>
@@ -46,7 +46,7 @@ const TabsPage = () => {
 </Tabs>`}
         >
           <DocsPreview>
-            <Tabs defaultValue='account' className='w-[400px]'>
+            <Tabs defaultValue='account' className='w-96'>
               <TabsList>
                 <TabsTrigger value='account'>Account</TabsTrigger>
                 <TabsTrigger value='password'>Password</TabsTrigger>

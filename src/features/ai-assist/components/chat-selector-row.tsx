@@ -73,7 +73,7 @@ export const ChatSelectorRow = ({
             variant="ghost"
             size="sm"
             className={cn(
-              'h-5 px-0 w-fit max-w-[240px]',
+              'h-6 px-0 w-fit max-w-60',
               'text-xs font-medium text-foreground/90',
               'hover:bg-transparent hover:text-foreground',
               'focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0'
@@ -83,14 +83,14 @@ export const ChatSelectorRow = ({
             <span className="truncate text-left">{activeTitle}</span>
             <ChevronDownIcon
               className={cn(
-                'h-2.5 w-2.5 shrink-0 ml-1 text-muted-foreground/70 transition-transform',
+                'h-3 w-3 shrink-0 ml-1 text-muted-foreground/70 transition-transform',
                 isOpen && 'rotate-180'
               )}
             />
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className="w-[280px] p-0 rounded-xl border-border/60 bg-background overflow-hidden"
+          className="w-72 p-0 rounded-lg border-border/60 bg-background overflow-hidden"
           align="start"
           sideOffset={6}
         >
@@ -108,7 +108,7 @@ export const ChatSelectorRow = ({
           variant="ghost"
           size="sm"
           className={cn(
-            'h-5 w-5 shrink-0 rounded-xs',
+            'h-6 w-6 shrink-0 rounded-xs',
             'text-muted-foreground',
             'hover:text-foreground hover:bg-[var(--surface-hover)]',
             'focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0'
@@ -126,7 +126,7 @@ export const ChatSelectorRow = ({
               variant="ghost"
               size="sm"
               className={cn(
-                'h-5 w-5 shrink-0 rounded-xs',
+                'h-6 w-6 shrink-0 rounded-xs',
                 'text-muted-foreground',
                 'hover:text-foreground hover:bg-[var(--surface-hover)]',
                 'focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0'
@@ -137,7 +137,7 @@ export const ChatSelectorRow = ({
               <DotsHorizontalIcon className="h-2.5 w-2.5" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="rounded-xl p-1.5">
+          <DropdownMenuContent align="end" className="rounded-lg p-1.5">
             <DropdownMenuItem
               onClick={onCreateSession}
               disabled={isLoading}
@@ -156,7 +156,7 @@ export const ChatSelectorRow = ({
             <DropdownMenuItem
               onClick={onCloseAll}
               disabled={!canCloseAll}
-              className="text-xs text-destructive data-[highlighted]:text-destructive focus:text-destructive"
+              className="text-xs text-destructive data-[highlighted]:text-destructive"
             >
               {t('ai.chat.closeAll', 'Delete all chats')}
             </DropdownMenuItem>

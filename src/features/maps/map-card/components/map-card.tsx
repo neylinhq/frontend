@@ -106,7 +106,7 @@ export const MapCard = memo(
           </DropdownMenu>
         </CardHeader>
         <CardContent>
-          <div className='text-xs text-muted-foreground line-clamp-2 min-h-[2.5em]'>
+          <div className='text-xs text-muted-foreground line-clamp-2 min-h-8'>
             {map.description || t('dashboard.mapCard.noDescription')}
           </div>
 
@@ -123,12 +123,12 @@ export const MapCard = memo(
             <div className='mt-2'>
               <div className='flex flex-wrap gap-1'>
                 {matchedNodes.slice(0, 3).map(node => (
-                  <Badge key={node.id} variant='outline' className='text-[10px] px-2 py-0.5'>
+                  <Badge key={node.id} variant='outline' className='text-xs px-2 py-0.5'>
                     {node.label}
                   </Badge>
                 ))}
                 {matchedNodes.length > 3 && (
-                  <Badge variant='outline' className='text-[10px] px-2 py-0.5'>
+                  <Badge variant='outline' className='text-xs px-2 py-0.5'>
                     +{matchedNodes.length - 3}
                   </Badge>
                 )}

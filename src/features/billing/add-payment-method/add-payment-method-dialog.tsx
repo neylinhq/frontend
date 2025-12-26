@@ -307,7 +307,7 @@ export const AddPaymentMethodDialog = ({
         )}
       </DialogTrigger>
 
-      <DialogContent className='sm:max-w-[480px]'>
+      <DialogContent className='sm:max-w-lg'>
         {/* Selection Step */}
         {step === 'select' && (
           <>

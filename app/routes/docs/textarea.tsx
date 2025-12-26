@@ -72,7 +72,6 @@ export function FeedbackForm() {
     <Textarea
       placeholder="Share your feedback..."
       rows={5}
-      onChange={(e) => console.log(e.target.value)}
     />
   )
 }`}

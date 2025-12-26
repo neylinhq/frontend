@@ -40,7 +40,7 @@ const SelectPage = () => {
       <DocsSection id='basic' title='Basic' description='Simple select dropdown'>
         <DocsComponentPreview
           code={`<Select>
-  <SelectTrigger className="w-[180px]">
+  <SelectTrigger className="w-44">
     <SelectValue placeholder="Select a fruit" />
   </SelectTrigger>
   <SelectContent>
@@ -52,7 +52,7 @@ const SelectPage = () => {
         >
           <DocsPreview>
             <Select>
-              <SelectTrigger className='w-[180px]'>
+              <SelectTrigger className='w-44'>
                 <SelectValue placeholder='Select a fruit' />
               </SelectTrigger>
               <SelectContent>
@@ -70,7 +70,7 @@ const SelectPage = () => {
           code={`<div className="space-y-2">
   <Label>Theme</Label>
   <Select defaultValue="system">
-    <SelectTrigger className="w-[200px]">
+    <SelectTrigger className="w-48">
       <SelectValue />
     </SelectTrigger>
     <SelectContent>
@@ -85,7 +85,7 @@ const SelectPage = () => {
             <div className='space-y-2'>
               <Label>Theme</Label>
               <Select defaultValue='system'>
-                <SelectTrigger className='w-[200px]'>
+                <SelectTrigger className='w-48'>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -115,7 +115,7 @@ export function ThemeSelect() {
 
   return (
     <Select value={theme} onValueChange={setTheme}>
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className="w-44">
         <SelectValue placeholder="Select theme" />
       </SelectTrigger>
       <SelectContent>

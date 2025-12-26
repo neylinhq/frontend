@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
-import { useCreateEdge } from '@/entities/map'
+import { type Node, useCreateEdge, useFullMap } from '@/entities/map'
 import type { NodeType } from '@/entities/node'
+import type { ViewportState } from '@/features/graph-webgl'
 import { Button } from '@/shared/components/button'
 import {
   Dialog,
@@ -24,17 +25,32 @@ import {
 } from '../lib/parse-quick-input'
 import { NODE_CREATION_CONFIG } from '../model/node-creation.constants'
 import { useCreateNodeMutation } from '../model/node-creation.hooks'
+import { useCreateNodeMutationWebGL } from '../model/node-creation.webgl.hooks'
 import { useNodeCreationStore } from '../model/node-creation.store'
 import { ConnectionSelector } from './connection-selector'
 
-export const QuickAddDialog = () => {
+interface CreateNodeInput {
+  mapId: string
+  label: string
+  type: NodeType
+  description?: string
+}
+
+interface CreateNodeMutation {
+  mutateAsync: (input: CreateNodeInput) => Promise<Node>
+}
+
+interface QuickAddDialogBaseProps {
+  createNode: CreateNodeMutation
+}
+
+const QuickAddDialogBase = ({ createNode }: QuickAddDialogBaseProps) => {
   const { t } = useTranslation()
   const { mapId } = useParams<{ mapId: string }>()
   const inputRef = useRef<HTMLInputElement>(null)
 
   const { isQuickAddOpen, draftLabel, draftType, pendingConnections, closeQuickAdd, setDraft } =
     useNodeCreationStore()
-  const createNode = useCreateNodeMutation()
   const createEdge = useCreateEdge(mapId || '')
 
   const [input, setInput] = useState('')
@@ -149,7 +165,7 @@ export const QuickAddDialog = () => {
 
   return (
     <Dialog open={isQuickAddOpen} onOpenChange={open => !open && closeQuickAdd()}>
-      <DialogContent className='sm:max-w-[500px]'>
+      <DialogContent className='sm:max-w-lg'>
         <DialogHeader>
           <DialogTitle>{t('nodeCreation.quickAdd.title')}</DialogTitle>
           <DialogDescription>{t('nodeCreation.quickAdd.description')}</DialogDescription>
@@ -240,4 +256,24 @@ export const QuickAddDialog = () => {
       </DialogContent>
     </Dialog>
   )
+}
+
+export const QuickAddDialog = () => {
+  const createNode = useCreateNodeMutation()
+  return <QuickAddDialogBase createNode={createNode} />
+}
+
+interface QuickAddDialogWebGLProps {
+  viewport?: ViewportState | null
+}
+
+export const QuickAddDialogWebGL = ({ viewport = null }: QuickAddDialogWebGLProps) => {
+  const { mapId } = useParams<{ mapId: string }>()
+  const { data: fullMap } = useFullMap(mapId || '')
+  const createNode = useCreateNodeMutationWebGL({
+    nodes: fullMap?.nodes ?? [],
+    viewport
+  })
+
+  return <QuickAddDialogBase createNode={createNode} />
 }

@@ -1,4 +1,14 @@
-import type { Node as FlowNode } from '@xyflow/react'
+export interface PositionedNode {
+  id: string
+  position: {
+    x: number
+    y: number
+  }
+  measured?: {
+    width?: number
+    height?: number
+  }
+}
 
 interface Position {
   x: number
@@ -7,7 +17,7 @@ interface Position {
 
 interface SmartPositionOptions {
   center: Position
-  existingNodes: FlowNode[]
+  existingNodes: PositionedNode[]
   nodeWidth?: number
   nodeHeight?: number
   minDistance?: number
@@ -129,7 +139,7 @@ export const calculateSmartPosition = ({
  */
 export const calculatePositionNearConnections = (
   connectedNodeIds: string[],
-  existingNodes: FlowNode[],
+  existingNodes: PositionedNode[],
   minDistance: number = DEFAULT_MIN_DISTANCE
 ): Position | null => {
   if (connectedNodeIds.length === 0) {

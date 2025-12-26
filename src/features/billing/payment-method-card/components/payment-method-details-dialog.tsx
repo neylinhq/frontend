@@ -20,9 +20,9 @@ import {
 import { Button } from '@/shared/components/button'
 import { CardBrandIcon } from '@/shared/components/card-brand-icon'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/components/dialog'
+import { Field } from '@/shared/components/field'
 import { Icon, networkIcons } from '@/shared/components/icon'
 import { Input } from '@/shared/components/input'
-import { Label } from '@/shared/components/label'
 import type { CardBrand } from '@/shared/lib/card-utils'
 import { useCopyToClipboard } from '@/shared/lib/use-copy-to-clipboard'
 import { shortenWalletAddress } from '@/shared/lib/crypto-utils'
@@ -211,8 +211,10 @@ export const PaymentMethodDetailsDialog = ({
           <div className='flex flex-col items-center gap-4 py-4'>{renderIcon()}</div>
 
           <div className='space-y-4'>
-            <div className='space-y-2'>
-              <Label>{t('billing.editPaymentMethod.walletAddress')}</Label>
+            <Field
+              label={t('billing.editPaymentMethod.walletAddress')}
+              error={addressError ?? undefined}
+            >
               <Input
                 value={editWalletAddress}
                 onChange={e => {
@@ -222,8 +224,7 @@ export const PaymentMethodDetailsDialog = ({
                 placeholder={t('billing.addCryptoWallet.addressPlaceholder')}
                 className='font-mono text-sm'
               />
-              {addressError && <p className='text-sm text-destructive'>{addressError}</p>}
-            </div>
+            </Field>
 
             <div className='space-y-3 text-sm'>
               <div className='flex justify-between'>

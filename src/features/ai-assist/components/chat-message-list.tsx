@@ -121,7 +121,7 @@ export const ChatMessageList = ({
               onMouseEnter={() => setHoveredMessageId(message.id)}
               onMouseLeave={() => setHoveredMessageId(null)}
             >
-              <div className={cn('flex flex-col gap-1.5', isEditing ? 'w-full' : 'max-w-[82%]', 'items-end')}>
+              <div className={cn('flex flex-col gap-1.5', isEditing ? 'w-full' : 'max-w-2xl', 'items-end')}>
                 {isEditing ? (
                   <div className='flex flex-col gap-2 w-full'>
                       <Textarea
@@ -129,7 +129,7 @@ export const ChatMessageList = ({
                         value={editValue}
                         onChange={e => setEditValue(e.target.value)}
                         onKeyDown={handleEditKeyDown}
-                        className='min-h-[96px] resize-none text-sm w-full rounded-2xl border-border/60 bg-background'
+                        className='min-h-24 resize-none text-sm w-full rounded-xl border-border/50 bg-background'
                         placeholder={t('ai.chat.placeholder')}
                       />
                     <div className='flex items-center justify-between gap-4'>
@@ -147,7 +147,7 @@ export const ChatMessageList = ({
                 ) : (
                   <>
                     {/* User bubble - compact, muted */}
-                    <div className='rounded-2xl border border-border/60 bg-muted/60 px-3 py-2 text-sm leading-relaxed'>
+                    <div className='rounded-xl border border-border/50 bg-muted/50 px-3 py-2 text-sm leading-relaxed'>
                       <p className='whitespace-pre-wrap break-words'>{message.content}</p>
                     </div>
 
@@ -164,7 +164,7 @@ export const ChatMessageList = ({
                             <Button
                               variant='ghost'
                               size='icon'
-                              className='h-6 w-6 rounded-[6px] text-muted-foreground hover:text-foreground transition-colors'
+                              className='h-6 w-6 rounded-xs text-muted-foreground hover:text-foreground transition-colors'
                               onClick={() => handleStartEdit(message.id, message.content)}
                             >
                               <Pencil01Icon className='h-3.5 w-3.5' />
@@ -179,7 +179,7 @@ export const ChatMessageList = ({
                         value={message.content}
                         label={t('common.copy')}
                         copiedLabel={t('common.copied')}
-                        className='h-6 w-6 rounded-[6px] text-muted-foreground hover:text-foreground transition-colors'
+                        className='h-6 w-6 rounded-xs text-muted-foreground hover:text-foreground transition-colors'
                       />
                       {onRegenerate && !isStreaming && (
                         <Tooltip>
@@ -187,7 +187,7 @@ export const ChatMessageList = ({
                             <Button
                               variant='ghost'
                               size='icon'
-                              className='h-6 w-6 rounded-[6px] text-muted-foreground hover:text-foreground transition-colors'
+                              className='h-6 w-6 rounded-xs text-muted-foreground hover:text-foreground transition-colors'
                               onClick={() => onRegenerate(message.id, 'user')}
                             >
                               <RefreshCw01Icon className='h-3.5 w-3.5' />
@@ -243,7 +243,7 @@ export const ChatMessageList = ({
                         }
                         setExpandedSources(newExpanded)
                       }}
-                      className='flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors rounded-[6px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1'
+                      className='flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors rounded-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1'
                     >
                       <span>
                         {t('ai.chat.sources', 'Sources')} ({message.sourceNodes.length})
@@ -258,7 +258,7 @@ export const ChatMessageList = ({
                           <Badge
                             key={node.id}
                             variant='secondary'
-                            className='text-[10px] font-normal cursor-default'
+                            className='text-xs font-normal cursor-default'
                             title={`${node.label} (${node.type})`}
                           >
                             {node.label}
@@ -272,7 +272,7 @@ export const ChatMessageList = ({
                 {/* Preview Cards - both pending and resolved */}
                 {message.preview && message.preview.length > 0 && (
                   <div className='space-y-2'>
-                    <div className='text-[10px] uppercase tracking-wider text-muted-foreground'>
+                    <div className='text-xs uppercase tracking-wide text-muted-foreground'>
                       {t('ai.chat.suggestionsTitle', 'Suggestions')}
                     </div>
                     {message.preview.map(preview => (
@@ -351,7 +351,7 @@ export const ChatMessageList = ({
                       value={message.content}
                       label={t('common.copy')}
                       copiedLabel={t('common.copied')}
-                      className='h-6 w-6 rounded-[6px] text-muted-foreground hover:text-foreground transition-colors'
+                      className='h-6 w-6 rounded-xs text-muted-foreground hover:text-foreground transition-colors'
                     />
                     {onRegenerate && !isStreaming && (
                       <Tooltip>
@@ -359,7 +359,7 @@ export const ChatMessageList = ({
                           <Button
                             variant='ghost'
                             size='icon'
-                            className='h-6 w-6 rounded-[6px] text-muted-foreground hover:text-foreground transition-colors'
+                            className='h-6 w-6 rounded-xs text-muted-foreground hover:text-foreground transition-colors'
                             onClick={() => onRegenerate(message.id, 'assistant')}
                           >
                             <RefreshCw01Icon className='h-3.5 w-3.5' />

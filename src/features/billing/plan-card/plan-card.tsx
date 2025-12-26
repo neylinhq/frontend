@@ -35,7 +35,7 @@ export const PlanCard = memo(
         {/* Popular badge */}
         {highlighted && !isCurrentPlan && (
           <div className='absolute -top-3 left-6'>
-            <span className='text-[10px] font-medium uppercase tracking-wider px-2 py-1 rounded-full bg-foreground text-background'>
+            <span className='text-xs font-medium uppercase tracking-wide px-2 py-1 rounded-full bg-foreground text-background'>
               {t('pricing.popular')}
             </span>
           </div>
@@ -44,7 +44,7 @@ export const PlanCard = memo(
         {/* Current badge */}
         {isCurrentPlan && (
           <div className='absolute -top-3 left-6'>
-            <span className='text-[10px] font-medium uppercase tracking-wider px-2 py-1 rounded-full bg-muted text-muted-foreground border border-border'>
+            <span className='text-xs font-medium uppercase tracking-wide px-2 py-1 rounded-full bg-muted text-muted-foreground border border-border'>
               {t('billing.currentPlan')}
             </span>
           </div>

@@ -200,7 +200,7 @@ export const GraphToolbar = memo(
                 >
                   <MinusIcon className='w-3 h-3' />
                 </Button>
-                <span className='text-xs font-medium min-w-[4rem] text-center'>
+                <span className='text-xs font-medium min-w-16 text-center'>
                   {t('graph.toolbar.depth')}: {focusDepth}
                 </span>
                 <Button
@@ -249,7 +249,7 @@ export const GraphToolbar = memo(
                 {activeFiltersCount > 0 && (
                   <Badge
                     variant='destructive'
-                    className='h-4 px-1 text-[10px] ml-0.5 rounded-xs'
+                    className='h-4 px-1 text-xs ml-0.5 rounded-xs'
                     suppressHydrationWarning
                   >
                     {activeFiltersCount}
@@ -258,7 +258,7 @@ export const GraphToolbar = memo(
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align='center' className='w-60 p-2'>
-              <DropdownMenuLabel className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
+              <DropdownMenuLabel className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
                 {t('graph.filters.nodeTypes')}
               </DropdownMenuLabel>
               {ALL_NODE_TYPES.map(type => {
@@ -274,7 +274,7 @@ export const GraphToolbar = memo(
                   >
                     <span className='flex-1'>{t(NODE_TYPE_LABELS[type])}</span>
                     {count > 0 && (
-                      <Badge variant='secondary' className='ml-2 h-5 px-1.5 text-[10px] rounded-xs'>
+                      <Badge variant='secondary' className='ml-2 h-5 px-1.5 text-xs rounded-xs'>
                         {count}
                       </Badge>
                     )}
@@ -284,7 +284,7 @@ export const GraphToolbar = memo(
 
               <DropdownMenuSeparator className='my-1.5' />
 
-              <DropdownMenuLabel className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
+              <DropdownMenuLabel className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
                 {t('graph.filters.edgeTypes')}
               </DropdownMenuLabel>
               {ALL_EDGE_TYPES.map(type => {
@@ -300,7 +300,7 @@ export const GraphToolbar = memo(
                   >
                     <span className='flex-1'>{t(EDGE_TYPE_LABELS[type])}</span>
                     {count > 0 && (
-                      <Badge variant='secondary' className='ml-2 h-5 px-1.5 text-[10px] rounded-xs'>
+                      <Badge variant='secondary' className='ml-2 h-5 px-1.5 text-xs rounded-xs'>
                         {count}
                       </Badge>
                     )}
@@ -311,7 +311,7 @@ export const GraphToolbar = memo(
               <DropdownMenuSeparator className='my-1.5' />
 
               {/* Connection count filter */}
-              <DropdownMenuLabel className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
+              <DropdownMenuLabel className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
                 {t('graph.filters.connections')}
               </DropdownMenuLabel>
 

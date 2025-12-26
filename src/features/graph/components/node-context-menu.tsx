@@ -118,7 +118,7 @@ export const NodeContextMenu = ({
             {onDelete && (
               <ContextMenuItem
                 onClick={onDelete}
-                className='text-destructive focus:text-destructive'
+                className='text-destructive focus-visible:text-destructive'
               >
                 <Trash01Icon className='h-4 w-4 mr-2' />
                 {t('graph.contextMenu.deleteNode', 'Delete node')}

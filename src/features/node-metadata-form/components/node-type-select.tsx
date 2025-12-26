@@ -12,9 +12,19 @@ interface NodeTypeSelectProps {
   value: NodeType
   onChange: (value: NodeType) => void
   disabled?: boolean
+  id?: string
+  'aria-invalid'?: boolean
+  'aria-describedby'?: string
 }
 
-export const NodeTypeSelect = ({ value, onChange, disabled }: NodeTypeSelectProps) => {
+export const NodeTypeSelect = ({
+  value,
+  onChange,
+  disabled,
+  id,
+  'aria-invalid': ariaInvalid,
+  'aria-describedby': ariaDescribedBy
+}: NodeTypeSelectProps) => {
   const { t } = useTranslation()
 
   const selectedConfig = NODE_TYPE_CONFIGS.find(c => c.type === value)
@@ -22,7 +32,12 @@ export const NodeTypeSelect = ({ value, onChange, disabled }: NodeTypeSelectProp
 
   return (
     <Select value={value} onValueChange={onChange} disabled={disabled}>
-      <SelectTrigger className='w-full'>
+      <SelectTrigger
+        id={id}
+        aria-invalid={ariaInvalid}
+        aria-describedby={ariaDescribedBy}
+        className='w-full'
+      >
         <SelectValue>
           {selectedConfig && (
             <span className='flex items-center gap-2'>

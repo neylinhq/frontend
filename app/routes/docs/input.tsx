@@ -91,11 +91,7 @@ export function MyForm() {
   return (
     <div className="space-y-2">
       <Label htmlFor="name">Name</Label>
-      <Input
-        id="name"
-        placeholder="Enter your name"
-        onChange={(e) => console.log(e.target.value)}
-      />
+      <Input id="name" placeholder="Enter your name" />
     </div>
   )
 }`}

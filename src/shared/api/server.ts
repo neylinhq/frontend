@@ -4,6 +4,15 @@ interface ServerFetchOptions extends RequestInit {
   cookies?: string | null
 }
 
+class ServerFetchError extends Error {
+  constructor(
+    public status: number,
+    public response: Response
+  ) {
+    super(`API Error: ${status}`)
+  }
+}
+
 /**
  * Server-side fetch helper that forwards cookies to Go API
  * Use in React Router loaders/actions
@@ -25,10 +34,7 @@ export const serverFetch = async <T>(
   })
 
   if (!response.ok) {
-    const error = new Error(`API Error: ${response.status}`)
-    ;(error as any).status = response.status
-    ;(error as any).response = response
-    throw error
+    throw new ServerFetchError(response.status, response)
   }
 
   if (response.status === 204) {

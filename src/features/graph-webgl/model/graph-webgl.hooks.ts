@@ -17,6 +17,7 @@ import type {
 } from '../lib/types'
 import { DEFAULT_VIEWPORT } from '../lib/types'
 import type { GraphEngine as LegacyGraphEngineType } from '../lib/wasm-adapter'
+import { initWasmModule } from '../lib/wasm-loader'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // useViewport - Viewport state management (pan/zoom)
@@ -585,6 +586,7 @@ interface GraphEngineWasm {
   get_all_positions(): string
   get_visible_nodes(): string
   set_selected(nodeId: string | null): void
+  set_selected_nodes(nodeIds: string): void
   set_focused(nodeId: string | null): void
   set_dimmed(nodeIds: string): void
   pan(dx: number, dy: number): void
@@ -622,10 +624,8 @@ const loadWasm = async (): Promise<WasmModule> => {
       // The path will be resolved by Vite's WASM plugin
       const module = await import('../pkg/graph_engine')
 
-      // Initialize WASM before using GraphEngine
-      // The default export is the init function that loads the .wasm file
-      if (!wasmInitialized && module.default) {
-        await module.default()
+      if (!wasmInitialized) {
+        await initWasmModule(module)
         wasmInitialized = true
       }
 
@@ -676,7 +676,7 @@ export const useGraphEngine = ({ canvas, onPositionsUpdate }: UseGraphEngineOpti
           return
         }
 
-        const engine = new wasm.GraphEngine()
+        const engine = new wasm.GraphEngine() as GraphEngineWasm
         engine.init_renderer(canvas)
         engine.resize(canvas.width, canvas.height)
 
@@ -823,6 +823,10 @@ export const useGraphEngine = ({ canvas, onPositionsUpdate }: UseGraphEngineOpti
     engineRef.current?.set_selected(nodeId)
   }, [])
 
+  const setSelectedNodes = useCallback((nodeIds: string[]) => {
+    engineRef.current?.set_selected_nodes(JSON.stringify(nodeIds))
+  }, [])
+
   const setFocused = useCallback((nodeId: string | null) => {
     engineRef.current?.set_focused(nodeId)
   }, [])
@@ -868,6 +872,7 @@ export const useGraphEngine = ({ canvas, onPositionsUpdate }: UseGraphEngineOpti
     hitTest,
     updateNodePosition,
     setSelected,
+    setSelectedNodes,
     setFocused,
     setDimmed,
     pan,

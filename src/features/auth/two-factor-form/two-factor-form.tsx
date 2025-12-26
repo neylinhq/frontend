@@ -17,6 +17,7 @@ interface TwoFactorFormProps {
 }
 
 const RESEND_COOLDOWN = 60 // seconds
+const RESEND_COOLDOWN_TICK_MS = 1000
 
 type TwoFactorMethod = 'totp' | 'email' | 'backup'
 
@@ -53,7 +54,7 @@ export const TwoFactorForm = ({
   // Handle resend cooldown timer
   useEffect(() => {
     if (resendCooldown > 0) {
-      const timer = setTimeout(() => setResendCooldown(c => c - 1), 1000)
+      const timer = setTimeout(() => setResendCooldown(c => c - 1), RESEND_COOLDOWN_TICK_MS)
       return () => clearTimeout(timer)
     }
   }, [resendCooldown])

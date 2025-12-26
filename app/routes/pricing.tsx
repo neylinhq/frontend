@@ -3,6 +3,7 @@ import type { PlanDetails } from '@/entities/subscription'
 import { PricingPage } from '@/pages/pricing-page'
 import { API_URL } from '@/shared/config'
 import { getMeta } from '@/shared/lib/get-meta'
+import { logger } from '@/shared/lib/logger'
 
 export const meta = () => {
   return getMeta('pricing')
@@ -19,14 +20,14 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     })
 
     if (!response.ok) {
-      console.warn('Failed to load plans:', response.status, response.statusText)
+      logger.warn('Failed to load plans:', response.status, response.statusText)
       return { plans: [] }
     }
 
     const data = await response.json()
     return { plans: data.data as PlanDetails[] }
   } catch (error) {
-    console.warn('Failed to load plans in SSR:', error)
+    logger.warn('Failed to load plans in SSR:', error)
     return { plans: [] }
   }
 }

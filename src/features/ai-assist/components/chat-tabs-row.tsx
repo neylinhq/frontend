@@ -144,7 +144,7 @@ export const ChatTabsRow = ({
               ) : (
                 <>
                   <span
-                    className="text-[10px] font-semibold tracking-wide"
+                    className="text-xs font-semibold tracking-wide"
                     onDoubleClick={() => handleDoubleClick(session)}
                   >
                     {getSessionShortLabel(session, index)}
@@ -153,6 +153,7 @@ export const ChatTabsRow = ({
                   {/* Close button - appears on hover */}
                   {sessions.length > 1 && (
                     <button
+                      type="button"
                       className={cn(
                         'absolute -top-1 -right-1 rounded-full p-0.5',
                         'border border-border/60 bg-background',

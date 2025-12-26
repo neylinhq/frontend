@@ -104,13 +104,16 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
       <div
         ref={cardRef}
         tabIndex={0}
-        className={cn('border border-border/60 rounded-lg overflow-hidden bg-card focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2', className)}
+        className={cn(
+          'border border-border/60 rounded-lg overflow-hidden bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+          className
+        )}
         aria-label={t('ai.exercises.quizCard', 'Quiz exercise. Press 1-9 to select an answer, Enter to submit.')}
       >
         {/* Header */}
         <div className='px-3 py-2 bg-muted/30 border-b border-border/60 flex items-center justify-between'>
-          <span className='text-[10px] font-medium uppercase tracking-wider text-muted-foreground'>{title}</span>
-          <Badge variant='secondary' className='text-[10px]'>
+          <span className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>{title}</span>
+          <Badge variant='secondary' className='text-xs'>
             {t(`ai.exercises.types.${exerciseType}`, exerciseType)}
           </Badge>
         </div>
@@ -199,8 +202,8 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
     return (
       <div className={cn('border border-border/60 rounded-lg overflow-hidden bg-card', className)}>
         <div className='px-3 py-2 bg-muted/30 border-b border-border/60 flex items-center justify-between'>
-          <span className='text-[10px] font-medium uppercase tracking-wider text-muted-foreground'>{title}</span>
-          <Badge variant='secondary' className='text-[10px]'>
+          <span className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>{title}</span>
+          <Badge variant='secondary' className='text-xs'>
             {t('ai.exercises.types.true_false', 'True/False')}
           </Badge>
         </div>
@@ -269,8 +272,8 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
     return (
       <div className={cn('border border-border/60 rounded-lg overflow-hidden bg-card', className)}>
         <div className='px-3 py-2 bg-muted/30 border-b border-border/60 flex items-center justify-between'>
-          <span className='text-[10px] font-medium uppercase tracking-wider text-muted-foreground'>{title}</span>
-          <Badge variant='secondary' className='text-[10px]'>
+          <span className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>{title}</span>
+          <Badge variant='secondary' className='text-xs'>
             {t('ai.exercises.types.flashcard', 'Flashcard')}
           </Badge>
         </div>
@@ -306,8 +309,8 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
   return (
     <div className={cn('border border-border/60 rounded-lg overflow-hidden bg-card', className)}>
       <div className='px-3 py-2 bg-muted/30 border-b border-border/60 flex items-center justify-between'>
-        <span className='text-[10px] font-medium uppercase tracking-wider text-muted-foreground'>{title}</span>
-        <Badge variant='secondary' className='text-[10px]'>
+        <span className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>{title}</span>
+        <Badge variant='secondary' className='text-xs'>
           {exerciseType}
         </Badge>
       </div>

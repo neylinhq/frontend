@@ -18,7 +18,7 @@ const SelectTrigger = React.forwardRef<
     ref={ref}
     className={cn(
       'flex h-9 w-full cursor-pointer items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1',
-      'aria-[invalid=true]:border-destructive aria-[invalid=true]:focus:ring-destructive',
+      'aria-[invalid=true]:border-destructive aria-[invalid=true]:focus-visible:ring-destructive',
       className
     )}
     {...props}
@@ -109,7 +109,7 @@ const SelectItem = React.forwardRef<
     className={cn(
       'relative flex w-full cursor-pointer select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none',
       'data-[highlighted]:bg-[var(--surface-hover)] data-[highlighted]:text-foreground',
-      'focus:bg-[var(--surface-hover)] focus:text-foreground',
+      'focus-visible:bg-[var(--surface-hover)] focus-visible:text-foreground',
       'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
       className
     )}

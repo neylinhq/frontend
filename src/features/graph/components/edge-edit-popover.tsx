@@ -125,8 +125,8 @@ export const EdgeEditPopover = memo(({ mapId }: EdgeEditPopoverProps) => {
 
   return (
     <Popover open={true} onOpenChange={open => !open && cancelEdgeEditing()}>
-        <SmartPopoverContent
-          className='w-[280px] p-3'
+      <SmartPopoverContent
+        className='w-72 p-3'
         mode='fixed'
         position={editPosition}
         offset={{ y: 8 }}
@@ -166,7 +166,7 @@ export const EdgeEditPopover = memo(({ mapId }: EdgeEditPopoverProps) => {
           <Button
             variant='ghost'
             size='sm'
-            className='h-7 px-2.5 text-[11px] text-muted-foreground rounded-xs hover:text-destructive hover:bg-destructive/10'
+            className='h-7 px-2.5 text-xs text-muted-foreground rounded-xs hover:text-destructive hover:bg-destructive/10'
             onClick={handleDelete}
             disabled={deleteEdge.isPending}
           >

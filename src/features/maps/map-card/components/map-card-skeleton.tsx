@@ -14,7 +14,7 @@ export function MapCardSkeleton() {
       </CardHeader>
       <CardContent>
         {/* Description - 2 lines */}
-        <div className='space-y-1.5 min-h-[2.5em]'>
+        <div className='space-y-1.5 min-h-8'>
           <Skeleton className='h-3 w-full' />
           <Skeleton className='h-3 w-2/3' />
         </div>

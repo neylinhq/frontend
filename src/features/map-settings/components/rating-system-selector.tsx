@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { type RatingSystem, RatingSystemEnum, useUpdateMapProgress } from '@/entities/progress'
-import { Label } from '@/shared/components/label'
+import { Field } from '@/shared/components/field'
 import {
   Select,
   SelectContent,
@@ -32,19 +32,20 @@ export const RatingSystemSelector = ({ mapId, currentSystem }: RatingSystemSelec
 
   return (
     <div className='space-y-2'>
-      <Label className='text-sm font-medium'>{t('mapSettings.ratingSystem.label')}</Label>
-      <Select value={currentSystem} onValueChange={handleChange}>
-        <SelectTrigger className='w-full'>
-          <SelectValue placeholder={t('mapSettings.ratingSystem.placeholder')} />
-        </SelectTrigger>
-        <SelectContent>
-          {RatingSystemEnum.options.map(option => (
-            <SelectItem key={option} value={option} title={t(`mapSettings.ratingSystem.${option}Tooltip`)}>
-              {t(`mapSettings.ratingSystem.${option}Short`)}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <Field label={t('mapSettings.ratingSystem.label')} size='sm' labelClassName='text-sm font-medium'>
+        <Select value={currentSystem} onValueChange={handleChange}>
+          <SelectTrigger className='w-full'>
+            <SelectValue placeholder={t('mapSettings.ratingSystem.placeholder')} />
+          </SelectTrigger>
+          <SelectContent>
+            {RatingSystemEnum.options.map(option => (
+              <SelectItem key={option} value={option} title={t(`mapSettings.ratingSystem.${option}Tooltip`)}>
+                {t(`mapSettings.ratingSystem.${option}Short`)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </Field>
       <p className='text-xs text-muted-foreground'>{t('mapSettings.ratingSystem.description')}</p>
     </div>
   )

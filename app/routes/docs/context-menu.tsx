@@ -37,7 +37,7 @@ const ContextMenuPage = () => {
       <DocsSection id='basic' title='Basic' description='Right-click on the area to see the context menu.'>
         <DocsComponentPreview
           code={`<ContextMenu>
-  <ContextMenuTrigger className="flex h-[150px] w-[300px] items-center justify-center rounded-md border border-dashed">
+  <ContextMenuTrigger className="flex h-40 w-72 items-center justify-center rounded-md border border-dashed">
     Right click here
   </ContextMenuTrigger>
   <ContextMenuContent className="w-64">
@@ -54,7 +54,7 @@ const ContextMenuPage = () => {
         >
           <DocsPreview>
             <ContextMenu>
-              <ContextMenuTrigger className='flex h-[150px] w-[300px] items-center justify-center rounded-md border border-dashed text-sm'>
+              <ContextMenuTrigger className='flex h-40 w-72 items-center justify-center rounded-md border border-dashed text-sm'>
                 Right click here
               </ContextMenuTrigger>
               <ContextMenuContent className='w-64'>

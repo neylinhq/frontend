@@ -1,10 +1,10 @@
 import { useCallback, useState } from 'react'
 import type { FullMap, Node } from '@/entities/map'
-import { GraphWebGLVisualization } from '@/features/graph-webgl'
+import { GraphWebGLVisualization, type ViewportState } from '@/features/graph-webgl'
 import { ReadOnlyBanner, useMapPermissions } from '@/features/map-permissions'
 import { ChatPanel, NodePanel, SettingsPanel, SidebarToggleFab, useMapSidebarStore } from '@/features/map-sidebar'
 import { NodeConnectionsPanel } from '@/features/node-connections-panel'
-import { AddNodeFab, QuickAddDialog, useNodeCreationStore } from '@/features/node-creation'
+import { AddNodeFab, QuickAddDialogWebGL, useNodeCreationStore } from '@/features/node-creation'
 import { useKeyboardShortcut } from '@/shared/hooks/use-keyboard-shortcut'
 import { cn } from '@/shared/lib/cn'
 
@@ -18,6 +18,7 @@ export const MapWebGLPage = ({ map, mapId }: MapWebGLPageProps) => {
   const { canEdit, isReadOnly } = useMapPermissions(map)
   const { isOpen, width, open, setTab } = useMapSidebarStore()
   const [selectedNode, setSelectedNode] = useState<Node | null>(null)
+  const [viewport, setViewport] = useState<ViewportState | null>(null)
 
   // Keyboard shortcut: Cmd+N (Mac) or Ctrl+N (Windows/Linux) - only for owners
   useKeyboardShortcut({ key: 'n', meta: true, enabled: canEdit }, openQuickAdd)
@@ -67,7 +68,7 @@ export const MapWebGLPage = ({ map, mapId }: MapWebGLPageProps) => {
   )
 
   return (
-    <div className='h-[calc(100vh-3.5rem)] flex'>
+    <div className='h-screen flex'>
       {/* Main canvas area - flex-1 to shrink when sidebar opens */}
       <div className='flex-1 min-w-0 relative'>
         <GraphWebGLVisualization
@@ -76,6 +77,7 @@ export const MapWebGLPage = ({ map, mapId }: MapWebGLPageProps) => {
           className='h-full w-full'
           interactive={canEdit}
           onNodeSelect={handleNodeSelect}
+          onViewportChange={nextViewport => setViewport(nextViewport)}
           renderConnectionsPanel={(node, edges, allNodes, onOpenNode, onPanToNode) => (
             <NodeConnectionsPanel
               node={node}
@@ -90,7 +92,7 @@ export const MapWebGLPage = ({ map, mapId }: MapWebGLPageProps) => {
         {/* Owner-only components */}
         {canEdit && (
           <>
-            <QuickAddDialog />
+            <QuickAddDialogWebGL viewport={viewport} />
             <AddNodeFab />
           </>
         )}

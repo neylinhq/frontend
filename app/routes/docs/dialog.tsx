@@ -83,7 +83,7 @@ const DialogPage = () => {
   <DialogTrigger asChild>
     <Button>Edit Profile</Button>
   </DialogTrigger>
-  <DialogContent className="sm:max-w-[425px]">
+  <DialogContent className="sm:max-w-md">
     <DialogHeader>
       <DialogTitle>Edit Profile</DialogTitle>
       <DialogDescription>
@@ -111,7 +111,7 @@ const DialogPage = () => {
               <DialogTrigger asChild>
                 <Button>Edit Profile</Button>
               </DialogTrigger>
-              <DialogContent className='sm:max-w-[425px]'>
+              <DialogContent className='sm:max-w-md'>
                 <DialogHeader>
                   <DialogTitle>Edit Profile</DialogTitle>
                   <DialogDescription>Make changes to your profile here.</DialogDescription>

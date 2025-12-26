@@ -47,7 +47,7 @@ export const ProposalCard = ({
     <div className={cn('border border-border/60 rounded-lg overflow-hidden bg-card', className)}>
       {/* Header */}
       <div className='px-3 py-2 bg-muted/30 border-b border-border/60'>
-        <span className='text-[10px] font-medium uppercase tracking-wider text-muted-foreground'>
+        <span className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
           {title}
         </span>
       </div>

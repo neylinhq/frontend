@@ -41,10 +41,10 @@
 /* Reduced motion - static subtle glow */
 @media (prefers-reduced-motion: reduce) {
   .focusGlow {
-    animation: none !important;
-    box-shadow: 0 0 24px oklch(var(--brand) / 0.15) !important;
+    animation: none;
+    box-shadow: 0 0 24px oklch(var(--brand) / 0.15);
   }
   :global(.dark) .focusGlow {
-    box-shadow: 0 0 24px oklch(var(--brand) / 0.06) !important;
+    box-shadow: 0 0 24px oklch(var(--brand) / 0.06);
   }
 }

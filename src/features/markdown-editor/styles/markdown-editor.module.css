@@ -34,7 +34,7 @@
 
 /* Scroller - NO SCROLL */
 .editorWrapper :global(.cm-scroller) {
-  overflow: visible !important;
+  overflow: visible;
   font-family: inherit;
 }
 
@@ -58,11 +58,11 @@
 
 /* Selection */
 .editorWrapper :global(.cm-selectionBackground) {
-  background: oklch(var(--muted-foreground) / 0.2) !important;
+  background: oklch(var(--muted-foreground) / 0.2);
 }
 
 .editorWrapper :global(.cm-editor.cm-focused .cm-selectionBackground) {
-  background: oklch(var(--muted-foreground) / 0.3) !important;
+  background: oklch(var(--muted-foreground) / 0.3);
 }
 
 /* Cursor */

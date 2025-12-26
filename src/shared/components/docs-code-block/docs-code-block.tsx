@@ -21,6 +21,8 @@ interface DocsCodeBlockProps {
   className?: string
 }
 
+const COPY_FEEDBACK_DURATION_MS = 2000
+
 export const DocsCodeBlock = ({
   code,
   language = 'tsx',
@@ -37,7 +39,7 @@ export const DocsCodeBlock = ({
     try {
       await navigator.clipboard.writeText(code)
       setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+      setTimeout(() => setCopied(false), COPY_FEEDBACK_DURATION_MS)
     } catch {
       // Clipboard API failed - user denied permission or unsupported
     }

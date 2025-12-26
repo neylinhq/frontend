@@ -21,6 +21,7 @@ import { OtpInput } from '@/shared/components/otp-input'
 import { toast } from '@/shared/components/toast'
 
 const RESEND_COOLDOWN = 60 // seconds
+const RESEND_COOLDOWN_TICK_MS = 1000
 
 const maskEmail = (email: string): string => {
   const [local, domain] = email.split('@')
@@ -47,7 +48,7 @@ export const ResetPasswordForm = () => {
   // Handle resend cooldown timer
   useEffect(() => {
     if (resendCooldown > 0) {
-      const timer = setTimeout(() => setResendCooldown(c => c - 1), 1000)
+      const timer = setTimeout(() => setResendCooldown(c => c - 1), RESEND_COOLDOWN_TICK_MS)
       return () => clearTimeout(timer)
     }
   }, [resendCooldown])

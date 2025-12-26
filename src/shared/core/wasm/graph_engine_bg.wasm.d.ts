@@ -1,25 +1,43 @@
 /* tslint:disable */
 /* eslint-disable */
-export const memory: WebAssembly.Memory
-export const __wbg_graphengine_free: (a: number, b: number) => void
-export const graphengine_new: () => number
-export const graphengine_initRenderer: (a: number, b: number, c: number) => void
-export const graphengine_loadGraph: (a: number, b: number, c: number, d: number) => void
-export const graphengine_exportGraph: (a: number, b: number) => void
-export const graphengine_runLayout: (a: number, b: number, c: number) => void
-export const graphengine_render: (a: number, b: number) => void
-export const graphengine_setView: (a: number, b: number, c: number, d: number) => void
-export const graphengine_setResolution: (a: number, b: number, c: number) => void
-export const graphengine_hitTest: (a: number, b: number, c: number, d: number) => void
-export const graphengine_selectNodes: (a: number, b: number, c: number, d: number) => void
-export const graphengine_focusNode: (a: number, b: number, c: number) => void
-export const graphengine_getNodeCount: (a: number) => number
-export const graphengine_getEdgeCount: (a: number) => number
-export const graphengine_getStats: (a: number, b: number) => void
-export const init: () => void
-export const __wbindgen_export: (a: number) => void
-export const __wbindgen_export2: (a: number, b: number) => number
-export const __wbindgen_export3: (a: number, b: number, c: number, d: number) => number
-export const __wbindgen_add_to_stack_pointer: (a: number) => number
-export const __wbindgen_export4: (a: number, b: number, c: number) => void
-export const __wbindgen_start: () => void
+export const memory: WebAssembly.Memory;
+export const __wbg_graphengine_free: (a: number, b: number) => void;
+export const graphengine_edge_count: (a: number) => number;
+export const graphengine_fit_view: (a: number, b: number) => void;
+export const graphengine_get_all_positions: (a: number) => [number, number];
+export const graphengine_get_viewport: (a: number) => [number, number];
+export const graphengine_get_visible_nodes: (a: number) => [number, number];
+export const graphengine_get_zoom: (a: number) => number;
+export const graphengine_hit_test: (a: number, b: number, c: number) => [number, number];
+export const graphengine_init_layout: (a: number, b: number, c: number) => [number, number];
+export const graphengine_init_renderer: (a: number, b: any) => [number, number];
+export const graphengine_is_converged: (a: number) => number;
+export const graphengine_is_layout_running: (a: number) => number;
+export const graphengine_load_font_atlas_data: (a: number, b: number, c: number, d: number, e: number, f: number, g: number) => [number, number];
+export const graphengine_load_graph: (a: number, b: number, c: number) => [number, number];
+export const graphengine_load_icon_atlas_data: (a: number, b: number, c: number, d: number, e: number, f: number, g: number) => [number, number];
+export const graphengine_load_sdf_atlas_data: (a: number, b: number, c: number, d: number, e: number, f: number, g: number) => [number, number];
+export const graphengine_new: () => number;
+export const graphengine_node_count: (a: number) => number;
+export const graphengine_pan: (a: number, b: number, c: number) => void;
+export const graphengine_render: (a: number) => void;
+export const graphengine_resize: (a: number, b: number, c: number) => number;
+export const graphengine_run_layout: (a: number, b: number, c: number) => [number, number, number, number];
+export const graphengine_set_dimmed: (a: number, b: number, c: number) => void;
+export const graphengine_set_focused: (a: number, b: number, c: number) => void;
+export const graphengine_set_selected: (a: number, b: number, c: number) => void;
+export const graphengine_set_selected_nodes: (a: number, b: number, c: number) => void;
+export const graphengine_set_theme: (a: number, b: number, c: number) => [number, number];
+export const graphengine_set_viewport: (a: number, b: number, c: number) => [number, number];
+export const graphengine_step_layout: (a: number, b: number) => [number, number];
+export const graphengine_update_node_position: (a: number, b: number, c: number, d: number, e: number) => void;
+export const graphengine_zoom_at: (a: number, b: number, c: number, d: number) => void;
+export const init: () => void;
+export const __wbindgen_exn_store: (a: number) => void;
+export const __externref_table_alloc: () => number;
+export const __wbindgen_externrefs: WebAssembly.Table;
+export const __wbindgen_free: (a: number, b: number, c: number) => void;
+export const __wbindgen_malloc: (a: number, b: number) => number;
+export const __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
+export const __externref_table_dealloc: (a: number) => void;
+export const __wbindgen_start: () => void;

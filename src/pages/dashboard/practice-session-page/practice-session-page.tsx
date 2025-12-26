@@ -120,7 +120,7 @@ export const PracticeSessionPage = () => {
             {t('common.back')}
           </Link>
         </Button>
-        <span className='text-[10px] uppercase tracking-wider text-muted-foreground'>
+        <span className='text-xs uppercase tracking-wide text-muted-foreground'>
           {t('practice.session')}
         </span>
       </header>
@@ -130,10 +130,10 @@ export const PracticeSessionPage = () => {
         <div className='w-full max-w-2xl space-y-5'>
           <div className='rounded-lg border border-border/60 bg-card overflow-hidden'>
             <div className='flex items-center justify-between border-b border-border/60 bg-muted/30 px-4 py-2'>
-              <span className='text-[10px] font-medium uppercase tracking-wider text-muted-foreground'>
+              <span className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
                 {t('practice.exercise', 'Exercise')}
               </span>
-              <Badge variant='secondary' className='text-[10px] font-medium'>
+              <Badge variant='secondary' className='text-xs font-medium'>
                 {t(`practice.types.${exercise.type}`, exercise.type)}
               </Badge>
             </div>
@@ -166,7 +166,7 @@ export const PracticeSessionPage = () => {
           {/* Feedback */}
           {showFeedback && exercise.explanation && (
             <div className='rounded-lg border border-border/60 bg-muted/30 p-4 space-y-2'>
-              <div className='text-[10px] uppercase tracking-wider text-muted-foreground'>
+              <div className='text-xs uppercase tracking-wide text-muted-foreground'>
                 {t('practice.explanation', 'Explanation')}
               </div>
               <p className='text-sm text-muted-foreground'>{exercise.explanation}</p>

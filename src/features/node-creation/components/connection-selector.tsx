@@ -76,7 +76,7 @@ export const ConnectionSelector = memo(() => {
               {t('nodeCreation.connections.add', 'Add')}
             </Button>
           </PopoverTrigger>
-          <PopoverContent className='w-[280px] p-0' align='end'>
+          <PopoverContent className='w-72 p-0' align='end'>
             <div className='p-2'>
               <Input
                 placeholder={t('nodeCreation.connections.searchPlaceholder', 'Search nodes...')}
@@ -85,7 +85,7 @@ export const ConnectionSelector = memo(() => {
                 className='mb-2 h-8 text-xs rounded-sm'
                 autoFocus
               />
-              <div className='max-h-[200px] overflow-y-auto'>
+              <div className='max-h-52 overflow-y-auto'>
                 {availableNodes.length === 0 ? (
                   <div className='py-4 text-center text-xs text-muted-foreground'>
                     {t('nodeCreation.connections.noResults', 'No nodes found')}
@@ -102,7 +102,7 @@ export const ConnectionSelector = memo(() => {
                           'group flex w-full items-center gap-2 rounded-xs px-2 py-1 text-left text-xs',
                           'cursor-pointer transition-colors',
                           'hover:bg-[var(--surface-hover)] hover:text-foreground',
-                          'focus:bg-[var(--surface-hover)] focus:text-foreground focus:outline-none'
+                          'focus-visible:bg-[var(--surface-hover)] focus-visible:text-foreground focus-visible:outline-none'
                         )}
                       >
                         <Icon className='h-4 w-4 shrink-0 text-muted-foreground' />
@@ -151,7 +151,7 @@ const ConnectionRow = memo(({ connection, onRemove, onTypeChange }: ConnectionRo
       <span className='flex-1 truncate text-sm'>{connection.targetNodeLabel}</span>
 
       <Select value={connection.relationType} onValueChange={onTypeChange}>
-        <SelectTrigger className='h-7 w-[130px] text-xs'>
+        <SelectTrigger className='h-7 w-32 text-xs'>
           <SelectValue />
         </SelectTrigger>
         <SelectContent>

@@ -40,7 +40,7 @@ export const PublicHeader = () => {
                 <span className='sr-only'>{t('common.menu', 'Menu')}</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side='left' className='w-[280px] p-0 flex flex-col'>
+            <SheetContent side='left' className='w-72 p-0 flex flex-col'>
               <SheetTitle className='sr-only'>{t('common.menu', 'Menu')}</SheetTitle>
               <div className='py-4 px-6 border-b'>
                 <Logo size='lg' />

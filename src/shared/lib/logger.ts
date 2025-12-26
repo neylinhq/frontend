@@ -1,24 +1,40 @@
-/**
- * Development-only logger utility.
- * Logs are stripped in production builds.
- */
+type LoggerFn = (...args: unknown[]) => void
+type LoggerTarget = {
+  debug?: LoggerFn
+  info?: LoggerFn
+  warn?: LoggerFn
+  error?: LoggerFn
+}
+
+const getLoggerTarget = (): LoggerTarget | undefined =>
+  (globalThis as { __NEYLIN_LOGGER__?: LoggerTarget }).__NEYLIN_LOGGER__
+
+const logToTarget = (level: keyof LoggerTarget, args: unknown[]) => {
+  const target = getLoggerTarget()
+  if (!target) return
+  const handler = target[level] ?? target.info
+  if (handler) {
+    handler(...args)
+  }
+}
+
 export const logger = {
   debug: (...args: unknown[]) => {
     if (import.meta.env.DEV) {
-      console.log(...args)
+      logToTarget('debug', args)
     }
   },
   info: (...args: unknown[]) => {
     if (import.meta.env.DEV) {
-      console.info(...args)
+      logToTarget('info', args)
     }
   },
   warn: (...args: unknown[]) => {
     if (import.meta.env.DEV) {
-      console.warn(...args)
+      logToTarget('warn', args)
     }
   },
   error: (...args: unknown[]) => {
-    console.error(...args)
+    logToTarget('error', args)
   }
 }

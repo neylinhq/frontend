@@ -168,6 +168,10 @@
   /* Code font: Söhne Mono - matching monospace from Klim */
   --font-mono: "Söhne Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 
+  /* Typography scale */
+  --text-2xs: 0.625rem;
+  --text-2xs--line-height: 0.875rem;
+
   /* Colors Mapping - OKLCH format: L C H */
   --color-background: oklch(var(--background));
   --color-foreground: oklch(var(--foreground));
@@ -1412,13 +1416,16 @@
     color: oklch(1 0 0);
   }
 
-  /* Fix Chrome autocomplete blue highlight */
+  /* @layer base: Fix Chrome autocomplete blue highlight */
   input:-webkit-autofill,
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus,
   input:-webkit-autofill:active {
+    /* @layer base */
     -webkit-box-shadow: 0 0 0 30px oklch(var(--background)) inset !important;
+    /* @layer base */
     -webkit-text-fill-color: oklch(var(--foreground)) !important;
+    /* @layer base */
     caret-color: oklch(var(--foreground)) !important;
   }
 
@@ -1601,11 +1608,11 @@
 }
 
 .toast-error {
-  border-color: oklch(var(--destructive) / 0.4) !important;
+  border-color: oklch(var(--destructive) / 0.4);
 }
 
 .toast-error [data-icon] {
-  color: oklch(var(--destructive)) !important;
+  color: oklch(var(--destructive));
 }
 
 /* Success toast */
@@ -1614,11 +1621,11 @@
 }
 
 .toast-success {
-  border-color: oklch(var(--success) / 0.4) !important;
+  border-color: oklch(var(--success) / 0.4);
 }
 
 .toast-success [data-icon] {
-  color: oklch(var(--success)) !important;
+  color: oklch(var(--success));
 }
 
 /* Warning toast */
@@ -1627,11 +1634,11 @@
 }
 
 .toast-warning {
-  border-color: oklch(var(--warning) / 0.4) !important;
+  border-color: oklch(var(--warning) / 0.4);
 }
 
 .toast-warning [data-icon] {
-  color: oklch(var(--warning)) !important;
+  color: oklch(var(--warning));
 }
 
 /* Info toast */
@@ -1640,11 +1647,11 @@
 }
 
 .toast-info {
-  border-color: oklch(var(--info) / 0.4) !important;
+  border-color: oklch(var(--info) / 0.4);
 }
 
 .toast-info [data-icon] {
-  color: oklch(var(--info)) !important;
+  color: oklch(var(--info));
 }
 
 /* ========================================
@@ -1701,11 +1708,11 @@
 
 @media (prefers-reduced-motion: reduce) {
   .react-flow__node-knowledgeNode.focused {
-    animation: none !important;
-    filter: drop-shadow(0 0 24px oklch(var(--brand) / 0.15)) !important;
+    animation: none;
+    filter: drop-shadow(0 0 24px oklch(var(--brand) / 0.15));
   }
   .dark .react-flow__node-knowledgeNode.focused {
-    filter: drop-shadow(0 0 24px oklch(var(--brand) / 0.06)) !important;
+    filter: drop-shadow(0 0 24px oklch(var(--brand) / 0.06));
   }
 }
 
@@ -1717,7 +1724,7 @@
 /* During active interaction (pan/zoom), disable transitions for max FPS */
 .react-flow.interacting .react-flow__node,
 .react-flow.interacting .react-flow__edge {
-  transition: none !important;
+  transition: none;
 }
 
 /* Edge labels - contain layout recalculations */
@@ -1735,8 +1742,12 @@ html.theme-transition-disabled,
 html.theme-transition-disabled *,
 html.theme-transition-disabled *::before,
 html.theme-transition-disabled *::after {
-  transition: none !important;
-  transition-duration: 0s !important;
+  transition: none;
+  transition-duration: 0s;
+}
+
+button {
+  cursor: pointer;
 }
 
 /* ========================================
@@ -1747,16 +1758,16 @@ html.theme-transition-disabled *::after {
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+    transition-duration: 0.01ms;
+    scroll-behavior: auto;
   }
 
   /* Focus glow - static ring instead of animation */
   .animate-focus-glow {
-    animation: none !important;
-    box-shadow: 0 0 0 2px oklch(var(--primary)) !important;
+    animation: none;
+    box-shadow: 0 0 0 2px oklch(var(--primary));
   }
 }
 
@@ -1957,12 +1968,12 @@ html.theme-transition-disabled *::after {
 /* Fix aria-hidden issue - TON Connect modal should be interactive */
 #tc-widget-root[aria-hidden="true"],
 #tc-widget-root[data-aria-hidden="true"] {
-  pointer-events: auto !important;
+  pointer-events: auto;
 }
 
 /* Ensure all TON Connect elements are interactive */
 #tc-widget-root *[aria-hidden="true"],
 #tc-widget-root *[data-aria-hidden="true"] {
-  pointer-events: auto !important;
+  pointer-events: auto;
 }
 

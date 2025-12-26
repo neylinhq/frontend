@@ -15,6 +15,7 @@ import { useEffect, useRef, useCallback, useMemo, useState } from 'react'
 import { Compartment, EditorState } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
 import { cn } from '@/shared/lib/cn'
+import { logger } from '@/shared/lib/logger'
 
 import { createExtensions } from '../lib/extensions'
 import type { MarkdownEditorProps } from '../model/markdown-editor.types'
@@ -87,7 +88,7 @@ export const MarkdownEditor = ({
         onEditorUpdateRef.current(view)
       }
     } catch (error) {
-      console.error('Failed to initialize markdown editor:', error)
+      logger.error('Failed to initialize markdown editor:', error)
       setHasError(true)
 
       if (onErrorRef.current) {

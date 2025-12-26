@@ -2,172 +2,141 @@
 /* eslint-disable */
 
 export class GraphEngine {
-  free(): void
-  [Symbol.dispose](): void
+  free(): void;
+  [Symbol.dispose](): void;
   /**
-   * Create a new GraphEngine instance
+   * Get edge count
    */
-  constructor()
+  edge_count(): number;
   /**
-   * Initialize WebGL renderer with canvas element
-   *
-   * # Arguments
-   * * `canvas` - HTML canvas element for WebGL rendering
-   *
-   * # Returns
-   * * Result with unit or error message
+   * Load graph from JSON string
    */
-  initRenderer(canvas: HTMLCanvasElement): void
+  load_graph(json: string): void;
   /**
-   * Load graph data from JSON
-   *
-   * # Arguments
-   * * `json_data` - JSON string containing nodes and edges
-   *
-   * # Returns
-   * * Result with unit or error message
+   * Get node count
    */
-  loadGraph(json_data: string): void
+  node_count(): number;
   /**
-   * Export graph data to JSON
-   *
-   * # Returns
-   * * JSON string with graph data
+   * Run complete layout and return result as JSON
    */
-  exportGraph(): string
+  run_layout(options_json: string): string;
   /**
-   * Run force-directed layout algorithm
-   *
-   * # Arguments
-   * * `iterations` - Number of layout iterations (default: 150)
-   *
-   * # Returns
-   * * Result with unit or error message
+   * Set dimmed nodes
    */
-  runLayout(iterations?: number | null): void
+  set_dimmed(node_ids: string): void;
   /**
-   * Render current frame
-   *
-   * # Returns
-   * * Result with unit or error message
+   * Initialize animated layout
    */
-  render(): void
+  init_layout(options_json: string): void;
   /**
-   * Set view transformation (pan and zoom)
-   *
-   * # Arguments
-   * * `pan_x` - Horizontal pan offset
-   * * `pan_y` - Vertical pan offset
-   * * `zoom` - Zoom level (1.0 = 100%)
+   * Set focused node
    */
-  setView(pan_x: number, pan_y: number, zoom: number): void
+  set_focused(node_id?: string | null): void;
   /**
-   * Set canvas resolution
-   *
-   * # Arguments
-   * * `width` - Canvas width in pixels
-   * * `height` - Canvas height in pixels
+   * Single animation step (N iterations)
+   * Returns positions as JSON
    */
-  setResolution(width: number, height: number): void
+  step_layout(iterations: number): string;
   /**
-   * Hit test - find node at screen position
-   *
-   * # Arguments
-   * * `screen_x` - Screen X coordinate
-   * * `screen_y` - Screen Y coordinate
-   *
-   * # Returns
-   * * Node ID if found, null otherwise
+   * Get viewport state as JSON
    */
-  hitTest(_screen_x: number, _screen_y: number): string | undefined
+  get_viewport(): string;
   /**
-   * Select nodes by IDs
-   *
-   * # Arguments
-   * * `node_ids` - JSON array of node IDs
+   * Check if layout converged
    */
-  selectNodes(node_ids_json: string): void
+  is_converged(): boolean;
   /**
-   * Focus on a specific node
-   *
-   * # Arguments
-   * * `node_id` - Node ID to focus, or null to clear focus
+   * Set selected node
    */
-  focusNode(node_id?: string | null): void
+  set_selected(node_id?: string | null): void;
   /**
-   * Get number of nodes in graph
+   * Set viewport state from JSON
    */
-  getNodeCount(): number
+  set_viewport(json: string): void;
   /**
-   * Get number of edges in graph
+   * Initialize renderer with a canvas element
    */
-  getEdgeCount(): number
+  init_renderer(canvas: HTMLCanvasElement): void;
   /**
-   * Get rendering statistics
-   *
-   * # Returns
-   * * JSON string with statistics
+   * Get all node positions as JSON
    */
-  getStats(): string
+  get_all_positions(): string;
+  /**
+   * Get visible node IDs for DOM overlay
+   */
+  get_visible_nodes(): string;
+  /**
+   * Check if layout animation is running
+   */
+  is_layout_running(): boolean;
+  /**
+   * Set selected nodes (multi-select)
+   */
+  set_selected_nodes(node_ids: string): void;
+  /**
+   * Load SDF font atlas from tiny-sdf format for GPU text rendering
+   * This uses single-channel SDF from Mapbox's tiny-sdf library
+   * Called once at startup or when font changes
+   */
+  load_sdf_atlas_data(image_data: Uint8Array, width: number, height: number, metrics_json: string): void;
+  /**
+   * Load MSDF font atlas for GPU text rendering
+   * Called once at startup with atlas image data and JSON metrics
+   */
+  load_font_atlas_data(image_data: Uint8Array, width: number, height: number, metrics_json: string): void;
+  /**
+   * Load icon sprite atlas for GPU icon rendering
+   * Called once at startup with atlas image data and JSON coords
+   */
+  load_icon_atlas_data(image_data: Uint8Array, width: number, height: number, icons_json: string): void;
+  /**
+   * Update single node position (for drag)
+   */
+  update_node_position(id: string, x: number, y: number): void;
+  /**
+   * Create a new graph engine
+   */
+  constructor();
+  /**
+   * Pan the viewport
+   */
+  pan(dx: number, dy: number): void;
+  /**
+   * Render the graph
+   */
+  render(): void;
+  /**
+   * Resize the canvas
+   * Returns false if dimensions are invalid
+   */
+  resize(width: number, height: number): boolean;
+  /**
+   * Zoom at screen point
+   */
+  zoom_at(screen_x: number, screen_y: number, factor: number): void;
+  /**
+   * Fit viewport to show all nodes
+   */
+  fit_view(padding: number): void;
+  /**
+   * Get current zoom level
+   */
+  get_zoom(): number;
+  /**
+   * Hit test at screen coordinates
+   * Returns node ID if hit, null otherwise
+   */
+  hit_test(screen_x: number, screen_y: number): string | undefined;
+  /**
+   * Set theme colors from JSON
+   * Called from JS when theme changes (light/dark mode toggle, etc.)
+   * Note: Does not call update_render_data() to avoid wasm-bindgen borrow conflicts.
+   * Theme is used directly in render() so it takes effect on next frame.
+   */
+  set_theme(json: string): void;
 }
 
 /**
- * Initialize the WASM module
- * This is called automatically when importing the module in JavaScript
+ * Initialize panic hook for better error messages in browser console
  */
-export function init(): void
-
-export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module
-
-export interface InitOutput {
-  readonly memory: WebAssembly.Memory
-  readonly __wbg_graphengine_free: (a: number, b: number) => void
-  readonly graphengine_new: () => number
-  readonly graphengine_initRenderer: (a: number, b: number, c: number) => void
-  readonly graphengine_loadGraph: (a: number, b: number, c: number, d: number) => void
-  readonly graphengine_exportGraph: (a: number, b: number) => void
-  readonly graphengine_runLayout: (a: number, b: number, c: number) => void
-  readonly graphengine_render: (a: number, b: number) => void
-  readonly graphengine_setView: (a: number, b: number, c: number, d: number) => void
-  readonly graphengine_setResolution: (a: number, b: number, c: number) => void
-  readonly graphengine_hitTest: (a: number, b: number, c: number, d: number) => void
-  readonly graphengine_selectNodes: (a: number, b: number, c: number, d: number) => void
-  readonly graphengine_focusNode: (a: number, b: number, c: number) => void
-  readonly graphengine_getNodeCount: (a: number) => number
-  readonly graphengine_getEdgeCount: (a: number) => number
-  readonly graphengine_getStats: (a: number, b: number) => void
-  readonly init: () => void
-  readonly __wbindgen_export: (a: number) => void
-  readonly __wbindgen_export2: (a: number, b: number) => number
-  readonly __wbindgen_export3: (a: number, b: number, c: number, d: number) => number
-  readonly __wbindgen_add_to_stack_pointer: (a: number) => number
-  readonly __wbindgen_export4: (a: number, b: number, c: number) => void
-  readonly __wbindgen_start: () => void
-}
-
-export type SyncInitInput = BufferSource | WebAssembly.Module
-
-/**
- * Instantiates the given `module`, which can either be bytes or
- * a precompiled `WebAssembly.Module`.
- *
- * @param {{ module: SyncInitInput }} module - Passing `SyncInitInput` directly is deprecated.
- *
- * @returns {InitOutput}
- */
-export function initSync(module: { module: SyncInitInput } | SyncInitInput): InitOutput
-
-/**
- * If `module_or_path` is {RequestInfo} or {URL}, makes a request and
- * for everything else, calls `WebAssembly.instantiate` directly.
- *
- * @param {{ module_or_path: InitInput | Promise<InitInput> }} module_or_path - Passing `InitInput` directly is deprecated.
- *
- * @returns {Promise<InitOutput>}
- */
-export default function __wbg_init(
-  module_or_path?:
-    | { module_or_path: InitInput | Promise<InitInput> }
-    | InitInput
-    | Promise<InitInput>
-): Promise<InitOutput>
+export function init(): void;

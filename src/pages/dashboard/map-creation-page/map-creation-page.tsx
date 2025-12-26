@@ -7,8 +7,8 @@ import { MAP_CREATION_CONFIG } from '@/features/map-creation/model/map-creation.
 import { ApiError } from '@/shared/api/client'
 import { Button } from '@/shared/components/button'
 import { Card, CardContent } from '@/shared/components/card'
+import { Field } from '@/shared/components/field'
 import { Input } from '@/shared/components/input'
-import { Label } from '@/shared/components/label'
 import { Textarea } from '@/shared/components/textarea'
 import { toast } from '@/shared/components/toast'
 import { Typography } from '@/shared/components/typography'
@@ -105,20 +105,24 @@ export const MapCreationPage = () => {
           <CardContent className='pt-6 space-y-4'>
             {/* Title — the essential field */}
             <div className='space-y-2'>
-              <Label htmlFor='map-title' className='text-sm font-medium'>
-                {t('mapCreation.form.title.label')}
-              </Label>
-              <Input
-                id='map-title'
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder={t('mapCreation.form.title.placeholder')}
-                maxLength={MAP_CREATION_CONFIG.TITLE_MAX_LENGTH}
-                aria-required='true'
-                autoFocus
-                className='h-11'
-              />
+              <Field
+                label={t('mapCreation.form.title.label')}
+                required
+                htmlFor='map-title'
+                labelClassName='text-sm font-medium'
+              >
+                <Input
+                  id='map-title'
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder={t('mapCreation.form.title.placeholder')}
+                  maxLength={MAP_CREATION_CONFIG.TITLE_MAX_LENGTH}
+                  aria-required='true'
+                  autoFocus
+                  className='h-11'
+                />
+              </Field>
               {/* Counter only when approaching limit */}
               {title.length > MAP_CREATION_CONFIG.TITLE_MAX_LENGTH * 0.7 && (
                 <p className='text-xs text-muted-foreground text-right'>
@@ -130,22 +134,29 @@ export const MapCreationPage = () => {
             {/* Description — progressive disclosure */}
             {showDescription ? (
               <div className='space-y-2'>
-                <Label htmlFor='map-description' className='text-sm font-medium'>
-                  {t('mapCreation.form.description.label')}
-                  <span className='text-muted-foreground font-normal ml-1'>
-                    ({t('common.optional')})
-                  </span>
-                </Label>
-                <Textarea
-                  id='map-description'
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  placeholder={t('mapCreation.form.description.placeholder')}
-                  maxLength={MAP_CREATION_CONFIG.DESCRIPTION_MAX_LENGTH}
-                  rows={3}
-                  className='resize-none'
-                />
+                <Field
+                  label={
+                    <>
+                      {t('mapCreation.form.description.label')}
+                      <span className='text-muted-foreground font-normal ml-1'>
+                        ({t('common.optional')})
+                      </span>
+                    </>
+                  }
+                  htmlFor='map-description'
+                  labelClassName='text-sm font-medium'
+                >
+                  <Textarea
+                    id='map-description'
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder={t('mapCreation.form.description.placeholder')}
+                    maxLength={MAP_CREATION_CONFIG.DESCRIPTION_MAX_LENGTH}
+                    rows={3}
+                    className='resize-none'
+                  />
+                </Field>
                 {description.length > MAP_CREATION_CONFIG.DESCRIPTION_MAX_LENGTH * 0.7 && (
                   <p className='text-xs text-muted-foreground text-right'>
                     {description.length}/{MAP_CREATION_CONFIG.DESCRIPTION_MAX_LENGTH}

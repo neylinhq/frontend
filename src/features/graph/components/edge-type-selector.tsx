@@ -97,7 +97,7 @@ export const EdgeTypeSelector = memo(({ mapId, onComplete, onCancel }: EdgeTypeS
     <div
       ref={containerRef}
       onKeyDown={handleKeyDown}
-      className='fixed z-50 w-[280px] rounded-xl border bg-popover p-3'
+      className='fixed z-50 w-72 rounded-lg border bg-popover p-3'
       style={{
         left: pendingEdge.position.x,
         top: pendingEdge.position.y,
@@ -106,9 +106,9 @@ export const EdgeTypeSelector = memo(({ mapId, onComplete, onCancel }: EdgeTypeS
     >
       {/* Header */}
       <div className='mb-2.5 flex items-center gap-2 text-xs'>
-        <span className='max-w-[80px] truncate font-medium'>{pendingEdge.sourceLabel}</span>
+        <span className='max-w-20 truncate font-medium'>{pendingEdge.sourceLabel}</span>
         <ArrowRightIcon className='h-3 w-3 shrink-0 text-muted-foreground' />
-        <span className='max-w-[80px] truncate font-medium'>{pendingEdge.targetLabel}</span>
+        <span className='max-w-20 truncate font-medium'>{pendingEdge.targetLabel}</span>
       </div>
 
       {/* Relation Type Grid */}

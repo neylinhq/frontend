@@ -4,6 +4,7 @@ import { useEffect, useRef, useCallback, useMemo, useState } from 'react'
 import { Compartment, EditorState } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
 import { cn } from '@/shared/lib/cn'
+import { logger } from '@/shared/lib/logger'
 
 import { createExtensions } from '../lib/extensions'
 import type { NoteEditorProps } from '../model/note-editor.types'
@@ -67,7 +68,7 @@ export const NoteEditor = ({
 
       onEditorUpdateRef.current?.(view)
     } catch (error) {
-      console.error('Failed to initialize note editor:', error)
+      logger.error('Failed to initialize note editor:', error)
       setHasError(true)
       onErrorRef.current?.(error instanceof Error ? error : new Error(String(error)))
     }

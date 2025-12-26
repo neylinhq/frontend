@@ -44,7 +44,7 @@ const EDGE_TYPE_COLORS: Record<string, string> = {
   'similar-to': 'bg-edge-similar-to-muted text-edge-similar-to'
 }
 
-const TAG_BASE_CLASSES = 'text-[10px] font-medium lowercase rounded-xs px-2 py-[3px] leading-[1.45]'
+const TAG_BASE_CLASSES = 'text-xs font-medium lowercase rounded-xs px-2 py-0.5 leading-tight'
 
 interface CollapsibleProposalProps {
   preview: ResolvedPreview
@@ -142,10 +142,12 @@ export const CollapsibleProposal = ({
         </span>
 
         {/* Status text */}
-        <span className={cn(
-          'text-[10px] flex-shrink-0',
-          isApproved ? 'text-muted-foreground/60' : 'text-muted-foreground/50'
-        )}>
+        <span
+          className={cn(
+            'text-xs flex-shrink-0',
+            isApproved ? 'text-muted-foreground/60' : 'text-muted-foreground/50'
+          )}
+        >
           {isApproved ? t('ai.status.applied', 'Applied') : t('ai.status.skipped', 'Skipped')}
         </span>
 
@@ -305,7 +307,7 @@ const ProposalContent = ({ preview }: { preview: ResolvedPreview }) => {
             <div className='space-y-3'>
               {groupedEdges.map(group => (
                 <div key={group.key} className='space-y-1.5'>
-                  <div className='text-[11px] font-medium text-foreground/70'>
+                  <div className='text-xs font-medium text-foreground/70'>
                     {group.label}
                   </div>
                   <div className='space-y-1'>

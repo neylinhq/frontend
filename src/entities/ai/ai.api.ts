@@ -1,4 +1,5 @@
 import { api } from '@/shared/api/client'
+import { logger } from '@/shared/lib/logger'
 import type { AIModel, EnrichType } from './ai.schema'
 
 interface ApiResponse<T> {
@@ -232,7 +233,7 @@ export const aiApi = {
                 const chunk = JSON.parse(data) as ChatStreamChunk
                 onChunk(chunk)
               } catch (parseError) {
-                console.warn('[AI Stream] Failed to parse chunk:', data, parseError)
+                logger.warn('[AI Stream] Failed to parse chunk:', data, parseError)
               }
             }
           }
@@ -240,7 +241,7 @@ export const aiApi = {
 
         resolve()
       } catch (error) {
-        console.error('[AI Stream] Stream error:', error)
+        logger.error('[AI Stream] Stream error:', error)
         if ((error as Error).name === 'AbortError') {
           resolve() // Aborted, not an error
         } else {

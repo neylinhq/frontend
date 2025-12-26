@@ -46,12 +46,12 @@ export const ModelSelector = ({ value, onChange, models, disabled }: ModelSelect
           variant='ghost'
           size='sm'
           disabled={disabled}
-          className='h-7 px-2.5 text-[11px] gap-2 bg-muted/60 hover:bg-muted/70 data-[state=open]:bg-muted/70'
+          className='h-7 px-2.5 gap-2 bg-muted/60 hover:bg-muted/70 data-[state=open]:bg-muted/70 [&&_svg]:size-3.5'
         >
           {currentModel && aiBrandIcons[currentModel.provider] && (
-            <Icon data={aiBrandIcons[currentModel.provider]} size={14} />
+            <Icon data={aiBrandIcons[currentModel.provider]} size={16} />
           )}
-          <span className='truncate max-w-28'>
+          <span className='truncate max-w-28 text-2xs'>
             {currentModel?.name || 'Select model'}
           </span>
         </Button>
@@ -67,7 +67,7 @@ export const ModelSelector = ({ value, onChange, models, disabled }: ModelSelect
             return (
               <div key={tier}>
                 {tierIndex > 0 && <div className='h-1.5' />}
-              <div className='text-[10px] uppercase tracking-wider text-muted-foreground px-2 mb-0.5 font-medium'>
+              <div className='text-2xs uppercase tracking-wide text-muted-foreground px-2 mb-0.5 font-medium'>
                 {config.label}
               </div>
                 <div className='flex flex-col gap-0.5'>
@@ -84,7 +84,7 @@ export const ModelSelector = ({ value, onChange, models, disabled }: ModelSelect
                     )}
                   >
                     {aiBrandIcons[model.provider] ? (
-                      <Icon data={aiBrandIcons[model.provider]} size={12} className='shrink-0' />
+                      <Icon data={aiBrandIcons[model.provider]} size={14} className='shrink-0' />
                     ) : (
                       <div className='w-3 h-3 shrink-0' />
                     )}

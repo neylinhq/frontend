@@ -160,6 +160,18 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
             `
           }}
         />
+
+        {/* <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.ExpertiserAssistant = {
+                ownerUserId: '123e6194-cab1-4699-b2e9-b9efaaf30d9c'
+              };
+            `
+          }}
+        />
+        <script src="http://localhost:5188/embed.js"></script> */}
+
       </head>
       <body className='bg-background text-foreground'>
         {children}

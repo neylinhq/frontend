@@ -5,6 +5,7 @@ import type { CryptoWallet } from './use-crypto-wallet'
 
 // TON USDT (jUSDT) jetton master address
 const JUSDT_MASTER = 'EQBynBO23ywHy_CgarY9NK9FTz0yDsG82PtcbSTQgGoXwiuA'
+const CONNECT_TIMEOUT_MS = 60000
 
 // Subscription contract address (будет задеплоен)
 const SUBSCRIPTION_CONTRACT = 'EQ...' // TODO: replace after deploy
@@ -74,7 +75,7 @@ export const TonWalletConnector = ({ onWalletChange }: TonWalletConnectorProps) 
           unsubscribeWallet()
           reject(new Error('Connection timeout'))
         }
-      }, 60000)
+      }, CONNECT_TIMEOUT_MS)
     })
   }, [tonConnectUI, wallet])
 

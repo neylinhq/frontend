@@ -9,6 +9,7 @@ import { MapWebGLPage } from '@/pages/dashboard/map-webgl-page'
 import { getMeta } from '@/shared/lib/get-meta'
 import { ApiError } from '@/shared/api/client'
 import { getCookies } from '@/shared/api/server'
+import { logger } from '@/shared/lib/logger'
 
 export const meta = () => {
   return getMeta('mapView')
@@ -33,7 +34,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
       throw redirect(`/auth/sign-in?from=${encodeURIComponent(request.url)}`)
     }
 
-    console.error('getFullMap error:', error)
+    logger.error('getFullMap error:', error)
     throw new Response('Map not found', { status: 404 })
   }
 }

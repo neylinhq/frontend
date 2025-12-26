@@ -16,7 +16,7 @@
 
 /* CodeMirror overrides */
 .editorWrapper :global(.cm-editor) {
-  height: auto !important;
+  height: auto;
   width: 100%;
   font-family: inherit;
   background: transparent;
@@ -25,10 +25,10 @@
 }
 
 .editorWrapper :global(.cm-scroller) {
-  overflow: visible !important;
-  height: auto !important;
-  max-height: none !important;
-  min-height: 0 !important;
+  overflow: visible;
+  height: auto;
+  max-height: none;
+  min-height: 0;
   display: block;
   font-family: inherit;
 }
@@ -36,7 +36,7 @@
 .editorWrapper :global(.cm-content) {
   padding: 0;
   font-family: inherit;
-  min-height: 0 !important;
+  min-height: 0;
   caret-color: currentColor;
 }
 
@@ -53,11 +53,11 @@
 }
 
 .editorWrapper :global(.cm-selectionBackground) {
-  background: oklch(var(--muted-foreground) / 0.2) !important;
+  background: oklch(var(--muted-foreground) / 0.2);
 }
 
 .editorWrapper :global(.cm-editor.cm-focused .cm-selectionBackground) {
-  background: oklch(var(--muted-foreground) / 0.3) !important;
+  background: oklch(var(--muted-foreground) / 0.3);
 }
 
 .editorWrapper :global(.cm-cursor) {

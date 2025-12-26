@@ -827,7 +827,7 @@ const GraphVisualizationContent = ({
   // Show loading only when fetching client-side (no initialData)
   if (!initialData && isLoading) {
     return (
-      <div className={cn('flex items-center justify-center h-[600px]', className)}>
+      <div className={cn('flex items-center justify-center h-full min-h-96', className)}>
         <div className='text-center space-y-3'>
           <Loading03Icon className='h-8 w-8 animate-spin mx-auto text-primary' />
           <p className='text-sm text-muted-foreground'>{t('graph.loading')}</p>
@@ -838,7 +838,7 @@ const GraphVisualizationContent = ({
 
   if (!initialData && (isError || !fullMap)) {
     return (
-      <div className={cn('flex items-center justify-center h-[600px]', className)}>
+      <div className={cn('flex items-center justify-center h-full min-h-96', className)}>
         <Card className='p-8 text-center'>
           <p className='text-lg font-semibold text-destructive mb-2'>{t('graph.loadingError')}</p>
           <p className='text-muted-foreground'>{t('graph.loadingErrorMessage')}</p>

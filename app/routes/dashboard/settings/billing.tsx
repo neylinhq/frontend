@@ -19,10 +19,12 @@ import {
   PaymentMethodCard,
   PaymentMethodDetailsDialog
 } from '@/features/billing/payment-method-card'
+import { ApiError } from '@/shared/api/client'
 import { getCookies } from '@/shared/api/server'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
 import { toast } from '@/shared/components/toast'
 import { Typography } from '@/shared/components/typography'
+import { logger } from '@/shared/lib/logger'
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const cookies = getCookies(request)
@@ -38,7 +40,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       paymentHistory: paymentHistoryData.payments || []
     }
   } catch (error) {
-    console.error('Failed to load billing data:', error)
+    logger.error('Failed to load billing data:', error)
     return {
       paymentMethods: [] as PaymentMethod[],
       paymentHistory: [] as PaymentHistory[]
@@ -125,10 +127,15 @@ const BillingPage = () => {
                     const networkName = t(`billing.crypto.networks.${data.network}`)
                     toast.success(t('billing.crypto.walletAdded', { network: networkName }))
                   },
-                  onError: (error: any) => {
+                  onError: (error: unknown) => {
                     // ApiError stores response data in .data field, not .response.data
-                    const errorMessage = error?.data?.error?.message || t('common.error')
-                    toast.error(errorMessage)
+                    const errorMessage =
+                      error instanceof ApiError &&
+                      typeof error.data === 'object' &&
+                      error.data !== null
+                        ? (error.data as { error?: { message?: string } }).error?.message
+                        : null
+                    toast.error(errorMessage ?? t('common.error'))
                   }
                 }
               )

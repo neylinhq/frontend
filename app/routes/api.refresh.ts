@@ -1,5 +1,6 @@
 import type { ActionFunctionArgs } from 'react-router'
 import { API_URL } from '@/shared/config/env'
+import { logger } from '@/shared/lib/logger'
 
 /**
  * Resource route for refreshing auth tokens.
@@ -25,7 +26,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       } catch {
         errorData = await response.text()
       }
-      console.error('[api.refresh] Backend error:', response.status, errorData)
+      logger.error('[api.refresh] Backend error:', response.status, errorData)
       return Response.json({ success: false, error: 'Refresh failed' }, { status: 401 })
     }
 
@@ -45,7 +46,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       headers
     })
   } catch (error) {
-    console.error('[api.refresh] Error:', error)
+    logger.error('[api.refresh] Error:', error)
     return Response.json({ success: false, error: 'Refresh failed' }, { status: 500 })
   }
 }

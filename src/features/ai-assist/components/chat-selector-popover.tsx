@@ -108,7 +108,7 @@ export const ChatSelectorPopover = ({
   }
 
   return (
-    <div className='flex flex-col max-h-[320px] bg-background p-2'>
+    <div className='flex flex-col max-h-80 bg-background p-2'>
       {/* Search input */}
       <div className='pb-2'>
         <div className='relative'>
@@ -124,7 +124,7 @@ export const ChatSelectorPopover = ({
       </div>
 
       {/* Sessions list */}
-      <div className='flex-1 overflow-y-auto space-y-1'>
+      <div className='flex-1 overflow-y-auto space-y-1.5'>
         {groupedSessions.length === 0 ? (
           <div className='px-2 py-3 text-center text-xs text-muted-foreground'>
             {search
@@ -135,7 +135,7 @@ export const ChatSelectorPopover = ({
           groupedSessions.map(group => (
             <div key={group.label} className='space-y-0'>
               {/* Group header */}
-              <div className='px-2 mb-0.5 text-[10px] font-medium tracking-wider text-muted-foreground uppercase'>
+              <div className='px-2 mb-0.75 text-2xs font-medium tracking-wide text-muted-foreground uppercase'>
                 {group.label}
               </div>
               {/* Group items */}
@@ -145,6 +145,7 @@ export const ChatSelectorPopover = ({
                   return (
                     <button
                       key={session.id}
+                      type='button'
                       className={cn(
                         'w-full px-2 py-1 text-xs text-left truncate rounded-xs',
                         'hover:bg-[var(--surface-hover)] transition-colors',

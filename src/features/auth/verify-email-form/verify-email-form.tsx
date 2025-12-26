@@ -13,6 +13,7 @@ interface VerifyEmailFormProps {
 }
 
 const RESEND_COOLDOWN = 60 // seconds
+const RESEND_COOLDOWN_TICK_MS = 1000
 
 const maskEmail = (email: string): string => {
   const [local, domain] = email.split('@')
@@ -37,7 +38,7 @@ export const VerifyEmailForm = ({ email }: VerifyEmailFormProps) => {
   // Handle resend cooldown timer
   useEffect(() => {
     if (resendCooldown > 0) {
-      const timer = setTimeout(() => setResendCooldown(c => c - 1), 1000)
+      const timer = setTimeout(() => setResendCooldown(c => c - 1), RESEND_COOLDOWN_TICK_MS)
       return () => clearTimeout(timer)
     }
   }, [resendCooldown])

@@ -9,6 +9,7 @@ import { NodeEditPage, SIDEBAR_COOKIE_KEY } from '@/pages/dashboard/node-edit-pa
 import { getMeta } from '@/shared/lib/get-meta'
 import { ApiError } from '@/shared/api/client'
 import { getCookie, getCookies } from '@/shared/api/server'
+import { logger } from '@/shared/lib/logger'
 
 // Tell parent layout to disable scroll
 export const handle = { disableScroll: true }
@@ -47,7 +48,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
       throw redirect(`/auth/sign-in?from=${encodeURIComponent(request.url)}`)
     }
 
-    console.error('fetchNodeData error:', error)
+    logger.error('fetchNodeData error:', error)
     throw new Response('Node or Map not found', { status: 404 })
   }
 }

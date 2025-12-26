@@ -17,7 +17,7 @@ export const PaletteToggle = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant='outline' size='icon'>
-          <PaletteIcon className='h-[1.2rem] w-[1.2rem]' />
+          <PaletteIcon className='h-5 w-5' />
           <span className='sr-only'>{t('settings.theme.appearance.palette')}</span>
         </Button>
       </DropdownMenuTrigger>

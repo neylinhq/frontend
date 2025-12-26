@@ -124,12 +124,11 @@ export const KnowledgeEdge = memo(
               style={{
                 position: 'absolute',
                 transform: `translate(-50%, -50%) translate(${labelX}px,${labelY + labelOffset}px)`,
-                fontSize: 12,
                 pointerEvents: 'all',
                 backgroundColor: `oklch(${edgeColor} / ${isSelected ? 0.3 : 0.2})`
               }}
               className={cn(
-                'nodrag nopan cursor-pointer rounded-xs px-2.5 py-0.75 text-xs font-medium leading-[1.3] transition-colors',
+                'nodrag nopan cursor-pointer rounded-xs px-2.5 py-0.5 text-xs font-medium leading-[140%] transition-colors',
                 getEdgeTextClass(data.relationType)
               )}
               onClick={handleClick}

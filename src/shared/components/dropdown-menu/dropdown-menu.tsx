@@ -28,7 +28,7 @@ const DropdownMenuSubTrigger = React.forwardRef<
       'flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none',
       'data-[highlighted]:bg-[var(--surface-hover)] data-[highlighted]:text-foreground',
       'data-[state=open]:bg-[var(--surface-hover)] data-[state=open]:text-foreground',
-      'focus:bg-[var(--surface-hover)] focus:text-foreground',
+      'focus-visible:bg-[var(--surface-hover)] focus-visible:text-foreground',
       inset && 'pl-8',
       className
     )}
@@ -85,7 +85,7 @@ const DropdownMenuItem = React.forwardRef<
     className={cn(
       'relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors',
       'data-[highlighted]:bg-[var(--surface-hover)] data-[highlighted]:text-foreground',
-      'focus:bg-[var(--surface-hover)] focus:text-foreground',
+      'focus-visible:bg-[var(--surface-hover)] focus-visible:text-foreground',
       'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
       inset && 'pl-8',
       className
@@ -104,7 +104,7 @@ const DropdownMenuCheckboxItem = React.forwardRef<
     className={cn(
       'relative flex cursor-pointer select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none transition-colors',
       'data-[highlighted]:bg-[var(--surface-hover)] data-[highlighted]:text-foreground',
-      'focus:bg-[var(--surface-hover)] focus:text-foreground',
+      'focus-visible:bg-[var(--surface-hover)] focus-visible:text-foreground',
       'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
       className
     )}
@@ -130,7 +130,7 @@ const DropdownMenuRadioItem = React.forwardRef<
     className={cn(
       'relative flex cursor-pointer select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none transition-colors',
       'data-[highlighted]:bg-[var(--surface-hover)] data-[highlighted]:text-foreground',
-      'focus:bg-[var(--surface-hover)] focus:text-foreground',
+      'focus-visible:bg-[var(--surface-hover)] focus-visible:text-foreground',
       'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
       className
     )}

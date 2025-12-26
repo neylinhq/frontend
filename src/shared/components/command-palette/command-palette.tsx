@@ -62,6 +62,10 @@ export const CommandPalette = <T extends CommandPaletteItem>({
   // Keyboard navigation
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
+      if (results.length === 0) {
+        return
+      }
+
       switch (e.key) {
         case 'ArrowDown':
           e.preventDefault()
@@ -101,8 +105,11 @@ export const CommandPalette = <T extends CommandPaletteItem>({
 
   // Reset selection on query change
   useEffect(() => {
+    if (!open) {
+      return
+    }
     setSelectedIndex(0)
-  }, [])
+  }, [open, query])
 
   // Reset query when closed
   useEffect(() => {

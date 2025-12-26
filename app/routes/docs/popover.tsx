@@ -125,7 +125,7 @@ export function ColorPicker() {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" className="w-[200px] justify-start">
+        <Button variant="outline" className="w-48 justify-start">
           <div className="h-4 w-4 rounded bg-blue-500 mr-2" />
           Pick a color
         </Button>

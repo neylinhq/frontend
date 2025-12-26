@@ -141,7 +141,7 @@ export const PaymentMethodCard = ({
             <DropdownMenuItem
               onClick={() => setIsDeleteOpen(true)}
               disabled={loading}
-              className='text-destructive focus:text-destructive'
+              className='text-destructive focus-visible:text-destructive'
             >
               <Trash01Icon className='h-4 w-4 mr-2' />
               {t('billing.removePaymentMethod.confirm')}

@@ -95,7 +95,7 @@ export const ViewControlsPanel = memo(
             size='sm'
             variant='ghost'
             onClick={() => setSettingsOpen(true)}
-            className='h-8 px-2.5 max-w-[200px] group'
+            className='h-8 px-2.5 max-w-48 group'
             title={t('mapSettings.title')}
           >
             <span className='truncate text-sm font-medium'>
@@ -190,7 +190,7 @@ export const ViewControlsPanel = memo(
                     step={10}
                     className='w-full'
                   />
-                  <p className='text-[10px] text-muted-foreground'>
+                  <p className='text-xs text-muted-foreground'>
                     {t('graph.toolbar.directionHint')}
                   </p>
                 </div>
@@ -252,7 +252,7 @@ export const ViewControlsPanel = memo(
             <ZoomOutIcon className='w-4 h-4' />
           </Button>
 
-          <span className='text-xs font-medium text-muted-foreground min-w-[3rem] text-center'>
+          <span className='text-xs font-medium text-muted-foreground min-w-12 text-center'>
             {Math.round(zoom)}%
           </span>
 

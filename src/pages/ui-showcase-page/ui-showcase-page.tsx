@@ -19,6 +19,7 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/shared/components/dialog'
+import { Field } from '@/shared/components/field'
 import { Input } from '@/shared/components/input'
 import { Label } from '@/shared/components/label'
 import { RadioGroup, RadioGroupItem } from '@/shared/components/radio-group'
@@ -157,8 +158,7 @@ const FormElementsSection = () => (
 const SelectsSection = () => (
   <Section title='Selects & Textarea'>
     <div className='grid w-full gap-4'>
-      <div className='space-y-2'>
-        <Label>Select framework</Label>
+      <Field label='Select framework'>
         <Select>
           <SelectTrigger>
             <SelectValue placeholder='Select a fruit' />
@@ -174,11 +174,10 @@ const SelectsSection = () => (
             </SelectGroup>
           </SelectContent>
         </Select>
-      </div>
-      <div className='space-y-2'>
-        <Label htmlFor='message'>Message</Label>
+      </Field>
+      <Field label='Message' htmlFor='message'>
         <Textarea placeholder='Type your message here.' id='message' />
-      </div>
+      </Field>
     </div>
   </Section>
 )
@@ -189,7 +188,7 @@ const DialogsSection = () => (
       <DialogTrigger asChild>
         <Button variant='outline'>Edit Profile</Button>
       </DialogTrigger>
-      <DialogContent className='sm:max-w-[425px]'>
+      <DialogContent className='sm:max-w-md'>
         <DialogHeader>
           <DialogTitle>Edit profile</DialogTitle>
           <DialogDescription>
@@ -197,18 +196,22 @@ const DialogsSection = () => (
           </DialogDescription>
         </DialogHeader>
         <div className='grid gap-4 py-4'>
-          <div className='grid grid-cols-4 items-center gap-4'>
-            <Label htmlFor='name' className='text-right'>
-              Name
-            </Label>
+          <Field
+            label='Name'
+            htmlFor='name'
+            className='grid grid-cols-4 items-center gap-4 space-y-0'
+            labelClassName='text-right col-span-1'
+          >
             <Input id='name' defaultValue='Pedro Duarte' className='col-span-3' />
-          </div>
-          <div className='grid grid-cols-4 items-center gap-4'>
-            <Label htmlFor='username' className='text-right'>
-              Username
-            </Label>
+          </Field>
+          <Field
+            label='Username'
+            htmlFor='username'
+            className='grid grid-cols-4 items-center gap-4 space-y-0'
+            labelClassName='text-right col-span-1'
+          >
             <Input id='username' defaultValue='@peduarte' className='col-span-3' />
-          </div>
+          </Field>
         </div>
         <DialogFooter>
           <Button type='submit'>Save changes</Button>
@@ -264,8 +267,7 @@ const InputWithLabel = ({
   label,
   ...props
 }: { id: string; label: string } & React.ComponentProps<typeof Input>) => (
-  <div className='grid w-full items-center gap-2'>
-    <Label htmlFor={id}>{label}</Label>
+  <Field label={label} htmlFor={id} size='sm'>
     <Input id={id} {...props} />
-  </div>
+  </Field>
 )

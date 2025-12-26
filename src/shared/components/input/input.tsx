@@ -31,7 +31,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           <button
             type='button'
             onClick={togglePasswordVisibility}
-            className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground focus:outline-none'
+            className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground focus-visible:outline-none'
             tabIndex={-1}
             aria-label={showPassword ? 'Hide password' : 'Show password'}
           >

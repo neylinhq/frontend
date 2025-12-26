@@ -17,7 +17,7 @@ export const CreateMapCard = memo(({ className }: CreateMapCardProps) => {
     <Button
       variant='outline'
       className={cn(
-        'h-full min-h-[180px] flex flex-col items-center justify-center gap-2 border-dashed hover:bg-transparent hover:border-primary/50 whitespace-normal p-6',
+        'h-full min-h-44 flex flex-col items-center justify-center gap-2 border-dashed hover:bg-transparent hover:border-primary/50 whitespace-normal p-6',
         className
       )}
       asChild

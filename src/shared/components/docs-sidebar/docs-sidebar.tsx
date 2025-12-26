@@ -104,19 +104,19 @@ const DocsSidebarSectionComponent = ({ section }: { section: DocsSidebarSection 
               >
                 <span className='flex-1 truncate'>{item.title}</span>
                 {badge === 'new' && (
-                  <Badge variant='secondary' className='ml-auto text-[10px] h-5 px-1.5'>
+                  <Badge variant='secondary' className='ml-auto text-xs h-5 px-1.5'>
                     New
                   </Badge>
                 )}
                 {badge === 'updated' && (
-                  <Badge variant='brand' className='ml-auto text-[10px] h-5 px-1.5'>
+                  <Badge variant='brand' className='ml-auto text-xs h-5 px-1.5'>
                     Updated
                   </Badge>
                 )}
                 {item.isDeprecated && (
                   <Badge
                     variant='outline'
-                    className='ml-auto text-[10px] h-5 px-1.5 text-muted-foreground'
+                    className='ml-auto text-xs h-5 px-1.5 text-muted-foreground'
                   >
                     Deprecated
                   </Badge>

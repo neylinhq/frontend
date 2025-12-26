@@ -108,7 +108,7 @@ export const SubscribeDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className='sm:max-w-[480px]'>
+      <DialogContent className='sm:max-w-lg'>
         <DialogHeader>
           <DialogTitle>
             {step === 'add-method'

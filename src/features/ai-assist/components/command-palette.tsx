@@ -159,17 +159,17 @@ export const CommandPalette = ({
       </div>
 
       {/* Keyboard hints */}
-      <div className='border-t border-border px-3 py-1.5 flex items-center gap-3 text-[10px] text-muted-foreground'>
+      <div className='border-t border-border px-3 py-1.5 flex items-center gap-3 text-xs text-muted-foreground'>
         <span className='flex items-center gap-1'>
-          <kbd className='px-1 py-0.5 bg-muted rounded text-[9px]'>↑↓</kbd>
+          <kbd className='px-1 py-0.5 bg-muted rounded text-xs'>↑↓</kbd>
           {t('ai.commands.navigate', 'Navigate')}
         </span>
         <span className='flex items-center gap-1'>
-          <kbd className='px-1 py-0.5 bg-muted rounded text-[9px]'>↵</kbd>
+          <kbd className='px-1 py-0.5 bg-muted rounded text-xs'>↵</kbd>
           {t('ai.commands.select', 'Select')}
         </span>
         <span className='flex items-center gap-1'>
-          <kbd className='px-1 py-0.5 bg-muted rounded text-[9px]'>esc</kbd>
+          <kbd className='px-1 py-0.5 bg-muted rounded text-xs'>esc</kbd>
           {t('ai.commands.close', 'Close')}
         </span>
       </div>

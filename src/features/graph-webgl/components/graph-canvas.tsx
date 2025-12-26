@@ -5,7 +5,7 @@
  * No React viewport state - everything controlled by WASM.
  */
 
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import type { Edge, Node } from '@/entities/map'
 import { useDarkMode } from '@/shared/hooks'
 import { cn } from '@/shared/lib/cn'
@@ -15,6 +15,7 @@ import { themeToJson } from '../lib/theme-bridge'
 import { layoutOptionsToWasm, transformToWasm } from '../lib/transform'
 import type { LayoutOptions } from '../lib/types'
 import { DEFAULT_LAYOUT_OPTIONS } from '../lib/types'
+import { initWasmModule } from '../lib/wasm-loader'
 
 /** Viewport state returned by WASM engine */
 export interface ViewportState {
@@ -42,12 +43,14 @@ interface WasmGraphEngine {
   resize(width: number, height: number): boolean
   load_graph(json: string): void
   run_layout(options_json: string): string
+  update_node_position(id: string, x: number, y: number): void
   render(): void
   pan(dx: number, dy: number): void
   zoom_at(screen_x: number, screen_y: number, factor: number): void
   get_zoom(): number
   fit_view(padding: number): void
   set_selected(node_id: string | null): void
+  set_selected_nodes(node_ids: string): void
   set_focused(node_id: string | null): void
   set_dimmed(node_ids: string): void
   hit_test(screen_x: number, screen_y: number): string | undefined
@@ -91,11 +94,16 @@ interface GraphCanvasProps {
   nodes: Node[]
   edges: Edge[]
   layoutOptions?: Partial<LayoutOptions>
+  selectedNodeIds?: string[]
   selectedNodeId?: string | null
   focusedNodeId?: string | null
   dimmedNodeIds?: string[]
   onNodeClick?: (nodeId: string | null) => void
   onNodeDoubleClick?: (nodeId: string) => void
+  onSelectionChange?: (selection: { nodes: string[]; edges: string[] }) => void
+  onNodeDragStart?: (nodeId: string, x: number, y: number) => void
+  onNodeDrag?: (nodeId: string, x: number, y: number) => void
+  onNodeDragEnd?: (nodeId: string, x: number, y: number) => void
   onViewportChange?: (viewport: ViewportState) => void
   onLayoutComplete?: (positions: LayoutPosition[]) => void
   className?: string
@@ -106,11 +114,16 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
     nodes,
     edges,
     layoutOptions,
+    selectedNodeIds,
     selectedNodeId,
     focusedNodeId,
     dimmedNodeIds = [],
     onNodeClick,
     onNodeDoubleClick,
+    onSelectionChange,
+    onNodeDragStart,
+    onNodeDrag,
+    onNodeDragEnd,
     onViewportChange,
     onLayoutComplete,
     className
@@ -121,6 +134,8 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const engineRef = useRef<WasmGraphEngine | null>(null)
   const animationRef = useRef<number | null>(null)
+  const viewportRef = useRef<ViewportState | null>(null)
+  const positionsRef = useRef<Map<string, { x: number; y: number }>>(new Map())
 
   const [isReady, setIsReady] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -130,55 +145,127 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
 
   // Interaction state
   const isPanningRef = useRef(false)
+  const draggingNodeRef = useRef<string | null>(null)
+  const dragOffsetRef = useRef({ x: 0, y: 0 })
   const lastMouseRef = useRef({ x: 0, y: 0 })
   const dragStartRef = useRef({ x: 0, y: 0 })
   const hasDraggedRef = useRef(false)
   const DRAG_THRESHOLD = 5 // pixels before considering it a drag
 
-  // Helper to get parsed viewport from WASM
-  const getViewportFromEngine = useCallback((): ViewportState | null => {
-    const engine = engineRef.current
-    const canvas = canvasRef.current
-    if (!engine || !canvas) {
-      return null
+  const resolvedSelectedNodeIds = useMemo(() => {
+    if (selectedNodeIds && selectedNodeIds.length > 0) {
+      return selectedNodeIds
     }
-    try {
-      const json = engine.get_viewport()
-      const viewport = JSON.parse(json) as ViewportState
-      // Ensure width/height are set from canvas
-      const rect = canvas.getBoundingClientRect()
-      return {
-        ...viewport,
-        width: rect.width,
-        height: rect.height
+    return selectedNodeId ? [selectedNodeId] : []
+  }, [selectedNodeIds, selectedNodeId])
+
+  const resolvedLayoutOptions = useMemo(
+    () => ({
+      ...DEFAULT_LAYOUT_OPTIONS,
+      ...layoutOptions
+    }),
+    [
+      layoutOptions?.viewMode,
+      layoutOptions?.spacingPercent,
+      layoutOptions?.directionStrength,
+      layoutOptions?.focusedNodeId,
+      layoutOptions?.iterations,
+      layoutOptions?.coolingFactor,
+      layoutOptions?.theta,
+      layoutOptions?.ignoreExistingPositions
+    ]
+  )
+
+  const getViewportFromEngine = useCallback(
+    (useCanvasRect: boolean): ViewportState | null => {
+      const engine = engineRef.current
+      const canvas = canvasRef.current
+      if (!engine) {
+        return null
       }
-    } catch {
-      return null
-    }
-  }, [])
+      try {
+        const json = engine.get_viewport()
+        const viewport = JSON.parse(json) as ViewportState
+        if (!useCanvasRect || !canvas) {
+          return viewport
+        }
+        const rect = canvas.getBoundingClientRect()
+        return {
+          ...viewport,
+          width: rect.width,
+          height: rect.height
+        }
+      } catch {
+        return null
+      }
+    },
+    []
+  )
 
   // Notify parent of viewport change
   const notifyViewportChange = useCallback(() => {
-    const viewport = getViewportFromEngine()
+    const rawViewport = getViewportFromEngine(false)
+    if (rawViewport) {
+      viewportRef.current = rawViewport
+    }
+    const viewport = getViewportFromEngine(true)
     if (viewport) {
       onViewportChange?.(viewport)
     }
   }, [getViewportFromEngine, onViewportChange])
 
-  // Get positions from WASM and notify parent
-  const notifyLayoutComplete = useCallback(() => {
+  const getCanvasPoint = useCallback((clientX: number, clientY: number) => {
+    const canvas = canvasRef.current
+    if (!canvas) {
+      return { x: 0, y: 0 }
+    }
+    const rect = canvas.getBoundingClientRect()
+    const dpr = window.devicePixelRatio || 1
+    return {
+      x: (clientX - rect.left) * dpr,
+      y: (clientY - rect.top) * dpr
+    }
+  }, [])
+
+  const screenToWorld = useCallback(
+    (screenX: number, screenY: number) => {
+      const viewport = viewportRef.current ?? getViewportFromEngine(false)
+      if (!viewport) {
+        return { x: screenX, y: screenY }
+      }
+      if (!viewportRef.current) {
+        viewportRef.current = viewport
+      }
+      return {
+        x: (screenX - viewport.width / 2) / viewport.zoom + viewport.x,
+        y: (screenY - viewport.height / 2) / viewport.zoom + viewport.y
+      }
+    },
+    [getViewportFromEngine]
+  )
+
+  const syncPositionsFromEngine = useCallback((): LayoutPosition[] | null => {
     const engine = engineRef.current
-    if (!engine || !onLayoutComplete) {
-      return
+    if (!engine) {
+      return null
     }
     try {
       const positionsJson = engine.get_all_positions()
       const positions = JSON.parse(positionsJson) as LayoutPosition[]
-      onLayoutComplete(positions)
+      positionsRef.current = new Map(positions.map(pos => [pos.id, { x: pos.x, y: pos.y }]))
+      return positions
     } catch {
-      // Failed to get positions - ignore
+      return null
     }
-  }, [onLayoutComplete])
+  }, [])
+
+  // Get positions from WASM and notify parent
+  const notifyLayoutComplete = useCallback(() => {
+    const positions = syncPositionsFromEngine()
+    if (positions && onLayoutComplete) {
+      onLayoutComplete(positions)
+    }
+  }, [onLayoutComplete, syncPositionsFromEngine])
 
   // Expose imperative handle for parent control
   useImperativeHandle(
@@ -219,7 +306,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
           return
         }
         // Set viewport position directly
-        const viewport = getViewportFromEngine()
+        const viewport = getViewportFromEngine(false)
         if (viewport) {
           const newViewport = { ...viewport, x: worldX, y: worldY }
           engine.set_viewport(JSON.stringify(newViewport))
@@ -230,7 +317,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
         return engineRef.current?.get_zoom() ?? 1
       },
       getViewport() {
-        return getViewportFromEngine()
+        return getViewportFromEngine(true)
       }
     }),
     [getViewportFromEngine, notifyViewportChange]
@@ -248,13 +335,13 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
     const init = async () => {
       try {
         const wasm = await import('../wasm/graph_engine')
-        await wasm.default()
+        await initWasmModule(wasm)
 
         if (!mounted) {
           return
         }
 
-        const engine = new wasm.GraphEngine()
+        const engine = new wasm.GraphEngine() as unknown as WasmGraphEngine
         engine.init_renderer(canvas)
 
         // Set initial size
@@ -327,7 +414,14 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
       return
     }
     engineRef.current.set_theme(themeToJson())
-  }, [isReady])
+  }, [isReady, notifyViewportChange])
+
+  const updateSelection = useCallback(
+    (nextNodeIds: string[]) => {
+      onSelectionChange?.({ nodes: nextNodeIds, edges: [] })
+    },
+    [onSelectionChange]
+  )
 
   // Handle resize
   useEffect(() => {
@@ -347,6 +441,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
         canvas.style.width = `${width}px`
         canvas.style.height = `${height}px`
         engineRef.current.resize(canvas.width, canvas.height)
+        notifyViewportChange()
       }
     })
 
@@ -382,11 +477,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
       engine.load_graph(json)
 
       // Run layout
-      const options: LayoutOptions = {
-        ...DEFAULT_LAYOUT_OPTIONS,
-        ...layoutOptions
-      }
-      engine.run_layout(layoutOptionsToWasm(options))
+      engine.run_layout(layoutOptionsToWasm(resolvedLayoutOptions))
 
       // Fit view
       engine.fit_view(0.1)
@@ -397,7 +488,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load graph')
     }
-  }, [isReady, nodes, edges, notifyLayoutComplete, notifyViewportChange, layoutOptions])
+  }, [isReady, nodes, edges, notifyLayoutComplete, notifyViewportChange, resolvedLayoutOptions])
 
   // Re-run layout when layout options change
   useEffect(() => {
@@ -406,22 +497,14 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
       return
     }
 
-    const options: LayoutOptions = {
-      ...DEFAULT_LAYOUT_OPTIONS,
-      ...layoutOptions
-    }
-    engine.run_layout(layoutOptionsToWasm(options))
+    engine.run_layout(layoutOptionsToWasm(resolvedLayoutOptions))
 
     // Notify about new positions
     notifyLayoutComplete()
   }, [
     isReady,
-    layoutOptions?.viewMode,
-    layoutOptions?.spacingPercent,
-    layoutOptions?.directionStrength,
-    layoutOptions?.focusedNodeId,
     notifyLayoutComplete,
-    layoutOptions
+    resolvedLayoutOptions
   ])
 
   // Sync selection
@@ -430,8 +513,8 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
     if (!engine || !isReady) {
       return
     }
-    engine.set_selected(selectedNodeId ?? null)
-  }, [isReady, selectedNodeId])
+    engine.set_selected_nodes(JSON.stringify(resolvedSelectedNodeIds))
+  }, [isReady, resolvedSelectedNodeIds])
 
   useEffect(() => {
     const engine = engineRef.current
@@ -478,114 +561,178 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
   }, [isReady])
 
   // Mouse handlers
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    // Only handle left mouse button
-    if (e.button !== 0) {
-      return
-    }
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      if (e.button !== 0) {
+        return
+      }
 
-    const engine = engineRef.current
-    const canvas = canvasRef.current
-    if (!engine || !canvas) {
-      return
-    }
+      const engine = engineRef.current
+      if (!engine) {
+        return
+      }
 
-    // Start potential drag/pan
-    isPanningRef.current = true
-    hasDraggedRef.current = false
-    lastMouseRef.current = { x: e.clientX, y: e.clientY }
-    dragStartRef.current = { x: e.clientX, y: e.clientY }
-  }, [])
+      const { x, y } = getCanvasPoint(e.clientX, e.clientY)
+      lastMouseRef.current = { x, y }
+      dragStartRef.current = { x, y }
+      hasDraggedRef.current = false
+
+      const nodeId = engine.hit_test(x, y)
+      const isMultiSelect = e.shiftKey || e.metaKey || e.ctrlKey
+
+      if (nodeId) {
+        const nextSelection = isMultiSelect
+          ? resolvedSelectedNodeIds.includes(nodeId)
+            ? resolvedSelectedNodeIds.filter(id => id !== nodeId)
+            : [...resolvedSelectedNodeIds, nodeId]
+          : [nodeId]
+        updateSelection(nextSelection)
+
+        if (!isMultiSelect) {
+          onNodeClick?.(nodeId)
+        }
+
+        draggingNodeRef.current = nodeId
+        isPanningRef.current = false
+
+        const world = screenToWorld(x, y)
+        const storedPos = positionsRef.current.get(nodeId)
+        const fallbackPos = nodes.find(node => node.id === nodeId)?.position
+        const baseX = storedPos?.x ?? fallbackPos?.x ?? world.x
+        const baseY = storedPos?.y ?? fallbackPos?.y ?? world.y
+
+        dragOffsetRef.current = {
+          x: world.x - baseX,
+          y: world.y - baseY
+        }
+
+        onNodeDragStart?.(nodeId, baseX, baseY)
+      } else {
+        draggingNodeRef.current = null
+        isPanningRef.current = true
+        if (!isMultiSelect) {
+          updateSelection([])
+          onNodeClick?.(null)
+        }
+      }
+    },
+    [
+      getCanvasPoint,
+      nodes,
+      onNodeClick,
+      onNodeDragStart,
+      resolvedSelectedNodeIds,
+      screenToWorld,
+      updateSelection
+    ]
+  )
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent) => {
       const engine = engineRef.current
-      if (!engine || !isPanningRef.current) {
+      if (!engine) {
         return
       }
 
-      const dx = e.clientX - lastMouseRef.current.x
-      const dy = e.clientY - lastMouseRef.current.y
-      lastMouseRef.current = { x: e.clientX, y: e.clientY }
+      const { x, y } = getCanvasPoint(e.clientX, e.clientY)
+      const dx = x - lastMouseRef.current.x
+      const dy = y - lastMouseRef.current.y
+      lastMouseRef.current = { x, y }
 
-      // Check if we've moved beyond threshold (to distinguish click from drag)
-      const totalDx = e.clientX - dragStartRef.current.x
-      const totalDy = e.clientY - dragStartRef.current.y
+      const totalDx = x - dragStartRef.current.x
+      const totalDy = y - dragStartRef.current.y
       if (Math.abs(totalDx) > DRAG_THRESHOLD || Math.abs(totalDy) > DRAG_THRESHOLD) {
         hasDraggedRef.current = true
       }
 
-      // Only pan if we've actually dragged
-      if (hasDraggedRef.current) {
-        // Natural drag: content follows mouse direction
+      if (draggingNodeRef.current) {
+        if (!hasDraggedRef.current) {
+          return
+        }
+        const nodeId = draggingNodeRef.current
+        const world = screenToWorld(x, y)
+        const nextX = world.x - dragOffsetRef.current.x
+        const nextY = world.y - dragOffsetRef.current.y
+
+        engine.update_node_position(nodeId, nextX, nextY)
+        positionsRef.current.set(nodeId, { x: nextX, y: nextY })
+        onNodeDrag?.(nodeId, nextX, nextY)
+        return
+      }
+
+      if (isPanningRef.current && hasDraggedRef.current) {
         engine.pan(-dx, -dy)
         notifyViewportChange()
+        return
       }
+
+      const nodeId = engine.hit_test(x, y)
+      canvasRef.current?.style.setProperty('cursor', nodeId ? 'grab' : 'default')
     },
-    [notifyViewportChange]
+    [getCanvasPoint, notifyViewportChange, onNodeDrag, screenToWorld]
   )
 
   const handleMouseUp = useCallback(
     (e: React.MouseEvent) => {
       const engine = engineRef.current
-      const canvas = canvasRef.current
+      if (!engine) {
+        return
+      }
 
-      // If we didn't drag, treat as click
-      if (!hasDraggedRef.current && engine && canvas) {
-        const rect = canvas.getBoundingClientRect()
-        const dpr = window.devicePixelRatio || 1
-        const x = (e.clientX - rect.left) * dpr
-        const y = (e.clientY - rect.top) * dpr
+      const { x, y } = getCanvasPoint(e.clientX, e.clientY)
 
-        const nodeId = engine.hit_test(x, y)
-        onNodeClick?.(nodeId ?? null)
+      if (draggingNodeRef.current) {
+        const nodeId = draggingNodeRef.current
+        if (hasDraggedRef.current) {
+          const world = screenToWorld(x, y)
+          const nextX = world.x - dragOffsetRef.current.x
+          const nextY = world.y - dragOffsetRef.current.y
+          positionsRef.current.set(nodeId, { x: nextX, y: nextY })
+          onNodeDragEnd?.(nodeId, nextX, nextY)
+          notifyLayoutComplete()
+        }
+        draggingNodeRef.current = null
       }
 
       isPanningRef.current = false
       hasDraggedRef.current = false
     },
-    [onNodeClick]
+    [getCanvasPoint, notifyLayoutComplete, onNodeDragEnd, screenToWorld]
   )
 
   const handleWheel = useCallback(
     (e: React.WheelEvent) => {
       e.preventDefault()
       const engine = engineRef.current
-      const canvas = canvasRef.current
-      if (!engine || !canvas) {
+      if (!engine) {
         return
       }
 
-      const rect = canvas.getBoundingClientRect()
-      const x = e.clientX - rect.left
-      const y = e.clientY - rect.top
+      const { x, y } = getCanvasPoint(e.clientX, e.clientY)
       // Reduced zoom sensitivity: 1.05 instead of 1.1
       const factor = e.deltaY < 0 ? 1.05 : 1 / 1.05
 
       engine.zoom_at(x, y, factor)
       notifyViewportChange()
     },
-    [notifyViewportChange]
+    [getCanvasPoint, notifyViewportChange]
   )
 
   const handleDoubleClick = useCallback(
     (e: React.MouseEvent) => {
       const engine = engineRef.current
-      const canvas = canvasRef.current
-      if (!engine || !canvas || !onNodeDoubleClick) {
+      if (!engine || !onNodeDoubleClick) {
         return
       }
 
-      const rect = canvas.getBoundingClientRect()
-      const x = e.clientX - rect.left
-      const y = e.clientY - rect.top
+      const { x, y } = getCanvasPoint(e.clientX, e.clientY)
 
       const nodeId = engine.hit_test(x, y)
       if (nodeId) {
         onNodeDoubleClick(nodeId)
       }
     },
-    [onNodeDoubleClick]
+    [getCanvasPoint, onNodeDoubleClick]
   )
 
   return (

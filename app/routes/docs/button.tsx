@@ -163,8 +163,12 @@ const ButtonPage = () => {
               code={`import { Button } from '@/shared/components/button'
 
 export function MyComponent() {
+  const handleClick = () => {
+    // handle action
+  }
+
   return (
-    <Button onClick={() => console.log('clicked')}>
+    <Button onClick={handleClick}>
       Click me
     </Button>
   )

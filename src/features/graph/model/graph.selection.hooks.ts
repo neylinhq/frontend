@@ -7,7 +7,7 @@ export const useNodeSelection = () => {
     nodes: [],
     edges: []
   })
-  const [drawerNodeId, setDrawerNodeId] = useState<string | null>(null)
+  const [drawerNodeId, setDrawerNodeIdState] = useState<string | null>(null)
 
   const handleSelectionChange = useCallback(
     ({ nodes, edges }: { nodes: FlowNode[]; edges: FlowEdge[] }) => {
@@ -21,11 +21,19 @@ export const useNodeSelection = () => {
 
   const clearSelection = useCallback(() => {
     setSelectedElements({ nodes: [], edges: [] })
-    setDrawerNodeId(null)
+    setDrawerNodeIdState(null)
   }, [])
 
   const selectNode = useCallback((nodeId: string) => {
-    setDrawerNodeId(nodeId)
+    setDrawerNodeIdState(nodeId)
+  }, [])
+
+  const setSelection = useCallback((nodes: string[], edges: string[] = []) => {
+    setSelectedElements({ nodes, edges })
+  }, [])
+
+  const setDrawerNodeId = useCallback((nodeId: string | null) => {
+    setDrawerNodeIdState(nodeId)
   }, [])
 
   return {
@@ -33,6 +41,8 @@ export const useNodeSelection = () => {
     handleSelectionChange,
     clearSelection,
     selectNode,
+    setSelection,
+    setDrawerNodeId,
     selectedNodeId: drawerNodeId
   }
 }

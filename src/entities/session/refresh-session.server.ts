@@ -1,5 +1,6 @@
 import { redirect } from 'react-router'
 import { API_URL } from '@/shared/config/env'
+import { logger } from '@/shared/lib/logger'
 import { commitSession, getSession } from './session.server'
 import type { SessionData } from './session.types'
 
@@ -28,7 +29,7 @@ export async function refreshSession(request: Request): Promise<RefreshResult> {
     })
 
     if (!response.ok) {
-      console.error('[refreshSession] Backend refresh failed:', response.status)
+      logger.error('[refreshSession] Backend refresh failed:', response.status)
       throw redirect('/auth/sign-in')
     }
 
@@ -36,7 +37,7 @@ export async function refreshSession(request: Request): Promise<RefreshResult> {
     const { accessToken, refreshToken } = data.data
 
     if (!accessToken) {
-      console.error('[refreshSession] No access token in response')
+      logger.error('[refreshSession] No access token in response')
       throw redirect('/auth/sign-in')
     }
 
@@ -53,7 +54,7 @@ export async function refreshSession(request: Request): Promise<RefreshResult> {
     if (error instanceof Response) {
       throw error // Re-throw redirects
     }
-    console.error('[refreshSession] Error:', error)
+    logger.error('[refreshSession] Error:', error)
     throw redirect('/auth/sign-in')
   }
 }

@@ -427,7 +427,7 @@ export const NodeEditPage = ({
               onKeyDown={handleTitleKeyDown}
               placeholder={t('nodeEdit.untitledPlaceholder')}
               rows={1}
-              className='w-full resize-none overflow-hidden border-none bg-transparent text-4xl font-bold leading-tight tracking-tight text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-0'
+              className='w-full resize-none overflow-hidden border-none bg-transparent text-4xl font-bold leading-tight tracking-tight text-foreground placeholder:text-muted-foreground/50 focus-visible:outline-none focus-visible:ring-0'
             />
           </div>
 
@@ -438,7 +438,7 @@ export const NodeEditPage = ({
             initialContent={node.content ?? ''}
             onChange={handleEditorChange}
             placeholder={t('nodeEdit.editorPlaceholder')}
-            className='min-h-[500px]'
+            className='min-h-96'
           />
         </div>
       </main>

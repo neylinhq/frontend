@@ -27,7 +27,7 @@ export const DocsHeader = ({ mobileNav }: DocsHeaderProps) => {
                 <span className='sr-only'>Toggle menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side='left' className='w-[300px] p-0 flex flex-col h-full'>
+            <SheetContent side='left' className='w-72 p-0 flex flex-col h-full'>
               <SheetTitle className='sr-only'>Navigation menu</SheetTitle>
               <div className='py-4 px-6 border-b flex-shrink-0'>
                 <Logo size='md' />

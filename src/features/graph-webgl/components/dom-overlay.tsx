@@ -9,7 +9,7 @@ import { memo, useMemo } from 'react'
 import type { Edge, Node } from '@/entities/map'
 import { EdgeOverlay } from '@/features/graph-webgl/components/edge-overlay'
 import { NodeOverlay } from '@/features/graph-webgl/components/node-overlay'
-import type { ViewportState } from '../lib/types'
+import type { ViewportState } from '../model/graph-webgl.types'
 
 /** Fixed node dimensions for culling calculations */
 const NODE_WIDTH = 250

@@ -1,0 +1,1 @@
+export { markdownToPlainText } from './markdown'

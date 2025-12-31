@@ -29,9 +29,14 @@ export const links: Route.LinksFunction = () => [
 ]
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
+  if (import.meta.env.VITE_MOCK_API === 'true') {
+    const { ensureServerMocking } = await import('@/shared/mocks/server-runtime')
+    ensureServerMocking()
+  }
+
   // Dynamic imports to avoid bundling Node.js modules for client
-  const { getI18nData } = await import('@/app/i18n/i18n.server')
-  const { getThemeData } = await import('@/app/theme/theme.server')
+  const { getI18nData } = await import('@/app/i18n/server/i18n.server')
+  const { getThemeData } = await import('@/app/theme/server/theme.server')
 
   const i18nData = getI18nData(request)
   const themeData = getThemeData(request)
@@ -91,17 +96,6 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
         <Meta />
         <Links />
 
-        {/* <script 
-          dangerouslySetInnerHTML={{ 
-            __html: `
-              window.ExpertiserAssistant = {
-                apiKey: 'test_123',
-                baseUrl: 'http://localhost:5188'
-              };
-            `
-          }} />
-        <script src="http://localhost:5188/embed.js"></script> */}
-
         {/* Theme & Locale Script: синхронизация темы и предотвращение мигания */}
         <script
           dangerouslySetInnerHTML={{
@@ -160,17 +154,6 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
             `
           }}
         />
-
-        {/* <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.ExpertiserAssistant = {
-                ownerUserId: '123e6194-cab1-4699-b2e9-b9efaaf30d9c'
-              };
-            `
-          }}
-        />
-        <script src="http://localhost:5188/embed.js"></script> */}
 
       </head>
       <body className='bg-background text-foreground'>

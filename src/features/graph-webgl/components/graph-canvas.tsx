@@ -11,10 +11,10 @@ import { useDarkMode } from '@/shared/hooks'
 import { cn } from '@/shared/lib/cn'
 import { loadIconAtlas } from '../lib/atlas-loader'
 import { createSDFAtlas } from '../lib/sdf-atlas'
-import { themeToJson } from '../lib/theme-bridge'
+import { getCssVar, themeToJson } from '../lib/theme-bridge'
 import { layoutOptionsToWasm, transformToWasm } from '../lib/transform'
-import type { LayoutOptions } from '../lib/types'
-import { DEFAULT_LAYOUT_OPTIONS } from '../lib/types'
+import type { LayoutOptions } from '../model/graph-webgl.types'
+import { DEFAULT_LAYOUT_OPTIONS } from '../model/graph-webgl.constants'
 import { initWasmModule } from '../lib/wasm-loader'
 
 /** Viewport state returned by WASM engine */
@@ -135,6 +135,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
   const engineRef = useRef<WasmGraphEngine | null>(null)
   const animationRef = useRef<number | null>(null)
   const viewportRef = useRef<ViewportState | null>(null)
+  const [viewportState, setViewportState] = useState<ViewportState | null>(null)
   const positionsRef = useRef<Map<string, { x: number; y: number }>>(new Map())
 
   const [isReady, setIsReady] = useState(false)
@@ -210,6 +211,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
     }
     const viewport = getViewportFromEngine(true)
     if (viewport) {
+      setViewportState(viewport)
       onViewportChange?.(viewport)
     }
   }, [getViewportFromEngine, onViewportChange])
@@ -243,6 +245,29 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
     },
     [getViewportFromEngine]
   )
+
+  const containerStyle = useMemo(() => {
+    const base = { backgroundColor: 'oklch(var(--background))' }
+    const gridSize = 24
+    if (!viewportState) {
+      return {
+        ...base,
+        backgroundImage: 'radial-gradient(oklch(var(--canvas-grid) / 0.5) 0.5px, transparent 0.5px)',
+        backgroundSize: `${gridSize}px ${gridSize}px`
+      }
+    }
+    const zoom = Math.max(viewportState.zoom, 0.05)
+    const size = Math.max(8, gridSize * zoom)
+    const mod = (value: number, m: number) => ((value % m) + m) % m
+    const offsetX = mod(-viewportState.x * zoom + viewportState.width / 2, size)
+    const offsetY = mod(-viewportState.y * zoom + viewportState.height / 2, size)
+    return {
+      ...base,
+      backgroundImage: 'radial-gradient(oklch(var(--canvas-grid) / 0.5) 0.5px, transparent 0.5px)',
+      backgroundSize: `${size}px ${size}px`,
+      backgroundPosition: `${offsetX}px ${offsetY}px`
+    }
+  }, [viewportState])
 
   const syncPositionsFromEngine = useCallback((): LayoutPosition[] | null => {
     const engine = engineRef.current
@@ -359,10 +384,16 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
         // Load atlases (Figma S+ level GPU text/icon rendering)
         try {
           // Create SDF font atlas using Mapbox tiny-sdf (dynamic, system fonts)
+          const fontFamily =
+            getCssVar('--font-sans') ||
+            '"Söhne", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"'
+          if (document.fonts?.ready) {
+            await document.fonts.ready
+          }
           const sdfAtlas = createSDFAtlas({
             fontSize: 48,
-            fontFamily: 'Inter, system-ui, sans-serif',
-            fontWeight: '400'
+            fontFamily,
+            fontWeight: '600'
           })
           const atlasData = sdfAtlas.getAtlasData()
           const metricsJson = sdfAtlas.getGlyphMetricsJson()
@@ -739,7 +770,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
     <div
       ref={containerRef}
       className={cn('relative w-full h-full overflow-hidden', className)}
-      style={{ background: 'oklch(var(--background))' }}
+      style={containerStyle}
     >
       <canvas
         ref={canvasRef}

@@ -1,6 +1,6 @@
 import { redirect } from 'react-router'
 import { sessionApi } from '@/entities/session'
-import { destroySession } from '@/entities/session/session.server'
+import { destroySession } from '@/entities/session/server/session.server'
 
 export const action = async () => {
   // Call logout API to cleanup server-side session (ignore errors - we logout anyway)

@@ -94,27 +94,3 @@ export interface GraphData {
   nodes: Node[]
   edges: Edge[]
 }
-
-/**
- * Default layout options
- */
-export const DEFAULT_LAYOUT_OPTIONS: LayoutOptions = {
-  viewMode: 'overview',
-  spacingPercent: 100,
-  directionStrength: 100,
-  iterations: 150,
-  coolingFactor: 0.97,
-  theta: 0.9,
-  ignoreExistingPositions: false
-}
-
-/**
- * Default viewport state
- */
-export const DEFAULT_VIEWPORT: ViewportState = {
-  x: 0,
-  y: 0,
-  zoom: 1,
-  width: 800,
-  height: 600
-}

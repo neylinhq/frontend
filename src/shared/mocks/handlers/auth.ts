@@ -76,6 +76,30 @@ export const authHandlers = [
     })
   }),
 
+  // Telegram bot info
+  http.get(`${API_URL}/oauth/telegram/info`, async () => {
+    await delay(150)
+    return HttpResponse.json({
+      success: true,
+      data: {
+        bot_username: 'neylin_mock_bot',
+        bot_id: 'mock-telegram-bot'
+      }
+    })
+  }),
+
+  // Telegram login
+  http.post(`${API_URL}/oauth/telegram/login`, async () => {
+    await delay(300)
+    return HttpResponse.json({
+      success: true,
+      data: {
+        user: mockUser,
+        is_new_user: false
+      }
+    })
+  }),
+
   // Refresh token
   http.post(`${API_URL}/auth/refresh`, async ({ request }) => {
     await delay(100)

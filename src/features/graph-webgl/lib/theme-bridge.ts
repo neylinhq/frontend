@@ -10,6 +10,7 @@ export interface ThemeColors {
   card_fg: [number, number, number, number]
   border: [number, number, number, number]
   background: [number, number, number, number]
+  muted_fg: [number, number, number, number]
   // Node type colors (8 unique hues)
   concept: [number, number, number, number]
   theory: [number, number, number, number]
@@ -19,6 +20,17 @@ export interface ThemeColors {
   hypothesis: [number, number, number, number]
   person: [number, number, number, number]
   school: [number, number, number, number]
+  // Edge colors (relation types)
+  edge_prerequisite: [number, number, number, number]
+  edge_causes: [number, number, number, number]
+  edge_explains: [number, number, number, number]
+  edge_is_a: [number, number, number, number]
+  edge_has_a: [number, number, number, number]
+  edge_part_of: [number, number, number, number]
+  edge_influences: [number, number, number, number]
+  edge_related_to: [number, number, number, number]
+  edge_contradicts: [number, number, number, number]
+  edge_similar_to: [number, number, number, number]
   // Legacy aliases (for backward compatibility)
   knowledge: [number, number, number, number]
   primary: [number, number, number, number]
@@ -34,21 +46,32 @@ const isBrowser = typeof window !== 'undefined' && typeof document !== 'undefine
  * Default theme colors for SSR fallback (dark mode defaults)
  */
 const SSR_FALLBACK_COLORS: ThemeColors = {
-  card_bg: [0.19, 0.19, 0.19, 1],
-  card_fg: [0.93, 0.93, 0.93, 1],
-  border: [0.28, 0.28, 0.28, 1],
-  background: [0.16, 0.16, 0.16, 1],
-  concept: [0.35, 0.52, 0.87, 1],
-  theory: [0.45, 0.38, 0.82, 1],
-  fact: [0.38, 0.78, 0.45, 1],
-  example: [0.92, 0.68, 0.25, 1],
-  question: [0.68, 0.35, 0.85, 1],
-  hypothesis: [0.82, 0.38, 0.68, 1],
-  person: [0.88, 0.48, 0.35, 1],
-  school: [0.35, 0.72, 0.78, 1],
-  knowledge: [0.35, 0.52, 0.87, 1],
-  primary: [0.95, 0.95, 0.95, 1],
-  glow: [0.95, 0.95, 0.95, 0.5]
+  card_bg: oklchToRgba('0.19 0 0'),
+  card_fg: oklchToRgba('0.93 0 0'),
+  border: oklchToRgba('0.28 0 0'),
+  background: oklchToRgba('0.16 0 0'),
+  muted_fg: oklchToRgba('0.65 0 0'),
+  concept: oklchToRgba('0.55 0.17 240'),
+  theory: oklchToRgba('0.52 0.18 265'),
+  fact: oklchToRgba('0.58 0.17 145'),
+  example: oklchToRgba('0.68 0.17 55'),
+  question: oklchToRgba('0.55 0.18 290'),
+  hypothesis: oklchToRgba('0.58 0.19 315'),
+  person: oklchToRgba('0.62 0.18 25'),
+  school: oklchToRgba('0.60 0.14 195'),
+  edge_prerequisite: oklchToRgba('0.68 0.18 55'),
+  edge_causes: oklchToRgba('0.60 0.20 340'),
+  edge_explains: oklchToRgba('0.55 0.19 290'),
+  edge_is_a: oklchToRgba('0.52 0.18 265'),
+  edge_has_a: oklchToRgba('0.58 0.16 160'),
+  edge_part_of: oklchToRgba('0.60 0.14 195'),
+  edge_influences: oklchToRgba('0.72 0.16 75'),
+  edge_related_to: oklchToRgba('0.55 0.16 230'),
+  edge_contradicts: oklchToRgba('0.60 0.22 25'),
+  edge_similar_to: oklchToRgba('0.60 0.18 130'),
+  knowledge: oklchToRgba('0.55 0.17 240'),
+  primary: oklchToRgba('0.95 0 0'),
+  glow: oklchToRgba('0.95 0 0', 0.5)
 }
 
 /**
@@ -128,6 +151,7 @@ export function extractThemeColors(): ThemeColors {
   const cardFg = getCssVar('--card-foreground') || (isDark ? '0.93 0 0' : '0.12 0 0')
   const border = getCssVar('--border') || (isDark ? '0.28 0 0' : '0.91 0 0')
   const background = getCssVar('--background') || (isDark ? '0.16 0 0' : '0.99 0 0')
+  const mutedFg = getCssVar('--muted-foreground') || (isDark ? '0.65 0 0' : '0.42 0 0')
 
   // Node type colors - 8 unique hues
   const concept = getCssVar('--node-concept') || '0.55 0.17 240'
@@ -142,11 +166,24 @@ export function extractThemeColors(): ThemeColors {
   // UI colors
   const primary = getCssVar('--primary') || (isDark ? '0.95 0 0' : '0.12 0 0')
 
+  // Edge colors
+  const edgePrerequisite = getCssVar('--edge-prerequisite') || '0.68 0.18 55'
+  const edgeCauses = getCssVar('--edge-causes') || '0.60 0.20 340'
+  const edgeExplains = getCssVar('--edge-explains') || '0.55 0.19 290'
+  const edgeIsA = getCssVar('--edge-is-a') || '0.52 0.18 265'
+  const edgeHasA = getCssVar('--edge-has-a') || '0.58 0.16 160'
+  const edgePartOf = getCssVar('--edge-part-of') || '0.60 0.14 195'
+  const edgeInfluences = getCssVar('--edge-influences') || '0.72 0.16 75'
+  const edgeRelatedTo = getCssVar('--edge-related-to') || '0.55 0.16 230'
+  const edgeContradicts = getCssVar('--edge-contradicts') || '0.60 0.22 25'
+  const edgeSimilarTo = getCssVar('--edge-similar-to') || '0.60 0.18 130'
+
   return {
     card_bg: oklchToRgba(cardBg),
     card_fg: oklchToRgba(cardFg),
     border: oklchToRgba(border),
     background: oklchToRgba(background),
+    muted_fg: oklchToRgba(mutedFg),
     // Node type colors
     concept: oklchToRgba(concept),
     theory: oklchToRgba(theory),
@@ -156,6 +193,16 @@ export function extractThemeColors(): ThemeColors {
     hypothesis: oklchToRgba(hypothesis),
     person: oklchToRgba(person),
     school: oklchToRgba(school),
+    edge_prerequisite: oklchToRgba(edgePrerequisite),
+    edge_causes: oklchToRgba(edgeCauses),
+    edge_explains: oklchToRgba(edgeExplains),
+    edge_is_a: oklchToRgba(edgeIsA),
+    edge_has_a: oklchToRgba(edgeHasA),
+    edge_part_of: oklchToRgba(edgePartOf),
+    edge_influences: oklchToRgba(edgeInfluences),
+    edge_related_to: oklchToRgba(edgeRelatedTo),
+    edge_contradicts: oklchToRgba(edgeContradicts),
+    edge_similar_to: oklchToRgba(edgeSimilarTo),
     // Legacy alias
     knowledge: oklchToRgba(concept),
     primary: oklchToRgba(primary),

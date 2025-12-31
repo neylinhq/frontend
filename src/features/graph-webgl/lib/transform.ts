@@ -3,7 +3,7 @@
  */
 
 import { ComplexityEnum } from '@/entities/node'
-import type { Edge, Node } from './types'
+import type { Edge, Node } from '@/entities/map'
 
 // Valid complexity values from single source of truth
 const VALID_COMPLEXITY = ComplexityEnum.options
@@ -46,6 +46,8 @@ interface WasmNode {
   description?: string
   type: string // NodeType enum in Rust
   position: { x: number; y: number }
+  width: number
+  height: number
   metadata?: Record<string, unknown>
 }
 
@@ -68,13 +70,18 @@ interface WasmEdge {
  * Transform frontend nodes/edges to WASM-compatible format
  */
 export function transformToWasm(nodes: Node[], edges: Edge[]): string {
+  const defaultWidth = 250
+  const defaultHeight = 120
+
   const wasmNodes: WasmNode[] = nodes.map(node => {
     const wasmNode: WasmNode = {
       id: node.id,
       mapId: node.mapId,
       label: node.label,
       type: node.type,
-      position: node.position || { x: 0, y: 0 }
+      position: node.position || { x: 0, y: 0 },
+      width: defaultWidth,
+      height: defaultHeight
     }
 
     // Only add optional fields if they have values

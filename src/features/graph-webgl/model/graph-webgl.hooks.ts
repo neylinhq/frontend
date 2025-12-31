@@ -14,8 +14,8 @@ import type {
   LayoutResult,
   Node,
   ViewportState
-} from '../lib/types'
-import { DEFAULT_VIEWPORT } from '../lib/types'
+} from './graph-webgl.types'
+import { DEFAULT_VIEWPORT } from './graph-webgl.constants'
 import type { GraphEngine as LegacyGraphEngineType } from '../lib/wasm-adapter'
 import { initWasmModule } from '../lib/wasm-loader'
 

@@ -2,7 +2,7 @@ import { redirect } from 'react-router'
 import { API_URL } from '@/shared/config/env'
 import { logger } from '@/shared/lib/logger'
 import { commitSession, getSession } from './session.server'
-import type { SessionData } from './session.types'
+import type { SessionData } from '../session.types'
 
 interface RefreshResult {
   session: SessionData

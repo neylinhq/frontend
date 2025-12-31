@@ -38,9 +38,9 @@ export type {
   NodePosition,
   ViewportState,
   VisibleNode
-} from './lib/types'
+} from './model/graph-webgl.types'
 // Constants
-export { DEFAULT_LAYOUT_OPTIONS, DEFAULT_VIEWPORT } from './lib/types'
+export { DEFAULT_LAYOUT_OPTIONS, DEFAULT_VIEWPORT } from './model/graph-webgl.constants'
 export type { GraphEdge, GraphNode, GraphStats } from './lib/wasm-adapter'
 export { GraphEngine as LegacyGraphEngine } from './lib/wasm-adapter'
 // Hooks
@@ -55,4 +55,4 @@ export {
  * Feature flag to switch between WebGL and xyflow renderers.
  * Set to true to enable the WebGL renderer.
  */
-export const USE_WEBGL_RENDERER = false
+export const USE_WEBGL_RENDERER = true

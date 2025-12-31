@@ -4,7 +4,7 @@ import {
   NodeMetadataSchema,
   NodeSchema,
   NodeTypeSchema
-} from './node.schema'
+} from '../node.schema'
 
 describe('Node Schemas', () => {
   describe('NodeTypeSchema', () => {

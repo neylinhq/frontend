@@ -53,13 +53,16 @@ describe('session queries', () => {
       await resend.current.mutateAsync()
     })
 
-    expect(sessionApi.verifyEmail).toHaveBeenCalledWith({ code: '123456' })
-    expect(sessionApi.forgotPassword).toHaveBeenCalledWith('test@example.com')
-    expect(sessionApi.resetPassword).toHaveBeenCalledWith({
-      email: 'test@example.com',
-      code: '123456',
-      password: 'password123'
-    })
-    expect(sessionApi.resendVerification).toHaveBeenCalled()
+    expect(sessionApi.verifyEmail).toHaveBeenCalledWith({ code: '123456' }, expect.any(Object))
+    expect(sessionApi.forgotPassword).toHaveBeenCalledWith('test@example.com', expect.any(Object))
+    expect(sessionApi.resetPassword).toHaveBeenCalledWith(
+      {
+        email: 'test@example.com',
+        code: '123456',
+        password: 'password123'
+      },
+      expect.any(Object)
+    )
+    expect(sessionApi.resendVerification).toHaveBeenCalledWith(undefined, expect.any(Object))
   })
 })

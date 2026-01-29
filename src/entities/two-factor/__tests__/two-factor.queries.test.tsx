@@ -41,7 +41,7 @@ describe('two-factor queries', () => {
     const { result } = renderHook(() => useTwoFactorStatus(status), { wrapper })
 
     await waitFor(() => expect(result.current.data).toEqual(status))
-    expect(twoFactorApi.getStatus).toHaveBeenCalled()
+    expect(twoFactorApi.getStatus).not.toHaveBeenCalled()
     expect(twoFactorKeys.status()).toEqual(['two-factor', 'status'])
   })
 
@@ -90,5 +90,35 @@ describe('two-factor queries', () => {
     expect(twoFactorApi.enableTOTP).toHaveBeenCalledWith('123456')
     expect(twoFactorApi.disable).toHaveBeenCalledWith('123456', 'password')
     expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: twoFactorKeys.status() })
+  })
+
+  it('fetches status when initial data is null', async () => {
+    const status = {
+      totpEnabled: true,
+      emailOtpEnabled: false,
+      backupCodesRemaining: 2
+    }
+    vi.mocked(twoFactorApi.getStatus).mockResolvedValue(status)
+
+    const queryClient = createTestQueryClient()
+    const wrapper = createQueryWrapper(queryClient)
+
+    const { result } = renderHook(() => useTwoFactorStatus(null), { wrapper })
+    await waitFor(() => expect(result.current.data).toEqual(status))
+    expect(twoFactorApi.getStatus).toHaveBeenCalled()
+  })
+
+  it('disables two-factor without password', async () => {
+    vi.mocked(twoFactorApi.disable).mockResolvedValue({ disabled: true })
+
+    const queryClient = createTestQueryClient()
+    const wrapper = createQueryWrapper(queryClient)
+
+    const { result } = renderHook(() => useDisableTwoFactor(), { wrapper })
+    await act(async () => {
+      await result.current.mutateAsync({ code: '654321' })
+    })
+
+    expect(twoFactorApi.disable).toHaveBeenCalledWith('654321', undefined)
   })
 })

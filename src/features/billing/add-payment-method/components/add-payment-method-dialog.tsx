@@ -37,12 +37,12 @@ import type { CryptoNetwork } from '@/entities/subscription'
 import { getEvmChainId, getWalletType } from '@/entities/subscription/lib/crypto-utils'
 import { useCryptoWallet } from '@/features/billing/crypto-wallet-connect/model/crypto-wallet-connect.hooks'
 import { NetworkConnectButtons } from '@/features/billing/crypto-wallet-connect/components/network-connect-buttons'
-import { CARD_VALIDATION, getCvcLength, getCvcPlaceholder } from './lib/card-validation'
+import { CARD_VALIDATION, getCvcLength, getCvcPlaceholder } from '../lib/card-validation'
 import {
   type AddPaymentMethodValues,
   addPaymentMethodSchema,
   type PaymentMethodInput
-} from './lib/validation'
+} from '../lib/validation'
 
 // Types
 type Step = 'select' | 'card' | 'crypto'

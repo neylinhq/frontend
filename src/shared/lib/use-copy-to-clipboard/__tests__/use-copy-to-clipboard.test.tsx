@@ -60,7 +60,50 @@ describe('useCopyToClipboard', () => {
 
     expect(success).toBe(true)
     expect(execCommand).toHaveBeenCalledWith('copy')
+    expect(result.current.copied).toBe(true)
+
+    act(() => {
+      vi.advanceTimersByTime(10)
+    })
+
+    expect(result.current.copied).toBe(false)
 
     document.execCommand = originalExecCommand
+  })
+
+  it('returns false when execCommand fails', async () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: undefined,
+      configurable: true
+    })
+
+    const execCommand = vi.fn().mockReturnValue(false)
+    const originalExecCommand = document.execCommand
+    document.execCommand = execCommand
+
+    const { result } = renderHook(() => useCopyToClipboard())
+    let success = true
+    await act(async () => {
+      success = await result.current.copy('fallback')
+    })
+
+    expect(success).toBe(false)
+    document.execCommand = originalExecCommand
+  })
+
+  it('returns false when clipboard copy throws', async () => {
+    const writeText = vi.fn().mockRejectedValue(new Error('fail'))
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true
+    })
+
+    const { result } = renderHook(() => useCopyToClipboard())
+    let success = true
+    await act(async () => {
+      success = await result.current.copy('boom')
+    })
+
+    expect(success).toBe(false)
   })
 })

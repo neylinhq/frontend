@@ -1,6 +1,9 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import {
   detectCardBrand,
+  getCardBrandConfig,
+  getCvcLength,
+  getMaxCardLength,
   formatCardNumber,
   formatExpiry,
   isValidExpiry,
@@ -22,14 +25,19 @@ describe('card-utils', () => {
   it('validates card numbers with Luhn', () => {
     expect(isValidLuhn('4111111111111111')).toBe(true)
     expect(isValidLuhn('4111111111111112')).toBe(false)
+    expect(isValidLuhn('')).toBe(false)
   })
 
   it('formats card numbers with gaps', () => {
     expect(formatCardNumber('4111111111111111')).toBe('4111 1111 1111 1111')
+    expect(formatCardNumber('000000')).toBe('0000 00')
   })
 
   it('formats expiry with auto-prefix', () => {
     expect(formatExpiry('3')).toBe('03/')
+    expect(formatExpiry('1')).toBe('1')
+    expect(formatExpiry('12')).toBe('12/')
+    expect(formatExpiry('')).toBe('')
     expect(formatExpiry('1225')).toBe('12/25')
   })
 
@@ -40,11 +48,30 @@ describe('card-utils', () => {
 
   it('validates expiry dates', () => {
     expect(isValidExpiry('12/99')).toBe(true)
+    expect(isValidExpiry('1/2')).toBe(false)
     expect(isValidExpiry('13/20')).toBe(false)
+    expect(isValidExpiry('01/00')).toBe(false)
+  })
+
+  it('rejects expiry dates earlier in the current year', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2025-07-15T00:00:00Z'))
+
+    expect(isValidExpiry('06/25')).toBe(false)
+
+    vi.useRealTimers()
   })
 
   it('masks card numbers', () => {
     expect(maskCardNumber('4111111111111111')).toMatch(/1111$/)
     expect(maskCardNumber('12')).toBe('12')
+  })
+
+  it('exposes card configs and limits', () => {
+    expect(getCardBrandConfig('visa')?.gaps).toContain(4)
+    expect(getMaxCardLength('amex')).toBe(15)
+    expect(getMaxCardLength('unknown')).toBe(19)
+    expect(getCvcLength('amex')).toBe(4)
+    expect(getCvcLength('unknown')).toBe(3)
   })
 })

@@ -65,4 +65,13 @@ describe('subscriptionApi', () => {
     const result = await subscriptionApi.getPaymentHistory(1, 0)
     expect(result).toEqual({ history: [{ id: 'ph-1' }], total: 4 })
   })
+
+  it('falls back to data length when meta is missing', async () => {
+    vi.mocked(api.get).mockResolvedValue({
+      data: [{ id: 'ph-1' }, { id: 'ph-2' }]
+    })
+
+    const result = await subscriptionApi.getPaymentHistory(2, 0)
+    expect(result).toEqual({ history: [{ id: 'ph-1' }, { id: 'ph-2' }], total: 2 })
+  })
 })

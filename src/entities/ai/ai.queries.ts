@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useCallback, useEffect, useState } from 'react'
 import { aiApi } from './ai.api'
 import type { EnrichType } from './ai.schema'
+import { IS_BROWSER } from '@/shared/config/env'
 
 const SELECTED_MODEL_KEY = 'neylin:selected-ai-model'
 
@@ -26,7 +27,7 @@ export const useSelectedModel = () => {
   const { data: models = [], isLoading } = useAIModels()
   const [selectedModel, setSelectedModelState] = useState<string>(() => {
     // Try to get from localStorage first
-    if (typeof window !== 'undefined') {
+    if (IS_BROWSER) {
       return localStorage.getItem(SELECTED_MODEL_KEY) || ''
     }
     return ''

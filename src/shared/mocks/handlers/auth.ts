@@ -122,6 +122,19 @@ export const authHandlers = [
     })
   }),
 
+  // Session refresh route (frontend resource)
+  http.post('/api/refresh', async () => {
+    await delay(50)
+    const tokens = generateMockTokens()
+    return HttpResponse.json({
+      success: true,
+      data: {
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken
+      }
+    })
+  }),
+
   // Logout
   http.post(`${API_URL}/auth/logout`, async () => {
     await delay(100)

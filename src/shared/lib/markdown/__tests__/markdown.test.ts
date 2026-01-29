@@ -13,4 +13,14 @@ describe('markdownToPlainText', () => {
     expect(result.endsWith('...')).toBe(true)
     expect(result.length).toBeLessThanOrEqual(43)
   })
+
+  it('returns full text when under max length', () => {
+    expect(markdownToPlainText('Short text', 200)).toBe('Short text')
+  })
+
+  it('truncates without word boundary when no spaces', () => {
+    const text = 'A'.repeat(50)
+    const result = markdownToPlainText(text, 20)
+    expect(result).toBe(`${'A'.repeat(20)}...`)
+  })
 })

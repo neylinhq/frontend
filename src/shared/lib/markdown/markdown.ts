@@ -2,7 +2,7 @@ export const markdownToPlainText = (markdown: string, maxLength = 200) => {
   const text = markdown
     // Remove code blocks
     .replace(/```[\s\S]*?```/g, ' ')
-    .replace(/`[^`]+`/g, ' ')
+    .replace(/`([^`]+)`/g, '$1')
     // Remove headings markers
     .replace(/^#{1,6}\s+/gm, '')
     // Remove bold/italic markers

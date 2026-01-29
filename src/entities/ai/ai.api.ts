@@ -1,5 +1,6 @@
 import { api } from '@/shared/api/client'
 import { logger } from '@/shared/lib/logger'
+import { STREAM_API_URL } from '@/shared/config/env'
 import type { AIModel, EnrichType } from './ai.schema'
 
 interface ApiResponse<T> {
@@ -173,9 +174,7 @@ export const aiApi = {
       }
 
       try {
-        const baseUrl = import.meta.env.VITE_API_URL || '/api'
-
-        const response = await fetch(`${baseUrl}/maps/${mapId}/chat/stream`, {
+        const response = await fetch(`${STREAM_API_URL}/maps/${mapId}/chat/stream`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

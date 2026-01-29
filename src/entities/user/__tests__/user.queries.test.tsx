@@ -1,5 +1,5 @@
 import { act, renderHook, waitFor } from '@testing-library/react'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createQueryWrapper, createTestQueryClient } from '@/shared/tests'
 
 vi.mock('../user.api', () => ({
@@ -29,6 +29,9 @@ import {
 } from '../user.queries'
 
 describe('user queries', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
   const user = {
     id: '00000000-0000-0000-0000-000000000001',
     email: 'test@example.com',
@@ -50,6 +53,18 @@ describe('user queries', () => {
 
     await waitFor(() => expect(result.current.data).toEqual(user))
     expect(userApi.getCurrentUser).toHaveBeenCalled()
+  })
+
+  it('uses initial data without refetch', async () => {
+    vi.mocked(userApi.getCurrentUser).mockResolvedValue(user)
+
+    const queryClient = createTestQueryClient()
+    const wrapper = createQueryWrapper(queryClient)
+
+    const { result } = renderHook(() => useCurrentUser(user), { wrapper })
+
+    await waitFor(() => expect(result.current.data).toEqual(user))
+    expect(userApi.getCurrentUser).not.toHaveBeenCalled()
   })
 
   it('updates profile and preferences', async () => {
@@ -84,6 +99,26 @@ describe('user queries', () => {
         interface: { density: 'compact', animations: false, sound: true }
       }
     })
+  })
+
+  it('keeps undefined user data when updating preferences without cache', async () => {
+    vi.mocked(userApi.updatePreferences).mockResolvedValue({
+      notifications: { email: false, marketing: false, updates: false },
+      interface: { density: 'compact', animations: false, sound: false }
+    })
+
+    const queryClient = createTestQueryClient()
+    const wrapper = createQueryWrapper(queryClient)
+
+    const { result } = renderHook(() => useUpdatePreferences(), { wrapper })
+    await act(async () => {
+      await result.current.mutateAsync({
+        notifications: { email: false, marketing: false, updates: false },
+        interface: { density: 'compact', animations: false, sound: false }
+      })
+    })
+
+    expect(queryClient.getQueryData(userKeys.current())).toBeUndefined()
   })
 
   it('updates avatar and invalidates email change', async () => {

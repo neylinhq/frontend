@@ -55,6 +55,58 @@ describe('layout-algorithms-optimized', () => {
     vi.restoreAllMocks()
   })
 
+  it('refines branches and applies soft forces in path layout', () => {
+    vi.spyOn(Math, 'random').mockReturnValue(0.5)
+
+    const nodes = [
+      { id: 'a', position: { x: 0, y: 0 } },
+      { id: 'b', position: { x: 0, y: 0 } },
+      { id: 'c', position: { x: 0, y: 0 } },
+      { id: 'd', position: { x: 0, y: 0 } }
+    ]
+    const edges = [
+      { id: 'e1', source: 'a', target: 'b', data: { relationType: 'prerequisite' } },
+      { id: 'e2', source: 'b', target: 'c', data: { relationType: 'is-a' } },
+      { id: 'e3', source: 'b', target: 'd', data: { relationType: 'is-a' } }
+    ]
+
+    const result = applyLayout(nodes, edges, {
+      viewMode: 'path',
+      spacingPercent: 100,
+      directionStrength: 50,
+      ignoreExistingPositions: true
+    })
+
+    expect(result.nodes).toHaveLength(4)
+    expect(result.nodes.find(node => node.id === 'c')?.position).toBeTruthy()
+    vi.restoreAllMocks()
+  })
+
+  it('offsets disconnected components in path layout', () => {
+    const nodes = [
+      { id: 'a', position: { x: 0, y: 0 } },
+      { id: 'b', position: { x: 0, y: 0 } },
+      { id: 'c', position: { x: 0, y: 0 } },
+      { id: 'd', position: { x: 0, y: 0 } }
+    ]
+    const edges = [
+      { id: 'e1', source: 'a', target: 'b', data: { relationType: 'prerequisite' } },
+      { id: 'e2', source: 'c', target: 'd', data: { relationType: 'prerequisite' } }
+    ]
+
+    const result = applyLayout(nodes, edges, {
+      viewMode: 'path',
+      spacingPercent: 100,
+      directionStrength: 100,
+      ignoreExistingPositions: true
+    })
+
+    const positions = new Map(result.nodes.map(node => [node.id, node.position]))
+    const maxYFirst = Math.max(positions.get('a')!.y, positions.get('b')!.y)
+    const minYSecond = Math.min(positions.get('c')!.y, positions.get('d')!.y)
+    expect(minYSecond).toBeGreaterThanOrEqual(maxYFirst)
+  })
+
   it('returns nodes within depth and edges between nodes', () => {
     const edges = [
       { id: 'e1', source: 'a', target: 'b' },

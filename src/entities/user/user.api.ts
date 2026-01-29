@@ -1,4 +1,5 @@
 import { api } from '@/shared/api/client'
+import { API_URL } from '@/shared/config/env'
 import type {
   ChangeEmail,
   ChangePassword,
@@ -37,14 +38,11 @@ export const userApi = {
     const formData = new FormData()
     formData.append('avatar', file)
 
-    const response = await fetch(
-      `${import.meta.env.VITE_API_URL || 'http://localhost:8080/v1'}/users/me/avatar`,
-      {
-        method: 'POST',
-        body: formData,
-        credentials: 'include'
-      }
-    )
+    const response = await fetch(`${API_URL}/users/me/avatar`, {
+      method: 'POST',
+      body: formData,
+      credentials: 'include'
+    })
 
     if (!response.ok) {
       const error = await response.json().catch(() => ({}))

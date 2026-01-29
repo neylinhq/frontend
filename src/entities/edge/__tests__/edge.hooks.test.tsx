@@ -47,4 +47,13 @@ describe('useConnectionFilter', () => {
     expect(result.current.filteredEdges).toHaveLength(1)
     expect(result.current.filteredEdges[0].sourceNodeId).toBe('node-b')
   })
+
+  it('filters outgoing edges', () => {
+    const { result } = renderHook(() => useConnectionFilter('node-a', edges))
+    act(() => {
+      result.current.changeFilter('outgoing')
+    })
+    expect(result.current.filteredEdges).toHaveLength(1)
+    expect(result.current.filteredEdges[0].targetNodeId).toBe('node-b')
+  })
 })

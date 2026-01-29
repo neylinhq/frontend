@@ -30,4 +30,18 @@ describe('platform helpers', () => {
     expect(mod.isMac).toBe(false)
     expect(mod.getShortcut({ mac: 'cmd', win: 'ctrl' })).toBe('ctrl')
   })
+
+  it('returns null when shortcut is missing', async () => {
+    setPlatform('Win32')
+    const mod = await import('../platform')
+    expect(mod.getShortcut()).toBeNull()
+  })
+
+  it('defaults to non-mac when window is undefined', async () => {
+    vi.stubGlobal('window', undefined)
+    vi.resetModules()
+    const mod = await import('../platform')
+    expect(mod.isMac).toBe(false)
+    vi.unstubAllGlobals()
+  })
 })

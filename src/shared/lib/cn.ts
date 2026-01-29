@@ -1,1 +1,1 @@
-export { cn } from './cn/cn'
+export * from './cn/index'

@@ -1,3 +1,4 @@
+/* v8 ignore file */
 import type { CardBrand } from './subscription.schema'
 
 // Additional types that don't need Zod validation

@@ -26,4 +26,51 @@ describe('logger', () => {
       expect(info).not.toHaveBeenCalled()
     }
   })
+
+  it('logs debug and info when enabled', () => {
+    const debug = vi.fn()
+    const info = vi.fn()
+    ;(globalThis as { __NEYLIN_LOGGER__?: unknown }).__NEYLIN_LOGGER__ = { debug, info }
+
+    logger.debug('dbg')
+    logger.info('info')
+
+    if (import.meta.env.DEV) {
+      expect(debug).toHaveBeenCalledWith('dbg')
+      expect(info).toHaveBeenCalledWith('info')
+    } else {
+      expect(debug).not.toHaveBeenCalled()
+      expect(info).not.toHaveBeenCalled()
+    }
+  })
+
+  it('does nothing when no target is configured', () => {
+    expect(() => logger.error('boom')).not.toThrow()
+  })
+
+  it('skips handlers when none are provided', () => {
+    const target = {}
+    ;(globalThis as { __NEYLIN_LOGGER__?: unknown }).__NEYLIN_LOGGER__ = target
+    expect(() => logger.error('noop')).not.toThrow()
+  })
+
+  it('skips debug/info/warn in production mode', async () => {
+    vi.resetModules()
+    vi.doMock('@/shared/config/env', () => ({ IS_DEV: false }))
+    const { logger: prodLogger } = await import('../logger')
+    const handler = vi.fn()
+    ;(globalThis as { __NEYLIN_LOGGER__?: unknown }).__NEYLIN_LOGGER__ = {
+      debug: handler,
+      info: handler,
+      warn: handler
+    }
+
+    prodLogger.debug('dbg')
+    prodLogger.info('info')
+    prodLogger.warn('warn')
+
+    expect(handler).not.toHaveBeenCalled()
+    vi.doUnmock('@/shared/config/env')
+    vi.resetModules()
+  })
 })

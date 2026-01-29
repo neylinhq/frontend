@@ -1,20 +1,21 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-vi.mock('@/shared/api/client', () => ({
-  api: {
-    get: vi.fn(),
-    post: vi.fn(),
-    patch: vi.fn(),
-    delete: vi.fn()
-  }
-}))
-
-import { api } from '@/shared/api/client'
-import { nodeApi } from '../node.api'
+let api: typeof import('@/shared/api/client').api
+let nodeApi: typeof import('../node.api').nodeApi
 
 describe('nodeApi', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
+  beforeEach(async () => {
+    vi.resetModules()
+    vi.doMock('@/shared/api/client', () => ({
+      api: {
+        get: vi.fn(),
+        post: vi.fn(),
+        patch: vi.fn(),
+        delete: vi.fn()
+      }
+    }))
+    ;({ api } = await import('@/shared/api/client'))
+    ;({ nodeApi } = await import('../node.api'))
   })
 
   it('calls node endpoints', async () => {
@@ -34,6 +35,7 @@ describe('nodeApi', () => {
     })
     await nodeApi.get('map-1', 'node-1')
     await nodeApi.list('map-1')
+    await nodeApi.list('map-1', 'concept')
     await nodeApi.update('map-1', 'node-1', { label: 'Updated' })
     await nodeApi.delete('map-1', 'node-1')
     await nodeApi.updatePositions('map-1', { positions: [{ id: 'node-1', x: 1, y: 2 }] })
@@ -41,5 +43,6 @@ describe('nodeApi', () => {
 
     expect(api.post).toHaveBeenCalledWith('/maps/map-1/nodes', expect.any(Object))
     expect(api.get).toHaveBeenCalledWith('/maps/map-1/nodes/node-1')
+    expect(api.get).toHaveBeenCalledWith('/maps/map-1/nodes?type=concept')
   })
 })

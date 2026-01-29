@@ -34,4 +34,15 @@ describe('addPaymentMethodSchema', () => {
       })
     ).toThrow()
   })
+
+  it('validates CVC length for different brands', () => {
+    const amex = {
+      cardholderName: 'Jane Doe',
+      cardNumber: '378282246310005',
+      expiry: '12/99'
+    }
+
+    expect(addPaymentMethodSchema.parse({ ...amex, cvc: '1234' }).cvc).toBe('1234')
+    expect(addPaymentMethodSchema.parse({ ...amex, cvc: '123' }).cvc).toBe('123')
+  })
 })

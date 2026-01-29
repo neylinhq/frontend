@@ -1,3 +1,5 @@
+import { IS_DEV } from '@/shared/config/env'
+
 type LoggerFn = (...args: unknown[]) => void
 type LoggerTarget = {
   debug?: LoggerFn
@@ -20,17 +22,17 @@ const logToTarget = (level: keyof LoggerTarget, args: unknown[]) => {
 
 export const logger = {
   debug: (...args: unknown[]) => {
-    if (import.meta.env.DEV) {
+    if (IS_DEV) {
       logToTarget('debug', args)
     }
   },
   info: (...args: unknown[]) => {
-    if (import.meta.env.DEV) {
+    if (IS_DEV) {
       logToTarget('info', args)
     }
   },
   warn: (...args: unknown[]) => {
-    if (import.meta.env.DEV) {
+    if (IS_DEV) {
       logToTarget('warn', args)
     }
   },

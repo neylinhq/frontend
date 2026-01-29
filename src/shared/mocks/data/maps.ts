@@ -1,5 +1,5 @@
-import { GRAPH_PRESETS, generateMockGraph } from '../lib/generate-mock-graph'
-import type { MapEntity } from '../map.schema'
+import { GRAPH_PRESETS, generateMockGraph } from '@/entities/map'
+import type { MapEntity } from '@/entities/map'
 
 // Generated test graph
 const GENERATED_GRAPH = generateMockGraph({ ...GRAPH_PRESETS.mixed, mapId: '4', nodeCount: 100 })

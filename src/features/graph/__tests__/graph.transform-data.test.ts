@@ -42,6 +42,23 @@ describe('transformNodesToFlow', () => {
     expect(result[0].data.onSelect).toBe(onSelect)
     expect(result[0].style?.transition).toContain('transform')
   })
+
+  it('uses defaults when options are omitted', () => {
+    const result = transformNodesToFlow([baseNode])
+    expect(result[0].data.selected).toBe(false)
+    expect(result[0].data.isFocused).toBe(false)
+    expect(result[0].data.zoom).toBe(1)
+    expect(result[0].className).toBeUndefined()
+    expect(result[0].style).toBeUndefined()
+  })
+
+  it('accepts selected node ids as a Set', () => {
+    const result = transformNodesToFlow([baseNode], {
+      selectedNodeIds: new Set(['node-1'])
+    })
+
+    expect(result[0].data.selected).toBe(true)
+  })
 })
 
 describe('transformEdgesToFlow', () => {
@@ -59,5 +76,13 @@ describe('transformEdgesToFlow', () => {
     expect(result[0].data.selected).toBe(true)
     expect(result[0].data.translatedType).toBe('Related')
     expect(result[0].data.onStartEditing).toBe(onStartEditing)
+  })
+
+  it('falls back when translations are missing', () => {
+    const result = transformEdgesToFlow([baseEdge], {
+      selectedEdgeIds: ['edge-1']
+    })
+    expect(result[0].data.selected).toBe(true)
+    expect(result[0].data.translatedType).toBeUndefined()
   })
 })

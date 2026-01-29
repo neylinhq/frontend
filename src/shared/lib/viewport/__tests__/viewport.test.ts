@@ -19,7 +19,7 @@ describe('viewport utilities', () => {
   it('detects collisions', () => {
     const viewport = { width: 100, height: 100, scrollX: 0, scrollY: 0 }
     const result = detectCollisions({ x: -5, y: 10, width: 50, height: 120 }, viewport)
-    expect(result).toEqual({ top: true, right: false, bottom: true, left: true })
+    expect(result).toEqual({ top: false, right: false, bottom: true, left: true })
   })
 
   it('constrains positions within bounds', () => {

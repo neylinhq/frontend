@@ -1,7 +1,9 @@
 import type { Node } from '@/entities/map'
-import { GRAPH_THEORY_NODES as _gtNodes } from './graph-theory.mock'
-import { NEURAL_NETWORKS_NODES as _nnNodes } from './neural-networks.mock'
-import { PHILOSOPHY_NODES as _philNodes } from './philosophy.mock'
+import {
+  GRAPH_THEORY_NODES as _gtNodes,
+  NEURAL_NETWORKS_NODES as _nnNodes,
+  PHILOSOPHY_NODES as _philNodes
+} from '@/entities/map/__mocks__/nodes'
 
 export const GRAPH_THEORY_NODES: Node[] = [
   // Корневой узел + цепочка

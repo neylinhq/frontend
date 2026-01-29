@@ -170,8 +170,8 @@ const App = () => {
   const initializedRef = useRef(false)
   const navigation = useNavigation()
 
-  // Initialize i18n with SSR data on first render
-  if (!initializedRef.current) {
+  // Initialize i18n with SSR data on first client render
+  if (!initializedRef.current && typeof window !== 'undefined' && typeof initI18n === 'function') {
     initI18n(i18nData)
     initializedRef.current = true
   }

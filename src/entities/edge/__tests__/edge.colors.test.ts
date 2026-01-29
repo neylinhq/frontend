@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import type { RelationType } from '../model/edge.schema'
 import {
   getEdgeBadgeClass,
   getEdgeBgClass,
@@ -19,6 +20,18 @@ describe('edge color helpers', () => {
 
   it('builds badge class with background and text', () => {
     expect(getEdgeBadgeClass('related-to')).toBe(
+      'bg-edge-related-to-muted text-edge-related-to'
+    )
+  })
+
+  it('falls back to defaults for unknown types', () => {
+    const unknown = 'mystery' as RelationType
+    expect(getEdgeStrokeColor(unknown)).toBe('oklch(var(--edge-related-to))')
+    expect(getEdgeBgClass(unknown)).toBe('bg-edge-related-to-muted')
+    expect(getEdgeBgLightClass(unknown)).toBe('bg-edge-related-to/15')
+    expect(getEdgeBgMediumClass(unknown)).toBe('bg-edge-related-to/25')
+    expect(getEdgeTextClass(unknown)).toBe('text-edge-related-to')
+    expect(getEdgeBadgeClass(unknown)).toBe(
       'bg-edge-related-to-muted text-edge-related-to'
     )
   })

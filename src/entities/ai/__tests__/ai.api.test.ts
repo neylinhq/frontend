@@ -70,8 +70,9 @@ describe('aiApi', () => {
 
     expect(onChunk).toHaveBeenCalledWith({ type: 'text', content: 'Hello' })
     expect(onChunk).toHaveBeenCalledWith({ type: 'done' })
+    const baseUrl = import.meta.env.VITE_API_URL || '/api'
     expect(fetchMock).toHaveBeenCalledWith(
-      '/api/maps/map-1/chat/stream',
+      `${baseUrl}/maps/map-1/chat/stream`,
       expect.objectContaining({ method: 'POST' })
     )
 
@@ -91,6 +92,126 @@ describe('aiApi', () => {
     )
     expect(logger.error).toHaveBeenCalled()
 
+    vi.unstubAllGlobals()
+  })
+
+  it('logs parse errors and ignores non-data lines', async () => {
+    const encoder = new TextEncoder()
+    const chunks = [
+      encoder.encode('event: ping\n'),
+      encoder.encode('data: {not-json}\n')
+    ]
+    const reader = {
+      read: vi
+        .fn()
+        .mockResolvedValueOnce({ done: false, value: chunks[0] })
+        .mockResolvedValueOnce({ done: false, value: chunks[1] })
+        .mockResolvedValueOnce({ done: true, value: undefined })
+    }
+
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      body: { getReader: () => reader }
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    const onChunk = vi.fn()
+    const controller = new AbortController()
+    await aiApi.chatWithMapStream('map-1', 'Question?', onChunk, {
+      timeout: 100000,
+      signal: controller.signal
+    })
+
+    expect(onChunk).not.toHaveBeenCalled()
+    expect(logger.warn).toHaveBeenCalled()
+
+    vi.unstubAllGlobals()
+  })
+
+  it('rejects when response body is missing', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      body: null
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    await expect(aiApi.chatWithMapStream('map-1', 'Question?', vi.fn())).rejects.toThrow(
+      'No response body'
+    )
+    expect(logger.error).toHaveBeenCalled()
+
+    vi.unstubAllGlobals()
+  })
+
+  it('uses fallback error message when error response cannot be parsed', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 500,
+      json: async () => {
+        throw new Error('bad json')
+      }
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    await expect(aiApi.chatWithMapStream('map-1', 'Question?', vi.fn())).rejects.toThrow(
+      'HTTP error! status: 500'
+    )
+    expect(logger.error).toHaveBeenCalled()
+
+    vi.unstubAllGlobals()
+  })
+
+  it('uses status fallback when error payload is missing message', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 400,
+      json: async () => ({ error: {} })
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    await expect(aiApi.chatWithMapStream('map-1', 'Question?', vi.fn())).rejects.toThrow(
+      'HTTP error! status: 400'
+    )
+    expect(logger.error).toHaveBeenCalled()
+
+    vi.unstubAllGlobals()
+  })
+
+  it('resolves on AbortError', async () => {
+    const abortError = new Error('aborted')
+    abortError.name = 'AbortError'
+    const fetchMock = vi.fn().mockRejectedValue(abortError)
+    vi.stubGlobal('fetch', fetchMock)
+
+    await expect(aiApi.chatWithMapStream('map-1', 'Question?', vi.fn())).resolves.toBeUndefined()
+    expect(logger.error).toHaveBeenCalled()
+
+    vi.unstubAllGlobals()
+  })
+
+  it('aborts on timeout and emits error chunk', async () => {
+    vi.useFakeTimers()
+    const onChunk = vi.fn()
+    const fetchMock = vi.fn((_url: string, options: RequestInit) => {
+      const signal = options.signal as AbortSignal | undefined
+      return new Promise((_, reject) => {
+        if (signal) {
+          signal.addEventListener('abort', () => {
+            const error = new Error('aborted')
+            error.name = 'AbortError'
+            reject(error)
+          })
+        }
+      })
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    const promise = aiApi.chatWithMapStream('map-1', 'Question?', onChunk, { timeout: 1 })
+    vi.advanceTimersByTime(1)
+    await expect(promise).resolves.toBeUndefined()
+
+    expect(onChunk).toHaveBeenCalledWith({ type: 'error', content: 'Request timed out' })
+    vi.useRealTimers()
     vi.unstubAllGlobals()
   })
 })

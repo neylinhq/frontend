@@ -24,4 +24,19 @@ describe('note editor extensions', () => {
     expect(onChange).toHaveBeenCalledWith('hi')
     view.destroy()
   })
+
+  it('does not invoke onChange when document is unchanged', () => {
+    const onChange = vi.fn()
+    const state = EditorState.create({
+      doc: 'hello',
+      extensions: createExtensions({ onChange })
+    })
+    const parent = document.createElement('div')
+    const view = new EditorView({ state, parent })
+
+    view.dispatch({ selection: { anchor: 0 } })
+
+    expect(onChange).not.toHaveBeenCalled()
+    view.destroy()
+  })
 })

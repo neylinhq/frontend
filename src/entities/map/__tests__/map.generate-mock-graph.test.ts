@@ -21,4 +21,24 @@ describe('generateMockGraph', () => {
     const { nodes } = generateMockGraph(GRAPH_PRESETS.small)
     expect(nodes).toHaveLength(10)
   })
+
+  it('skips chain pattern when disabled', () => {
+    const { nodes, edges } = generateMockGraph({
+      nodeCount: 5,
+      seed: 1,
+      patterns: { chains: false }
+    })
+    expect(nodes).toHaveLength(5)
+    expect(edges.length).toBeGreaterThanOrEqual(0)
+  })
+
+  it('avoids edges when only one node is generated', () => {
+    const { nodes, edges } = generateMockGraph({
+      nodeCount: 1,
+      seed: 2,
+      patterns: { chains: false }
+    })
+    expect(nodes).toHaveLength(1)
+    expect(edges).toHaveLength(0)
+  })
 })

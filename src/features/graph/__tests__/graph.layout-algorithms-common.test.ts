@@ -8,7 +8,8 @@ describe('layout-algorithms-common', () => {
       { id: 'b', position: { x: 0, y: 0 } }
     ]
     const edges = [
-      { id: 'e1', source: 'a', target: 'b', data: { relationType: 'related-to' } }
+      { id: 'e1', source: 'a', target: 'b', data: { relationType: 'prerequisite' } },
+      { id: 'e2', source: 'b', target: 'a', data: { relationType: 'prerequisite' } }
     ]
     const fallback = vi.fn(() => ({ nodes, edges }))
 
@@ -38,6 +39,34 @@ describe('layout-algorithms-common', () => {
     expect(nodeB?.position.x).toBe(200)
   })
 
+  it('positions disconnected chains and skips duplicate visits', () => {
+    const nodes = [
+      { id: '', position: { x: 0, y: 0 } },
+      { id: 'a', position: { x: 0, y: 0 } },
+      { id: 'b', position: { x: 0, y: 0 } },
+      { id: 'c', position: { x: 0, y: 0 } },
+      { id: 'x', position: { x: 0, y: 0 } },
+      { id: 'y', position: { x: 0, y: 0 } }
+    ]
+    const edges = [
+      { id: 'e1', source: 'a', target: 'b', data: { relationType: 'prerequisite' } },
+      { id: 'e2', source: 'a', target: 'c', data: { relationType: 'prerequisite' } },
+      { id: 'e3', source: 'b', target: 'c', data: { relationType: 'prerequisite' } },
+      { id: 'e4', source: 'x', target: 'y', data: { relationType: 'prerequisite' } },
+      { id: 'e5', source: 'y', target: 'x', data: { relationType: 'prerequisite' } }
+    ]
+
+    const result = pathLayout(
+      nodes,
+      edges,
+      { nodeSpacing: 100, levelSpacing: 200, directionStrength: 1 },
+      () => ({ nodes, edges })
+    )
+
+    const orphan = result.nodes.find(node => node.id === 'x')
+    expect(orphan?.position.x).toBe(400)
+  })
+
   it('returns nodes within depth', () => {
     const edges = [
       { id: 'e1', source: 'a', target: 'b' },
@@ -45,6 +74,16 @@ describe('layout-algorithms-common', () => {
     ]
     const connected = getNodesWithinDepth('a', edges, 1)
     expect(Array.from(connected)).toEqual(['a', 'b'])
+  })
+
+  it('handles cycles and repeated neighbors within depth', () => {
+    const edges = [
+      { id: 'e1', source: 'a', target: 'b' },
+      { id: 'e2', source: 'b', target: 'a' },
+      { id: 'e3', source: 'a', target: 'b' }
+    ]
+    const connected = getNodesWithinDepth('a', edges, 2)
+    expect(Array.from(connected).sort()).toEqual(['a', 'b'])
   })
 
   it('filters edges between node sets', () => {

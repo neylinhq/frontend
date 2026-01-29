@@ -1,20 +1,21 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-vi.mock('@/shared/api/client', () => ({
-  api: {
-    get: vi.fn(),
-    post: vi.fn(),
-    patch: vi.fn(),
-    delete: vi.fn()
-  }
-}))
-
-import { api } from '@/shared/api/client'
-import { mapApi } from '../map.api'
+let api: typeof import('@/shared/api/client').api
+let mapApi: typeof import('../map.api').mapApi
 
 describe('mapApi', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
+  beforeEach(async () => {
+    vi.resetModules()
+    vi.doMock('@/shared/api/client', () => ({
+      api: {
+        get: vi.fn(),
+        post: vi.fn(),
+        patch: vi.fn(),
+        delete: vi.fn()
+      }
+    }))
+    ;({ api } = await import('@/shared/api/client'))
+    ;({ mapApi } = await import('../map.api'))
   })
 
   it('calls map endpoints', async () => {
@@ -80,5 +81,64 @@ describe('mapApi', () => {
 
     expect(api.get).toHaveBeenCalledWith('/maps?limit=20&offset=0', { cookies: undefined })
     expect(api.post).toHaveBeenCalledWith('/maps', { title: 'Test' })
+  })
+
+  it('builds query strings and uses fallback totals', async () => {
+    vi.mocked(api.get)
+      .mockResolvedValueOnce({ data: [{ id: 'map-1' }] })
+      .mockResolvedValueOnce({ data: [{ id: 'edge-1' }] })
+      .mockResolvedValueOnce({ data: {} })
+      .mockResolvedValueOnce({ data: {} })
+      .mockResolvedValueOnce({ data: {} })
+      .mockResolvedValueOnce({ data: [] })
+      .mockResolvedValueOnce({ data: {} })
+      .mockResolvedValueOnce({ data: {} })
+      .mockResolvedValueOnce({ data: {} })
+
+    const mapsResult = await mapApi.getMaps(1, 2)
+    expect(mapsResult.total).toBe(1)
+    expect(api.get).toHaveBeenCalledWith('/maps?limit=1&offset=2', { cookies: undefined })
+
+    const edgesResult = await mapApi.getEdges('map-1', 5, 10)
+    expect(edgesResult.total).toBe(1)
+    expect(api.get).toHaveBeenCalledWith('/maps/map-1/edges?limit=5&offset=10')
+
+    await mapApi.getDashboardMaps({ publicLimit: 2 })
+    expect(api.get).toHaveBeenCalledWith('/maps/dashboard?publicLimit=2', { cookies: undefined })
+
+    await mapApi.getDashboardMaps({})
+    expect(api.get).toHaveBeenCalledWith('/maps/dashboard', { cookies: undefined })
+
+    await mapApi.discoverMaps({
+      filter: 'public',
+      sortBy: 'createdAt',
+      sortOrder: 'asc',
+      limit: 10,
+      offset: 5
+    })
+    expect(api.get).toHaveBeenCalledWith(
+      '/maps/discover?filter=public&sortBy=createdAt&sortOrder=asc&limit=10&offset=5',
+      { cookies: undefined }
+    )
+
+    await mapApi.discoverMaps({})
+    expect(api.get).toHaveBeenCalledWith('/maps/discover?', { cookies: undefined })
+
+    await mapApi.searchMaps({
+      query: 'q',
+      mode: 'maps',
+      filter: 'public',
+      limit: 5,
+      offset: 1
+    })
+    expect(api.get).toHaveBeenCalledWith(
+      '/maps/search?q=q&mode=maps&filter=public&limit=5&offset=1'
+    )
+
+    await mapApi.getNodes('map-1', 'concept')
+    expect(api.get).toHaveBeenCalledWith('/maps/map-1/nodes?type=concept')
+
+    await mapApi.getMapHistory('map-1', { limit: 2, offset: 3 })
+    expect(api.get).toHaveBeenCalledWith('/maps/map-1/history?limit=2&offset=3')
   })
 })

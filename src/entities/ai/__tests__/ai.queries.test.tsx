@@ -74,6 +74,25 @@ describe('ai queries', () => {
     expect(localStorage.getItem('neylin:selected-ai-model')).toBe('model-1')
   })
 
+  it('handles missing window and empty models', async () => {
+    vi.resetModules()
+    vi.doMock('@/shared/config/env', () => ({ IS_BROWSER: false }))
+    const { aiApi } = await import('../ai.api')
+    const { useSelectedModel } = await import('../ai.queries')
+
+    vi.mocked(aiApi.listModels).mockResolvedValue([])
+
+    const queryClient = createTestQueryClient()
+    const wrapper = createQueryWrapper(queryClient)
+
+    const { result } = renderHook(() => useSelectedModel(), { wrapper })
+
+    await waitFor(() => expect(result.current.selectedModel).toBe(''))
+    expect(aiApi.listModels).toHaveBeenCalled()
+    vi.doUnmock('@/shared/config/env')
+    vi.resetModules()
+  })
+
   it('invalidates queries after enrich and analysis', async () => {
     vi.mocked(aiApi.enrichNode).mockResolvedValue({})
     vi.mocked(aiApi.analyzeMap).mockResolvedValue({})

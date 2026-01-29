@@ -3,7 +3,7 @@ import {
   LightweightNodeSchema,
   NodeMetadataSchema,
   NodeSchema,
-  NodeTypeSchema
+  NodeTypeEnum
 } from '../node.schema'
 
 describe('Node Schemas', () => {
@@ -21,26 +21,22 @@ describe('Node Schemas', () => {
       ]
 
       for (const type of validTypes) {
-        expect(NodeTypeSchema.parse(type)).toBe(type)
+        expect(NodeTypeEnum.parse(type)).toBe(type)
       }
     })
 
     it('should reject invalid node types', () => {
-      expect(() => NodeTypeSchema.parse('invalid')).toThrow()
-      expect(() => NodeTypeSchema.parse('')).toThrow()
-      expect(() => NodeTypeSchema.parse(123)).toThrow()
+      expect(() => NodeTypeEnum.parse('invalid')).toThrow()
+      expect(() => NodeTypeEnum.parse('')).toThrow()
+      expect(() => NodeTypeEnum.parse(123)).toThrow()
     })
   })
 
   describe('NodeMetadataSchema', () => {
     it('should validate valid metadata', () => {
       const validMetadata = {
-        confidence: 0.8,
-        complexity: 'intermediate' as const,
         sources: ['https://example.com'],
-        tags: ['philosophy', 'modern'],
-        lastReviewed: '2024-01-15T00:00:00.000Z',
-        reviewCount: 5
+        tags: ['philosophy', 'modern']
       }
 
       const result = NodeMetadataSchema.parse(validMetadata)
@@ -52,13 +48,9 @@ describe('Node Schemas', () => {
       expect(result).toEqual({})
     })
 
-    it('should reject invalid confidence values', () => {
-      expect(() => NodeMetadataSchema.parse({ confidence: 1.5 })).toThrow()
-      expect(() => NodeMetadataSchema.parse({ confidence: -0.1 })).toThrow()
-    })
-
-    it('should reject invalid complexity values', () => {
-      expect(() => NodeMetadataSchema.parse({ complexity: 'expert' })).toThrow()
+    it('should reject invalid metadata values', () => {
+      expect(() => NodeMetadataSchema.parse({ sources: [123] })).toThrow()
+      expect(() => NodeMetadataSchema.parse({ tags: ['valid', 42] })).toThrow()
     })
   })
 
@@ -73,10 +65,9 @@ describe('Node Schemas', () => {
         type: 'theory' as const,
         position: { x: 100, y: 200 },
         metadata: {
-          confidence: 0.9,
-          complexity: 'advanced' as const,
           tags: ['philosophy']
         },
+        complexity: 9200,
         createdAt: '2024-01-15T00:00:00.000Z',
         updatedAt: '2024-01-15T00:00:00.000Z'
       }

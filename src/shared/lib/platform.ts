@@ -1,1 +1,1 @@
-export { platform } from './platform/platform'
+export * from './platform/index'

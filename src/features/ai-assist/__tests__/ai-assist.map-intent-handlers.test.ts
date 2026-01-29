@@ -32,6 +32,15 @@ const nodeContext = {
 describe('map intent handlers', () => {
   it('detects analyze commands', () => {
     expect(analyzeHandler.detect('/analyze')).toBe(true)
+    expect(analyzeHandler.detect(' /analysis ')).toBe(true)
+  })
+
+  it('detects suggest/gaps/summary commands', () => {
+    expect(suggestHandler.detect('/connections')).toBe(true)
+    expect(suggestHandler.detect('/edges')).toBe(true)
+    expect(gapsHandler.detect('/missing')).toBe(true)
+    expect(summaryHandler.detect('/overview')).toBe(true)
+    expect(suggestHandler.detect('hello')).toBe(false)
   })
 
   it('handles analyze for maps', async () => {
@@ -51,6 +60,16 @@ describe('map intent handlers', () => {
 
     expect(aiApi.suggestEdges).toHaveBeenCalledWith('map-1')
     expect(aiApi.detectGaps).toHaveBeenCalledWith('map-1')
+  })
+
+  it('rejects suggest/gaps/summary outside map context', async () => {
+    const suggestResult = await suggestHandler.execute(nodeContext, '/suggest', 'fast')
+    const gapsResult = await gapsHandler.execute(nodeContext, '/gaps', 'fast')
+    const summaryResult = await summaryHandler.execute(nodeContext, '/summary', 'fast')
+
+    expect(suggestResult.content).toContain('only available for maps')
+    expect(gapsResult.content).toContain('only available for maps')
+    expect(summaryResult.content).toContain('only available for maps')
   })
 
   it('handles summary without API call', async () => {

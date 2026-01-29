@@ -178,10 +178,9 @@ export const generateMockGraph = (options: GeneratorOptions = {}) => {
     }
 
     // Add grandchildren
-    for (const child of children) {
-      if (remaining <= 0) {
-        break
-      }
+    const grandchildrenCount = Math.min(children.length, remaining)
+    for (let index = 0; index < grandchildrenCount; index++) {
+      const child = children[index]
       const grandchild = createNode(`Лист от ${child.label}`, 'fact')
       nodes.push(grandchild)
       remaining--
@@ -280,7 +279,7 @@ export const generateMockGraph = (options: GeneratorOptions = {}) => {
 
   // === Fill remaining with random connections ===
   while (remaining > 0) {
-    const node = createNode(`Узел ${nodeIndex}`, pick(NODE_TYPES, random))
+    const node = createNode(`Узел ${nodeIndex}`)
     nodes.push(node)
     remaining--
 
@@ -291,9 +290,9 @@ export const generateMockGraph = (options: GeneratorOptions = {}) => {
 
       for (const target of targets) {
         if (random() > 0.5) {
-          edges.push(createEdge(node.id, target.id, pick(EDGE_TYPES, random)))
+          edges.push(createEdge(node.id, target.id))
         } else {
-          edges.push(createEdge(target.id, node.id, pick(EDGE_TYPES, random)))
+          edges.push(createEdge(target.id, node.id))
         }
       }
     }

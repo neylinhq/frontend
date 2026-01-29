@@ -20,6 +20,13 @@ describe('parseQuickInput', () => {
       type: 'concept'
     })
   })
+
+  it('uses provided default type for unknown suffix', () => {
+    expect(parseQuickInput('Topic /unknown', 'fact')).toEqual({
+      label: 'Topic',
+      type: 'fact'
+    })
+  })
 })
 
 describe('quick input helpers', () => {
@@ -36,5 +43,15 @@ describe('quick input helpers', () => {
   it('returns type suggestions', () => {
     const suggestions = getTypeSuggestions('q')
     expect(suggestions).toContain('question')
+  })
+
+  it('returns all suggestions for empty query', () => {
+    const suggestions = getTypeSuggestions('')
+    expect(suggestions).toContain('concept')
+    expect(new Set(suggestions).size).toBe(suggestions.length)
+  })
+
+  it('returns empty suggestions when no matches', () => {
+    expect(getTypeSuggestions('zz')).toEqual([])
   })
 })

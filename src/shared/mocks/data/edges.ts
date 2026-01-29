@@ -1,7 +1,9 @@
 import type { Edge } from '@/entities/map'
-import { GRAPH_THEORY_EDGES as _gtEdges } from './graph-theory-edges.mock'
-import { NEURAL_NETWORKS_EDGES as _nnEdges } from './neural-networks-edges.mock'
-import { PHILOSOPHY_EDGES as _philEdges } from './philosophy-edges.mock'
+import {
+  GRAPH_THEORY_EDGES as _gtEdges,
+  NEURAL_NETWORKS_EDGES as _nnEdges,
+  PHILOSOPHY_EDGES as _philEdges
+} from '@/entities/map/__mocks__/edges'
 
 export const GRAPH_THEORY_EDGES: Edge[] = [
   // Цепочка: Граф → Вершина → Ребро

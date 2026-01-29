@@ -5,6 +5,7 @@ export const SESSION_SECRET = import.meta.env.VITE_SESSION_SECRET || 'neylin-sec
 // Production: https://api.neylin.io/v1
 // Development: http://localhost:8080/v1
 export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/v1'
+export const STREAM_API_URL = import.meta.env.VITE_API_URL || '/api'
 
 // Mock API flag
 // Set VITE_MOCK_API=true to use MSW mock handlers instead of real backend

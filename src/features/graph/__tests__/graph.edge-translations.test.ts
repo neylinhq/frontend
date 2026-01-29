@@ -16,4 +16,16 @@ describe('edge translations', () => {
     expect(translations['related-to']).toBe('translated:graph.edgeTypes.related-to')
     expect(getEdgeTypeLabel(translations, 'related-to')).toBe('translated:graph.edgeTypes.related-to')
   })
+
+  it('recomputes cache when language changes', () => {
+    const t = vi.fn((key: string) => key)
+    const first = getEdgeTranslations(t, 'en')
+    const second = getEdgeTranslations(t, 'ru')
+    expect(first).not.toBe(second)
+  })
+
+  it('falls back to relation type when missing', () => {
+    const translations = { 'related-to': 'ok' } as ReturnType<typeof getEdgeTranslations>
+    expect(getEdgeTypeLabel(translations, 'causes')).toBe('causes')
+  })
 })

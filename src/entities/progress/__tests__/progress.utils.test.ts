@@ -111,4 +111,11 @@ describe('progress utilities', () => {
     expect(stats.bookmarked).toBe(1)
     expect(stats.masteryPercent).toBe(50)
   })
+
+  it('returns zeros for empty progress stats', () => {
+    const stats = getProgressStats([])
+    expect(stats.total).toBe(0)
+    expect(stats.avgConfidence).toBe(0)
+    expect(stats.masteryPercent).toBe(0)
+  })
 })

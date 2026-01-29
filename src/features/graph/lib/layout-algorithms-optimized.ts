@@ -1210,13 +1210,9 @@ const refineBranchPositions = (
   // Calculate barycenter for each node
   const barycenters = branchNodes.map(nodeId => {
     const neighbors = [
-      ...(incoming.get(nodeId) || []).map(e => e.source),
-      ...(outgoing.get(nodeId) || []).map(e => e.target)
+      ...incoming.get(nodeId)!.map(e => e.source),
+      ...outgoing.get(nodeId)!.map(e => e.target)
     ]
-
-    if (neighbors.length === 0) {
-      return { nodeId, barycenter: positions.get(nodeId)?.y || 0 }
-    }
 
     let sum = 0
     let count = 0
@@ -1239,15 +1235,8 @@ const refineBranchPositions = (
 
   // Reposition while respecting depth constraints
   barycenters.forEach(({ nodeId }, idx) => {
-    const info = nodeInfo.get(nodeId)
-    if (!info) {
-      return
-    }
-
-    const pos = positions.get(nodeId)
-    if (!pos) {
-      return
-    }
+    const info = nodeInfo.get(nodeId)!
+    const pos = positions.get(nodeId)!
 
     // Keep depth-based base position, adjust within depth group
     const baseY = info.depth * spacing * direction

@@ -1,5 +1,5 @@
 import { act, renderHook, waitFor } from '@testing-library/react'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createQueryWrapper, createTestQueryClient } from '@/shared/tests'
 
 vi.mock('../subscription.api', () => ({
@@ -24,6 +24,7 @@ vi.mock('../subscription.api', () => ({
   }
 }))
 
+import type { PlanType } from '../subscription.schema'
 import { subscriptionApi } from '../subscription.api'
 import {
   subscriptionKeys,
@@ -47,6 +48,9 @@ import {
 } from '../subscription.queries'
 
 describe('subscription queries', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
   const subscription = {
     id: '00000000-0000-0000-0000-000000000001',
     userId: '00000000-0000-0000-0000-000000000002',
@@ -248,6 +252,44 @@ describe('subscription queries', () => {
     expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: subscriptionKeys.paymentMethods() })
   })
 
+  it('keeps payment methods unchanged for mismatched update payloads', async () => {
+    vi.mocked(subscriptionApi.updatePaymentMethod).mockResolvedValue(paymentMethods[1])
+
+    const queryClient = createTestQueryClient()
+    queryClient.setQueryData(subscriptionKeys.paymentMethods(), paymentMethods)
+    const wrapper = createQueryWrapper(queryClient)
+
+    const { result } = renderHook(() => useUpdatePaymentMethod(), { wrapper })
+    await act(async () => {
+      await result.current.mutateAsync({
+        id: 'pm-crypto',
+        expiryMonth: 3,
+        expiryYear: 2032
+      })
+    })
+
+    expect(queryClient.getQueryData(subscriptionKeys.paymentMethods())).toEqual(paymentMethods)
+  })
+
+  it('restores payment methods when update fails', async () => {
+    vi.mocked(subscriptionApi.updatePaymentMethod).mockRejectedValue(new Error('fail'))
+
+    const queryClient = createTestQueryClient()
+    queryClient.setQueryData(subscriptionKeys.paymentMethods(), paymentMethods)
+    const wrapper = createQueryWrapper(queryClient)
+
+    const { result } = renderHook(() => useUpdatePaymentMethod(), { wrapper })
+    await expect(
+      result.current.mutateAsync({
+        id: 'pm-card',
+        expiryMonth: 2,
+        expiryYear: 2031
+      })
+    ).rejects.toThrow('fail')
+
+    expect(queryClient.getQueryData(subscriptionKeys.paymentMethods())).toEqual(paymentMethods)
+  })
+
   it('creates checkout and billing sessions', async () => {
     vi.mocked(subscriptionApi.createCheckoutSession).mockResolvedValue({ url: 'https://pay' })
     vi.mocked(subscriptionApi.createBillingPortalSession).mockResolvedValue({ url: 'https://portal' })
@@ -267,5 +309,54 @@ describe('subscription queries', () => {
 
     expect(subscriptionApi.createCheckoutSession).toHaveBeenCalledWith('pro')
     expect(subscriptionApi.createBillingPortalSession).toHaveBeenCalled()
+  })
+
+  it('skips plan details when plan type is missing', async () => {
+    const queryClient = createTestQueryClient()
+    const wrapper = createQueryWrapper(queryClient)
+
+    renderHook(() => usePlanDetails('' as PlanType), { wrapper })
+    await Promise.resolve()
+
+    expect(subscriptionApi.getPlanDetails).not.toHaveBeenCalled()
+  })
+
+  it('rolls back default payment method on error', async () => {
+    vi.mocked(subscriptionApi.setDefaultPaymentMethod).mockRejectedValue(new Error('fail'))
+
+    const queryClient = createTestQueryClient()
+    queryClient.setQueryData(subscriptionKeys.paymentMethods(), paymentMethods)
+    const wrapper = createQueryWrapper(queryClient)
+
+    const { result } = renderHook(() => useSetDefaultPaymentMethod(), { wrapper })
+    await expect(result.current.mutateAsync('pm-crypto')).rejects.toThrow('fail')
+
+    expect(queryClient.getQueryData(subscriptionKeys.paymentMethods())).toEqual(paymentMethods)
+  })
+
+  it('skips rollback when default payment method cache is empty', async () => {
+    vi.mocked(subscriptionApi.setDefaultPaymentMethod).mockRejectedValue(new Error('fail'))
+
+    const queryClient = createTestQueryClient()
+    const wrapper = createQueryWrapper(queryClient)
+
+    const { result } = renderHook(() => useSetDefaultPaymentMethod(), { wrapper })
+    await expect(result.current.mutateAsync('pm-crypto')).rejects.toThrow('fail')
+  })
+
+  it('skips rollback when update cache is empty', async () => {
+    vi.mocked(subscriptionApi.updatePaymentMethod).mockRejectedValue(new Error('fail'))
+
+    const queryClient = createTestQueryClient()
+    const wrapper = createQueryWrapper(queryClient)
+
+    const { result } = renderHook(() => useUpdatePaymentMethod(), { wrapper })
+    await expect(
+      result.current.mutateAsync({
+        id: 'pm-card',
+        expiryMonth: 2,
+        expiryYear: 2031
+      })
+    ).rejects.toThrow('fail')
   })
 })

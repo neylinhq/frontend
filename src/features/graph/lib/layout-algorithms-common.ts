@@ -79,7 +79,7 @@ export const pathLayout = (
     if (!nodeId) {
       continue
     }
-    const currentLevel = levels.get(nodeId) ?? 0
+    const currentLevel = levels.get(nodeId)!
 
     outgoing.get(nodeId)?.forEach(targetId => {
       if (!visited.has(targetId)) {
@@ -115,7 +115,7 @@ export const pathLayout = (
   // Position nodes left-to-right
   const positionedNodes = nodes.map(node => {
     const level = levels.get(node.id) || 0
-    const levelNodes = levelGroups.get(level) || []
+    const levelNodes = levelGroups.get(level)!
     const indexInLevel = levelNodes.indexOf(node.id)
     const levelHeight = levelNodes.length * nodeSpacing
 

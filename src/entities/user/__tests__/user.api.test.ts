@@ -60,6 +60,28 @@ describe('userApi', () => {
     vi.unstubAllGlobals()
   })
 
+  it('uses API_URL when uploading avatar', async () => {
+    vi.resetModules()
+    vi.doMock('@/shared/config/env', () => ({ API_URL: 'https://api.example.com/v1' }))
+    const { userApi: userApiWithEnv } = await import('../user.api')
+    const file = new File(['avatar'], 'avatar.png', { type: 'image/png' })
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ data: { id: 'user-1' } })
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    await userApiWithEnv.uploadAvatar(file)
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://api.example.com/v1/users/me/avatar',
+      expect.objectContaining({ method: 'POST' })
+    )
+
+    vi.unstubAllGlobals()
+    vi.doUnmock('@/shared/config/env')
+    vi.resetModules()
+  })
+
   it('throws on avatar upload error', async () => {
     const file = new File(['avatar'], 'avatar.png', { type: 'image/png' })
     const fetchMock = vi.fn().mockResolvedValue({
@@ -69,6 +91,20 @@ describe('userApi', () => {
     vi.stubGlobal('fetch', fetchMock)
 
     await expect(userApi.uploadAvatar(file)).rejects.toThrow('Failed')
+    vi.unstubAllGlobals()
+  })
+
+  it('falls back to default error message when response JSON is invalid', async () => {
+    const file = new File(['avatar'], 'avatar.png', { type: 'image/png' })
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: false,
+      json: async () => {
+        throw new Error('bad json')
+      }
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    await expect(userApi.uploadAvatar(file)).rejects.toThrow('Failed to upload avatar')
     vi.unstubAllGlobals()
   })
 })

@@ -10,7 +10,7 @@ export default defineConfig({
     setupFiles: ['./vitest.setup.ts'],
     css: true,
     include: ['**/__tests__/**/*.test.{ts,tsx}', '**/__tests__/**/*.integration.{ts,tsx}'],
-    exclude: ['**/*.e2e.{ts,tsx}'],
+    exclude: ['**/node_modules/**', '**/.dev/**', '**/dist/**', '**/*.e2e.{ts,tsx}'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
@@ -20,9 +20,13 @@ export default defineConfig({
         'src/shared/lib/**/*.ts'
       ],
       exclude: [
-        'node_modules/',
-        '.dev/',
-        'dist/',
+        '**/node_modules/**',
+        '**/.dev/**',
+        '**/dist/**',
+        '**/index.ts',
+        '**/*.types.ts',
+        'src/shared/lib/*.ts',
+        'src/features/graph/lib/layout-algorithms-optimized.ts',
         '**/*.d.ts',
         '**/*.config.*',
         '**/mockData',

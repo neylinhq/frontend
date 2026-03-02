@@ -9,13 +9,14 @@ import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRe
 import type { Edge, Node } from '@/entities/map'
 import { useDarkMode } from '@/shared/hooks'
 import { cn } from '@/shared/lib/cn'
-import { loadIconAtlas } from '../lib/atlas-loader'
+import { loadFontAtlas, loadIconAtlas } from '../lib/atlas-loader'
 import { createSDFAtlas } from '../lib/sdf-atlas'
 import { getCssVar, themeToJson } from '../lib/theme-bridge'
 import { layoutOptionsToWasm, transformToWasm } from '../lib/transform'
 import type { LayoutOptions } from '../model/graph-webgl.types'
 import { DEFAULT_LAYOUT_OPTIONS } from '../model/graph-webgl.constants'
 import { initWasmModule } from '../lib/wasm-loader'
+import type { GraphWebGLRenderParams } from '../model/graph-webgl.render-params'
 
 /** Viewport state returned by WASM engine */
 export interface ViewportState {
@@ -63,6 +64,8 @@ interface WasmGraphEngine {
   get_all_positions(): string
   // Figma S+ level: theme and atlases
   set_theme(json: string): void
+  // Renderer style knobs
+  set_render_params(json: string): void
   load_font_atlas_data(
     image_data: Uint8Array,
     width: number,
@@ -94,6 +97,12 @@ interface GraphCanvasProps {
   nodes: Node[]
   edges: Edge[]
   layoutOptions?: Partial<LayoutOptions>
+  /** Disable auto-layout (use provided node positions as-is). */
+  autoLayout?: boolean
+  /** Background pattern behind the canvas. */
+  backgroundMode?: 'none' | 'dots' | 'paper'
+  /** Live renderer params (playground). */
+  renderParams?: GraphWebGLRenderParams
   selectedNodeIds?: string[]
   selectedNodeId?: string | null
   focusedNodeId?: string | null
@@ -114,6 +123,9 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
     nodes,
     edges,
     layoutOptions,
+    autoLayout = true,
+    backgroundMode = 'dots',
+    renderParams,
     selectedNodeIds,
     selectedNodeId,
     focusedNodeId,
@@ -249,7 +261,25 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
   const containerStyle = useMemo(() => {
     const base = { backgroundColor: 'oklch(var(--background))' }
     const gridSize = 24
+
+    // Subtle paper grain (cheap): SVG turbulence layer, static in screen space.
+    // Kept low-contrast so it doesn't shimmer under motion.
+    const paperGrain =
+      "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='matrix' values='1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>\")"
+
+    if (backgroundMode === 'none') {
+      return base
+    }
     if (!viewportState) {
+      if (backgroundMode === 'paper') {
+        const size = `${gridSize}px ${gridSize}px`
+        return {
+          ...base,
+          backgroundImage:
+            `linear-gradient(to right, oklch(var(--canvas-grid) / 0.10) 1px, transparent 1px), linear-gradient(to bottom, oklch(var(--canvas-grid) / 0.10) 1px, transparent 1px), radial-gradient(oklch(var(--canvas-grid) / 0.35) 0.5px, transparent 0.5px), ${paperGrain}`,
+          backgroundSize: `${size}, ${size}, ${size}, 160px 160px`
+        }
+      }
       return {
         ...base,
         backgroundImage: 'radial-gradient(oklch(var(--canvas-grid) / 0.5) 0.5px, transparent 0.5px)',
@@ -261,13 +291,25 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
     const mod = (value: number, m: number) => ((value % m) + m) % m
     const offsetX = mod(-viewportState.x * zoom + viewportState.width / 2, size)
     const offsetY = mod(-viewportState.y * zoom + viewportState.height / 2, size)
+
+    if (backgroundMode === 'paper') {
+      const layerSize = `${size}px ${size}px`
+      const layerPos = `${offsetX}px ${offsetY}px`
+      return {
+        ...base,
+        backgroundImage:
+          `linear-gradient(to right, oklch(var(--canvas-grid) / 0.10) 1px, transparent 1px), linear-gradient(to bottom, oklch(var(--canvas-grid) / 0.10) 1px, transparent 1px), radial-gradient(oklch(var(--canvas-grid) / 0.30) 0.5px, transparent 0.5px), ${paperGrain}`,
+        backgroundSize: `${layerSize}, ${layerSize}, ${layerSize}, 160px 160px`,
+        backgroundPosition: `${layerPos}, ${layerPos}, ${layerPos}, 0 0`
+      }
+    }
     return {
       ...base,
       backgroundImage: 'radial-gradient(oklch(var(--canvas-grid) / 0.5) 0.5px, transparent 0.5px)',
       backgroundSize: `${size}px ${size}px`,
       backgroundPosition: `${offsetX}px ${offsetY}px`
     }
-  }, [viewportState])
+  }, [viewportState, backgroundMode])
 
   const syncPositionsFromEngine = useCallback((): LayoutPosition[] | null => {
     const engine = engineRef.current
@@ -381,23 +423,44 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
         // Set initial theme
         engine.set_theme(themeToJson())
 
+        // Set initial render params (if provided)
+        if (renderParams) {
+          try {
+            engine.set_render_params(JSON.stringify(renderParams))
+          } catch {
+            // ignore
+          }
+        }
+
         // Load atlases (Figma S+ level GPU text/icon rendering)
         try {
-          // Create SDF font atlas using Mapbox tiny-sdf (dynamic, system fonts)
-          const fontFamily =
-            getCssVar('--font-sans') ||
-            '"Söhne", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"'
-          if (document.fonts?.ready) {
-            await document.fonts.ready
+          // Prefer shipped Inter MSDF atlas for crisp XYFlow-grade typography.
+          // Fallback to tiny-sdf if MSDF load fails.
+          try {
+            const font = await loadFontAtlas('/assets', 'inter-msdf')
+            engine.load_font_atlas_data(
+              font.imageData,
+              font.width,
+              font.height,
+              JSON.stringify(font.metrics)
+            )
+          } catch {
+            // Create SDF font atlas using Mapbox tiny-sdf (dynamic, system fonts)
+            const fontFamily =
+              getCssVar('--font-sans') ||
+              '"Söhne", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"'
+            if (document.fonts?.ready) {
+              await document.fonts.ready
+            }
+            const sdfAtlas = createSDFAtlas({
+              fontSize: 48,
+              fontFamily,
+              fontWeight: '600'
+            })
+            const atlasData = sdfAtlas.getAtlasData()
+            const metricsJson = sdfAtlas.getGlyphMetricsJson()
+            engine.load_sdf_atlas_data(atlasData.data, atlasData.width, atlasData.height, metricsJson)
           }
-          const sdfAtlas = createSDFAtlas({
-            fontSize: 48,
-            fontFamily,
-            fontWeight: '600'
-          })
-          const atlasData = sdfAtlas.getAtlasData()
-          const metricsJson = sdfAtlas.getGlyphMetricsJson()
-          engine.load_sdf_atlas_data(atlasData.data, atlasData.width, atlasData.height, metricsJson)
 
           // Load icon atlas (static, from PNG)
           const icons = await loadIconAtlas('/assets')
@@ -438,6 +501,25 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
       }
     }
   }, [])
+
+  // Sync render params (playground) - avoid redundant JSON churn.
+  const lastRenderParamsJsonRef = useRef<string | null>(null)
+  useEffect(() => {
+    const engine = engineRef.current
+    if (!engine || !isReady || !renderParams) {
+      return
+    }
+    const json = JSON.stringify(renderParams)
+    if (json === lastRenderParamsJsonRef.current) {
+      return
+    }
+    lastRenderParamsJsonRef.current = json
+    try {
+      engine.set_render_params(json)
+    } catch {
+      // ignore
+    }
+  }, [isReady, renderParams])
 
   // Sync theme when dark mode changes
   useEffect(() => {
@@ -507,8 +589,10 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
       const json = transformToWasm(nodes, edges)
       engine.load_graph(json)
 
-      // Run layout
-      engine.run_layout(layoutOptionsToWasm(resolvedLayoutOptions))
+      if (autoLayout) {
+        // Run layout
+        engine.run_layout(layoutOptionsToWasm(resolvedLayoutOptions))
+      }
 
       // Fit view
       engine.fit_view(0.1)
@@ -519,12 +603,12 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load graph')
     }
-  }, [isReady, nodes, edges, notifyLayoutComplete, notifyViewportChange, resolvedLayoutOptions])
+  }, [isReady, nodes, edges, notifyLayoutComplete, notifyViewportChange, resolvedLayoutOptions, autoLayout])
 
   // Re-run layout when layout options change
   useEffect(() => {
     const engine = engineRef.current
-    if (!engine || !isReady || !graphLoadedRef.current) {
+    if (!engine || !isReady || !graphLoadedRef.current || !autoLayout) {
       return
     }
 
@@ -535,7 +619,8 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
   }, [
     isReady,
     notifyLayoutComplete,
-    resolvedLayoutOptions
+    resolvedLayoutOptions,
+    autoLayout
   ])
 
   // Sync selection

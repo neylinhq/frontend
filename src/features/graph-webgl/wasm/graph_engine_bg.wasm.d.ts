@@ -25,6 +25,7 @@ export const graphengine_resize: (a: number, b: number, c: number) => number;
 export const graphengine_run_layout: (a: number, b: number, c: number) => [number, number, number, number];
 export const graphengine_set_dimmed: (a: number, b: number, c: number) => void;
 export const graphengine_set_focused: (a: number, b: number, c: number) => void;
+export const graphengine_set_render_params: (a: number, b: number, c: number) => [number, number];
 export const graphengine_set_selected: (a: number, b: number, c: number) => void;
 export const graphengine_set_selected_nodes: (a: number, b: number, c: number) => void;
 export const graphengine_set_theme: (a: number, b: number, c: number) => [number, number];

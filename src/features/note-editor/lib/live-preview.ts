@@ -15,6 +15,22 @@ import {
 import { syntaxTree } from '@codemirror/language'
 import { type EditorState, type Range } from '@codemirror/state'
 
+class HorizontalRuleWidget extends WidgetType {
+  toDOM() {
+    const hr = document.createElement('hr')
+    hr.className = 'cm-hr'
+    return hr
+  }
+
+  eq() {
+    return true
+  }
+
+  ignoreEvent() {
+    return false
+  }
+}
+
 class TaskCheckboxWidget extends WidgetType {
   constructor(
     readonly checked: boolean,
@@ -318,9 +334,49 @@ const buildDecorations = (view: EditorView): DecorationSet => {
         case 'Blockquote':
           decorations.push(marks.quote.range(from, to))
           break
-        case 'HeaderMark':
-          addHiddenSyntax(decorations, from, to, contextCounts.heading > 0)
+        case 'HeaderMark': {
+          // Hide the space after ### too, to prevent indent
+          const afterMark = to < state.doc.length ? state.doc.sliceString(to, to + 1) : ''
+          const hideEnd = afterMark === ' ' ? to + 1 : to
+          addHiddenSyntax(decorations, from, hideEnd, contextCounts.heading > 0)
           break
+        }
+        case 'HorizontalRule': {
+          const isActive = selectionIntersects(state, from, to)
+          if (!isActive) {
+            decorations.push(
+              Decoration.replace({ widget: new HorizontalRuleWidget() }).range(from, to)
+            )
+          }
+          break
+        }
+        case 'Table': {
+          const startLine = state.doc.lineAt(from)
+          const endLine = state.doc.lineAt(to)
+          for (let i = startLine.number; i <= endLine.number; i++) {
+            decorations.push(
+              Decoration.line({ class: 'cm-table-row' }).range(state.doc.line(i).from)
+            )
+          }
+          break
+        }
+        case 'TableDelimiter': {
+          const isActive = selectionIntersects(state, from, to)
+          const delimLine = state.doc.lineAt(from)
+          if (!isActive) {
+            decorations.push(
+              Decoration.replace({}).range(delimLine.from, delimLine.to)
+            )
+          }
+          break
+        }
+        case 'TableHeader': {
+          const headerLine = state.doc.lineAt(from)
+          decorations.push(
+            Decoration.line({ class: 'cm-table-header' }).range(headerLine.from)
+          )
+          break
+        }
         case 'EmphasisMark':
           addHiddenSyntax(
             decorations,
@@ -562,6 +618,18 @@ const livePreviewStyles = EditorView.baseTheme({
     textTransform: 'uppercase',
     letterSpacing: '0.08em',
     color: 'oklch(var(--muted-foreground))'
+  },
+  '.cm-hr': {
+    border: 'none',
+    borderTop: '1px solid oklch(var(--border))',
+    margin: '0.25em 0'
+  },
+  '.cm-table-row': {
+    fontFamily: 'var(--font-mono)',
+    fontSize: '0.875em'
+  },
+  '.cm-table-header': {
+    fontWeight: '600'
   }
 })
 

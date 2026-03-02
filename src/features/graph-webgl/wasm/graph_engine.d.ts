@@ -70,6 +70,10 @@ export class GraphEngine {
    */
   is_layout_running(): boolean;
   /**
+   * Set render parameters (style + quality knobs) from JSON.
+   */
+  set_render_params(json: string): void;
+  /**
    * Set selected nodes (multi-select)
    */
   set_selected_nodes(node_ids: string): void;

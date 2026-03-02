@@ -64,6 +64,35 @@ interface WasmEdge {
   label?: string
   strength?: number
   bidirectional?: boolean
+  metadata?: Record<string, unknown>
+}
+
+function sanitizeEdgeMetadata(metadata: Edge['metadata']): Record<string, unknown> | undefined {
+  if (!metadata) {
+    return undefined
+  }
+
+  const result: Record<string, unknown> = {}
+
+  // Confidence drives dashing in WASM.
+  if (typeof metadata.confidence === 'number') {
+    result.confidence = metadata.confidence
+  }
+
+  // Keep createdBy for future styling/debug.
+  if (metadata.createdBy) {
+    result.createdBy = metadata.createdBy
+  }
+
+  if (metadata.evidence && metadata.evidence.length > 0) {
+    result.evidence = metadata.evidence
+  }
+
+  if (metadata.examples && metadata.examples.length > 0) {
+    result.examples = metadata.examples
+  }
+
+  return Object.keys(result).length > 0 ? result : undefined
 }
 
 /**
@@ -115,6 +144,11 @@ export function transformToWasm(nodes: Node[], edges: Edge[]): string {
     }
     if (edge.bidirectional !== undefined) {
       wasmEdge.bidirectional = edge.bidirectional
+    }
+
+    const metadata = sanitizeEdgeMetadata(edge.metadata)
+    if (metadata) {
+      wasmEdge.metadata = metadata
     }
 
     return wasmEdge

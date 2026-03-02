@@ -4,6 +4,7 @@
 
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown'
 import { languages } from '@codemirror/language-data'
+import { Table } from '@lezer/markdown'
 import {
   defaultKeymap,
   history,
@@ -49,7 +50,8 @@ export const createExtensions = (options: {
     EditorView.lineWrapping,
     markdown({
       base: markdownLanguage,
-      codeLanguages: languages
+      codeLanguages: languages,
+      extensions: [Table]
     }),
     ...theme,
     livePreview(),

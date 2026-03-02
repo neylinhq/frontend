@@ -28,6 +28,17 @@ export { NodeOverlay } from './components/node-overlay'
 
 // Transform utilities
 export { applyPositions, transformPositions, transformToWasm } from './lib/transform'
+export type { GraphEdge, GraphNode, GraphStats } from './lib/wasm-adapter'
+export { GraphEngine as LegacyGraphEngine } from './lib/wasm-adapter'
+// Constants
+export { DEFAULT_LAYOUT_OPTIONS, DEFAULT_VIEWPORT } from './model/graph-webgl.constants'
+// Hooks
+export {
+  useGraphEngine,
+  useInteraction,
+  useLegacyGraphEngine,
+  useViewport
+} from './model/graph-webgl.hooks'
 // Types
 export type {
   GraphData,
@@ -39,20 +50,9 @@ export type {
   ViewportState,
   VisibleNode
 } from './model/graph-webgl.types'
-// Constants
-export { DEFAULT_LAYOUT_OPTIONS, DEFAULT_VIEWPORT } from './model/graph-webgl.constants'
-export type { GraphEdge, GraphNode, GraphStats } from './lib/wasm-adapter'
-export { GraphEngine as LegacyGraphEngine } from './lib/wasm-adapter'
-// Hooks
-export {
-  useGraphEngine,
-  useInteraction,
-  useLegacyGraphEngine,
-  useViewport
-} from './model/graph-webgl.hooks'
 
 /**
  * Feature flag to switch between WebGL and xyflow renderers.
  * Set to true to enable the WebGL renderer.
  */
-export const USE_WEBGL_RENDERER = true
+export const USE_WEBGL_RENDERER = false

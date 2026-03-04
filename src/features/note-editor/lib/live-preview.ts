@@ -31,6 +31,47 @@ class HorizontalRuleWidget extends WidgetType {
   }
 }
 
+class TableWidget extends WidgetType {
+  constructor(readonly content: string) {
+    super()
+  }
+
+  toDOM() {
+    const lines = this.content.split('\n').filter((l) => l.trim())
+    const table = document.createElement('table')
+    table.className = 'cm-table'
+
+    for (let i = 0; i < lines.length; i++) {
+      // Skip delimiter row (|---|---|)
+      if (i === 1 && /^\|?[\s\-:|]+\|?$/.test(lines[i])) continue
+
+      const row = table.insertRow()
+      if (i === 0) row.className = 'cm-table-header-row'
+
+      // Split by | and drop empty first/last from leading/trailing pipes
+      const raw = lines[i].split('|')
+      const cells =
+        raw[0].trim() === '' ? raw.slice(1, raw[raw.length - 1].trim() === '' ? -1 : undefined) : raw
+
+      for (const cellText of cells) {
+        const cell = document.createElement(i === 0 ? 'th' : 'td')
+        cell.textContent = cellText.trim()
+        row.appendChild(cell)
+      }
+    }
+
+    return table
+  }
+
+  eq(other: TableWidget) {
+    return other.content === this.content
+  }
+
+  ignoreEvent() {
+    return false
+  }
+}
+
 class TaskCheckboxWidget extends WidgetType {
   constructor(
     readonly checked: boolean,
@@ -351,30 +392,13 @@ const buildDecorations = (view: EditorView): DecorationSet => {
           break
         }
         case 'Table': {
-          const startLine = state.doc.lineAt(from)
-          const endLine = state.doc.lineAt(to)
-          for (let i = startLine.number; i <= endLine.number; i++) {
-            decorations.push(
-              Decoration.line({ class: 'cm-table-row' }).range(state.doc.line(i).from)
-            )
-          }
-          break
-        }
-        case 'TableDelimiter': {
           const isActive = selectionIntersects(state, from, to)
-          const delimLine = state.doc.lineAt(from)
           if (!isActive) {
+            const content = state.doc.sliceString(from, to)
             decorations.push(
-              Decoration.replace({}).range(delimLine.from, delimLine.to)
+              Decoration.replace({ widget: new TableWidget(content), block: true }).range(from, to)
             )
           }
-          break
-        }
-        case 'TableHeader': {
-          const headerLine = state.doc.lineAt(from)
-          decorations.push(
-            Decoration.line({ class: 'cm-table-header' }).range(headerLine.from)
-          )
           break
         }
         case 'EmphasisMark':
@@ -624,12 +648,23 @@ const livePreviewStyles = EditorView.baseTheme({
     borderTop: '1px solid oklch(var(--border))',
     margin: '0.25em 0'
   },
-  '.cm-table-row': {
-    fontFamily: 'var(--font-mono)',
-    fontSize: '0.875em'
+  '.cm-table': {
+    borderCollapse: 'collapse',
+    width: 'auto',
+    margin: '0.5em 0',
+    fontSize: '0.9em'
   },
-  '.cm-table-header': {
-    fontWeight: '600'
+  '.cm-table th, .cm-table td': {
+    border: '1px solid oklch(var(--border))',
+    padding: '0.4em 0.75em',
+    textAlign: 'left'
+  },
+  '.cm-table th': {
+    fontWeight: '600',
+    backgroundColor: 'oklch(var(--muted) / 0.4)'
+  },
+  '.cm-table tr:nth-child(even) td': {
+    backgroundColor: 'oklch(var(--muted) / 0.15)'
   }
 })
 

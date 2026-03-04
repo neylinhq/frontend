@@ -7,6 +7,7 @@ import { cn } from '@/shared/lib/cn'
 import { logger } from '@/shared/lib/logger'
 
 import { createExtensions } from '../lib/extensions'
+import { decodeHtmlEntities } from '../lib/decode-html-entities'
 import type { NoteEditorProps } from '../model/note-editor.types'
 import styles from '../styles/note-editor.module.css'
 
@@ -19,9 +20,13 @@ export const NoteEditor = ({
   className,
   placeholder
 }: NoteEditorProps) => {
+  const content = useMemo(() => decodeHtmlEntities(initialContent), [initialContent])
+  const contentRef = useRef(content)
+  contentRef.current = content
   const containerRef = useRef<HTMLDivElement>(null)
   const viewRef = useRef<EditorView | null>(null)
   const isInitialized = useRef(false)
+  const [isMounted, setIsMounted] = useState(false)
   const [hasError, setHasError] = useState(false)
 
   const editableCompartment = useMemo(() => new Compartment(), [])
@@ -30,6 +35,10 @@ export const NoteEditor = ({
   const onChangeRef = useRef(onChange)
   const onEditorUpdateRef = useRef(onEditorUpdate)
   const onErrorRef = useRef(onError)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   useEffect(() => {
     onChangeRef.current = onChange
@@ -51,7 +60,7 @@ export const NoteEditor = ({
       })
 
       const state = EditorState.create({
-        doc: initialContent,
+        doc: contentRef.current,
         extensions: [
           ...extensions,
           editableCompartmentRef.current.of(EditorView.editable.of(editable))
@@ -89,29 +98,29 @@ export const NoteEditor = ({
     })
   }, [editable])
 
-  const lastInitialContentRef = useRef(initialContent)
+  const lastContentRef = useRef(content)
 
   useEffect(() => {
     if (!viewRef.current || !isInitialized.current) return
 
     const isNewDocument =
-      lastInitialContentRef.current !== initialContent &&
-      initialContent !== viewRef.current.state.doc.toString()
+      lastContentRef.current !== content &&
+      content !== viewRef.current.state.doc.toString()
 
     if (isNewDocument) {
       viewRef.current.dispatch({
         changes: {
           from: 0,
           to: viewRef.current.state.doc.length,
-          insert: initialContent
+          insert: content
         }
       })
     }
 
-    lastInitialContentRef.current = initialContent
-  }, [initialContent])
+    lastContentRef.current = content
+  }, [content])
 
-  if (typeof window === 'undefined') {
+  if (!isMounted) {
     return (
       <div className={cn(styles.editorWrapper, className)}>
         <div className={styles.skeleton}>
@@ -129,7 +138,7 @@ export const NoteEditor = ({
       <div className={cn(styles.editorWrapper, className)}>
         <textarea
           className={cn(styles.editor, styles.fallbackTextarea)}
-          defaultValue={initialContent}
+          defaultValue={content}
           onChange={(event) => onChange?.(event.target.value)}
           placeholder={placeholder || "Type '/' for commands, or start writing..."}
           readOnly={!editable}

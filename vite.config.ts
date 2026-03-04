@@ -11,6 +11,11 @@ export default defineConfig({
   build: {
     cssCodeSplit: false // All CSS in one file - prevents FOUC on SPA navigation
   },
+  ssr: {
+    // Bundle i18n modules instead of externalizing — prevents dual-module issue
+    // where I18nextProvider and useTranslation get different React contexts
+    noExternal: ['i18next', 'react-i18next', 'i18next-http-backend']
+  },
   server: {
     host: '0.0.0.0',
     allowedHosts: ['.ngrok-free.app', '.ngrok.io', '.trycloudflare.com', 'neylin.io']

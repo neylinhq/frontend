@@ -39,13 +39,18 @@ export const ConnectionItem = memo(
     deleteTitle
   }: ConnectionItemProps) => {
     return (
-      <button
-        type='button'
+      <div
         className={cn(
           'group w-full text-left rounded-sm transition-colors duration-150 cursor-pointer',
           className
         )}
         onClick={onOpen}
+        onKeyDown={e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            onOpen?.()
+          }
+        }}
       >
         <div className='flex items-center gap-3'>
           {/* Icon */}
@@ -60,9 +65,9 @@ export const ConnectionItem = memo(
 
           {/* Content */}
           <div className='flex-1 min-w-0'>
-            <p className='font-medium text-sm truncate'>{label}</p>
+            <span className='block font-medium text-sm truncate'>{label}</span>
             {(subtitle || (showDirectionHint && direction)) && (
-              <p className='text-xs text-muted-foreground mt-0.25 flex items-center gap-1 min-w-0'>
+              <span className='text-xs text-muted-foreground mt-0.25 flex items-center gap-1 min-w-0'>
                 {showDirectionHint && direction && (
                   <span
                     className={cn(
@@ -74,7 +79,7 @@ export const ConnectionItem = memo(
                   </span>
                 )}
                 {subtitle}
-              </p>
+              </span>
             )}
           </div>
 
@@ -154,7 +159,7 @@ export const ConnectionItem = memo(
             </div>
           )}
         </div>
-      </button>
+      </div>
     )
   }
 )

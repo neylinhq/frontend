@@ -1,5 +1,5 @@
 import { CheckIcon, Copy01Icon, Download01Icon, Loading02Icon } from '@untitledui/icons-react/outline'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   useRegenerateBackupCodes,
@@ -46,8 +46,11 @@ export const BackupCodesDialog = ({
   const displayCodes = newCodes.length > 0 ? newCodes : codes
   const isEmailMethod = status?.emailOtpEnabled && !status?.totpEnabled
 
+  // Ref to latest startRegeneration to avoid re-triggering useEffect
+  const startRegenerationRef = useRef(() => {})
+
   // Start regeneration - send email in background, show OTP immediately
-  const startRegeneration = useCallback(() => {
+  const startRegeneration = () => {
     setStep('verify')
     if (isEmailMethod) {
       sendEmailCode.mutate(undefined, {
@@ -59,7 +62,9 @@ export const BackupCodesDialog = ({
         }
       })
     }
-  }, [isEmailMethod, sendEmailCode, t])
+  }
+
+  startRegenerationRef.current = startRegeneration
 
   useEffect(() => {
     if (open) {
@@ -68,13 +73,12 @@ export const BackupCodesDialog = ({
       setHasError(false)
 
       if (isRegenerate && codes.length === 0) {
-        // Auto-start regeneration flow
-        startRegeneration()
+        startRegenerationRef.current()
       } else {
         setStep('codes')
       }
     }
-  }, [open, codes.length, isRegenerate, startRegeneration])
+  }, [open, codes.length, isRegenerate])
 
   const handleRegenerate = (completedCode?: string) => {
     const codeToUse = completedCode || verifyCode

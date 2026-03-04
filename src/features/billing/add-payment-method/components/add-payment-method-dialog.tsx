@@ -1,8 +1,19 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CreditCard01Icon, EyeIcon, EyeOffIcon, Lock01Icon, PlusIcon, Wallet01Icon } from '@untitledui/icons-react/outline'
+import {
+  CreditCard01Icon,
+  EyeIcon,
+  EyeOffIcon,
+  Lock01Icon,
+  PlusIcon,
+  Wallet01Icon
+} from '@untitledui/icons-react/outline'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import type { CryptoNetwork } from '@/entities/subscription'
+import { getEvmChainId, getWalletType } from '@/entities/subscription/lib/crypto-utils'
+import { NetworkConnectButtons } from '@/features/billing/crypto-wallet-connect/components/network-connect-buttons'
+import { useCryptoWallet } from '@/features/billing/crypto-wallet-connect/model/crypto-wallet-connect.hooks'
 import { Breadcrumb } from '@/shared/components/breadcrumb'
 import { Button } from '@/shared/components/button'
 import { CardBrandIcon } from '@/shared/components/card-brand-icon'
@@ -33,10 +44,6 @@ import {
   parseExpiry
 } from '@/shared/lib/card-utils'
 import { cn } from '@/shared/lib/cn'
-import type { CryptoNetwork } from '@/entities/subscription'
-import { getEvmChainId, getWalletType } from '@/entities/subscription/lib/crypto-utils'
-import { useCryptoWallet } from '@/features/billing/crypto-wallet-connect/model/crypto-wallet-connect.hooks'
-import { NetworkConnectButtons } from '@/features/billing/crypto-wallet-connect/components/network-connect-buttons'
 import { CARD_VALIDATION, getCvcLength, getCvcPlaceholder } from '../lib/card-validation'
 import {
   type AddPaymentMethodValues,
@@ -90,7 +97,6 @@ const SelectionCard = ({
     </button>
   )
 }
-
 
 const SecurityNotice = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -274,7 +280,16 @@ export const AddPaymentMethodDialog = ({
     wallet.disconnect()
     setSelectedNetwork(null)
     resetAndClose()
-  }, [selectedNetwork, wallet.isConnected, wallet.address, wallet.chainId, isConnecting, onAddCrypto, wallet, resetAndClose])
+  }, [
+    selectedNetwork,
+    wallet.isConnected,
+    wallet.address,
+    wallet.chainId,
+    isConnecting,
+    onAddCrypto,
+    wallet,
+    resetAndClose
+  ])
 
   const handleOpenChange = (newOpen: boolean) => {
     if (!newOpen) {
@@ -312,9 +327,7 @@ export const AddPaymentMethodDialog = ({
         {step === 'select' && (
           <>
             <DialogHeader>
-              <DialogTitle>
-                {t('billing.addPaymentMethod.selectTitle')}
-              </DialogTitle>
+              <DialogTitle>{t('billing.addPaymentMethod.selectTitle')}</DialogTitle>
               <DialogDescription>
                 {t('billing.addPaymentMethod.selectDescription')}
               </DialogDescription>
@@ -497,7 +510,11 @@ export const AddPaymentMethodDialog = ({
         {step === 'crypto' && (
           <>
             <DialogHeader>
-              <Breadcrumb onBack={handleBack} disabled={loadingCrypto || isConnecting} className='mb-4' />
+              <Breadcrumb
+                onBack={handleBack}
+                disabled={loadingCrypto || isConnecting}
+                className='mb-4'
+              />
               <DialogTitle>{t('billing.crypto.title')}</DialogTitle>
               <DialogDescription>{t('billing.crypto.description')}</DialogDescription>
             </DialogHeader>

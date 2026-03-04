@@ -1,13 +1,13 @@
 import { memo, useCallback, useEffect, useState } from 'react'
 
-import { ChatHeader } from '@/features/ai-assist/components/chat-header'
-import { MapChatPanel } from '@/features/ai-assist/components/map-chat-panel'
 import {
+  ChatHeader,
+  MapChatPanel,
   useChatSessions,
   useCreateChatSession,
   useDeleteChatSession,
   useRenameChatSession
-} from '@/features/ai-assist/model'
+} from '@/features/ai-assist'
 
 interface ChatPanelProps {
   mapId: string

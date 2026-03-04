@@ -2,6 +2,7 @@ import { PlusIcon } from '@untitledui/icons-react/outline'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { Breadcrumb } from '@/shared/components/breadcrumb'
 import { Button } from '@/shared/components/button'
 import {
   Dialog,
@@ -13,7 +14,11 @@ import {
 } from '@/shared/components/dialog'
 
 import type { PaymentMethodInput } from '../lib/validation'
-import { AddPaymentMethodContent, type CryptoWalletInput } from './add-payment-method-content'
+import {
+  AddPaymentMethodContent,
+  type CryptoWalletInput,
+  type PaymentMethodStep
+} from './add-payment-method-content'
 
 interface AddPaymentMethodDialogProps {
   onAddCard: (data: PaymentMethodInput) => void
@@ -30,19 +35,29 @@ export const AddPaymentMethodDialog = ({
 }: AddPaymentMethodDialogProps) => {
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
+  const [step, setStep] = useState<PaymentMethodStep>('select')
 
   const handleAddCard = (data: PaymentMethodInput) => {
     onAddCard(data)
     setOpen(false)
+    setStep('select')
   }
 
   const handleAddCrypto = (data: CryptoWalletInput) => {
     onAddCrypto(data)
     setOpen(false)
+    setStep('select')
+  }
+
+  const handleOpenChange = (newOpen: boolean) => {
+    setOpen(newOpen)
+    if (!newOpen) {
+      setStep('select')
+    }
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         {trigger || (
           <Button size='sm'>
@@ -54,11 +69,16 @@ export const AddPaymentMethodDialog = ({
 
       <DialogContent className='sm:max-w-lg'>
         <DialogHeader>
+          {step !== 'select' && (
+            <Breadcrumb onBack={() => setStep('select')} disabled={loading} className='mb-4' />
+          )}
           <DialogTitle>{t('billing.addPaymentMethod.selectTitle')}</DialogTitle>
           <DialogDescription>{t('billing.addPaymentMethod.selectDescription')}</DialogDescription>
         </DialogHeader>
 
         <AddPaymentMethodContent
+          step={step}
+          onStepChange={setStep}
           onAddCard={handleAddCard}
           onAddCrypto={handleAddCrypto}
           loading={loading}

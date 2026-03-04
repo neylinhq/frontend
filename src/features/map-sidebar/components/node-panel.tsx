@@ -8,7 +8,7 @@ import { memo, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
-import { useFocusMode } from '@/features/graph/model/graph.store'
+import { useFocusMode } from '@/features/graph'
 import { NodeMetadataForm, type NodeMetadataFormValues } from '@/features/node-metadata-form'
 import type { Edge, Node } from '@/entities/map'
 import { useDeleteNode, useUpdateNode } from '@/entities/map'

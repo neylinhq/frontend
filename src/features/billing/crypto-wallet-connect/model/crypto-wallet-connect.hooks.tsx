@@ -2,7 +2,7 @@ import type React from 'react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import type { CryptoNetwork } from '@/entities/subscription'
-import { getWalletType, type WalletType } from '@/entities/subscription/lib/crypto-utils'
+import { getWalletType, type WalletType } from '@/entities/subscription'
 
 export interface CryptoWallet {
   address: string | null

@@ -1,8 +1,9 @@
-import { CreditCard01Icon, Loading02Icon, Wallet01Icon } from '@untitledui/icons-react/outline'
+import { CreditCard01Icon, Loading02Icon } from '@untitledui/icons-react/outline'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { AddPaymentMethodContent } from '@/features/billing/add-payment-method'
+import { AddPaymentMethodContent, type PaymentMethodStep } from '@/features/billing/add-payment-method'
+import { Breadcrumb } from '@/shared/components/breadcrumb'
 import type { CryptoNetwork, PaymentMethod, PlanDetails } from '@/entities/subscription'
 import { getNetworkDisplayName, shortenWalletAddress } from '@/entities/subscription'
 import { Button } from '@/shared/components/button'
@@ -53,6 +54,7 @@ export const SubscribeDialog = ({
   )
   const [isSubscribing, setIsSubscribing] = useState(false)
   const [isAddingMethod, setIsAddingMethod] = useState(false)
+  const [paymentMethodStep, setPaymentMethodStep] = useState<PaymentMethodStep>('select')
 
   // Sync internal state when paymentMethods prop changes
   useEffect(() => {
@@ -82,6 +84,7 @@ export const SubscribeDialog = ({
         const newMethod = await onAddCard(data)
         setSelectedMethodId(newMethod.id)
         setStep('confirm')
+        setPaymentMethodStep('select')
       } finally {
         setIsAddingMethod(false)
       }
@@ -96,6 +99,7 @@ export const SubscribeDialog = ({
         const newMethod = await onAddCrypto(data)
         setSelectedMethodId(newMethod.id)
         setStep('confirm')
+        setPaymentMethodStep('select')
       } finally {
         setIsAddingMethod(false)
       }
@@ -117,6 +121,7 @@ export const SubscribeDialog = ({
 
   const handleClose = () => {
     onOpenChange(false)
+    setPaymentMethodStep('select')
     // Reset step on close if we have payment methods
     if (paymentMethods.length > 0) {
       setStep('confirm')
@@ -129,6 +134,9 @@ export const SubscribeDialog = ({
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className='sm:max-w-lg'>
         <DialogHeader>
+          {step === 'add-method' && paymentMethodStep !== 'select' && (
+            <Breadcrumb onBack={() => setPaymentMethodStep('select')} disabled={isAddingMethod} className='mb-4' />
+          )}
           <DialogTitle>
             {step === 'add-method'
               ? t('billing.subscribe.addMethodTitle')
@@ -144,6 +152,8 @@ export const SubscribeDialog = ({
         {/* Add Payment Method Step */}
         {step === 'add-method' && (
           <AddPaymentMethodContent
+            step={paymentMethodStep}
+            onStepChange={setPaymentMethodStep}
             onAddCard={handleAddCard}
             onAddCrypto={handleAddCrypto}
             loading={isAddingMethod}

@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import type { LightweightNode } from '@/entities/node'
-import { getNodeIcon } from '@/entities/node/lib/node-icon'
+import { getNodeIcon } from '@/entities/node'
 import { Button } from '@/shared/components/button'
 import { CommandPalette, type CommandPaletteItem } from '@/shared/components/command-palette'
 import { cn } from '@/shared/lib/cn'

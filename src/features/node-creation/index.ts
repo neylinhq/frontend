@@ -11,6 +11,11 @@ export {
   hasTypePrefix,
   parseQuickInput
 } from './lib/parse-quick-input'
+// Smart positioning
+export {
+  calculatePositionNearConnections,
+  calculateSmartPosition
+} from './lib/smart-positioning'
 // Constants
 export { NODE_CREATION_CONFIG } from './model/node-creation.constants'
 // Hooks

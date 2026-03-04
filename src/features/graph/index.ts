@@ -1,5 +1,6 @@
 // Components
 export { GraphToolbar } from './components/graph-toolbar'
+export { NodeDrawer } from './components/node-drawer'
 
 // GraphVisualization - switches between xyflow and WebGL based on feature flag
 import { GraphVisualization as GraphWebGL, USE_WEBGL_RENDERER } from '@/features/graph-webgl'
@@ -9,6 +10,8 @@ export const GraphVisualization = USE_WEBGL_RENDERER ? GraphWebGL : GraphXYFlow
 
 // Export xyflow version explicitly for fallback
 export { GraphVisualization as GraphXYFlowVisualization } from './components/graph-visualization'
+export { EdgeEditPopover } from './components/edge-edit-popover'
+
 export { KnowledgeEdge } from './components/knowledge-edge'
 export { KnowledgeNode } from './components/knowledge-node'
 export { NodeContextMenu } from './components/node-context-menu'
@@ -30,6 +33,9 @@ export { useFilteredGraphData } from './model/graph.data.hooks'
 export { useGraphKeyboard } from './model/graph.keyboard.hooks'
 export { useAnimatedLayout } from './model/graph.layout.hooks'
 export { useNodeSelection } from './model/graph.selection.hooks'
+// Model - Edge management store
+export { useEdgeManagementStore } from './model/graph.edge.store'
+
 // Model - Store
 export {
   ALL_EDGE_TYPES,

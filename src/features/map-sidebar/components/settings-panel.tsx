@@ -10,8 +10,7 @@ import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
-import { MapHistoryList } from '@/features/map-settings/components/map-history-list'
-import { RatingSystemSelector } from '@/features/map-settings/components/rating-system-selector'
+import { MapHistoryList, RatingSystemSelector } from '@/features/map-settings'
 import { useDeleteMap, useMap, useSetVisibility, useUpdateMap } from '@/entities/map'
 import { type RatingSystem, useMapProgress } from '@/entities/progress'
 import {

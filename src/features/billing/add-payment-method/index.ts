@@ -1,6 +1,7 @@
 export {
   AddPaymentMethodContent,
-  type CryptoWalletInput
+  type CryptoWalletInput,
+  type PaymentMethodStep
 } from './components/add-payment-method-content'
 export { AddPaymentMethodDialog } from './components/add-payment-method-dialog'
 export {

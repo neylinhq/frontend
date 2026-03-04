@@ -12,7 +12,6 @@ import { useTranslation } from 'react-i18next'
 
 import { NetworkConnectButtons, useCryptoWallet } from '@/features/billing/crypto-wallet-connect'
 import { type CryptoNetwork, getEvmChainId, getWalletType } from '@/entities/subscription'
-import { Breadcrumb } from '@/shared/components/breadcrumb'
 import { Button } from '@/shared/components/button'
 import { CardBrandIcon } from '@/shared/components/card-brand-icon'
 import { DialogFooter } from '@/shared/components/dialog'
@@ -47,7 +46,11 @@ export interface CryptoWalletInput {
   address: string
 }
 
+export type PaymentMethodStep = 'select' | 'card' | 'crypto'
+
 interface AddPaymentMethodContentProps {
+  step: PaymentMethodStep
+  onStepChange: (step: PaymentMethodStep) => void
   onAddCard: (data: PaymentMethodInput) => void
   onAddCrypto: (data: CryptoWalletInput) => void
   loading?: boolean
@@ -84,15 +87,14 @@ const SelectionCard = ({
   )
 }
 
-type Step = 'select' | 'card' | 'crypto'
-
 export const AddPaymentMethodContent = ({
+  step,
+  onStepChange,
   onAddCard,
   onAddCrypto,
   loading
 }: AddPaymentMethodContentProps) => {
   const { t } = useTranslation()
-  const [step, setStep] = useState<Step>('select')
   const [showCvc, setShowCvc] = useState(false)
   const [cardBrand, setCardBrand] = useState<CardBrand>('unknown')
 
@@ -220,17 +222,21 @@ export const AddPaymentMethodContent = ({
     wallet
   ])
 
-  const handleBack = () => {
-    setStep('select')
-    cardForm.reset()
-    setCardBrand('unknown')
-
-    if (wallet.isConnected) {
-      wallet.disconnect()
+  // Reset internal state when navigating back to select
+  const prevStepRef = useRef(step)
+  useEffect(() => {
+    if (step === 'select' && prevStepRef.current !== 'select') {
+      cardForm.reset()
+      setCardBrand('unknown')
+      setShowCvc(false)
+      if (wallet.isConnected) {
+        wallet.disconnect()
+      }
+      setSelectedNetwork(null)
+      setIsConnecting(false)
     }
-    setSelectedNetwork(null)
-    setIsConnecting(false)
-  }
+    prevStepRef.current = step
+  }, [step, cardForm, wallet])
 
   // Selection step
   if (step === 'select') {
@@ -240,13 +246,13 @@ export const AddPaymentMethodContent = ({
           icon={<CreditCard01Icon className='h-12 w-12' />}
           title={t('billing.addPaymentMethod.cardOption.title')}
           description={t('billing.addPaymentMethod.cardOption.description')}
-          onClick={() => setStep('card')}
+          onClick={() => onStepChange('card')}
         />
         <SelectionCard
           icon={<Wallet01Icon className='h-12 w-12' />}
           title={t('billing.addPaymentMethod.cryptoOption.title')}
           description={t('billing.addPaymentMethod.cryptoOption.description')}
-          onClick={() => setStep('crypto')}
+          onClick={() => onStepChange('crypto')}
         />
       </div>
     )
@@ -255,10 +261,7 @@ export const AddPaymentMethodContent = ({
   // Card step
   if (step === 'card') {
     return (
-      <>
-        <Breadcrumb onBack={handleBack} disabled={loading} className='mb-4' />
-
-        <Form {...cardForm}>
+      <Form {...cardForm}>
           <form onSubmit={cardForm.handleSubmit(handleCardSubmit)} className='space-y-4'>
             <FormField
               control={cardForm.control}
@@ -374,16 +377,12 @@ export const AddPaymentMethodContent = ({
             </div>
 
             <DialogFooter className='gap-2 sm:gap-0'>
-              <Button type='button' variant='outline' onClick={handleBack} disabled={loading}>
-                {t('common.back')}
-              </Button>
               <Button type='submit' disabled={loading || !cardForm.formState.isValid}>
                 {loading ? t('common.loading') : t('billing.addPaymentMethod.submit')}
               </Button>
             </DialogFooter>
           </form>
         </Form>
-      </>
     )
   }
 
@@ -394,7 +393,6 @@ export const AddPaymentMethodContent = ({
     <>
       {WalletConnector && <div className='hidden'>{WalletConnector}</div>}
 
-      <Breadcrumb onBack={handleBack} disabled={loading || isConnecting} className='mb-4' />
       <div className='py-4'>
         <NetworkConnectButtons
           onNetworkClick={handleNetworkClick}

@@ -7,10 +7,14 @@ export {
   getEvmChainId,
   getNetworkDisplayName,
   getNetworkFeeEstimate,
+  getSubscriptionContractAddress,
+  getUsdtContractAddress,
   getWalletType,
   isValidWalletAddress,
   shortenWalletAddress
 } from './lib/crypto-utils'
+export type { WalletType } from './lib/crypto-utils'
+
 export { subscriptionApi } from './subscription.api'
 export {
   subscriptionKeys,

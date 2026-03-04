@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import type { CryptoNetwork } from '@/entities/subscription'
-import { getEvmChainId, getWalletType } from '@/entities/subscription/lib/crypto-utils'
+import { getEvmChainId, getWalletType } from '@/entities/subscription'
 import {
   Dialog,
   DialogContent,

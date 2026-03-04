@@ -14,7 +14,7 @@ import {
   getEvmChainId,
   getSubscriptionContractAddress,
   getUsdtContractAddress
-} from '@/entities/subscription/lib/crypto-utils'
+} from '@/entities/subscription'
 
 import type { CryptoWallet } from './use-crypto-wallet'
 

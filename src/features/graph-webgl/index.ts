@@ -25,6 +25,8 @@ export {
 } from './components/graph-webgl-visualization'
 export { MiniMapWebGL } from './components/minimap-webgl'
 export { NodeOverlay } from './components/node-overlay'
+// Theme bridge utilities
+export { cssVarToHex, getNodeColorHex } from './lib/theme-bridge'
 // Transform utilities
 export { applyPositions, transformPositions, transformToWasm } from './lib/transform'
 export type { GraphEdge, GraphNode, GraphStats } from './lib/wasm-adapter'

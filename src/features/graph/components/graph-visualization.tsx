@@ -18,7 +18,7 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useAIPanelStore } from '@/features/ai-assist'
-import { cssVarToHex, getNodeColorHex } from '@/features/graph-webgl/lib/theme-bridge'
+import { cssVarToHex, getNodeColorHex } from '@/features/graph-webgl'
 import {
   type Edge,
   type FullMap,

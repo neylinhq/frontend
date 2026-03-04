@@ -7,7 +7,8 @@ import { I18nextProvider } from 'react-i18next'
 import type { AppLoadContext, EntryContext } from 'react-router'
 import { ServerRouter } from 'react-router'
 
-import { createServerI18nInstance, getI18nData } from '@/app/i18n/server'
+import { createServerI18nInstance } from '@/app/i18n/server/i18n.factory.server'
+import { getI18nData } from '@/app/i18n/server/i18n.server'
 
 export const streamTimeout = 5_000
 

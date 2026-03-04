@@ -11,20 +11,20 @@ import { Loading02Icon } from '@untitledui/icons-react/outline'
 import { memo, useCallback, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { GraphToolbar } from '@/features/graph/components/graph-toolbar'
-import { NodeDrawer } from '@/features/graph/components/node-drawer'
-import { ViewControlsPanel } from '@/features/graph/components/view-controls-panel'
-import { useGraphControls } from '@/features/graph/model/graph.controls.hooks'
-import { useFilteredGraphData } from '@/features/graph/model/graph.data.hooks'
-import { useGraphKeyboard } from '@/features/graph/model/graph.keyboard.hooks'
-import { useNodeSelection } from '@/features/graph/model/graph.selection.hooks'
 import {
+  GraphToolbar,
+  NodeDrawer,
+  ViewControlsPanel,
+  useGraphControls,
+  useFilteredGraphData,
+  useGraphKeyboard,
+  useNodeSelection,
   useFilters,
   useFocusMode,
   useGraphUI,
   useNodeSpacing,
   useViewMode
-} from '@/features/graph/model/graph.store'
+} from '@/features/graph'
 import {
   GraphCanvas,
   type GraphCanvasHandle,

@@ -1,4 +1,5 @@
 import { api } from '@/shared/api/client'
+
 import type {
   ReviewNodeRequest,
   UpdateMapProgressRequest,
@@ -63,7 +64,10 @@ export const progressApi = {
     return response.data
   },
 
-  updateViewport: async (mapId: string, data: UpdateMapProgressRequest): Promise<UserMapProgress> => {
+  updateViewport: async (
+    mapId: string,
+    data: UpdateMapProgressRequest
+  ): Promise<UserMapProgress> => {
     const response = await api.patch<ApiResponse<UserMapProgress>>(
       `/maps/${mapId}/progress/viewport`,
       data

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { getNodeConfig, getNodeIcon } from '../lib/node-type-utils'
 
 describe('node type utils', () => {

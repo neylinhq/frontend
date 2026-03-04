@@ -1,7 +1,15 @@
-import { Home01Icon, LogIn01Icon, Menu01Icon, Rocket01Icon, Wallet01Icon } from '@untitledui/icons-react/outline'
+import {
+  Home01Icon,
+  LogIn01Icon,
+  Menu01Icon,
+  Rocket01Icon,
+  Wallet01Icon
+} from '@untitledui/icons-react/outline'
 import type { ComponentType, SVGProps } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, NavLink } from 'react-router'
+
+import { AuthNav } from '@/widgets/auth-nav'
 import { ModeSelect } from '@/features/theme/mode-select'
 import { PaletteSelect } from '@/features/theme/palette-select'
 import { Button } from '@/shared/components/button'
@@ -11,7 +19,6 @@ import { Separator } from '@/shared/components/separator'
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/shared/components/sheet'
 import { AUTH_ROUTES, ROUTES } from '@/shared/config'
 import { cn } from '@/shared/lib/cn'
-import { AuthNav } from '@/widgets/auth-nav'
 
 export const PublicHeader = () => {
   const { t } = useTranslation()

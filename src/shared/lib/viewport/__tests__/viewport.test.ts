@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { constrainToViewport, detectCollisions, getViewportBounds } from '..'
 
 describe('viewport utilities', () => {

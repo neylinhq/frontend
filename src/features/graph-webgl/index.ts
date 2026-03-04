@@ -25,7 +25,6 @@ export {
 } from './components/graph-webgl-visualization'
 export { MiniMapWebGL } from './components/minimap-webgl'
 export { NodeOverlay } from './components/node-overlay'
-
 // Transform utilities
 export { applyPositions, transformPositions, transformToWasm } from './lib/transform'
 export type { GraphEdge, GraphNode, GraphStats } from './lib/wasm-adapter'

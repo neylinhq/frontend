@@ -1,4 +1,5 @@
 import { API_URL } from '@/shared/config/env'
+
 import { server } from './server'
 
 let isStarted = false

@@ -1,14 +1,16 @@
 import { LayoutLeftIcon } from '@untitledui/icons-react/outline'
-import type { ComponentType, SVGProps } from 'react'
 import type React from 'react'
+import type { ComponentType, SVGProps } from 'react'
 import { useTranslation } from 'react-i18next'
 import { NavLink } from 'react-router'
+
+import { UserNav } from '@/widgets/user-nav'
 import { Button } from '@/shared/components/button'
 import { Logo } from '@/shared/components/logo'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/components/tooltip'
 import { DASHBOARD_ROUTES } from '@/shared/config'
 import { cn } from '@/shared/lib/cn'
-import { UserNav } from '@/widgets/user-nav'
+
 import { DASHBOARD_SIDEBAR_ITEMS } from '../dashboard-layout.constants'
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {

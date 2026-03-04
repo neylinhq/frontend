@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { generateMockGraph, GRAPH_PRESETS } from '../lib/generate-mock-graph'
+
+import { GRAPH_PRESETS, generateMockGraph } from '../lib/generate-mock-graph'
 
 describe('generateMockGraph', () => {
   it('creates the requested number of nodes', () => {

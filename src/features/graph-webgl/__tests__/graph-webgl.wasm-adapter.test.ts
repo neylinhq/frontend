@@ -37,9 +37,9 @@ describe('GraphEngine', () => {
     vi.resetModules()
     const initWasmModule = vi.fn().mockResolvedValue(undefined)
     const init_renderer = vi.fn()
-    const GraphEngineCtor = vi.fn(function GraphEngineCtor(
-      this: { init_renderer: typeof init_renderer }
-    ) {
+    const GraphEngineCtor = vi.fn(function GraphEngineCtor(this: {
+      init_renderer: typeof init_renderer
+    }) {
       this.init_renderer = init_renderer
     })
 

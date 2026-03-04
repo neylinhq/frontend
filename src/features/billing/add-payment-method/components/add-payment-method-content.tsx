@@ -1,13 +1,17 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CreditCard01Icon, EyeIcon, EyeOffIcon, Lock01Icon, Wallet01Icon } from '@untitledui/icons-react/outline'
+import {
+  CreditCard01Icon,
+  EyeIcon,
+  EyeOffIcon,
+  Lock01Icon,
+  Wallet01Icon
+} from '@untitledui/icons-react/outline'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { z } from 'zod'
-import type { CryptoNetwork } from '@/entities/subscription'
-import { getEvmChainId, getWalletType } from '@/entities/subscription/lib/crypto-utils'
-import { useCryptoWallet } from '@/features/billing/crypto-wallet-connect/model/crypto-wallet-connect.hooks'
-import { NetworkConnectButtons } from '@/features/billing/crypto-wallet-connect/components/network-connect-buttons'
+
+import { NetworkConnectButtons, useCryptoWallet } from '@/features/billing/crypto-wallet-connect'
+import { type CryptoNetwork, getEvmChainId, getWalletType } from '@/entities/subscription'
 import { Breadcrumb } from '@/shared/components/breadcrumb'
 import { Button } from '@/shared/components/button'
 import { CardBrandIcon } from '@/shared/components/card-brand-icon'
@@ -31,26 +35,23 @@ import {
 } from '@/shared/lib/card-utils'
 import { cn } from '@/shared/lib/cn'
 
-type Step = 'select' | 'card' | 'crypto'
+import { CARD_VALIDATION, getCvcLength, getCvcPlaceholder } from '../lib/card-validation'
+import {
+  type AddPaymentMethodValues,
+  addPaymentMethodSchema,
+  type PaymentMethodInput
+} from '../lib/validation'
 
-interface AddPaymentMethodContentProps {
-  onAddCard: (data: { cardholderName: string; cardNumber: string; brand: string; expiryMonth: number; expiryYear: number }) => void
-  onAddCrypto: (data: { network: CryptoNetwork; address: string }) => void
-  loading?: boolean
+export interface CryptoWalletInput {
+  network: CryptoNetwork
+  address: string
 }
 
-// Validation schema
-const cardSchema = z.object({
-  cardholderName: z.string().min(2),
-  cardNumber: z.string().min(13).max(23),
-  expiry: z.string().regex(/^\d{2}\/\d{2}$/),
-  cvc: z.string().min(3).max(4)
-})
-
-type CardFormValues = z.infer<typeof cardSchema>
-
-const CARD_NUMBER_MAX_LENGTH = 23
-const EXPIRY_MAX_LENGTH = 5
+interface AddPaymentMethodContentProps {
+  onAddCard: (data: PaymentMethodInput) => void
+  onAddCrypto: (data: CryptoWalletInput) => void
+  loading?: boolean
+}
 
 const SelectionCard = ({
   icon,
@@ -83,6 +84,7 @@ const SelectionCard = ({
   )
 }
 
+type Step = 'select' | 'card' | 'crypto'
 
 export const AddPaymentMethodContent = ({
   onAddCard,
@@ -94,8 +96,8 @@ export const AddPaymentMethodContent = ({
   const [showCvc, setShowCvc] = useState(false)
   const [cardBrand, setCardBrand] = useState<CardBrand>('unknown')
 
-  const cardForm = useForm<CardFormValues>({
-    resolver: zodResolver(cardSchema),
+  const cardForm = useForm<AddPaymentMethodValues>({
+    resolver: zodResolver(addPaymentMethodSchema),
     defaultValues: {
       cardholderName: '',
       cardNumber: '',
@@ -122,7 +124,7 @@ export const AddPaymentMethodContent = ({
     []
   )
 
-  const handleCardSubmit = (values: CardFormValues) => {
+  const handleCardSubmit = (values: AddPaymentMethodValues) => {
     const parsedExpiry = parseExpiry(values.expiry)
     if (!parsedExpiry || cardBrand === 'unknown') return
 
@@ -144,14 +146,12 @@ export const AddPaymentMethodContent = ({
   const initialConnectionStateRef = useRef<boolean>(false)
   const connectionAttemptedRef = useRef<boolean>(false)
 
-  // Handle network button click - triggers wallet provider
   const handleNetworkClick = (network: CryptoNetwork) => {
-    // Prevent multiple clicks while provider is already open
     if (isConnecting) {
       toast.warning(t('billing.crypto.providerAlreadyOpen'))
       return
     }
-    connectionAttemptedRef.current = false // Reset attempt flag
+    connectionAttemptedRef.current = false
     setSelectedNetwork(network)
     setIsConnecting(true)
   }
@@ -160,36 +160,27 @@ export const AddPaymentMethodContent = ({
   useEffect(() => {
     if (!selectedNetwork || !isConnecting) return
 
-    // Store initial connection state when we start connecting
     initialConnectionStateRef.current = wallet.isConnected
 
-    // Wait for wallet connector to load (wallet.connect changes from empty function)
     if (!wallet.connect || wallet.connect.toString().includes('async () => {}')) return
 
-    // Prevent duplicate connection attempts
     if (connectionAttemptedRef.current) return
     connectionAttemptedRef.current = true
 
     const triggerConnection = async () => {
       try {
         await wallet.connect()
-        // Don't reset state here - let auto-save useEffect handle it
       } catch (err) {
-        // Check error type
         const errorCode = err && typeof err === 'object' && 'code' in err ? err.code : null
         const isUserRejection = errorCode === 4001 || errorCode === 'ACTION_REJECTED'
-        const isAlreadyPending = errorCode === -32002 // Request already pending
+        const isAlreadyPending = errorCode === -32002
 
-        if (isAlreadyPending) {
-          // MetaMask window is already open, don't reset state
-          return
-        }
+        if (isAlreadyPending) return
 
         if (isUserRejection) {
           setIsConnecting(false)
           setSelectedNetwork(null)
         } else {
-          // For other errors, also reset
           setIsConnecting(false)
           setSelectedNetwork(null)
         }
@@ -206,7 +197,6 @@ export const AddPaymentMethodContent = ({
       return
     }
 
-    // For EVM wallets - validate chainId
     const walletType = getWalletType(selectedNetwork)
     if (walletType === 'evm') {
       const expectedChainId = getEvmChainId(selectedNetwork)
@@ -215,21 +205,26 @@ export const AddPaymentMethodContent = ({
       }
     }
 
-    // Call parent callback to save wallet
     setIsConnecting(false)
     onAddCrypto({ network: selectedNetwork, address: wallet.address })
 
-    // Reset state
     wallet.disconnect()
     setSelectedNetwork(null)
-  }, [selectedNetwork, wallet.isConnected, wallet.address, wallet.chainId, isConnecting, onAddCrypto, wallet])
+  }, [
+    selectedNetwork,
+    wallet.isConnected,
+    wallet.address,
+    wallet.chainId,
+    isConnecting,
+    onAddCrypto,
+    wallet
+  ])
 
   const handleBack = () => {
     setStep('select')
     cardForm.reset()
     setCardBrand('unknown')
 
-    // Reset crypto state
     if (wallet.isConnected) {
       wallet.disconnect()
     }
@@ -272,7 +267,11 @@ export const AddPaymentMethodContent = ({
                 <FormItem>
                   <FormLabel>{t('billing.addPaymentMethod.cardholderName')}</FormLabel>
                   <FormControl>
-                    <Input placeholder={t('form.placeholders.name')} autoComplete='cc-name' {...field} />
+                    <Input
+                      placeholder={t('form.placeholders.name')}
+                      autoComplete='cc-name'
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -288,10 +287,10 @@ export const AddPaymentMethodContent = ({
                   <FormControl>
                     <div className='relative'>
                       <Input
-                        placeholder='1234 5678 9012 3456'
+                        placeholder={CARD_VALIDATION.CARD_NUMBER_PLACEHOLDER}
                         autoComplete='cc-number'
                         inputMode='numeric'
-                        maxLength={CARD_NUMBER_MAX_LENGTH}
+                        maxLength={CARD_VALIDATION.CARD_NUMBER_MAX_LENGTH}
                         className='pr-14'
                         {...field}
                         onChange={e => handleCardNumberChange(e, field.onChange)}
@@ -315,10 +314,10 @@ export const AddPaymentMethodContent = ({
                     <FormLabel>{t('billing.addPaymentMethod.expiry')}</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder='MM/YY'
+                        placeholder={CARD_VALIDATION.EXPIRY_PLACEHOLDER}
                         autoComplete='cc-exp'
                         inputMode='numeric'
-                        maxLength={EXPIRY_MAX_LENGTH}
+                        maxLength={CARD_VALIDATION.EXPIRY_MAX_LENGTH}
                         {...field}
                         onChange={e => handleExpiryChange(e, field.onChange)}
                       />
@@ -333,15 +332,18 @@ export const AddPaymentMethodContent = ({
                 name='cvc'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t('billing.addPaymentMethod.cvc')}</FormLabel>
+                    <FormLabel className='flex items-center gap-1'>
+                      {t('billing.addPaymentMethod.cvc')}
+                      <Lock01Icon className='h-3 w-3 text-muted-foreground' />
+                    </FormLabel>
                     <FormControl>
                       <div className='relative'>
                         <Input
                           type={showCvc ? 'text' : 'password'}
-                          placeholder={cardBrand === 'amex' ? '1234' : '123'}
+                          placeholder={getCvcPlaceholder(cardBrand)}
                           autoComplete='cc-csc'
                           inputMode='numeric'
-                          maxLength={cardBrand === 'amex' ? 4 : 3}
+                          maxLength={getCvcLength(cardBrand)}
                           className='pr-10'
                           {...field}
                         />
@@ -385,12 +387,11 @@ export const AddPaymentMethodContent = ({
     )
   }
 
-  // Crypto step - show network buttons
+  // Crypto step
   const WalletConnector = wallet._connector
 
   return (
     <>
-      {/* Hidden wallet connector */}
       {WalletConnector && <div className='hidden'>{WalletConnector}</div>}
 
       <Breadcrumb onBack={handleBack} disabled={loading || isConnecting} className='mb-4' />

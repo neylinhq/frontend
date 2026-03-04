@@ -1,5 +1,6 @@
 import type React from 'react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+
 import type { CryptoNetwork } from '@/entities/subscription'
 import { getWalletType, type WalletType } from '@/entities/subscription/lib/crypto-utils'
 
@@ -37,9 +38,7 @@ type WalletConnectorComponent = React.ComponentType<{
  * Hook для работы с крипто кошельками
  * Лениво загружает соответствующий коннектор в зависимости от сети
  */
-export const useCryptoWallet = (
-  network: CryptoNetwork | null
-): CryptoWalletWithConnector => {
+export const useCryptoWallet = (network: CryptoNetwork | null): CryptoWalletWithConnector => {
   const [wallet, setWallet] = useState<CryptoWallet>(emptyWallet)
   const [WalletComponent, setWalletComponent] = useState<WalletConnectorComponent | null>(null)
 

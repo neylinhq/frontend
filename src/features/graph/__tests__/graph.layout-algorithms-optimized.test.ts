@@ -1,5 +1,10 @@
 import { describe, expect, it, vi } from 'vitest'
-import { applyLayout, getEdgesBetweenNodes, getNodesWithinDepth } from '../lib/layout-algorithms-optimized'
+
+import {
+  applyLayout,
+  getEdgesBetweenNodes,
+  getNodesWithinDepth
+} from '../lib/layout-algorithms-optimized'
 
 describe('layout-algorithms-optimized', () => {
   it('returns empty layout when no nodes', () => {
@@ -15,9 +20,7 @@ describe('layout-algorithms-optimized', () => {
       { id: 'a', position: { x: 0, y: 0 } },
       { id: 'b', position: { x: 0, y: 0 } }
     ]
-    const edges = [
-      { id: 'e1', source: 'a', target: 'b', data: { relationType: 'related-to' } }
-    ]
+    const edges = [{ id: 'e1', source: 'a', target: 'b', data: { relationType: 'related-to' } }]
 
     const result = applyLayout(nodes, edges, {
       viewMode: 'focus',
@@ -40,9 +43,7 @@ describe('layout-algorithms-optimized', () => {
       { id: 'a', position: { x: 0, y: 0 } },
       { id: 'b', position: { x: 0, y: 0 } }
     ]
-    const edges = [
-      { id: 'e1', source: 'a', target: 'b', data: { relationType: 'prerequisite' } }
-    ]
+    const edges = [{ id: 'e1', source: 'a', target: 'b', data: { relationType: 'prerequisite' } }]
 
     const result = applyLayout(nodes, edges, {
       viewMode: 'path',

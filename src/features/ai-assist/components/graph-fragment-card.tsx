@@ -1,11 +1,23 @@
-import { useState, useMemo } from 'react'
+import {
+  CheckIcon,
+  ChevronRightIcon,
+  Loading02Icon,
+  XCloseIcon
+} from '@untitledui/icons-react/outline'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { CheckIcon, ChevronRightIcon, Loading02Icon, XCloseIcon } from '@untitledui/icons-react/outline'
-import { Button } from '@/shared/components/button'
+
 import { Badge } from '@/shared/components/badge'
+import { Button } from '@/shared/components/button'
 import { Checkbox } from '@/shared/components/checkbox'
 import { cn } from '@/shared/lib/cn'
-import type { GraphFragmentPreviewData, GraphFragmentNode, GraphFragmentEdge, PreviewStatus } from '../model/ai-assist.types'
+
+import type {
+  GraphFragmentEdge,
+  GraphFragmentNode,
+  GraphFragmentPreviewData,
+  PreviewStatus
+} from '../model/ai-assist.types'
 
 /** Decode HTML entities like &#39; -> ' */
 const decodeHtmlEntities = (text: string): string => {
@@ -97,8 +109,10 @@ export const GraphFragmentCard = ({
         next.delete(tempId)
         // Also deselect edges that depend on this node
         data.edges.forEach(edge => {
-          if ((edge.fromIsNew && edge.fromRef === tempId) ||
-              (edge.toIsNew && edge.toRef === tempId)) {
+          if (
+            (edge.fromIsNew && edge.fromRef === tempId) ||
+            (edge.toIsNew && edge.toRef === tempId)
+          ) {
             setSelectedEdges(e => {
               const nextE = new Set(e)
               nextE.delete(edge.tempId)
@@ -203,9 +217,9 @@ export const GraphFragmentCard = ({
   // For resolved state, show a simplified collapsed view
   if (isResolved) {
     return (
-      <div className="rounded-lg overflow-hidden border border-border/60 bg-muted/20 group">
+      <div className='rounded-lg overflow-hidden border border-border/60 bg-muted/20 group'>
         <button
-          type="button"
+          type='button'
           onClick={() => setIsExpanded(!isExpanded)}
           className={cn(
             'w-full px-3 py-2',
@@ -225,9 +239,7 @@ export const GraphFragmentCard = ({
           />
 
           {/* Summary */}
-          <span className="text-xs text-muted-foreground flex-1 truncate">
-            {summary}
-          </span>
+          <span className='text-xs text-muted-foreground flex-1 truncate'>{summary}</span>
 
           {/* Status text */}
           <span
@@ -236,21 +248,23 @@ export const GraphFragmentCard = ({
               status === 'approved' ? 'text-muted-foreground/60' : 'text-muted-foreground/50'
             )}
           >
-            {status === 'approved' ? t('ai.status.applied', 'Applied') : t('ai.status.skipped', 'Skipped')}
+            {status === 'approved'
+              ? t('ai.status.applied', 'Applied')
+              : t('ai.status.skipped', 'Skipped')}
           </span>
         </button>
 
         {/* Expanded content for resolved state */}
         {isExpanded && (
-          <div className="px-3 py-2.5 bg-background/60 rounded-b-lg space-y-2">
+          <div className='px-3 py-2.5 bg-background/60 rounded-b-lg space-y-2'>
             {/* Nodes */}
             {data.nodes.length > 0 && (
-              <div className="space-y-1.5">
+              <div className='space-y-1.5'>
                 {data.nodes.map(node => (
-                  <div key={node.tempId} className="flex items-center gap-1.5 text-xs">
-                    <span className="font-medium truncate flex-1">{node.label}</span>
+                  <div key={node.tempId} className='flex items-center gap-1.5 text-xs'>
+                    <span className='font-medium truncate flex-1'>{node.label}</span>
                     <Badge
-                      variant="secondary"
+                      variant='secondary'
                       className={cn(TAG_BASE_CLASSES, NODE_TYPE_COLORS[node.nodeType])}
                     >
                       {t(`nodeTypes.${node.nodeType}`, node.nodeType)}
@@ -261,30 +275,27 @@ export const GraphFragmentCard = ({
             )}
 
             {/* Separator */}
-            {data.nodes.length > 0 && data.edges.length > 0 && (
-              <div className="h-px bg-border" />
-            )}
+            {data.nodes.length > 0 && data.edges.length > 0 && <div className='h-px bg-border' />}
 
             {/* Edges */}
             {data.edges.length > 0 && (
-              <div className="space-y-3">
+              <div className='space-y-3'>
                 {groupedEdges.map(group => (
-                  <div key={group.key} className="space-y-1.5">
-                    <div className="text-xs font-medium text-foreground/70">
-                      {group.label}
-                    </div>
-                    <div className="space-y-1">
+                  <div key={group.key} className='space-y-1.5'>
+                    <div className='text-xs font-medium text-foreground/70'>{group.label}</div>
+                    <div className='space-y-1'>
                       {group.edges.map(edge => {
                         const toLabel = getEdgeLabel(edge.toRef, edge.toIsNew)
-                        const edgeColorClasses = EDGE_TYPE_COLORS[edge.relation] ?? 'bg-muted text-muted-foreground'
+                        const edgeColorClasses =
+                          EDGE_TYPE_COLORS[edge.relation] ?? 'bg-muted text-muted-foreground'
 
                         return (
-                          <div key={edge.tempId} className="flex items-center gap-2 text-xs">
+                          <div key={edge.tempId} className='flex items-center gap-2 text-xs'>
                             <span className={cn('truncate flex-1', edge.toIsNew && 'text-primary')}>
                               {toLabel}
                             </span>
                             <Badge
-                              variant="secondary"
+                              variant='secondary'
                               className={cn(TAG_BASE_CLASSES, 'flex-shrink-0', edgeColorClasses)}
                             >
                               {t(`graph.edgeTypes.${edge.relation}`, edge.relation)}
@@ -299,11 +310,11 @@ export const GraphFragmentCard = ({
             )}
 
             {/* Reasoning */}
-          {data.reasoning && (
-            <p className="text-xs text-muted-foreground italic border-t border-border/60 pt-2">
-              {decodeHtmlEntities(data.reasoning)}
-            </p>
-          )}
+            {data.reasoning && (
+              <p className='text-xs text-muted-foreground italic border-t border-border/60 pt-2'>
+                {decodeHtmlEntities(data.reasoning)}
+              </p>
+            )}
           </div>
         )}
       </div>
@@ -312,10 +323,10 @@ export const GraphFragmentCard = ({
 
   // Pending/editing state — full card with actions
   return (
-    <div className="border border-border/60 rounded-lg overflow-hidden bg-card">
+    <div className='border border-border/60 rounded-lg overflow-hidden bg-card'>
       {/* Header - collapsible */}
       <button
-        type="button"
+        type='button'
         onClick={() => setIsExpanded(!isExpanded)}
         className={cn(
           'w-full px-3 py-2 bg-muted/30',
@@ -330,35 +341,33 @@ export const GraphFragmentCard = ({
             isExpanded && 'rotate-90'
           )}
         />
-        <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground flex-1 truncate">
+        <span className='text-xs font-medium uppercase tracking-wide text-muted-foreground flex-1 truncate'>
           {data.title || t('ai.graphFragment.title', 'Graph Changes')}
         </span>
-        <span className="text-xs text-muted-foreground">
-          {summary}
-        </span>
+        <span className='text-xs text-muted-foreground'>{summary}</span>
       </button>
 
       {/* Expanded content */}
       {isExpanded && (
-        <div className="px-3 py-2 space-y-3">
+        <div className='px-3 py-2 space-y-3'>
           {/* Select all toggle */}
-          <div className="flex items-center justify-between">
+          <div className='flex items-center justify-between'>
             <button
-              type="button"
+              type='button'
               onClick={toggleAll}
-              className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className='flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
             >
               <Checkbox checked={allSelected} />
               <span>{t('ai.graphFragment.selectAll', 'Select all')}</span>
             </button>
-            <span className="text-xs text-muted-foreground">
+            <span className='text-xs text-muted-foreground'>
               {selectedCount}/{totalCount}
             </span>
           </div>
 
           {/* Nodes section */}
           {data.nodes.length > 0 && (
-            <div className="space-y-1">
+            <div className='space-y-1'>
               {data.nodes.map(node => (
                 <NodeRow
                   key={node.tempId}
@@ -372,19 +381,15 @@ export const GraphFragmentCard = ({
           )}
 
           {/* Visual separator between sections */}
-          {data.nodes.length > 0 && data.edges.length > 0 && (
-            <div className="h-px bg-border" />
-          )}
+          {data.nodes.length > 0 && data.edges.length > 0 && <div className='h-px bg-border' />}
 
           {/* Edges section */}
-            {data.edges.length > 0 && (
-            <div className="space-y-3">
+          {data.edges.length > 0 && (
+            <div className='space-y-3'>
               {groupedEdges.map(group => (
-                <div key={group.key} className="space-y-1.5">
-                  <div className="text-xs font-medium text-foreground/70">
-                    {group.label}
-                  </div>
-                  <div className="space-y-1">
+                <div key={group.key} className='space-y-1.5'>
+                  <div className='text-xs font-medium text-foreground/70'>{group.label}</div>
+                  <div className='space-y-1'>
                     {group.edges.map(edge => (
                       <EdgeRow
                         key={edge.tempId}
@@ -404,7 +409,7 @@ export const GraphFragmentCard = ({
 
           {/* Reasoning */}
           {data.reasoning && (
-            <div className="text-xs text-muted-foreground italic border-t border-border/60 pt-2">
+            <div className='text-xs text-muted-foreground italic border-t border-border/60 pt-2'>
               {decodeHtmlEntities(data.reasoning)}
             </div>
           )}
@@ -412,26 +417,22 @@ export const GraphFragmentCard = ({
       )}
 
       {/* Actions */}
-      <div className="px-3 py-2 border-t border-border/60 bg-muted/20 flex justify-end gap-2">
+      <div className='px-3 py-2 border-t border-border/60 bg-muted/20 flex justify-end gap-2'>
         <Button
-          size="sm"
-          variant="ghost"
+          size='sm'
+          variant='ghost'
           onClick={onReject}
-          className="text-muted-foreground"
+          className='text-muted-foreground'
           disabled={isDisabled}
         >
-          <XCloseIcon className="h-3.5 w-3.5 mr-1" />
+          <XCloseIcon className='h-3.5 w-3.5 mr-1' />
           {t('common.dismiss', 'Dismiss')}
         </Button>
-        <Button
-          size="sm"
-          onClick={handleApply}
-          disabled={isDisabled || noneSelected}
-        >
+        <Button size='sm' onClick={handleApply} disabled={isDisabled || noneSelected}>
           {isDisabled ? (
-            <Loading02Icon className="h-3.5 w-3.5 mr-1 animate-spin" />
+            <Loading02Icon className='h-3.5 w-3.5 mr-1 animate-spin' />
           ) : (
-            <CheckIcon className="h-3.5 w-3.5 mr-1" />
+            <CheckIcon className='h-3.5 w-3.5 mr-1' />
           )}
           {selectedCount === totalCount
             ? t('ai.graphFragment.applyAll', 'Apply All')
@@ -455,7 +456,7 @@ const NodeRow = ({ node, selected, onToggle, disabled }: NodeRowProps) => {
 
   return (
     <button
-      type="button"
+      type='button'
       onClick={onToggle}
       disabled={disabled}
       className={cn(
@@ -465,8 +466,8 @@ const NodeRow = ({ node, selected, onToggle, disabled }: NodeRowProps) => {
       )}
     >
       <Checkbox checked={selected} />
-      <span className="text-xs font-medium flex-1 truncate">{node.label}</span>
-      <Badge variant="secondary" className={cn(TAG_BASE_CLASSES, NODE_TYPE_COLORS[node.nodeType])}>
+      <span className='text-xs font-medium flex-1 truncate'>{node.label}</span>
+      <Badge variant='secondary' className={cn(TAG_BASE_CLASSES, NODE_TYPE_COLORS[node.nodeType])}>
         {t(`nodeTypes.${node.nodeType}`, node.nodeType)}
       </Badge>
     </button>
@@ -493,7 +494,7 @@ const EdgeRow = ({ edge, selected, canSelect, onToggle, getLabel, disabled }: Ed
 
   return (
     <button
-      type="button"
+      type='button'
       onClick={onToggle}
       disabled={isDisabled}
       className={cn(
@@ -501,14 +502,18 @@ const EdgeRow = ({ edge, selected, canSelect, onToggle, getLabel, disabled }: Ed
         'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded-md',
         isDisabled && 'opacity-50 cursor-not-allowed'
       )}
-      title={!canSelect ? t('ai.graphFragment.edgeRequiresNodes', 'Select the connected nodes first') : undefined}
+      title={
+        !canSelect
+          ? t('ai.graphFragment.edgeRequiresNodes', 'Select the connected nodes first')
+          : undefined
+      }
     >
       <Checkbox checked={selected && canSelect} />
       <span className={cn('text-xs truncate flex-1', edge.toIsNew && 'text-primary')}>
         {toLabel}
       </span>
       <Badge
-        variant="secondary"
+        variant='secondary'
         className={cn(TAG_BASE_CLASSES, 'flex-shrink-0', edgeColorClasses)}
       >
         {t(`graph.edgeTypes.${edge.relation}`, edge.relation)}
@@ -516,6 +521,5 @@ const EdgeRow = ({ edge, selected, canSelect, onToggle, getLabel, disabled }: Ed
     </button>
   )
 }
-
 
 // TODO: DRY

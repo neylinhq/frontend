@@ -1,5 +1,6 @@
 import { CheckIcon } from '@untitledui/icons-react/outline'
 import { useState } from 'react'
+
 import { Button } from '@/shared/components/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/components/popover'
 import { cn } from '@/shared/lib/cn'
@@ -83,10 +84,10 @@ export const SelectPopover = <T extends string = string>({
       <PopoverContent align={align} side={side} className='w-auto min-w-[140px] p-1'>
         <div className='flex flex-col'>
           {items.map(item => (
-                <button
-                  type='button'
-                  key={item.value}
-                  onClick={() => handleSelect(item.value)}
+            <button
+              type='button'
+              key={item.value}
+              onClick={() => handleSelect(item.value)}
               className={cn(
                 'flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none',
                 'hover:bg-[var(--surface-hover)] hover:text-foreground',

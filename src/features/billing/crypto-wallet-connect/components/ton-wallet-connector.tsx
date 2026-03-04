@@ -1,6 +1,8 @@
 import { useTonConnectUI, useTonWallet } from '@tonconnect/ui-react'
 import { useCallback, useEffect } from 'react'
+
 import type { CryptoNetwork } from '@/entities/subscription'
+
 import type { CryptoWallet } from './use-crypto-wallet'
 
 // TON USDT (jUSDT) jetton master address
@@ -28,7 +30,7 @@ export const TonWalletConnector = ({ onWalletChange }: TonWalletConnectorProps) 
       let resolved = false
 
       // Listen for modal state changes
-      const unsubscribeModal = tonConnectUI.onModalStateChange((state) => {
+      const unsubscribeModal = tonConnectUI.onModalStateChange(state => {
         if (state.open) {
           modalWasOpen = true
         } else if (modalWasOpen && !resolved) {
@@ -47,7 +49,7 @@ export const TonWalletConnector = ({ onWalletChange }: TonWalletConnectorProps) 
       })
 
       // Listen for wallet status changes
-      const unsubscribeWallet = tonConnectUI.onStatusChange((walletInfo) => {
+      const unsubscribeWallet = tonConnectUI.onStatusChange(walletInfo => {
         if (walletInfo && !resolved) {
           // Wallet connected successfully
           resolved = true
@@ -58,7 +60,7 @@ export const TonWalletConnector = ({ onWalletChange }: TonWalletConnectorProps) 
       })
 
       // Open modal
-      tonConnectUI.openModal().catch((err) => {
+      tonConnectUI.openModal().catch(err => {
         if (!resolved) {
           resolved = true
           unsubscribeModal()

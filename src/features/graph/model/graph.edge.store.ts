@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+
 import type { Edge, RelationType } from '@/entities/map'
 
 export interface PendingEdgeCreation {

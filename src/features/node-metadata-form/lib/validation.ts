@@ -1,4 +1,5 @@
 import { z } from 'zod'
+
 import { NodeTypeEnum } from '@/entities/node'
 
 export const nodeMetadataFormSchema = z.object({

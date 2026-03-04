@@ -1,7 +1,6 @@
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-
 import { type RelationType, RelationTypeEnum } from '@/entities/edge'
 import { useDeleteEdge, useUpdateEdge } from '@/entities/map'
 import { Button } from '@/shared/components/button'

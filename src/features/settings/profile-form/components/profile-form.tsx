@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+
 import {
   type UpdateProfile,
   type User,
@@ -24,6 +25,7 @@ import { Input } from '@/shared/components/input'
 import { Textarea } from '@/shared/components/textarea'
 import { toast } from '@/shared/components/toast'
 import { Typography } from '@/shared/components/typography'
+
 import { type ProfileFormValues, profileFormSchema } from '../lib/validation'
 import { AvatarUpload } from './avatar-upload'
 

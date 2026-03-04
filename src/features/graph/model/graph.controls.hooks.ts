@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react'
+
 import type { GraphControls } from './graph-visualization.types'
 
 export const useGraphControls = () => {

@@ -1,5 +1,6 @@
 import { act, renderHook, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { createQueryWrapper, createTestQueryClient } from '@/shared/tests'
 
 vi.mock('../subscription.api', () => ({
@@ -24,7 +25,6 @@ vi.mock('../subscription.api', () => ({
   }
 }))
 
-import type { PlanType } from '../subscription.schema'
 import { subscriptionApi } from '../subscription.api'
 import {
   subscriptionKeys,
@@ -46,6 +46,7 @@ import {
   useUpdateSubscription,
   useUsageStats
 } from '../subscription.queries'
+import type { PlanType } from '../subscription.schema'
 
 describe('subscription queries', () => {
   beforeEach(() => {
@@ -110,14 +111,16 @@ describe('subscription queries', () => {
     }
   ]
 
-  const history = [{
-    id: 'ph-1',
-    amount: 1000,
-    currency: 'USD',
-    status: 'succeeded',
-    description: 'Payment',
-    createdAt: '2024-01-01T00:00:00.000Z'
-  }]
+  const history = [
+    {
+      id: 'ph-1',
+      amount: 1000,
+      currency: 'USD',
+      status: 'succeeded',
+      description: 'Payment',
+      createdAt: '2024-01-01T00:00:00.000Z'
+    }
+  ]
 
   it('fetches subscription data', async () => {
     vi.mocked(subscriptionApi.getCurrentSubscription).mockResolvedValue(subscription)
@@ -292,7 +295,9 @@ describe('subscription queries', () => {
 
   it('creates checkout and billing sessions', async () => {
     vi.mocked(subscriptionApi.createCheckoutSession).mockResolvedValue({ url: 'https://pay' })
-    vi.mocked(subscriptionApi.createBillingPortalSession).mockResolvedValue({ url: 'https://portal' })
+    vi.mocked(subscriptionApi.createBillingPortalSession).mockResolvedValue({
+      url: 'https://portal'
+    })
 
     const queryClient = createTestQueryClient()
     const wrapper = createQueryWrapper(queryClient)

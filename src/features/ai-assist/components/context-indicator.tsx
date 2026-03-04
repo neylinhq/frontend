@@ -1,6 +1,7 @@
 import { Atom01Icon, ChevronDownIcon } from '@untitledui/icons-react/outline'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
 import { useNode } from '@/entities/node'
 import { Badge } from '@/shared/components/badge'
 import {
@@ -29,7 +30,10 @@ export const ContextIndicator = ({ nodeId, mapId }: ContextIndicatorProps) => {
   return (
     <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
       <CollapsibleTrigger asChild>
-        <button type='button' className='flex items-center gap-2 w-full px-3 py-2 bg-muted/30 rounded-md border border-border/50 hover:bg-muted/50 transition-colors'>
+        <button
+          type='button'
+          className='flex items-center gap-2 w-full px-3 py-2 bg-muted/30 rounded-md border border-border/50 hover:bg-muted/50 transition-colors'
+        >
           <Badge variant='secondary' className='flex items-center gap-1 text-xs'>
             <Atom01Icon className='h-3 w-3' />
             {t('ai.chat.contextLabel')}

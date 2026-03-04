@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { theme } from '../lib/theme'
 
 describe('markdown editor theme', () => {

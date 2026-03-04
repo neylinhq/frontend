@@ -1,4 +1,10 @@
 import { useTranslation } from 'react-i18next'
+
+// Storage format is now Markdown — no conversion needed
+import {
+  calculatePositionNearConnections,
+  calculateSmartPosition
+} from '@/features/node-creation/lib/smart-positioning'
 import {
   useCreateEdge,
   useCreateNode,
@@ -10,12 +16,10 @@ import {
 } from '@/entities/map'
 import type { Node } from '@/entities/node'
 import { useNodes } from '@/entities/node'
-// Storage format is now Markdown — no conversion needed
-import {
-  calculatePositionNearConnections,
-  calculateSmartPosition
-} from '@/features/node-creation/lib/smart-positioning'
 import { toast } from '@/shared/components/toast'
+
+import { getChatSessionId } from '../model/ai-assist.chat.store'
+import { useProposalHistoryStore } from '../model/ai-assist.proposal.store'
 import type {
   ConnectionPreviewData,
   EnrichmentPreviewData,
@@ -25,8 +29,6 @@ import type {
   PreviewCard,
   ResolvedPreview
 } from '../model/ai-assist.types'
-import { getChatSessionId } from '../model/ai-assist.chat.store'
-import { useProposalHistoryStore } from '../model/ai-assist.proposal.store'
 import { AIChatCore } from './ai-chat-core'
 
 interface NodeChatPanelProps {
@@ -35,7 +37,11 @@ interface NodeChatPanelProps {
   sessionId?: string
 }
 
-export const NodeChatPanel = ({ nodeId, mapId, sessionId: externalSessionId }: NodeChatPanelProps) => {
+export const NodeChatPanel = ({
+  nodeId,
+  mapId,
+  sessionId: externalSessionId
+}: NodeChatPanelProps) => {
   const { t } = useTranslation()
   const { data: node } = useNodeWithContent(mapId, nodeId)
   const { data: map } = useMap(mapId)
@@ -72,9 +78,7 @@ export const NodeChatPanel = ({ nodeId, mapId, sessionId: externalSessionId }: N
   const findNodeByLabel = (label: string) => {
     const labelLower = label.toLowerCase()
     return allNodes.find(
-      n =>
-        n.label.toLowerCase() === labelLower ||
-        n.label.toLowerCase().includes(labelLower)
+      n => n.label.toLowerCase() === labelLower || n.label.toLowerCase().includes(labelLower)
     )
   }
 
@@ -165,14 +169,16 @@ export const NodeChatPanel = ({ nodeId, mapId, sessionId: externalSessionId }: N
       })) as Parameters<typeof calculateSmartPosition>[0]['existingNodes']
 
       // Find connected node IDs for positioning near them
-      const connectedNodeIds = data.connectTo
-        ?.map(conn => findNodeByLabel(conn.nodeLabel)?.id)
-        .filter((id): id is string => !!id) || []
+      const connectedNodeIds =
+        data.connectTo
+          ?.map(conn => findNodeByLabel(conn.nodeLabel)?.id)
+          .filter((id): id is string => !!id) || []
 
       // Calculate position - near connections if any, otherwise near current focus node
-      let position = connectedNodeIds.length > 0
-        ? calculatePositionNearConnections(connectedNodeIds, flowNodes)
-        : null
+      let position =
+        connectedNodeIds.length > 0
+          ? calculatePositionNearConnections(connectedNodeIds, flowNodes)
+          : null
 
       if (!position) {
         // Fallback: position near current focus node
@@ -269,7 +275,11 @@ export const NodeChatPanel = ({ nodeId, mapId, sessionId: externalSessionId }: N
         entityType: 'edge',
         entityId: edge?.id || '',
         previousState,
-        newState: { sourceNodeId: sourceNode.id, targetNodeId: targetNode.id, relation: data.relation }
+        newState: {
+          sourceNodeId: sourceNode.id,
+          targetNodeId: targetNode.id,
+          relation: data.relation
+        }
       })
 
       toast.success(t('ai.connection.created', 'Connection created'))

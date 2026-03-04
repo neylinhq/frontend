@@ -1,5 +1,6 @@
 import { Settings01Icon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
+
 import { type RatingSystem, useMapProgress } from '@/entities/progress'
 import { Button } from '@/shared/components/button'
 import { Label } from '@/shared/components/label'
@@ -11,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/shared/components/select'
+
 import { RatingSystemSelector } from './rating-system-selector'
 
 interface MapSettingsPopoverProps {
@@ -26,12 +28,7 @@ export const MapSettingsPopover = ({ mapId }: MapSettingsPopoverProps) => {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button
-          size='sm'
-          variant='ghost'
-          className='h-8 w-8 p-0'
-          title={t('mapSettings.title')}
-        >
+        <Button size='sm' variant='ghost' className='h-8 w-8 p-0' title={t('mapSettings.title')}>
           <Settings01Icon className='w-4 h-4' />
         </Button>
       </PopoverTrigger>

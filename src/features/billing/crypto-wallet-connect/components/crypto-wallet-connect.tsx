@@ -1,6 +1,7 @@
 import { Loading02Icon } from '@untitledui/icons-react/outline'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
 import type { CryptoNetwork } from '@/entities/subscription'
 import { getEvmChainId, getWalletType } from '@/entities/subscription/lib/crypto-utils'
 import {
@@ -10,9 +11,10 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/shared/components/dialog'
+
+import { useCryptoWallet } from '../model/crypto-wallet-connect.hooks.tsx'
 import { NetworkSelector } from './network-selector'
 import { WalletConnectStep } from './wallet-connect-step'
-import { useCryptoWallet } from '../model/crypto-wallet-connect.hooks.tsx'
 
 interface CryptoWalletConnectDialogProps {
   open: boolean
@@ -122,7 +124,8 @@ export const CryptoWalletConnectContent = ({
     setUserRejected(false)
     setError(null)
     setIsConnectingLocal(true)
-    wallet.connect()
+    wallet
+      .connect()
       .catch(err => {
         if (err && typeof err === 'object' && 'code' in err && err.code === 4001) {
           setUserRejected(true)
@@ -137,20 +140,24 @@ export const CryptoWalletConnectContent = ({
   }, [wallet])
 
   // Network selection - устанавливаем сеть и делаем разовую попытку подключения
-  const handleNetworkSelect = useCallback(
-    (selectedNetwork: CryptoNetwork) => {
-      setNetwork(selectedNetwork)
-      setError(null)
-      setUserRejected(false) // Сбрасываем флаг отказа при выборе новой сети
-    },
-    []
-  )
+  const handleNetworkSelect = useCallback((selectedNetwork: CryptoNetwork) => {
+    setNetwork(selectedNetwork)
+    setError(null)
+    setUserRejected(false) // Сбрасываем флаг отказа при выборе новой сети
+  }, [])
 
   // Автоматически вызываем окно провайдера при выборе сети (если пользователь не отменял)
   useEffect(() => {
-    if (network && !wallet.isConnected && !wallet.isConnecting && !userRejected && !isConnectingLocal) {
+    if (
+      network &&
+      !wallet.isConnected &&
+      !wallet.isConnecting &&
+      !userRejected &&
+      !isConnectingLocal
+    ) {
       setIsConnectingLocal(true)
-      wallet.connect()
+      wallet
+        .connect()
         .catch(err => {
           // Проверяем код ошибки - 4001 = User rejected
           if (err && typeof err === 'object' && 'code' in err && err.code === 4001) {
@@ -219,7 +226,8 @@ export const CryptoWalletConnectContent = ({
               setUserRejected(false) // Сбрасываем флаг при ручном подключении
               setError(null)
               setIsConnectingLocal(true)
-              wallet.connect()
+              wallet
+                .connect()
                 .catch(err => {
                   if (err && typeof err === 'object' && 'code' in err && err.code === 4001) {
                     setUserRejected(true)

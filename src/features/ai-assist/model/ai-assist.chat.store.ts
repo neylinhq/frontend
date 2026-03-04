@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+
 import type { ChatMessage, PreviewCard } from './ai-assist.types'
 
 const MAX_MESSAGES_PER_SESSION = 100
@@ -216,9 +217,7 @@ export const useChatHistoryStore = create<ChatHistoryState & ChatHistoryActions>
                   return {
                     ...msg,
                     preview: msg.preview.map(p =>
-                      p.id === previewId
-                        ? { ...p, status, resolvedAt: new Date(), undoData }
-                        : p
+                      p.id === previewId ? { ...p, status, resolvedAt: new Date(), undoData } : p
                     )
                   }
                 }),
@@ -273,8 +272,12 @@ export const useChatHistoryStore = create<ChatHistoryState & ChatHistoryActions>
                             ...p.data,
                             appliedEdgeId: previousState.createdEdgeId
                           }
-                        } else if (p.type === 'graph_fragment' && (previousState.tempIdMapping || previousState.createdEdgeIds)) {
-                          const fragmentData = p.data as import('./ai-assist.types').GraphFragmentPreviewData
+                        } else if (
+                          p.type === 'graph_fragment' &&
+                          (previousState.tempIdMapping || previousState.createdEdgeIds)
+                        ) {
+                          const fragmentData =
+                            p.data as import('./ai-assist.types').GraphFragmentPreviewData
                           const updatedNodes = fragmentData.nodes.map(node => {
                             const realId = previousState.tempIdMapping?.[node.tempId]
                             return realId ? { ...node, appliedNodeId: realId } : node
@@ -406,7 +409,8 @@ export const useChatHistory = (sessionId: string) => {
       status: 'approved' | 'rejected',
       undoData?: PreviewCard['undoData']
     ) => resolvePreview(sessionId, msgId, previewId, status, undoData),
-    unresolvePreview: (msgId: string, previewId: string) => unresolvePreview(sessionId, msgId, previewId),
+    unresolvePreview: (msgId: string, previewId: string) =>
+      unresolvePreview(sessionId, msgId, previewId),
     /** @deprecated Use resolvePreview instead */
     moveToResolved: (
       msgId: string,

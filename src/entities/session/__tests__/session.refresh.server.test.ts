@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import type { SessionData } from '../session.types'
 
 let refreshSession: typeof import('../server/session.refresh.server').refreshSession
@@ -24,7 +25,9 @@ beforeEach(async () => {
     logger: { error: vi.fn() }
   }))
   vi.doMock('react-router', () => ({
-    redirect: vi.fn((path: string) => new Response(null, { status: 302, headers: { Location: path } }))
+    redirect: vi.fn(
+      (path: string) => new Response(null, { status: 302, headers: { Location: path } })
+    )
   }))
 
   ;({ refreshSession } = await import('../server/session.refresh.server'))

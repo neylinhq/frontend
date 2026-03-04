@@ -1,6 +1,7 @@
 import type * as React from 'react'
-import { cn } from '@/shared/lib/cn'
+
 import { DocsHeader } from '@/widgets/docs-header'
+import { cn } from '@/shared/lib/cn'
 
 interface DocsLayoutProps {
   children: React.ReactNode
@@ -24,9 +25,7 @@ export const DocsLayout = ({ children, sidebar, toc, className }: DocsLayoutProp
 
         {/* Main Content - scrollable */}
         <main className='flex-1 min-w-0 overflow-y-auto scroll-smooth'>
-          <div className={cn('max-w-4xl mx-auto px-6 py-8 lg:px-8', className)}>
-            {children}
-          </div>
+          <div className={cn('max-w-4xl mx-auto px-6 py-8 lg:px-8', className)}>{children}</div>
         </main>
 
         {/* Right TOC */}

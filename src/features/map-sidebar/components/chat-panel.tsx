@@ -1,7 +1,13 @@
 import { memo, useCallback, useEffect, useState } from 'react'
-import { useChatSessions, useCreateChatSession, useDeleteChatSession, useRenameChatSession } from '@/features/ai-assist/model'
+
 import { ChatHeader } from '@/features/ai-assist/components/chat-header'
 import { MapChatPanel } from '@/features/ai-assist/components/map-chat-panel'
+import {
+  useChatSessions,
+  useCreateChatSession,
+  useDeleteChatSession,
+  useRenameChatSession
+} from '@/features/ai-assist/model'
 
 interface ChatPanelProps {
   mapId: string
@@ -39,7 +45,14 @@ export const ChatPanel = memo(function ChatPanel({ mapId }: ChatPanelProps) {
         }
       )
     }
-  }, [sessions, activeSessionId, sessionsLoading, isError, createSession.isPending, autoCreateAttempted])
+  }, [
+    sessions,
+    activeSessionId,
+    sessionsLoading,
+    isError,
+    createSession.isPending,
+    autoCreateAttempted
+  ])
 
   // Handle session deletion
   const handleCloseSession = useCallback(

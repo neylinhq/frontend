@@ -1,7 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useReactFlow, useViewport } from '@xyflow/react'
+
 import { type FullMap, mapApi, mapKeys, type Node } from '@/entities/map'
 import type { NodeType } from '@/entities/node'
+
 import { calculatePositionNearConnections, calculateSmartPosition } from '../lib/smart-positioning'
 import { useNodeCreationStore } from './node-creation.store'
 

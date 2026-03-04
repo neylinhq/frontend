@@ -1,4 +1,5 @@
 import { useLayoutEffect, useState } from 'react'
+
 import type { Mode, Palette, ThemeContextState } from '@/shared/core/theme'
 import {
   MODE_COOKIE_KEY,

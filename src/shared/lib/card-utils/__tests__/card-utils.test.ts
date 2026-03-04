@@ -1,11 +1,12 @@
 import { describe, expect, it, vi } from 'vitest'
+
 import {
   detectCardBrand,
+  formatCardNumber,
+  formatExpiry,
   getCardBrandConfig,
   getCvcLength,
   getMaxCardLength,
-  formatCardNumber,
-  formatExpiry,
   isValidExpiry,
   isValidLuhn,
   maskCardNumber,

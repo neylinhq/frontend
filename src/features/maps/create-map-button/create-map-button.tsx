@@ -2,6 +2,7 @@ import { PlusIcon } from '@untitledui/icons-react/outline'
 import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
+
 import { Button } from '@/shared/components/button'
 import { MAPS_ROUTES } from '@/shared/config'
 import { cn } from '@/shared/lib/cn'

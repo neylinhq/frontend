@@ -1,5 +1,6 @@
 import { Globe01Icon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
+
 import { changeLanguage } from '@/app/i18n'
 import { Button } from '@/shared/components/button'
 import {
@@ -8,6 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/shared/components/dropdown-menu'
+
 import { LANGUAGES } from '../language-switcher.constants'
 
 export const LanguageSwitcher = () => {

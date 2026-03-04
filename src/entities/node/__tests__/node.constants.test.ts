@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { NODE_TYPE_CONFIGS } from '../node.constants'
 
 describe('NODE_TYPE_CONFIGS', () => {

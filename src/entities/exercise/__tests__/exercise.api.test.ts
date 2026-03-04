@@ -8,6 +8,7 @@ vi.mock('@/shared/api/client', () => ({
 }))
 
 import { api } from '@/shared/api/client'
+
 import { exerciseApi } from '../exercise.api'
 
 describe('exerciseApi', () => {

@@ -1,5 +1,6 @@
 import * as PopoverPrimitive from '@radix-ui/react-popover'
 import * as React from 'react'
+
 import { cn } from '@/shared/lib/cn'
 import { constrainToViewport, getViewportBounds } from '@/shared/lib/viewport'
 
@@ -109,4 +110,5 @@ const SmartPopoverContent = React.forwardRef<HTMLDivElement, SmartPopoverContent
 SmartPopoverContent.displayName = 'SmartPopoverContent'
 
 export { SmartPopoverContent }
+
 export { Popover, PopoverTrigger } from '@/shared/components/popover'

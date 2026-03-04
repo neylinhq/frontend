@@ -1,11 +1,18 @@
-import { CheckIcon, ChevronDownIcon, ChevronRightIcon, XCloseIcon } from '@untitledui/icons-react/outline'
+import {
+  CheckIcon,
+  ChevronDownIcon,
+  ChevronRightIcon,
+  XCloseIcon
+} from '@untitledui/icons-react/outline'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import { cn } from '@/shared/lib/cn'
+
 import type { ExercisePreviewData } from '../model/ai-assist.types'
 
 /** Inline markdown renderer for exercise text */
@@ -44,9 +51,7 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
 
   const exerciseType = exercise.type
   // AI-generated exercises store answer directly, not in metadata
-  const correctAnswer = typeof exercise.answer === 'number'
-    ? exercise.answer
-    : 0
+  const correctAnswer = typeof exercise.answer === 'number' ? exercise.answer : 0
 
   const isCorrect = selectedAnswer === correctAnswer
 
@@ -66,7 +71,10 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Only handle when card is focused or contains focus
-      if (!cardRef.current?.contains(document.activeElement) && document.activeElement !== cardRef.current) {
+      if (
+        !cardRef.current?.contains(document.activeElement) &&
+        document.activeElement !== cardRef.current
+      ) {
         return
       }
 
@@ -94,9 +102,14 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
   const exerciseIndex = data.index ?? index
   const exerciseTotal = data.total ?? total
 
-  const title = exerciseIndex !== undefined && exerciseTotal !== undefined
-    ? t('ai.exercises.exerciseN', { n: exerciseIndex + 1, total: exerciseTotal, defaultValue: `Exercise ${exerciseIndex + 1}/${exerciseTotal}` })
-    : t('ai.exercises.exercise', 'Exercise')
+  const title =
+    exerciseIndex !== undefined && exerciseTotal !== undefined
+      ? t('ai.exercises.exerciseN', {
+          n: exerciseIndex + 1,
+          total: exerciseTotal,
+          defaultValue: `Exercise ${exerciseIndex + 1}/${exerciseTotal}`
+        })
+      : t('ai.exercises.exercise', 'Exercise')
 
   // Quiz type
   if (exerciseType === 'quiz' && exercise.options) {
@@ -108,11 +121,16 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
           'border border-border/60 rounded-lg overflow-hidden bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
           className
         )}
-        aria-label={t('ai.exercises.quizCard', 'Quiz exercise. Press 1-9 to select an answer, Enter to submit.')}
+        aria-label={t(
+          'ai.exercises.quizCard',
+          'Quiz exercise. Press 1-9 to select an answer, Enter to submit.'
+        )}
       >
         {/* Header */}
         <div className='px-3 py-2 bg-muted/30 border-b border-border/60 flex items-center justify-between'>
-          <span className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>{title}</span>
+          <span className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+            {title}
+          </span>
           <Badge variant='secondary' className='text-xs'>
             {t(`ai.exercises.types.${exerciseType}`, exerciseType)}
           </Badge>
@@ -145,18 +163,29 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
                     !isSubmitted && !isSelected && 'border-border hover:bg-muted/50',
                     // Submitted: semantic colors for feedback (muted borders)
                     isSubmitted && isThisCorrect && 'border-success/50 bg-success/10',
-                    isSubmitted && isSelected && !isThisCorrect && 'border-destructive/50 bg-destructive/10',
+                    isSubmitted &&
+                      isSelected &&
+                      !isThisCorrect &&
+                      'border-destructive/50 bg-destructive/10',
                     isSubmitted && 'cursor-default'
                   )}
                 >
                   <div className='flex items-center gap-2'>
                     {showResult && isThisCorrect && (
-                      <CheckIcon className='h-4 w-4 text-success flex-shrink-0' aria-hidden='true' />
+                      <CheckIcon
+                        className='h-4 w-4 text-success flex-shrink-0'
+                        aria-hidden='true'
+                      />
                     )}
                     {showResult && isSelected && !isThisCorrect && (
-                      <XCloseIcon className='h-4 w-4 text-destructive flex-shrink-0' aria-hidden='true' />
+                      <XCloseIcon
+                        className='h-4 w-4 text-destructive flex-shrink-0'
+                        aria-hidden='true'
+                      />
                     )}
-                    <span><InlineMarkdown>{optionContent}</InlineMarkdown></span>
+                    <span>
+                      <InlineMarkdown>{optionContent}</InlineMarkdown>
+                    </span>
                   </div>
                 </button>
               )
@@ -167,7 +196,9 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
           {showExplanation && exercise.explanation && (
             <div className='mt-3 p-3 rounded-md bg-muted/50 text-xs text-muted-foreground'>
               <div className='font-medium mb-1'>
-                {isCorrect ? t('ai.exercises.correct', 'Correct!') : t('ai.exercises.incorrect', 'Incorrect')}
+                {isCorrect
+                  ? t('ai.exercises.correct', 'Correct!')
+                  : t('ai.exercises.incorrect', 'Incorrect')}
               </div>
               <InlineMarkdown>{exercise.explanation}</InlineMarkdown>
             </div>
@@ -176,11 +207,7 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
           {/* Actions */}
           <div className='mt-3 flex justify-end gap-2'>
             {!isSubmitted ? (
-              <Button
-                size='sm'
-                onClick={handleSubmit}
-                disabled={selectedAnswer === null}
-              >
+              <Button size='sm' onClick={handleSubmit} disabled={selectedAnswer === null}>
                 {t('ai.exercises.check', 'Check')}
               </Button>
             ) : (
@@ -202,7 +229,9 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
     return (
       <div className={cn('border border-border/60 rounded-lg overflow-hidden bg-card', className)}>
         <div className='px-3 py-2 bg-muted/30 border-b border-border/60 flex items-center justify-between'>
-          <span className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>{title}</span>
+          <span className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+            {title}
+          </span>
           <Badge variant='secondary' className='text-xs'>
             {t('ai.exercises.types.true_false', 'True/False')}
           </Badge>
@@ -232,7 +261,10 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
                     !isSubmitted && !isSelected && 'border-border hover:bg-muted/50',
                     // Submitted: semantic colors for feedback (muted borders)
                     showResult && isThisCorrect && 'border-success/50 bg-success/10',
-                    showResult && isSelected && !isThisCorrect && 'border-destructive/50 bg-destructive/10',
+                    showResult &&
+                      isSelected &&
+                      !isThisCorrect &&
+                      'border-destructive/50 bg-destructive/10',
                     isSubmitted && 'cursor-default'
                   )}
                 >
@@ -272,7 +304,9 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
     return (
       <div className={cn('border border-border/60 rounded-lg overflow-hidden bg-card', className)}>
         <div className='px-3 py-2 bg-muted/30 border-b border-border/60 flex items-center justify-between'>
-          <span className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>{title}</span>
+          <span className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+            {title}
+          </span>
           <Badge variant='secondary' className='text-xs'>
             {t('ai.exercises.types.flashcard', 'Flashcard')}
           </Badge>
@@ -309,7 +343,9 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
   return (
     <div className={cn('border border-border/60 rounded-lg overflow-hidden bg-card', className)}>
       <div className='px-3 py-2 bg-muted/30 border-b border-border/60 flex items-center justify-between'>
-        <span className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>{title}</span>
+        <span className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+          {title}
+        </span>
         <Badge variant='secondary' className='text-xs'>
           {exerciseType}
         </Badge>
@@ -324,7 +360,11 @@ export const ExerciseCard = ({ data, index, total, className }: ExerciseCardProp
             onClick={() => setShowExplanation(!showExplanation)}
             className='mt-2 flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground'
           >
-            {showExplanation ? <ChevronDownIcon className='h-3 w-3' /> : <ChevronRightIcon className='h-3 w-3' />}
+            {showExplanation ? (
+              <ChevronDownIcon className='h-3 w-3' />
+            ) : (
+              <ChevronRightIcon className='h-3 w-3' />
+            )}
             {t('ai.exercises.explanation', 'Explanation')}
           </button>
         )}

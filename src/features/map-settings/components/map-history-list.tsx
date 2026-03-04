@@ -10,6 +10,7 @@ import {
 } from '@untitledui/icons-react/outline'
 import { memo, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+
 import { type MapEvent, mapApi, mapKeys } from '@/entities/map'
 import { Button } from '@/shared/components/button'
 import { cn } from '@/shared/lib/cn'
@@ -24,13 +25,7 @@ const ITEMS_PER_PAGE = 20
 export const MapHistoryList = memo(({ mapId, className }: MapHistoryListProps) => {
   const { t } = useTranslation()
 
-  const {
-    data,
-    isLoading,
-    isFetchingNextPage,
-    hasNextPage,
-    fetchNextPage
-  } = useInfiniteQuery({
+  const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } = useInfiniteQuery({
     queryKey: [...mapKeys.history(mapId), 'infinite'],
     queryFn: ({ pageParam = 0 }) =>
       mapApi.getMapHistory(mapId, { limit: ITEMS_PER_PAGE, offset: pageParam }),
@@ -83,9 +78,7 @@ export const MapHistoryList = memo(({ mapId, className }: MapHistoryListProps) =
             onClick={() => fetchNextPage()}
             disabled={isFetchingNextPage}
           >
-            {isFetchingNextPage && (
-              <Loading02Icon className='h-4 w-4 animate-spin mr-2' />
-            )}
+            {isFetchingNextPage && <Loading02Icon className='h-4 w-4 animate-spin mr-2' />}
             {t('mapSettings.history.loadMore')}
           </Button>
         </div>
@@ -169,14 +162,10 @@ const HistoryEventItem = memo(({ event }: HistoryEventItemProps) => {
         </div>
 
         {entityLabel && (
-          <p className='text-xs text-muted-foreground truncate mt-0.5'>
-            {entityLabel}
-          </p>
+          <p className='text-xs text-muted-foreground truncate mt-0.5'>{entityLabel}</p>
         )}
 
-        <p className='text-xs text-muted-foreground/60 mt-1'>
-          {timeAgo}
-        </p>
+        <p className='text-xs text-muted-foreground/60 mt-1'>{timeAgo}</p>
       </div>
     </div>
   )
@@ -186,7 +175,10 @@ HistoryEventItem.displayName = 'HistoryEventItem'
 
 // ====== Time Formatting Helper ======
 
-function formatTimeAgo(dateString: string, t: (key: string, options?: Record<string, unknown>) => string): string {
+function formatTimeAgo(
+  dateString: string,
+  t: (key: string, options?: Record<string, unknown>) => string
+): string {
   const date = new Date(dateString)
   const now = new Date()
   const diffMs = now.getTime() - date.getTime()

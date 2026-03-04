@@ -5,18 +5,28 @@
  * No React viewport state - everything controlled by WASM.
  */
 
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState
+} from 'react'
+
 import type { Edge, Node } from '@/entities/map'
 import { useDarkMode } from '@/shared/hooks'
 import { cn } from '@/shared/lib/cn'
+
 import { loadFontAtlas, loadIconAtlas } from '../lib/atlas-loader'
 import { createSDFAtlas } from '../lib/sdf-atlas'
 import { getCssVar, themeToJson } from '../lib/theme-bridge'
 import { layoutOptionsToWasm, transformToWasm } from '../lib/transform'
-import type { LayoutOptions } from '../model/graph-webgl.types'
-import { DEFAULT_LAYOUT_OPTIONS } from '../model/graph-webgl.constants'
 import { initWasmModule } from '../lib/wasm-loader'
+import { DEFAULT_LAYOUT_OPTIONS } from '../model/graph-webgl.constants'
 import type { GraphWebGLRenderParams } from '../model/graph-webgl.render-params'
+import type { LayoutOptions } from '../model/graph-webgl.types'
 
 /** Viewport state returned by WASM engine */
 export interface ViewportState {
@@ -189,31 +199,28 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
     ]
   )
 
-  const getViewportFromEngine = useCallback(
-    (useCanvasRect: boolean): ViewportState | null => {
-      const engine = engineRef.current
-      const canvas = canvasRef.current
-      if (!engine) {
-        return null
+  const getViewportFromEngine = useCallback((useCanvasRect: boolean): ViewportState | null => {
+    const engine = engineRef.current
+    const canvas = canvasRef.current
+    if (!engine) {
+      return null
+    }
+    try {
+      const json = engine.get_viewport()
+      const viewport = JSON.parse(json) as ViewportState
+      if (!useCanvasRect || !canvas) {
+        return viewport
       }
-      try {
-        const json = engine.get_viewport()
-        const viewport = JSON.parse(json) as ViewportState
-        if (!useCanvasRect || !canvas) {
-          return viewport
-        }
-        const rect = canvas.getBoundingClientRect()
-        return {
-          ...viewport,
-          width: rect.width,
-          height: rect.height
-        }
-      } catch {
-        return null
+      const rect = canvas.getBoundingClientRect()
+      return {
+        ...viewport,
+        width: rect.width,
+        height: rect.height
       }
-    },
-    []
-  )
+    } catch {
+      return null
+    }
+  }, [])
 
   // Notify parent of viewport change
   const notifyViewportChange = useCallback(() => {
@@ -275,14 +282,14 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
         const size = `${gridSize}px ${gridSize}px`
         return {
           ...base,
-          backgroundImage:
-            `linear-gradient(to right, oklch(var(--canvas-grid) / 0.10) 1px, transparent 1px), linear-gradient(to bottom, oklch(var(--canvas-grid) / 0.10) 1px, transparent 1px), radial-gradient(oklch(var(--canvas-grid) / 0.35) 0.5px, transparent 0.5px), ${paperGrain}`,
+          backgroundImage: `linear-gradient(to right, oklch(var(--canvas-grid) / 0.10) 1px, transparent 1px), linear-gradient(to bottom, oklch(var(--canvas-grid) / 0.10) 1px, transparent 1px), radial-gradient(oklch(var(--canvas-grid) / 0.35) 0.5px, transparent 0.5px), ${paperGrain}`,
           backgroundSize: `${size}, ${size}, ${size}, 160px 160px`
         }
       }
       return {
         ...base,
-        backgroundImage: 'radial-gradient(oklch(var(--canvas-grid) / 0.5) 0.5px, transparent 0.5px)',
+        backgroundImage:
+          'radial-gradient(oklch(var(--canvas-grid) / 0.5) 0.5px, transparent 0.5px)',
         backgroundSize: `${gridSize}px ${gridSize}px`
       }
     }
@@ -297,8 +304,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
       const layerPos = `${offsetX}px ${offsetY}px`
       return {
         ...base,
-        backgroundImage:
-          `linear-gradient(to right, oklch(var(--canvas-grid) / 0.10) 1px, transparent 1px), linear-gradient(to bottom, oklch(var(--canvas-grid) / 0.10) 1px, transparent 1px), radial-gradient(oklch(var(--canvas-grid) / 0.30) 0.5px, transparent 0.5px), ${paperGrain}`,
+        backgroundImage: `linear-gradient(to right, oklch(var(--canvas-grid) / 0.10) 1px, transparent 1px), linear-gradient(to bottom, oklch(var(--canvas-grid) / 0.10) 1px, transparent 1px), radial-gradient(oklch(var(--canvas-grid) / 0.30) 0.5px, transparent 0.5px), ${paperGrain}`,
         backgroundSize: `${layerSize}, ${layerSize}, ${layerSize}, 160px 160px`,
         backgroundPosition: `${layerPos}, ${layerPos}, ${layerPos}, 0 0`
       }
@@ -459,7 +465,12 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
             })
             const atlasData = sdfAtlas.getAtlasData()
             const metricsJson = sdfAtlas.getGlyphMetricsJson()
-            engine.load_sdf_atlas_data(atlasData.data, atlasData.width, atlasData.height, metricsJson)
+            engine.load_sdf_atlas_data(
+              atlasData.data,
+              atlasData.width,
+              atlasData.height,
+              metricsJson
+            )
           }
 
           // Load icon atlas (static, from PNG)
@@ -603,7 +614,15 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load graph')
     }
-  }, [isReady, nodes, edges, notifyLayoutComplete, notifyViewportChange, resolvedLayoutOptions, autoLayout])
+  }, [
+    isReady,
+    nodes,
+    edges,
+    notifyLayoutComplete,
+    notifyViewportChange,
+    resolvedLayoutOptions,
+    autoLayout
+  ])
 
   // Re-run layout when layout options change
   useEffect(() => {
@@ -616,12 +635,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
 
     // Notify about new positions
     notifyLayoutComplete()
-  }, [
-    isReady,
-    notifyLayoutComplete,
-    resolvedLayoutOptions,
-    autoLayout
-  ])
+  }, [isReady, notifyLayoutComplete, resolvedLayoutOptions, autoLayout])
 
   // Sync selection
   useEffect(() => {

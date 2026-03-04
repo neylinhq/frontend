@@ -16,6 +16,9 @@ import {
 } from '@xyflow/react'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
+import { useAIPanelStore } from '@/features/ai-assist'
+import { cssVarToHex, getNodeColorHex } from '@/features/graph-webgl/lib/theme-bridge'
 import {
   type Edge,
   type FullMap,
@@ -27,11 +30,10 @@ import {
   useUpdateNodePosition,
   useUpdateNodePositions
 } from '@/entities/map'
-import { cssVarToHex, getNodeColorHex } from '@/features/graph-webgl/lib/theme-bridge'
-import { useAIPanelStore } from '@/features/ai-assist'
 import { Card } from '@/shared/components/card'
 import { useDarkMode } from '@/shared/hooks'
 import { cn } from '@/shared/lib/cn'
+
 import { type EdgeTranslations, getEdgeTranslations } from '../lib/edge-translations'
 import { applyLayout } from '../lib/layout-algorithms-optimized'
 import { transformEdgesToFlow, transformNodesToFlow } from '../lib/transform-data'

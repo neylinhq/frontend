@@ -1,4 +1,5 @@
 import { api } from '@/shared/api/client'
+
 import type { Exercise, GenerateExercisesRequest, SubmitAnswerOutput } from './exercise.schema'
 
 interface ApiResponse<T> {

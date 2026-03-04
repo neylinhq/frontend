@@ -6,6 +6,7 @@ vi.mock('react-router', () => ({
 }))
 
 import { useMatches } from 'react-router'
+
 import { useLoaderUser } from '../user.hooks'
 
 describe('useLoaderUser', () => {

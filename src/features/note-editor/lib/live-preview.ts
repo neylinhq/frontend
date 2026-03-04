@@ -4,6 +4,8 @@
  * Obsidian-style markdown rendering with hidden syntax outside active selections.
  */
 
+import { syntaxTree } from '@codemirror/language'
+import type { EditorState, Range } from '@codemirror/state'
 import {
   Decoration,
   type DecorationSet,
@@ -12,8 +14,6 @@ import {
   type ViewUpdate,
   WidgetType
 } from '@codemirror/view'
-import { syntaxTree } from '@codemirror/language'
-import { type EditorState, type Range } from '@codemirror/state'
 
 class HorizontalRuleWidget extends WidgetType {
   toDOM() {
@@ -37,7 +37,7 @@ class TableWidget extends WidgetType {
   }
 
   toDOM() {
-    const lines = this.content.split('\n').filter((l) => l.trim())
+    const lines = this.content.split('\n').filter(l => l.trim())
     const table = document.createElement('table')
     table.className = 'cm-table'
 
@@ -51,7 +51,9 @@ class TableWidget extends WidgetType {
       // Split by | and drop empty first/last from leading/trailing pipes
       const raw = lines[i].split('|')
       const cells =
-        raw[0].trim() === '' ? raw.slice(1, raw[raw.length - 1].trim() === '' ? -1 : undefined) : raw
+        raw[0].trim() === ''
+          ? raw.slice(1, raw[raw.length - 1].trim() === '' ? -1 : undefined)
+          : raw
 
       for (const cellText of cells) {
         const cell = document.createElement(i === 0 ? 'th' : 'td')
@@ -87,7 +89,7 @@ class TaskCheckboxWidget extends WidgetType {
     checkbox.className = 'cm-task-checkbox'
     checkbox.setAttribute('aria-label', 'Toggle task')
 
-    checkbox.addEventListener('mousedown', (event) => {
+    checkbox.addEventListener('mousedown', event => {
       event.preventDefault()
       const { state } = view
       const line = state.doc.lineAt(this.pos)
@@ -148,7 +150,7 @@ const marks = {
 }
 
 const selectionIntersects = (state: EditorState, from: number, to: number) =>
-  state.selection.ranges.some((range) => range.from < to && range.to > from)
+  state.selection.ranges.some(range => range.from < to && range.to > from)
 
 const isInCode = (state: EditorState, pos: number) => {
   let node = syntaxTree(state).resolve(pos, 1)
@@ -302,7 +304,7 @@ const buildDecorations = (view: EditorView): DecorationSet => {
   syntaxTree(state).iterate({
     from: scanFrom,
     to: scanTo,
-    enter: (node) => {
+    enter: node => {
       const { from, to, name } = node
       const isNodeActive = selectionIntersects(state, from, to)
 
@@ -490,7 +492,7 @@ const buildDecorations = (view: EditorView): DecorationSet => {
         }
       }
     },
-    leave: (node) => {
+    leave: node => {
       switch (node.name) {
         case 'Emphasis':
           popContext('emphasis')
@@ -551,7 +553,7 @@ const livePreviewPlugin = ViewPlugin.fromClass(
       }
     }
   },
-  { decorations: (view) => view.decorations }
+  { decorations: view => view.decorations }
 )
 
 const livePreviewStyles = EditorView.baseTheme({

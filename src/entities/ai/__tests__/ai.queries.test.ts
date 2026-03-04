@@ -1,5 +1,6 @@
 import { act, renderHook, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { createQueryWrapper, createTestQueryClient } from '@/shared/tests'
 
 vi.mock('../ai.api', () => ({
@@ -20,9 +21,7 @@ describe('ai queries', () => {
   })
 
   it('fetches models', async () => {
-    const models = [
-      { id: 'model-1', name: 'Model 1', provider: 'openai', tier: 'pro' }
-    ]
+    const models = [{ id: 'model-1', name: 'Model 1', provider: 'openai', tier: 'pro' }]
     vi.mocked(aiApi.listModels).mockResolvedValue(models)
 
     const queryClient = createTestQueryClient()

@@ -1,13 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Drawer as VaulDrawer } from 'vaul'
+
 import { Drawer, DrawerContent } from '@/shared/components/drawer'
 import { cn } from '@/shared/lib/cn'
+
 import {
   useAIPanelStore,
   useChatSessions,
   useCreateChatSession,
   useDeleteChatSession,
-  useRenameChatSession,
+  useRenameChatSession
 } from '../model'
 import { ChatHeader } from './chat-header'
 import { MapChatPanel } from './map-chat-panel'
@@ -64,11 +66,19 @@ export const MapChatDrawer = ({ mapId }: MapChatDrawerProps) => {
         {
           onSuccess: session => {
             setActiveSessionId(session.id)
-          },
+          }
         }
       )
     }
-  }, [sessions, activeSessionId, sessionsLoading, isError, isOpen, createSession.isPending, autoCreateAttempted])
+  }, [
+    sessions,
+    activeSessionId,
+    sessionsLoading,
+    isError,
+    isOpen,
+    createSession.isPending,
+    autoCreateAttempted
+  ])
 
   // Handle session deletion - switch to another session
   const handleCloseSession = useCallback(
@@ -80,7 +90,7 @@ export const MapChatDrawer = ({ mapId }: MapChatDrawerProps) => {
             const remaining = sessions.filter(s => s.id !== sessionId)
             setActiveSessionId(remaining[0]?.id || null)
           }
-        },
+        }
       })
     },
     [deleteSession, activeSessionId, sessions]
@@ -92,7 +102,7 @@ export const MapChatDrawer = ({ mapId }: MapChatDrawerProps) => {
       {
         onSuccess: session => {
           setActiveSessionId(session.id)
-        },
+        }
       }
     )
   }, [createSession])
@@ -116,7 +126,7 @@ export const MapChatDrawer = ({ mapId }: MapChatDrawerProps) => {
         {
           onSuccess: session => {
             setActiveSessionId(session.id)
-          },
+          }
         }
       )
     }, 100)

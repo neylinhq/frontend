@@ -4,7 +4,13 @@ vi.mock('@/features/graph-webgl/lib/theme-bridge', () => ({
   cssVarToHex: vi.fn((name: string) => (name === 'confidence-high' ? '#111111' : '#222222'))
 }))
 
-import { getEdgeDashArray, getEdgeOpacity, getEdgeStroke, getEdgeStrokeByType, getEdgeWidth } from '../lib/get-edge-style'
+import {
+  getEdgeDashArray,
+  getEdgeOpacity,
+  getEdgeStroke,
+  getEdgeStrokeByType,
+  getEdgeWidth
+} from '../lib/get-edge-style'
 
 describe('edge style helpers', () => {
   it('returns stroke based on relation type', () => {

@@ -10,6 +10,7 @@ vi.mock('@/shared/api/client', () => ({
 }))
 
 import { api } from '@/shared/api/client'
+
 import { subscriptionApi } from '../subscription.api'
 
 describe('subscriptionApi', () => {

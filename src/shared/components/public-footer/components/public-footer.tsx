@@ -1,7 +1,9 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
+
 import { APP_NAME, CURRENT_YEAR } from '@/shared/config/app'
 import { LEGAL_ROUTES, ROUTES } from '@/shared/config/routes'
+
 import { FooterSocial } from './footer-social'
 
 export const PublicFooter = () => {

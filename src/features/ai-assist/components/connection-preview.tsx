@@ -1,6 +1,8 @@
 import { ArrowRightIcon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
+
 import { Badge } from '@/shared/components/badge'
+
 import type { ConnectionPreviewData } from '../model/ai-assist.types'
 import { ProposalCard } from './proposal-card'
 

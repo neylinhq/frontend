@@ -2,8 +2,8 @@ import {
   AlertCircleIcon,
   ArrowLeftIcon,
   GraduationHat01Icon,
-  Loading02Icon,
   LayoutRightIcon,
+  Loading02Icon,
   Sliders04Icon,
   Stars01Icon,
   Trash01Icon
@@ -11,18 +11,24 @@ import {
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router'
-import type { Edge } from '@/entities/edge'
-import type { FullMap, Node } from '@/entities/map'
-import { useDeleteEdge, useDeleteNode, useFullMap, useNodeWithContent, useUpdateNode } from '@/entities/map'
-import type { NodeType } from '@/entities/node'
+
 import { AISuggestionsPanel } from '@/features/ai-assist/components/ai-suggestions-panel'
-import { markdownToPlainText } from '@/shared/lib/markdown'
-import { UnifiedEditor } from '@/features/unified-editor'
 import { EdgeEditPopover } from '@/features/graph/components/edge-edit-popover'
 import { useEdgeManagementStore } from '@/features/graph/model/graph.edge.store'
 import { NodeConnectionsPanel } from '@/features/node-connections-panel'
 import { NodeMetadataForm, type NodeMetadataFormValues } from '@/features/node-metadata-form'
 import { PracticePanel } from '@/features/practice-panel'
+import { UnifiedEditor } from '@/features/unified-editor'
+import type { Edge } from '@/entities/edge'
+import type { FullMap, Node } from '@/entities/map'
+import {
+  useDeleteEdge,
+  useDeleteNode,
+  useFullMap,
+  useNodeWithContent,
+  useUpdateNode
+} from '@/entities/map'
+import type { NodeType } from '@/entities/node'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -42,6 +48,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/components/ta
 import { toast } from '@/shared/components/toast'
 import { useAutoSave, useResizable } from '@/shared/hooks'
 import { cn } from '@/shared/lib/cn'
+import { markdownToPlainText } from '@/shared/lib/markdown'
 
 /** Default sidebar width in pixels */
 const SIDEBAR_DEFAULT_WIDTH = 360
@@ -387,10 +394,7 @@ export const NodeEditPage = ({
                 variant='secondary'
                 className={cn('text-xs font-medium', NODE_TYPE_CONFIG[node.type]?.color)}
               >
-                {t(
-                  `nodeTypes.${node.type}`,
-                  NODE_TYPE_CONFIG[node.type]?.label || node.type
-                )}
+                {t(`nodeTypes.${node.type}`, NODE_TYPE_CONFIG[node.type]?.label || node.type)}
               </Badge>
               {updateNodeMutation.isPending && (
                 <span className='flex items-center gap-1.5 text-xs text-muted-foreground'>
@@ -474,11 +478,7 @@ export const NodeEditPage = ({
                 >
                   <Sliders04Icon className='h-4 w-4' />
                 </TabsTrigger>
-                <TabsTrigger
-                  variant='iconbar'
-                  value='practice'
-                  title={t('nodeEdit.tabs.practice')}
-                >
+                <TabsTrigger variant='iconbar' value='practice' title={t('nodeEdit.tabs.practice')}>
                   <GraduationHat01Icon className='h-4 w-4' />
                 </TabsTrigger>
                 <TabsTrigger variant='iconbar' value='ai' title={t('nodeEdit.tabs.ai')}>
@@ -579,11 +579,7 @@ export const NodeEditPage = ({
                 >
                   <Sliders04Icon className='h-4 w-4' />
                 </TabsTrigger>
-                <TabsTrigger
-                  variant='iconbar'
-                  value='practice'
-                  title={t('nodeEdit.tabs.practice')}
-                >
+                <TabsTrigger variant='iconbar' value='practice' title={t('nodeEdit.tabs.practice')}>
                   <GraduationHat01Icon className='h-4 w-4' />
                 </TabsTrigger>
                 <TabsTrigger variant='iconbar' value='ai' title={t('nodeEdit.tabs.ai')}>

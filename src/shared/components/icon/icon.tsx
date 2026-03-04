@@ -1,4 +1,5 @@
 import type { SVGProps } from 'react'
+
 import { cn } from '@/shared/lib/cn'
 
 export interface IconData {

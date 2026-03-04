@@ -5,7 +5,11 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react'
+
 import { applyPositions, layoutOptionsToWasm, transformToWasm } from '../lib/transform'
+import type { GraphEngine as LegacyGraphEngineType } from '../lib/wasm-adapter'
+import { initWasmModule } from '../lib/wasm-loader'
+import { DEFAULT_VIEWPORT } from './graph-webgl.constants'
 import type {
   Edge,
   GraphEngineState,
@@ -15,9 +19,6 @@ import type {
   Node,
   ViewportState
 } from './graph-webgl.types'
-import { DEFAULT_VIEWPORT } from './graph-webgl.constants'
-import type { GraphEngine as LegacyGraphEngineType } from '../lib/wasm-adapter'
-import { initWasmModule } from '../lib/wasm-loader'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // useViewport - Viewport state management (pan/zoom)

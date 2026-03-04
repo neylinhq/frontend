@@ -1,8 +1,10 @@
 import { CreditCard01Icon, Loading02Icon, Wallet01Icon } from '@untitledui/icons-react/outline'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
+import { AddPaymentMethodContent } from '@/features/billing/add-payment-method'
 import type { CryptoNetwork, PaymentMethod, PlanDetails } from '@/entities/subscription'
-import { shortenWalletAddress, getNetworkDisplayName } from '@/entities/subscription/lib/crypto-utils'
+import { getNetworkDisplayName, shortenWalletAddress } from '@/entities/subscription'
 import { Button } from '@/shared/components/button'
 import { CardBrandIcon } from '@/shared/components/card-brand-icon'
 import {
@@ -14,7 +16,6 @@ import {
   DialogTitle
 } from '@/shared/components/dialog'
 import { cn } from '@/shared/lib/cn'
-import { AddPaymentMethodContent } from './add-payment-method-content'
 
 type Step = 'add-method' | 'confirm'
 
@@ -24,7 +25,13 @@ interface SubscribeDialogProps {
   plan: PlanDetails
   paymentMethods: PaymentMethod[]
   onSubscribe: (paymentMethodId: string) => Promise<void>
-  onAddCard: (data: { cardholderName: string; cardNumber: string; brand: string; expiryMonth: number; expiryYear: number }) => Promise<PaymentMethod>
+  onAddCard: (data: {
+    cardholderName: string
+    cardNumber: string
+    brand: string
+    expiryMonth: number
+    expiryYear: number
+  }) => Promise<PaymentMethod>
   onAddCrypto: (data: { network: CryptoNetwork; address: string }) => Promise<PaymentMethod>
 }
 
@@ -41,8 +48,8 @@ export const SubscribeDialog = ({
   const [step, setStep] = useState<Step>(() =>
     paymentMethods.length > 0 ? 'confirm' : 'add-method'
   )
-  const [selectedMethodId, setSelectedMethodId] = useState<string | null>(() =>
-    paymentMethods.find(m => m.isDefault)?.id ?? paymentMethods[0]?.id ?? null
+  const [selectedMethodId, setSelectedMethodId] = useState<string | null>(
+    () => paymentMethods.find(m => m.isDefault)?.id ?? paymentMethods[0]?.id ?? null
   )
   const [isSubscribing, setIsSubscribing] = useState(false)
   const [isAddingMethod, setIsAddingMethod] = useState(false)
@@ -62,27 +69,39 @@ export const SubscribeDialog = ({
     return (cents / 100).toFixed(2)
   }
 
-  const handleAddCard = useCallback(async (data: { cardholderName: string; cardNumber: string; brand: string; expiryMonth: number; expiryYear: number }) => {
-    setIsAddingMethod(true)
-    try {
-      const newMethod = await onAddCard(data)
-      setSelectedMethodId(newMethod.id)
-      setStep('confirm')
-    } finally {
-      setIsAddingMethod(false)
-    }
-  }, [onAddCard])
+  const handleAddCard = useCallback(
+    async (data: {
+      cardholderName: string
+      cardNumber: string
+      brand: string
+      expiryMonth: number
+      expiryYear: number
+    }) => {
+      setIsAddingMethod(true)
+      try {
+        const newMethod = await onAddCard(data)
+        setSelectedMethodId(newMethod.id)
+        setStep('confirm')
+      } finally {
+        setIsAddingMethod(false)
+      }
+    },
+    [onAddCard]
+  )
 
-  const handleAddCrypto = useCallback(async (data: { network: CryptoNetwork; address: string }) => {
-    setIsAddingMethod(true)
-    try {
-      const newMethod = await onAddCrypto(data)
-      setSelectedMethodId(newMethod.id)
-      setStep('confirm')
-    } finally {
-      setIsAddingMethod(false)
-    }
-  }, [onAddCrypto])
+  const handleAddCrypto = useCallback(
+    async (data: { network: CryptoNetwork; address: string }) => {
+      setIsAddingMethod(true)
+      try {
+        const newMethod = await onAddCrypto(data)
+        setSelectedMethodId(newMethod.id)
+        setStep('confirm')
+      } finally {
+        setIsAddingMethod(false)
+      }
+    },
+    [onAddCrypto]
+  )
 
   const handleSubscribe = async () => {
     if (!selectedMethodId) return
@@ -163,9 +182,7 @@ export const SubscribeDialog = ({
                     onClick={() => setSelectedMethodId(method.id)}
                     className={cn(
                       'w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left',
-                      selectedMethodId === method.id
-                        ? 'bg-muted/50'
-                        : 'hover:bg-muted/30'
+                      selectedMethodId === method.id ? 'bg-muted/50' : 'hover:bg-muted/30'
                     )}
                   >
                     {method.type === 'card' ? (
@@ -174,7 +191,10 @@ export const SubscribeDialog = ({
                         <div className='flex-1'>
                           <div className='font-medium'>•••• {method.last4}</div>
                           <div className='text-xs text-muted-foreground'>
-                            {t('billing.expiresAt', { month: method.expiryMonth, year: method.expiryYear })}
+                            {t('billing.expiresAt', {
+                              month: method.expiryMonth,
+                              year: method.expiryYear
+                            })}
                           </div>
                         </div>
                       </>
@@ -191,9 +211,7 @@ export const SubscribeDialog = ({
                       </>
                     )}
                     {method.isDefault && (
-                      <span className='text-xs text-muted-foreground'>
-                        {t('billing.default')}
-                      </span>
+                      <span className='text-xs text-muted-foreground'>{t('billing.default')}</span>
                     )}
                   </button>
                 ))}
@@ -219,10 +237,7 @@ export const SubscribeDialog = ({
             <Button variant='outline' onClick={handleClose} disabled={isSubscribing}>
               {t('common.cancel')}
             </Button>
-            <Button
-              onClick={handleSubscribe}
-              disabled={!selectedMethodId || isSubscribing}
-            >
+            <Button onClick={handleSubscribe} disabled={!selectedMethodId || isSubscribing}>
               {isSubscribing ? (
                 <>
                   <Loading02Icon className='h-4 w-4 mr-2 animate-spin' />

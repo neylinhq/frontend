@@ -164,8 +164,9 @@ describe('wsClient', () => {
     wsClient.connect('ws://example.com', 'token')
 
     const instance = WebSocketMock.instances[0]
-    ;(wsClient as { reconnectAttempts: number; maxReconnects: number }).reconnectAttempts =
-      (wsClient as { maxReconnects: number }).maxReconnects
+    ;(wsClient as { reconnectAttempts: number; maxReconnects: number }).reconnectAttempts = (
+      wsClient as { maxReconnects: number }
+    ).maxReconnects
 
     instance.onclose?.()
     vi.advanceTimersByTime(1000)

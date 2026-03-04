@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { ChangePasswordSchema, UserPreferencesSchema, UserSchema } from '../user.schema'
 
 describe('UserSchema', () => {

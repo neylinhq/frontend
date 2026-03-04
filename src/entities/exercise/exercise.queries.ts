@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
 import { exerciseApi } from './exercise.api'
 import type { GenerateExercisesRequest } from './exercise.schema'
 

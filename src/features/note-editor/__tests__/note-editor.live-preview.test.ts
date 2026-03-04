@@ -1,8 +1,9 @@
-import { EditorState } from '@codemirror/state'
-import { EditorView } from '@codemirror/view'
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown'
 import { languages } from '@codemirror/language-data'
+import { EditorState } from '@codemirror/state'
+import { EditorView } from '@codemirror/view'
 import { describe, expect, it, vi } from 'vitest'
+
 import { livePreview } from '../lib/live-preview'
 
 describe('note editor live preview', () => {
@@ -38,11 +39,7 @@ describe('note editor live preview', () => {
     const state = EditorState.create({
       doc,
       selection: { anchor: wikiStart, head: wikiEnd },
-      extensions: [
-        markdown({ base: markdownLanguage, codeLanguages: languages }),
-        plugin,
-        styles
-      ]
+      extensions: [markdown({ base: markdownLanguage, codeLanguages: languages }), plugin, styles]
     })
     const parent = document.createElement('div')
     const view = new EditorView({ state, parent })
@@ -57,11 +54,9 @@ describe('note editor live preview', () => {
     })
     view.dispatch({ selection: { anchor: view.state.doc.length } })
 
-    const boxes = Array.from(
-      view.dom.querySelectorAll<HTMLInputElement>('.cm-task-checkbox')
-    )
+    const boxes = Array.from(view.dom.querySelectorAll<HTMLInputElement>('.cm-task-checkbox'))
     expect(boxes.length).toBeGreaterThan(0)
-    boxes.forEach((box) => {
+    boxes.forEach(box => {
       box.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))
     })
 
@@ -76,11 +71,7 @@ describe('note editor live preview', () => {
     const [plugin, styles] = livePreview()
     const state = EditorState.create({
       doc,
-      extensions: [
-        markdown({ base: markdownLanguage, codeLanguages: languages }),
-        plugin,
-        styles
-      ]
+      extensions: [markdown({ base: markdownLanguage, codeLanguages: languages }), plugin, styles]
     })
     const parent = document.createElement('div')
     const view = new EditorView({ state, parent })
@@ -109,11 +100,7 @@ describe('note editor live preview', () => {
     const [plugin, styles] = livePreview()
     const state = EditorState.create({
       doc,
-      extensions: [
-        markdown({ base: markdownLanguage, codeLanguages: languages }),
-        plugin,
-        styles
-      ]
+      extensions: [markdown({ base: markdownLanguage, codeLanguages: languages }), plugin, styles]
     })
     const parent = document.createElement('div')
     const view = new EditorView({ state, parent })
@@ -156,16 +143,10 @@ describe('note editor live preview', () => {
     const [plugin, styles] = livePreview()
     const state = EditorState.create({
       doc,
-      extensions: [
-        markdown({ base: markdownLanguage, codeLanguages: languages }),
-        plugin,
-        styles
-      ]
+      extensions: [markdown({ base: markdownLanguage, codeLanguages: languages }), plugin, styles]
     })
     const parent = document.createElement('div')
-    const trimSpy = vi.spyOn(String.prototype, 'trim').mockImplementationOnce(function () {
-      return ''
-    })
+    const trimSpy = vi.spyOn(String.prototype, 'trim').mockImplementationOnce(() => '')
     const view = new EditorView({ state, parent })
 
     const pluginInstance = view.plugin(plugin)
@@ -223,11 +204,7 @@ describe('note editor live preview', () => {
     const state = EditorState.create({
       doc,
       selection: { anchor: selectionPos, head: selectionPos },
-      extensions: [
-        markdown({ base: markdownLanguage, codeLanguages: languages }),
-        plugin,
-        styles
-      ]
+      extensions: [markdown({ base: markdownLanguage, codeLanguages: languages }), plugin, styles]
     })
     const parent = document.createElement('div')
     const view = new EditorView({ state, parent })

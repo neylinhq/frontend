@@ -1,5 +1,6 @@
 import { Download01Icon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
+
 import type { PaymentHistory } from '@/entities/subscription'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'

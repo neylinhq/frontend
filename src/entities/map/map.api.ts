@@ -1,4 +1,5 @@
 import { api } from '@/shared/api/client'
+
 import type { Edge } from '../edge'
 import type { LightweightNode, Node } from '../node'
 import type {
@@ -307,9 +308,7 @@ export const mapApi = {
   },
 
   getMapHistorySummary: async (mapId: string): Promise<MapHistorySummary> => {
-    const response = await api.get<ApiResponse<MapHistorySummary>>(
-      `/maps/${mapId}/history/summary`
-    )
+    const response = await api.get<ApiResponse<MapHistorySummary>>(`/maps/${mapId}/history/summary`)
     return response.data
   },
 

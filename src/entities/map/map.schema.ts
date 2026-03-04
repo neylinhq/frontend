@@ -1,4 +1,5 @@
 import { z } from 'zod'
+
 import { type Edge, EdgeSchema, type RelationType, RelationTypeEnum } from '../edge'
 import { type Node, NodeSchema } from '../node'
 

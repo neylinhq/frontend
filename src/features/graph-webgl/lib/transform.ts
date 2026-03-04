@@ -2,8 +2,8 @@
  * Data transformation utilities for WASM
  */
 
-import { ComplexityEnum } from '@/entities/node'
 import type { Edge, Node } from '@/entities/map'
+import { ComplexityEnum } from '@/entities/node'
 
 // Valid complexity values from single source of truth
 const VALID_COMPLEXITY = ComplexityEnum.options

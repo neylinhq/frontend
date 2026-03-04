@@ -112,7 +112,7 @@ function oklchToRgba(oklchString: string, alpha = 1): [number, number, number, n
   const toSrgb = (x: number) => {
     if (x <= 0) return 0
     if (x >= 1) return 1
-    return x <= 0.0031308 ? 12.92 * x : 1.055 * Math.pow(x, 1 / 2.4) - 0.055
+    return x <= 0.0031308 ? 12.92 * x : 1.055 * x ** (1 / 2.4) - 0.055
   }
 
   const r = toSrgb(rLin)
@@ -239,7 +239,6 @@ export function getNodeColorHex(nodeType: string): string {
   const rgba = colors[nodeType as keyof ThemeColors] ?? colors.concept
   return rgbaToHex(rgba as [number, number, number, number])
 }
-
 
 /**
  * Get CSS variable as computed value

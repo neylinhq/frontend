@@ -4,8 +4,8 @@ export {
   getNodeBgColor,
   getNodeBorderColor,
   getNodeTextColor,
-  getRatingColor,
-  getRatingBorderColor
+  getRatingBorderColor,
+  getRatingColor
 } from './lib/node-style'
 export type { NodeTypeConfig } from './node.constants'
 export { NODE_TYPE_CONFIGS } from './node.constants'

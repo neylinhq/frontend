@@ -1,8 +1,10 @@
 import { BaseEdge, EdgeLabelRenderer, getBezierPath, type Position } from '@xyflow/react'
 import { memo, useCallback } from 'react'
+
 import { getEdgeTextClass } from '@/entities/edge'
 import type { Edge } from '@/entities/map'
 import { cn } from '@/shared/lib/cn'
+
 import { getEdgeDashArray, getEdgeStrokeByType, getEdgeWidth } from '../lib/get-edge-style'
 
 interface KnowledgeEdgeProps {

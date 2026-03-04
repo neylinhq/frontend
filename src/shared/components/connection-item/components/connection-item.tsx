@@ -1,5 +1,11 @@
-import { LinkExternal01Icon, EyeIcon, Pencil01Icon, Trash01Icon } from '@untitledui/icons-react/outline'
+import {
+  EyeIcon,
+  LinkExternal01Icon,
+  Pencil01Icon,
+  Trash01Icon
+} from '@untitledui/icons-react/outline'
 import { memo } from 'react'
+
 import { cn } from '@/shared/lib/cn'
 
 interface ConnectionItemProps {

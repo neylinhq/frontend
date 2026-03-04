@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+
 import type { RelationType } from '@/entities/edge'
 import type { NodeType } from '@/entities/node'
 

@@ -1,6 +1,13 @@
+import {
+  Copy01Icon,
+  DotsHorizontalIcon,
+  GitBranch01Icon,
+  Globe01Icon,
+  Lock01Icon,
+  User01Icon
+} from '@untitledui/icons-react/outline'
 import { formatDistanceToNow } from 'date-fns'
 import { de, enUS, ru } from 'date-fns/locale'
-import { Copy01Icon, GitBranch01Icon, Globe01Icon, Lock01Icon, DotsHorizontalIcon, User01Icon } from '@untitledui/icons-react/outline'
 import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'

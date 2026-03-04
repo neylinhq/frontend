@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+
 import { mapApi, mapKeys } from '@/entities/map'
 
 interface CreateMapInput {

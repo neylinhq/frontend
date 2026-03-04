@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+
 import type { MapFilter } from '@/entities/map'
 import { SegmentedControl } from '@/shared/components/segmented-control'
 

@@ -1,6 +1,8 @@
 import { delay, HttpResponse, http } from 'msw'
+
 import type { PaymentMethod } from '@/entities/subscription'
 import { API_URL } from '@/shared/config/env'
+
 import { mockPaymentHistory, mockPaymentMethods } from '../data'
 
 // Mutable payment methods state

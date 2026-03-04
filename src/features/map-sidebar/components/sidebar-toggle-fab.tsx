@@ -1,7 +1,9 @@
 import { LayoutRightIcon } from '@untitledui/icons-react/outline'
 import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
+
 import { Button } from '@/shared/components/button'
+
 import { useMapSidebarStore } from '../model'
 
 export const SidebarToggleFab = memo(function SidebarToggleFab() {

@@ -3,6 +3,7 @@
 import { Loading02Icon } from '@untitledui/icons-react/outline'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
 import { Button } from '@/shared/components/button'
 import {
   Dialog,

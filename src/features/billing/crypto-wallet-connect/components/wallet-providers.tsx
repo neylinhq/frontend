@@ -1,11 +1,11 @@
 'use client'
 
-import { type ReactNode, useEffect, useState } from 'react'
-import { http, createConfig, WagmiProvider } from 'wagmi'
-import { mainnet, bsc, polygon } from 'wagmi/chains'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WalletProvider as TronWalletProvider } from '@tronweb3/tronwallet-adapter-react-hooks'
 import { TronLinkAdapter } from '@tronweb3/tronwallet-adapters'
+import { type ReactNode, useEffect, useState } from 'react'
+import { createConfig, http, WagmiProvider } from 'wagmi'
+import { bsc, mainnet, polygon } from 'wagmi/chains'
 
 // Wagmi config for EVM networks
 const wagmiConfig = createConfig({

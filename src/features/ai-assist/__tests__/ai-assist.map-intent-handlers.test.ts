@@ -9,7 +9,14 @@ vi.mock('@/entities/ai', () => ({
 }))
 
 import { aiApi } from '@/entities/ai'
-import { analyzeHandler, gapsHandler, mapIntentHandlers, suggestHandler, summaryHandler } from '../lib/map-intent-handlers'
+
+import {
+  analyzeHandler,
+  gapsHandler,
+  mapIntentHandlers,
+  suggestHandler,
+  summaryHandler
+} from '../lib/map-intent-handlers'
 
 const mapContext = {
   type: 'map',

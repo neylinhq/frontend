@@ -1,6 +1,7 @@
 import { EditorState } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
 import { describe, expect, it, vi } from 'vitest'
+
 import { createExtensions, createPreviewExtensions } from '../lib/extensions'
 
 describe('markdown editor extensions', () => {

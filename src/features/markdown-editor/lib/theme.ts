@@ -5,10 +5,10 @@
  * Typography comes from .prose class.
  */
 
-import { EditorView } from '@codemirror/view'
 import { HighlightStyle, syntaxHighlighting } from '@codemirror/language'
-import { tags } from '@lezer/highlight'
 import type { Extension } from '@codemirror/state'
+import { EditorView } from '@codemirror/view'
+import { tags } from '@lezer/highlight'
 
 /**
  * Base editor theme
@@ -79,7 +79,4 @@ const syntaxStyle = HighlightStyle.define([
 /**
  * Combined theme
  */
-export const theme: Extension[] = [
-  editorTheme,
-  syntaxHighlighting(syntaxStyle)
-]
+export const theme: Extension[] = [editorTheme, syntaxHighlighting(syntaxStyle)]

@@ -2,6 +2,7 @@ import { ChevronRightIcon } from '@untitledui/icons-react/outline'
 import type { ComponentType, SVGProps } from 'react'
 import * as React from 'react'
 import { NavLink } from 'react-router'
+
 import { Badge } from '@/shared/components/badge'
 import {
   Collapsible,
@@ -9,6 +10,7 @@ import {
   CollapsibleTrigger
 } from '@/shared/components/collapsible'
 import { cn } from '@/shared/lib/cn'
+
 import styles from './docs-sidebar.module.css'
 
 export interface DocsSidebarItem {

@@ -6,7 +6,6 @@ export type {
   TwoFactorStatus
 } from './two-factor.api'
 export { twoFactorApi } from './two-factor.api'
-
 export {
   twoFactorKeys,
   useDisableTwoFactor,

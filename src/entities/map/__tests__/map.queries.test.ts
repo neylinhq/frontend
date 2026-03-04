@@ -1,6 +1,8 @@
 import { act, renderHook, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { createQueryWrapper, createTestQueryClient } from '@/shared/tests'
+
 import type { MapDiscoverResponse } from '../map.schema'
 
 let mapApi: typeof import('../map.api').mapApi
@@ -156,7 +158,9 @@ describe('map queries', () => {
     const { result: fullResult } = renderHook(() => mapQueries.useFullMap('map-1'), { wrapper })
     await waitFor(() => expect(fullResult.current.data).toEqual(fullMap))
 
-    const { result: lightResult } = renderHook(() => mapQueries.useLightweightMap('map-1'), { wrapper })
+    const { result: lightResult } = renderHook(() => mapQueries.useLightweightMap('map-1'), {
+      wrapper
+    })
     await waitFor(() => expect(lightResult.current.data).toEqual(fullMap))
 
     const { result: nodeContent } = renderHook(
@@ -322,10 +326,9 @@ describe('map queries', () => {
       await visibility.current.mutateAsync({ mapId: 'map-1', isPublic: true })
     })
 
-    const { result: updatePosition } = renderHook(
-      () => mapQueries.useUpdateNodePosition('map-1'),
-      { wrapper }
-    )
+    const { result: updatePosition } = renderHook(() => mapQueries.useUpdateNodePosition('map-1'), {
+      wrapper
+    })
     await act(async () => {
       await updatePosition.current.mutateAsync({ id: 'node-1', position: { x: 1, y: 2 } })
     })
@@ -413,17 +416,7 @@ describe('map queries', () => {
 
   it('builds map query keys', () => {
     expect(mapQueries.mapKeys.list('filters')).toEqual(['maps', 'list', { filters: 'filters' }])
-    expect(mapQueries.mapKeys.node('map-1', 'node-1')).toEqual([
-      'maps',
-      'nodes',
-      'map-1',
-      'node-1'
-    ])
-    expect(mapQueries.mapKeys.edge('map-1', 'edge-1')).toEqual([
-      'maps',
-      'edges',
-      'map-1',
-      'edge-1'
-    ])
+    expect(mapQueries.mapKeys.node('map-1', 'node-1')).toEqual(['maps', 'nodes', 'map-1', 'node-1'])
+    expect(mapQueries.mapKeys.edge('map-1', 'edge-1')).toEqual(['maps', 'edges', 'map-1', 'edge-1'])
   })
 })

@@ -1,11 +1,18 @@
-import { MessageChatCircleIcon, Settings01Icon, Sliders04Icon, XCloseIcon } from '@untitledui/icons-react/outline'
+import {
+  MessageChatCircleIcon,
+  Settings01Icon,
+  Sliders04Icon,
+  XCloseIcon
+} from '@untitledui/icons-react/outline'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Drawer as VaulDrawer } from 'vaul'
+
 import type { Edge, Node } from '@/entities/map'
 import { Button } from '@/shared/components/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/components/tabs'
 import { cn } from '@/shared/lib/cn'
+
 import {
   MAP_SIDEBAR_MAX_WIDTH,
   MAP_SIDEBAR_MIN_WIDTH,
@@ -130,7 +137,11 @@ export const MapSidebar = memo(function MapSidebar({
 
   // Tab content
   const tabContent = (
-    <Tabs value={activeTab} onValueChange={handleTabChange} className='flex flex-1 flex-col min-h-0'>
+    <Tabs
+      value={activeTab}
+      onValueChange={handleTabChange}
+      className='flex flex-1 flex-col min-h-0'
+    >
       <TabsList variant='underline' className='grid grid-cols-3 shrink-0'>
         <TabsTrigger
           variant='underline'
@@ -143,12 +154,22 @@ export const MapSidebar = memo(function MapSidebar({
           <span className='text-xs hidden sm:inline'>{t('mapSidebar.tabs.node')}</span>
         </TabsTrigger>
         {canEdit && (
-          <TabsTrigger variant='underline' value='chat' className='gap-1.5' title={t('mapSidebar.tabs.chat')}>
+          <TabsTrigger
+            variant='underline'
+            value='chat'
+            className='gap-1.5'
+            title={t('mapSidebar.tabs.chat')}
+          >
             <MessageChatCircleIcon className='h-3.5 w-3.5' />
             <span className='text-xs hidden sm:inline'>{t('mapSidebar.tabs.chat')}</span>
           </TabsTrigger>
         )}
-        <TabsTrigger variant='underline' value='settings' className='gap-1.5' title={t('mapSidebar.tabs.settings')}>
+        <TabsTrigger
+          variant='underline'
+          value='settings'
+          className='gap-1.5'
+          title={t('mapSidebar.tabs.settings')}
+        >
           <Settings01Icon className='h-3.5 w-3.5' />
           <span className='text-xs hidden sm:inline'>{t('mapSidebar.tabs.settings')}</span>
         </TabsTrigger>
@@ -184,7 +205,7 @@ export const MapSidebar = memo(function MapSidebar({
   // Mobile: Vaul drawer from bottom
   if (isMobile) {
     return (
-      <VaulDrawer.Root open={isOpen} onOpenChange={(open) => !open && handleClose()}>
+      <VaulDrawer.Root open={isOpen} onOpenChange={open => !open && handleClose()}>
         <VaulDrawer.Portal>
           <VaulDrawer.Overlay className='fixed inset-0 z-40 bg-overlay' />
           <VaulDrawer.Content className='fixed inset-x-0 bottom-0 z-50 flex h-[calc(100vh-6rem)] flex-col rounded-t-xl bg-background'>

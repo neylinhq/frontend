@@ -1,5 +1,6 @@
+import { getRatingTierBorderColor, getRatingTierColor, type RatingTier } from '@/shared/lib/rating'
+
 import type { NodeType } from '../node.schema'
-import { getRatingTierColor, getRatingTierBorderColor, type RatingTier } from '@/shared/lib/rating'
 
 /**
  * Node Type Color System - 8 unique hues

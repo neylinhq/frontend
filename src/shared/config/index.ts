@@ -1,9 +1,7 @@
 // App
 export { APP_NAME, CURRENT_YEAR } from './app'
-
 // Env
 export { API_URL, IS_DEV, IS_PROD, SESSION_SECRET } from './env'
-
 // Routes
 export {
   AUTH_ROUTES,
@@ -15,11 +13,9 @@ export {
   ROUTES,
   SETTINGS_ROUTES
 } from './routes'
-
 // Settings navigation
 export type { SettingsNavItem } from './settings-nav'
 export { SETTINGS_NAV_ITEMS } from './settings-nav'
-
 // Support
 export type { SupportChannel } from './support'
 export { SUPPORT_CONTACTS } from './support'

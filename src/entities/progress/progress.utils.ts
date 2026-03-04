@@ -1,4 +1,5 @@
 import type { LightweightNode, Node } from '@/entities/node'
+
 import type { UserNodeProgress } from './progress.schema'
 import { DEFAULT_NODE_PROGRESS } from './progress.schema'
 

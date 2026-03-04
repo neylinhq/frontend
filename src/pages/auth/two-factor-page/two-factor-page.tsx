@@ -1,8 +1,9 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router'
-import type { TwoFactorChallengeData } from '@/entities/session'
+
 import { TwoFactorForm } from '@/features/auth/two-factor-form'
+import type { TwoFactorChallengeData } from '@/entities/session'
 import { AUTH_ROUTES } from '@/shared/config'
 
 interface LocationState {

@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next'
+
 import { Badge } from '@/shared/components/badge'
+
 import type { ExercisePreviewData } from '../model/ai-assist.types'
 import { ProposalCard } from './proposal-card'
 
@@ -11,7 +13,13 @@ interface ExercisePreviewProps {
   isSaving?: boolean
 }
 
-export const ExercisePreview = ({ data, onRemove, onSave, onEdit, isSaving }: ExercisePreviewProps) => {
+export const ExercisePreview = ({
+  data,
+  onRemove,
+  onSave,
+  onEdit,
+  isSaving
+}: ExercisePreviewProps) => {
   const { t } = useTranslation()
   const exerciseData = data as ExercisePreviewData
 

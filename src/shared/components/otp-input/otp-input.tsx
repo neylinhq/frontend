@@ -1,4 +1,5 @@
 import { type ChangeEvent, type ClipboardEvent, type KeyboardEvent, useRef } from 'react'
+
 import { cn } from '@/shared/lib/cn'
 
 interface OtpInputProps {

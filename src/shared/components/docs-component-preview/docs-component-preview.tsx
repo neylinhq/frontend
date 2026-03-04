@@ -1,7 +1,9 @@
 import type * as React from 'react'
+
 import { DocsCodeBlock } from '@/shared/components/docs-code-block'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/components/tabs'
 import { cn } from '@/shared/lib/cn'
+
 import styles from './docs-component-preview.module.css'
 
 interface DocsComponentPreviewProps {

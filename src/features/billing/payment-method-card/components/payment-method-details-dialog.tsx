@@ -1,6 +1,13 @@
-import { CheckIcon, Copy01Icon, Pencil01Icon, Star01Icon, Trash01Icon } from '@untitledui/icons-react/outline'
+import {
+  CheckIcon,
+  Copy01Icon,
+  Pencil01Icon,
+  Star01Icon,
+  Trash01Icon
+} from '@untitledui/icons-react/outline'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
 import type { PaymentMethod, UpdatePaymentMethodInput } from '@/entities/subscription'
 import {
   getCurrencyDisplayName,
@@ -24,8 +31,8 @@ import { Field } from '@/shared/components/field'
 import { Icon, networkIcons } from '@/shared/components/icon'
 import { Input } from '@/shared/components/input'
 import type { CardBrand } from '@/shared/lib/card-utils'
-import { useCopyToClipboard } from '@/shared/lib/use-copy-to-clipboard'
 import { shortenWalletAddress } from '@/shared/lib/crypto-utils'
+import { useCopyToClipboard } from '@/shared/lib/use-copy-to-clipboard'
 
 interface PaymentMethodDetailsDialogProps {
   method: PaymentMethod | null

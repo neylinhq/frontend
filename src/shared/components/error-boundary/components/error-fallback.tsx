@@ -1,7 +1,9 @@
 import { AlertTriangleIcon, RefreshCw01Icon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
+
 import { Button } from '@/shared/components/button'
 import { Card } from '@/shared/components/card'
+
 import type { ErrorBoundaryLevel } from './error-boundary'
 
 interface ErrorFallbackProps {
@@ -45,9 +47,7 @@ export const ErrorFallback = ({ error, level = 'widget', onRetry }: ErrorFallbac
   return (
     <div className='flex flex-col items-center justify-center min-h-[50vh] gap-4 p-8'>
       <AlertTriangleIcon className='h-12 w-12 text-destructive' />
-      <h2 className='text-xl font-semibold'>
-        {t('error.pageFailed', 'Something went wrong')}
-      </h2>
+      <h2 className='text-xl font-semibold'>{t('error.pageFailed', 'Something went wrong')}</h2>
       <p className='text-muted-foreground text-center max-w-md'>
         {error?.message || t('error.pageFailedDescription', 'An unexpected error occurred')}
       </p>

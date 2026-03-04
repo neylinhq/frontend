@@ -8,9 +8,10 @@ import {
 import { memo, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
+
+import { NodeMetadataForm, type NodeMetadataFormValues } from '@/features/node-metadata-form'
 import type { Node } from '@/entities/map'
 import { useDeleteNode, useUpdateNode } from '@/entities/map'
-import { NodeMetadataForm, type NodeMetadataFormValues } from '@/features/node-metadata-form'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -27,6 +28,7 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/shared/compo
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/components/tabs'
 import { toast } from '@/shared/components/toast'
 import { cn } from '@/shared/lib/cn'
+
 import { useDrawerTabs } from '../model/graph.drawer.hooks'
 import { useFocusMode } from '../model/graph.store'
 import { DrawerOverviewTab } from './drawer-overview-tab'
@@ -206,32 +208,20 @@ export const NodeDrawer = memo(
               onValueChange={value => switchTab(value as 'overview' | 'properties' | 'connections')}
               className='flex flex-col flex-1 min-h-0'
             >
-            <TabsList variant='underline' className='grid grid-cols-2 px-4'>
-              {isReadOnly ? (
-                <TabsTrigger
-                  variant='underline'
-                  value='overview'
-                  className='text-xs'
-                >
-                  {t('nodeDrawer.tabs.overview')}
+              <TabsList variant='underline' className='grid grid-cols-2 px-4'>
+                {isReadOnly ? (
+                  <TabsTrigger variant='underline' value='overview' className='text-xs'>
+                    {t('nodeDrawer.tabs.overview')}
+                  </TabsTrigger>
+                ) : (
+                  <TabsTrigger variant='underline' value='properties' className='text-xs'>
+                    {t('nodeDrawer.tabs.properties')}
+                  </TabsTrigger>
+                )}
+                <TabsTrigger variant='underline' value='connections' className='text-xs'>
+                  {t('nodeDrawer.tabs.connections')}
                 </TabsTrigger>
-              ) : (
-                <TabsTrigger
-                  variant='underline'
-                  value='properties'
-                  className='text-xs'
-                >
-                  {t('nodeDrawer.tabs.properties')}
-                </TabsTrigger>
-              )}
-              <TabsTrigger
-                variant='underline'
-                value='connections'
-                className='text-xs'
-              >
-                {t('nodeDrawer.tabs.connections')}
-              </TabsTrigger>
-            </TabsList>
+              </TabsList>
 
               {/* Read-only: Overview tab */}
               {isReadOnly && (

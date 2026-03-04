@@ -1,4 +1,5 @@
 import { api } from '@/shared/api/client'
+
 import type {
   PaymentHistory,
   PaymentMethod,
@@ -160,8 +161,14 @@ export const subscriptionApi = {
   },
 
   // Subscribe with crypto payment method
-  subscribeWithCrypto: async (data: { planType: string; paymentMethodId: string }): Promise<Subscription> => {
-    const response = await api.post<ApiResponse<Subscription>>('/subscriptions/subscribe-crypto', data)
+  subscribeWithCrypto: async (data: {
+    planType: string
+    paymentMethodId: string
+  }): Promise<Subscription> => {
+    const response = await api.post<ApiResponse<Subscription>>(
+      '/subscriptions/subscribe-crypto',
+      data
+    )
     return response.data
   }
 }

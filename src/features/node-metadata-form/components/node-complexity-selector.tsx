@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+
 import { Field } from '@/shared/components/field'
 import {
   Select,
@@ -7,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/shared/components/select'
+
 import { COMPLEXITY_OPTIONS } from '../model/node-metadata-form.constants'
 
 interface NodeComplexitySelectorProps {

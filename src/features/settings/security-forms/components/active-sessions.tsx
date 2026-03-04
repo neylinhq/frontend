@@ -1,5 +1,6 @@
 import { Laptop01Icon, Phone01Icon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
+
 import { Button } from '@/shared/components/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
 

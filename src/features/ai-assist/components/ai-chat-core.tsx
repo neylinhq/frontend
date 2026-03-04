@@ -1,10 +1,19 @@
-import { useEffect, useRef, useState, useCallback } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { v4 as uuidv4 } from 'uuid'
+
 import { aiApi, type ChatStreamChunk, type ProposalData, useSelectedModel } from '@/entities/ai'
 import { useLoaderUser } from '@/entities/user'
 import { toast } from '@/shared/components/toast'
+
+import { getChatSessionId, useChatHistoryStore } from '../model/ai-assist.chat.store'
+import {
+  chatSessionKeys,
+  useAddChatMessage,
+  useChatSession
+} from '../model/ai-assist.sessions.hooks'
+import type { ChatProposal } from '../model/ai-assist.sessions.types'
 import type {
   ChatMessage,
   MapChatContext,
@@ -12,11 +21,8 @@ import type {
   PreviewCard,
   ResolvedPreview
 } from '../model/ai-assist.types'
-import { getChatSessionId, useChatHistoryStore } from '../model/ai-assist.chat.store'
-import { chatSessionKeys, useChatSession, useAddChatMessage } from '../model/ai-assist.sessions.hooks'
-import type { ChatProposal } from '../model/ai-assist.sessions.types'
-import { ChatInput } from './chat-input'
 import { ChatEmptyState } from './chat-empty-state'
+import { ChatInput } from './chat-input'
 import { ChatMessageList } from './chat-message-list'
 
 const EMPTY_MESSAGES: ChatMessage[] = []
@@ -129,7 +135,7 @@ export const AIChatCore = ({
           id: (p.data?.id as string) || uuidv4(),
           type: p.type as ResolvedPreview['type'],
           data: p.data as unknown as ResolvedPreview['data'],
-          status: p.status === 'accepted' ? 'approved' as const : 'rejected' as const,
+          status: p.status === 'accepted' ? ('approved' as const) : ('rejected' as const),
           resolvedAt: new Date()
         }))
 
@@ -159,35 +165,34 @@ export const AIChatCore = ({
   const messages = localMessages
 
   // Save message to DB (for DB sessions)
-  const saveMessageToDb = useCallback(async (
-    role: 'user' | 'assistant',
-    content: string,
-    proposals?: PreviewCard[]
-  ) => {
-    if (!externalSessionId) return
+  const saveMessageToDb = useCallback(
+    async (role: 'user' | 'assistant', content: string, proposals?: PreviewCard[]) => {
+      if (!externalSessionId) return
 
-    try {
-      // Convert PreviewCard[] to ChatProposal[] for DB
-      const dbProposals = proposals?.map(p => ({
-        type: p.type as ChatProposal['type'],
-        status: 'pending' as const,
-        data: p.data as unknown as Record<string, unknown>
-      }))
+      try {
+        // Convert PreviewCard[] to ChatProposal[] for DB
+        const dbProposals = proposals?.map(p => ({
+          type: p.type as ChatProposal['type'],
+          status: 'pending' as const,
+          data: p.data as unknown as Record<string, unknown>
+        }))
 
-      await addMessageToDb.mutateAsync({
-        sessionId: externalSessionId,
-        role,
-        content,
-        proposals: dbProposals
-      })
+        await addMessageToDb.mutateAsync({
+          sessionId: externalSessionId,
+          role,
+          content,
+          proposals: dbProposals
+        })
 
-      // Invalidate session cache to sync with DB
-      queryClient.invalidateQueries({ queryKey: chatSessionKeys.list(mapContext.mapId) })
-    } catch {
-      // Non-critical error - message is still in localStorage
-      // This can happen if backend is not updated or not available
-    }
-  }, [externalSessionId, addMessageToDb, queryClient, mapContext.mapId])
+        // Invalidate session cache to sync with DB
+        queryClient.invalidateQueries({ queryKey: chatSessionKeys.list(mapContext.mapId) })
+      } catch {
+        // Non-critical error - message is still in localStorage
+        // This can happen if backend is not updated or not available
+      }
+    },
+    [externalSessionId, addMessageToDb, queryClient, mapContext.mapId]
+  )
 
   const handleSendMessage = async (content: string) => {
     if (!content.trim() || isStreaming) {
@@ -308,7 +313,11 @@ export const AIChatCore = ({
     }
   }
 
-  const createProposalPreview = (proposal: ProposalData, index?: number, total?: number): PreviewCard => {
+  const createProposalPreview = (
+    proposal: ProposalData,
+    index?: number,
+    total?: number
+  ): PreviewCard => {
     const id = uuidv4()
 
     switch (proposal.type) {
@@ -317,15 +326,27 @@ export const AIChatCore = ({
           id,
           type: 'exercise',
           data: {
-            exercise: proposal.exercise ? {
-              type: proposal.exercise.type as 'quiz' | 'flashcard' | 'fill_gaps' | 'match' | 'sequence' | 'true_false' | 'open_ended',
-              difficulty: proposal.exercise.difficulty,
-              question: proposal.exercise.question,
-              options: proposal.exercise.options?.map((opt, i) => ({ id: String(i), content: opt })),
-              explanation: proposal.exercise.explanation,
-              // AI-generated exercises store answer directly
-              answer: proposal.exercise.answer
-            } : {},
+            exercise: proposal.exercise
+              ? {
+                  type: proposal.exercise.type as
+                    | 'quiz'
+                    | 'flashcard'
+                    | 'fill_gaps'
+                    | 'match'
+                    | 'sequence'
+                    | 'true_false'
+                    | 'open_ended',
+                  difficulty: proposal.exercise.difficulty,
+                  question: proposal.exercise.question,
+                  options: proposal.exercise.options?.map((opt, i) => ({
+                    id: String(i),
+                    content: opt
+                  })),
+                  explanation: proposal.exercise.explanation,
+                  // AI-generated exercises store answer directly
+                  answer: proposal.exercise.answer
+                }
+              : {},
             // Add batch info for ExerciseCard
             index,
             total
@@ -423,7 +444,8 @@ export const AIChatCore = ({
     } catch (error) {
       // Extract error message from API response
       const apiError = error as { data?: { error?: { message?: string } } }
-      const errorMessage = apiError.data?.error?.message || (error as Error).message || t('ai.saveFailed')
+      const errorMessage =
+        apiError.data?.error?.message || (error as Error).message || t('ai.saveFailed')
       toast.error(t('common.error'), {
         description: errorMessage
       })
@@ -445,7 +467,8 @@ export const AIChatCore = ({
       if (preview.type === 'graph_fragment') {
         // For graph_fragment, check if any nodes/edges have been applied
         const data = preview.data as import('../model/ai-assist.types').GraphFragmentPreviewData
-        hasAppliedEntities = data.nodes.some(n => n.appliedNodeId) || data.edges.some(e => e.appliedEdgeId)
+        hasAppliedEntities =
+          data.nodes.some(n => n.appliedNodeId) || data.edges.some(e => e.appliedEdgeId)
       } else {
         // For other types, check appliedNodeId/appliedEdgeId on the data object
         const data = preview.data as { appliedNodeId?: string; appliedEdgeId?: string }
@@ -524,7 +547,9 @@ export const AIChatCore = ({
         // Truncate from the AI message
         truncateFromMessage(sessionId, messageId)
         // Find the user message that triggered this AI response (the one before)
-        const previousUserMessage = [...messages.slice(0, messageIndex)].reverse().find(m => m.role === 'user')
+        const previousUserMessage = [...messages.slice(0, messageIndex)]
+          .reverse()
+          .find(m => m.role === 'user')
         if (previousUserMessage) {
           handleSendMessage(previousUserMessage.content)
         }

@@ -1,6 +1,13 @@
-import { BookOpen01Icon, ChevronDownIcon, Lightbulb01Icon, Link01Icon, Stars01Icon } from '@untitledui/icons-react/outline'
+import {
+  BookOpen01Icon,
+  ChevronDownIcon,
+  Lightbulb01Icon,
+  Link01Icon,
+  Stars01Icon
+} from '@untitledui/icons-react/outline'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
 import { Button } from '@/shared/components/button'
 import {
   Collapsible,
@@ -8,6 +15,7 @@ import {
   CollapsibleTrigger
 } from '@/shared/components/collapsible'
 import { cn } from '@/shared/lib/cn'
+
 import type { QuickActionType } from '../model/ai-assist.types'
 
 interface QuickActionBarProps {
@@ -37,7 +45,10 @@ export const QuickActionBar = ({
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
       <div className='px-4 pt-2'>
         <CollapsibleTrigger asChild>
-          <button type='button' className='flex items-center justify-between w-full py-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors'>
+          <button
+            type='button'
+            className='flex items-center justify-between w-full py-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors'
+          >
             <span>{t('ai.chat.quickActions')}</span>
             <ChevronDownIcon
               className={cn('h-4 w-4 transition-transform duration-200', isOpen && 'rotate-180')}

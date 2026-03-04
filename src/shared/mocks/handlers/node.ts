@@ -1,6 +1,8 @@
 import { delay, HttpResponse, http } from 'msw'
+
 import type { Node } from '@/entities/node'
 import { API_URL } from '@/shared/config/env'
+
 import { ALL_NODES } from '../data'
 
 // Mutable nodes state

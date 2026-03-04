@@ -8,4 +8,5 @@ export {
   PALETTES,
   useTheme
 } from '@/shared/core/theme'
+
 export { ThemeProvider } from './components/theme-provider'

@@ -1,7 +1,9 @@
-import { useCallback, useEffect, useRef } from 'react'
 import { useWallet } from '@tronweb3/tronwallet-adapter-react-hooks'
+import { useCallback, useEffect, useRef } from 'react'
+
 import type { CryptoNetwork } from '@/entities/subscription'
 import { getUsdtContractAddress } from '@/entities/subscription/lib/crypto-utils'
+
 import type { CryptoWallet } from './use-crypto-wallet'
 
 interface TronWalletConnectorProps {

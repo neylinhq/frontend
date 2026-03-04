@@ -1,6 +1,7 @@
 import { Home01Icon, LayoutGrid01Icon, SearchMdIcon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
+
 import { Button } from '@/shared/components/button'
 import { Typography } from '@/shared/components/typography'
 import { DASHBOARD_ROUTES, ROUTES } from '@/shared/config'

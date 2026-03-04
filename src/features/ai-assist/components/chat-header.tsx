@@ -33,7 +33,7 @@ export const ChatHeader = ({
   const activeSession = sessions.find(s => s.id === activeSessionId) || null
 
   return (
-    <div className="flex flex-col shrink-0 bg-background border-b border-border/60">
+    <div className='flex flex-col shrink-0 bg-background border-b border-border/60'>
       <ChatSelectorRow
         sessions={sessions}
         activeSession={activeSession}

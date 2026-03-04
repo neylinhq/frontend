@@ -1,6 +1,8 @@
 import { delay, HttpResponse, http } from 'msw'
+
 import type { Edge } from '@/entities/edge'
 import { API_URL } from '@/shared/config/env'
+
 import { ALL_EDGES } from '../data'
 
 // Mutable edges state

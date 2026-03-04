@@ -1,9 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import {
-  PaymentMethodSchema,
-  PlanTypeEnum,
-  SubscriptionSchema
-} from '../subscription.schema'
+
+import { PaymentMethodSchema, PlanTypeEnum, SubscriptionSchema } from '../subscription.schema'
 
 describe('SubscriptionSchema', () => {
   it('parses a valid subscription', () => {

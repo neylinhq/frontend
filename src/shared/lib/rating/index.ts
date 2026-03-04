@@ -1,9 +1,5 @@
 export type { ActiveRating, NodeRating, RatingSystem, RatingTier, TierInfo } from './rating'
 export {
-  RATING_SEGMENTS,
-  RATING_TIER_BORDER_COLORS,
-  RATING_TIER_COLORS,
-  RATING_TIER_HEX_COLORS,
   compareTiers,
   formatRating,
   getActiveRating,
@@ -19,5 +15,9 @@ export {
   hasRating,
   hasRatingSystem,
   isValidRating,
-  isValidTier
+  isValidTier,
+  RATING_SEGMENTS,
+  RATING_TIER_BORDER_COLORS,
+  RATING_TIER_COLORS,
+  RATING_TIER_HEX_COLORS
 } from './rating'

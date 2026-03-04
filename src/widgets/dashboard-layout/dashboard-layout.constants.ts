@@ -1,5 +1,11 @@
-import { Beaker01Icon, BookOpen01Icon, LayoutGrid01Icon, Dataflow03Icon } from '@untitledui/icons-react/outline'
+import {
+  Beaker01Icon,
+  BookOpen01Icon,
+  Dataflow03Icon,
+  LayoutGrid01Icon
+} from '@untitledui/icons-react/outline'
 import type { ComponentType, SVGProps } from 'react'
+
 import { DASHBOARD_ROUTES, KNOWLEDGE_BASE_ROUTES, MAPS_ROUTES } from '@/shared/config'
 
 export interface SidebarItem {

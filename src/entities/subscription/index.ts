@@ -4,6 +4,7 @@
 export {
   copyToClipboard,
   getCurrencyDisplayName,
+  getEvmChainId,
   getNetworkDisplayName,
   getNetworkFeeEstimate,
   getWalletType,

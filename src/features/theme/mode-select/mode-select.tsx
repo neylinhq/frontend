@@ -1,5 +1,6 @@
 import { Monitor01Icon, Moon01Icon, SunIcon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
+
 import { SelectPopover } from '@/shared/components/select-popover'
 import type { Mode } from '@/shared/core/theme'
 import { useTheme } from '@/shared/core/theme'

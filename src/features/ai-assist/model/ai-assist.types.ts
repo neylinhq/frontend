@@ -24,14 +24,28 @@ export interface ChatMessage {
 }
 
 // Preview card types
-export type PreviewType = 'exercise' | 'enrichment' | 'edge' | 'node' | 'new_node' | 'connection' | 'graph_fragment'
+export type PreviewType =
+  | 'exercise'
+  | 'enrichment'
+  | 'edge'
+  | 'node'
+  | 'new_node'
+  | 'connection'
+  | 'graph_fragment'
 
 export type PreviewStatus = 'pending' | 'editing' | 'approved' | 'rejected'
 
 export interface PreviewCard {
   id: string
   type: PreviewType
-  data: ExercisePreviewData | EnrichmentPreviewData | EdgePreviewData | NodePreviewData | NewNodePreviewData | ConnectionPreviewData | GraphFragmentPreviewData
+  data:
+    | ExercisePreviewData
+    | EnrichmentPreviewData
+    | EdgePreviewData
+    | NodePreviewData
+    | NewNodePreviewData
+    | ConnectionPreviewData
+    | GraphFragmentPreviewData
   status: PreviewStatus
   /** When the preview was resolved (approved/rejected) */
   resolvedAt?: Date
@@ -46,7 +60,14 @@ export interface PreviewCard {
 export interface ResolvedPreview {
   id: string
   type: PreviewType
-  data: ExercisePreviewData | EnrichmentPreviewData | EdgePreviewData | NodePreviewData | NewNodePreviewData | ConnectionPreviewData | GraphFragmentPreviewData
+  data:
+    | ExercisePreviewData
+    | EnrichmentPreviewData
+    | EdgePreviewData
+    | NodePreviewData
+    | NewNodePreviewData
+    | ConnectionPreviewData
+    | GraphFragmentPreviewData
   status: 'approved' | 'rejected'
   resolvedAt: Date
   undoData?: {

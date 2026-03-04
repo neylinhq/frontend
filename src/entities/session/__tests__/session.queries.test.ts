@@ -1,5 +1,6 @@
 import { act, renderHook } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
+
 import { createQueryWrapper, createTestQueryClient } from '@/shared/tests'
 
 vi.mock('../session.api', () => ({

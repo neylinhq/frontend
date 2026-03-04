@@ -11,7 +11,8 @@ interface DocsApiTableProps {
 }
 
 export const DocsApiTable = ({ variant, rows }: DocsApiTableProps) => {
-  const headers = variant === 'component' ? ['Component', 'Description'] : ['Prop', 'Type', 'Default']
+  const headers =
+    variant === 'component' ? ['Component', 'Description'] : ['Prop', 'Type', 'Default']
 
   return (
     <div className='rounded-lg border overflow-hidden'>
@@ -41,7 +42,9 @@ export const DocsApiTable = ({ variant, rows }: DocsApiTableProps) => {
                     <code className='text-xs text-muted-foreground'>{row.type}</code>
                   </td>
                   <td className='px-4 py-3'>
-                    <code className='text-xs bg-muted px-1.5 py-0.5 rounded'>{row.defaultValue}</code>
+                    <code className='text-xs bg-muted px-1.5 py-0.5 rounded'>
+                      {row.defaultValue}
+                    </code>
                   </td>
                 </>
               )}

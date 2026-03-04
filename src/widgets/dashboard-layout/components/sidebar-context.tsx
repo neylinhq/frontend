@@ -1,4 +1,5 @@
-import { createContext, useCallback, useContext, useEffect, type ReactNode } from 'react'
+import { createContext, type ReactNode, useCallback, useContext, useEffect } from 'react'
+
 import { useLocalStorage } from '@/shared/hooks/use-local-storage'
 
 const SIDEBAR_STORAGE_KEY = 'neylin-sidebar-expanded'

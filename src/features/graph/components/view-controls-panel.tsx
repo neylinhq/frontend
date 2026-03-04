@@ -1,6 +1,3 @@
-import { memo, useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-
 import {
   Map01Icon,
   Maximize01Icon,
@@ -11,8 +8,11 @@ import {
   ZoomInIcon,
   ZoomOutIcon
 } from '@untitledui/icons-react/outline'
-import type { LightweightNode } from '@/entities/node'
+import { memo, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+
 import { MapSettingsDrawer } from '@/features/map-settings'
+import type { LightweightNode } from '@/entities/node'
 import { Button } from '@/shared/components/button'
 import { Card } from '@/shared/components/card'
 import {
@@ -23,6 +23,7 @@ import {
 import { Slider } from '@/shared/components/slider'
 import { cn } from '@/shared/lib/cn'
 import { isMac } from '@/shared/lib/platform'
+
 import { useGraphUI, useNodeSpacing } from '../model/graph.store'
 import { NodeSearch } from './node-search'
 
@@ -64,7 +65,8 @@ export const ViewControlsPanel = memo(
     const [internalSettingsOpen, setInternalSettingsOpen] = useState(false)
     const isSettingsControlled = settingsOpen !== undefined
     const resolvedSettingsOpen = isSettingsControlled ? settingsOpen : internalSettingsOpen
-    const setSettingsOpen = isSettingsControlled && onSettingsOpenChange ? onSettingsOpenChange : setInternalSettingsOpen
+    const setSettingsOpen =
+      isSettingsControlled && onSettingsOpenChange ? onSettingsOpenChange : setInternalSettingsOpen
     const {
       nodeSpacing,
       setNodeSpacing,
@@ -98,11 +100,13 @@ export const ViewControlsPanel = memo(
             className='h-8 px-2.5 max-w-48 group'
             title={t('mapSettings.title')}
           >
-            <span className='truncate text-sm font-medium'>
-              {mapTitle || t('common.untitled')}
-            </span>
+            <span className='truncate text-sm font-medium'>{mapTitle || t('common.untitled')}</span>
           </Button>
-          <MapSettingsDrawer mapId={mapId} open={resolvedSettingsOpen} onOpenChange={setSettingsOpen} />
+          <MapSettingsDrawer
+            mapId={mapId}
+            open={resolvedSettingsOpen}
+            onOpenChange={setSettingsOpen}
+          />
 
           {/* 2. Search — high frequency action */}
           {nodes && nodes.length > 0 && onNodeSelect && (
@@ -225,7 +229,11 @@ export const ViewControlsPanel = memo(
             className='h-8 w-8 p-0'
             title={isFullscreen ? t('graph.toolbar.exitFullscreen') : t('graph.toolbar.fullscreen')}
           >
-            {isFullscreen ? <Minimize01Icon className='w-4 h-4' /> : <Maximize01Icon className='w-4 h-4' />}
+            {isFullscreen ? (
+              <Minimize01Icon className='w-4 h-4' />
+            ) : (
+              <Maximize01Icon className='w-4 h-4' />
+            )}
           </Button>
 
           {/* Center view */}

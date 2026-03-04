@@ -1,13 +1,14 @@
 'use client'
 
-import { useEffect, useRef, useCallback, useMemo, useState } from 'react'
 import { Compartment, EditorState } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+
 import { cn } from '@/shared/lib/cn'
 import { logger } from '@/shared/lib/logger'
 
-import { createExtensions } from '../lib/extensions'
 import { decodeHtmlEntities } from '../lib/decode-html-entities'
+import { createExtensions } from '../lib/extensions'
 import type { NoteEditorProps } from '../model/note-editor.types'
 import styles from '../styles/note-editor.module.css'
 
@@ -92,9 +93,7 @@ export const NoteEditor = ({
   useEffect(() => {
     if (!viewRef.current) return
     viewRef.current.dispatch({
-      effects: editableCompartmentRef.current.reconfigure(
-        EditorView.editable.of(editable)
-      )
+      effects: editableCompartmentRef.current.reconfigure(EditorView.editable.of(editable))
     })
   }, [editable])
 
@@ -104,8 +103,7 @@ export const NoteEditor = ({
     if (!viewRef.current || !isInitialized.current) return
 
     const isNewDocument =
-      lastContentRef.current !== content &&
-      content !== viewRef.current.state.doc.toString()
+      lastContentRef.current !== content && content !== viewRef.current.state.doc.toString()
 
     if (isNewDocument) {
       viewRef.current.dispatch({
@@ -139,7 +137,7 @@ export const NoteEditor = ({
         <textarea
           className={cn(styles.editor, styles.fallbackTextarea)}
           defaultValue={content}
-          onChange={(event) => onChange?.(event.target.value)}
+          onChange={event => onChange?.(event.target.value)}
           placeholder={placeholder || "Type '/' for commands, or start writing..."}
           readOnly={!editable}
           data-testid='note-editor-fallback'

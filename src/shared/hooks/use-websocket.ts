@@ -1,5 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
+
 import { wsClient } from '@/shared/lib/websocket-client'
 
 export const useWebSocket = (mapId: string) => {

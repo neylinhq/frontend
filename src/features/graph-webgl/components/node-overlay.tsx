@@ -6,10 +6,12 @@
  */
 
 import { memo } from 'react'
+
 import type { Node } from '@/entities/map'
 import { getComplexityColor, getNodeBorderColor, getNodeIcon } from '@/entities/node'
 import { Badge } from '@/shared/components/badge'
 import { cn } from '@/shared/lib/cn'
+
 import styles from '../styles/node-overlay.module.css'
 
 interface NodeOverlayProps {

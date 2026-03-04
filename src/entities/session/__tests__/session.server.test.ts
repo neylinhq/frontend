@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { commitSession, destroySession, getSession, sessionCookie } from '../server/session.server'
 import type { SessionData } from '../session.types'
 

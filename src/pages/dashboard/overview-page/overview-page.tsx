@@ -3,6 +3,9 @@ import { useCallback, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLoaderData } from 'react-router'
 
+import { CreateMapCard } from '@/features/maps/create-map-button'
+import { MapCard, MapCardSkeleton } from '@/features/maps/map-card'
+import { MapFilters } from '@/features/maps/map-filters'
 import {
   type DashboardMapsResponse,
   type MapEntity,
@@ -14,9 +17,6 @@ import {
   useSetVisibility
 } from '@/entities/map'
 import { useLoaderUser } from '@/entities/user'
-import { CreateMapCard } from '@/features/maps/create-map-button'
-import { MapCard, MapCardSkeleton } from '@/features/maps/map-card'
-import { MapFilters } from '@/features/maps/map-filters'
 import { Button } from '@/shared/components/button'
 import { Input } from '@/shared/components/input'
 import { LoadMoreButton } from '@/shared/components/load-more-button'

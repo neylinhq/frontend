@@ -1,5 +1,11 @@
-import { CreditCard01Icon, Sliders01Icon, UserEditIcon, User01Icon } from '@untitledui/icons-react/outline'
+import {
+  CreditCard01Icon,
+  Sliders01Icon,
+  User01Icon,
+  UserEditIcon
+} from '@untitledui/icons-react/outline'
 import type { ComponentType, SVGProps } from 'react'
+
 import { SETTINGS_ROUTES } from './routes'
 
 export interface SettingsNavItem {

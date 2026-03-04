@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+
 import type { PlanLimits, UsageStats } from '@/entities/subscription'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
 import { Progress } from '@/shared/components/progress'
@@ -72,9 +73,7 @@ export const UsageProgress = ({ usage, limits }: UsageProgressProps) => {
               {formatTokens(usage.tokensUsedThisMonth)} / {formatTokenLimit(limits.tokensPerMonth)}
             </span>
           </div>
-          <Progress
-            value={calculatePercentage(usage.tokensUsedThisMonth, limits.tokensPerMonth)}
-          />
+          <Progress value={calculatePercentage(usage.tokensUsedThisMonth, limits.tokensPerMonth)} />
         </div>
 
         {/* Model tiers info */}

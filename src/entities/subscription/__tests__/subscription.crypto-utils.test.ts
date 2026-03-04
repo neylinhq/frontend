@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import type { CryptoNetwork } from '../subscription.schema'
+
 import {
   copyToClipboard,
   getCurrencyDisplayName,
@@ -12,6 +12,7 @@ import {
   isValidWalletAddress,
   shortenWalletAddress
 } from '../lib/crypto-utils'
+import type { CryptoNetwork } from '../subscription.schema'
 
 describe('subscription crypto utils', () => {
   it('shortens wallet addresses', () => {
@@ -42,19 +43,13 @@ describe('subscription crypto utils', () => {
       true
     )
     expect(isValidWalletAddress('TQJd3sY7y9t1qg2o7m2b4n9n5r5d9v7v2t', 'tron')).toBe(true)
-    expect(isValidWalletAddress('TQJd3sY7y9t1qg2o7m2b4n9n5r5d9v7v20', 'tron')).toBe(
-      false
-    )
+    expect(isValidWalletAddress('TQJd3sY7y9t1qg2o7m2b4n9n5r5d9v7v20', 'tron')).toBe(false)
     expect(isValidWalletAddress('0x4bbeEB066eD09B7AEd07bF39Ee0460DFa2615200', 'ethereum')).toBe(
       true
     )
     expect(isValidWalletAddress('0x123', 'ethereum')).toBe(false)
-    expect(isValidWalletAddress('0x4bbeEB066eD09B7AEd07bF39Ee0460DFa2615200', 'bsc')).toBe(
-      true
-    )
-    expect(isValidWalletAddress('0x4bbeEB066eD09B7AEd07bF39Ee0460DFa2615200', 'polygon')).toBe(
-      true
-    )
+    expect(isValidWalletAddress('0x4bbeEB066eD09B7AEd07bF39Ee0460DFa2615200', 'bsc')).toBe(true)
+    expect(isValidWalletAddress('0x4bbeEB066eD09B7AEd07bF39Ee0460DFa2615200', 'polygon')).toBe(true)
     expect(isValidWalletAddress('bad', 'ton')).toBe(false)
   })
 

@@ -1,5 +1,7 @@
 import { createCookie } from 'react-router'
+
 import { IS_PROD, SESSION_SECRET } from '@/shared/config'
+
 import type { SessionData } from '../session.types'
 
 export const sessionCookie = createCookie('neylin-session', {

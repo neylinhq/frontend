@@ -16,6 +16,7 @@ vi.mock('@/shared/lib/logger', () => ({
 
 import { api } from '@/shared/api/client'
 import { logger } from '@/shared/lib/logger'
+
 import { aiApi } from '../ai.api'
 
 describe('aiApi', () => {
@@ -97,10 +98,7 @@ describe('aiApi', () => {
 
   it('logs parse errors and ignores non-data lines', async () => {
     const encoder = new TextEncoder()
-    const chunks = [
-      encoder.encode('event: ping\n'),
-      encoder.encode('data: {not-json}\n')
-    ]
+    const chunks = [encoder.encode('event: ping\n'), encoder.encode('data: {not-json}\n')]
     const reader = {
       read: vi
         .fn()

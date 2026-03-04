@@ -4,10 +4,10 @@
  * Minimal theme that inherits typography from the container.
  */
 
-import { EditorView } from '@codemirror/view'
 import { HighlightStyle, syntaxHighlighting } from '@codemirror/language'
-import { tags } from '@lezer/highlight'
 import type { Extension } from '@codemirror/state'
+import { EditorView } from '@codemirror/view'
+import { tags } from '@lezer/highlight'
 
 const editorTheme = EditorView.theme({
   '&': {
@@ -65,7 +65,4 @@ const syntaxStyle = HighlightStyle.define([
   { tag: tags.attributeValue, color: 'oklch(var(--syntax-string))' }
 ])
 
-export const theme: Extension[] = [
-  editorTheme,
-  syntaxHighlighting(syntaxStyle)
-]
+export const theme: Extension[] = [editorTheme, syntaxHighlighting(syntaxStyle)]

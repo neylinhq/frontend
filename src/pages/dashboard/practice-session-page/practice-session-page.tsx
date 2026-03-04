@@ -2,6 +2,7 @@ import { ArrowLeftIcon, Loading02Icon, Stars01Icon } from '@untitledui/icons-rea
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams, useSearchParams } from 'react-router'
+
 import { useGenerateExercises, useNextExercise, useSubmitAnswer } from '@/entities/exercise'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
@@ -92,7 +93,11 @@ export const PracticeSessionPage = () => {
             </Link>
           </Button>
 
-          <Button onClick={handleGenerateExercises} disabled={generateExercisesMutation.isPending} size='sm'>
+          <Button
+            onClick={handleGenerateExercises}
+            disabled={generateExercisesMutation.isPending}
+            size='sm'
+          >
             {generateExercisesMutation.isPending ? (
               <>
                 <Loading02Icon className='mr-2 h-4 w-4 animate-spin' />
@@ -138,7 +143,9 @@ export const PracticeSessionPage = () => {
               </Badge>
             </div>
             <div className='px-4 py-4 space-y-4'>
-              <h1 className='text-xl font-semibold leading-snug text-balance'>{exercise.question}</h1>
+              <h1 className='text-xl font-semibold leading-snug text-balance'>
+                {exercise.question}
+              </h1>
               {exercise.type === 'quiz' && exercise.options && (
                 <div className='space-y-2'>
                   {exercise.options.map(option => (
@@ -191,7 +198,9 @@ export const PracticeSessionPage = () => {
                 )}
               </Button>
             ) : (
-              <Button size='sm' onClick={handleNext}>{t('practice.next')}</Button>
+              <Button size='sm' onClick={handleNext}>
+                {t('practice.next')}
+              </Button>
             )}
           </div>
         </div>

@@ -1,8 +1,21 @@
 import { useCallback, useEffect, useRef } from 'react'
-import { useAccount, useConnect, useDisconnect, useSwitchChain, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
+import {
+  useAccount,
+  useConnect,
+  useDisconnect,
+  useSwitchChain,
+  useWaitForTransactionReceipt,
+  useWriteContract
+} from 'wagmi'
 import { injected } from 'wagmi/connectors'
+
 import type { CryptoNetwork } from '@/entities/subscription'
-import { getEvmChainId, getUsdtContractAddress, getSubscriptionContractAddress } from '@/entities/subscription/lib/crypto-utils'
+import {
+  getEvmChainId,
+  getSubscriptionContractAddress,
+  getUsdtContractAddress
+} from '@/entities/subscription/lib/crypto-utils'
+
 import type { CryptoWallet } from './use-crypto-wallet'
 
 // ERC-20 ABI (только approve и allowance)

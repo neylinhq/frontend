@@ -10,8 +10,7 @@
 import { Loading02Icon } from '@untitledui/icons-react/outline'
 import { memo, useCallback, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { Edge, FullMap, Node } from '@/entities/map'
-import { useFullMap, useUpdateNodePosition } from '@/entities/map'
+
 import { GraphToolbar } from '@/features/graph/components/graph-toolbar'
 import { NodeDrawer } from '@/features/graph/components/node-drawer'
 import { ViewControlsPanel } from '@/features/graph/components/view-controls-panel'
@@ -33,6 +32,8 @@ import {
   type ViewportState
 } from '@/features/graph-webgl/components/graph-canvas'
 import { MiniMapWebGL } from '@/features/graph-webgl/components/minimap-webgl'
+import type { Edge, FullMap, Node } from '@/entities/map'
+import { useFullMap, useUpdateNodePosition } from '@/entities/map'
 import { Card } from '@/shared/components/card'
 import { useDarkMode } from '@/shared/hooks'
 import { cn } from '@/shared/lib/cn'
@@ -75,13 +76,8 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
   const updatePositionMutation = useUpdateNodePosition(mapId)
 
   // Selection state
-  const {
-    selectedElements,
-    setSelection,
-    setDrawerNodeId,
-    clearSelection,
-    selectedNodeId
-  } = useNodeSelection()
+  const { selectedElements, setSelection, setDrawerNodeId, clearSelection, selectedNodeId } =
+    useNodeSelection()
   const { controls, toggleFullscreen } = useGraphControls()
 
   // Store hooks for view settings
@@ -222,13 +218,10 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
 
   // Pan to node (for connections panel eye icon)
   // Does NOT enable focus mode - just centers on the node
-  const handlePanToNodeWithZoom = useCallback(
-    (nodeId: string) => {
-      // TODO: Pan to node in WebGL
-      canvasRef.current?.centerOnNode?.(nodeId)
-    },
-    []
-  )
+  const handlePanToNodeWithZoom = useCallback((nodeId: string) => {
+    // TODO: Pan to node in WebGL
+    canvasRef.current?.centerOnNode?.(nodeId)
+  }, [])
 
   // Show loading only when fetching client-side (no initialData)
   if (!initialData && isLoading) {

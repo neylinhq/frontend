@@ -4,26 +4,18 @@
  * Configures all extensions for the Obsidian-style Live Preview editor.
  */
 
-import { markdown, markdownLanguage } from '@codemirror/lang-markdown'
-import { languages } from '@codemirror/language-data'
-import {
-  defaultKeymap,
-  history,
-  historyKeymap,
-  indentWithTab
-} from '@codemirror/commands'
 import {
   autocompletion,
   closeBrackets,
   closeBracketsKeymap,
   completionKeymap
 } from '@codemirror/autocomplete'
+import { defaultKeymap, history, historyKeymap, indentWithTab } from '@codemirror/commands'
+import { markdown, markdownLanguage } from '@codemirror/lang-markdown'
+import { bracketMatching, foldKeymap, indentOnInput } from '@codemirror/language'
+import { languages } from '@codemirror/language-data'
 import { searchKeymap } from '@codemirror/search'
-import {
-  bracketMatching,
-  foldKeymap,
-  indentOnInput
-} from '@codemirror/language'
+import { EditorState, type Extension } from '@codemirror/state'
 import {
   drawSelection,
   dropCursor,
@@ -31,10 +23,9 @@ import {
   keymap,
   placeholder as placeholderExtension
 } from '@codemirror/view'
-import { EditorState, type Extension } from '@codemirror/state'
 
-import { theme } from './theme'
 import { livePreview } from './live-preview'
+import { theme } from './theme'
 
 /**
  * Create all editor extensions
@@ -95,7 +86,7 @@ export const createExtensions = (options: {
   // Change listener
   if (options.onChange) {
     extensions.push(
-      EditorView.updateListener.of((update) => {
+      EditorView.updateListener.of(update => {
         if (update.docChanged) {
           const content = update.state.doc.toString()
           options.onChange!(content)

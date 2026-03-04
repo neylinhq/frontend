@@ -21,7 +21,13 @@ export const USER_NAV_ITEMS: UserNavItem[] = [
 ]
 
 // Для примера разделим как в макете
-import { LayoutGrid01Icon, LogOut01Icon, Settings01Icon, Wallet01Icon } from '@untitledui/icons-react/outline'
+import {
+  LayoutGrid01Icon,
+  LogOut01Icon,
+  Settings01Icon,
+  Wallet01Icon
+} from '@untitledui/icons-react/outline'
+
 import { DASHBOARD_ROUTES, ROUTES, SETTINGS_ROUTES } from '@/shared/config'
 
 export const getUserNavMainSection = (isDashboard: boolean): UserNavItem[] => {

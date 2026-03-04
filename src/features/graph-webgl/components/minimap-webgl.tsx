@@ -7,8 +7,10 @@
  */
 
 import { memo, useMemo } from 'react'
+
 import type { Node } from '@/entities/map'
 import { cn } from '@/shared/lib/cn'
+
 import { getNodeColorHex } from '../lib/theme-bridge'
 
 interface ViewportState {

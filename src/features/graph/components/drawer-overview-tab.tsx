@@ -1,5 +1,6 @@
 import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
+
 import type { Node } from '@/entities/map'
 import { getNodeBorderColor, getRatingColor } from '@/entities/node'
 import { Badge } from '@/shared/components/badge'
@@ -49,7 +50,10 @@ export const DrawerOverviewTab = memo(({ node, className }: DrawerOverviewTabPro
               <span className='text-xs text-muted-foreground w-20'>
                 {t('nodeDrawer.overview.complexity')}:
               </span>
-              <Badge variant='secondary' className={cn('text-xs pointer-events-none', getRatingColor(complexityTier))}>
+              <Badge
+                variant='secondary'
+                className={cn('text-xs pointer-events-none', getRatingColor(complexityTier))}
+              >
                 {complexityTier}
                 {complexity !== null && <span className='ml-1 opacity-70'>({complexity})</span>}
               </Badge>

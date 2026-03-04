@@ -1,6 +1,8 @@
 import { useTranslation } from 'react-i18next'
+
 import { Badge } from '@/shared/components/badge'
 import { cn } from '@/shared/lib/cn'
+
 import type { NewNodePreviewData } from '../model/ai-assist.types'
 import { ProposalCard } from './proposal-card'
 
@@ -44,9 +46,7 @@ export const NewNodePreview = ({ data, onRemove, onSave, isSaving }: NewNodePrev
           </Badge>
         </div>
 
-        {data.description && (
-          <p className='text-sm text-muted-foreground'>{data.description}</p>
-        )}
+        {data.description && <p className='text-sm text-muted-foreground'>{data.description}</p>}
 
         {data.connectTo && data.connectTo.length > 0 && (
           <div className='flex flex-wrap gap-1'>

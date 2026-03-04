@@ -1,8 +1,17 @@
 'use client'
 
-import { ArrowRightIcon, BookOpen01Icon, File01Icon, PackageIcon, PaletteIcon, SearchMdIcon, Type01Icon } from '@untitledui/icons-react/outline'
+import {
+  ArrowRightIcon,
+  BookOpen01Icon,
+  File01Icon,
+  PackageIcon,
+  PaletteIcon,
+  SearchMdIcon,
+  Type01Icon
+} from '@untitledui/icons-react/outline'
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
+
 import { CommandPalette, type CommandPaletteItem } from '@/shared/components/command-palette'
 import { cn } from '@/shared/lib/cn'
 import { isMac } from '@/shared/lib/platform'

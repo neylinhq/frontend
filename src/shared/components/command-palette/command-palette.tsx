@@ -2,8 +2,10 @@
 
 import { Hash01Icon, SearchMdIcon } from '@untitledui/icons-react/outline'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+
 import { Dialog, DialogContent, DialogTitle } from '@/shared/components/dialog'
 import { cn } from '@/shared/lib/cn'
+
 import type { CommandPaletteItem, CommandPaletteProps } from './command-palette.types'
 
 export const CommandPalette = <T extends CommandPaletteItem>({

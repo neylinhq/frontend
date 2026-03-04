@@ -8,6 +8,7 @@ vi.mock('@/shared/api/client', () => ({
 }))
 
 import { api } from '@/shared/api/client'
+
 import { sessionApi } from '../session.api'
 
 describe('sessionApi', () => {
@@ -28,7 +29,11 @@ describe('sessionApi', () => {
     await sessionApi.verifyEmail({ code: '123456' })
     await sessionApi.resendVerification()
     await sessionApi.forgotPassword('user@example.com')
-    await sessionApi.resetPassword({ email: 'user@example.com', code: '123456', password: 'newpass' })
+    await sessionApi.resetPassword({
+      email: 'user@example.com',
+      code: '123456',
+      password: 'newpass'
+    })
     await sessionApi.logout()
     await sessionApi.telegramLogin({
       id: 1,
@@ -39,9 +44,13 @@ describe('sessionApi', () => {
     await sessionApi.getTelegramBotInfo()
 
     expect(api.get).toHaveBeenCalledWith('/users/me')
-    expect(api.post).toHaveBeenCalledWith('/auth/login', {
-      email: 'user@example.com',
-      password: 'password123'
-    }, { skipAuth: true, locale: undefined })
+    expect(api.post).toHaveBeenCalledWith(
+      '/auth/login',
+      {
+        email: 'user@example.com',
+        password: 'password123'
+      },
+      { skipAuth: true, locale: undefined }
+    )
   })
 })

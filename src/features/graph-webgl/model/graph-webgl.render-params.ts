@@ -75,4 +75,3 @@ export const DEFAULT_RENDER_PARAMS: GraphWebGLRenderParams = {
   icon_zoom_threshold: 0.5,
   text_zoom_threshold: 0.3
 }
-

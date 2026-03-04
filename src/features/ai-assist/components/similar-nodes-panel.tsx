@@ -1,6 +1,7 @@
 import { LinkExternal01Icon, Stars01Icon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
+
 import { useSimilarNodes } from '@/entities/node'
 import { Badge } from '@/shared/components/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/card'

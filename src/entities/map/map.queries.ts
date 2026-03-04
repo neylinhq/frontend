@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
 import { mapApi } from './map.api'
 import type {
   CreateEdgeRequest,
@@ -77,19 +78,16 @@ export const useDeleteMap = () => {
       })
 
       // Optimistically remove from all cached lists
-      queryClient.setQueriesData<MapDiscoverResponse>(
-        { queryKey: mapKeys.all },
-        old => {
-          if (!old?.maps) return old
-          const filtered = old.maps.filter(m => m.id !== mapId)
-          return {
-            ...old,
-            maps: filtered,
-            totalCount: Math.max(0, old.totalCount - 1),
-            ownedCount: Math.max(0, old.ownedCount - 1)
-          }
+      queryClient.setQueriesData<MapDiscoverResponse>({ queryKey: mapKeys.all }, old => {
+        if (!old?.maps) return old
+        const filtered = old.maps.filter(m => m.id !== mapId)
+        return {
+          ...old,
+          maps: filtered,
+          totalCount: Math.max(0, old.totalCount - 1),
+          ownedCount: Math.max(0, old.ownedCount - 1)
         }
-      )
+      })
 
       return { previousQueries }
     },
@@ -110,8 +108,7 @@ export const useUpdateMap = (mapId: string) => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (data: { title?: string; description?: string }) =>
-      mapApi.updateMap(mapId, data),
+    mutationFn: (data: { title?: string; description?: string }) => mapApi.updateMap(mapId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: mapKeys.detail(mapId) })
       queryClient.invalidateQueries({ queryKey: mapKeys.fullMap(mapId) })

@@ -5,6 +5,8 @@
  * No hidden syntax - just visual styling that CodeMirror can handle.
  */
 
+import { syntaxTree } from '@codemirror/language'
+import type { Range } from '@codemirror/state'
 import {
   Decoration,
   type DecorationSet,
@@ -13,8 +15,6 @@ import {
   type ViewUpdate,
   WidgetType
 } from '@codemirror/view'
-import { syntaxTree } from '@codemirror/language'
-import { type Range } from '@codemirror/state'
 
 // ============================================================================
 // WIDGETS
@@ -37,7 +37,7 @@ class CheckboxWidget extends WidgetType {
     cb.checked = this.checked
     cb.className = 'cm-task-checkbox'
 
-    cb.addEventListener('mousedown', (e) => {
+    cb.addEventListener('mousedown', e => {
       e.preventDefault()
       const { state } = view
       const line = state.doc.lineAt(this.pos)
@@ -93,7 +93,7 @@ function buildDecorations(view: EditorView): DecorationSet {
   const { state } = view
 
   syntaxTree(state).iterate({
-    enter: (node) => {
+    enter: node => {
       const { from, to, name } = node
 
       switch (name) {
@@ -168,9 +168,7 @@ function buildDecorations(view: EditorView): DecorationSet {
           const endLine = state.doc.lineAt(to)
           for (let i = startLine.number; i <= endLine.number; i++) {
             const line = state.doc.line(i)
-            decorations.push(
-              Decoration.line({ class: 'cm-codeblock-line' }).range(line.from)
-            )
+            decorations.push(Decoration.line({ class: 'cm-codeblock-line' }).range(line.from))
           }
           break
         }
@@ -199,7 +197,7 @@ const livePreviewPlugin = ViewPlugin.fromClass(
       }
     }
   },
-  { decorations: (v) => v.decorations }
+  { decorations: v => v.decorations }
 )
 
 // ============================================================================

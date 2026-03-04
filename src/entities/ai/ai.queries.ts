@@ -1,8 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useCallback, useEffect, useState } from 'react'
+
+import { IS_BROWSER } from '@/shared/config/env'
+
 import { aiApi } from './ai.api'
 import type { EnrichType } from './ai.schema'
-import { IS_BROWSER } from '@/shared/config/env'
 
 const SELECTED_MODEL_KEY = 'neylin:selected-ai-model'
 

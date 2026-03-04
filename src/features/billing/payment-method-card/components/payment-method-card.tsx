@@ -1,6 +1,7 @@
-import { EyeIcon, DotsVerticalIcon, Star01Icon, Trash01Icon } from '@untitledui/icons-react/outline'
+import { DotsVerticalIcon, EyeIcon, Star01Icon, Trash01Icon } from '@untitledui/icons-react/outline'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
 import type { PaymentMethod } from '@/entities/subscription'
 import {
   AlertDialog,

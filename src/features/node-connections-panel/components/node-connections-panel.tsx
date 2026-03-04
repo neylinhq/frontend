@@ -1,6 +1,7 @@
 import { ArrowDownLeftIcon, ArrowUpRightIcon } from '@untitledui/icons-react/outline'
 import { memo, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+
 import type { Edge } from '@/entities/edge'
 import { useConnectionFilter } from '@/entities/edge'
 import type { Node } from '@/entities/node'
@@ -220,10 +221,7 @@ const ConnectionSection = ({
       {showHeader && (
         <div className='mb-3.5 flex items-center gap-2.5'>
           <span
-            className={cn(
-              'flex h-5.5 w-5.5 items-center justify-center rounded-xs',
-              toneClasses
-            )}
+            className={cn('flex h-5.5 w-5.5 items-center justify-center rounded-xs', toneClasses)}
           >
             {icon}
           </span>

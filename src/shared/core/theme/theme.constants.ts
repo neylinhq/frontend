@@ -1,4 +1,5 @@
 import { APP_NAME } from '@/shared/config'
+
 import type { Mode, Palette } from './theme.types'
 
 const APP_PREFIX = APP_NAME.toLowerCase().replace(/\./g, '-')

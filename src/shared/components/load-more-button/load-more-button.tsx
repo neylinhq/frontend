@@ -1,5 +1,6 @@
 import { Loading02Icon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
+
 import { Button, type ButtonProps } from '@/shared/components/button'
 
 export interface LoadMoreButtonProps extends Omit<ButtonProps, 'children'> {
@@ -39,7 +40,7 @@ export const LoadMoreButton = ({
           {loadingText ?? t('common.loading')}
         </>
       ) : (
-        loadMoreText ?? t('common.loadMore')
+        (loadMoreText ?? t('common.loadMore'))
       )}
     </Button>
   )

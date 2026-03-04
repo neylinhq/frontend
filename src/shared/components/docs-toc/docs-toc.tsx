@@ -1,4 +1,5 @@
 import { cn } from '@/shared/lib/cn'
+
 import { useActiveHeading } from './docs-toc.hooks'
 import styles from './docs-toc.module.css'
 

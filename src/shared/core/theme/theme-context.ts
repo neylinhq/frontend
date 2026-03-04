@@ -1,4 +1,5 @@
 import { createContext, useContext } from 'react'
+
 import type { ThemeContextState } from './theme.types'
 
 const initialState: ThemeContextState = {

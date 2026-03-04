@@ -1,4 +1,5 @@
 import type { Edge, Node } from '@/entities/map'
+
 import type { EdgeTranslations } from './edge-translations'
 
 interface TransformNodesOptions {

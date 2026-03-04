@@ -1,16 +1,15 @@
-import { memo, useEffect, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-
 import {
   FilterFunnel01Icon,
   MinusIcon,
   PlusIcon,
   Stars01Icon
 } from '@untitledui/icons-react/outline'
+import { memo, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
+import { useAIPanelStore } from '@/features/ai-assist'
 import type { RelationType } from '@/entities/edge'
 import type { NodeType } from '@/entities/node'
-import { useAIPanelStore } from '@/features/ai-assist'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import { Card } from '@/shared/components/card'

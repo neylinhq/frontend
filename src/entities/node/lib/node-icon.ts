@@ -1,4 +1,3 @@
-import type { ComponentType, SVGProps } from 'react'
 import {
   Atom01Icon,
   File01Icon,
@@ -9,6 +8,8 @@ import {
   User01Icon,
   ZapIcon
 } from '@untitledui/icons-react/outline'
+import type { ComponentType, SVGProps } from 'react'
+
 import type { NodeType } from '../node.schema'
 
 export const getNodeIcon = (type: NodeType): ComponentType<SVGProps<SVGSVGElement>> => {

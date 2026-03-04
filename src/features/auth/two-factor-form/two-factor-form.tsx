@@ -1,8 +1,15 @@
 import { useQueryClient } from '@tanstack/react-query'
-import { Key01Icon, Loading02Icon, Mail01Icon, RefreshCw01Icon, Shield01Icon } from '@untitledui/icons-react/outline'
+import {
+  Key01Icon,
+  Loading02Icon,
+  Mail01Icon,
+  RefreshCw01Icon,
+  Shield01Icon
+} from '@untitledui/icons-react/outline'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
+
 import { sessionApi, type TwoFactorChallengeData } from '@/entities/session'
 import { ApiError } from '@/shared/api/client'
 import { Button } from '@/shared/components/button'

@@ -9,6 +9,7 @@ vi.mock('@/shared/api/client', () => ({
 }))
 
 import { api } from '@/shared/api/client'
+
 import { progressApi } from '../progress.api'
 
 describe('progressApi', () => {

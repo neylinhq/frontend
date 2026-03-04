@@ -1,5 +1,6 @@
 import { XCloseIcon } from '@untitledui/icons-react/outline'
 import { forwardRef } from 'react'
+
 import { cn } from '@/shared/lib/cn'
 
 type CloseButtonSize = 'sm' | 'md' | 'lg'

@@ -2,6 +2,7 @@ import { Link01Icon, PlusIcon, XCloseIcon } from '@untitledui/icons-react/outlin
 import { memo, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
+
 import { type RelationType, RelationTypeEnum } from '@/entities/edge'
 import { useFullMap } from '@/entities/map'
 import { getNodeIcon } from '@/entities/node'
@@ -16,6 +17,7 @@ import {
   SelectValue
 } from '@/shared/components/select'
 import { cn } from '@/shared/lib/cn'
+
 import { type PendingConnection, useNodeCreationStore } from '../model/node-creation.store'
 
 const ALL_RELATION_TYPES = RelationTypeEnum.options

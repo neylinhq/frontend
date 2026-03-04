@@ -1,6 +1,13 @@
-import { BookOpen01Icon, GraduationHat01Icon, Link01Icon, Stars01Icon, Trash01Icon } from '@untitledui/icons-react/outline'
+import {
+  BookOpen01Icon,
+  GraduationHat01Icon,
+  Link01Icon,
+  Stars01Icon,
+  Trash01Icon
+} from '@untitledui/icons-react/outline'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
 import { cn } from '@/shared/lib/cn'
 
 export interface SlashCommand {

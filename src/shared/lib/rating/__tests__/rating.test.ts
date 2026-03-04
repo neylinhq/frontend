@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+
 import type { RatingTier } from '..'
 
 let cssVarToHex: typeof import('@/features/graph-webgl/lib/theme-bridge').cssVarToHex

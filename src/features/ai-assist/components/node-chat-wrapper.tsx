@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+
 import {
   useChatSessions,
   useCreateChatSession,
@@ -15,7 +16,11 @@ interface NodeChatWrapperProps {
 
 export const NodeChatWrapper = ({ nodeId, mapId }: NodeChatWrapperProps) => {
   // Chat sessions state - filter by nodeId
-  const { data: sessions = [], isLoading: sessionsLoading, isError } = useChatSessions(mapId, nodeId)
+  const {
+    data: sessions = [],
+    isLoading: sessionsLoading,
+    isError
+  } = useChatSessions(mapId, nodeId)
   const createSession = useCreateChatSession(mapId)
   const renameSession = useRenameChatSession(mapId)
   const deleteSession = useDeleteChatSession(mapId)
@@ -45,7 +50,15 @@ export const NodeChatWrapper = ({ nodeId, mapId }: NodeChatWrapperProps) => {
         }
       )
     }
-  }, [sessions, activeSessionId, sessionsLoading, isError, createSession.isPending, autoCreateAttempted, nodeId])
+  }, [
+    sessions,
+    activeSessionId,
+    sessionsLoading,
+    isError,
+    createSession.isPending,
+    autoCreateAttempted,
+    nodeId
+  ])
 
   // Reset when nodeId changes
   useEffect(() => {

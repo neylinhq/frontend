@@ -1,10 +1,11 @@
 import { ReactFlowProvider } from '@xyflow/react'
-import type { FullMap } from '@/entities/map'
+
+import { GraphView } from '@/widgets/graph-view'
 import { MapChatDrawer } from '@/features/ai-assist'
 import { ReadOnlyBanner, useMapPermissions } from '@/features/map-permissions'
 import { AddNodeFab, QuickAddDialog, useNodeCreationStore } from '@/features/node-creation'
+import type { FullMap } from '@/entities/map'
 import { useKeyboardShortcut } from '@/shared/hooks/use-keyboard-shortcut'
-import { GraphView } from '@/widgets/graph-view'
 
 interface MapViewPageProps {
   map: FullMap

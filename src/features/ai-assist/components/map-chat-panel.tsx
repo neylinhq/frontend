@@ -1,11 +1,23 @@
-import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
-import { mapKeys, useApplyGraphFragment, useCreateEdge, useCreateNode, useDeleteEdge, useDeleteNode, useFullMap, useMap, useUpdateEdge } from '@/entities/map'
+import { useTranslation } from 'react-i18next'
+
+import type { RelationType } from '@/entities/edge'
+import {
+  mapKeys,
+  useApplyGraphFragment,
+  useCreateEdge,
+  useCreateNode,
+  useDeleteEdge,
+  useDeleteNode,
+  useFullMap,
+  useMap,
+  useUpdateEdge
+} from '@/entities/map'
 import type { Node, NodeType } from '@/entities/node'
 import { useNodes } from '@/entities/node'
-import type { RelationType } from '@/entities/edge'
 // Storage format is now Markdown — no conversion needed
 import { toast } from '@/shared/components/toast'
+
 import type {
   ConnectionPreviewData,
   GraphFragmentPreviewData,
@@ -38,9 +50,7 @@ export const MapChatPanel = ({ mapId, sessionId }: MapChatPanelProps) => {
   const findNodeByLabel = (label: string) => {
     const labelLower = label.toLowerCase()
     return allNodes.find(
-      n =>
-        n.label.toLowerCase() === labelLower ||
-        n.label.toLowerCase().includes(labelLower)
+      n => n.label.toLowerCase() === labelLower || n.label.toLowerCase().includes(labelLower)
     )
   }
 
@@ -49,7 +59,8 @@ export const MapChatPanel = ({ mapId, sessionId }: MapChatPanelProps) => {
       const data = previewCard.data as GraphFragmentPreviewData
 
       // Check if already applied (re-apply after undo) - skip creation
-      const alreadyApplied = data.nodes.some(n => n.appliedNodeId) || data.edges.some(e => e.appliedEdgeId)
+      const alreadyApplied =
+        data.nodes.some(n => n.appliedNodeId) || data.edges.some(e => e.appliedEdgeId)
       if (alreadyApplied) {
         // Already created, just return existing IDs
         const tempIdMapping: Record<string, string> = {}
@@ -229,14 +240,20 @@ export const MapChatPanel = ({ mapId, sessionId }: MapChatPanelProps) => {
     const edgesCreated = result.createdEdges.length
 
     if (nodesCreated > 0 && edgesCreated > 0) {
-      toast.success(t('ai.graphFragment.applied', 'Created {{nodes}} nodes and {{edges}} connections', {
-        nodes: nodesCreated,
-        edges: edgesCreated
-      }))
+      toast.success(
+        t('ai.graphFragment.applied', 'Created {{nodes}} nodes and {{edges}} connections', {
+          nodes: nodesCreated,
+          edges: edgesCreated
+        })
+      )
     } else if (nodesCreated > 0) {
-      toast.success(t('ai.node.createdMultiple', 'Created {{count}} nodes', { count: nodesCreated }))
+      toast.success(
+        t('ai.node.createdMultiple', 'Created {{count}} nodes', { count: nodesCreated })
+      )
     } else if (edgesCreated > 0) {
-      toast.success(t('ai.connection.createdMultiple', 'Created {{count}} connections', { count: edgesCreated }))
+      toast.success(
+        t('ai.connection.createdMultiple', 'Created {{count}} connections', { count: edgesCreated })
+      )
     }
 
     return result

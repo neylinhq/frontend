@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
+
+import type { ViewportState } from '@/features/graph-webgl'
 import { type Node, useCreateEdge, useFullMap } from '@/entities/map'
 import type { NodeType } from '@/entities/node'
-import type { ViewportState } from '@/features/graph-webgl'
 import { Button } from '@/shared/components/button'
 import {
   Dialog,
@@ -16,6 +17,7 @@ import {
 import { Input } from '@/shared/components/input'
 import { toast } from '@/shared/components/toast'
 import { cn } from '@/shared/lib/cn'
+
 import { getNodeConfig, getNodeIcon } from '../lib/node-type-utils'
 import {
   getPartialType,
@@ -25,8 +27,8 @@ import {
 } from '../lib/parse-quick-input'
 import { NODE_CREATION_CONFIG } from '../model/node-creation.constants'
 import { useCreateNodeMutation } from '../model/node-creation.hooks'
-import { useCreateNodeMutationWebGL } from '../model/node-creation.webgl.hooks'
 import { useNodeCreationStore } from '../model/node-creation.store'
+import { useCreateNodeMutationWebGL } from '../model/node-creation.webgl.hooks'
 import { ConnectionSelector } from './connection-selector'
 
 interface CreateNodeInput {

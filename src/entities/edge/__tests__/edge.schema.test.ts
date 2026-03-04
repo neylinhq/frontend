@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { EdgeSchema, RelationTypeEnum } from '../model/edge.schema'
 
 describe('RelationTypeEnum', () => {

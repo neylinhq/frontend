@@ -1,6 +1,12 @@
-import { GraduationHat01Icon, Loading02Icon, PlayIcon, Stars01Icon } from '@untitledui/icons-react/outline'
+import {
+  GraduationHat01Icon,
+  Loading02Icon,
+  PlayIcon,
+  Stars01Icon
+} from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
+
 import { useGenerateExercises, useNextExercise } from '@/entities/exercise'
 import { ApiError } from '@/shared/api/client'
 import { Badge } from '@/shared/components/badge'
@@ -32,9 +38,7 @@ export const PracticePanel = ({ nodeId, mapId }: PracticePanelProps) => {
         onError: (error: unknown) => {
           // ApiError has data property directly (not response.data like axios)
           const message =
-            error instanceof ApiError &&
-            typeof error.data === 'object' &&
-            error.data !== null
+            error instanceof ApiError && typeof error.data === 'object' && error.data !== null
               ? (error.data as { error?: { message?: string } }).error?.message
               : null
           toast.error(message ?? t('errors.failedGenerateExercises'))

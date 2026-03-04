@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { UserMapProgressSchema, UserNodeProgressSchema } from '../progress.schema'
 
 describe('UserNodeProgressSchema', () => {

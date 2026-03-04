@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
+
 import type { Edge } from './edge.schema'
 
 export type ConnectionFilterType = 'all' | 'incoming' | 'outgoing'

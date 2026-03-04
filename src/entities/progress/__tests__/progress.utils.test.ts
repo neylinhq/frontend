@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { enrichNodesWithProgress, getProgressStats } from '../progress.utils'
 
 describe('progress utilities', () => {

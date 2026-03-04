@@ -7,7 +7,9 @@
  */
 
 import type { Edge, Node } from '@xyflow/react'
+
 import type { RelationType } from '@/entities/edge'
+
 import type { ViewMode } from '../model/graph.store'
 
 interface LayoutOptions {

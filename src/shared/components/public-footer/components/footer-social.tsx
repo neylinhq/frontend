@@ -11,10 +11,7 @@ export const FooterSocial = () => {
       >
         telegram
       </a>
-      <a
-        href={SUPPORT_CONTACTS.email.url}
-        className='hover:text-foreground transition-colors'
-      >
+      <a href={SUPPORT_CONTACTS.email.url} className='hover:text-foreground transition-colors'>
         mail
       </a>
     </>

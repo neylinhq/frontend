@@ -1,5 +1,5 @@
-import { getEdgeStrokeColor, type RelationType } from '@/entities/edge'
 import { cssVarToHex } from '@/features/graph-webgl/lib/theme-bridge'
+import { getEdgeStrokeColor, type RelationType } from '@/entities/edge'
 
 export const getEdgeStrokeByType = (relationType: RelationType) => {
   return getEdgeStrokeColor(relationType)

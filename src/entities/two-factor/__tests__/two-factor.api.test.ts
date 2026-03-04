@@ -8,6 +8,7 @@ vi.mock('@/shared/api/client', () => ({
 }))
 
 import { api } from '@/shared/api/client'
+
 import { twoFactorApi } from '../two-factor.api'
 
 describe('twoFactorApi', () => {

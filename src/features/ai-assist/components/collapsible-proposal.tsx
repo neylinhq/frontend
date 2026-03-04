@@ -1,8 +1,10 @@
 import { CheckIcon, ChevronRightIcon, XCloseIcon } from '@untitledui/icons-react/outline'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
 import { Badge } from '@/shared/components/badge'
 import { cn } from '@/shared/lib/cn'
+
 import type {
   ConnectionPreviewData,
   EnrichmentPreviewData,
@@ -51,10 +53,7 @@ interface CollapsibleProposalProps {
   className?: string
 }
 
-export const CollapsibleProposal = ({
-  preview,
-  className
-}: CollapsibleProposalProps) => {
+export const CollapsibleProposal = ({ preview, className }: CollapsibleProposalProps) => {
   const { t } = useTranslation()
   const [isExpanded, setIsExpanded] = useState(false)
 
@@ -84,10 +83,14 @@ export const CollapsibleProposal = ({
         const data = preview.data as GraphFragmentPreviewData
         const parts: string[] = []
         if (data.nodes?.length > 0) {
-          parts.push(t('ai.graphFragment.nodesCount', '{{count}} nodes', { count: data.nodes.length }))
+          parts.push(
+            t('ai.graphFragment.nodesCount', '{{count}} nodes', { count: data.nodes.length })
+          )
         }
         if (data.edges?.length > 0) {
-          parts.push(t('ai.graphFragment.edgesCount', '{{count}} edges', { count: data.edges.length }))
+          parts.push(
+            t('ai.graphFragment.edgesCount', '{{count}} edges', { count: data.edges.length })
+          )
         }
         return parts.join(', ') || t('ai.proposals.change', 'Change')
       }
@@ -101,7 +104,9 @@ export const CollapsibleProposal = ({
   }
 
   return (
-    <div className={cn('rounded-lg overflow-hidden border border-border/60 bg-muted/20', className)}>
+    <div
+      className={cn('rounded-lg overflow-hidden border border-border/60 bg-muted/20', className)}
+    >
       {/* Header row */}
       <div
         role='button'
@@ -124,9 +129,7 @@ export const CollapsibleProposal = ({
         <div
           className={cn(
             'flex-shrink-0 h-4 w-4 rounded-full flex items-center justify-center',
-            isApproved
-              ? 'bg-success/15 text-success'
-              : 'bg-muted text-muted-foreground'
+            isApproved ? 'bg-success/15 text-success' : 'bg-muted text-muted-foreground'
           )}
         >
           {isApproved ? (
@@ -137,9 +140,7 @@ export const CollapsibleProposal = ({
         </div>
 
         {/* Summary text */}
-        <span className='flex-1 text-xs text-muted-foreground truncate'>
-          {getSummary()}
-        </span>
+        <span className='flex-1 text-xs text-muted-foreground truncate'>{getSummary()}</span>
 
         {/* Status text */}
         <span
@@ -223,9 +224,7 @@ const ProposalContent = ({ preview }: { preview: ResolvedPreview }) => {
               {t(`nodeTypes.${data.nodeType}`, data.nodeType)}
             </Badge>
           </div>
-          {data.description && (
-            <p className='text-muted-foreground'>{data.description}</p>
-          )}
+          {data.description && <p className='text-muted-foreground'>{data.description}</p>}
           {data.connectTo && data.connectTo.length > 0 && (
             <div className='flex flex-wrap gap-1'>
               {data.connectTo.map((conn, i) => (
@@ -307,14 +306,14 @@ const ProposalContent = ({ preview }: { preview: ResolvedPreview }) => {
             <div className='space-y-3'>
               {groupedEdges.map(group => (
                 <div key={group.key} className='space-y-1.5'>
-                  <div className='text-xs font-medium text-foreground/70'>
-                    {group.label}
-                  </div>
+                  <div className='text-xs font-medium text-foreground/70'>{group.label}</div>
                   <div className='space-y-1'>
                     {group.edges.map((edge, index) => {
                       const toLabel = getEdgeLabel(edge.toRef, edge.toIsNew)
-                      const edgeColorClasses = EDGE_TYPE_COLORS[edge.relation] ?? 'bg-muted text-muted-foreground'
-                      const edgeKey = edge.tempId || `${edge.fromRef}-${edge.toRef}-${edge.relation}-${index}`
+                      const edgeColorClasses =
+                        EDGE_TYPE_COLORS[edge.relation] ?? 'bg-muted text-muted-foreground'
+                      const edgeKey =
+                        edge.tempId || `${edge.fromRef}-${edge.toRef}-${edge.relation}-${index}`
 
                       return (
                         <div key={edgeKey} className='flex items-center gap-2 text-xs'>
@@ -336,7 +335,9 @@ const ProposalContent = ({ preview }: { preview: ResolvedPreview }) => {
             </div>
           )}
           {data.reasoning && (
-            <p className='text-muted-foreground italic border-t border-border pt-2'>{decodeHtmlEntities(data.reasoning)}</p>
+            <p className='text-muted-foreground italic border-t border-border pt-2'>
+              {decodeHtmlEntities(data.reasoning)}
+            </p>
           )}
         </div>
       )

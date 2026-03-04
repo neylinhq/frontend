@@ -1,4 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react'
+
 import { ErrorFallback } from './error-fallback'
 
 export type ErrorBoundaryLevel = 'page' | 'widget' | 'feature'

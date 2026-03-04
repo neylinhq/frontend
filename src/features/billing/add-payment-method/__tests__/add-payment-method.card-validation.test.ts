@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { CARD_VALIDATION, getCvcLength, getCvcPlaceholder } from '../lib/card-validation'
 
 describe('card validation helpers', () => {

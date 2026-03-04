@@ -1,5 +1,6 @@
 import { AlertCircleIcon, Loading02Icon, Wallet01Icon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
+
 import type { CryptoNetwork } from '@/entities/subscription'
 import { getNetworkDisplayName, shortenWalletAddress } from '@/entities/subscription'
 import { Button } from '@/shared/components/button'

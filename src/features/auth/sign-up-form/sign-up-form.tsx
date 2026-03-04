@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import { z } from 'zod'
+
 import { sessionApi } from '@/entities/session'
 import { ApiError } from '@/shared/api/client'
 import { Button } from '@/shared/components/button'
@@ -21,6 +22,7 @@ import { githubIcon, Icon } from '@/shared/components/icon'
 import { Input } from '@/shared/components/input'
 import { LegalLinks } from '@/shared/components/legal-links'
 import { toast } from '@/shared/components/toast'
+
 import { TelegramLoginButton } from '../telegram-login-button'
 
 export const SignUpForm = () => {

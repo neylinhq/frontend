@@ -1,8 +1,9 @@
 import { Menu01Icon } from '@untitledui/icons-react/outline'
 import { Link } from 'react-router'
+
+import { AuthNav } from '@/widgets/auth-nav'
 import { ModeSelect } from '@/features/theme/mode-select'
 import { PaletteSelect } from '@/features/theme/palette-select'
-import { AuthNav } from '@/widgets/auth-nav'
 import { Button } from '@/shared/components/button'
 import { DocsSearchTrigger } from '@/shared/components/docs-search'
 import { LanguageSelect } from '@/shared/components/language-switcher'

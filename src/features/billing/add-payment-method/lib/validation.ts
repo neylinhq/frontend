@@ -1,7 +1,6 @@
 import { z } from 'zod'
 
 import { CardBrandEnum } from '@/entities/subscription'
-
 import { detectCardBrand, getCvcLength, isValidExpiry, isValidLuhn } from '@/shared/lib/card-utils'
 
 export const addPaymentMethodSchema = z

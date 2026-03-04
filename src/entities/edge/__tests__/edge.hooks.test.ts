@@ -1,5 +1,6 @@
 import { act, renderHook } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
+
 import { useConnectionFilter } from '../model/edge.hooks'
 
 const edges = [

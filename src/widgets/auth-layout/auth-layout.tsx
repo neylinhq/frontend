@@ -1,4 +1,5 @@
 import type * as React from 'react'
+
 import { ModeToggle } from '@/features/theme/mode-toggle'
 import { LanguageSwitcher } from '@/shared/components/language-switcher'
 import { Logo } from '@/shared/components/logo'

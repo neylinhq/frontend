@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+
 import { LegalLayout } from '@/shared/components/legal-layout'
 import { Typography } from '@/shared/components/typography'
 import { LEGAL_ROUTES } from '@/shared/config'

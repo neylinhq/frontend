@@ -1,4 +1,5 @@
 import { CheckIcon, Copy01Icon } from '@untitledui/icons-react/outline'
+
 import { Button, type ButtonProps } from '@/shared/components/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/components/tooltip'
 import { cn } from '@/shared/lib/cn'
@@ -34,10 +35,7 @@ export const CopyButton = ({
           <Button
             variant={variant}
             size={size}
-            className={cn(
-              copied && 'text-success',
-              className
-            )}
+            className={cn(copied && 'text-success', className)}
             onClick={() => copy(value)}
             aria-label={copied ? copiedLabel : label}
             {...props}
@@ -56,10 +54,7 @@ export const CopyButton = ({
     <Button
       variant={variant}
       size={size}
-      className={cn(
-        copied && 'text-success',
-        className
-      )}
+      className={cn(copied && 'text-success', className)}
       onClick={() => copy(value)}
       {...props}
     >

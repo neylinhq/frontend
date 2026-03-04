@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { NodeType } from '../node.schema'
+
 import {
   getComplexityColor,
   getNodeBgColor,
@@ -8,6 +8,7 @@ import {
   getRatingBorderColor,
   getRatingColor
 } from '../lib/node-style'
+import type { NodeType } from '../node.schema'
 
 describe('node style helpers', () => {
   it('returns node-specific classes', () => {

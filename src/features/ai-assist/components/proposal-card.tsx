@@ -5,12 +5,14 @@ import { useTranslation } from 'react-i18next'
 import Markdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
+
 import { Button } from '@/shared/components/button'
 import { cn } from '@/shared/lib/cn'
 import { sanitizeHtml } from '@/shared/lib/sanitize'
 
 /** Prose styles for consistent markdown rendering */
-const proseClasses = 'prose prose-sm dark:prose-invert max-w-none prose-p:my-0.5 prose-headings:my-1 prose-ul:my-0.5 prose-li:my-0'
+const proseClasses =
+  'prose prose-sm dark:prose-invert max-w-none prose-p:my-0.5 prose-headings:my-1 prose-ul:my-0.5 prose-li:my-0'
 
 interface ProposalCardProps {
   /** Header title */
@@ -53,13 +55,24 @@ export const ProposalCard = ({
       </div>
 
       {/* Content */}
-      <div className={cn('text-sm leading-relaxed', variant === 'compact' ? 'px-3 py-2.5' : 'px-3 py-3')}>
+      <div
+        className={cn(
+          'text-sm leading-relaxed',
+          variant === 'compact' ? 'px-3 py-2.5' : 'px-3 py-3'
+        )}
+      >
         {children}
       </div>
 
       {/* Actions */}
       <div className='px-3 py-2 border-t border-border/60 bg-muted/20 flex justify-end gap-2'>
-        <Button size='sm' variant='ghost' onClick={onReject} className='text-muted-foreground' disabled={isLoading}>
+        <Button
+          size='sm'
+          variant='ghost'
+          onClick={onReject}
+          className='text-muted-foreground'
+          disabled={isLoading}
+        >
           <XCloseIcon className='h-3.5 w-3.5 mr-1' />
           {t('common.dismiss', 'Dismiss')}
         </Button>
@@ -128,10 +141,7 @@ export const DiffBlock = ({ current, proposed, className, renderHtml }: DiffBloc
       {current && (
         <DiffLine type='remove'>
           {currentHtml ? (
-            <div
-              className={proseClasses}
-              dangerouslySetInnerHTML={{ __html: currentHtml }}
-            />
+            <div className={proseClasses} dangerouslySetInnerHTML={{ __html: currentHtml }} />
           ) : (
             current
           )}

@@ -2,6 +2,7 @@ import { CheckIcon, Copy01Icon, Loading02Icon } from '@untitledui/icons-react/ou
 import { QRCodeSVG } from 'qrcode.react'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
 import { useEnableTOTP, useSetupTOTP } from '@/entities/two-factor'
 import { Button } from '@/shared/components/button'
 import {

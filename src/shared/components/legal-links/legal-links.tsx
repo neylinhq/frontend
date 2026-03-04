@@ -1,6 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
+
 import { cn } from '@/shared/lib/cn'
+
 import {
   DEFAULT_LINKS_BY_VARIANT,
   LEGAL_LINKS,

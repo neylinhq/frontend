@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
 import { type TwoFactorStatus, twoFactorApi } from './two-factor.api'
 
 export const twoFactorKeys = {

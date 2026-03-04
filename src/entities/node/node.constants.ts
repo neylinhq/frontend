@@ -1,14 +1,15 @@
-import type { ComponentType, SVGProps } from 'react'
 import {
-  BookOpen01Icon,
   Atom01Icon,
-  File01Icon,
   Beaker01Icon,
+  BookOpen01Icon,
+  File01Icon,
   GraduationHat01Icon,
   HelpCircleIcon,
   Lightbulb01Icon,
   User01Icon
 } from '@untitledui/icons-react/outline'
+import type { ComponentType, SVGProps } from 'react'
+
 import type { NodeType } from './node.schema'
 
 export interface NodeTypeConfig {

@@ -2,6 +2,7 @@ import { Loading02Icon } from '@untitledui/icons-react/outline'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useSearchParams } from 'react-router'
+
 import { sessionApi } from '@/entities/session'
 import { ApiError } from '@/shared/api/client'
 import { Button } from '@/shared/components/button'

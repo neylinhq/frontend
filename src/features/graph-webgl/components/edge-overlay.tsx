@@ -6,6 +6,7 @@
  */
 
 import { memo } from 'react'
+
 import type { Edge } from '@/entities/map'
 
 interface EdgeOverlayProps {

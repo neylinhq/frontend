@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
+
 import { SignUpForm } from '@/features/auth/sign-up-form'
 import { Typography } from '@/shared/components/typography'
 import { AUTH_ROUTES } from '@/shared/config'

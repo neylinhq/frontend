@@ -8,8 +8,8 @@
  * Storage format: Markdown (native, no conversion needed).
  */
 
-import { useCallback, useRef } from 'react'
 import type { EditorView } from '@codemirror/view'
+import { useCallback, useRef } from 'react'
 
 import { NoteEditor } from '@/features/note-editor'
 

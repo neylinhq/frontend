@@ -1,9 +1,8 @@
 'use client'
 
+import { ArrowRightIcon, SearchMdIcon } from '@untitledui/icons-react/outline'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-
-import { ArrowRightIcon, SearchMdIcon } from '@untitledui/icons-react/outline'
 
 import type { LightweightNode } from '@/entities/node'
 import { getNodeIcon } from '@/entities/node/lib/node-icon'

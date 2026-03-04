@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+
 import { NODE_TYPE_CONFIGS, type NodeType } from '@/entities/node'
 import {
   Select,

@@ -1,8 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useCallback, useEffect, useRef } from 'react'
+
+import type { ViewportState } from '@/features/graph-webgl'
 import { type FullMap, mapApi, mapKeys, type Node } from '@/entities/map'
 import type { NodeType } from '@/entities/node'
-import type { ViewportState } from '@/features/graph-webgl'
+
 import { calculatePositionNearConnections, calculateSmartPosition } from '../lib/smart-positioning'
 import { useNodeCreationStore } from './node-creation.store'
 
@@ -45,9 +47,10 @@ const getNodesCenter = (nodes: Node[]) => {
  * WebGL variant of create-node mutation.
  * Uses WebGL viewport center instead of React Flow viewport.
  */
-export const useCreateNodeMutationWebGL = (
-  { nodes = [], viewport = null }: CreateNodeWebGLOptions = {}
-) => {
+export const useCreateNodeMutationWebGL = ({
+  nodes = [],
+  viewport = null
+}: CreateNodeWebGLOptions = {}) => {
   const queryClient = useQueryClient()
   const pendingConnections = useNodeCreationStore(state => state.pendingConnections)
 
@@ -73,10 +76,7 @@ export const useCreateNodeMutationWebGL = (
   const getCreatePosition = useCallback(() => {
     const currentNodes = nodesRef.current
     const connectedNodeIds = pendingConnections.map(c => c.targetNodeId)
-    const positionNearConnections = calculatePositionNearConnections(
-      connectedNodeIds,
-      currentNodes
-    )
+    const positionNearConnections = calculatePositionNearConnections(connectedNodeIds, currentNodes)
 
     return (
       positionNearConnections ??

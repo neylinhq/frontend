@@ -1,10 +1,12 @@
 import { Menu01Icon } from '@untitledui/icons-react/outline'
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+
 import { Button } from '@/shared/components/button'
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/shared/components/sheet'
 import { useLocalStorage } from '@/shared/hooks/use-local-storage'
 import { cn } from '@/shared/lib/cn'
+
 import { Sidebar } from './sidebar'
 
 export const SIDEBAR_STORAGE_KEY = 'neylin-sidebar-expanded'
@@ -17,7 +19,11 @@ interface DashboardLayoutProps {
   children: React.ReactNode
 }
 
-export const DashboardLayout = ({ disableScroll = false, defaultExpanded = true, children }: DashboardLayoutProps) => {
+export const DashboardLayout = ({
+  disableScroll = false,
+  defaultExpanded = true,
+  children
+}: DashboardLayoutProps) => {
   const [isExpanded, setIsExpanded] = useLocalStorage(SIDEBAR_STORAGE_KEY, defaultExpanded)
   const { t } = useTranslation()
 

@@ -15,7 +15,7 @@ export {
 export { NODE_CREATION_CONFIG } from './model/node-creation.constants'
 // Hooks
 export { useCreateNodeMutation } from './model/node-creation.hooks'
-export { useCreateNodeMutationWebGL } from './model/node-creation.webgl.hooks'
 export type { NodeCreationState } from './model/node-creation.store'
 // Store
 export { useNodeCreationStore } from './model/node-creation.store'
+export { useCreateNodeMutationWebGL } from './model/node-creation.webgl.hooks'

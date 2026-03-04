@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useOutletContext } from 'react-router'
+
 import { Badge } from '@/shared/components/badge'
 import { DocsBreadcrumbs } from '@/shared/components/docs-breadcrumbs'
 import type { TocItem } from '@/shared/components/docs-toc'

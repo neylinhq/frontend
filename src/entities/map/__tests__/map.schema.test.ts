@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { FullMapSchema, MapEntitySchema } from '../map.schema'
 
 describe('MapEntitySchema', () => {

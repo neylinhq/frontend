@@ -1,5 +1,6 @@
 import { Handle, Position } from '@xyflow/react'
 import { memo } from 'react'
+
 import type { Node } from '@/entities/map'
 import { getNodeBorderColor, getNodeIcon, getRatingColor } from '@/entities/node'
 import { Badge } from '@/shared/components/badge'

@@ -1,18 +1,20 @@
 import { useTranslation } from 'react-i18next'
+
+import { ModeToggle } from '@/features/theme/mode-toggle'
+import { PaletteToggle } from '@/features/theme/palette-toggle'
 import {
   defaultUserPreferences,
   type User,
   type UserPreferences,
   useUpdatePreferences
 } from '@/entities/user'
-import { ModeToggle } from '@/features/theme/mode-toggle'
-import { PaletteToggle } from '@/features/theme/palette-toggle'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
 import { Label } from '@/shared/components/label'
 import { LanguageSwitcher } from '@/shared/components/language-switcher'
 import { Switch } from '@/shared/components/switch'
 import { toast } from '@/shared/components/toast'
 import { Typography } from '@/shared/components/typography'
+
 import { NOTIFICATION_SETTINGS } from '../model/preferences-form.constants'
 
 interface PreferencesFormProps {

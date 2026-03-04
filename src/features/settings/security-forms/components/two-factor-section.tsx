@@ -1,12 +1,14 @@
 import { Loading02Icon } from '@untitledui/icons-react/outline'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
 import { type TwoFactorStatus, useEnableEmailOTP, useTwoFactorStatus } from '@/entities/two-factor'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
 import { Skeleton } from '@/shared/components/skeleton'
 import { toast } from '@/shared/components/toast'
+
 import { BackupCodesDialog } from './backup-codes-dialog'
 import { DisableTwoFactorDialog } from './disable-two-factor-dialog'
 import { TotpSetupDialog } from './totp-setup-dialog'
@@ -119,7 +121,9 @@ export const TwoFactorSection = ({ initialStatus }: TwoFactorSectionProps) => {
                 onClick={handleEnableEmailOTP}
                 disabled={enableEmailOTP.isPending}
               >
-                {enableEmailOTP.isPending && <Loading02Icon className='mr-2 h-4 w-4 animate-spin' />}
+                {enableEmailOTP.isPending && (
+                  <Loading02Icon className='mr-2 h-4 w-4 animate-spin' />
+                )}
                 {t('settings.security.twoFactor.enable')}
               </Button>
             )}

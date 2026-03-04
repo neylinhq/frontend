@@ -1,6 +1,7 @@
 import * as ToastPrimitives from '@radix-ui/react-toast'
 import { XCloseIcon } from '@untitledui/icons-react/outline'
 import * as React from 'react'
+
 import { cn } from '@/shared/lib/cn'
 
 const ToastProvider = ToastPrimitives.Provider
@@ -68,11 +69,11 @@ const ToastClose = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ToastPrimitives.Close
     ref={ref}
-      className={cn(
-        'absolute right-2 top-2 rounded-xs p-1 text-foreground transition-transform',
-        'hover:scale-110 focus-visible:outline-none focus-visible:ring-2',
-        className
-      )}
+    className={cn(
+      'absolute right-2 top-2 rounded-xs p-1 text-foreground transition-transform',
+      'hover:scale-110 focus-visible:outline-none focus-visible:ring-2',
+      className
+    )}
     toast-close=''
     {...props}
   >

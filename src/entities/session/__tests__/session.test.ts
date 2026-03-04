@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { isTwoFactorRequired } from '../session.api'
 
 describe('isTwoFactorRequired', () => {

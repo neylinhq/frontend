@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { deleteAccountSchema, emailChangeSchema, passwordChangeSchema } from '../lib/validation'
 
 describe('security form validation', () => {

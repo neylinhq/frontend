@@ -1,5 +1,7 @@
-import { useTranslation } from 'react-i18next'
 import { ChevronDownIcon, DotsHorizontalIcon, PlusIcon } from '@untitledui/icons-react/outline'
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+
 import { Button } from '@/shared/components/button'
 import {
   DropdownMenu,
@@ -10,9 +12,9 @@ import {
 } from '@/shared/components/dropdown-menu'
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/components/popover'
 import { cn } from '@/shared/lib/cn'
+
 import type { ChatSession } from '../model/ai-assist.sessions.types'
 import { ChatSelectorPopover } from './chat-selector-popover'
-import { useState } from 'react'
 
 interface ChatSelectorRowProps {
   sessions: ChatSession[]
@@ -65,13 +67,15 @@ export const ChatSelectorRow = ({
   const canCloseOthers = !!onCloseOthers && sessions.length > 1 && !!activeSession
 
   return (
-    <div className={cn('flex items-center justify-between gap-2 px-2.5 py-1 bg-background', className)}>
+    <div
+      className={cn('flex items-center justify-between gap-2 px-2.5 py-1 bg-background', className)}
+    >
       {/* Chat selector with popover */}
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <Button
-            variant="ghost"
-            size="sm"
+            variant='ghost'
+            size='sm'
             className={cn(
               'h-6 px-0 w-fit max-w-60',
               'text-xs font-medium text-foreground/90',
@@ -80,7 +84,7 @@ export const ChatSelectorRow = ({
             )}
             disabled={isLoading}
           >
-            <span className="truncate text-left">{activeTitle}</span>
+            <span className='truncate text-left'>{activeTitle}</span>
             <ChevronDownIcon
               className={cn(
                 'h-3 w-3 shrink-0 ml-1 text-muted-foreground/70 transition-transform',
@@ -90,8 +94,8 @@ export const ChatSelectorRow = ({
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className="w-72 p-0 rounded-lg border-border/60 bg-background overflow-hidden"
-          align="start"
+          className='w-72 p-0 rounded-lg border-border/60 bg-background overflow-hidden'
+          align='start'
           sideOffset={6}
         >
           <ChatSelectorPopover
@@ -103,10 +107,10 @@ export const ChatSelectorRow = ({
       </Popover>
 
       {/* New chat button */}
-      <div className="flex items-center gap-1.5">
+      <div className='flex items-center gap-1.5'>
         <Button
-          variant="ghost"
-          size="sm"
+          variant='ghost'
+          size='sm'
           className={cn(
             'h-6 w-6 shrink-0 rounded-xs',
             'text-muted-foreground',
@@ -117,14 +121,14 @@ export const ChatSelectorRow = ({
           disabled={isLoading}
           aria-label={t('ai.chat.newChat', 'New chat')}
         >
-          <PlusIcon className="h-2.5 w-2.5" />
+          <PlusIcon className='h-2.5 w-2.5' />
         </Button>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
-              variant="ghost"
-              size="sm"
+              variant='ghost'
+              size='sm'
               className={cn(
                 'h-6 w-6 shrink-0 rounded-xs',
                 'text-muted-foreground',
@@ -134,29 +138,25 @@ export const ChatSelectorRow = ({
               disabled={isLoading}
               aria-label={t('common.menu', 'Menu')}
             >
-              <DotsHorizontalIcon className="h-2.5 w-2.5" />
+              <DotsHorizontalIcon className='h-2.5 w-2.5' />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="rounded-lg p-1.5">
-            <DropdownMenuItem
-              onClick={onCreateSession}
-              disabled={isLoading}
-              className="text-xs"
-            >
+          <DropdownMenuContent align='end' className='rounded-lg p-1.5'>
+            <DropdownMenuItem onClick={onCreateSession} disabled={isLoading} className='text-xs'>
               {t('ai.chat.newChat', 'New chat')}
             </DropdownMenuItem>
-            <DropdownMenuSeparator className="my-0.5" />
+            <DropdownMenuSeparator className='my-0.5' />
             <DropdownMenuItem
               onClick={onCloseOthers}
               disabled={!canCloseOthers}
-              className="text-xs"
+              className='text-xs'
             >
               {t('ai.chat.closeOthers', 'Close others')}
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={onCloseAll}
               disabled={!canCloseAll}
-              className="text-xs text-destructive data-[highlighted]:text-destructive"
+              className='text-xs text-destructive data-[highlighted]:text-destructive'
             >
               {t('ai.chat.closeAll', 'Delete all chats')}
             </DropdownMenuItem>

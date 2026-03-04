@@ -1,7 +1,6 @@
+import { ArrowRightIcon, CheckIcon, XCloseIcon } from '@untitledui/icons-react/outline'
 import { memo, useCallback, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-
-import { ArrowRightIcon, CheckIcon, XCloseIcon } from '@untitledui/icons-react/outline'
 
 import { RelationTypeEnum } from '@/entities/edge'
 import { useCreateEdge } from '@/entities/map'

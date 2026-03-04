@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
+
 import { getEdgeTranslations, getEdgeTypeLabel } from '../lib/edge-translations'
 
 describe('edge translations', () => {
@@ -14,7 +15,9 @@ describe('edge translations', () => {
     const t = (key: string) => `translated:${key}`
     const translations = getEdgeTranslations(t, 'ru')
     expect(translations['related-to']).toBe('translated:graph.edgeTypes.related-to')
-    expect(getEdgeTypeLabel(translations, 'related-to')).toBe('translated:graph.edgeTypes.related-to')
+    expect(getEdgeTypeLabel(translations, 'related-to')).toBe(
+      'translated:graph.edgeTypes.related-to'
+    )
   })
 
   it('recomputes cache when language changes', () => {

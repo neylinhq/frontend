@@ -1,14 +1,13 @@
 import { PassThrough } from 'node:stream'
-
-import type { AppLoadContext, EntryContext } from 'react-router'
 import { createReadableStreamFromReadable } from '@react-router/node'
-import { ServerRouter } from 'react-router'
 import { isbot } from 'isbot'
 import type { RenderToPipeableStreamOptions } from 'react-dom/server'
 import { renderToPipeableStream } from 'react-dom/server'
 import { I18nextProvider } from 'react-i18next'
-import { getI18nData } from '@/app/i18n/server/i18n.server'
-import { createServerI18nInstance } from '@/app/i18n/create-instance.server'
+import type { AppLoadContext, EntryContext } from 'react-router'
+import { ServerRouter } from 'react-router'
+
+import { createServerI18nInstance, getI18nData } from '@/app/i18n/server'
 
 export const streamTimeout = 5_000
 

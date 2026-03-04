@@ -1,5 +1,6 @@
 import * as fs from 'node:fs'
 import * as path from 'node:path'
+
 import { getLocale, type SupportedLanguage } from '@/shared/lib/locale'
 
 export { getLocale, type SupportedLanguage }

@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+
 import { cn } from '@/shared/lib/cn'
 
 interface Suggestion {
@@ -41,16 +42,17 @@ export const ChatEmptyState = ({
     { key: 'summary', text: t('ai.chat.suggestions.summary', 'Summarize') }
   ]
 
-  const suggestions = customSuggestions ?? (context === 'map' ? defaultMapSuggestions : defaultNodeSuggestions)
+  const suggestions =
+    customSuggestions ?? (context === 'map' ? defaultMapSuggestions : defaultNodeSuggestions)
 
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-4 px-5 text-center">
+    <div className='flex h-full flex-col items-center justify-center gap-4 px-5 text-center'>
       {/* Tags - hidden on mobile */}
-      <div className="hidden md:flex flex-wrap items-center justify-center gap-2">
+      <div className='hidden md:flex flex-wrap items-center justify-center gap-2'>
         {suggestions.map(suggestion => (
           <button
             key={suggestion.key}
-            type="button"
+            type='button'
             onClick={() => onSuggestionClick(suggestion.text)}
             className={cn(
               'px-3 py-1.5 rounded-full cursor-pointer',
@@ -67,7 +69,7 @@ export const ChatEmptyState = ({
       </div>
 
       {/* Hint text */}
-      <p className="text-sm text-center text-balance text-muted-foreground/70">
+      <p className='text-sm text-center text-balance text-muted-foreground/70'>
         {t('ai.chat.emptyHint', 'Type anything or use /commands')}
       </p>
     </div>

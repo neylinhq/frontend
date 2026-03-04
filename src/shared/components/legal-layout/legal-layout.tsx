@@ -2,6 +2,7 @@ import { ArrowLeftIcon } from '@untitledui/icons-react/outline'
 import type * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
+
 import { ROUTES } from '@/shared/config'
 
 interface LegalLayoutProps {

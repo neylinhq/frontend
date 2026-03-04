@@ -1,5 +1,6 @@
 import { act, renderHook, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { createQueryWrapper, createTestQueryClient } from '@/shared/tests'
 
 let nodeApi: typeof import('../node.api').nodeApi
@@ -88,10 +89,9 @@ describe('node queries', () => {
       })
     })
 
-    const { result: updateNode } = renderHook(
-      () => nodeQueries.useUpdateNode('map-1', 'node-1'),
-      { wrapper }
-    )
+    const { result: updateNode } = renderHook(() => nodeQueries.useUpdateNode('map-1', 'node-1'), {
+      wrapper
+    })
     await act(async () => {
       await updateNode.current.mutateAsync({ label: 'Updated' })
     })
@@ -101,10 +101,9 @@ describe('node queries', () => {
       await deleteNode.current.mutateAsync('node-1')
     })
 
-    const { result: generate } = renderHook(
-      () => nodeQueries.useGenerateEmbedding('map-1'),
-      { wrapper }
-    )
+    const { result: generate } = renderHook(() => nodeQueries.useGenerateEmbedding('map-1'), {
+      wrapper
+    })
     await act(async () => {
       await generate.current.mutateAsync('node-1')
     })
@@ -120,10 +119,9 @@ describe('node queries', () => {
     const queryClient = createTestQueryClient()
     const wrapper = createQueryWrapper(queryClient)
 
-    const { result: disabled } = renderHook(
-      () => nodeQueries.useSimilarNodes('map-1', 'node-1'),
-      { wrapper }
-    )
+    const { result: disabled } = renderHook(() => nodeQueries.useSimilarNodes('map-1', 'node-1'), {
+      wrapper
+    })
     expect(disabled.current.data).toBeUndefined()
 
     const { result: enabled } = renderHook(

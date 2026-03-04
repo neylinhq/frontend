@@ -1,5 +1,14 @@
 import { useTranslation } from 'react-i18next'
-import type { ConnectionPreviewData, EdgePreviewData, ExercisePreviewData, GraphFragmentPreviewData, NewNodePreviewData, NodePreviewData, PreviewCard } from '../model/ai-assist.types'
+
+import type {
+  ConnectionPreviewData,
+  EdgePreviewData,
+  ExercisePreviewData,
+  GraphFragmentPreviewData,
+  NewNodePreviewData,
+  NodePreviewData,
+  PreviewCard
+} from '../model/ai-assist.types'
 import { ConnectionPreview } from './connection-preview'
 import { EnrichmentPreview } from './enrichment-preview'
 import { ExerciseCard } from './exercise-card'
@@ -71,10 +80,24 @@ export const PreviewCardComponent = ({
       )
 
     case 'new_node':
-      return <NewNodePreview data={preview.data as NewNodePreviewData} onRemove={onRemove} onSave={onSave} isSaving={isSaving} />
+      return (
+        <NewNodePreview
+          data={preview.data as NewNodePreviewData}
+          onRemove={onRemove}
+          onSave={onSave}
+          isSaving={isSaving}
+        />
+      )
 
     case 'connection':
-      return <ConnectionPreview data={preview.data as ConnectionPreviewData} onRemove={onRemove} onSave={onSave} isSaving={isSaving} />
+      return (
+        <ConnectionPreview
+          data={preview.data as ConnectionPreviewData}
+          onRemove={onRemove}
+          onSave={onSave}
+          isSaving={isSaving}
+        />
+      )
 
     case 'edge': {
       const data = preview.data as EdgePreviewData

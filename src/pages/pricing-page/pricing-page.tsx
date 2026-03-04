@@ -1,11 +1,15 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import type { CryptoNetwork, PaymentMethod, PlanDetails } from '@/entities/subscription'
-import { usePaymentMethods, useSubscribeWithCrypto, useAddPaymentMethod } from '@/entities/subscription'
-import { useCurrentUser } from '@/entities/user'
 import { PlanCard } from '@/features/billing/plan-card'
 import { SubscribeDialog } from '@/features/billing/subscribe-dialog'
+import type { CryptoNetwork, PaymentMethod, PlanDetails } from '@/entities/subscription'
+import {
+  useAddPaymentMethod,
+  usePaymentMethods,
+  useSubscribeWithCrypto
+} from '@/entities/subscription'
+import { useCurrentUser } from '@/entities/user'
 import { toast } from '@/shared/components/toast'
 import { Typography } from '@/shared/components/typography'
 
@@ -48,7 +52,13 @@ export const PricingPage = ({ plans }: PricingPageProps) => {
     setDialogOpen(false)
   }
 
-  const handleAddCard = async (data: { cardholderName: string; cardNumber: string; brand: string; expiryMonth: number; expiryYear: number }): Promise<PaymentMethod> => {
+  const handleAddCard = async (data: {
+    cardholderName: string
+    cardNumber: string
+    brand: string
+    expiryMonth: number
+    expiryYear: number
+  }): Promise<PaymentMethod> => {
     const result = await addPaymentMethod.mutateAsync({
       type: 'card',
       cardholderName: data.cardholderName,
@@ -60,12 +70,16 @@ export const PricingPage = ({ plans }: PricingPageProps) => {
     return result
   }
 
-  const handleAddCrypto = async (data: { network: CryptoNetwork; address: string }): Promise<PaymentMethod> => {
+  const handleAddCrypto = async (data: {
+    network: CryptoNetwork
+    address: string
+  }): Promise<PaymentMethod> => {
     // Check if wallet already exists - skip silently with warning
     const walletExists = paymentMethods.some(
-      m => m.type === 'crypto' &&
-           m.walletAddress?.toLowerCase() === data.address.toLowerCase() &&
-           m.network === data.network
+      m =>
+        m.type === 'crypto' &&
+        m.walletAddress?.toLowerCase() === data.address.toLowerCase() &&
+        m.network === data.network
     )
 
     if (walletExists) {
@@ -74,9 +88,10 @@ export const PricingPage = ({ plans }: PricingPageProps) => {
       toast.warning(t('billing.crypto.walletAlreadyExists', { network: networkName }))
       // Return the existing payment method
       return paymentMethods.find(
-        m => m.type === 'crypto' &&
-             m.walletAddress?.toLowerCase() === data.address.toLowerCase() &&
-             m.network === data.network
+        m =>
+          m.type === 'crypto' &&
+          m.walletAddress?.toLowerCase() === data.address.toLowerCase() &&
+          m.network === data.network
       )!
     }
 

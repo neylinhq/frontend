@@ -1,6 +1,7 @@
 import { Loading02Icon, Trash01Icon } from '@untitledui/icons-react/outline'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/components/avatar'
 import { Button } from '@/shared/components/button'
 import { ImageCropDialog } from '@/shared/components/image-crop-dialog'

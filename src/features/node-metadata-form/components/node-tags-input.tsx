@@ -1,6 +1,7 @@
 import { XCloseIcon } from '@untitledui/icons-react/outline'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import { Input } from '@/shared/components/input'

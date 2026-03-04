@@ -1,8 +1,9 @@
-import { EditorState } from '@codemirror/state'
-import { EditorView } from '@codemirror/view'
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown'
 import { languages } from '@codemirror/language-data'
+import { EditorState } from '@codemirror/state'
+import { EditorView } from '@codemirror/view'
 import { describe, expect, it, vi } from 'vitest'
+
 import { livePreview } from '../lib/live-preview'
 
 describe('markdown editor live preview', () => {
@@ -38,11 +39,7 @@ describe('markdown editor live preview', () => {
     const [plugin, styles] = livePreview()
     const state = EditorState.create({
       doc,
-      extensions: [
-        markdown({ base: markdownLanguage, codeLanguages: languages }),
-        plugin,
-        styles
-      ]
+      extensions: [markdown({ base: markdownLanguage, codeLanguages: languages }), plugin, styles]
     })
     const parent = document.createElement('div')
     const view = new EditorView({ state, parent })
@@ -50,11 +47,9 @@ describe('markdown editor live preview', () => {
     expect(view.dom.querySelector('.cm-heading-1')).toBeTruthy()
     expect(view.dom.querySelector('.cm-task-checkbox')).toBeTruthy()
 
-    const boxes = Array.from(
-      view.dom.querySelectorAll<HTMLInputElement>('.cm-task-checkbox')
-    )
+    const boxes = Array.from(view.dom.querySelectorAll<HTMLInputElement>('.cm-task-checkbox'))
     const beforeText = view.state.doc.toString()
-    boxes.forEach((box) => {
+    boxes.forEach(box => {
       box.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))
     })
     const afterText = view.state.doc.toString()
@@ -74,11 +69,7 @@ describe('markdown editor live preview', () => {
     const [plugin, styles] = livePreview()
     const state = EditorState.create({
       doc,
-      extensions: [
-        markdown({ base: markdownLanguage, codeLanguages: languages }),
-        plugin,
-        styles
-      ]
+      extensions: [markdown({ base: markdownLanguage, codeLanguages: languages }), plugin, styles]
     })
     const parent = document.createElement('div')
     const view = new EditorView({ state, parent })

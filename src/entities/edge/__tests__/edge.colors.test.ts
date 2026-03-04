@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { RelationType } from '../model/edge.schema'
+
 import {
   getEdgeBadgeClass,
   getEdgeBgClass,
@@ -8,6 +8,7 @@ import {
   getEdgeStrokeColor,
   getEdgeTextClass
 } from '../lib/edge-colors'
+import type { RelationType } from '../model/edge.schema'
 
 describe('edge color helpers', () => {
   it('returns style tokens for relation types', () => {
@@ -19,9 +20,7 @@ describe('edge color helpers', () => {
   })
 
   it('builds badge class with background and text', () => {
-    expect(getEdgeBadgeClass('related-to')).toBe(
-      'bg-edge-related-to-muted text-edge-related-to'
-    )
+    expect(getEdgeBadgeClass('related-to')).toBe('bg-edge-related-to-muted text-edge-related-to')
   })
 
   it('falls back to defaults for unknown types', () => {
@@ -31,8 +30,6 @@ describe('edge color helpers', () => {
     expect(getEdgeBgLightClass(unknown)).toBe('bg-edge-related-to/15')
     expect(getEdgeBgMediumClass(unknown)).toBe('bg-edge-related-to/25')
     expect(getEdgeTextClass(unknown)).toBe('text-edge-related-to')
-    expect(getEdgeBadgeClass(unknown)).toBe(
-      'bg-edge-related-to-muted text-edge-related-to'
-    )
+    expect(getEdgeBadgeClass(unknown)).toBe('bg-edge-related-to-muted text-edge-related-to')
   })
 })

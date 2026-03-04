@@ -16,7 +16,8 @@ const tabsListVariants = cva('inline-flex items-center justify-center text-muted
     variant: {
       default: 'h-10 rounded-lg bg-muted p-1',
       underline: 'h-10 w-full rounded-none border-b border-border/50 bg-transparent p-0 px-2',
-      iconbar: 'h-10 w-full rounded-none border-b border-border/60 bg-muted/50 px-2 justify-center gap-2'
+      iconbar:
+        'h-10 w-full rounded-none border-b border-border/60 bg-muted/50 px-2 justify-center gap-2'
     }
   },
   defaultVariants: {

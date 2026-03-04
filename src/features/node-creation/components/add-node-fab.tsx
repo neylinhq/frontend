@@ -1,8 +1,10 @@
 import { PlusIcon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
+
 import { Button } from '@/shared/components/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/components/tooltip'
 import { getShortcut } from '@/shared/lib/platform'
+
 import { useNodeCreationStore } from '../model/node-creation.store'
 
 export const AddNodeFab = () => {

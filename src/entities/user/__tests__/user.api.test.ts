@@ -11,6 +11,7 @@ vi.mock('@/shared/api/client', () => ({
 }))
 
 import { api } from '@/shared/api/client'
+
 import { userApi } from '../user.api'
 
 describe('userApi', () => {

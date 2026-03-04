@@ -1,4 +1,5 @@
 import * as React from 'react'
+
 import { Label } from '@/shared/components/label'
 import { cn } from '@/shared/lib/cn'
 
@@ -17,14 +18,23 @@ interface FieldProps {
 
 const Field = React.forwardRef<HTMLDivElement, FieldProps>(
   (
-    { label, error, description, required, htmlFor, children, size = 'md', className, labelClassName },
+    {
+      label,
+      error,
+      description,
+      required,
+      htmlFor,
+      children,
+      size = 'md',
+      className,
+      labelClassName
+    },
     ref
   ) => {
     const generatedId = React.useId()
     const id = htmlFor ?? generatedId
     const isInvalid = Boolean(error)
-    const spacingClass =
-      size === 'sm' ? 'space-y-1' : size === 'lg' ? 'space-y-2' : 'space-y-1.5'
+    const spacingClass = size === 'sm' ? 'space-y-1' : size === 'lg' ? 'space-y-2' : 'space-y-1.5'
 
     // Clone child element to inject id and validation state
     const childWithProps = React.isValidElement(children)

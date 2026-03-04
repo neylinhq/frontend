@@ -1,5 +1,7 @@
 import { delay, HttpResponse, http } from 'msw'
+
 import { API_URL } from '@/shared/config/env'
+
 import { generateMockTokens, MOCK_CREDENTIALS, mockUser } from '../data'
 
 export const authHandlers = [

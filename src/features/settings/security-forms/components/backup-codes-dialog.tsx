@@ -1,6 +1,12 @@
-import { CheckIcon, Copy01Icon, Download01Icon, Loading02Icon } from '@untitledui/icons-react/outline'
+import {
+  CheckIcon,
+  Copy01Icon,
+  Download01Icon,
+  Loading02Icon
+} from '@untitledui/icons-react/outline'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
 import {
   useRegenerateBackupCodes,
   useSendEmailCode,

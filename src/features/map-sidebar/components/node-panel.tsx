@@ -1,12 +1,18 @@
-import { AlertCircleIcon, Maximize01Icon, Target01Icon, Trash01Icon } from '@untitledui/icons-react/outline'
+import {
+  AlertCircleIcon,
+  Maximize01Icon,
+  Target01Icon,
+  Trash01Icon
+} from '@untitledui/icons-react/outline'
 import { memo, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
+
+import { useFocusMode } from '@/features/graph/model/graph.store'
+import { NodeMetadataForm, type NodeMetadataFormValues } from '@/features/node-metadata-form'
 import type { Edge, Node } from '@/entities/map'
 import { useDeleteNode, useUpdateNode } from '@/entities/map'
 import { useNodeProgress, useUpdateNodeProgress } from '@/entities/progress'
-import { useFocusMode } from '@/features/graph/model/graph.store'
-import { NodeMetadataForm, type NodeMetadataFormValues } from '@/features/node-metadata-form'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -129,7 +135,9 @@ export const NodePanel = memo(function NodePanel({
               size='icon'
               className='h-7 w-7'
               onClick={() => (isFocused ? clearFocus() : focusNode(node.id))}
-              title={isFocused ? t('graph.nodeControls.clearFocus') : t('graph.nodeControls.focusMode')}
+              title={
+                isFocused ? t('graph.nodeControls.clearFocus') : t('graph.nodeControls.focusMode')
+              }
             >
               <Target01Icon className='h-3.5 w-3.5' />
             </Button>
@@ -150,7 +158,7 @@ export const NodePanel = memo(function NodePanel({
         {/* Tabs */}
         <Tabs
           value={activeTab}
-          onValueChange={(v) => setActiveTab(v as 'properties' | 'connections')}
+          onValueChange={v => setActiveTab(v as 'properties' | 'connections')}
           className='flex flex-col flex-1 min-h-0'
         >
           <TabsList variant='underline' className='grid grid-cols-2'>
@@ -210,7 +218,10 @@ export const NodePanel = memo(function NodePanel({
                     </CardHeader>
                     <CardContent className='px-3 pb-3'>
                       <p className='text-xs text-muted-foreground mb-3'>
-                        {t('nodeEdit.deleteWarning', 'Deleting this node will also remove all its connections.')}
+                        {t(
+                          'nodeEdit.deleteWarning',
+                          'Deleting this node will also remove all its connections.'
+                        )}
                       </p>
                       <Button
                         variant='ghost'

@@ -3,14 +3,21 @@ import { XCloseIcon } from '@untitledui/icons-react/outline'
 import { useCallback, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+
 import { Badge } from '@/shared/components/badge'
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/shared/components/form'
 import { Input } from '@/shared/components/input'
+
 import { type NodeMetadataFormValues, nodeMetadataFormSchema } from '../lib/validation'
 import type { NodeMetadataFormProps } from '../model/node-metadata-form.types'
 import { NodeTypeSelect } from './node-type-select'
 
-export const NodeMetadataForm = ({ node, onSubmit, isPending, disabled }: NodeMetadataFormProps) => {
+export const NodeMetadataForm = ({
+  node,
+  onSubmit,
+  isPending,
+  disabled
+}: NodeMetadataFormProps) => {
   const { t } = useTranslation()
   const [tagInput, setTagInput] = useState('')
 

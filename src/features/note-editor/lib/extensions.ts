@@ -2,39 +2,29 @@
  * CodeMirror Extensions Configuration
  */
 
-import { markdown, markdownLanguage } from '@codemirror/lang-markdown'
-import { languages } from '@codemirror/language-data'
-import { Table } from '@lezer/markdown'
-import {
-  defaultKeymap,
-  history,
-  historyKeymap,
-  indentWithTab
-} from '@codemirror/commands'
 import {
   autocompletion,
   closeBrackets,
   closeBracketsKeymap,
   completionKeymap
 } from '@codemirror/autocomplete'
+import { defaultKeymap, history, historyKeymap, indentWithTab } from '@codemirror/commands'
+import { markdown, markdownLanguage } from '@codemirror/lang-markdown'
+import { bracketMatching, foldKeymap, indentOnInput, indentUnit } from '@codemirror/language'
+import { languages } from '@codemirror/language-data'
 import { searchKeymap } from '@codemirror/search'
-import {
-  bracketMatching,
-  foldKeymap,
-  indentOnInput,
-  indentUnit
-} from '@codemirror/language'
-import {
-  EditorView,
-  keymap,
-  placeholder as placeholderExtension,
-  highlightActiveLine,
-  dropCursor
-} from '@codemirror/view'
 import { EditorState, type Extension } from '@codemirror/state'
+import {
+  dropCursor,
+  EditorView,
+  highlightActiveLine,
+  keymap,
+  placeholder as placeholderExtension
+} from '@codemirror/view'
+import { Table } from '@lezer/markdown'
 
-import { theme } from './theme'
 import { livePreview } from './live-preview'
+import { theme } from './theme'
 
 export const createExtensions = (options: {
   placeholder?: string
@@ -80,7 +70,7 @@ export const createExtensions = (options: {
 
   if (options.onChange) {
     extensions.push(
-      EditorView.updateListener.of((update) => {
+      EditorView.updateListener.of(update => {
         if (update.docChanged) {
           options.onChange?.(update.state.doc.toString())
         }

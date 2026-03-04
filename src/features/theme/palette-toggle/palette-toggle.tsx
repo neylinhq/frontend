@@ -1,5 +1,6 @@
 import { PaletteIcon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
+
 import { Button } from '@/shared/components/button'
 import {
   DropdownMenu,

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import {
   applyPositions,
   layoutOptionsToWasm,
@@ -119,7 +120,7 @@ describe('transform helpers', () => {
   })
 
   it('transforms positions into a map', () => {
-    const map = transformPositions('[{\"id\":\"node-1\",\"x\":5,\"y\":7}]')
+    const map = transformPositions('[{"id":"node-1","x":5,"y":7}]')
     expect(map.get('node-1')).toEqual({ x: 5, y: 7 })
   })
 
@@ -136,7 +137,7 @@ describe('transform helpers', () => {
         updatedAt: '2024-01-01T00:00:00.000Z'
       }
     ]
-    const result = applyPositions(nodes, '[{\"id\":\"node-1\",\"x\":10,\"y\":20}]')
+    const result = applyPositions(nodes, '[{"id":"node-1","x":10,"y":20}]')
     expect(result[0].position).toEqual({ x: 10, y: 20 })
   })
 
@@ -159,9 +160,9 @@ describe('transform helpers', () => {
   })
 
   it('serializes viewport and layout options', () => {
-    expect(
-      viewportToWasm({ x: 1, y: 2, zoom: 1.2, width: 100, height: 200 })
-    ).toContain('"zoom":1.2')
+    expect(viewportToWasm({ x: 1, y: 2, zoom: 1.2, width: 100, height: 200 })).toContain(
+      '"zoom":1.2'
+    )
 
     const options = JSON.parse(
       layoutOptionsToWasm({

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { ExerciseSchema, SubmitAnswerOutputSchema } from '../exercise.schema'
 
 describe('ExerciseSchema', () => {

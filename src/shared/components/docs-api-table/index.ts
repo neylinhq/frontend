@@ -1,1 +1,1 @@
-export { DocsApiTable, type ApiTableRow } from './docs-api-table'
+export { type ApiTableRow, DocsApiTable } from './docs-api-table'

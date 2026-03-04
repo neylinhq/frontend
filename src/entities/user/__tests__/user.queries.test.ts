@@ -1,5 +1,6 @@
 import { act, renderHook, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { createQueryWrapper, createTestQueryClient } from '@/shared/tests'
 
 vi.mock('../user.api', () => ({
@@ -17,12 +18,12 @@ vi.mock('../user.api', () => ({
 
 import { userApi } from '../user.api'
 import {
-  userKeys,
   useChangeEmail,
   useChangePassword,
   useCurrentUser,
   useDeleteAccount,
   useDeleteAvatar,
+  userKeys,
   useUpdatePreferences,
   useUpdateProfile,
   useUploadAvatar

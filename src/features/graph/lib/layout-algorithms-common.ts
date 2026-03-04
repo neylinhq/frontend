@@ -1,4 +1,5 @@
 import type { Edge, Node } from '@xyflow/react'
+
 import type { RelationType } from '@/entities/edge'
 
 export const DEFAULT_NODE_SPACING = 200

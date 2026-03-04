@@ -1,6 +1,7 @@
 import { Loading02Icon } from '@untitledui/icons-react/outline'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
 import { useDisableTwoFactor, useSendEmailCode, useTwoFactorStatus } from '@/entities/two-factor'
 import {
   Dialog,

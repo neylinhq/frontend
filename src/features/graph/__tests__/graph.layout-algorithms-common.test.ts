@@ -1,5 +1,10 @@
 import { describe, expect, it, vi } from 'vitest'
-import { getEdgesBetweenNodes, getNodesWithinDepth, pathLayout } from '../lib/layout-algorithms-common'
+
+import {
+  getEdgesBetweenNodes,
+  getNodesWithinDepth,
+  pathLayout
+} from '../lib/layout-algorithms-common'
 
 describe('layout-algorithms-common', () => {
   it('falls back when no prerequisite roots', () => {
@@ -13,7 +18,12 @@ describe('layout-algorithms-common', () => {
     ]
     const fallback = vi.fn(() => ({ nodes, edges }))
 
-    pathLayout(nodes, edges, { nodeSpacing: 100, levelSpacing: 200, directionStrength: 1 }, fallback)
+    pathLayout(
+      nodes,
+      edges,
+      { nodeSpacing: 100, levelSpacing: 200, directionStrength: 1 },
+      fallback
+    )
     expect(fallback).toHaveBeenCalled()
   })
 
@@ -22,9 +32,7 @@ describe('layout-algorithms-common', () => {
       { id: 'a', position: { x: 0, y: 0 } },
       { id: 'b', position: { x: 0, y: 0 } }
     ]
-    const edges = [
-      { id: 'e1', source: 'a', target: 'b', data: { relationType: 'prerequisite' } }
-    ]
+    const edges = [{ id: 'e1', source: 'a', target: 'b', data: { relationType: 'prerequisite' } }]
 
     const result = pathLayout(
       nodes,

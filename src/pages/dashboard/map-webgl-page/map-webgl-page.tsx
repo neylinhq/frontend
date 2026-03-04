@@ -1,10 +1,17 @@
 import { useCallback, useState } from 'react'
-import type { FullMap, Node } from '@/entities/map'
+
 import { GraphWebGLVisualization, type ViewportState } from '@/features/graph-webgl'
 import { ReadOnlyBanner, useMapPermissions } from '@/features/map-permissions'
-import { ChatPanel, NodePanel, SettingsPanel, SidebarToggleFab, useMapSidebarStore } from '@/features/map-sidebar'
+import {
+  ChatPanel,
+  NodePanel,
+  SettingsPanel,
+  SidebarToggleFab,
+  useMapSidebarStore
+} from '@/features/map-sidebar'
 import { NodeConnectionsPanel } from '@/features/node-connections-panel'
 import { AddNodeFab, QuickAddDialogWebGL, useNodeCreationStore } from '@/features/node-creation'
+import type { FullMap, Node } from '@/entities/map'
 import { useKeyboardShortcut } from '@/shared/hooks/use-keyboard-shortcut'
 import { cn } from '@/shared/lib/cn'
 
@@ -41,12 +48,15 @@ export const MapWebGLPage = ({ map, mapId }: MapWebGLPageProps) => {
   })
 
   // Handle node selection from graph - open sidebar with node tab
-  const handleNodeSelect = useCallback((node: Node | null) => {
-    setSelectedNode(node)
-    if (node) {
-      setTab('node')
-    }
-  }, [setTab])
+  const handleNodeSelect = useCallback(
+    (node: Node | null) => {
+      setSelectedNode(node)
+      if (node) {
+        setTab('node')
+      }
+    },
+    [setTab]
+  )
 
   // Handle close node in sidebar
   const handleCloseNode = useCallback(() => {
@@ -55,7 +65,13 @@ export const MapWebGLPage = ({ map, mapId }: MapWebGLPageProps) => {
 
   // Render connections panel for NodePanel
   const renderConnectionsPanel = useCallback(
-    (node: Node, edges: typeof map.edges, allNodes: typeof map.nodes, onOpenNode?: (id: string) => void, onPanToNode?: (id: string) => void) => (
+    (
+      node: Node,
+      edges: typeof map.edges,
+      allNodes: typeof map.nodes,
+      onOpenNode?: (id: string) => void,
+      onPanToNode?: (id: string) => void
+    ) => (
       <NodeConnectionsPanel
         node={node}
         edges={edges}

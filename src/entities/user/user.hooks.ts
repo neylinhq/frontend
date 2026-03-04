@@ -1,4 +1,5 @@
 import { useMatches } from 'react-router'
+
 import type { User } from './user.schema'
 
 interface LoaderDataWithUser {

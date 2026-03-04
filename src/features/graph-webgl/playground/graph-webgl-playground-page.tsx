@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+
 import type { Edge, Node, RelationType } from '@/entities/map'
 import { Button } from '@/shared/components/button'
 import { Card } from '@/shared/components/card'
@@ -7,8 +8,12 @@ import { SegmentedControl } from '@/shared/components/segmented-control'
 import { Slider } from '@/shared/components/slider'
 import { Switch } from '@/shared/components/switch'
 import { cn } from '@/shared/lib/cn'
+
 import { GraphCanvas, type GraphCanvasHandle, type ViewportState } from '../components/graph-canvas'
-import { DEFAULT_RENDER_PARAMS, type GraphWebGLRenderParams } from '../model/graph-webgl.render-params'
+import {
+  DEFAULT_RENDER_PARAMS,
+  type GraphWebGLRenderParams
+} from '../model/graph-webgl.render-params'
 
 type BackgroundMode = 'none' | 'dots' | 'paper'
 
@@ -205,7 +210,13 @@ function SliderField({
           {format ? format(value) : value.toFixed(2)}
         </div>
       </div>
-      <Slider value={[value]} min={min} max={max} step={step} onValueChange={v => onChange(v[0] ?? value)} />
+      <Slider
+        value={[value]}
+        min={min}
+        max={max}
+        step={step}
+        onValueChange={v => onChange(v[0] ?? value)}
+      />
     </div>
   )
 }
@@ -253,9 +264,12 @@ export const GraphWebGLPlaygroundPage = () => {
     }
   }, [graph.nodes.length, graph.edges.length, viewport?.zoom])
 
-  const update = useCallback(<K extends keyof GraphWebGLRenderParams>(key: K, value: GraphWebGLRenderParams[K]) => {
-    setParams(p => ({ ...p, [key]: value }))
-  }, [])
+  const update = useCallback(
+    <K extends keyof GraphWebGLRenderParams>(key: K, value: GraphWebGLRenderParams[K]) => {
+      setParams(p => ({ ...p, [key]: value }))
+    },
+    []
+  )
 
   const handleNodeClick = useCallback((id: string | null) => {
     setSelectedNodeId(id)
@@ -312,12 +326,16 @@ export const GraphWebGLPlaygroundPage = () => {
                 <div>
                   <div className='text-sm font-semibold'>WebGL Graph Playground</div>
                   <div className='mt-1 text-xs text-muted-foreground tabular-nums'>
-                    {stats.nodes.toLocaleString()} nodes · {stats.edges.toLocaleString()} edges · zoom{' '}
-                    {stats.zoom.toFixed(2)} · {fps} fps
+                    {stats.nodes.toLocaleString()} nodes · {stats.edges.toLocaleString()} edges ·
+                    zoom {stats.zoom.toFixed(2)} · {fps} fps
                   </div>
                 </div>
                 <div className='flex gap-2'>
-                  <Button size='sm' variant='secondary' onClick={() => canvasRef.current?.fitView()}>
+                  <Button
+                    size='sm'
+                    variant='secondary'
+                    onClick={() => canvasRef.current?.fitView()}
+                  >
                     Fit
                   </Button>
                   <Button size='sm' variant='secondary' onClick={resetDemo}>
@@ -333,7 +351,11 @@ export const GraphWebGLPlaygroundPage = () => {
                 <Button size='sm' variant='outline' onClick={() => loadLarge(10000, 20000)}>
                   10k/20k
                 </Button>
-                <Button size='sm' variant='outline' onClick={() => setParams(DEFAULT_RENDER_PARAMS)}>
+                <Button
+                  size='sm'
+                  variant='outline'
+                  onClick={() => setParams(DEFAULT_RENDER_PARAMS)}
+                >
                   Reset Style
                 </Button>
               </div>
@@ -583,7 +605,9 @@ export const GraphWebGLPlaygroundPage = () => {
               </div>
 
               <div className='space-y-3'>
-                <div className='text-xs font-semibold tracking-wide text-foreground/70'>Interaction</div>
+                <div className='text-xs font-semibold tracking-wide text-foreground/70'>
+                  Interaction
+                </div>
                 <SwitchField label='Auto Layout' checked={autoLayout} onChange={setAutoLayout} />
                 <div className='text-xs text-muted-foreground'>
                   Click selects. Double-click focuses (glow).
@@ -596,4 +620,3 @@ export const GraphWebGLPlaygroundPage = () => {
     </div>
   )
 }
-

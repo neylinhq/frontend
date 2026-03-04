@@ -5,11 +5,7 @@
  * @param endChars - Number of characters to show at end (default: 4)
  * @returns Shortened address like "0x0D11...4aD6"
  */
-export const shortenWalletAddress = (
-  address: string,
-  startChars = 6,
-  endChars = 4
-): string => {
+export const shortenWalletAddress = (address: string, startChars = 6, endChars = 4): string => {
   if (!address || address.length <= startChars + endChars) {
     return address
   }

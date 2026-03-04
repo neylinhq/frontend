@@ -24,24 +24,23 @@ const MAX_WIDTH = 800
 
 export const useMapSidebarStore = create<MapSidebarState>()(
   persist(
-    (set) => ({
+    set => ({
       isOpen: false,
       activeTab: 'chat',
       width: DEFAULT_WIDTH,
-      open: (tab) =>
-        set((state) => ({
+      open: tab =>
+        set(state => ({
           isOpen: true,
           activeTab: tab ?? state.activeTab
         })),
       close: () => set({ isOpen: false }),
-      toggle: () => set((state) => ({ isOpen: !state.isOpen })),
-      setTab: (tab) => set({ activeTab: tab, isOpen: true }),
-      setWidth: (width) =>
-        set({ width: Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, width)) })
+      toggle: () => set(state => ({ isOpen: !state.isOpen })),
+      setTab: tab => set({ activeTab: tab, isOpen: true }),
+      setWidth: width => set({ width: Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, width)) })
     }),
     {
       name: 'map-sidebar-state',
-      partialize: (state) => ({
+      partialize: state => ({
         isOpen: state.isOpen,
         width: state.width,
         activeTab: state.activeTab
@@ -50,4 +49,8 @@ export const useMapSidebarStore = create<MapSidebarState>()(
   )
 )
 
-export { MIN_WIDTH as MAP_SIDEBAR_MIN_WIDTH, MAX_WIDTH as MAP_SIDEBAR_MAX_WIDTH, DEFAULT_WIDTH as MAP_SIDEBAR_DEFAULT_WIDTH }
+export {
+  MIN_WIDTH as MAP_SIDEBAR_MIN_WIDTH,
+  MAX_WIDTH as MAP_SIDEBAR_MAX_WIDTH,
+  DEFAULT_WIDTH as MAP_SIDEBAR_DEFAULT_WIDTH
+}

@@ -19,7 +19,15 @@ export interface ChatSessionMessage {
 }
 
 // Preview types from ai-assist
-export type ProposalType = 'connection' | 'new_node' | 'edit' | 'enrichment' | 'exercise' | 'edge' | 'node' | 'graph_fragment'
+export type ProposalType =
+  | 'connection'
+  | 'new_node'
+  | 'edit'
+  | 'enrichment'
+  | 'exercise'
+  | 'edge'
+  | 'node'
+  | 'graph_fragment'
 
 export interface ChatProposal {
   type: ProposalType

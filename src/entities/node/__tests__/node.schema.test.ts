@@ -1,10 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import {
-  LightweightNodeSchema,
-  NodeMetadataSchema,
-  NodeSchema,
-  NodeTypeEnum
-} from '../node.schema'
+
+import { LightweightNodeSchema, NodeMetadataSchema, NodeSchema, NodeTypeEnum } from '../node.schema'
 
 describe('Node Schemas', () => {
   describe('NodeTypeSchema', () => {

@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Link, useLoaderData } from 'react-router'
+
 import { VerifyEmailForm } from '@/features/auth/verify-email-form'
 import { AUTH_ROUTES } from '@/shared/config'
 

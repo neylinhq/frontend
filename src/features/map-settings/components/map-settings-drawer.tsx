@@ -10,6 +10,7 @@ import {
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
+
 import { useDeleteMap, useMap, useSetVisibility, useUpdateMap } from '@/entities/map'
 import { type RatingSystem, useMapProgress } from '@/entities/progress'
 import {
@@ -35,6 +36,7 @@ import { toast } from '@/shared/components/toast'
 import { useAutoSave } from '@/shared/hooks'
 import { cn } from '@/shared/lib/cn'
 import { getComplexityTier } from '@/shared/lib/rating'
+
 import { MapHistoryList } from './map-history-list'
 import { RatingSystemSelector } from './rating-system-selector'
 

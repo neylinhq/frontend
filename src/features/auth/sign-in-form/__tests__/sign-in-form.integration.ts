@@ -1,12 +1,14 @@
-import { createElement, Fragment } from 'react'
 import { waitFor } from '@testing-library/react'
-import { http, HttpResponse } from 'msw'
+import { HttpResponse, http } from 'msw'
+import { createElement, Fragment } from 'react'
 import { useLocation } from 'react-router'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { toast } from '@/shared/components/toast'
 import { API_URL } from '@/shared/config/env'
 import { server } from '@/shared/mocks/server'
 import { renderWithProviders, screen, userEvent } from '@/shared/tests'
-import { toast } from '@/shared/components/toast'
+
 import { SignInForm } from '../sign-in-form'
 
 vi.mock('@/shared/components/toast', () => ({
@@ -48,12 +50,7 @@ describe('SignInForm integration', () => {
 
     const user = userEvent.setup()
     renderWithProviders(
-      createElement(
-        Fragment,
-        null,
-        createElement(SignInForm),
-        createElement(LocationDisplay)
-      ),
+      createElement(Fragment, null, createElement(SignInForm), createElement(LocationDisplay)),
       { route: '/auth/sign-in?from=/pricing' }
     )
 
@@ -79,12 +76,7 @@ describe('SignInForm integration', () => {
 
     const user = userEvent.setup()
     renderWithProviders(
-      createElement(
-        Fragment,
-        null,
-        createElement(SignInForm),
-        createElement(LocationDisplay)
-      ),
+      createElement(Fragment, null, createElement(SignInForm), createElement(LocationDisplay)),
       { route: '/auth/sign-in' }
     )
 

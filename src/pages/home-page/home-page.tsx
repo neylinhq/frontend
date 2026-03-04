@@ -1,9 +1,11 @@
 import { ArrowRightIcon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
+
 import { Button } from '@/shared/components/button'
 import { Typography } from '@/shared/components/typography'
 import { AUTH_ROUTES } from '@/shared/config'
+
 import { HOME_FEATURES } from './home-page.constants'
 
 export const HomePage = () => {

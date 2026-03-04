@@ -1,11 +1,13 @@
 import { ArrowUpIcon, DotsHorizontalIcon } from '@untitledui/icons-react/outline'
 import { type KeyboardEvent, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
 import type { AIModel } from '@/entities/ai'
 import { Button } from '@/shared/components/button'
 import { Textarea } from '@/shared/components/textarea'
 import { useResizable } from '@/shared/hooks'
 import { cn } from '@/shared/lib/cn'
+
 import { CommandPalette, type SlashCommand } from './command-palette'
 import { ModelSelector } from './model-selector'
 

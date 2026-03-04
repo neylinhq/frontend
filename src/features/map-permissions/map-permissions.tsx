@@ -1,10 +1,11 @@
 import { Copy01Icon, EyeIcon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
+
 import { useCopyMap } from '@/entities/map'
 import { Button } from '@/shared/components/button'
-import { MAPS_ROUTES } from '@/shared/config'
 import { toast } from '@/shared/components/toast'
+import { MAPS_ROUTES } from '@/shared/config'
 
 interface ReadOnlyBannerProps {
   mapId: string

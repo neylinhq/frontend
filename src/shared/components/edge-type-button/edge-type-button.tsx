@@ -1,4 +1,5 @@
 import { memo } from 'react'
+
 import { getEdgeTextClass, type RelationType } from '@/entities/edge'
 import { cn } from '@/shared/lib/cn'
 

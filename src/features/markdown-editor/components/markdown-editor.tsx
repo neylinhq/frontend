@@ -11,9 +11,10 @@
  * - Syntax highlighting for code blocks
  */
 
-import { useEffect, useRef, useCallback, useMemo, useState } from 'react'
 import { Compartment, EditorState } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+
 import { cn } from '@/shared/lib/cn'
 import { logger } from '@/shared/lib/logger'
 
@@ -110,9 +111,7 @@ export const MarkdownEditor = ({
     if (!viewRef.current) return
 
     viewRef.current.dispatch({
-      effects: editableCompartmentRef.current.reconfigure(
-        EditorView.editable.of(editable)
-      )
+      effects: editableCompartmentRef.current.reconfigure(EditorView.editable.of(editable))
     })
   }, [editable])
 
@@ -125,8 +124,9 @@ export const MarkdownEditor = ({
 
     // Only update if this is a fundamentally different document
     // (e.g., navigating to a different note), not just a save cycle
-    const isNewDocument = lastInitialContentRef.current !== initialContent &&
-                          initialContent !== viewRef.current.state.doc.toString()
+    const isNewDocument =
+      lastInitialContentRef.current !== initialContent &&
+      initialContent !== viewRef.current.state.doc.toString()
 
     if (isNewDocument) {
       viewRef.current.dispatch({
@@ -162,10 +162,10 @@ export const MarkdownEditor = ({
         <textarea
           className={cn(styles.editor, styles.fallbackTextarea)}
           defaultValue={initialContent}
-          onChange={(e) => onChange?.(e.target.value)}
+          onChange={e => onChange?.(e.target.value)}
           placeholder={placeholder || "Type '/' for commands, or start writing..."}
           readOnly={!editable}
-          data-testid="markdown-editor-fallback"
+          data-testid='markdown-editor-fallback'
         />
       </div>
     )
@@ -182,7 +182,7 @@ export const MarkdownEditor = ({
         'focus-within:outline-none',
         className
       )}
-      data-testid="markdown-editor"
+      data-testid='markdown-editor'
     />
   )
 }

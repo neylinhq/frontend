@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-import { useLoaderUser } from '@/entities/user'
+
 import { UserNav } from '@/widgets/user-nav'
+import { useLoaderUser } from '@/entities/user'
 import { Button } from '@/shared/components/button'
 import { AUTH_ROUTES } from '@/shared/config'
 import { cn } from '@/shared/lib/cn'

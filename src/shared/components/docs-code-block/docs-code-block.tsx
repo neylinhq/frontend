@@ -1,7 +1,13 @@
 'use client'
 
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon, Copy01Icon } from '@untitledui/icons-react/outline'
+import {
+  CheckIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+  Copy01Icon
+} from '@untitledui/icons-react/outline'
 import * as React from 'react'
+
 import { Button } from '@/shared/components/button'
 import {
   Collapsible,
@@ -9,6 +15,7 @@ import {
   CollapsibleTrigger
 } from '@/shared/components/collapsible'
 import { cn } from '@/shared/lib/cn'
+
 import styles from './docs-code-block.module.css'
 
 interface DocsCodeBlockProps {
@@ -56,7 +63,11 @@ export const DocsCodeBlock = ({
           className={styles.copy}
           aria-label={copied ? 'Copied!' : 'Copy code'}
         >
-          {copied ? <CheckIcon className='h-4 w-4 text-success' /> : <Copy01Icon className='h-4 w-4' />}
+          {copied ? (
+            <CheckIcon className='h-4 w-4 text-success' />
+          ) : (
+            <Copy01Icon className='h-4 w-4' />
+          )}
         </button>
       </div>
       <pre className={styles.pre}>
@@ -78,7 +89,11 @@ export const DocsCodeBlock = ({
               <span className='text-xs text-muted-foreground'>
                 {filename || `${language} code`}
               </span>
-              {isOpen ? <ChevronUpIcon className='h-4 w-4' /> : <ChevronDownIcon className='h-4 w-4' />}
+              {isOpen ? (
+                <ChevronUpIcon className='h-4 w-4' />
+              ) : (
+                <ChevronDownIcon className='h-4 w-4' />
+              )}
             </Button>
           </CollapsibleTrigger>
           <CollapsibleContent>

@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+
 import type { CryptoNetwork } from '@/entities/subscription'
 import { Icon, networkIcons } from '@/shared/components/icon'
 import { cn } from '@/shared/lib/cn'
@@ -9,10 +10,26 @@ interface NetworkSelectorProps {
 }
 
 const NETWORKS: Array<{ id: CryptoNetwork; translationKey: string; descriptionKey: string }> = [
-  { id: 'ton', translationKey: 'billing.crypto.networks.ton', descriptionKey: 'billing.crypto.networks.tonDescription' },
-  { id: 'tron', translationKey: 'billing.crypto.networks.tron', descriptionKey: 'billing.crypto.networks.tronDescription' },
-  { id: 'ethereum', translationKey: 'billing.crypto.networks.ethereum', descriptionKey: 'billing.crypto.networks.ethereumDescription' },
-  { id: 'bsc', translationKey: 'billing.crypto.networks.bsc', descriptionKey: 'billing.crypto.networks.bscDescription' }
+  {
+    id: 'ton',
+    translationKey: 'billing.crypto.networks.ton',
+    descriptionKey: 'billing.crypto.networks.tonDescription'
+  },
+  {
+    id: 'tron',
+    translationKey: 'billing.crypto.networks.tron',
+    descriptionKey: 'billing.crypto.networks.tronDescription'
+  },
+  {
+    id: 'ethereum',
+    translationKey: 'billing.crypto.networks.ethereum',
+    descriptionKey: 'billing.crypto.networks.ethereumDescription'
+  },
+  {
+    id: 'bsc',
+    translationKey: 'billing.crypto.networks.bsc',
+    descriptionKey: 'billing.crypto.networks.bscDescription'
+  }
   // { id: 'polygon', translationKey: 'billing.crypto.networks.polygon', descriptionKey: 'billing.crypto.networks.polygonDescription' }
 ]
 
@@ -40,9 +57,7 @@ export const NetworkSelector = ({ selected, onSelect }: NetworkSelectorProps) =>
             {iconData && <Icon data={iconData} size={32} className='text-foreground' />}
             <div className='text-center'>
               <div className='text-sm font-medium'>{t(network.translationKey)}</div>
-              <div className='text-xs text-muted-foreground'>
-                {t(network.descriptionKey)}
-              </div>
+              <div className='text-xs text-muted-foreground'>{t(network.descriptionKey)}</div>
             </div>
           </button>
         )

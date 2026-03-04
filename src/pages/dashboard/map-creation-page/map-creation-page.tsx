@@ -1,7 +1,8 @@
+import { Lightbulb01Icon } from '@untitledui/icons-react/outline'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
-import { Lightbulb01Icon } from '@untitledui/icons-react/outline'
+
 import { useCreateMapMutation } from '@/features/map-creation'
 import { MAP_CREATION_CONFIG } from '@/features/map-creation/model/map-creation.constants'
 import { ApiError } from '@/shared/api/client'
@@ -95,9 +96,7 @@ export const MapCreationPage = () => {
           <Typography variant='h1' className='text-2xl'>
             {t('mapCreation.page.title')}
           </Typography>
-          <p className='text-muted-foreground text-sm mt-1'>
-            {t('mapCreation.page.description')}
-          </p>
+          <p className='text-muted-foreground text-sm mt-1'>{t('mapCreation.page.description')}</p>
         </div>
 
         {/* Single card — focused */}
@@ -114,7 +113,7 @@ export const MapCreationPage = () => {
                 <Input
                   id='map-title'
                   value={title}
-                  onChange={(e) => setTitle(e.target.value)}
+                  onChange={e => setTitle(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder={t('mapCreation.form.title.placeholder')}
                   maxLength={MAP_CREATION_CONFIG.TITLE_MAX_LENGTH}
@@ -149,7 +148,7 @@ export const MapCreationPage = () => {
                   <Textarea
                     id='map-description'
                     value={description}
-                    onChange={(e) => setDescription(e.target.value)}
+                    onChange={e => setDescription(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder={t('mapCreation.form.description.placeholder')}
                     maxLength={MAP_CREATION_CONFIG.DESCRIPTION_MAX_LENGTH}
@@ -183,12 +182,7 @@ export const MapCreationPage = () => {
               >
                 {t('common.cancel')}
               </Button>
-              <Button
-                type='button'
-                variant='brand'
-                onClick={handleCreate}
-                disabled={!canCreate}
-              >
+              <Button type='button' variant='brand' onClick={handleCreate} disabled={!canCreate}>
                 {createMap.isPending ? t('common.creating') : t('common.create')}
               </Button>
             </div>

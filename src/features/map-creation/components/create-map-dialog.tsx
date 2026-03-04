@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
+
 import { ApiError } from '@/shared/api/client'
 import { Button } from '@/shared/components/button'
 import {
@@ -16,6 +17,7 @@ import { Input } from '@/shared/components/input'
 import { Textarea } from '@/shared/components/textarea'
 import { toast } from '@/shared/components/toast'
 import { MAPS_ROUTES } from '@/shared/config'
+
 import { MAP_CREATION_CONFIG } from '../model/map-creation.constants'
 import { useCreateMapMutation } from '../model/map-creation.hooks'
 import { useMapCreationStore } from '../model/map-creation.store'

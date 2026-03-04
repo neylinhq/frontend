@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
+
 import { initWasmModule } from '../lib/wasm-loader'
 
 describe('initWasmModule', () => {

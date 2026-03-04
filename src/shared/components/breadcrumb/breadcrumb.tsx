@@ -1,5 +1,6 @@
 import { ChevronLeftIcon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
+
 import { cn } from '@/shared/lib/cn'
 
 interface BreadcrumbProps {

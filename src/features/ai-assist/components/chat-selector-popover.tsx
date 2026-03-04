@@ -1,8 +1,10 @@
 import { SearchMdIcon } from '@untitledui/icons-react/outline'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
 import { Input } from '@/shared/components/input'
 import { cn } from '@/shared/lib/cn'
+
 import type { ChatSession } from '../model/ai-assist.sessions.types'
 
 interface ChatSelectorPopoverProps {
@@ -149,7 +151,9 @@ export const ChatSelectorPopover = ({
                       className={cn(
                         'w-full px-2 py-1 text-xs text-left truncate rounded-xs',
                         'hover:bg-[var(--surface-hover)] transition-colors',
-                        isActive ? 'bg-muted/60 text-foreground font-medium' : 'text-muted-foreground'
+                        isActive
+                          ? 'bg-muted/60 text-foreground font-medium'
+                          : 'text-muted-foreground'
                       )}
                       onClick={() => onSelectSession(session.id)}
                     >

@@ -1,5 +1,6 @@
 import { act, renderHook, waitFor } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
+
 import { createQueryWrapper, createTestQueryClient } from '@/shared/tests'
 
 vi.mock('../progress.api', () => ({
@@ -74,10 +75,7 @@ describe('progress queries', () => {
     const queryClient = createTestQueryClient()
     const wrapper = createQueryWrapper(queryClient)
 
-    const { result: nodeResult } = renderHook(
-      () => useNodeProgress('map-1', 'node-1'),
-      { wrapper }
-    )
+    const { result: nodeResult } = renderHook(() => useNodeProgress('map-1', 'node-1'), { wrapper })
     await waitFor(() => expect(nodeResult.current.data).toEqual(nodeProgress))
 
     const { result: allResult } = renderHook(() => useAllNodeProgress('map-1'), { wrapper })
@@ -148,6 +146,8 @@ describe('progress queries', () => {
     expect(invalidateSpy).toHaveBeenCalledWith({
       queryKey: progressKeys.nodeProgressDetail('map-1', 'node-1')
     })
-    expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: progressKeys.mapProgressDetail('map-1') })
+    expect(invalidateSpy).toHaveBeenCalledWith({
+      queryKey: progressKeys.mapProgressDetail('map-1')
+    })
   })
 })

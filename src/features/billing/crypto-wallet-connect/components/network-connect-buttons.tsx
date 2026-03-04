@@ -1,6 +1,7 @@
 import { Loading02Icon } from '@untitledui/icons-react/outline'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
 import type { CryptoNetwork } from '@/entities/subscription'
 import { Icon, networkIcons } from '@/shared/components/icon'
 import { cn } from '@/shared/lib/cn'
@@ -12,13 +13,33 @@ interface NetworkConnectButtonsProps {
 }
 
 const NETWORKS: Array<{ id: CryptoNetwork; translationKey: string; descriptionKey: string }> = [
-  { id: 'tron', translationKey: 'billing.crypto.networks.tron', descriptionKey: 'billing.crypto.networks.tronDescription' },
-  { id: 'bsc', translationKey: 'billing.crypto.networks.bsc', descriptionKey: 'billing.crypto.networks.bscDescription' },
-  { id: 'ethereum', translationKey: 'billing.crypto.networks.ethereum', descriptionKey: 'billing.crypto.networks.ethereumDescription' },
-  { id: 'ton', translationKey: 'billing.crypto.networks.ton', descriptionKey: 'billing.crypto.networks.tonDescription' }
+  {
+    id: 'tron',
+    translationKey: 'billing.crypto.networks.tron',
+    descriptionKey: 'billing.crypto.networks.tronDescription'
+  },
+  {
+    id: 'bsc',
+    translationKey: 'billing.crypto.networks.bsc',
+    descriptionKey: 'billing.crypto.networks.bscDescription'
+  },
+  {
+    id: 'ethereum',
+    translationKey: 'billing.crypto.networks.ethereum',
+    descriptionKey: 'billing.crypto.networks.ethereumDescription'
+  },
+  {
+    id: 'ton',
+    translationKey: 'billing.crypto.networks.ton',
+    descriptionKey: 'billing.crypto.networks.tonDescription'
+  }
 ]
 
-export const NetworkConnectButtons = ({ onNetworkClick, loadingNetwork, disabled }: NetworkConnectButtonsProps) => {
+export const NetworkConnectButtons = ({
+  onNetworkClick,
+  loadingNetwork,
+  disabled
+}: NetworkConnectButtonsProps) => {
   const { t } = useTranslation()
 
   return (
@@ -49,9 +70,7 @@ export const NetworkConnectButtons = ({ onNetworkClick, loadingNetwork, disabled
             )}
             <div className='text-center'>
               <div className='text-sm font-medium'>{t(network.translationKey)}</div>
-              <div className='text-xs text-muted-foreground'>
-                {t(network.descriptionKey)}
-              </div>
+              <div className='text-xs text-muted-foreground'>{t(network.descriptionKey)}</div>
             </div>
           </button>
         )

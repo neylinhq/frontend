@@ -1,4 +1,5 @@
 import type { Node } from '@/entities/node'
+
 import type { NodeMetadataFormValues } from '../lib/validation'
 
 export interface NodeMetadataFormProps {

@@ -7,10 +7,11 @@ import {
 } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router'
-import { sessionApi } from '@/entities/session'
-import { useLoaderUser } from '@/entities/user'
+
 import { ModeSelect } from '@/features/theme/mode-select'
 import { PaletteSelect } from '@/features/theme/palette-select'
+import { sessionApi } from '@/entities/session'
+import { useLoaderUser } from '@/entities/user'
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/components/avatar'
 import { Button } from '@/shared/components/button'
 import {
@@ -30,6 +31,7 @@ import { LanguageSelect } from '@/shared/components/language-switcher'
 import { SUPPORT_CONTACTS } from '@/shared/config'
 import { cn } from '@/shared/lib/cn'
 import { getShortcut } from '@/shared/lib/platform'
+
 import { getUserNavMainSection, USER_NAV_LOGOUT_ITEM } from './user-nav.constants'
 
 interface UserNavProps {

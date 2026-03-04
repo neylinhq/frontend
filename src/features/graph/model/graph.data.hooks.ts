@@ -1,5 +1,7 @@
 import { useMemo } from 'react'
+
 import type { FullMap } from '@/entities/map'
+
 import { getNodesWithinDepth } from '../lib/layout-algorithms-optimized'
 
 export interface ConnectionStats {

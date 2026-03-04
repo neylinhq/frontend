@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { AITaskSchema, EdgeSuggestionResultSchema } from '../ai.schema'
 
 describe('AITaskSchema', () => {

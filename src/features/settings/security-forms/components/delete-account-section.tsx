@@ -3,6 +3,7 @@ import { AlertCircleIcon } from '@untitledui/icons-react/outline'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+
 import { useDeleteAccount } from '@/entities/user'
 import { Button } from '@/shared/components/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
@@ -24,6 +25,7 @@ import {
 } from '@/shared/components/form'
 import { Input } from '@/shared/components/input'
 import { toast } from '@/shared/components/toast'
+
 import { type DeleteAccountValues, deleteAccountSchema } from '../lib/validation'
 
 export const DeleteAccountSection = () => {

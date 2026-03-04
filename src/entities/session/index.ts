@@ -2,7 +2,6 @@
 
 export type { TwoFactorChallengeData, VerifyTwoFactorRequest } from './session.api'
 export { isTwoFactorRequired, sessionApi } from './session.api'
-
 // Queries
 export {
   useForgotPasswordMutation,
@@ -10,7 +9,6 @@ export {
   useResetPasswordMutation,
   useVerifyEmailMutation
 } from './session.queries'
-
 // Types
 export type { SessionData } from './session.types'
 

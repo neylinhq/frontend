@@ -1,5 +1,5 @@
 import { CheckIcon, Copy01Icon, Download01Icon, Loading02Icon } from '@untitledui/icons-react/outline'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   useRegenerateBackupCodes,
@@ -47,7 +47,7 @@ export const BackupCodesDialog = ({
   const isEmailMethod = status?.emailOtpEnabled && !status?.totpEnabled
 
   // Start regeneration - send email in background, show OTP immediately
-  const startRegeneration = () => {
+  const startRegeneration = useCallback(() => {
     setStep('verify')
     if (isEmailMethod) {
       sendEmailCode.mutate(undefined, {
@@ -59,7 +59,7 @@ export const BackupCodesDialog = ({
         }
       })
     }
-  }
+  }, [isEmailMethod, sendEmailCode, t])
 
   useEffect(() => {
     if (open) {
@@ -74,12 +74,7 @@ export const BackupCodesDialog = ({
         setStep('codes')
       }
     }
-  }, [
-    open,
-    codes.length,
-    isRegenerate, // Auto-start regeneration flow
-    startRegeneration
-  ])
+  }, [open, codes.length, isRegenerate, startRegeneration])
 
   const handleRegenerate = (completedCode?: string) => {
     const codeToUse = completedCode || verifyCode

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { ModeToggle } from '@/features/theme/mode-toggle'
-import { PaletteToggle } from '@/features/theme/palette-toggle'
+import { ModeToggle } from '@/features/settings/mode-toggle'
+import { PaletteToggle } from '@/features/settings/palette-toggle'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
 import { Label } from '@/shared/components/label'
 import { LanguageSwitcher } from '@/shared/components/language-switcher'

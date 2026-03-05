@@ -2,6 +2,14 @@
  * Viewport utilities for smart positioning of floating elements
  */
 
+export interface ViewportState {
+  x: number // Camera X position (center of view)
+  y: number // Camera Y position (center of view)
+  zoom: number // Zoom level (1.0 = 100%)
+  width: number // Canvas width in pixels
+  height: number // Canvas height in pixels
+}
+
 export interface ViewportBounds {
   width: number
   height: number

@@ -11,7 +11,6 @@ import {
 import { memo, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { MapSettingsDrawer } from '@/features/map-settings'
 import type { LightweightNode } from '@/entities/node'
 import { Button } from '@/shared/components/button'
 import { Card } from '@/shared/components/card'
@@ -40,6 +39,8 @@ interface ViewControlsPanelProps {
   onNodeSelect?: (node: LightweightNode) => void
   settingsOpen?: boolean
   onSettingsOpenChange?: (open: boolean) => void
+  /** Render prop for map settings drawer — injected by widget */
+  renderSettingsDrawer?: (mapId: string, open: boolean, onOpenChange: (open: boolean) => void) => React.ReactNode
   className?: string
 }
 
@@ -57,6 +58,7 @@ export const ViewControlsPanel = memo(
     onNodeSelect,
     settingsOpen,
     onSettingsOpenChange,
+    renderSettingsDrawer,
     className
   }: ViewControlsPanelProps) => {
     const { t } = useTranslation()
@@ -102,11 +104,7 @@ export const ViewControlsPanel = memo(
           >
             <span className='truncate text-sm font-medium'>{mapTitle || t('common.untitled')}</span>
           </Button>
-          <MapSettingsDrawer
-            mapId={mapId}
-            open={resolvedSettingsOpen}
-            onOpenChange={setSettingsOpen}
-          />
+          {renderSettingsDrawer?.(mapId, resolvedSettingsOpen, setSettingsOpen)}
 
           {/* 2. Search — high frequency action */}
           {nodes && nodes.length > 0 && onNodeSelect && (

@@ -7,7 +7,6 @@ import {
 import { memo, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { useAIPanelStore } from '@/features/ai-assist'
 import type { RelationType } from '@/entities/edge'
 import type { NodeType } from '@/entities/node'
 import { Badge } from '@/shared/components/badge'
@@ -49,6 +48,9 @@ interface GraphToolbarProps {
   selectedNodeId?: string | null
   /** Hide AI button for read-only maps */
   canEdit?: boolean
+  /** AI panel state — injected from widget layer */
+  isAIPanelOpen?: boolean
+  onToggleAIPanel?: () => void
   className?: string
 }
 
@@ -59,12 +61,13 @@ export const GraphToolbar = memo(
     connectionStats,
     selectedNodeId,
     canEdit = true,
+    isAIPanelOpen = false,
+    onToggleAIPanel,
     className
   }: GraphToolbarProps) => {
     const { t } = useTranslation()
     const { viewMode, setViewMode } = useViewMode()
     const { focusedNodeId, focusDepth, setFocusDepth, clearFocus, focusNode } = useFocusMode()
-    const { isOpen: isAIPanelOpen, toggle: toggleAIPanel } = useAIPanelStore()
     const {
       visibleNodeTypes,
       visibleEdgeTypes,
@@ -141,7 +144,7 @@ export const GraphToolbar = memo(
               <Button
                 size='sm'
                 variant={isAIPanelOpen ? 'secondary' : 'ghost'}
-                onClick={toggleAIPanel}
+                onClick={onToggleAIPanel}
                 className='h-8 px-2.5'
                 title={t('graph.toolbar.aiAnalysis')}
               >

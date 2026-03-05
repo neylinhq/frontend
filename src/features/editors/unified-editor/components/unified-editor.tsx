@@ -11,7 +11,7 @@
 import type { EditorView } from '@codemirror/view'
 import { useCallback, useRef } from 'react'
 
-import { NoteEditor } from '@/features/note-editor'
+import { NoteEditor } from '@/features/editors/note-editor'
 
 import type { UnifiedEditorProps } from '../model/unified-editor.types'
 

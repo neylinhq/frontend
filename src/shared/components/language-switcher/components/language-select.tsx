@@ -2,7 +2,7 @@ import { CheckIcon, Globe01Icon } from '@untitledui/icons-react/outline'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { changeLanguage } from '@/app/i18n'
+import { changeLanguage } from '@/shared/lib/locale'
 import { Button } from '@/shared/components/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/components/popover'
 import { cn } from '@/shared/lib/cn'

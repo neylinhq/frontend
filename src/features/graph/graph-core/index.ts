@@ -3,7 +3,7 @@ export { GraphToolbar } from './components/graph-toolbar'
 export { NodeDrawer } from './components/node-drawer'
 
 // GraphVisualization - switches between xyflow and WebGL based on feature flag
-import { GraphVisualization as GraphWebGL, USE_WEBGL_RENDERER } from '@/features/graph-webgl'
+import { GraphVisualization as GraphWebGL, USE_WEBGL_RENDERER } from '@/features/graph/graph-webgl'
 
 import { GraphVisualization as GraphXYFlow } from './components/graph-visualization'
 export const GraphVisualization = USE_WEBGL_RENDERER ? GraphWebGL : GraphXYFlow

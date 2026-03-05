@@ -1,4 +1,4 @@
-import { GraphWebGLPlaygroundPage } from '@/features/graph-webgl/playground/graph-webgl-playground-page'
+import { GraphWebGLPlaygroundPage } from '@/features/graph/graph-webgl/playground/graph-webgl-playground-page'
 import { APP_NAME } from '@/shared/config'
 
 export const meta = () => [{ title: `WebGL Playground | ${APP_NAME}` }]

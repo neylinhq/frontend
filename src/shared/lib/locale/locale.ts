@@ -1,3 +1,5 @@
+import i18next from 'i18next'
+
 const SUPPORTED_LANGUAGES = ['en', 'ru'] as const
 const DEFAULT_LANGUAGE = 'en'
 
@@ -19,4 +21,13 @@ export const getLocale = (request: Request): SupportedLanguage => {
       ? cookieLocale
       : DEFAULT_LANGUAGE
   ) as SupportedLanguage
+}
+
+/**
+ * Change language with persistence to localStorage and cookie
+ */
+export const changeLanguage = async (lng: string) => {
+  await i18next.changeLanguage(lng)
+  localStorage.setItem('i18nextLng', lng)
+  document.cookie = `i18nextLng=${lng}; path=/; max-age=31536000; SameSite=Lax`
 }

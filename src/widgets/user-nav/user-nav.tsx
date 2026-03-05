@@ -8,8 +8,8 @@ import {
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router'
 
-import { ModeSelect } from '@/features/theme/mode-select'
-import { PaletteSelect } from '@/features/theme/palette-select'
+import { ModeSelect } from '@/features/settings/mode-select'
+import { PaletteSelect } from '@/features/settings/palette-select'
 import { sessionApi } from '@/entities/session'
 import { useLoaderUser } from '@/entities/user'
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/components/avatar'

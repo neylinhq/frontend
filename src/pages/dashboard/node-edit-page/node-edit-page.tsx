@@ -13,11 +13,11 @@ import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router'
 
 import { AISuggestionsPanel } from '@/features/ai-assist'
-import { EdgeEditPopover, useEdgeManagementStore } from '@/features/graph'
+import { EdgeEditPopover, useEdgeManagementStore } from '@/features/graph/graph-core'
 import { NodeConnectionsPanel } from '@/features/node-connections-panel'
 import { NodeMetadataForm, type NodeMetadataFormValues } from '@/features/node-metadata-form'
 import { PracticePanel } from '@/features/practice-panel'
-import { UnifiedEditor } from '@/features/unified-editor'
+import { UnifiedEditor } from '@/features/editors/unified-editor'
 import type { Edge } from '@/entities/edge'
 import type { FullMap, Node } from '@/entities/map'
 import {

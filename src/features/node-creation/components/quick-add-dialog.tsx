@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
 
-import type { ViewportState } from '@/features/graph-webgl'
+import type { ViewportState } from '@/shared/lib/viewport'
 import { type Node, useCreateEdge, useFullMap } from '@/entities/map'
 import type { NodeType } from '@/entities/node'
 import { Button } from '@/shared/components/button'

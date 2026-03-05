@@ -1,9 +1,12 @@
 import { memo } from 'react'
 
 // Switch graph engine by commenting/uncommenting:
-import { GraphVisualization } from '@/features/graph' // xyflow (React Flow)
-// import { GraphVisualization } from '@/features/graph-webgl'  // WebGL + WASM (high-performance)
+import { GraphVisualization } from '@/features/graph/graph-core' // xyflow (React Flow)
+// import { GraphVisualization } from '@/features/graph/graph-webgl'  // WebGL + WASM (high-performance)
+import { useAIPanelStore } from '@/features/ai-assist'
+import { MapSettingsDrawer } from '@/features/map-settings'
 import { NodeConnectionsPanel } from '@/features/node-connections-panel'
+import { NodeMetadataForm } from '@/features/node-metadata-form'
 import type { Edge, FullMap, Node } from '@/entities/map'
 import { ErrorBoundary } from '@/shared/components/error-boundary'
 
@@ -15,10 +18,12 @@ interface GraphViewProps {
 }
 
 /**
- * Widget that composes GraphVisualization with NodeConnectionsPanel
- * Avoids cross-feature imports by composing at widget layer
+ * Widget that composes GraphVisualization with cross-feature dependencies.
+ * All feature-to-feature wiring happens here at the widget layer (FSD pattern).
  */
 export const GraphView = memo(({ mapId, className, interactive, initialData }: GraphViewProps) => {
+  const { isOpen: isAIPanelOpen, toggle: toggleAIPanel, close: closeAIPanel } = useAIPanelStore()
+
   return (
     <ErrorBoundary level='widget'>
       <GraphVisualization
@@ -26,6 +31,9 @@ export const GraphView = memo(({ mapId, className, interactive, initialData }: G
         className={className}
         interactive={interactive}
         initialData={initialData}
+        isAIPanelOpen={isAIPanelOpen}
+        onToggleAIPanel={toggleAIPanel}
+        onCloseAIPanel={closeAIPanel}
         renderConnectionsPanel={(
           node: Node,
           edges: Edge[],
@@ -44,6 +52,12 @@ export const GraphView = memo(({ mapId, className, interactive, initialData }: G
             onEditEdge={onEditEdge}
             onDeleteEdge={onDeleteEdge}
           />
+        )}
+        renderMetadataForm={(node, onSubmit, isPending) => (
+          <NodeMetadataForm node={node} onSubmit={onSubmit} isPending={isPending} />
+        )}
+        renderSettingsDrawer={(settingsMapId, open, onOpenChange) => (
+          <MapSettingsDrawer mapId={settingsMapId} open={open} onOpenChange={onOpenChange} />
         )}
       />
     </ErrorBoundary>

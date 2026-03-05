@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { type RelationType, RelationTypeEnum } from '@/entities/edge'
 import { useDeleteEdge, useUpdateEdge } from '@/entities/map'
 import { Button } from '@/shared/components/button'
-import { EdgeTypeButton } from '@/shared/components/edge-type-button'
+import { EdgeTypeButton } from '@/entities/edge'
 import { Input } from '@/shared/components/input'
 import { Popover, SmartPopoverContent } from '@/shared/components/smart-popover'
 

@@ -1,2 +1,2 @@
 export type { SupportedLanguage } from './locale'
-export { getLocale } from './locale'
+export { changeLanguage, getLocale } from './locale'

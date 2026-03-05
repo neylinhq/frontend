@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import {
   calculatePositionNearConnections,
   calculateSmartPosition
-} from '@/features/node-creation'
+} from '@/shared/lib/smart-positioning'
 import {
   useCreateEdge,
   useCreateNode,

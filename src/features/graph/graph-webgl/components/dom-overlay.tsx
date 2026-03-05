@@ -7,8 +7,8 @@
 
 import { memo, useMemo } from 'react'
 
-import { EdgeOverlay } from '@/features/graph-webgl/components/edge-overlay'
-import { NodeOverlay } from '@/features/graph-webgl/components/node-overlay'
+import { EdgeOverlay } from '@/features/graph/graph-webgl/components/edge-overlay'
+import { NodeOverlay } from '@/features/graph/graph-webgl/components/node-overlay'
 import type { Edge, Node } from '@/entities/map'
 
 import type { ViewportState } from '../model/graph-webgl.types'

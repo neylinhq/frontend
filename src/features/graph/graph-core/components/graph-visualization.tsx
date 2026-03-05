@@ -17,8 +17,7 @@ import {
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { useAIPanelStore } from '@/features/ai-assist'
-import { cssVarToHex, getNodeColorHex } from '@/features/graph-webgl'
+import { cssVarToHex, getNodeColorHex } from '@/features/graph/graph-webgl'
 import {
   type Edge,
   type FullMap,
@@ -84,6 +83,18 @@ interface GraphVisualizationProps {
     onEditEdge?: (edge: Edge) => void,
     onDeleteEdge?: (edgeId: string) => void
   ) => React.ReactNode
+  /** Render prop for node metadata form in drawer - injected by widget */
+  renderMetadataForm?: (
+    node: Node,
+    onSubmit: (values: Record<string, unknown>) => void,
+    isPending: boolean
+  ) => React.ReactNode
+  /** Render prop for map settings drawer - injected by widget */
+  renderSettingsDrawer?: (mapId: string, open: boolean, onOpenChange: (open: boolean) => void) => React.ReactNode
+  /** AI panel state — injected from widget layer */
+  isAIPanelOpen?: boolean
+  onToggleAIPanel?: () => void
+  onCloseAIPanel?: () => void
 }
 
 const GraphVisualizationContent = ({
@@ -91,7 +102,12 @@ const GraphVisualizationContent = ({
   className,
   interactive = true,
   initialData,
-  renderConnectionsPanel
+  renderConnectionsPanel,
+  renderMetadataForm,
+  renderSettingsDrawer,
+  isAIPanelOpen = false,
+  onToggleAIPanel,
+  onCloseAIPanel
 }: GraphVisualizationProps) => {
   const { t, i18n } = useTranslation()
   const queryClient = useQueryClient()
@@ -186,7 +202,6 @@ const GraphVisualizationContent = ({
   const { nodeSpacing, directionStrength, animationDuration } = useNodeSpacing()
   const { animateToPositions } = useAnimatedLayout()
   const { saveSnapshot, undo, redo } = useLayoutHistory()
-  const { isOpen: isAIPanelOpen, close: closeAIPanel } = useAIPanelStore()
   const [settingsOpen, setSettingsOpen] = useState(false)
 
   // Track dark mode for theme-aware styling
@@ -195,9 +210,9 @@ const GraphVisualizationContent = ({
   useEffect(() => {
     if (settingsOpen) {
       clearSelection()
-      closeAIPanel()
+      onCloseAIPanel?.()
     }
-  }, [settingsOpen, clearSelection, closeAIPanel])
+  }, [settingsOpen, clearSelection, onCloseAIPanel])
 
   useEffect(() => {
     if (isAIPanelOpen) {
@@ -209,9 +224,9 @@ const GraphVisualizationContent = ({
   useEffect(() => {
     if (selectedNodeId) {
       setSettingsOpen(false)
-      closeAIPanel()
+      onCloseAIPanel?.()
     }
-  }, [selectedNodeId, closeAIPanel])
+  }, [selectedNodeId, onCloseAIPanel])
 
   // Use refs for layout params to avoid stale closures when triggerLayout fires
   const layoutParamsRef = useRef({
@@ -927,6 +942,7 @@ const GraphVisualizationContent = ({
         }}
         settingsOpen={settingsOpen}
         onSettingsOpenChange={setSettingsOpen}
+        renderSettingsDrawer={renderSettingsDrawer}
       />
 
       {/* Toolbar - view modes, focus controls, filters */}
@@ -936,6 +952,8 @@ const GraphVisualizationContent = ({
         connectionStats={connectionStats}
         selectedNodeId={selectedNodeId}
         canEdit={interactive}
+        isAIPanelOpen={isAIPanelOpen}
+        onToggleAIPanel={onToggleAIPanel}
       />
 
       {/* Node drawer */}
@@ -943,6 +961,7 @@ const GraphVisualizationContent = ({
         node={selectedNode}
         onClose={clearSelection}
         isReadOnly={!interactive}
+        renderMetadataForm={renderMetadataForm}
         connectionsCount={
           selectedNode
             ? fullMap.edges.filter(

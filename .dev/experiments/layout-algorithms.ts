@@ -1,6 +1,6 @@
 import type { Edge, Node } from '@xyflow/react'
 import type { RelationType } from '@/entities/edge'
-import type { ViewMode } from '@/features/graph'
+import type { ViewMode } from '@/features/graph/graph-core'
 
 interface LayoutOptions {
   viewMode: ViewMode

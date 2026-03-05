@@ -4,20 +4,13 @@
  */
 
 import type { Edge, Node } from '@/entities/map'
+import type { ViewportState } from '@/shared/lib/viewport'
 
 // Re-export entity types
 export type { Node, Edge }
 
-/**
- * Viewport state for pan/zoom
- */
-export interface ViewportState {
-  x: number // Camera X position (center of view)
-  y: number // Camera Y position (center of view)
-  zoom: number // Zoom level (1.0 = 100%)
-  width: number // Canvas width in pixels
-  height: number // Canvas height in pixels
-}
+// Re-export from shared
+export type { ViewportState }
 
 /**
  * Graph engine state from WASM

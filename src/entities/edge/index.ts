@@ -1,3 +1,4 @@
+export { EdgeTypeButton } from './components/edge-type-button'
 export {
   EDGE_BG_CLASSES,
   EDGE_BG_LIGHT_CLASSES,

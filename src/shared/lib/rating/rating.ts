@@ -3,7 +3,48 @@
  * Provides functions to work with node complexity ratings and user preferences
  */
 
-import { cssVarToHex } from '@/features/graph-webgl/lib/theme-bridge'
+const isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined'
+
+/** Read a CSS custom property value */
+const getCssVarValue = (name: string): string => {
+  if (!isBrowser) {
+    return ''
+  }
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim()
+}
+
+/** Convert OKLCH CSS variable to HEX */
+const cssVarToHex = (varName: string): string => {
+  if (!isBrowser) {
+    return '#808080'
+  }
+  const oklchStr = getCssVarValue(`--${varName}`)
+  if (!oklchStr) {
+    return '#808080'
+  }
+  const parts = oklchStr.trim().split(/\s+/)
+  if (parts.length < 3) {
+    return '#808080'
+  }
+  const L = parseFloat(parts[0])
+  const C = parseFloat(parts[1])
+  const H = parseFloat(parts[2])
+  const hRad = (H * Math.PI) / 180
+  const a = C * Math.cos(hRad)
+  const b = C * Math.sin(hRad)
+  const l_ = L + 0.3963377774 * a + 0.2158037573 * b
+  const m_ = L - 0.1055613458 * a - 0.0638541728 * b
+  const s_ = L - 0.0894841775 * a - 1.291485548 * b
+  const l = l_ * l_ * l_
+  const m = m_ * m_ * m_
+  const s = s_ * s_ * s_
+  const rLin = +4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s
+  const gLin = -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s
+  const bLin = -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s
+  const toSrgb = (x: number) => (x <= 0 ? 0 : x >= 1 ? 1 : x <= 0.0031308 ? 12.92 * x : 1.055 * x ** (1 / 2.4) - 0.055)
+  const toHex = (v: number) => Math.round(v * 255).toString(16).padStart(2, '0')
+  return `#${toHex(toSrgb(rLin))}${toHex(toSrgb(gLin))}${toHex(toSrgb(bLin))}`
+}
 
 // ============================================================================
 // Types and Enums

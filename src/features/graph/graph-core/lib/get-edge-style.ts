@@ -1,4 +1,4 @@
-import { cssVarToHex } from '@/features/graph-webgl'
+import { cssVarToHex } from '@/features/graph/graph-webgl'
 import { getEdgeStrokeColor, type RelationType } from '@/entities/edge'
 
 export const getEdgeStrokeByType = (relationType: RelationType) => {

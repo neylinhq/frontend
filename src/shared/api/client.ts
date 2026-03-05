@@ -1,4 +1,4 @@
-import { i18n } from '@/app/i18n'
+import i18next from 'i18next'
 import { API_URL, IS_BROWSER } from '@/shared/config/env'
 
 export interface ApiResponse<T> {
@@ -64,7 +64,7 @@ const request = async <T>(endpoint: string, options: RequestOptions = {}): Promi
   } = options
 
   // Determine locale: server-side uses passed locale, client-side uses i18n
-  const locale = IS_BROWSER ? i18n.language : serverLocale
+  const locale = IS_BROWSER ? i18next.language : serverLocale
 
   const requestHeaders: HeadersInit = {
     'Content-Type': 'application/json',

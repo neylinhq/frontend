@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 
-import { GraphWebGLVisualization, type ViewportState } from '@/features/graph-webgl'
+import { GraphWebGLVisualization, type ViewportState } from '@/features/graph/graph-webgl'
 import { ReadOnlyBanner, useMapPermissions } from '@/features/map-permissions'
 import {
   ChatPanel,
@@ -8,7 +8,7 @@ import {
   SettingsPanel,
   SidebarToggleFab,
   useMapSidebarStore
-} from '@/features/map-sidebar'
+} from '@/widgets/map-sidebar'
 import { NodeConnectionsPanel } from '@/features/node-connections-panel'
 import { AddNodeFab, QuickAddDialogWebGL, useNodeCreationStore } from '@/features/node-creation'
 import type { FullMap, Node } from '@/entities/map'

@@ -2,15 +2,15 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { RatingTier } from '..'
 
-let cssVarToHex: typeof import('@/features/graph-webgl/lib/theme-bridge').cssVarToHex
+let cssVarToHex: typeof import('@/features/graph/graph-webgl/lib/theme-bridge').cssVarToHex
 let rating: typeof import('..')
 
 beforeEach(async () => {
   vi.resetModules()
-  vi.doMock('@/features/graph-webgl/lib/theme-bridge', () => ({
+  vi.doMock('@/features/graph/graph-webgl/lib/theme-bridge', () => ({
     cssVarToHex: vi.fn(() => '#808080')
   }))
-  ;({ cssVarToHex } = await import('@/features/graph-webgl/lib/theme-bridge'))
+  ;({ cssVarToHex } = await import('@/features/graph/graph-webgl/lib/theme-bridge'))
   rating = await import('..')
 })
 

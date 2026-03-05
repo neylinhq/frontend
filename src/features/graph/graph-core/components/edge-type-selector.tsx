@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { RelationTypeEnum } from '@/entities/edge'
 import { useCreateEdge } from '@/entities/map'
 import { Button } from '@/shared/components/button'
-import { EdgeTypeButton } from '@/shared/components/edge-type-button'
+import { EdgeTypeButton } from '@/entities/edge'
 
 import { useEdgeManagementStore } from '../model/graph.edge.store'
 

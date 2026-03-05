@@ -1,4 +1,4 @@
-import { ModeToggle } from '@/features/theme/mode-toggle'
+import { ModeToggle } from '@/features/settings/mode-toggle'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import {

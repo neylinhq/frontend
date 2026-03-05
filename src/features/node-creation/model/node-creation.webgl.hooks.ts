@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useCallback, useEffect, useRef } from 'react'
 
-import type { ViewportState } from '@/features/graph-webgl'
+import type { ViewportState } from '@/shared/lib/viewport'
 import { type FullMap, mapApi, mapKeys, type Node } from '@/entities/map'
 import type { NodeType } from '@/entities/node'
 

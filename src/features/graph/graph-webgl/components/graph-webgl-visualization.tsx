@@ -24,14 +24,14 @@ import {
   useGraphUI,
   useNodeSpacing,
   useViewMode
-} from '@/features/graph'
+} from '@/features/graph/graph-core'
 import {
   GraphCanvas,
   type GraphCanvasHandle,
   type LayoutPosition,
   type ViewportState
-} from '@/features/graph-webgl/components/graph-canvas'
-import { MiniMapWebGL } from '@/features/graph-webgl/components/minimap-webgl'
+} from '@/features/graph/graph-webgl/components/graph-canvas'
+import { MiniMapWebGL } from '@/features/graph/graph-webgl/components/minimap-webgl'
 import type { Edge, FullMap, Node } from '@/entities/map'
 import { useFullMap, useUpdateNodePosition } from '@/entities/map'
 import { Card } from '@/shared/components/card'

@@ -9,7 +9,6 @@ import { memo, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
-import { NodeMetadataForm, type NodeMetadataFormValues } from '@/features/node-metadata-form'
 import type { Node } from '@/entities/map'
 import { useDeleteNode, useUpdateNode } from '@/entities/map'
 import {
@@ -40,6 +39,12 @@ interface NodeDrawerProps {
   connectionsCount?: number
   /** Render prop for connections tab content - injected by parent to avoid cross-feature import */
   connectionsTab?: React.ReactNode
+  /** Render prop for metadata form - injected by widget to avoid cross-feature import */
+  renderMetadataForm?: (
+    node: Node,
+    onSubmit: (values: Record<string, unknown>) => void,
+    isPending: boolean
+  ) => React.ReactNode
   /** Read-only mode - show overview instead of edit form, hide danger zone */
   isReadOnly?: boolean
   className?: string
@@ -51,6 +56,7 @@ export const NodeDrawer = memo(
     onClose,
     connectionsCount = 0,
     connectionsTab,
+    renderMetadataForm,
     isReadOnly = false,
     className
   }: NodeDrawerProps) => {
@@ -94,7 +100,7 @@ export const NodeDrawer = memo(
 
     // Handle metadata form submit
     const handleMetadataSubmit = useCallback(
-      (values: NodeMetadataFormValues) => {
+      (values: Record<string, unknown>) => {
         if (!displayNode) {
           return
         }
@@ -103,12 +109,12 @@ export const NodeDrawer = memo(
           {
             id: displayNode.id,
             data: {
-              type: values.type,
+              type: values.type as string,
               metadata: {
                 ...displayNode.metadata,
-                tags: values.tags,
-                complexity: values.complexity,
-                confidence: values.confidence
+                tags: values.tags as string[],
+                complexity: values.complexity as number,
+                confidence: values.confidence as number
               }
             }
           },
@@ -240,13 +246,9 @@ export const NodeDrawer = memo(
                   className='flex-1 overflow-y-auto [scrollbar-gutter:stable] mt-0'
                 >
                   <div className='flex flex-col min-h-full'>
-                    {/* Node Metadata Form */}
+                    {/* Node Metadata Form — injected via render prop */}
                     <div className='p-4 border-b'>
-                      <NodeMetadataForm
-                        node={displayNode}
-                        onSubmit={handleMetadataSubmit}
-                        isPending={updateNodeMutation.isPending}
-                      />
+                      {renderMetadataForm?.(displayNode, handleMetadataSubmit, updateNodeMutation.isPending)}
                     </div>
 
                     {/* Danger Zone - mt-auto pushes to bottom when space available */}

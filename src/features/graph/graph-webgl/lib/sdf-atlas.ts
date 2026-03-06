@@ -56,10 +56,10 @@ const DEFAULT_CONFIG: SDFAtlasConfig = {
   fontSize: 48, // Larger for better quality when scaled down
   fontFamily: 'Inter, system-ui, sans-serif',
   fontWeight: '400',
-  buffer: 3,
-  radius: 8,
+  buffer: 5, // More padding for larger SDF radius
+  radius: 12, // Larger radius = crisper glyph edges
   cutoff: 0.25,
-  atlasSize: 1024
+  atlasSize: 2048 // Larger atlas to fit glyphs with bigger radius
 }
 
 /**

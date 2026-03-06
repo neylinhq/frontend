@@ -6,8 +6,10 @@ import topLevelAwait from 'vite-plugin-top-level-await'
 import wasm from 'vite-plugin-wasm'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
+import { dataComponent } from './.dev/plugins/vite-plugin-data-component'
+
 export default defineConfig({
-  plugins: [tailwindcss(), reactRouter(), tsconfigPaths(), wasm(), topLevelAwait()],
+  plugins: [dataComponent(), tailwindcss(), reactRouter(), tsconfigPaths(), wasm(), topLevelAwait()],
   build: {
     cssCodeSplit: false // All CSS in one file - prevents FOUC on SPA navigation
   },
@@ -18,6 +20,7 @@ export default defineConfig({
   },
   server: {
     host: '0.0.0.0',
+    port: 5190,
     allowedHosts: ['.ngrok-free.app', '.ngrok.io', '.trycloudflare.com', 'neylin.io']
   },
   resolve: {

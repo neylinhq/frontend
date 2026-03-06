@@ -56,4 +56,4 @@ export type {
  * Feature flag to switch between WebGL and xyflow renderers.
  * Set to true to enable the WebGL renderer.
  */
-export const USE_WEBGL_RENDERER = false
+export const USE_WEBGL_RENDERER = true

@@ -9,6 +9,7 @@ import {
   useNavigation,
   useRouteLoaderData
 } from 'react-router'
+
 import { QueryProvider } from '@/app/providers/query-provider'
 import { ThemeProvider } from '@/app/theme'
 import { WalletProviders } from '@/features/billing/crypto-wallet-connect/components/wallet-providers'
@@ -17,8 +18,10 @@ import { TooltipProvider } from '@/shared/components/tooltip'
 import '@/shared/styles/globals.css'
 import type React from 'react'
 import { useEffect, useRef } from 'react'
+
 import { initI18n } from '@/app/i18n'
 import { MODE_COOKIE_KEY, PALETTE_COOKIE_KEY } from '@/shared/core/theme'
+
 import type { Route } from './+types/root'
 
 export const links: Route.LinksFunction = () => [
@@ -61,7 +64,12 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     // suppressHydrationWarning нужен для html, так как клиентский скрипт может изменить классы
-    <html lang={ssrLang} className={ssrDarkClass} data-palette={ssrPalette} suppressHydrationWarning>
+    <html
+      lang={ssrLang}
+      className={ssrDarkClass}
+      data-palette={ssrPalette}
+      suppressHydrationWarning
+    >
       <head>
         <meta charSet='utf-8' />
         <meta name='viewport' content='width=device-width, initial-scale=1' />
@@ -154,7 +162,6 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
             `
           }}
         />
-
       </head>
       <body className='bg-background text-foreground'>
         {children}

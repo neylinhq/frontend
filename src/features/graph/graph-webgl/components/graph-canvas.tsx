@@ -74,6 +74,8 @@ interface WasmGraphEngine {
   get_all_positions(): string
   // Figma S+ level: theme and atlases
   set_theme(json: string): void
+  // DPR for screen-stable rendering
+  set_dpr(dpr: number): void
   // Renderer style knobs
   set_render_params(json: string): void
   load_font_atlas_data(
@@ -425,6 +427,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
         canvas.style.width = `${rect.width}px`
         canvas.style.height = `${rect.height}px`
         engine.resize(canvas.width, canvas.height)
+        engine.set_dpr(dpr)
 
         // Set initial theme
         engine.set_theme(themeToJson())
@@ -565,6 +568,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
         canvas.style.width = `${width}px`
         canvas.style.height = `${height}px`
         engineRef.current.resize(canvas.width, canvas.height)
+        engineRef.current.set_dpr(dpr)
         notifyViewportChange()
       }
     })
@@ -885,7 +889,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
 
       {!isReady && !error && (
         <div className='absolute inset-0 flex items-center justify-center bg-background/80'>
-          <div className='text-muted-foreground'>Loading WASM...</div>
+          <div className='text-muted-foreground'>Loading...</div>
         </div>
       )}
 

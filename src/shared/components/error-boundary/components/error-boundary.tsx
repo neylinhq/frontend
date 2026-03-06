@@ -39,11 +39,13 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       }
 
       return (
-        <ErrorFallback
-          error={this.state.error}
-          level={this.props.level}
-          onRetry={this.handleRetry}
-        />
+        <div className='p-10 h-full flex justify-center items-center'>
+          <ErrorFallback
+            error={this.state.error}
+            level={this.props.level}
+            onRetry={this.handleRetry}
+          />
+        </div>
       )
     }
 

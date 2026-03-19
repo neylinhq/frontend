@@ -3,6 +3,7 @@ import { memo } from 'react'
 
 import type { Node } from '@/entities/map'
 import { getNodeBorderColor, getNodeIcon, getRatingColor } from '@/entities/node'
+import type { MasteryLevel } from '@/entities/progress'
 import { Badge } from '@/shared/components/badge'
 import { Card } from '@/shared/components/card'
 import { cn } from '@/shared/lib/cn'
@@ -15,8 +16,26 @@ interface KnowledgeNodeProps {
     isDimmed?: boolean
     isFocused?: boolean
     zoom?: number
+    /** Practice mode overlay */
+    masteryLevel?: MasteryLevel
+    isDue?: boolean
+    isPracticeMode?: boolean
   }
   id: string
+}
+
+const MASTERY_RING_CLASSES: Record<MasteryLevel, string> = {
+  mastered: 'ring-2 ring-[var(--color-mastery-mastered)]',
+  practicing: 'ring-2 ring-[var(--color-mastery-practicing)]',
+  learning: 'ring-2 ring-[var(--color-mastery-learning)]',
+  not_started: ''
+}
+
+const MASTERY_OPACITY_CLASSES: Record<MasteryLevel, string> = {
+  mastered: 'opacity-100',
+  practicing: 'opacity-90',
+  learning: 'opacity-80',
+  not_started: 'opacity-45'
 }
 
 /** Zoom threshold for showing description and rating tier badge */
@@ -34,6 +53,9 @@ const KnowledgeNodeComponent = ({ data }: KnowledgeNodeProps) => {
   const isDimmed = data.isDimmed
   const isFocused = data.isFocused
   const zoom = data.zoom ?? 1
+  const isPracticeMode = data.isPracticeMode
+  const masteryLevel = data.masteryLevel ?? 'not_started'
+  const isDue = data.isDue
 
   // LOD: Show description and rating tier only at high zoom (> 20%)
   const showDetails = zoom >= DETAIL_ZOOM_THRESHOLD
@@ -53,7 +75,11 @@ const KnowledgeNodeComponent = ({ data }: KnowledgeNodeProps) => {
         // Dimmed state - reduced opacity
         isDimmed && 'opacity-40',
         // Dimmed removes focus/select visuals
-        !isDimmed && !isFocused && isSelected && 'ring-2 ring-primary'
+        !isDimmed && !isFocused && isSelected && 'ring-2 ring-primary',
+        // Practice mode mastery overlay
+        isPracticeMode && !isDimmed && MASTERY_OPACITY_CLASSES[masteryLevel],
+        isPracticeMode && !isDimmed && !isSelected && MASTERY_RING_CLASSES[masteryLevel],
+        isPracticeMode && isDue && 'animate-due-pulse'
       )}
     >
       <Handle
@@ -133,6 +159,9 @@ export const KnowledgeNode = memo(KnowledgeNodeComponent, (prevProps, nextProps)
     prevData.isDimmed === nextData.isDimmed &&
     prevData.isFocused === nextData.isFocused &&
     prevData.complexity === nextData.complexity &&
+    prevData.isPracticeMode === nextData.isPracticeMode &&
+    prevData.masteryLevel === nextData.masteryLevel &&
+    prevData.isDue === nextData.isDue &&
     tagsEqual &&
     prevShowDetails === nextShowDetails
   )

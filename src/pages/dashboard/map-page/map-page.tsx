@@ -88,6 +88,7 @@ export const MapPage = ({ map, mapId }: MapPageProps) => {
             interactive={canEdit}
             isAIPanelOpen={isAIPanelOpen}
             onToggleAIPanel={handleToggleAIPanel}
+            onOpenSettings={() => setTab('settings')}
             onNodeSelect={handleNodeSelect}
             onViewportChange={setViewport}
           />

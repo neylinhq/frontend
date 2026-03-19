@@ -99,6 +99,8 @@ interface GraphVisualizationProps {
   isAIPanelOpen?: boolean
   onToggleAIPanel?: () => void
   onCloseAIPanel?: () => void
+  /** Callback when map title clicked — open settings in sidebar */
+  onOpenSettings?: () => void
   /** Practice mode — injected from widget layer */
   isPracticeModeActive?: boolean
   onTogglePracticeMode?: () => void
@@ -119,6 +121,7 @@ const GraphVisualizationContent = ({
   isAIPanelOpen = false,
   onToggleAIPanel,
   onCloseAIPanel,
+  onOpenSettings,
   isPracticeModeActive = false,
   onTogglePracticeMode,
   practiceModeStats,
@@ -966,6 +969,7 @@ const GraphVisualizationContent = ({
         }}
         settingsOpen={settingsOpen}
         onSettingsOpenChange={setSettingsOpen}
+        onOpenSettings={onOpenSettings}
         renderSettingsDrawer={renderSettingsDrawer}
       />
 

@@ -28,6 +28,8 @@ interface GraphViewProps {
   /** AI panel state — when provided, overrides internal useAIPanelStore */
   isAIPanelOpen?: boolean
   onToggleAIPanel?: () => void
+  /** Callback when map title clicked — open settings */
+  onOpenSettings?: () => void
 }
 
 /**
@@ -42,7 +44,8 @@ export const GraphView = memo(({
   onNodeSelect,
   onViewportChange,
   isAIPanelOpen,
-  onToggleAIPanel
+  onToggleAIPanel,
+  onOpenSettings
 }: GraphViewProps) => {
   const [useWebGL, setUseWebGL] = useState(true)
   const GraphVisualization = useWebGL ? GraphWebGL : GraphXYFlow
@@ -81,6 +84,7 @@ export const GraphView = memo(({
         initialData={initialData}
         isAIPanelOpen={isAIPanelOpen}
         onToggleAIPanel={onToggleAIPanel}
+        onOpenSettings={onOpenSettings}
         onNodeSelect={onNodeSelect}
         onViewportChange={onViewportChange}
         isPracticeModeActive={isPracticeModeActive}

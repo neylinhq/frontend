@@ -65,7 +65,7 @@ export const SIDEBAR_COOKIE_KEY = 'node-edit-sidebar'
 /** Skeleton placeholder for sidebar while hydrating */
 const SidebarSkeleton = ({ width }: { width: number }) => (
   <aside
-    className='hidden lg:flex flex-col flex-shrink-0 border-l border-border h-full overflow-hidden'
+    className='hidden lg:flex flex-col flex-shrink-0 border-l border-border/60 h-full overflow-hidden'
     style={{ width }}
   >
     <div className='flex flex-1 flex-col min-h-0 overflow-hidden'>
@@ -452,7 +452,7 @@ export const NodeEditPage = ({
       {isHydrated && sidebarOpen && (
         <aside
           className={cn(
-            'hidden lg:flex flex-col flex-shrink-0 border-l border-border h-full overflow-hidden relative',
+            'hidden lg:flex flex-col flex-shrink-0 border-l border-border/60 h-full overflow-hidden relative',
             isResizing && 'select-none'
           )}
           style={{ width: sidebarWidth }}

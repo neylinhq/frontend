@@ -39,6 +39,8 @@ interface ViewControlsPanelProps {
   onNodeSelect?: (node: LightweightNode) => void
   settingsOpen?: boolean
   onSettingsOpenChange?: (open: boolean) => void
+  /** Callback when map title is clicked — opens settings in sidebar */
+  onOpenSettings?: () => void
   /** Render prop for map settings drawer — injected by widget */
   renderSettingsDrawer?: (mapId: string, open: boolean, onOpenChange: (open: boolean) => void) => React.ReactNode
   className?: string
@@ -58,6 +60,7 @@ export const ViewControlsPanel = memo(
     onNodeSelect,
     settingsOpen,
     onSettingsOpenChange,
+    onOpenSettings,
     renderSettingsDrawer,
     className
   }: ViewControlsPanelProps) => {
@@ -98,7 +101,7 @@ export const ViewControlsPanel = memo(
           <Button
             size='sm'
             variant='ghost'
-            onClick={() => setSettingsOpen(true)}
+            onClick={() => onOpenSettings ? onOpenSettings() : setSettingsOpen(true)}
             className='h-8 px-2.5 max-w-48 group'
             title={t('mapSettings.title')}
           >

@@ -1273,6 +1273,8 @@
     "saving": "Сохранение..."
   },
   "nodeEdit": {
+    "nameLabel": "Название",
+    "namePlaceholder": "Название узла",
     "untitledPlaceholder": "Без названия",
     "editorPlaceholder": "Начните писать или введите '/' для команд...",
     "properties": "Свойства",

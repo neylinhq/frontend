@@ -94,9 +94,13 @@ export const ChatMessageList = ({
     }
   }
 
+  const initialScrollDone = useRef(false)
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [])
+    if (messages.length > 0 && !initialScrollDone.current) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'instant' })
+      initialScrollDone.current = true
+    }
+  }, [messages.length])
 
   const parseContent = (content: string) => {
     if (content.startsWith('{"action":')) {

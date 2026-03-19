@@ -1,10 +1,12 @@
 import {
   AlertCircleIcon,
+  Dataflow03Icon,
   Maximize01Icon,
+  Sliders04Icon,
   Target01Icon,
   Trash01Icon
 } from '@untitledui/icons-react/outline'
-import { memo, useCallback, useState } from 'react'
+import { memo, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
@@ -25,11 +27,14 @@ import {
 } from '@/shared/components/alert-dialog'
 import { Button } from '@/shared/components/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/card'
+import { Field } from '@/shared/components/field'
+import { Input } from '@/shared/components/input'
 import { Label } from '@/shared/components/label'
 import { Slider } from '@/shared/components/slider'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/components/tabs'
 import { toast } from '@/shared/components/toast'
 import { useDebouncedCallback } from '@/shared/hooks'
+import { cn } from '@/shared/lib/cn'
 
 interface NodePanelProps {
   node: Node
@@ -63,6 +68,12 @@ export const NodePanel = memo(function NodePanel({
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [activeTab, setActiveTab] = useState<'properties' | 'connections'>('properties')
   const { focusedNodeId, focusNode, clearFocus } = useFocusMode()
+  const [localLabel, setLocalLabel] = useState(node.label)
+
+  // Sync local label when node label changes externally
+  useEffect(() => {
+    setLocalLabel(node.label)
+  }, [node.label])
 
   const updateNodeMutation = useUpdateNode(node.mapId)
   const deleteNodeMutation = useDeleteNode(node.mapId)
@@ -72,6 +83,19 @@ export const NodePanel = memo(function NodePanel({
   const updateProgressMutation = useUpdateNodeProgress(node.mapId, node.id)
 
   const isFocused = focusedNodeId === node.id
+
+  // Debounced label save
+  const debouncedLabelSave = useDebouncedCallback((value: string) => {
+    updateNodeMutation.mutate({ id: node.id, data: { label: value } })
+  }, 500)
+
+  const handleLabelChange = useCallback(
+    (value: string) => {
+      setLocalLabel(value)
+      debouncedLabelSave(value)
+    },
+    [debouncedLabelSave]
+  )
 
   // Debounced confidence update
   const debouncedConfidenceUpdate = useDebouncedCallback((value: number) => {
@@ -126,53 +150,65 @@ export const NodePanel = memo(function NodePanel({
   return (
     <>
       <div className='flex flex-col h-full'>
-        {/* Header with node title and actions */}
-        <div className='flex items-center justify-between px-4 py-3 border-b'>
-          <h3 className='text-sm font-medium truncate flex-1'>{node.label}</h3>
-          <div className='flex items-center gap-1 ml-2'>
-            <Button
-              variant={isFocused ? 'default' : 'ghost'}
-              size='icon'
-              className='h-7 w-7'
-              onClick={() => (isFocused ? clearFocus() : focusNode(node.id))}
-              title={
-                isFocused ? t('graph.nodeControls.clearFocus') : t('graph.nodeControls.focusMode')
-              }
-            >
-              <Target01Icon className='h-3.5 w-3.5' />
-            </Button>
-            <Button
-              variant='ghost'
-              size='icon'
-              className='h-7 w-7'
-              asChild
-              title={t('nodeDrawer.openFullEditor')}
-            >
-              <Link to={`/dashboard/maps/${node.mapId}/node/${node.id}`}>
-                <Maximize01Icon className='h-3.5 w-3.5' />
-              </Link>
-            </Button>
-          </div>
-        </div>
-
-        {/* Tabs */}
+        {/* Icon bar — tabs (properties, connections) + actions (focus, expand) */}
         <Tabs
           value={activeTab}
           onValueChange={v => setActiveTab(v as 'properties' | 'connections')}
           className='flex flex-col flex-1 min-h-0'
         >
-          <TabsList variant='underline' className='grid grid-cols-2'>
-            <TabsTrigger variant='underline' value='properties'>
-              {t('nodeDrawer.tabs.properties')}
+          <TabsList variant='iconbar'>
+            <TabsTrigger
+              variant='iconbar'
+              value='properties'
+              title={t('nodeDrawer.tabs.properties')}
+            >
+              <Sliders04Icon className='h-4 w-4' />
             </TabsTrigger>
-            <TabsTrigger variant='underline' value='connections'>
-              {t('nodeDrawer.tabs.connections')}
+            <TabsTrigger
+              variant='iconbar'
+              value='connections'
+              title={t('nodeDrawer.tabs.connections')}
+            >
+              <Dataflow03Icon className='h-4 w-4' />
             </TabsTrigger>
+            <button
+              type='button'
+              onClick={() => (isFocused ? clearFocus() : focusNode(node.id))}
+              title={
+                isFocused ? t('graph.nodeControls.clearFocus') : t('graph.nodeControls.focusMode')
+              }
+              className={cn(
+                'h-8 w-8 rounded-md inline-flex items-center justify-center transition-all text-muted-foreground hover:bg-muted/80 hover:text-foreground',
+                isFocused && 'bg-muted text-foreground'
+              )}
+            >
+              <Target01Icon className='h-4 w-4' />
+            </button>
+            <Link
+              to={`/dashboard/maps/${node.mapId}/node/${node.id}`}
+              title={t('nodeDrawer.openFullEditor')}
+              className='h-8 w-8 rounded-md inline-flex items-center justify-center transition-all text-muted-foreground hover:bg-muted/80 hover:text-foreground'
+            >
+              <Maximize01Icon className='h-4 w-4' />
+            </Link>
           </TabsList>
 
           {/* Properties Tab */}
           <TabsContent value='properties' className='flex-1 overflow-y-auto mt-0'>
             <div className='flex flex-col min-h-full'>
+              {/* Node title — editable field */}
+              <div className='px-4 pt-4 pb-2'>
+                <Field label={`${t('nodeEdit.nameLabel')}`}>
+                  <Input
+                    value={localLabel}
+                    readOnly={isReadOnly}
+                    disabled={isReadOnly}
+                    onChange={e => handleLabelChange(e.target.value)}
+                    placeholder={t('nodeEdit.namePlaceholder')}
+                  />
+                </Field>
+              </div>
+
               {/* Node Metadata Form */}
               <div className='p-4 border-b'>
                 <NodeMetadataForm

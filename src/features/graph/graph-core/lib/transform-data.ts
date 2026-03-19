@@ -1,6 +1,12 @@
 import type { Edge, Node } from '@/entities/map'
+import type { MasteryLevel } from '@/entities/progress'
 
 import type { EdgeTranslations } from './edge-translations'
+
+interface NodeMasteryInfo {
+  mastery: MasteryLevel
+  isDue: boolean
+}
 
 interface TransformNodesOptions {
   selectedNodeIds?: Set<string> | string[]
@@ -9,6 +15,9 @@ interface TransformNodesOptions {
   animated?: boolean
   /** Zoom level to pass to node components for LOD */
   zoom?: number
+  /** Practice mode mastery overlay data */
+  isPracticeMode?: boolean
+  masteryMap?: Map<string, NodeMasteryInfo>
 }
 
 /**
@@ -18,13 +27,22 @@ interface TransformNodesOptions {
  * to avoid useViewport() subscription in each KnowledgeNode component.
  */
 export const transformNodesToFlow = (nodes: Node[], options: TransformNodesOptions = {}) => {
-  const { selectedNodeIds = [], onSelect, focusedNodeId, animated, zoom = 1 } = options
+  const {
+    selectedNodeIds = [],
+    onSelect,
+    focusedNodeId,
+    animated,
+    zoom = 1,
+    isPracticeMode,
+    masteryMap
+  } = options
 
   // Convert to Set for O(1) lookup if array passed
   const selectedSet = selectedNodeIds instanceof Set ? selectedNodeIds : new Set(selectedNodeIds)
 
   return nodes.map(node => {
     const isFocused = focusedNodeId === node.id
+    const masteryInfo = masteryMap?.get(node.id)
     return {
       id: node.id,
       type: 'knowledgeNode',
@@ -36,7 +54,11 @@ export const transformNodesToFlow = (nodes: Node[], options: TransformNodesOptio
         selected: selectedSet.has(node.id),
         isFocused,
         onSelect,
-        zoom
+        zoom,
+        // Practice mode overlay
+        isPracticeMode,
+        masteryLevel: masteryInfo?.mastery,
+        isDue: masteryInfo?.isDue
       },
       // Smooth transition when layout changes
       style: animated ? { transition: 'transform 0.3s ease-out' } : undefined

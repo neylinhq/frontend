@@ -82,9 +82,9 @@ export const MapSidebar = memo(function MapSidebar({
                 type='button'
                 onClick={() => setTab('node')}
                 className={cn(
-                  'px-1.5 py-0.5 text-xs rounded-sm transition-colors',
+                  'px-1.5 py-0.5 text-xs font-medium rounded-sm transition-colors',
                   activeTab === 'node'
-                    ? 'text-foreground font-medium'
+                    ? 'text-foreground'
                     : 'text-muted-foreground hover:text-foreground'
                 )}
               >
@@ -96,9 +96,9 @@ export const MapSidebar = memo(function MapSidebar({
                 type='button'
                 onClick={() => setTab('chat')}
                 className={cn(
-                  'px-1.5 py-0.5 text-xs rounded-sm transition-colors',
+                  'px-1.5 py-0.5 text-xs font-medium rounded-sm transition-colors',
                   activeTab === 'chat'
-                    ? 'text-foreground font-medium'
+                    ? 'text-foreground'
                     : 'text-muted-foreground hover:text-foreground'
                 )}
               >
@@ -109,9 +109,9 @@ export const MapSidebar = memo(function MapSidebar({
               type='button'
               onClick={() => setTab('settings')}
               className={cn(
-                'px-1.5 py-0.5 text-xs rounded-sm transition-colors',
+                'px-1.5 py-0.5 text-xs font-medium rounded-sm transition-colors',
                 activeTab === 'settings'
-                  ? 'text-foreground font-medium'
+                  ? 'text-foreground'
                   : 'text-muted-foreground hover:text-foreground'
               )}
             >

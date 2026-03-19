@@ -211,7 +211,7 @@ export const SettingsPanel = memo(function SettingsPanel({
 
               {/* Title & Description with autosave */}
               <div className='space-y-4'>
-                <Field label={t('mapSettings.overview.mapTitle')}>
+                <Field label={t('mapSettings.overview.mapTitle')} labelClassName='text-xs'>
                   <Input
                     value={title}
                     onChange={e => handleTitleChange(e.target.value)}
@@ -220,7 +220,7 @@ export const SettingsPanel = memo(function SettingsPanel({
                   />
                 </Field>
 
-                <Field label={t('mapSettings.overview.description')}>
+                <Field label={t('mapSettings.overview.description')} labelClassName='text-xs'>
                   <Textarea
                     value={description}
                     onChange={e => handleDescriptionChange(e.target.value)}

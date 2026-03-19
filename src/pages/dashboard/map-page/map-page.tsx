@@ -61,12 +61,12 @@ export const MapPage = ({ map, mapId }: MapPageProps) => {
   const isAIPanelOpen = isOpen && activeTab === 'chat'
 
   // Handle node selection from graph — open sidebar with node tab
+  // Ignore null (click on canvas) — node stays selected until user picks another or closes panel
   const handleNodeSelect = useCallback(
     (node: Node | null) => {
+      if (!node) return
       setSelectedNode(node)
-      if (node) {
-        setTab('node')
-      }
+      setTab('node')
     },
     [setTab]
   )

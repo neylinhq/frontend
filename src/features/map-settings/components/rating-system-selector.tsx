@@ -33,7 +33,7 @@ export const RatingSystemSelector = ({ mapId, currentSystem }: RatingSystemSelec
 
   return (
     <div className='space-y-2'>
-      <Field label={t('mapSettings.ratingSystem.label')}>
+      <Field label={t('mapSettings.ratingSystem.label')} labelClassName='text-xs'>
         <Select value={currentSystem} onValueChange={handleChange}>
           <SelectTrigger className='w-full'>
             <SelectValue placeholder={t('mapSettings.ratingSystem.placeholder')} />

@@ -331,17 +331,15 @@ export const MapChatPanel = ({ mapId, sessionId }: MapChatPanelProps) => {
   }
 
   return (
-    <div className='h-full'>
-      <AIChatCore
-        key={sessionId} // Reset component state when session changes
-        nodeContext={nodeContext}
-        mapContext={mapContext}
-        sessionId={sessionId}
-        onSavePreview={handleSavePreview}
-        onRejectAppliedPreview={handleRejectAppliedPreview}
-        emptyStateMessage={t('ai.chat.noMessagesMap')}
-        placeholderText={t('ai.chat.placeholderMap', 'Ask about this map...')}
-      />
-    </div>
+    <AIChatCore
+      key={sessionId}
+      nodeContext={nodeContext}
+      mapContext={mapContext}
+      sessionId={sessionId}
+      onSavePreview={handleSavePreview}
+      onRejectAppliedPreview={handleRejectAppliedPreview}
+      emptyStateMessage={t('ai.chat.noMessagesMap')}
+      placeholderText={t('ai.chat.placeholderMap', 'Ask about this map...')}
+    />
   )
 }

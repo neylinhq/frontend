@@ -1,22 +1,14 @@
-import {
-  MessageChatCircleIcon,
-  Settings01Icon,
-  Sliders04Icon,
-  XCloseIcon
-} from '@untitledui/icons-react/outline'
+import { XCloseIcon } from '@untitledui/icons-react/outline'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Drawer as VaulDrawer } from 'vaul'
 
 import type { Edge, Node } from '@/entities/map'
-import { Button } from '@/shared/components/button'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/components/tabs'
 import { cn } from '@/shared/lib/cn'
 
 import {
   MAP_SIDEBAR_MAX_WIDTH,
   MAP_SIDEBAR_MIN_WIDTH,
-  type MapSidebarTab,
   useMapSidebarStore
 } from '../model'
 
@@ -72,12 +64,14 @@ export const MapSidebar = memo(function MapSidebar({
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  // Auto-switch to node tab when node is selected
+  // Auto-switch to node tab when node is selected, close if deselected while on node tab
   useEffect(() => {
     if (selectedNode && isOpen) {
       setTab('node')
+    } else if (!selectedNode && isOpen && activeTab === 'node') {
+      close()
     }
-  }, [selectedNode, isOpen, setTab])
+  }, [selectedNode, isOpen, activeTab, setTab, close])
 
   // Resize handlers
   const handleMouseDown = useCallback(
@@ -94,7 +88,6 @@ export const MapSidebar = memo(function MapSidebar({
     if (!isResizing) return
 
     const handleMouseMove = (e: MouseEvent) => {
-      // Resize from left edge: moving left increases width
       const delta = startXRef.current - e.clientX
       const newWidth = Math.min(
         MAP_SIDEBAR_MAX_WIDTH,
@@ -116,14 +109,6 @@ export const MapSidebar = memo(function MapSidebar({
     }
   }, [isResizing, setWidth])
 
-  // Handle tab change
-  const handleTabChange = useCallback(
-    (value: string) => {
-      setTab(value as MapSidebarTab)
-    },
-    [setTab]
-  )
-
   // Handle close
   const handleClose = useCallback(() => {
     close()
@@ -135,71 +120,91 @@ export const MapSidebar = memo(function MapSidebar({
   // Don't render if not open
   if (!isOpen) return null
 
-  // Tab content
-  const tabContent = (
-    <Tabs
-      value={activeTab}
-      onValueChange={handleTabChange}
-      className='flex flex-1 flex-col min-h-0'
-    >
-      <TabsList variant='underline' className='grid grid-cols-3 shrink-0'>
-        <TabsTrigger
-          variant='underline'
-          value='node'
-          disabled={!selectedNode}
-          className='gap-1.5'
-          title={t('mapSidebar.tabs.node')}
-        >
-          <Sliders04Icon className='h-3.5 w-3.5' />
-          <span className='text-xs hidden sm:inline'>{t('mapSidebar.tabs.node')}</span>
-        </TabsTrigger>
-        {canEdit && (
-          <TabsTrigger
-            variant='underline'
-            value='chat'
-            className='gap-1.5'
-            title={t('mapSidebar.tabs.chat')}
+  // Navigation bar + content
+  const sidebarContent = (
+    <div className='flex flex-1 flex-col min-h-0'>
+      {/* Compact nav bar — text links + close */}
+      <div className='flex items-center border-b border-border/60 pl-3 pr-1.5 py-1 shrink-0'>
+        <nav className='flex items-center gap-1.5 flex-1 min-w-0'>
+          {selectedNode && (
+            <button
+              type='button'
+              onClick={() => setTab('node')}
+              className={cn(
+                'px-1.5 py-0.5 text-xs rounded-sm transition-colors',
+                activeTab === 'node'
+                  ? 'text-foreground font-medium'
+                  : 'text-muted-foreground hover:text-foreground'
+              )}
+            >
+              {t('mapSidebar.tabs.node')}
+            </button>
+          )}
+          {canEdit && (
+            <button
+              type='button'
+              onClick={() => setTab('chat')}
+              className={cn(
+                'px-1.5 py-0.5 text-xs rounded-sm transition-colors',
+                activeTab === 'chat'
+                  ? 'text-foreground font-medium'
+                  : 'text-muted-foreground hover:text-foreground'
+              )}
+            >
+              {t('mapSidebar.tabs.chat')}
+            </button>
+          )}
+          <button
+            type='button'
+            onClick={() => setTab('settings')}
+            className={cn(
+              'px-1.5 py-0.5 text-xs rounded-sm transition-colors',
+              activeTab === 'settings'
+                ? 'text-foreground font-medium'
+                : 'text-muted-foreground hover:text-foreground'
+            )}
           >
-            <MessageChatCircleIcon className='h-3.5 w-3.5' />
-            <span className='text-xs hidden sm:inline'>{t('mapSidebar.tabs.chat')}</span>
-          </TabsTrigger>
-        )}
-        <TabsTrigger
-          variant='underline'
-          value='settings'
-          className='gap-1.5'
-          title={t('mapSidebar.tabs.settings')}
+            {t('mapSidebar.tabs.settings')}
+          </button>
+        </nav>
+        <button
+          type='button'
+          onClick={handleClose}
+          className='h-6 w-6 flex items-center justify-center rounded-sm text-muted-foreground hover:text-foreground transition-colors'
         >
-          <Settings01Icon className='h-3.5 w-3.5' />
-          <span className='text-xs hidden sm:inline'>{t('mapSidebar.tabs.settings')}</span>
-        </TabsTrigger>
-      </TabsList>
+          <XCloseIcon className='h-3.5 w-3.5' />
+        </button>
+      </div>
 
-      {/* Node Tab */}
-      <TabsContent value='node' className='flex-1 overflow-y-auto mt-0'>
-        {selectedNode ? (
-          renderNodePanel?.(selectedNode)
-        ) : (
-          <div className='flex items-center justify-center h-full p-4'>
-            <p className='text-sm text-muted-foreground text-center'>
-              {t('mapSidebar.selectNode')}
-            </p>
+      {/* Content area — renders based on active tab */}
+      <div className='flex-1 min-h-0 overflow-hidden'>
+        {activeTab === 'node' && (
+          <div className='h-full overflow-y-auto'>
+            {selectedNode ? (
+              renderNodePanel?.(selectedNode)
+            ) : (
+              <div className='flex items-center justify-center h-full p-4'>
+                <p className='text-sm text-muted-foreground text-center'>
+                  {t('mapSidebar.selectNode')}
+                </p>
+              </div>
+            )}
           </div>
         )}
-      </TabsContent>
 
-      {/* Chat Tab */}
-      {canEdit && (
-        <TabsContent value='chat' className='flex-1 overflow-hidden mt-0'>
-          {renderChatPanel?.()}
-        </TabsContent>
-      )}
+        {activeTab === 'chat' && canEdit && (
+          <div className='flex flex-col h-full overflow-hidden'>
+            {renderChatPanel?.()}
+          </div>
+        )}
 
-      {/* Settings Tab */}
-      <TabsContent value='settings' className='flex-1 overflow-y-auto mt-0'>
-        {renderSettingsPanel?.()}
-      </TabsContent>
-    </Tabs>
+        {activeTab === 'settings' && (
+          <div className='h-full overflow-y-auto'>
+            {renderSettingsPanel?.()}
+          </div>
+        )}
+      </div>
+    </div>
   )
 
   // Mobile: Vaul drawer from bottom
@@ -211,14 +216,7 @@ export const MapSidebar = memo(function MapSidebar({
           <VaulDrawer.Content className='fixed inset-x-0 bottom-0 z-50 flex h-[calc(100vh-6rem)] flex-col rounded-t-xl bg-background'>
             {/* Drag handle */}
             <div className='mx-auto mt-3 h-1 w-12 shrink-0 rounded-full bg-muted-foreground/30' />
-            {/* Header */}
-            <div className='flex items-center justify-between px-4 py-2 border-b'>
-              <span className='text-sm font-medium'>{t('mapSidebar.title')}</span>
-              <Button variant='ghost' size='icon' className='h-7 w-7' onClick={handleClose}>
-                <XCloseIcon className='h-4 w-4' />
-              </Button>
-            </div>
-            {tabContent}
+            {sidebarContent}
           </VaulDrawer.Content>
         </VaulDrawer.Portal>
       </VaulDrawer.Root>
@@ -246,15 +244,7 @@ export const MapSidebar = memo(function MapSidebar({
         )}
       />
 
-      {/* Header */}
-      <div className='flex items-center justify-between px-4 py-2 border-b shrink-0'>
-        <span className='text-sm font-medium'>{t('mapSidebar.title')}</span>
-        <Button variant='ghost' size='icon' className='h-7 w-7' onClick={handleClose}>
-          <XCloseIcon className='h-4 w-4' />
-        </Button>
-      </div>
-
-      {tabContent}
+      {sidebarContent}
     </aside>
   )
 })

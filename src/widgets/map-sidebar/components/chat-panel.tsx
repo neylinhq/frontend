@@ -180,7 +180,7 @@ export const ChatPanel = memo(function ChatPanel({ mapId }: ChatPanelProps) {
         selectorOpen={selectorOpen}
         onSelectorOpenChange={setSelectorOpen}
       />
-      <div className='min-h-0 flex-1'>
+      <div className='flex-1 overflow-hidden'>
         <MapChatPanel mapId={mapId} sessionId={activeSessionId} />
       </div>
     </div>

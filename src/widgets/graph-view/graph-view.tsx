@@ -2,10 +2,17 @@ import { memo, useState } from 'react'
 
 import { GraphXYFlowVisualization as GraphXYFlow } from '@/features/graph/graph-core'
 import { GraphWebGLVisualization as GraphWebGL } from '@/features/graph/graph-webgl'
-import { useAIPanelStore } from '@/features/ai-assist'
+import type { ViewportState } from '@/features/graph/graph-webgl'
 import { MapSettingsDrawer } from '@/features/map-settings'
 import { NodeConnectionsPanel } from '@/features/node-connections-panel'
 import { NodeMetadataForm } from '@/features/node-metadata-form'
+import {
+  useMasteryMap,
+  useMasteryOverlay,
+  usePracticeModeActions,
+  usePracticeModeActive,
+  usePracticeModeStats
+} from '@/features/practice-mode'
 import type { Edge, FullMap, Node } from '@/entities/map'
 import { ErrorBoundary } from '@/shared/components/error-boundary'
 
@@ -14,16 +21,46 @@ interface GraphViewProps {
   className?: string
   interactive?: boolean
   initialData?: FullMap
+  /** Callback when node is selected — for external management (sidebar) */
+  onNodeSelect?: (node: Node | null) => void
+  /** Callback when viewport changes (pan/zoom) */
+  onViewportChange?: (viewport: ViewportState) => void
+  /** AI panel state — when provided, overrides internal useAIPanelStore */
+  isAIPanelOpen?: boolean
+  onToggleAIPanel?: () => void
 }
 
 /**
  * Widget that composes GraphVisualization with cross-feature dependencies.
  * All feature-to-feature wiring happens here at the widget layer (FSD pattern).
  */
-export const GraphView = memo(({ mapId, className, interactive, initialData }: GraphViewProps) => {
-  const { isOpen: isAIPanelOpen, toggle: toggleAIPanel, close: closeAIPanel } = useAIPanelStore()
+export const GraphView = memo(({
+  mapId,
+  className,
+  interactive,
+  initialData,
+  onNodeSelect,
+  onViewportChange,
+  isAIPanelOpen,
+  onToggleAIPanel
+}: GraphViewProps) => {
   const [useWebGL, setUseWebGL] = useState(true)
   const GraphVisualization = useWebGL ? GraphWebGL : GraphXYFlow
+
+  // Practice mode
+  const isPracticeModeActive = usePracticeModeActive()
+  const practiceModeStats = usePracticeModeStats()
+  const masteryMap = useMasteryMap()
+  const { enter: enterPractice, exit: exitPractice } = usePracticeModeActions()
+  useMasteryOverlay(mapId)
+
+  const togglePracticeMode = () => {
+    if (isPracticeModeActive) {
+      exitPractice()
+    } else {
+      enterPractice()
+    }
+  }
 
   return (
     <ErrorBoundary level='widget'>
@@ -43,8 +80,13 @@ export const GraphView = memo(({ mapId, className, interactive, initialData }: G
         interactive={interactive}
         initialData={initialData}
         isAIPanelOpen={isAIPanelOpen}
-        onToggleAIPanel={toggleAIPanel}
-        onCloseAIPanel={closeAIPanel}
+        onToggleAIPanel={onToggleAIPanel}
+        onNodeSelect={onNodeSelect}
+        onViewportChange={onViewportChange}
+        isPracticeModeActive={isPracticeModeActive}
+        onTogglePracticeMode={togglePracticeMode}
+        practiceModeStats={practiceModeStats}
+        masteryMap={masteryMap}
         renderConnectionsPanel={(
           node: Node,
           edges: Edge[],

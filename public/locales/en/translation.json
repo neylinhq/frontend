@@ -636,8 +636,15 @@
     }
   },
   "mapSidebar": {
+    "title": "Panel",
     "open": "Open sidebar",
-    "close": "Close sidebar"
+    "close": "Close sidebar",
+    "selectNode": "Select a node on the graph",
+    "tabs": {
+      "node": "Node",
+      "chat": "Chat",
+      "settings": "Settings"
+    }
   },
   "mapView": {
     "navigationError": "Navigation error",

@@ -1,0 +1,143 @@
+import { useCallback, useState } from 'react'
+import { ReactFlowProvider } from '@xyflow/react'
+
+import type { ViewportState } from '@/features/graph/graph-webgl'
+import { ReadOnlyBanner, useMapPermissions } from '@/features/map-permissions'
+import { NodeConnectionsPanel } from '@/features/node-connections-panel'
+import { AddNodeFab, QuickAddDialogWebGL, useNodeCreationStore } from '@/features/node-creation'
+import type { FullMap, Node } from '@/entities/map'
+import { useKeyboardShortcut } from '@/shared/hooks/use-keyboard-shortcut'
+import { GraphView } from '@/widgets/graph-view'
+import {
+  ChatPanel,
+  MapSidebar,
+  NodePanel,
+  SettingsPanel,
+  SidebarToggleFab,
+  useMapSidebarStore
+} from '@/widgets/map-sidebar'
+
+interface MapPageProps {
+  map: FullMap
+  mapId: string
+}
+
+export const MapPage = ({ map, mapId }: MapPageProps) => {
+  const { canEdit, isReadOnly } = useMapPermissions(map)
+  const { openQuickAdd } = useNodeCreationStore()
+  const { isOpen, activeTab, open, close, setTab } = useMapSidebarStore()
+  const [selectedNode, setSelectedNode] = useState<Node | null>(null)
+  const [viewport, setViewport] = useState<ViewportState | null>(null)
+
+  // Keyboard shortcut: Cmd+N / Ctrl+N — new node
+  useKeyboardShortcut({ key: 'n', meta: true, enabled: canEdit }, openQuickAdd)
+  useKeyboardShortcut({ key: 'n', ctrl: true, enabled: canEdit }, openQuickAdd)
+
+  // Keyboard shortcut: Cmd+B / Ctrl+B — toggle sidebar
+  useKeyboardShortcut({ key: 'b', meta: true }, () => {
+    if (isOpen) {
+      useMapSidebarStore.getState().close()
+    } else {
+      open()
+    }
+  })
+  useKeyboardShortcut({ key: 'b', ctrl: true }, () => {
+    if (isOpen) {
+      useMapSidebarStore.getState().close()
+    } else {
+      open()
+    }
+  })
+
+  // Toggle AI chat in sidebar
+  const handleToggleAIPanel = useCallback(() => {
+    if (isOpen && activeTab === 'chat') {
+      close()
+    } else {
+      setTab('chat')
+    }
+  }, [isOpen, activeTab, close, setTab])
+
+  const isAIPanelOpen = isOpen && activeTab === 'chat'
+
+  // Handle node selection from graph — open sidebar with node tab
+  const handleNodeSelect = useCallback(
+    (node: Node | null) => {
+      setSelectedNode(node)
+      if (node) {
+        setTab('node')
+      }
+    },
+    [setTab]
+  )
+
+  // Handle close node in sidebar
+  const handleCloseNode = useCallback(() => {
+    setSelectedNode(null)
+  }, [])
+
+  return (
+    <ReactFlowProvider>
+      <div className='h-screen flex'>
+        {/* Main canvas area */}
+        <div className='flex-1 min-w-0 relative'>
+          <GraphView
+            mapId={mapId}
+            initialData={map}
+            className='h-full w-full'
+            interactive={canEdit}
+            isAIPanelOpen={isAIPanelOpen}
+            onToggleAIPanel={handleToggleAIPanel}
+            onNodeSelect={handleNodeSelect}
+            onViewportChange={setViewport}
+          />
+
+          {/* Owner-only components */}
+          {canEdit && (
+            <>
+              <QuickAddDialogWebGL viewport={viewport} />
+              <AddNodeFab />
+            </>
+          )}
+
+          {/* Sidebar toggle FAB */}
+          <SidebarToggleFab />
+
+          {/* Read-only banner */}
+          {isReadOnly && <ReadOnlyBanner mapId={mapId} />}
+        </div>
+
+        {/* Sidebar — tabs node/chat/settings, resize, mobile drawer */}
+        <MapSidebar
+          mapId={mapId}
+          selectedNode={selectedNode}
+          edges={map.edges}
+          allNodes={map.nodes}
+          canEdit={canEdit}
+          isOwner={canEdit}
+          onCloseNode={handleCloseNode}
+          renderNodePanel={node => (
+            <NodePanel
+              node={node}
+              edges={map.edges}
+              allNodes={map.nodes}
+              isReadOnly={!canEdit}
+              onClose={handleCloseNode}
+              renderConnectionsPanel={(n, edges, allNodes, onOpenNode, onPanToNode) => (
+                <NodeConnectionsPanel
+                  node={n}
+                  edges={edges}
+                  allNodes={allNodes}
+                  onOpenNode={onOpenNode}
+                  onPanToNode={onPanToNode}
+                />
+              )}
+            />
+          )}
+          renderChatPanel={() => <ChatPanel mapId={mapId} />}
+          renderSettingsPanel={() => <SettingsPanel mapId={mapId} isOwner={canEdit} />}
+        />
+      </div>
+    </ReactFlowProvider>
+  )
+}

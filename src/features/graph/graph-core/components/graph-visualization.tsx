@@ -91,10 +91,19 @@ interface GraphVisualizationProps {
   ) => React.ReactNode
   /** Render prop for map settings drawer - injected by widget */
   renderSettingsDrawer?: (mapId: string, open: boolean, onOpenChange: (open: boolean) => void) => React.ReactNode
+  /** Callback when node is selected — for external management (sidebar) */
+  onNodeSelect?: (node: Node | null) => void
+  /** Callback when viewport changes (pan/zoom) */
+  onViewportChange?: (viewport: { x: number; y: number; zoom: number }) => void
   /** AI panel state — injected from widget layer */
   isAIPanelOpen?: boolean
   onToggleAIPanel?: () => void
   onCloseAIPanel?: () => void
+  /** Practice mode — injected from widget layer */
+  isPracticeModeActive?: boolean
+  onTogglePracticeMode?: () => void
+  practiceModeStats?: { dueCount: number; mastered: number; total: number }
+  masteryMap?: Map<string, { mastery: import('@/entities/progress').MasteryLevel; isDue: boolean }>
 }
 
 const GraphVisualizationContent = ({
@@ -105,9 +114,15 @@ const GraphVisualizationContent = ({
   renderConnectionsPanel,
   renderMetadataForm,
   renderSettingsDrawer,
+  onNodeSelect,
+  onViewportChange,
   isAIPanelOpen = false,
   onToggleAIPanel,
-  onCloseAIPanel
+  onCloseAIPanel,
+  isPracticeModeActive = false,
+  onTogglePracticeMode,
+  practiceModeStats,
+  masteryMap
 }: GraphVisualizationProps) => {
   const { t, i18n } = useTranslation()
   const queryClient = useQueryClient()
@@ -225,8 +240,10 @@ const GraphVisualizationContent = ({
     if (selectedNodeId) {
       setSettingsOpen(false)
       onCloseAIPanel?.()
+    } else {
+      onNodeSelect?.(null)
     }
-  }, [selectedNodeId, onCloseAIPanel])
+  }, [selectedNodeId, onCloseAIPanel, onNodeSelect])
 
   // Use refs for layout params to avoid stale closures when triggerLayout fires
   const layoutParamsRef = useRef({
@@ -265,8 +282,10 @@ const GraphVisualizationContent = ({
         focusNode(nodeId)
       }
       selectNode(nodeId)
+      const node = fullMap?.nodes.find(n => n.id === nodeId) || null
+      onNodeSelect?.(node)
     },
-    [viewMode, focusNode, selectNode]
+    [viewMode, focusNode, selectNode, fullMap?.nodes, onNodeSelect]
   )
 
   // Keep ref updated for stable callback in useMemo
@@ -297,14 +316,18 @@ const GraphVisualizationContent = ({
       selectedNodeIds: selectedElements.nodes,
       onSelect: stableHandleNodeClick,
       focusedNodeId,
-      zoom: debouncedZoom
+      zoom: debouncedZoom,
+      isPracticeMode: isPracticeModeActive,
+      masteryMap
     })
   }, [
     filteredData.nodes,
     selectedElements.nodes,
     stableHandleNodeClick,
     focusedNodeId,
-    debouncedZoom
+    debouncedZoom,
+    isPracticeModeActive,
+    masteryMap
   ])
 
   // Transform edges for XYFlow
@@ -904,6 +927,7 @@ const GraphVisualizationContent = ({
         defaultViewport={{ x: 0, y: 0, zoom: 2.5 }}
         onlyRenderVisibleElements={true}
         proOptions={{ hideAttribution: true }}
+        onMoveEnd={(_event, vp) => onViewportChange?.(vp)}
       >
         <Background color={cssVarToHex('canvas-grid')} size={1} />
 
@@ -954,6 +978,9 @@ const GraphVisualizationContent = ({
         canEdit={interactive}
         isAIPanelOpen={isAIPanelOpen}
         onToggleAIPanel={onToggleAIPanel}
+        isPracticeModeActive={isPracticeModeActive}
+        onTogglePracticeMode={onTogglePracticeMode}
+        practiceModeStats={practiceModeStats}
       />
 
       {/* Node drawer */}

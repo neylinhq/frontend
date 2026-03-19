@@ -62,6 +62,18 @@ interface GraphWebGLVisualizationProps {
     onEditEdge?: (edge: Edge) => void,
     onDeleteEdge?: (edgeId: string) => void
   ) => React.ReactNode
+  /** Render prop for metadata form — injected by widget to avoid cross-feature import */
+  renderMetadataForm?: (
+    node: Node,
+    onSubmit: (values: Record<string, unknown>) => void,
+    isPending: boolean
+  ) => React.ReactNode
+  /** Render prop for settings drawer — injected by widget to avoid cross-feature import */
+  renderSettingsDrawer?: (
+    mapId: string,
+    open: boolean,
+    onOpenChange: (open: boolean) => void
+  ) => React.ReactNode
 }
 
 export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
@@ -74,7 +86,9 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
   isAIPanelOpen = false,
   onToggleAIPanel,
   onCloseAIPanel: _onCloseAIPanel,
-  renderConnectionsPanel
+  renderConnectionsPanel,
+  renderMetadataForm,
+  renderSettingsDrawer: _renderSettingsDrawer
 }: GraphWebGLVisualizationProps) {
   const { t } = useTranslation()
 
@@ -360,6 +374,7 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
               handlePanToNodeWithZoom
             )
           }
+          renderMetadataForm={renderMetadataForm}
         />
       )}
 

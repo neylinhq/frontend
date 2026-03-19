@@ -5,11 +5,10 @@ import {
   useLoaderData
 } from 'react-router'
 import { mapApi } from '@/entities/map'
-import { MapWebGLPage } from '@/pages/dashboard/map-webgl-page'
+import { MapPage } from '@/pages/dashboard/map-page'
 import { getMeta } from '@/shared/lib/get-meta'
 import { ApiError } from '@/shared/api/client'
 import { getCookies } from '@/shared/api/server'
-import { logger } from '@/shared/lib/logger'
 
 export const meta = () => {
   return getMeta('mapView')
@@ -34,7 +33,6 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
       throw redirect(`/auth/sign-in?from=${encodeURIComponent(request.url)}`)
     }
 
-    logger.error('getFullMap error:', error)
     throw new Response('Map not found', { status: 404 })
   }
 }
@@ -71,7 +69,7 @@ clientLoader.hydrate = true
 
 const MapWebGLRoute = () => {
   const { map, mapId } = useLoaderData<typeof loader>()
-  return <MapWebGLPage map={map} mapId={mapId} />
+  return <MapPage map={map} mapId={mapId} />
 }
 
 export default MapWebGLRoute

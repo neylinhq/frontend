@@ -5,7 +5,7 @@ import {
   useLoaderData
 } from 'react-router'
 import { mapApi } from '@/entities/map'
-import { MapViewPage } from '@/pages/dashboard/map-view-page'
+import { MapPage } from '@/pages/dashboard/map-page'
 import { getMeta } from '@/shared/lib/get-meta'
 import { ApiError } from '@/shared/api/client'
 import { getCookies } from '@/shared/api/server'
@@ -72,7 +72,7 @@ export const handle = { disableScroll: true }
 
 const MapViewRoute = () => {
   const { map, mapId } = useLoaderData<typeof loader>()
-  return <MapViewPage map={map} mapId={mapId} />
+  return <MapPage map={map} mapId={mapId} />
 }
 
 export default MapViewRoute

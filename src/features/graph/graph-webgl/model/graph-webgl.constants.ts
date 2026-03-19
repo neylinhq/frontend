@@ -6,7 +6,7 @@ import type { LayoutOptions, ViewportState } from './graph-webgl.types'
 export const DEFAULT_LAYOUT_OPTIONS: LayoutOptions = {
   viewMode: 'overview',
   spacingPercent: 100,
-  directionStrength: 100,
+  directionStrength: 0,
   iterations: 150,
   coolingFactor: 0.97,
   theta: 0.9,

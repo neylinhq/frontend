@@ -45,7 +45,7 @@ export type GraphWebGLRenderParams = {
 
 export const DEFAULT_RENDER_PARAMS: GraphWebGLRenderParams = {
   // Nodes — FigJam-level card styling
-  node_corner_radius: 12,
+  node_corner_radius: 8,
   node_border_width_px: 1,
   node_accent_width_px: 3.5,
   node_shadow_strength: 0.0,

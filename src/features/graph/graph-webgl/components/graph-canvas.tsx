@@ -19,8 +19,8 @@ import type { Edge, Node } from '@/entities/map'
 import { useDarkMode } from '@/shared/hooks'
 import { cn } from '@/shared/lib/cn'
 
-import { loadFontAtlas, loadIconAtlas } from '../lib/atlas-loader'
-import { createSDFAtlas } from '../lib/sdf-atlas'
+import { createBitmapAtlas } from '../lib/bitmap-atlas'
+import { loadIconAtlas } from '../lib/atlas-loader'
 import { getCssVar, themeToJson } from '../lib/theme-bridge'
 import { layoutOptionsToWasm, transformToWasm } from '../lib/transform'
 import { initWasmModule } from '../lib/wasm-loader'
@@ -85,6 +85,12 @@ interface WasmGraphEngine {
     metrics_json: string
   ): void
   load_sdf_atlas_data(
+    image_data: Uint8Array,
+    width: number,
+    height: number,
+    metrics_json: string
+  ): void
+  load_bitmap_atlas_data(
     image_data: Uint8Array,
     width: number,
     height: number,
@@ -184,21 +190,31 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
     return selectedNodeId ? [selectedNodeId] : []
   }, [selectedNodeIds, selectedNodeId])
 
+  // Extract layout-triggering fields (excludes focusedNodeId — focus changes
+  // should only affect visibility/dimming, NOT trigger re-layout)
+  const viewMode = layoutOptions?.viewMode ?? DEFAULT_LAYOUT_OPTIONS.viewMode
+  const spacingPercent = layoutOptions?.spacingPercent ?? DEFAULT_LAYOUT_OPTIONS.spacingPercent
+  const directionStrength = layoutOptions?.directionStrength ?? DEFAULT_LAYOUT_OPTIONS.directionStrength
+  const iterations = layoutOptions?.iterations ?? DEFAULT_LAYOUT_OPTIONS.iterations
+  const coolingFactor = layoutOptions?.coolingFactor ?? DEFAULT_LAYOUT_OPTIONS.coolingFactor
+  const theta = layoutOptions?.theta ?? DEFAULT_LAYOUT_OPTIONS.theta
+  const ignoreExistingPositions = layoutOptions?.ignoreExistingPositions ?? DEFAULT_LAYOUT_OPTIONS.ignoreExistingPositions
+
+  // resolvedLayoutOptions drives layout re-computation.
+  // focusedNodeId is NOT in the deps — focus changes only affect dimming, not layout.
   const resolvedLayoutOptions = useMemo(
     () => ({
-      ...DEFAULT_LAYOUT_OPTIONS,
-      ...layoutOptions
+      viewMode,
+      spacingPercent,
+      directionStrength,
+      iterations,
+      coolingFactor,
+      theta,
+      ignoreExistingPositions,
+      focusedNodeId: focusedNodeId ?? undefined
     }),
-    [
-      layoutOptions?.viewMode,
-      layoutOptions?.spacingPercent,
-      layoutOptions?.directionStrength,
-      layoutOptions?.focusedNodeId,
-      layoutOptions?.iterations,
-      layoutOptions?.coolingFactor,
-      layoutOptions?.theta,
-      layoutOptions?.ignoreExistingPositions
-    ]
+    // biome-ignore lint/correctness/useExhaustiveDependencies: focusedNodeId excluded intentionally
+    [viewMode, spacingPercent, directionStrength, iterations, coolingFactor, theta, ignoreExistingPositions]
   )
 
   const getViewportFromEngine = useCallback((useCanvasRect: boolean): ViewportState | null => {
@@ -441,34 +457,24 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
           }
         }
 
-        // Load atlases (Figma S+ level GPU text/icon rendering)
+        // Load atlases (GPU text/icon rendering)
         try {
-          // Prefer shipped Inter MSDF atlas for crisp XYFlow-grade typography.
-          // Fallback to tiny-sdf if MSDF load fails.
-          try {
-            const font = await loadFontAtlas('/assets', 'inter-msdf')
-            engine.load_font_atlas_data(
-              font.imageData,
-              font.width,
-              font.height,
-              JSON.stringify(font.metrics)
-            )
-          } catch {
-            // Create SDF font atlas using Mapbox tiny-sdf (dynamic, system fonts)
+          // Bitmap font atlas: Canvas 2D rasterized Söhne glyphs.
+          // Perfect browser-quality text at any zoom level.
+          {
             const fontFamily =
               getCssVar('--font-sans') ||
               '"Söhne", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"'
             if (document.fonts?.ready) {
               await document.fonts.ready
             }
-            const sdfAtlas = createSDFAtlas({
-              fontSize: 48,
+            const bitmapAtlas = createBitmapAtlas({
               fontFamily,
               fontWeight: '600'
             })
-            const atlasData = sdfAtlas.getAtlasData()
-            const metricsJson = sdfAtlas.getGlyphMetricsJson()
-            engine.load_sdf_atlas_data(
+            const atlasData = bitmapAtlas.getAtlasData()
+            const metricsJson = bitmapAtlas.getGlyphMetricsJson()
+            engine.load_bitmap_atlas_data(
               atlasData.data,
               atlasData.width,
               atlasData.height,
@@ -596,6 +602,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
       return
     }
 
+    const isFirstLoad = !graphLoadedRef.current
     graphLoadedRef.current = true
     lastNodesRef.current = nodes
     lastEdgesRef.current = edges
@@ -604,13 +611,12 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
       const json = transformToWasm(nodes, edges)
       engine.load_graph(json)
 
-      if (autoLayout) {
-        // Run layout
+      if (autoLayout && isFirstLoad) {
+        // Only run layout on first load — subsequent node changes (focus filter)
+        // should preserve existing positions (matching React Flow behavior)
         engine.run_layout(layoutOptionsToWasm(resolvedLayoutOptions))
+        engine.fit_view(0.1)
       }
-
-      // Fit view
-      engine.fit_view(0.1)
 
       // Notify parent about layout positions for minimap
       notifyLayoutComplete()
@@ -635,7 +641,9 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
       return
     }
 
-    engine.run_layout(layoutOptionsToWasm(resolvedLayoutOptions))
+    // When layout options change, start fresh to avoid ratcheting effect
+    engine.run_layout(layoutOptionsToWasm({ ...resolvedLayoutOptions, ignoreExistingPositions: true }))
+    engine.fit_view(0.1)
 
     // Notify about new positions
     notifyLayoutComplete()
@@ -715,17 +723,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
       const isMultiSelect = e.shiftKey || e.metaKey || e.ctrlKey
 
       if (nodeId) {
-        const nextSelection = isMultiSelect
-          ? resolvedSelectedNodeIds.includes(nodeId)
-            ? resolvedSelectedNodeIds.filter(id => id !== nodeId)
-            : [...resolvedSelectedNodeIds, nodeId]
-          : [nodeId]
-        updateSelection(nextSelection)
-
-        if (!isMultiSelect) {
-          onNodeClick?.(nodeId)
-        }
-
+        // Selection + click deferred to mouseup (only if not dragged)
         draggingNodeRef.current = nodeId
         isPanningRef.current = false
 
@@ -755,7 +753,6 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
       nodes,
       onNodeClick,
       onNodeDragStart,
-      resolvedSelectedNodeIds,
       screenToWorld,
       updateSelection
     ]
@@ -818,12 +815,25 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
       if (draggingNodeRef.current) {
         const nodeId = draggingNodeRef.current
         if (hasDraggedRef.current) {
+          // Was a drag — commit position, no click
           const world = screenToWorld(x, y)
           const nextX = world.x - dragOffsetRef.current.x
           const nextY = world.y - dragOffsetRef.current.y
           positionsRef.current.set(nodeId, { x: nextX, y: nextY })
           onNodeDragEnd?.(nodeId, nextX, nextY)
           notifyLayoutComplete()
+        } else {
+          // Was a clean click (no drag) — fire selection + click
+          const isMultiSelect = e.shiftKey || e.metaKey || e.ctrlKey
+          if (isMultiSelect) {
+            const next = resolvedSelectedNodeIds.includes(nodeId)
+              ? resolvedSelectedNodeIds.filter(id => id !== nodeId)
+              : [...resolvedSelectedNodeIds, nodeId]
+            updateSelection(next)
+          } else {
+            updateSelection([nodeId])
+            onNodeClick?.(nodeId)
+          }
         }
         draggingNodeRef.current = null
       }
@@ -831,7 +841,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
       isPanningRef.current = false
       hasDraggedRef.current = false
     },
-    [getCanvasPoint, notifyLayoutComplete, onNodeDragEnd, screenToWorld]
+    [getCanvasPoint, notifyLayoutComplete, onNodeClick, onNodeDragEnd, resolvedSelectedNodeIds, screenToWorld, updateSelection]
   )
 
   const handleWheel = useCallback(

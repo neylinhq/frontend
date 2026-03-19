@@ -1,4 +1,5 @@
 import i18next from 'i18next'
+
 import { API_URL, IS_BROWSER } from '@/shared/config/env'
 
 export interface ApiResponse<T> {

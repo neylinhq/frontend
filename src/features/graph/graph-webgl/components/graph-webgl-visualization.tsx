@@ -115,7 +115,7 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
   // Layout positions from WASM for minimap sync
   const [layoutPositions, setLayoutPositions] = useState<LayoutPosition[]>([])
 
-  // Get filtered data using existing hook
+  // Get filtered data using existing hook (used for dimming, minimap, counts)
   const { filteredData, nodeCountsByType, edgeCountsByType } = useFilteredGraphData({
     fullMap,
     visibleNodeTypes,
@@ -125,6 +125,7 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
     focusedNodeId,
     focusDepth
   })
+
 
   // Handle node click
   const handleNodeClick = useCallback(

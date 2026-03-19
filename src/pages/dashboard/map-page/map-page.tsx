@@ -98,16 +98,14 @@ export const MapPage = ({ map, mapId }: MapPageProps) => {
           {canEdit && <QuickAddDialogWebGL viewport={viewport} />}
 
           <Fab.Root>
-            <Fab.Item position='top-right' order={0}>
+            <Fab.Item position='top-right'>
               <SidebarToggleFab />
             </Fab.Item>
-            {canEdit && (
-              <Fab.Item position='bottom-right' order={0}>
-                <AddNodeFab />
-              </Fab.Item>
-            )}
-            <Fab.Item position='bottom-right' order={1}>
-              <PracticeFab />
+            <Fab.Item position='bottom-right'>
+              <div className='flex flex-col-reverse items-center gap-3'>
+                {canEdit && <AddNodeFab />}
+                <PracticeFab />
+              </div>
             </Fab.Item>
           </Fab.Root>
 

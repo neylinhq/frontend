@@ -18,7 +18,7 @@ import {
 import type { Edge, Node } from '@/entities/map'
 import { cn } from '@/shared/lib/cn'
 
-import { generateSvgIconAtlas } from '../lib/svg-icon-atlas'
+import { generateSdfIconAtlas } from '../lib/sdf-icon-atlas'
 import { useTheme } from '@/shared/core/theme'
 import { themeToJson } from '../lib/theme-bridge'
 import { layoutOptionsToWasm, transformToWasm } from '../lib/transform'
@@ -487,16 +487,17 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
         }
 
         try {
-          // Generate high-DPI icon atlas from SVG paths (white, tinted by GPU)
-          const svgAtlas = generateSvgIconAtlas('white')
+          const sdfAtlas = generateSdfIconAtlas()
+          console.log('[icons] atlas', sdfAtlas.width, 'x', sdfAtlas.height, 'coords:', sdfAtlas.coordsJson.slice(0, 120))
           engine.load_icon_atlas_data(
-            svgAtlas.imageData,
-            svgAtlas.width,
-            svgAtlas.height,
-            svgAtlas.coordsJson
+            sdfAtlas.imageData,
+            sdfAtlas.width,
+            sdfAtlas.height,
+            sdfAtlas.coordsJson
           )
+          console.log('[icons] loaded OK, sdf_mode should be true')
         } catch (err) {
-          console.error('[GraphCanvas] Icon atlas load failed:', err)
+          console.error('[icons] FAILED:', err)
         }
 
         engineRef.current = engine

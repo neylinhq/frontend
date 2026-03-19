@@ -27,8 +27,8 @@ const ICON_PATHS: Record<string, string> = {
 }
 
 /** Cell size in pixels for each icon in the SDF atlas */
-const RENDER_SIZE = 128 // High-res render before distance transform
-const SDF_SIZE = 64 // Final SDF cell size in atlas
+const RENDER_SIZE = 512 // High-res render before distance transform (4× supersampling)
+const SDF_SIZE = 128 // Final SDF cell size in atlas
 const SDF_RADIUS = 16 // Distance field radius in pixels
 const STROKE_WIDTH = 1.75 // SVG stroke width (viewBox units)
 
@@ -60,9 +60,9 @@ function edt1d(
   z[1] = Infinity
   f[0] = data[offset]
 
+  let k = 0
   for (let q = 1; q < length; q++) {
     f[q] = data[offset + q * stride]
-    let k = 0
     let s: number
     do {
       const r = v[k]
@@ -80,10 +80,10 @@ function edt1d(
     z[k + 1] = Infinity
   }
 
-  let k = 0
+  let j = 0
   for (let q = 0; q < length; q++) {
-    while (z[k + 1] < q) k++
-    const r = v[k]
+    while (z[j + 1] < q) { j++ }
+    const r = v[j]
     const qr = q - r
     d[q] = f[r] + qr * qr
   }
@@ -170,8 +170,8 @@ function renderIconSdf(pathData: string, size: number, radius: number): Uint8Arr
       const si = sy * renderSize + sx
 
       const dist = Math.sqrt(outer[si]) - Math.sqrt(inner[si])
-      // Map distance to 0-255, with 192 = edge (like tiny-sdf buffer=3/4)
-      const sdfValue = Math.round(192 - (dist * 192) / radius)
+      // dist is in renderSize units; radius is in SDF output units — scale up
+      const sdfValue = Math.round(192 - (dist * 192) / (radius * scale))
       result[y * size + x] = Math.max(0, Math.min(255, sdfValue))
     }
   }
@@ -232,7 +232,7 @@ export function generateSdfIconAtlas(): SdfIconAtlasResult {
     width: atlasWidth,
     height: atlasHeight,
     coordsJson: JSON.stringify({
-      atlas: { width: atlasWidth, height: atlasHeight, iconSize: SDF_SIZE },
+      atlas: { width: atlasWidth, height: atlasHeight, iconSize: SDF_SIZE, sdf: true },
       icons
     })
   }

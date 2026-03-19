@@ -57,8 +57,6 @@ interface GraphWebGLVisualizationProps {
   onOpenSettings?: () => void
   /** Practice mode — injected from widget layer */
   isPracticeModeActive?: boolean
-  onTogglePracticeMode?: () => void
-  practiceModeStats?: { dueCount: number; mastered: number; total: number }
   masteryMap?: Map<string, { mastery: import('@/entities/progress').MasteryLevel; isDue: boolean }>
   renderConnectionsPanel?: (
     node: Node,
@@ -94,9 +92,7 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
   onToggleAIPanel,
   onCloseAIPanel: _onCloseAIPanel,
   onOpenSettings: _onOpenSettings,
-  isPracticeModeActive = false,
-  onTogglePracticeMode,
-  practiceModeStats,
+  isPracticeModeActive: _isPracticeModeActive = false,
   masteryMap: _masteryMap,
   renderConnectionsPanel,
   renderMetadataForm,
@@ -362,9 +358,6 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
         selectedNodeId={selectedNodeId}
         isAIPanelOpen={isAIPanelOpen}
         onToggleAIPanel={onToggleAIPanel}
-        isPracticeModeActive={isPracticeModeActive}
-        onTogglePracticeMode={onTogglePracticeMode}
-        practiceModeStats={practiceModeStats}
       />
 
       {/* Node drawer - only shown when onNodeSelect is NOT provided (internal mode) */}

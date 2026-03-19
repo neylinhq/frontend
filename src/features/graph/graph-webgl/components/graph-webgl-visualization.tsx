@@ -23,7 +23,9 @@ import {
   useFocusMode,
   useGraphUI,
   useNodeSpacing,
-  useViewMode
+  useViewMode,
+  useEdgeManagementStore,
+  EdgeEditPopover
 } from '@/features/graph/graph-core'
 import {
   GraphCanvas,
@@ -47,6 +49,10 @@ interface GraphWebGLVisualizationProps {
   onNodeSelect?: (node: Node | null) => void
   /** Callback when viewport changes (pan/zoom) */
   onViewportChange?: (viewport: ViewportState) => void
+  /** AI panel state — injected from widget/page layer */
+  isAIPanelOpen?: boolean
+  onToggleAIPanel?: () => void
+  onCloseAIPanel?: () => void
   renderConnectionsPanel?: (
     node: Node,
     edges: Edge[],
@@ -65,6 +71,9 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
   initialData,
   onNodeSelect,
   onViewportChange,
+  isAIPanelOpen = false,
+  onToggleAIPanel,
+  onCloseAIPanel: _onCloseAIPanel,
   renderConnectionsPanel
 }: GraphWebGLVisualizationProps) {
   const { t } = useTranslation()
@@ -86,6 +95,18 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
   const { visibleNodeTypes, visibleEdgeTypes, connectionRange } = useFilters()
   const { showMinimap } = useGraphUI()
   const { nodeSpacing, directionStrength } = useNodeSpacing()
+  const { startEdgeEditing } = useEdgeManagementStore()
+
+  // Handle edge badge click — open edge edit popover
+  const handleEdgeBadgeClick = useCallback(
+    (edgeId: string, screenX: number, screenY: number) => {
+      const edge = fullMap?.edges.find(e => e.id === edgeId)
+      if (edge) {
+        startEdgeEditing(edge, { x: screenX, y: screenY })
+      }
+    },
+    [fullMap?.edges, startEdgeEditing]
+  )
 
   const layoutOptions = useMemo(
     () => ({
@@ -274,9 +295,13 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
         onNodeDragEnd={handleNodeDragEnd}
         onViewportChange={handleViewportChange}
         onLayoutComplete={handleLayoutComplete}
+        onEdgeBadgeClick={handleEdgeBadgeClick}
         layoutOptions={layoutOptions}
         className='h-full w-full'
       />
+
+      {/* Edge Edit Popover */}
+      <EdgeEditPopover mapId={mapId} />
 
       {/* MiniMap */}
       {showMinimap && (
@@ -309,6 +334,8 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
         nodeCountsByType={nodeCountsByType}
         edgeCountsByType={edgeCountsByType}
         selectedNodeId={selectedNodeId}
+        isAIPanelOpen={isAIPanelOpen}
+        onToggleAIPanel={onToggleAIPanel}
       />
 
       {/* Node drawer - only shown when onNodeSelect is NOT provided (internal mode) */}

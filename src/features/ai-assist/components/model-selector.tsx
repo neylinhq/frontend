@@ -9,12 +9,13 @@ import { Separator } from '@/shared/components/separator'
 import { cn } from '@/shared/lib/cn'
 
 const TIER_CONFIG: Record<AIModelTier, { label: string }> = {
+  ultra: { label: 'Ultra' },
   pro: { label: 'Pro' },
-  fast: { label: 'Fast' },
+  lite: { label: 'Lite' },
   free: { label: 'Free' }
 }
 
-const TIER_ORDER: AIModelTier[] = ['pro', 'fast', 'free']
+const TIER_ORDER: AIModelTier[] = ['ultra', 'pro', 'lite', 'free']
 
 interface ModelSelectorProps {
   value?: string
@@ -27,7 +28,7 @@ export const ModelSelector = ({ value, onChange, models, disabled }: ModelSelect
   const currentModel = models.find(m => m.id === value)
 
   const modelsByTier = useMemo(() => {
-    const grouped: Record<AIModelTier, AIModel[]> = { pro: [], fast: [], free: [] }
+    const grouped: Record<AIModelTier, AIModel[]> = { ultra: [], pro: [], lite: [], free: [] }
     for (const model of models) {
       if (grouped[model.tier]) {
         grouped[model.tier].push(model)

@@ -26,8 +26,8 @@ export const useGenerateExercises = () => {
     mutationFn: ({ mapId, request }: { mapId: string; request: GenerateExercisesRequest }) =>
       exerciseApi.generateExercises(mapId, request),
     onSuccess: (_, { mapId }) => {
-      // Invalidate next exercise query
-      queryClient.invalidateQueries({ queryKey: exerciseKeys.next(mapId) })
+      // Invalidate all "next exercise" queries for this map (any nodeId)
+      queryClient.invalidateQueries({ queryKey: [...exerciseKeys.all, 'next', mapId] })
     }
   })
 }

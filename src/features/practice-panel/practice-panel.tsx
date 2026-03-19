@@ -74,7 +74,7 @@ export const PracticePanel = ({ nodeId, mapId }: PracticePanelProps) => {
         <Button
           onClick={handleGenerateExercises}
           disabled={generateExercisesMutation.isPending}
-          className='mt-1 w-full'
+          className='mt-1 w-fit'
         >
           {generateExercisesMutation.isPending ? (
             <>
@@ -108,7 +108,7 @@ export const PracticePanel = ({ nodeId, mapId }: PracticePanelProps) => {
       </div>
 
       {/* Actions */}
-      <div className='mt-auto space-y-2'>
+      <div className='mt-auto mx-auto space-y-2 max-w-xl w-full'>
         <Button asChild className='w-full'>
           <Link to={`${MAPS_ROUTES.practice(mapId)}?nodeId=${nodeId}`}>
             <PlayIcon className='mr-2 h-4 w-4' />

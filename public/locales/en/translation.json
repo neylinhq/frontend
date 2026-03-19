@@ -1293,6 +1293,7 @@
       "closeTab": "Close tab",
       "closeOthers": "Close other tabs",
       "closeAll": "Close all tabs",
+      "deleteCurrent": "Delete current chat",
       "exportChat": "Export chat",
       "searchChats": "Search chats...",
       "noSearchResults": "No chats found",

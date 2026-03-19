@@ -207,8 +207,8 @@ export function extractThemeColors(): ThemeColors {
     knowledge: oklchToRgba(concept),
     primary: oklchToRgba(primary),
     glow: isDark
-      ? [1.0, 1.0, 1.0, 0.6] as [number, number, number, number]   // White glow on dark — higher alpha for visibility
-      : oklchToRgba(getCssVar('--brand') || primary, 0.5)           // Brand glow on light
+      ? [1.0, 1.0, 1.0, 0.5] as [number, number, number, number]   // White, moderate alpha
+      : oklchToRgba(getCssVar('--brand') || primary, 0.2)           // Brand color, very subtle
   }
 }
 

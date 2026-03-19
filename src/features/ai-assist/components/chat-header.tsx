@@ -24,6 +24,7 @@ export const ChatHeader = ({
   activeSessionId,
   onSelectSession,
   onCreateSession,
+  onCloseSession,
   onCloseAll,
   onCloseOthers,
   isLoading,
@@ -39,6 +40,10 @@ export const ChatHeader = ({
         activeSession={activeSession}
         onSelectSession={onSelectSession}
         onCreateSession={onCreateSession}
+        onDeleteCurrentSession={
+          activeSessionId && onCloseSession ? () => onCloseSession(activeSessionId) : undefined
+        }
+        onDeleteSession={onCloseSession}
         onCloseAll={onCloseAll}
         onCloseOthers={onCloseOthers}
         isLoading={isLoading}

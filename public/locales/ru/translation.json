@@ -1321,6 +1321,7 @@
       "closeTab": "Закрыть вкладку",
       "closeOthers": "Закрыть другие вкладки",
       "closeAll": "Закрыть все вкладки",
+      "deleteCurrent": "Удалить текущий чат",
       "exportChat": "Экспортировать чат",
       "searchChats": "Поиск чатов...",
       "noSearchResults": "Чаты не найдены",

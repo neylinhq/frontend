@@ -341,7 +341,7 @@ export const GraphFragmentCard = ({
             isExpanded && 'rotate-90'
           )}
         />
-        <span className='text-xs font-medium uppercase tracking-wide text-muted-foreground flex-1 truncate'>
+        <span className='text-xs font-medium text-muted-foreground flex-1 truncate'>
           {data.title || t('ai.graphFragment.title', 'Graph Changes')}
         </span>
         <span className='text-xs text-muted-foreground'>{summary}</span>

@@ -21,6 +21,10 @@ interface ChatSelectorRowProps {
   activeSession: ChatSession | null
   onSelectSession: (id: string) => void
   onCreateSession: () => void
+  /** Delete the currently active session */
+  onDeleteCurrentSession?: () => void
+  /** Delete a specific session by id (for popover list) */
+  onDeleteSession?: (id: string) => void
   onCloseAll?: () => void
   onCloseOthers?: () => void
   isLoading?: boolean
@@ -36,6 +40,8 @@ export const ChatSelectorRow = ({
   activeSession,
   onSelectSession,
   onCreateSession,
+  onDeleteCurrentSession,
+  onDeleteSession,
   onCloseAll,
   onCloseOthers,
   isLoading,
@@ -102,6 +108,7 @@ export const ChatSelectorRow = ({
             sessions={sessions}
             activeSessionId={activeSession?.id || null}
             onSelectSession={handleSelect}
+            onDeleteSession={onDeleteSession}
           />
         </PopoverContent>
       </Popover>
@@ -156,9 +163,17 @@ export const ChatSelectorRow = ({
             <DropdownMenuItem
               onClick={onCloseAll}
               disabled={!canCloseAll}
-              className='text-xs text-destructive data-[highlighted]:text-destructive'
+              className='text-xs'
             >
               {t('ai.chat.closeAll', 'Delete all chats')}
+            </DropdownMenuItem>
+            <DropdownMenuSeparator className='my-0.5' />
+            <DropdownMenuItem
+              onClick={onDeleteCurrentSession}
+              disabled={!onDeleteCurrentSession}
+              className='text-xs text-destructive data-[highlighted]:text-destructive'
+            >
+              {t('ai.chat.deleteCurrent', 'Delete current chat')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

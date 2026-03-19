@@ -6,6 +6,7 @@ import {
   calculateSmartPosition
 } from '@/shared/lib/smart-positioning'
 import {
+  useApplyGraphFragment,
   useCreateEdge,
   useCreateNode,
   useDeleteEdge,
@@ -23,6 +24,7 @@ import { useProposalHistoryStore } from '../model/ai-assist.proposal.store'
 import type {
   ConnectionPreviewData,
   EnrichmentPreviewData,
+  GraphFragmentPreviewData,
   MapChatContext,
   NewNodePreviewData,
   NodeChatContext,
@@ -49,6 +51,7 @@ export const NodeChatPanel = ({
   const updateNodeMutation = useUpdateNode(mapId)
   const createNodeMutation = useCreateNode(mapId)
   const createEdgeMutation = useCreateEdge(mapId)
+  const applyFragmentMutation = useApplyGraphFragment(mapId)
   const deleteNodeMutation = useDeleteNode(mapId)
   const deleteEdgeMutation = useDeleteEdge(mapId)
 
@@ -284,6 +287,92 @@ export const NodeChatPanel = ({
 
       toast.success(t('ai.connection.created', 'Connection created'))
       return { previousState, actionId }
+    } else if (previewCard.type === 'graph_fragment') {
+      const data = previewCard.data as GraphFragmentPreviewData
+
+      // Check if already applied (re-apply after undo)
+      const alreadyApplied =
+        data.nodes.some(n => n.appliedNodeId) || data.edges.some(e => e.appliedEdgeId)
+      if (alreadyApplied) {
+        const tempIdMapping: Record<string, string> = {}
+        for (const n of data.nodes) {
+          if (n.appliedNodeId) {
+            tempIdMapping[n.tempId] = n.appliedNodeId
+          }
+        }
+        return {
+          previousState: {
+            tempIdMapping,
+            createdEdgeIds: data.edges.filter(e => e.appliedEdgeId).map(e => e.appliedEdgeId!)
+          },
+          actionId: ''
+        }
+      }
+
+      // Position nodes near the current focus node
+      const focusNode = allNodes.find(n => n.id === nodeId)
+      const centerX = focusNode ? focusNode.position.x + 300 : 0
+      const centerY = focusNode ? focusNode.position.y : 0
+      const nodeCount = data.nodes.length
+      const cols = Math.ceil(Math.sqrt(nodeCount))
+      const spacing = 250
+      const jitter = 30
+
+      const nodes = data.nodes.map((node, idx) => {
+        const col = idx % cols
+        const row = Math.floor(idx / cols)
+        const offsetX = ((cols - 1) * spacing) / 2
+        const offsetY = ((Math.ceil(nodeCount / cols) - 1) * spacing) / 2
+        return {
+          tempId: node.tempId,
+          label: node.label,
+          type: node.nodeType,
+          description: node.description,
+          content: node.content ?? '',
+          positionX: centerX + col * spacing - offsetX + (Math.random() * jitter * 2 - jitter),
+          positionY: centerY + row * spacing - offsetY + (Math.random() * jitter * 2 - jitter)
+        }
+      })
+
+      const edges = data.edges.map(edge => ({
+        fromRef: edge.fromRef,
+        toRef: edge.toRef,
+        fromIsNew: edge.fromIsNew,
+        toIsNew: edge.toIsNew,
+        relationType: edge.relation
+      }))
+
+      const result = await applyFragmentMutation.mutateAsync({ nodes, edges })
+
+      const nodesCreated = result.createdNodes.length
+      const edgesCreated = result.createdEdges.length
+
+      if (nodesCreated > 0 && edgesCreated > 0) {
+        toast.success(
+          t('ai.graphFragment.applied', 'Created {{nodes}} nodes and {{edges}} connections', {
+            nodes: nodesCreated,
+            edges: edgesCreated
+          })
+        )
+      } else if (nodesCreated > 0) {
+        toast.success(
+          t('ai.node.createdMultiple', 'Created {{count}} nodes', { count: nodesCreated })
+        )
+      } else if (edgesCreated > 0) {
+        toast.success(
+          t('ai.connection.createdMultiple', 'Created {{count}} connections', {
+            count: edgesCreated
+          })
+        )
+      }
+
+      return {
+        previousState: {
+          tempIdMapping: result.tempIdMapping,
+          createdEdgeIds: result.createdEdges.map(e => e.id)
+        },
+        actionId: ''
+      }
     } else if (previewCard.type === 'exercise') {
       // Exercises are already saved during generation
       toast.success(t('ai.exercises.saved'), {

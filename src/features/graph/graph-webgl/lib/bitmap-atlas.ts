@@ -51,7 +51,7 @@ const CHARSET_BASIC =
   ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'
 const CHARSET_CYRILLIC =
   'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя'
-const CHARSET_EXTENDED = `${CHARSET_BASIC}${CHARSET_CYRILLIC}—–…«»„"№`
+const CHARSET_EXTENDED = `${CHARSET_BASIC}${CHARSET_CYRILLIC}—–…«»„"№·`
 
 export class BitmapAtlas {
   private config: BitmapAtlasConfig

@@ -11,6 +11,7 @@ import {
   useDeleteChatSession,
   useRenameChatSession
 } from '../model'
+import { useChatHistoryStore } from '../model/ai-assist.chat.store'
 import { useStreamingStore } from '../model/ai-assist.streaming.store'
 import { ChatHeader } from './chat-header'
 import { MapChatPanel } from './map-chat-panel'
@@ -104,6 +105,13 @@ export const MapChatDrawer = ({ mapId }: MapChatDrawerProps) => {
   )
 
   const handleCreateSession = useCallback(() => {
+    // Don't create another empty session — reuse current one
+    if (activeSessionId) {
+      const currentMessages = useChatHistoryStore.getState().sessions[activeSessionId]?.messages
+      if (!currentMessages || currentMessages.length === 0) {
+        return
+      }
+    }
     createSession.mutate(
       { contextType: 'map' },
       {
@@ -112,7 +120,7 @@ export const MapChatDrawer = ({ mapId }: MapChatDrawerProps) => {
         }
       }
     )
-  }, [createSession])
+  }, [createSession, activeSessionId])
 
   const handleRenameSession = useCallback(
     (sessionId: string, title: string) => {

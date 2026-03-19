@@ -18,14 +18,13 @@ import {
 import type { Edge, Node } from '@/entities/map'
 import { cn } from '@/shared/lib/cn'
 
-import { createBitmapAtlas } from '../lib/bitmap-atlas'
-import { loadIconAtlas } from '../lib/atlas-loader'
+import { generateSvgIconAtlas } from '../lib/svg-icon-atlas'
 import { useTheme } from '@/shared/core/theme'
-import { getCssVar, themeToJson } from '../lib/theme-bridge'
+import { themeToJson } from '../lib/theme-bridge'
 import { layoutOptionsToWasm, transformToWasm } from '../lib/transform'
 import { initWasmModule } from '../lib/wasm-loader'
 import { DEFAULT_LAYOUT_OPTIONS } from '../model/graph-webgl.constants'
-import type { GraphWebGLRenderParams } from '../model/graph-webgl.render-params'
+import { DEFAULT_RENDER_PARAMS, type GraphWebGLRenderParams } from '../model/graph-webgl.render-params'
 import type { LayoutOptions } from '../model/graph-webgl.types'
 
 /** Viewport state returned by WASM engine */
@@ -65,6 +64,8 @@ interface WasmGraphEngine {
   set_focused(node_id: string | null): void
   set_dimmed(node_ids: string): void
   hit_test(screen_x: number, screen_y: number): string | undefined
+  hit_test_edge_badge(screen_x: number, screen_y: number): string | undefined
+  set_hovered_edge(edge_id: string): void
   node_count(): number
   edge_count(): number
   // Viewport state
@@ -133,6 +134,7 @@ interface GraphCanvasProps {
   onNodeDragEnd?: (nodeId: string, x: number, y: number) => void
   onViewportChange?: (viewport: ViewportState) => void
   onLayoutComplete?: (positions: LayoutPosition[]) => void
+  onEdgeBadgeClick?: (edgeId: string, screenX: number, screenY: number) => void
   className?: string
 }
 
@@ -156,6 +158,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
     onNodeDragEnd,
     onViewportChange,
     onLayoutComplete,
+    onEdgeBadgeClick,
     className
   },
   ref
@@ -448,50 +451,52 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
         // Set initial theme
         engine.set_theme(themeToJson())
 
-        // Set initial render params (if provided)
-        if (renderParams) {
-          try {
-            engine.set_render_params(JSON.stringify(renderParams))
-          } catch {
-            // ignore
-          }
+        // Set initial render params — always apply defaults, then override if provided
+        try {
+          engine.set_render_params(JSON.stringify(renderParams ?? DEFAULT_RENDER_PARAMS))
+        } catch {
+          // ignore
         }
 
         // Load atlases (GPU text/icon rendering)
         try {
-          // Bitmap font atlas: Canvas 2D rasterized Söhne glyphs.
-          // Perfect browser-quality text at any zoom level.
+          // MSDF font atlas: resolution-independent, crisp at any zoom.
           {
-            const fontFamily =
-              getCssVar('--font-sans') ||
-              '"Söhne", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"'
-            if (document.fonts?.ready) {
-              await document.fonts.ready
-            }
-            const bitmapAtlas = createBitmapAtlas({
-              fontFamily,
-              fontWeight: '600'
-            })
-            const atlasData = bitmapAtlas.getAtlasData()
-            const metricsJson = bitmapAtlas.getGlyphMetricsJson()
-            engine.load_bitmap_atlas_data(
-              atlasData.data,
-              atlasData.width,
-              atlasData.height,
+            const [pngResponse, jsonResponse] = await Promise.all([
+              fetch('/assets/inter-msdf.png'),
+              fetch('/assets/inter-msdf.json')
+            ])
+            const metricsJson = await jsonResponse.text()
+            const pngBlob = await pngResponse.blob()
+            const bitmap = await createImageBitmap(pngBlob)
+            const tmpCanvas = document.createElement('canvas')
+            tmpCanvas.width = bitmap.width
+            tmpCanvas.height = bitmap.height
+            const ctx = tmpCanvas.getContext('2d')!
+            ctx.drawImage(bitmap, 0, 0)
+            const imageData = ctx.getImageData(0, 0, bitmap.width, bitmap.height)
+            engine.load_font_atlas_data(
+              new Uint8Array(imageData.data.buffer),
+              bitmap.width,
+              bitmap.height,
               metricsJson
             )
           }
+        } catch (err) {
+          console.error('[GraphCanvas] Font atlas load failed:', err)
+        }
 
-          // Load icon atlas (static, from PNG)
-          const icons = await loadIconAtlas('/assets')
+        try {
+          // Generate high-DPI icon atlas from SVG paths (white, tinted by GPU)
+          const svgAtlas = generateSvgIconAtlas('white')
           engine.load_icon_atlas_data(
-            icons.imageData,
-            icons.width,
-            icons.height,
-            JSON.stringify(icons.coords)
+            svgAtlas.imageData,
+            svgAtlas.width,
+            svgAtlas.height,
+            svgAtlas.coordsJson
           )
-        } catch {
-          // Atlas loading failed - text/icons will use fallback
+        } catch (err) {
+          console.error('[GraphCanvas] Icon atlas load failed:', err)
         }
 
         engineRef.current = engine
@@ -550,7 +555,9 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
     }
     // Delay one frame to ensure CSS vars have updated after class/attribute toggle
     const timer = requestAnimationFrame(() => {
-      engineRef.current?.set_theme(themeToJson())
+      const engine = engineRef.current
+      if (!engine) return
+      engine.set_theme(themeToJson())
     })
     return () => cancelAnimationFrame(timer)
   }, [isReady, themeKey])
@@ -804,7 +811,22 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
       }
 
       const nodeId = engine.hit_test(x, y)
-      canvasRef.current?.style.setProperty('cursor', nodeId ? 'grab' : 'default')
+      if (nodeId) {
+        canvasRef.current?.style.setProperty('cursor', 'grab')
+        engine.set_hovered_edge('')
+      } else {
+        const badgeHit = engine.hit_test_edge_badge(x, y)
+        if (badgeHit) {
+          try {
+            const { edgeId } = JSON.parse(badgeHit)
+            engine.set_hovered_edge(edgeId)
+          } catch { /* ignore */ }
+          canvasRef.current?.style.setProperty('cursor', 'pointer')
+        } else {
+          engine.set_hovered_edge('')
+          canvasRef.current?.style.setProperty('cursor', 'default')
+        }
+      }
     },
     [getCanvasPoint, notifyViewportChange, onNodeDrag, screenToWorld]
   )
@@ -842,12 +864,24 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
           }
         }
         draggingNodeRef.current = null
+      } else if (!hasDraggedRef.current) {
+        // No node was dragged/clicked — check edge badge hit
+        const badgeHit = engine.hit_test_edge_badge(x, y)
+        if (badgeHit) {
+          try {
+            const { edgeId } = JSON.parse(badgeHit)
+            // Use mouse event clientX/Y + offset below cursor
+            onEdgeBadgeClick?.(edgeId, e.clientX, e.clientY + 20)
+          } catch {
+            // ignore parse errors
+          }
+        }
       }
 
       isPanningRef.current = false
       hasDraggedRef.current = false
     },
-    [getCanvasPoint, notifyLayoutComplete, onNodeClick, onNodeDragEnd, resolvedSelectedNodeIds, screenToWorld, updateSelection]
+    [getCanvasPoint, notifyLayoutComplete, onEdgeBadgeClick, onNodeClick, onNodeDragEnd, resolvedSelectedNodeIds, screenToWorld, updateSelection]
   )
 
   const handleWheel = useCallback(

@@ -118,7 +118,7 @@ export const PracticeSessionPage = () => {
   return (
     <div className='flex h-screen flex-col'>
       {/* Header */}
-      <header className='flex items-center justify-between border-b border-border/60 px-6 py-3'>
+      <header className='h-14 flex items-center justify-between border-b border-border/60 px-6 py-3'>
         <Button variant='ghost' size='sm' asChild>
           <Link to={`/dashboard/maps/${mapId}/view`}>
             <ArrowLeftIcon className='mr-2 h-4 w-4' />

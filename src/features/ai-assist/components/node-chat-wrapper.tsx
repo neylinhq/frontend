@@ -6,6 +6,7 @@ import {
   useDeleteChatSession,
   useRenameChatSession
 } from '../model'
+import { useChatHistoryStore } from '../model/ai-assist.chat.store'
 import { useStreamingStore } from '../model/ai-assist.streaming.store'
 import { ChatHeader } from './chat-header'
 import { NodeChatPanel } from './node-chat-panel'
@@ -88,6 +89,13 @@ export const NodeChatWrapper = ({ nodeId, mapId }: NodeChatWrapperProps) => {
   )
 
   const handleCreateSession = useCallback(() => {
+    // Don't create another empty session — reuse current one
+    if (activeSessionId) {
+      const currentMessages = useChatHistoryStore.getState().sessions[activeSessionId]?.messages
+      if (!currentMessages || currentMessages.length === 0) {
+        return
+      }
+    }
     createSession.mutate(
       { contextType: 'node', nodeId },
       {
@@ -96,7 +104,7 @@ export const NodeChatWrapper = ({ nodeId, mapId }: NodeChatWrapperProps) => {
         }
       }
     )
-  }, [createSession, nodeId])
+  }, [createSession, nodeId, activeSessionId])
 
   const handleRenameSession = useCallback(
     (sessionId: string, title: string) => {

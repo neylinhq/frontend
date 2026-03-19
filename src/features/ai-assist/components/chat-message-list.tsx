@@ -13,7 +13,6 @@ import remarkGfm from 'remark-gfm'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import { CopyButton } from '@/shared/components/copy-button'
-import { LoadingDots } from '@/shared/components/loading-dots'
 import { Textarea } from '@/shared/components/textarea'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/components/tooltip'
 import { cn } from '@/shared/lib/cn'
@@ -21,6 +20,7 @@ import { cn } from '@/shared/lib/cn'
 import type { ChatMessage, PreviewCard, ResolvedPreview } from '../model/ai-assist.types'
 import { CollapsibleProposal } from './collapsible-proposal'
 import { PreviewCardComponent } from './preview-card'
+import { ThinkingIndicator } from './thinking-indicator'
 
 interface ChatMessageListProps {
   messages: ChatMessage[]
@@ -240,12 +240,8 @@ export const ChatMessageList = ({
           >
             <div className='pl-3 space-y-3'>
               {isThinking ? (
-                <div
-                  className='py-1'
-                  role='status'
-                  aria-label={t('ai.chat.thinking', 'AI is thinking...')}
-                >
-                  <LoadingDots />
+                <div className='py-1'>
+                  <ThinkingIndicator />
                 </div>
               ) : (
                 <div
@@ -303,9 +299,6 @@ export const ChatMessageList = ({
               {/* Preview Cards - both pending and resolved */}
               {message.preview && message.preview.length > 0 && (
                 <div className='space-y-2'>
-                  <div className='text-xs uppercase tracking-wide text-muted-foreground'>
-                    {t('ai.chat.suggestionsTitle', 'Suggestions')}
-                  </div>
                   {message.preview.map(preview =>
                     preview.status === 'approved' || preview.status === 'rejected' ? (
                       preview.type === 'exercise' ? (

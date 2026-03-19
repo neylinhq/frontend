@@ -84,6 +84,6 @@ export const DEFAULT_RENDER_PARAMS: GraphWebGLRenderParams = {
   grid_dot_opacity: 1.0,
 
   // Global
-  icon_zoom_threshold: 0.5,
-  text_zoom_threshold: 0.3
+  icon_zoom_threshold: 0.15,
+  text_zoom_threshold: 0.1
 }

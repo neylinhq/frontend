@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "katex/dist/katex.min.css";
 
 /* Söhne - Klim Type Foundry's modern grotesque typeface */
 /* Regular weights */
@@ -369,6 +368,14 @@
     50% {
       transform: scale(1.08);
     }
+  }
+
+  /* Cursor blink animation for thinking indicator */
+  --animate-blink: blink 1s step-end infinite;
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
   }
 
   /* Menu fade-in animation (Design Manifesto: 200-300ms ease-out) */
@@ -1468,46 +1475,6 @@
   border-color: oklch(var(--border));
 }
 
-.editor-math-block .katex-display {
-  margin: 0;
-}
-
-.editor-math-block .katex {
-  font-size: 1.3em;
-}
-
-.editor-math-inline {
-  display: inline-block;
-  padding: 0.125rem 0.25rem;
-  margin: 0 0.125rem;
-  background: oklch(var(--muted) / 0.4);
-  border-radius: calc(var(--radius-sm) - 4px);
-  cursor: pointer;
-  transition: background 0.15s ease;
-}
-
-.editor-math-inline:hover {
-  background: oklch(var(--muted) / 0.7);
-}
-
-.editor-math-inline .katex {
-  font-size: 1em;
-}
-
-/* Math Error Styling */
-.math-error {
-  color: oklch(var(--destructive));
-  font-family: var(--font-mono);
-  font-size: 0.875em;
-  padding: 0.25rem 0.5rem;
-  background: oklch(var(--destructive) / 0.1);
-  border-radius: calc(var(--radius-sm) - 4px);
-}
-
-/* Dark mode adjustments for math */
-.dark .editor-math-block {
-  background: oklch(var(--muted) / 0.2);
-}
 
 .dark .editor-math-inline {
   background: oklch(var(--muted) / 0.3);

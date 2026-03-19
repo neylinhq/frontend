@@ -1,4 +1,4 @@
-import { SearchMdIcon } from '@untitledui/icons-react/outline'
+import { SearchMdIcon, Trash01Icon } from '@untitledui/icons-react/outline'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -11,6 +11,7 @@ interface ChatSelectorPopoverProps {
   sessions: ChatSession[]
   activeSessionId: string | null
   onSelectSession: (id: string) => void
+  onDeleteSession?: (id: string) => void
 }
 
 interface GroupedSessions {
@@ -50,7 +51,8 @@ const isThisMonth = (date: Date): boolean => {
 export const ChatSelectorPopover = ({
   sessions,
   activeSessionId,
-  onSelectSession
+  onSelectSession,
+  onDeleteSession
 }: ChatSelectorPopoverProps) => {
   const { t } = useTranslation()
   const [search, setSearch] = useState('')
@@ -145,11 +147,10 @@ export const ChatSelectorPopover = ({
                 {group.sessions.map(session => {
                   const isActive = session.id === activeSessionId
                   return (
-                    <button
+                    <div
                       key={session.id}
-                      type='button'
                       className={cn(
-                        'w-full px-2 py-1 text-xs text-left truncate rounded-xs',
+                        'group w-full px-2 py-1 text-xs text-left rounded-xs flex items-center gap-1 cursor-pointer',
                         'hover:bg-[var(--surface-hover)] transition-colors',
                         isActive
                           ? 'bg-muted/60 text-foreground font-medium'
@@ -157,8 +158,21 @@ export const ChatSelectorPopover = ({
                       )}
                       onClick={() => onSelectSession(session.id)}
                     >
-                      {getSessionTitle(session)}
-                    </button>
+                      <span className='truncate flex-1'>{getSessionTitle(session)}</span>
+                      {onDeleteSession && (
+                        <button
+                          type='button'
+                          tabIndex={-1}
+                          className='shrink-0 opacity-0 group-hover:opacity-100 p-0.5 rounded-xs text-muted-foreground hover:text-destructive transition-all'
+                          onClick={e => {
+                            e.stopPropagation()
+                            onDeleteSession(session.id)
+                          }}
+                        >
+                          <Trash01Icon className='h-3 w-3' />
+                        </button>
+                      )}
+                    </div>
                   )
                 })}
               </div>

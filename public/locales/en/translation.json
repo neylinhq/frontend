@@ -465,7 +465,8 @@
       "layoutSettings": "Settings",
       "direction": "Direction",
       "directionHint": "0 = less crossings, 200 = natural flow",
-      "animationSpeed": "Animation"
+      "animationSpeed": "Animation",
+      "practice": "Practice"
     },
     "filters": {
       "nodeTypes": "Node types",
@@ -1325,7 +1326,17 @@
         "gaps": "Find gaps",
         "summary": "Summarize"
       },
-      "emptyHint": "Type anything or use /commands"
+      "emptyHint": "Type anything or use /commands",
+      "status": {
+        "thinking": "Thinking",
+        "analyzing": "Analyzing",
+        "imagining": "Imagining",
+        "concocting": "Concocting",
+        "incubating": "Incubating",
+        "pondering": "Pondering",
+        "conjuring": "Conjuring",
+        "composing": "Composing"
+      }
     },
     "preview": {
       "edit": "Edit",
@@ -1462,6 +1473,19 @@
       "sequence": "Sequence",
       "true_false": "True/False",
       "open_ended": "Open-Ended"
+    },
+    "mode": {
+      "title": "Practice",
+      "mastery": "Mastery",
+      "mastered": "Mastered",
+      "practicing": "Practicing",
+      "learning": "Learning",
+      "notStarted": "Not started",
+      "dueForReview": "Due for review",
+      "dueDescription": "These nodes are scheduled for spaced repetition review.",
+      "noReviewDue": "No reviews due. Click a node to deep dive, or start a quick session to practice weak areas.",
+      "reviewDue": "Review {{count}} due",
+      "quickSession": "Quick Session"
     }
   },
   "settings": {

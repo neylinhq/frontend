@@ -20,3 +20,4 @@ export type {
   RenameSessionInput
 } from './ai-assist.sessions.types'
 export { useAIPanelStore } from './ai-assist.store'
+export { useStreamingStore } from './ai-assist.streaming.store'

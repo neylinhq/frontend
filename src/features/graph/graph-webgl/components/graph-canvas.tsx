@@ -16,11 +16,11 @@ import {
 } from 'react'
 
 import type { Edge, Node } from '@/entities/map'
-import { useDarkMode } from '@/shared/hooks'
 import { cn } from '@/shared/lib/cn'
 
 import { createBitmapAtlas } from '../lib/bitmap-atlas'
 import { loadIconAtlas } from '../lib/atlas-loader'
+import { useTheme } from '@/shared/core/theme'
 import { getCssVar, themeToJson } from '../lib/theme-bridge'
 import { layoutOptionsToWasm, transformToWasm } from '../lib/transform'
 import { initWasmModule } from '../lib/wasm-loader'
@@ -172,7 +172,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
   const [error, setError] = useState<string | null>(null)
 
   // Track dark mode for theme sync
-  const _isDark = useDarkMode()
+  const { palette, resolvedMode } = useTheme()
 
   // Interaction state
   const isPanningRef = useRef(false)
@@ -541,13 +541,19 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
     }
   }, [isReady, renderParams])
 
-  // Sync theme when dark mode changes
+  // Sync theme when mode or palette changes — all CSS vars may update
+  // resolvedMode + palette in deps trigger re-extraction of CSS vars
+  const themeKey = `${resolvedMode}-${palette}`
   useEffect(() => {
-    if (!isReady || !engineRef.current) {
+    if (!isReady || !engineRef.current || !themeKey) {
       return
     }
-    engineRef.current.set_theme(themeToJson())
-  }, [isReady, notifyViewportChange])
+    // Delay one frame to ensure CSS vars have updated after class/attribute toggle
+    const timer = requestAnimationFrame(() => {
+      engineRef.current?.set_theme(themeToJson())
+    })
+    return () => cancelAnimationFrame(timer)
+  }, [isReady, themeKey])
 
   const updateSelection = useCallback(
     (nextNodeIds: string[]) => {

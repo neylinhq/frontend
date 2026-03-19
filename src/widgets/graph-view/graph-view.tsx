@@ -1,8 +1,7 @@
-import { memo } from 'react'
+import { memo, useState } from 'react'
 
-// Switch graph engine by commenting/uncommenting:
-import { GraphVisualization } from '@/features/graph/graph-core' // xyflow (React Flow)
-// import { GraphVisualization } from '@/features/graph/graph-webgl'  // WebGL + WASM (high-performance)
+import { GraphXYFlowVisualization as GraphXYFlow } from '@/features/graph/graph-core'
+import { GraphWebGLVisualization as GraphWebGL } from '@/features/graph/graph-webgl'
 import { useAIPanelStore } from '@/features/ai-assist'
 import { MapSettingsDrawer } from '@/features/map-settings'
 import { NodeConnectionsPanel } from '@/features/node-connections-panel'
@@ -23,10 +22,22 @@ interface GraphViewProps {
  */
 export const GraphView = memo(({ mapId, className, interactive, initialData }: GraphViewProps) => {
   const { isOpen: isAIPanelOpen, toggle: toggleAIPanel, close: closeAIPanel } = useAIPanelStore()
+  const [useWebGL, setUseWebGL] = useState(true)
+  const GraphVisualization = useWebGL ? GraphWebGL : GraphXYFlow
 
   return (
     <ErrorBoundary level='widget'>
+      {/* Debug: engine toggle */}
+      <button
+        type='button'
+        onClick={() => setUseWebGL(v => !v)}
+        className='fixed bottom-6 right-24 z-50 rounded-lg bg-card border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground shadow-md hover:text-foreground transition-colors'
+      >
+        {useWebGL ? 'WebGL' : 'React Flow'}
+      </button>
+
       <GraphVisualization
+        key={useWebGL ? 'webgl' : 'xyflow'}
         mapId={mapId}
         className={className}
         interactive={interactive}

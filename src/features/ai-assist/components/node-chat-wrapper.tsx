@@ -6,6 +6,7 @@ import {
   useDeleteChatSession,
   useRenameChatSession
 } from '../model'
+import { useStreamingStore } from '../model/ai-assist.streaming.store'
 import { ChatHeader } from './chat-header'
 import { NodeChatPanel } from './node-chat-panel'
 
@@ -26,6 +27,12 @@ export const NodeChatWrapper = ({ nodeId, mapId }: NodeChatWrapperProps) => {
   const deleteSession = useDeleteChatSession(mapId)
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null)
   const [autoCreateAttempted, setAutoCreateAttempted] = useState(false)
+
+  // Abort all active streams when leaving the node page
+  const clearAll = useStreamingStore(s => s.clearAll)
+  useEffect(() => {
+    return () => clearAll()
+  }, [clearAll])
 
   // Auto-select first session or create one if none exist
   useEffect(() => {

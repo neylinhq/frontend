@@ -11,6 +11,7 @@ import {
   useDeleteChatSession,
   useRenameChatSession
 } from '../model'
+import { useStreamingStore } from '../model/ai-assist.streaming.store'
 import { ChatHeader } from './chat-header'
 import { MapChatPanel } from './map-chat-panel'
 
@@ -45,6 +46,12 @@ export const MapChatDrawer = ({ mapId }: MapChatDrawerProps) => {
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null)
   const [autoCreateAttempted, setAutoCreateAttempted] = useState(false)
   const [selectorOpen, setSelectorOpen] = useState(false)
+
+  // Abort all active streams when leaving the map page
+  const clearAll = useStreamingStore(s => s.clearAll)
+  useEffect(() => {
+    return () => clearAll()
+  }, [clearAll])
 
   // Auto-select first session or create one if none exist
   useEffect(() => {

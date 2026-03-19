@@ -206,7 +206,9 @@ export function extractThemeColors(): ThemeColors {
     // Legacy alias
     knowledge: oklchToRgba(concept),
     primary: oklchToRgba(primary),
-    glow: oklchToRgba(primary, 0.5) // Glow with 50% alpha
+    glow: isDark
+      ? [1.0, 1.0, 1.0, 0.6] as [number, number, number, number]   // White glow on dark — higher alpha for visibility
+      : oklchToRgba(getCssVar('--brand') || primary, 0.5)           // Brand glow on light
   }
 }
 

@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -14,6 +14,7 @@ import {
   useChatSession
 } from '../model/ai-assist.sessions.hooks'
 import type { ChatProposal } from '../model/ai-assist.sessions.types'
+import { useStreamingStore } from '../model/ai-assist.streaming.store'
 import type {
   ChatMessage,
   MapChatContext,
@@ -59,35 +60,27 @@ export const AIChatCore = ({
   const user = useLoaderUser()
   const queryClient = useQueryClient()
   const [inputValue, setInputValue] = useState('')
-  const [isStreaming, setIsStreaming] = useState(false)
   const [savingPreviews, setSavingPreviews] = useState<Set<string>>(new Set())
   const [dbMessagesLoaded, setDbMessagesLoaded] = useState(false)
 
-  // AbortController для отмены стрима при размонтировании
-  const abortControllerRef = useRef<AbortController | null>(null)
-
-  // Cleanup: отменяем стрим при размонтировании компонента
-  useEffect(() => {
-    return () => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort()
-      }
-    }
-  }, [])
-
-  // Stop streaming handler
-  const handleStop = useCallback(() => {
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort()
-      abortControllerRef.current = null
-    }
-  }, [])
+  // Streaming state lives in Zustand store — survives component unmount/remount
+  const startStream = useStreamingStore(s => s.startStream)
+  const stopStreamAction = useStreamingStore(s => s.stopStream)
+  const clearStream = useStreamingStore(s => s.clearStream)
 
   const { models, selectedModel, setSelectedModel } = useSelectedModel()
 
   // Session ID: use external DB session if provided, otherwise fallback to legacy localStorage-based
   const legacySessionId = getChatSessionId(nodeContext.mapId, nodeContext.nodeId)
   const sessionId = externalSessionId || legacySessionId
+
+  // Derived streaming flag from store (survives unmount/remount)
+  const isStreaming = useStreamingStore(s => !!s.streams[sessionId])
+
+  // Stop streaming handler
+  const handleStop = useCallback(() => {
+    stopStreamAction(sessionId)
+  }, [stopStreamAction, sessionId])
 
   // Fetch session with messages from DB (only for DB sessions)
   const { data: dbSessionData, isLoading: isLoadingSession } = useChatSession(
@@ -208,7 +201,6 @@ export const AIChatCore = ({
 
     addMessage(sessionId, userMessage)
     setInputValue('')
-    setIsStreaming(true)
 
     // Save user message to DB (title auto-generated on backend for first message)
     saveMessageToDb('user', content.trim())
@@ -225,7 +217,7 @@ export const AIChatCore = ({
 
     try {
       // Regular chat - use streaming API
-      abortControllerRef.current = new AbortController()
+      const abortController = startStream(sessionId, aiMessageId)
 
       // Build history from previous messages (excluding current streaming one)
       const history = messages
@@ -296,7 +288,7 @@ export const AIChatCore = ({
           // Unified context: always pass currentNodeId for focus node
           currentNodeId: nodeContext.nodeId,
           history,
-          signal: abortControllerRef.current.signal
+          signal: abortController.signal
         }
       )
     } catch (error) {
@@ -309,7 +301,9 @@ export const AIChatCore = ({
         description: error instanceof Error ? error.message : 'An error occurred'
       })
     } finally {
-      setIsStreaming(false)
+      clearStream(sessionId)
+      // Ensure message isStreaming flag is cleared (handles abort/stop cases where 'done' chunk never arrives)
+      updateMessage(sessionId, aiMessageId, { isStreaming: false })
     }
   }
 

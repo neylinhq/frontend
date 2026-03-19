@@ -551,7 +551,7 @@ export const NodeEditPage = ({
               </TabsContent>
 
               {/* AI Tab */}
-              <TabsContent value='ai' className='flex-1 flex flex-col min-h-0 mt-0'>
+              <TabsContent forceMount value='ai' className='flex-1 flex flex-col min-h-0 mt-0 data-[state=inactive]:hidden'>
                 <AISuggestionsPanel nodeId={nodeId} mapId={mapId} />
               </TabsContent>
             </Tabs>
@@ -653,7 +653,7 @@ export const NodeEditPage = ({
             </TabsContent>
 
             {/* AI Tab */}
-            <TabsContent value='ai' className='flex-1 flex flex-col min-h-0 mt-0'>
+            <TabsContent forceMount value='ai' className='flex-1 flex flex-col min-h-0 mt-0 data-[state=inactive]:hidden'>
               <AISuggestionsPanel nodeId={nodeId} mapId={mapId} />
             </TabsContent>
           </Tabs>

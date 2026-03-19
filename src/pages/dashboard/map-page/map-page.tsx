@@ -30,6 +30,7 @@ export const MapPage = ({ map, mapId }: MapPageProps) => {
   const { isOpen, activeTab, open, close, setTab } = useMapSidebarStore()
   const [selectedNode, setSelectedNode] = useState<Node | null>(null)
   const [viewport, setViewport] = useState<ViewportState | null>(null)
+  const [useWebGL, setUseWebGL] = useState(true)
 
   // Keyboard shortcut: Cmd+N / Ctrl+N — new node
   useKeyboardShortcut({ key: 'n', meta: true, enabled: canEdit }, openQuickAdd)
@@ -93,6 +94,7 @@ export const MapPage = ({ map, mapId }: MapPageProps) => {
             onOpenSettings={() => setTab('settings')}
             onNodeSelect={handleNodeSelect}
             onViewportChange={setViewport}
+            useWebGL={useWebGL}
           />
 
           {canEdit && <QuickAddDialogWebGL viewport={viewport} />}
@@ -105,6 +107,13 @@ export const MapPage = ({ map, mapId }: MapPageProps) => {
               <div className='flex flex-col-reverse items-center gap-3'>
                 {canEdit && <AddNodeFab />}
                 <PracticeFab />
+                <button
+                  type='button'
+                  onClick={() => setUseWebGL(v => !v)}
+                  className='h-8 rounded-lg border border-border/60 bg-background/80 backdrop-blur-sm px-2.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors'
+                >
+                  {useWebGL ? 'WebGL' : 'Flow'}
+                </button>
               </div>
             </Fab.Item>
           </Fab.Root>

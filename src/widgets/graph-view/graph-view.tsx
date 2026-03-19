@@ -1,4 +1,4 @@
-import { memo, useState } from 'react'
+import { memo } from 'react'
 
 import { GraphXYFlowVisualization as GraphXYFlow } from '@/features/graph/graph-core'
 import { GraphWebGLVisualization as GraphWebGL } from '@/features/graph/graph-webgl'
@@ -28,6 +28,8 @@ interface GraphViewProps {
   onToggleAIPanel?: () => void
   /** Callback when map title clicked — open settings */
   onOpenSettings?: () => void
+  /** Engine mode — controlled by parent */
+  useWebGL?: boolean
 }
 
 /**
@@ -43,10 +45,10 @@ export const GraphView = memo(({
   onViewportChange,
   isAIPanelOpen,
   onToggleAIPanel,
-  onOpenSettings
+  onOpenSettings,
+  useWebGL: useWebGLProp = true
 }: GraphViewProps) => {
-  const [useWebGL, setUseWebGL] = useState(true)
-  const GraphVisualization = useWebGL ? GraphWebGL : GraphXYFlow
+  const GraphVisualization = useWebGLProp ? GraphWebGL : GraphXYFlow
 
   // Practice mode
   const isPracticeModeActive = usePracticeModeActive()
@@ -55,17 +57,8 @@ export const GraphView = memo(({
 
   return (
     <ErrorBoundary level='widget'>
-      {/* Debug: engine toggle */}
-      <button
-        type='button'
-        onClick={() => setUseWebGL(v => !v)}
-        className='fixed bottom-6 right-24 z-50 rounded-lg bg-card border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground shadow-md hover:text-foreground transition-colors'
-      >
-        {useWebGL ? 'WebGL' : 'React Flow'}
-      </button>
-
       <GraphVisualization
-        key={useWebGL ? 'webgl' : 'xyflow'}
+        key={useWebGLProp ? 'webgl' : 'xyflow'}
         mapId={mapId}
         className={className}
         interactive={interactive}

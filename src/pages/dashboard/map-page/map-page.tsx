@@ -7,6 +7,7 @@ import { NodeConnectionsPanel } from '@/features/node-connections-panel'
 import { AddNodeFab, QuickAddDialogWebGL, useNodeCreationStore } from '@/features/node-creation'
 import { PracticeFab } from '@/features/practice-mode'
 import type { FullMap, Node } from '@/entities/map'
+import { Fab } from '@/shared/components/fab'
 import { useKeyboardShortcut } from '@/shared/hooks/use-keyboard-shortcut'
 import { GraphView } from '@/widgets/graph-view'
 import {
@@ -94,19 +95,21 @@ export const MapPage = ({ map, mapId }: MapPageProps) => {
             onViewportChange={setViewport}
           />
 
-          {/* Owner-only components */}
-          {canEdit && (
-            <>
-              <QuickAddDialogWebGL viewport={viewport} />
-              <AddNodeFab />
-            </>
-          )}
+          {canEdit && <QuickAddDialogWebGL viewport={viewport} />}
 
-          {/* Practice FAB — available for all users */}
-          <PracticeFab />
-
-          {/* Sidebar toggle FAB */}
-          <SidebarToggleFab />
+          <Fab.Root>
+            <Fab.Item position='top-right' order={0}>
+              <SidebarToggleFab />
+            </Fab.Item>
+            {canEdit && (
+              <Fab.Item position='bottom-right' order={0}>
+                <AddNodeFab />
+              </Fab.Item>
+            )}
+            <Fab.Item position='bottom-right' order={1}>
+              <PracticeFab />
+            </Fab.Item>
+          </Fab.Root>
 
           {/* Read-only banner */}
           {isReadOnly && <ReadOnlyBanner mapId={mapId} />}

@@ -29,7 +29,6 @@ export const PracticeFab = () => {
           onClick={() => (isActive ? exit() : enter())}
           aria-label={t('practice.mode.title')}
           className={cn(
-            'absolute bottom-24 right-6 z-20',
             'h-12 w-12 rounded-full',
             'flex items-center justify-center',
             'transition-all duration-300',

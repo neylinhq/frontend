@@ -375,7 +375,7 @@ export const GraphToolbar = memo(
           </DropdownMenu>
 
           {/* Practice Mode Toggle */}
-          {canEdit && onTogglePracticeMode && (
+          {onTogglePracticeMode && (
             <>
               <div className='h-5 w-px bg-border/60' />
               <Button

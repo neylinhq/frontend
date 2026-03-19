@@ -103,8 +103,6 @@ interface GraphVisualizationProps {
   onOpenSettings?: () => void
   /** Practice mode — injected from widget layer */
   isPracticeModeActive?: boolean
-  onTogglePracticeMode?: () => void
-  practiceModeStats?: { dueCount: number; mastered: number; total: number }
   masteryMap?: Map<string, { mastery: import('@/entities/progress').MasteryLevel; isDue: boolean }>
 }
 
@@ -123,8 +121,6 @@ const GraphVisualizationContent = ({
   onCloseAIPanel,
   onOpenSettings,
   isPracticeModeActive = false,
-  onTogglePracticeMode,
-  practiceModeStats,
   masteryMap
 }: GraphVisualizationProps) => {
   const { t, i18n } = useTranslation()
@@ -982,9 +978,6 @@ const GraphVisualizationContent = ({
         canEdit={interactive}
         isAIPanelOpen={isAIPanelOpen}
         onToggleAIPanel={onToggleAIPanel}
-        isPracticeModeActive={isPracticeModeActive}
-        onTogglePracticeMode={onTogglePracticeMode}
-        practiceModeStats={practiceModeStats}
       />
 
       {/* Node drawer */}

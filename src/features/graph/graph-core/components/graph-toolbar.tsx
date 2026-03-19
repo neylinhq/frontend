@@ -1,6 +1,5 @@
 import {
   FilterFunnel01Icon,
-  GraduationHat01Icon,
   MinusIcon,
   PlusIcon,
   Stars01Icon
@@ -52,11 +51,6 @@ interface GraphToolbarProps {
   /** AI panel state — injected from widget layer */
   isAIPanelOpen?: boolean
   onToggleAIPanel?: () => void
-  /** Practice mode state — injected from widget layer */
-  isPracticeModeActive?: boolean
-  onTogglePracticeMode?: () => void
-  /** Practice mode stats */
-  practiceModeStats?: { dueCount: number; mastered: number; total: number }
   className?: string
 }
 
@@ -69,9 +63,6 @@ export const GraphToolbar = memo(
     canEdit = true,
     isAIPanelOpen = false,
     onToggleAIPanel,
-    isPracticeModeActive = false,
-    onTogglePracticeMode,
-    practiceModeStats,
     className
   }: GraphToolbarProps) => {
     const { t } = useTranslation()
@@ -141,7 +132,7 @@ export const GraphToolbar = memo(
     return (
       <div
         className={cn(
-          'fixed bottom-8 left-1/2 -translate-x-1/2 z-50',
+          'absolute bottom-8 left-1/2 -translate-x-1/2 z-20',
           'pointer-events-none',
           className
         )}
@@ -374,35 +365,6 @@ export const GraphToolbar = memo(
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* Practice Mode Toggle */}
-          {onTogglePracticeMode && (
-            <>
-              <div className='h-5 w-px bg-border/60' />
-              <Button
-                size='sm'
-                variant={isPracticeModeActive ? 'default' : 'ghost'}
-                onClick={onTogglePracticeMode}
-                className='h-8 px-2.5 gap-1.5'
-                title={t('graph.toolbar.practice')}
-              >
-                <GraduationHat01Icon className='w-4 h-4' />
-                <span className='hidden sm:inline text-xs'>{t('graph.toolbar.practice')}</span>
-                {isPracticeModeActive && practiceModeStats && practiceModeStats.dueCount > 0 && (
-                  <Badge
-                    variant='destructive'
-                    className='h-4 px-1 text-xs ml-0.5 rounded-xs'
-                  >
-                    {practiceModeStats.dueCount}
-                  </Badge>
-                )}
-              </Button>
-              {isPracticeModeActive && practiceModeStats && practiceModeStats.total > 0 && (
-                <span className='text-xs text-muted-foreground tabular-nums'>
-                  {practiceModeStats.mastered}/{practiceModeStats.total}
-                </span>
-              )}
-            </>
-          )}
         </Card>
       </div>
     )

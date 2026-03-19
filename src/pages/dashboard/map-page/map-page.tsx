@@ -5,6 +5,7 @@ import type { ViewportState } from '@/features/graph/graph-webgl'
 import { ReadOnlyBanner, useMapPermissions } from '@/features/map-permissions'
 import { NodeConnectionsPanel } from '@/features/node-connections-panel'
 import { AddNodeFab, QuickAddDialogWebGL, useNodeCreationStore } from '@/features/node-creation'
+import { PracticeFab } from '@/features/practice-mode'
 import type { FullMap, Node } from '@/entities/map'
 import { useKeyboardShortcut } from '@/shared/hooks/use-keyboard-shortcut'
 import { GraphView } from '@/widgets/graph-view'
@@ -100,6 +101,9 @@ export const MapPage = ({ map, mapId }: MapPageProps) => {
               <AddNodeFab />
             </>
           )}
+
+          {/* Practice FAB — available for all users */}
+          <PracticeFab />
 
           {/* Sidebar toggle FAB */}
           <SidebarToggleFab />

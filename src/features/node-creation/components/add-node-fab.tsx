@@ -19,7 +19,7 @@ export const AddNodeFab = () => {
         <Button
           onClick={openQuickAdd}
           size='icon'
-          className='fixed bottom-6 right-6 h-14 w-14 rounded-full z-50'
+          className='absolute bottom-6 right-6 h-14 w-14 rounded-full z-20'
           aria-label={t('nodeCreation.addNode')}
         >
           <PlusIcon className='h-6 w-6' />

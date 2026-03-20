@@ -8,7 +8,7 @@ import { cn } from '@/shared/lib/cn'
 
 import { useMapSidebarStore } from '../model'
 
-/* ─── Pill tab button ─── */
+/* ─── Tab button ─── */
 function TabButton({
   active,
   onClick,
@@ -23,10 +23,10 @@ function TabButton({
       type='button'
       onClick={onClick}
       className={cn(
-        'px-2.5 py-1 text-xs font-medium rounded-md transition-colors',
+        'px-1.5 py-0.5 text-xs font-medium transition-colors',
         active
-          ? 'bg-muted text-foreground'
-          : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+          ? 'text-foreground'
+          : 'text-muted-foreground hover:text-foreground'
       )}
     >
       {children}

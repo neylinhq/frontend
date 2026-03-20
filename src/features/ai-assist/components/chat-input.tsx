@@ -16,8 +16,8 @@ const MAX_INPUT_HEIGHT = 300
 const DEFAULT_INPUT_HEIGHT = 80
 
 interface ChatInputProps {
-  value: string
-  onChange: (value: string) => void
+  /** Initial value (only used on mount, not controlled) */
+  defaultValue?: string
   onSend: (value: string) => void
   onStop?: () => void
   onCommand?: (commandId: string) => void
@@ -30,8 +30,7 @@ interface ChatInputProps {
 }
 
 export const ChatInput = ({
-  value,
-  onChange,
+  defaultValue = '',
   onSend,
   onStop,
   onCommand,
@@ -44,6 +43,7 @@ export const ChatInput = ({
 }: ChatInputProps) => {
   const { t } = useTranslation()
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const [value, setValue] = useState(defaultValue)
   const [showCommands, setShowCommands] = useState(false)
 
   // Resizable input height
@@ -66,12 +66,13 @@ export const ChatInput = ({
   const handleSend = () => {
     if (value.trim() && !disabled) {
       onSend(value)
+      setValue('')
     }
   }
 
   const handleCommandSelect = (command: SlashCommand) => {
     setShowCommands(false)
-    onChange('')
+    setValue('')
     onCommand?.(command.id)
   }
 
@@ -96,7 +97,7 @@ export const ChatInput = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value
-    onChange(newValue)
+    setValue(newValue)
 
     // Show/hide command palette
     setShowCommands(newValue.startsWith('/') && !newValue.includes(' '))

@@ -59,7 +59,6 @@ export const AIChatCore = ({
   const { t } = useTranslation()
   const user = useLoaderUser()
   const queryClient = useQueryClient()
-  const [inputValue, setInputValue] = useState('')
   const [savingPreviews, setSavingPreviews] = useState<Set<string>>(new Set())
   const [dbMessagesLoaded, setDbMessagesLoaded] = useState(false)
 
@@ -200,7 +199,6 @@ export const AIChatCore = ({
     }
 
     addMessage(sessionId, userMessage)
-    setInputValue('')
 
     // Save user message to DB (title auto-generated on backend for first message)
     saveMessageToDb('user', content.trim())
@@ -586,8 +584,6 @@ export const AIChatCore = ({
 
       <div className='px-3.5 pb-4'>
         <ChatInput
-          value={inputValue}
-          onChange={setInputValue}
           onSend={handleSendMessage}
           onStop={handleStop}
           onCommand={handleCommand}

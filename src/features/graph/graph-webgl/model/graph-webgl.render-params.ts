@@ -47,11 +47,11 @@ export const DEFAULT_RENDER_PARAMS: GraphWebGLRenderParams = {
   // Nodes — FigJam-level card styling
   node_corner_radius: 14,
   node_border_width_px: 1,
-  node_accent_width_px: 3.5,
+  node_accent_width_px: 2.0,
   node_shadow_strength: 0.0,
   node_shadow_blur_px: 16,
   node_shadow_offset_px: 3,
-  node_inner_highlight: 0.04,
+  node_inner_highlight: 0.0,
   node_selection_ring_width_px: 2,
   node_selection_ring_offset_px: 3,
   node_focus_glow_intensity: 0.3,

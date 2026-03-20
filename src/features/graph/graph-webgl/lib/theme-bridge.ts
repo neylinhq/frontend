@@ -143,10 +143,8 @@ export function extractThemeColors(): ThemeColors {
   // Check if dark mode is active
   const isDark = document.documentElement.classList.contains('dark')
 
-  // Card colors - use --popover for graph nodes as it's slightly lighter than --card
-  // In most themes, --card === --background which makes nodes invisible
-  const cardBgRaw = getCssVar('--popover') || getCssVar('--card')
-  const cardBg = cardBgRaw || (isDark ? '0.19 0 0' : '0.995 0 0')
+  const cardBgRaw = getCssVar('--card')
+  const cardBg = cardBgRaw || (isDark ? '0.20 0 0' : '0.99 0 0')
 
   const cardFg = getCssVar('--card-foreground') || (isDark ? '0.93 0 0' : '0.12 0 0')
   const border = getCssVar('--border') || (isDark ? '0.28 0 0' : '0.91 0 0')

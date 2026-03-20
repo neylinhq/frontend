@@ -587,7 +587,10 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
     [onSelectionChange]
   )
 
-  // Handle resize
+  // Handle resize — batched via rAF to prevent canvas-clear flicker.
+  // Setting canvas.width instantly clears the canvas; if ResizeObserver fires
+  // dozens of times per second during sidebar drag the result is epileptic
+  // blank flashes. Coalescing to one resize per animation frame fixes it.
   useEffect(() => {
     const container = containerRef.current
     const canvas = canvasRef.current
@@ -595,9 +598,18 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
       return
     }
 
+    let rafId: number | null = null
+
     const observer = new ResizeObserver(entries => {
       const entry = entries[0]
-      if (entry && engineRef.current) {
+      if (!entry || !engineRef.current) { return }
+
+      // Cancel any pending resize — only the last one in a given frame matters
+      if (rafId !== null) { cancelAnimationFrame(rafId) }
+
+      rafId = requestAnimationFrame(() => {
+        rafId = null
+        if (!engineRef.current) { return }
         const { width, height } = entry.contentRect
         const dpr = window.devicePixelRatio || 1
         canvas.width = width * dpr
@@ -607,11 +619,14 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
         engineRef.current.resize(canvas.width, canvas.height)
         engineRef.current.set_dpr(dpr)
         notifyViewportChange()
-      }
+      })
     })
 
     observer.observe(container)
-    return () => observer.disconnect()
+    return () => {
+      if (rafId !== null) { cancelAnimationFrame(rafId) }
+      observer.disconnect()
+    }
   }, [isReady])
 
   // Load graph data (only when nodes/edges change)

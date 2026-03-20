@@ -1,4 +1,5 @@
 import {
+  AlertCircleIcon,
   ChevronDownIcon,
   Trash01Icon
 } from '@untitledui/icons-react/outline'
@@ -21,6 +22,7 @@ import {
 } from '@/shared/components/alert-dialog'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/card'
 import {
   Collapsible,
   CollapsibleContent,
@@ -325,26 +327,39 @@ export const SettingsPanel = memo(function SettingsPanel({
               <CollapsibleContent>
                 <div className='px-2 pt-1 pb-2 space-y-4'>
                   <RatingSystemSelector mapId={mapId} currentSystem={currentRatingSystem} />
-
-                  {/* Delete map — subtle, at the bottom */}
-                  {isOwner && (
-                    <div className='pt-2'>
-                      <Button
-                        variant='ghost'
-                        size='sm'
-                        className='text-muted-foreground hover:text-destructive hover:bg-destructive/10'
-                        onClick={() => setDeleteDialogOpen(true)}
-                      >
-                        <Trash01Icon className='mr-1.5 h-3.5 w-3.5' />
-                        {t('mapSettings.dangerZone.delete')}
-                      </Button>
-                    </div>
-                  )}
                 </div>
               </CollapsibleContent>
             </Collapsible>
           </div>
         </div>
+
+        {/* Danger Zone — pinned to bottom */}
+        {isOwner && (
+          <div className='shrink-0 p-4 mt-auto'>
+            <Card className='border-destructive/30'>
+              <CardHeader className='pb-2 pt-3 px-3'>
+                <CardTitle className='text-xs font-medium text-destructive flex items-center gap-1.5'>
+                  <AlertCircleIcon className='h-3.5 w-3.5' />
+                  {t('mapSettings.dangerZone.title')}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className='px-3 pb-3'>
+                <p className='text-xs text-muted-foreground mb-3'>
+                  {t('mapSettings.dangerZone.warning')}
+                </p>
+                <Button
+                  variant='ghost'
+                  size='sm'
+                  className='text-muted-foreground hover:text-destructive hover:bg-destructive/10'
+                  onClick={() => setDeleteDialogOpen(true)}
+                >
+                  <Trash01Icon className='mr-1.5 h-3.5 w-3.5' />
+                  {t('mapSettings.dangerZone.delete')}
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </div>
 
       {/* Delete Confirmation Dialog */}

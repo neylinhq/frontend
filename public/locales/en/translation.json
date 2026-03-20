@@ -613,7 +613,8 @@
       "nodesTotal": "Nodes",
       "nodesMastered": "Mastered",
       "nodesLearning": "Learning",
-      "overallProgress": "Progress"
+      "overallProgress": "Progress",
+      "noRating": "Start a practice session to get your rating"
     },
     "ratingSystem": {
       "label": "Rating System",

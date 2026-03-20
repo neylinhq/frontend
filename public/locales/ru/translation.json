@@ -587,7 +587,8 @@
       "nodesTotal": "Узлов",
       "nodesMastered": "Освоено",
       "nodesLearning": "Изучается",
-      "overallProgress": "Прогресс"
+      "overallProgress": "Прогресс",
+      "noRating": "Начните тренировку, чтобы получить рейтинг"
     },
     "ratingSystem": {
       "label": "Система рейтинга",

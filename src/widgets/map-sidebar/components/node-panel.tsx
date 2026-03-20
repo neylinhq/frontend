@@ -197,7 +197,7 @@ export const NodePanel = memo(function NodePanel({
           <TabsContent value='properties' className='flex-1 overflow-y-auto mt-0'>
             <div className='flex flex-col min-h-full'>
               {/* Node title — editable field */}
-              <div className='px-4 pt-4 pb-2'>
+              <div className='px-4 pt-4 pb-1.5'>
                 <Field label={t('nodeEdit.nameLabel')} labelClassName='text-xs'>
                   <Input
                     value={localLabel}

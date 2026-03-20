@@ -13,7 +13,12 @@ import {
   usePracticeModeStats
 } from '../model/practice-mode.store'
 
-export const PracticeFab = () => {
+interface PracticeFabProps {
+  /** Called when practice mode toggles — parent can switch renderer */
+  onToggle?: (isActive: boolean) => void
+}
+
+export const PracticeFab = ({ onToggle }: PracticeFabProps) => {
   const { t } = useTranslation()
   const isActive = usePracticeModeActive()
   const stats = usePracticeModeStats()
@@ -21,12 +26,22 @@ export const PracticeFab = () => {
 
   const hasDue = stats.dueCount > 0
 
+  const handleClick = () => {
+    if (isActive) {
+      exit()
+      onToggle?.(false)
+    } else {
+      enter()
+      onToggle?.(true)
+    }
+  }
+
   return (
     <Tooltip>
       <TooltipTrigger asChild>
         <button
           type='button'
-          onClick={() => (isActive ? exit() : enter())}
+          onClick={handleClick}
           aria-label={t('practice.mode.title')}
           className={cn(
             'h-12 w-12 rounded-full',

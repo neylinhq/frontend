@@ -106,7 +106,9 @@ export const MapPage = ({ map, mapId }: MapPageProps) => {
             <Fab.Item position='bottom-right'>
               <div className='flex flex-col-reverse items-center gap-3'>
                 {canEdit && <AddNodeFab />}
-                <PracticeFab />
+                <PracticeFab onToggle={(active) => {
+                  if (active) setUseWebGL(false)
+                }} />
                 <button
                   type='button'
                   onClick={() => setUseWebGL(v => !v)}

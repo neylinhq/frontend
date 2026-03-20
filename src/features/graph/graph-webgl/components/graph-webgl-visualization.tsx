@@ -25,7 +25,8 @@ import {
   useNodeSpacing,
   useViewMode,
   useEdgeManagementStore,
-  EdgeEditPopover
+  EdgeEditPopover,
+  EdgeTypeSelector
 } from '@/features/graph/graph-core'
 import {
   GraphCanvas,
@@ -117,7 +118,7 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
   const { visibleNodeTypes, visibleEdgeTypes, connectionRange } = useFilters()
   const { showMinimap } = useGraphUI()
   const { nodeSpacing, directionStrength } = useNodeSpacing()
-  const { startEdgeEditing } = useEdgeManagementStore()
+  const { startEdgeEditing, startEdgeCreation } = useEdgeManagementStore()
 
   // Handle edge badge click — open edge edit popover
   const handleEdgeBadgeClick = useCallback(
@@ -224,6 +225,23 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
     setLayoutPositions(positions)
   }, [])
 
+  // Handle new edge connection — open EdgeTypeSelector at Bezier midpoint (from WASM)
+  const handleConnect = useCallback(
+    (sourceId: string, targetId: string, midX: number, midY: number) => {
+      const sourceNode = fullMap?.nodes.find(n => n.id === sourceId)
+      const targetNode = fullMap?.nodes.find(n => n.id === targetId)
+      if (!sourceNode || !targetNode) { return }
+      startEdgeCreation({
+        sourceId,
+        targetId,
+        sourceLabel: sourceNode.label,
+        targetLabel: targetNode.label,
+        position: { x: midX, y: midY }
+      })
+    },
+    [fullMap?.nodes, startEdgeCreation]
+  )
+
   const handleNodeDragEnd = useCallback(
     (nodeId: string, x: number, y: number) => {
       updatePositionMutation.mutate({
@@ -318,8 +336,16 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
         onViewportChange={handleViewportChange}
         onLayoutComplete={handleLayoutComplete}
         onEdgeBadgeClick={handleEdgeBadgeClick}
+        onConnect={handleConnect}
         layoutOptions={layoutOptions}
         className='h-full w-full'
+      />
+
+      {/* Edge creation dialog — appears when user drops a new connection */}
+      <EdgeTypeSelector
+        mapId={mapId}
+        onComplete={() => canvasRef.current?.cancelConnect()}
+        onCancel={() => canvasRef.current?.cancelConnect()}
       />
 
       {/* Edge Edit Popover */}

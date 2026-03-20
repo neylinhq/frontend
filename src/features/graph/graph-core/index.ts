@@ -11,6 +11,7 @@ export const GraphVisualization = USE_WEBGL_RENDERER ? GraphWebGL : GraphXYFlow
 // Export xyflow version explicitly for fallback
 export { GraphVisualization as GraphXYFlowVisualization } from './components/graph-visualization'
 export { EdgeEditPopover } from './components/edge-edit-popover'
+export { EdgeTypeSelector } from './components/edge-type-selector'
 
 export { KnowledgeEdge } from './components/knowledge-edge'
 export { KnowledgeNode } from './components/knowledge-node'

@@ -15,6 +15,8 @@ import {
   useState
 } from 'react'
 
+import { useTranslation } from 'react-i18next'
+
 import type { Edge, Node } from '@/entities/map'
 import { cn } from '@/shared/lib/cn'
 
@@ -44,6 +46,7 @@ export interface GraphCanvasHandle {
   panTo(worldX: number, worldY: number): void
   getZoom(): number
   getViewport(): ViewportState | null
+  cancelConnect(): void
 }
 
 // WASM types
@@ -66,6 +69,12 @@ interface WasmGraphEngine {
   hit_test(screen_x: number, screen_y: number): string | undefined
   hit_test_edge_badge(screen_x: number, screen_y: number): string | undefined
   set_hovered_edge(edge_id: string): void
+  hit_test_connector(screen_x: number, screen_y: number): string | undefined
+  begin_connect(source_node_id: string): void
+  begin_connect_reverse(target_node_id: string): void
+  update_connect_cursor(screen_x: number, screen_y: number): string | undefined
+  commit_connect(): string | undefined
+  cancel_connect(): void
   node_count(): number
   edge_count(): number
   // Viewport state
@@ -135,6 +144,7 @@ interface GraphCanvasProps {
   onViewportChange?: (viewport: ViewportState) => void
   onLayoutComplete?: (positions: LayoutPosition[]) => void
   onEdgeBadgeClick?: (edgeId: string, screenX: number, screenY: number) => void
+  onConnect?: (sourceId: string, targetId: string, screenX: number, screenY: number) => void
   className?: string
 }
 
@@ -159,10 +169,12 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
     onViewportChange,
     onLayoutComplete,
     onEdgeBadgeClick,
+    onConnect,
     className
   },
   ref
 ) {
+  const { t } = useTranslation()
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const engineRef = useRef<WasmGraphEngine | null>(null)
@@ -179,6 +191,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
 
   // Interaction state
   const isPanningRef = useRef(false)
+  const connectingRef = useRef<{ sourceId?: string; targetId?: string; reverse: boolean } | null>(null)
   const draggingNodeRef = useRef<string | null>(null)
   const dragOffsetRef = useRef({ x: 0, y: 0 })
   const lastMouseRef = useRef({ x: 0, y: 0 })
@@ -412,6 +425,9 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
       },
       getViewport() {
         return getViewportFromEngine(true)
+      },
+      cancelConnect() {
+        engineRef.current?.cancel_connect()
       }
     }),
     [getViewportFromEngine, notifyViewportChange]
@@ -716,6 +732,21 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
     }
   }, [isReady])
 
+  // Escape cancels edge creation
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && connectingRef.current) {
+        engineRef.current?.cancel_connect()
+        connectingRef.current = null
+        if (canvasRef.current) {
+          canvasRef.current.style.cursor = 'default'
+        }
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [])
+
   // Mouse handlers
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => {
@@ -732,6 +763,27 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
       lastMouseRef.current = { x, y }
       dragStartRef.current = { x, y }
       hasDraggedRef.current = false
+
+      // Check connector hit FIRST — drag from any connector starts edge creation
+      const connectorHit = engine.hit_test_connector(x, y)
+      if (connectorHit) {
+        try {
+          const { nodeId: connNodeId, handle } = JSON.parse(connectorHit)
+          if (handle === 'bottom') {
+            engine.begin_connect(connNodeId)
+            connectingRef.current = { sourceId: connNodeId, reverse: false }
+          } else if (handle === 'top') {
+            engine.begin_connect_reverse(connNodeId)
+            connectingRef.current = { targetId: connNodeId, reverse: true }
+          }
+          if (connectingRef.current) {
+            if (canvasRef.current) {
+              canvasRef.current.style.cursor = 'crosshair'
+            }
+            return
+          }
+        } catch { /* ignore */ }
+      }
 
       const nodeId = engine.hit_test(x, y)
       const isMultiSelect = e.shiftKey || e.metaKey || e.ctrlKey
@@ -790,6 +842,13 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
         hasDraggedRef.current = true
       }
 
+      // Connecting mode — update cursor position and snap to target
+      if (connectingRef.current) {
+        engine.update_connect_cursor(x, y)
+        canvasRef.current?.style.setProperty('cursor', 'crosshair')
+        return
+      }
+
       if (draggingNodeRef.current) {
         if (!hasDraggedRef.current) {
           return
@@ -808,6 +867,14 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
       if (isPanningRef.current && hasDraggedRef.current) {
         engine.pan(-dx, -dy)
         notifyViewportChange()
+        return
+      }
+
+      // Any connector proximity → crosshair (invite to drag to create edge)
+      const connHover = engine.hit_test_connector(x, y)
+      if (connHover) {
+        engine.set_hovered_edge('')
+        canvasRef.current?.style.setProperty('cursor', 'crosshair')
         return
       }
 
@@ -840,6 +907,34 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
       }
 
       const { x, y } = getCanvasPoint(e.clientX, e.clientY)
+
+      // Connecting mode — commit or cancel
+      if (connectingRef.current) {
+        const result = engine.commit_connect()
+        if (result) {
+          try {
+            const { sourceId, targetId, midX, midY } = JSON.parse(result)
+            // midX/midY are canvas-pixel coords; convert to CSS coords via DPR
+            const dpr = window.devicePixelRatio || 1
+            const canvas = canvasRef.current
+            const rect = canvas?.getBoundingClientRect()
+            const cssX = (rect?.left ?? 0) + midX / dpr
+            const cssY = (rect?.top ?? 0) + midY / dpr
+            onConnect?.(sourceId, targetId, cssX, cssY)
+            // Draft edge stays visible — cleared by cancelConnect() when dialog closes
+          } catch { /* ignore */ }
+        } else {
+          // No target snapped — discard
+          engine.cancel_connect()
+        }
+        connectingRef.current = null
+        if (canvasRef.current) {
+          canvasRef.current.style.cursor = 'default'
+        }
+        isPanningRef.current = false
+        hasDraggedRef.current = false
+        return
+      }
 
       if (draggingNodeRef.current) {
         const nodeId = draggingNodeRef.current
@@ -882,7 +977,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
       isPanningRef.current = false
       hasDraggedRef.current = false
     },
-    [getCanvasPoint, notifyLayoutComplete, onEdgeBadgeClick, onNodeClick, onNodeDragEnd, resolvedSelectedNodeIds, screenToWorld, updateSelection]
+    [getCanvasPoint, notifyLayoutComplete, onConnect, onEdgeBadgeClick, onNodeClick, onNodeDragEnd, resolvedSelectedNodeIds, screenToWorld, updateSelection]
   )
 
   const handleWheel = useCallback(
@@ -947,7 +1042,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
       {error && (
         <div className='absolute inset-0 flex items-center justify-center bg-background/80'>
           <div className='text-destructive text-center p-4'>
-            <div className='font-semibold'>WASM Error</div>
+            <div className='font-semibold'>{t('graph.webgl.wasmError', 'WASM error')}</div>
             <div className='text-sm mt-1'>{error}</div>
           </div>
         </div>

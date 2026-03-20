@@ -55,6 +55,7 @@ interface WasmGraphEngine {
   init_renderer(canvas: HTMLCanvasElement): void
   resize(width: number, height: number): boolean
   load_graph(json: string): void
+  update_graph(json: string): void
   run_layout(options_json: string): string
   update_node_position(id: string, x: number, y: number): void
   render(): void
@@ -639,11 +640,19 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
 
     try {
       const json = transformToWasm(nodes, edges)
-      engine.load_graph(json)
+
+      if (isFirstLoad) {
+        // First load: positions come from backend (or layout will be run below)
+        engine.load_graph(json)
+      } else {
+        // Subsequent updates (filter changes, backend refetch, node edits):
+        // preserve in-engine positions so manual drags are not overwritten
+        engine.update_graph(json)
+      }
 
       if (autoLayout && isFirstLoad) {
-        // Only run layout on first load — subsequent node changes (focus filter)
-        // should preserve existing positions (matching React Flow behavior)
+        // Only run layout on first load — subsequent node changes (focus filter,
+        // live edits) should preserve existing positions
         engine.run_layout(layoutOptionsToWasm(resolvedLayoutOptions))
         engine.fit_view(0.1)
       }

@@ -7,8 +7,8 @@ export const DEFAULT_LAYOUT_OPTIONS: LayoutOptions = {
   viewMode: 'overview',
   spacingPercent: 100,
   directionStrength: 0,
-  iterations: 150,
-  coolingFactor: 0.97,
+  iterations: 250,      // more iterations → better convergence for dense graphs
+  coolingFactor: 0.982, // slower cooling → nodes explore wider before settling
   theta: 0.9,
   ignoreExistingPositions: false
 }

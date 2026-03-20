@@ -981,31 +981,34 @@ const GraphVisualizationContent = ({
       />
 
       {/* Node drawer */}
-      <NodeDrawer
-        node={selectedNode}
-        onClose={clearSelection}
-        isReadOnly={!interactive}
-        renderMetadataForm={renderMetadataForm}
-        connectionsCount={
-          selectedNode
-            ? fullMap.edges.filter(
-                e => e.sourceNodeId === selectedNode.id || e.targetNodeId === selectedNode.id
-              ).length
-            : 0
-        }
-        connectionsTab={
-          selectedNode &&
-          renderConnectionsPanel?.(
-            selectedNode,
-            fullMap.edges,
-            fullMap.nodes,
-            selectNode,
-            handlePanToNodeWithZoom, // Pan to node and zoom (no focus mode)
-            interactive ? handleEditEdge : undefined,
-            interactive ? handleDeleteEdge : undefined
-          )
-        }
-      />
+      {/* Node drawer - only shown when onNodeSelect is NOT provided (internal mode) */}
+      {!onNodeSelect && (
+        <NodeDrawer
+          node={selectedNode}
+          onClose={clearSelection}
+          isReadOnly={!interactive}
+          renderMetadataForm={renderMetadataForm}
+          connectionsCount={
+            selectedNode
+              ? fullMap.edges.filter(
+                  e => e.sourceNodeId === selectedNode.id || e.targetNodeId === selectedNode.id
+                ).length
+              : 0
+          }
+          connectionsTab={
+            selectedNode &&
+            renderConnectionsPanel?.(
+              selectedNode,
+              fullMap.edges,
+              fullMap.nodes,
+              selectNode,
+              handlePanToNodeWithZoom,
+              interactive ? handleEditEdge : undefined,
+              interactive ? handleDeleteEdge : undefined
+            )
+          }
+        />
+      )}
 
       {/* Edge type selector - appears when creating new edge */}
       <EdgeTypeSelector

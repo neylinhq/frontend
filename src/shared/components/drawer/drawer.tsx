@@ -2,6 +2,7 @@ import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { XCloseIcon } from '@untitledui/icons-react/outline'
 import { cva, type VariantProps } from 'class-variance-authority'
 import * as React from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { cn } from '@/shared/lib/cn'
 
@@ -59,10 +60,11 @@ const DrawerContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   DrawerContentProps
 >(
-  (
-    { side = 'right', className, children, showOverlay = true, size, showClose = true, ...props },
-    ref
-  ) => {
+  function DrawerContentInner(
+    { side = 'right', className, children, showOverlay = true, size, showClose = true, ...props }: DrawerContentProps,
+    ref: React.ForwardedRef<React.ElementRef<typeof DialogPrimitive.Content>>
+  ) {
+    const { t } = useTranslation()
     // Определяем стили размера в зависимости от стороны
     const sizeStyles = React.useMemo(() => {
       if (!size) {
@@ -90,7 +92,7 @@ const DrawerContent = React.forwardRef<
           {showClose && (
             <DialogPrimitive.Close className='absolute right-4 top-4 rounded-md cursor-pointer opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary z-10'>
               <XCloseIcon className='h-4 w-4' />
-              <span className='sr-only'>Close</span>
+              <span className='sr-only'>{t('common.close', 'Close')}</span>
             </DialogPrimitive.Close>
           )}
           {children}

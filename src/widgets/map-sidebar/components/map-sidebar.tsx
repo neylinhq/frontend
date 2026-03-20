@@ -8,6 +8,32 @@ import { cn } from '@/shared/lib/cn'
 
 import { useMapSidebarStore } from '../model'
 
+/* ─── Pill tab button ─── */
+function TabButton({
+  active,
+  onClick,
+  children
+}: {
+  active: boolean
+  onClick: () => void
+  children: React.ReactNode
+}) {
+  return (
+    <button
+      type='button'
+      onClick={onClick}
+      className={cn(
+        'px-2.5 py-1 text-xs font-medium rounded-md transition-colors',
+        active
+          ? 'bg-muted text-foreground'
+          : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+      )}
+    >
+      {children}
+    </button>
+  )
+}
+
 interface MapSidebarProps {
   mapId: string
   /** Selected node for Node tab */
@@ -26,6 +52,10 @@ interface MapSidebarProps {
   renderChatPanel?: () => React.ReactNode
   /** Render prop for settings panel content */
   renderSettingsPanel?: () => React.ReactNode
+  /** Render prop for practice panel (shown when practice mode active) */
+  renderPracticePanel?: () => React.ReactNode
+  /** Whether practice mode is active */
+  isPracticeActive?: boolean
   /** Callback when node is closed */
   onCloseNode?: () => void
   className?: string
@@ -35,10 +65,12 @@ export const MapSidebar = memo(function MapSidebar({
   mapId: _mapId,
   selectedNode,
   canEdit,
-  isOwner = true,
+  isOwner: _isOwner = true,
   renderNodePanel,
   renderChatPanel,
   renderSettingsPanel,
+  renderPracticePanel,
+  isPracticeActive = false,
   onCloseNode,
   className
 }: MapSidebarProps) {
@@ -55,6 +87,13 @@ export const MapSidebar = memo(function MapSidebar({
     prevNodeIdRef.current = newId
   }, [selectedNode?.id, isOpen, setTab])
 
+  // Open sidebar on practice tab when practice mode activates
+  useEffect(() => {
+    if (isPracticeActive) {
+      setTab('practice')
+    }
+  }, [isPracticeActive, setTab])
+
   // Handle close
   const handleClose = useCallback(() => {
     close()
@@ -63,7 +102,9 @@ export const MapSidebar = memo(function MapSidebar({
     }
   }, [close, activeTab, onCloseNode])
 
-  if (!isOpen) return null
+  if (!isOpen) {
+    return null
+  }
 
   return (
     <ResizableSidebar
@@ -74,54 +115,30 @@ export const MapSidebar = memo(function MapSidebar({
       className={className}
     >
       <div className='flex flex-1 flex-col min-h-0'>
-        {/* Compact nav bar — text links + close */}
-        <div className='flex items-center border-b border-border/60 pl-3 pr-1.5 py-1 shrink-0'>
-          <nav className='flex items-center gap-1.5 flex-1 min-w-0'>
+        {/* Nav bar — pill tabs + close */}
+        <div className='flex items-center border-b border-border/60 px-2 py-1.5 shrink-0'>
+          <nav className='flex items-center gap-0.5 flex-1 min-w-0'>
             {selectedNode && (
-              <button
-                type='button'
-                onClick={() => setTab('node')}
-                className={cn(
-                  'px-1.5 py-0.5 text-xs font-medium rounded-sm transition-colors',
-                  activeTab === 'node'
-                    ? 'text-foreground'
-                    : 'text-muted-foreground hover:text-foreground'
-                )}
-              >
+              <TabButton active={activeTab === 'node'} onClick={() => setTab('node')}>
                 {t('mapSidebar.tabs.node')}
-              </button>
+              </TabButton>
             )}
             {canEdit && (
-              <button
-                type='button'
-                onClick={() => setTab('chat')}
-                className={cn(
-                  'px-1.5 py-0.5 text-xs font-medium rounded-sm transition-colors',
-                  activeTab === 'chat'
-                    ? 'text-foreground'
-                    : 'text-muted-foreground hover:text-foreground'
-                )}
-              >
+              <TabButton active={activeTab === 'chat'} onClick={() => setTab('chat')}>
                 {t('mapSidebar.tabs.chat')}
-              </button>
+              </TabButton>
             )}
-            <button
-              type='button'
-              onClick={() => setTab('settings')}
-              className={cn(
-                'px-1.5 py-0.5 text-xs font-medium rounded-sm transition-colors',
-                activeTab === 'settings'
-                  ? 'text-foreground'
-                  : 'text-muted-foreground hover:text-foreground'
-              )}
-            >
+            <TabButton active={activeTab === 'practice'} onClick={() => setTab('practice')}>
+              {t('practice.mode.title')}
+            </TabButton>
+            <TabButton active={activeTab === 'settings'} onClick={() => setTab('settings')}>
               {t('mapSidebar.tabs.settings')}
-            </button>
+            </TabButton>
           </nav>
           <button
             type='button'
             onClick={handleClose}
-            className='h-6 w-6 flex items-center justify-center rounded-sm text-muted-foreground hover:text-foreground transition-colors'
+            className='relative h-7 w-7 flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors before:absolute before:-inset-1 before:content-[""]'
           >
             <XCloseIcon className='h-3.5 w-3.5' />
           </button>
@@ -146,6 +163,12 @@ export const MapSidebar = memo(function MapSidebar({
           {activeTab === 'chat' && canEdit && (
             <div className='flex flex-col h-full overflow-hidden'>
               {renderChatPanel?.()}
+            </div>
+          )}
+
+          {activeTab === 'practice' && (
+            <div className='h-full overflow-y-auto'>
+              {renderPracticePanel?.()}
             </div>
           )}
 

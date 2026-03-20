@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
-export type MapSidebarTab = 'node' | 'chat' | 'settings'
+export type MapSidebarTab = 'node' | 'chat' | 'practice' | 'settings'
 
 interface MapSidebarState {
   /** Whether the sidebar is open */

@@ -53,20 +53,20 @@ export const ContextIndicator = ({ nodeId, mapId }: ContextIndicatorProps) => {
       <CollapsibleContent className='mt-2'>
         <div className='p-3 bg-muted/20 rounded-md text-xs space-y-2 border border-border/30'>
           <div>
-            <span className='text-muted-foreground'>Type:</span>{' '}
+            <span className='text-muted-foreground'>{t('form.nodeType.label')}:</span>{' '}
             <span className='font-medium'>{node.type}</span>
           </div>
 
           {node.tags && node.tags.length > 0 && (
             <div>
-              <span className='text-muted-foreground'>Tags:</span>{' '}
+              <span className='text-muted-foreground'>{t('form.tags.label')}:</span>{' '}
               <span className='font-medium'>{node.tags.join(', ')}</span>
             </div>
           )}
 
           {node.content && (
             <div>
-              <span className='text-muted-foreground'>Description:</span>
+              <span className='text-muted-foreground'>{t('mapSettings.overview.description')}:</span>
               <p className='mt-1 text-muted-foreground/80 line-clamp-3'>
                 {node.content.substring(0, 200)}
                 {node.content.length > 200 && '...'}

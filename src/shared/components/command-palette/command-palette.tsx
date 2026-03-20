@@ -2,6 +2,7 @@
 
 import { Hash01Icon, SearchMdIcon } from '@untitledui/icons-react/outline'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { Dialog, DialogContent, DialogTitle } from '@/shared/components/dialog'
 import { cn } from '@/shared/lib/cn'
@@ -23,6 +24,7 @@ export const CommandPalette = <T extends CommandPaletteItem>({
   footer,
   title = 'Command palette'
 }: CommandPaletteProps<T>) => {
+  const { t } = useTranslation()
   const [query, setQuery] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(0)
 
@@ -210,18 +212,18 @@ export const CommandPalette = <T extends CommandPaletteItem>({
                 <kbd className='inline-flex h-5 items-center rounded border bg-muted px-1.5 font-mono text-[10px]'>
                   ↓
                 </kbd>
-                <span className='ml-1'>Navigate</span>
+                <span className='ml-1'>{t('commandPalette.navigate', 'Navigate')}</span>
               </span>
               <span className='flex items-center gap-1'>
                 <kbd className='inline-flex h-5 items-center rounded border bg-muted px-1.5 font-mono text-[10px]'>
                   ↵
                 </kbd>
-                <span className='ml-1'>Select</span>
+                <span className='ml-1'>{t('commandPalette.select', 'Select')}</span>
               </span>
             </div>
             <div className='flex items-center gap-1'>
               <Hash01Icon className='h-3 w-3' />
-              <span>{results.length} results</span>
+              <span>{t('commandPalette.resultsCount', { count: results.length, defaultValue: '{{count}} results' })}</span>
             </div>
           </div>
         )}

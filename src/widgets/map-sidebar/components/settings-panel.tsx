@@ -1,10 +1,6 @@
 import {
-  AlertCircleIcon,
-  ClockRewindIcon,
-  InfoCircleIcon,
-  Sliders04Icon,
-  Trash01Icon,
-  TrendUp01Icon
+  ChevronDownIcon,
+  Trash01Icon
 } from '@untitledui/icons-react/outline'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -25,14 +21,18 @@ import {
 } from '@/shared/components/alert-dialog'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/card'
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger
+} from '@/shared/components/collapsible'
 import { Field } from '@/shared/components/field'
 import { Input } from '@/shared/components/input'
 import { Switch } from '@/shared/components/switch'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/components/tabs'
 import { Textarea } from '@/shared/components/textarea'
 import { toast } from '@/shared/components/toast'
 import { useAutoSave } from '@/shared/hooks'
+import { cn } from '@/shared/lib/cn'
 import { getComplexityTier } from '@/shared/lib/rating'
 
 interface SettingsPanelProps {
@@ -47,6 +47,8 @@ export const SettingsPanel = memo(function SettingsPanel({
   const { t } = useTranslation()
   const navigate = useNavigate()
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [historyOpen, setHistoryOpen] = useState(false)
+  const [advancedOpen, setAdvancedOpen] = useState(false)
 
   // Local state for form fields
   const [title, setTitle] = useState('')
@@ -158,171 +160,175 @@ export const SettingsPanel = memo(function SettingsPanel({
       <div className='flex flex-col h-full'>
         {/* Saving indicator */}
         {isSaving && (
-          <div className='px-4 py-1 text-xs text-muted-foreground border-b'>
+          <div className='px-4 py-1 text-xs text-muted-foreground border-b border-border/60 shrink-0'>
             {t('common.saving')}
           </div>
         )}
 
-        {/* Tabs */}
-        <Tabs defaultValue='overview' className='flex flex-col flex-1 min-h-0'>
-          <TabsList variant='iconbar'>
-            <TabsTrigger variant='iconbar' value='overview' title={t('mapSettings.tabs.overview')}>
-              <InfoCircleIcon className='h-4 w-4' />
-            </TabsTrigger>
-            <TabsTrigger variant='iconbar' value='progress' title={t('mapSettings.tabs.progress')}>
-              <TrendUp01Icon className='h-4 w-4' />
-            </TabsTrigger>
-            <TabsTrigger variant='iconbar' value='history' title={t('mapSettings.tabs.history')}>
-              <ClockRewindIcon className='h-4 w-4' />
-            </TabsTrigger>
-            <TabsTrigger variant='iconbar' value='settings' title={t('mapSettings.tabs.settings')}>
-              <Sliders04Icon className='h-4 w-4' />
-            </TabsTrigger>
-          </TabsList>
+        {/* Single scrollable content */}
+        <div className='flex-1 overflow-y-auto [scrollbar-gutter:stable]'>
+          {/* === Overview Section === */}
+          <div className='p-4 space-y-4'>
+            {/* Visibility Badge + Switch (only for owners) */}
+            {isOwner && (
+              <div className='flex items-center justify-between'>
+                {map?.isPublic ? (
+                  <Badge variant='info'>{t('mapSettings.visibility.public')}</Badge>
+                ) : (
+                  <Badge variant='secondary'>{t('mapSettings.visibility.private')}</Badge>
+                )}
+                <Switch
+                  checked={map?.isPublic ?? false}
+                  onCheckedChange={handleVisibilityChange}
+                  disabled={setVisibilityMutation.isPending}
+                />
+              </div>
+            )}
 
-          {/* Overview Tab */}
-          <TabsContent value='overview' className='flex-1 overflow-y-auto mt-0 p-4'>
-            <div className='space-y-6'>
-              {/* Visibility Badge + Switch (only for owners) */}
-              {isOwner && (
-                <div className='flex items-center justify-between'>
-                  {map?.isPublic ? (
-                    <Badge variant='info'>{t('mapSettings.visibility.public')}</Badge>
-                  ) : (
-                    <Badge variant='secondary'>{t('mapSettings.visibility.private')}</Badge>
-                  )}
-                  <Switch
-                    checked={map?.isPublic ?? false}
-                    onCheckedChange={handleVisibilityChange}
-                    disabled={setVisibilityMutation.isPending}
-                  />
-                </div>
+            {/* Author (for non-owners) */}
+            {!isOwner && map?.authorName && (
+              <div className='space-y-1.5'>
+                <span className='text-xs text-muted-foreground'>
+                  {t('mapSettings.overview.author')}
+                </span>
+                <div className='text-sm font-medium'>{map.authorName}</div>
+              </div>
+            )}
+
+            {/* Title & Description with autosave */}
+            <Field label={t('mapSettings.overview.mapTitle')} labelClassName='text-xs'>
+              <Input
+                value={title}
+                onChange={e => handleTitleChange(e.target.value)}
+                readOnly={!isOwner}
+                disabled={!isOwner}
+              />
+            </Field>
+
+            <Field label={t('mapSettings.overview.description')} labelClassName='text-xs'>
+              <Textarea
+                value={description}
+                onChange={e => handleDescriptionChange(e.target.value)}
+                placeholder={t('mapSettings.overview.descriptionPlaceholder')}
+                rows={3}
+                className='resize-none'
+                readOnly={!isOwner}
+                disabled={!isOwner}
+              />
+            </Field>
+          </div>
+
+          {/* Separator */}
+          <div className='mx-4 border-t border-border/60' />
+
+          {/* === Progress Section (inline) === */}
+          <div className='p-4 space-y-3'>
+            <h3 className='text-xs font-medium text-muted-foreground'>
+              {t('mapSettings.tabs.progress', 'Progress')}
+            </h3>
+
+            {/* Rating — compact single row */}
+            <div className='flex items-center justify-between'>
+              <div className='flex items-baseline gap-2'>
+                <span className='text-2xl font-bold tabular-nums'>{currentRating ?? '—'}</span>
+                <span className='text-xs text-muted-foreground'>
+                  {currentRatingSystem.toUpperCase()}
+                </span>
+              </div>
+              {tier && (
+                <span
+                  className='text-xs font-medium px-2 py-0.5 rounded'
+                  style={{ backgroundColor: `${tier.color}15`, color: tier.color }}
+                >
+                  {tier.name}
+                </span>
               )}
+            </div>
 
-              {/* Author (for non-owners) */}
-              {!isOwner && map?.authorName && (
-                <div className='space-y-1.5'>
-                  <span className='text-xs text-muted-foreground'>
-                    {t('mapSettings.overview.author')}
-                  </span>
-                  <div className='text-sm font-medium'>{map.authorName}</div>
-                </div>
-              )}
-
-              {/* Title & Description with autosave */}
-              <div className='space-y-4'>
-                <Field label={t('mapSettings.overview.mapTitle')} labelClassName='text-xs'>
-                  <Input
-                    value={title}
-                    onChange={e => handleTitleChange(e.target.value)}
-                    readOnly={!isOwner}
-                    disabled={!isOwner}
-                  />
-                </Field>
-
-                <Field label={t('mapSettings.overview.description')} labelClassName='text-xs'>
-                  <Textarea
-                    value={description}
-                    onChange={e => handleDescriptionChange(e.target.value)}
-                    placeholder={t('mapSettings.overview.descriptionPlaceholder')}
-                    rows={4}
-                    className='resize-none'
-                    readOnly={!isOwner}
-                    disabled={!isOwner}
-                  />
-                </Field>
+            {/* Stats — compact 2×2 */}
+            <div className='grid grid-cols-2 gap-2'>
+              <div className='flex items-baseline justify-between rounded-md bg-muted/30 px-3 py-2'>
+                <span className='text-xs text-muted-foreground'>
+                  {t('mapSettings.progress.nodesTotal')}
+                </span>
+                <span className='text-sm font-semibold tabular-nums'>{map?.nodesCount ?? 0}</span>
+              </div>
+              <div className='flex items-baseline justify-between rounded-md bg-muted/30 px-3 py-2'>
+                <span className='text-xs text-muted-foreground'>
+                  {t('mapSettings.progress.overallProgress')}
+                </span>
+                <span className='text-sm font-semibold tabular-nums'>
+                  {Math.round((mapProgress?.overallProgress ?? 0) * 100)}%
+                </span>
+              </div>
+              <div className='flex items-baseline justify-between rounded-md bg-muted/30 px-3 py-2'>
+                <span className='text-xs text-muted-foreground'>
+                  {t('mapSettings.progress.nodesMastered')}
+                </span>
+                <span className='text-sm font-semibold tabular-nums'>
+                  {mapProgress?.nodesMastered ?? 0}
+                </span>
+              </div>
+              <div className='flex items-baseline justify-between rounded-md bg-muted/30 px-3 py-2'>
+                <span className='text-xs text-muted-foreground'>
+                  {t('mapSettings.progress.nodesLearning')}
+                </span>
+                <span className='text-sm font-semibold tabular-nums'>
+                  {mapProgress?.nodesLearning ?? 0}
+                </span>
               </div>
             </div>
-          </TabsContent>
+          </div>
 
-          {/* Progress Tab */}
-          <TabsContent value='progress' className='flex-1 overflow-y-auto mt-0 p-4'>
-            <div className='space-y-6'>
-              {/* Your Rating */}
-              <div className='p-4 rounded-lg bg-muted/30 border'>
-                <div className='flex items-center justify-between mb-2'>
-                  <span className='text-xs text-muted-foreground'>
-                    {t('mapSettings.progress.yourRating')}
-                  </span>
-                  {tier && (
-                    <span
-                      className='text-xs font-medium px-2 py-0.5 rounded'
-                      style={{ backgroundColor: `${tier.color}15`, color: tier.color }}
-                    >
-                      {tier.name}
-                    </span>
-                  )}
+          {/* === History — collapsible === */}
+          <div className='px-2 py-1'>
+            <Collapsible open={historyOpen} onOpenChange={setHistoryOpen}>
+              <CollapsibleTrigger asChild>
+                <button
+                  type='button'
+                  className='flex w-full items-center justify-between rounded-md px-2 py-2 text-sm font-medium hover:bg-muted/50 transition-colors'
+                >
+                  <span>{t('mapSettings.tabs.history', 'History')}</span>
+                  <ChevronDownIcon
+                    className={cn(
+                      'h-4 w-4 text-muted-foreground transition-transform duration-200',
+                      historyOpen && 'rotate-180'
+                    )}
+                  />
+                </button>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <div className='px-2 pt-1 pb-2'>
+                  <MapHistoryList mapId={mapId} />
                 </div>
-                <div className='flex items-baseline gap-2'>
-                  <span className='text-3xl font-bold tabular-nums'>{currentRating ?? '?'}</span>
-                  <span className='text-xs text-muted-foreground'>
-                    {currentRatingSystem.toUpperCase()}
-                  </span>
-                </div>
-              </div>
+              </CollapsibleContent>
+            </Collapsible>
+          </div>
 
-              {/* Stats Grid */}
-              <div className='grid grid-cols-2 gap-3'>
-                <div className='p-3 rounded-lg bg-muted/30'>
-                  <p className='text-xs text-muted-foreground mb-1'>
-                    {t('mapSettings.progress.nodesTotal')}
-                  </p>
-                  <p className='text-xl font-semibold tabular-nums'>{map?.nodesCount ?? 0}</p>
-                </div>
-                <div className='p-3 rounded-lg bg-muted/30'>
-                  <p className='text-xs text-muted-foreground mb-1'>
-                    {t('mapSettings.progress.overallProgress')}
-                  </p>
-                  <p className='text-xl font-semibold tabular-nums'>
-                    {Math.round((mapProgress?.overallProgress ?? 0) * 100)}%
-                  </p>
-                </div>
-                <div className='p-3 rounded-lg bg-muted/30'>
-                  <p className='text-xs text-muted-foreground mb-1'>
-                    {t('mapSettings.progress.nodesMastered')}
-                  </p>
-                  <p className='text-xl font-semibold tabular-nums'>
-                    {mapProgress?.nodesMastered ?? 0}
-                  </p>
-                </div>
-                <div className='p-3 rounded-lg bg-muted/30'>
-                  <p className='text-xs text-muted-foreground mb-1'>
-                    {t('mapSettings.progress.nodesLearning')}
-                  </p>
-                  <p className='text-xl font-semibold tabular-nums'>
-                    {mapProgress?.nodesLearning ?? 0}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </TabsContent>
+          {/* === Advanced — collapsible (rating system + danger zone) === */}
+          <div className='px-2 py-1'>
+            <Collapsible open={advancedOpen} onOpenChange={setAdvancedOpen}>
+              <CollapsibleTrigger asChild>
+                <button
+                  type='button'
+                  className='flex w-full items-center justify-between rounded-md px-2 py-2 text-sm font-medium hover:bg-muted/50 transition-colors'
+                >
+                  <span>{t('mapSettings.tabs.settings', 'Advanced')}</span>
+                  <ChevronDownIcon
+                    className={cn(
+                      'h-4 w-4 text-muted-foreground transition-transform duration-200',
+                      advancedOpen && 'rotate-180'
+                    )}
+                  />
+                </button>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <div className='px-2 pt-1 pb-2 space-y-4'>
+                  <RatingSystemSelector mapId={mapId} currentSystem={currentRatingSystem} />
 
-          {/* History Tab */}
-          <TabsContent value='history' className='flex-1 overflow-y-auto mt-0 p-4'>
-            <MapHistoryList mapId={mapId} />
-          </TabsContent>
-
-          {/* Settings Tab */}
-          <TabsContent value='settings' className='flex-1 overflow-y-auto mt-0'>
-            <div className='flex flex-col min-h-full'>
-              <div className='p-4'>
-                <RatingSystemSelector mapId={mapId} currentSystem={currentRatingSystem} />
-              </div>
-
-              {/* Danger Zone (only for owners) */}
-              {isOwner && (
-                <div className='p-4 mt-auto'>
-                  <Card className='border-destructive/30'>
-                    <CardHeader className='pb-2 pt-3 px-3'>
-                      <CardTitle className='text-xs font-medium text-destructive flex items-center gap-1.5'>
-                        <AlertCircleIcon className='h-3.5 w-3.5' />
-                        {t('mapSettings.dangerZone.title')}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className='px-3 pb-3'>
-                      <p className='text-xs text-muted-foreground mb-3'>
-                        {t('mapSettings.dangerZone.warning')}
-                      </p>
+                  {/* Delete map — subtle, at the bottom */}
+                  {isOwner && (
+                    <div className='pt-2'>
                       <Button
                         variant='ghost'
                         size='sm'
@@ -332,13 +338,13 @@ export const SettingsPanel = memo(function SettingsPanel({
                         <Trash01Icon className='mr-1.5 h-3.5 w-3.5' />
                         {t('mapSettings.dangerZone.delete')}
                       </Button>
-                    </CardContent>
-                  </Card>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          </TabsContent>
-        </Tabs>
+              </CollapsibleContent>
+            </Collapsible>
+          </div>
+        </div>
       </div>
 
       {/* Delete Confirmation Dialog */}

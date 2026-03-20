@@ -1,31 +1,23 @@
 'use client'
 
 import {
-  GraduationHat01Icon,
   Loading02Icon,
   PlayIcon,
-  Stars01Icon,
-  XCloseIcon
+  ZapIcon
 } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
 
 import type { MasteryLevel } from '@/entities/progress'
-import { Badge } from '@/shared/components/badge'
+import type { Node } from '@/entities/map'
+import { getNodeBgColor, getNodeIcon, getNodeTextColor } from '@/entities/node'
 import { Button } from '@/shared/components/button'
 import { cn } from '@/shared/lib/cn'
 
 import {
-  usePracticeModeActions,
+  useNodeMastery,
   usePracticeModeStats,
   usePracticeModeStore
 } from '../model/practice-mode.store'
-
-const MASTERY_COLORS: Record<MasteryLevel, string> = {
-  mastered: 'bg-[var(--color-mastery-mastered-muted)] text-[var(--color-mastery-mastered)]',
-  practicing: 'bg-[var(--color-mastery-practicing-muted)] text-[var(--color-mastery-practicing)]',
-  learning: 'bg-[var(--color-mastery-learning-muted)] text-[var(--color-mastery-learning)]',
-  not_started: 'bg-muted text-muted-foreground'
-}
 
 const MASTERY_BAR_COLORS: Record<MasteryLevel, string> = {
   mastered: 'bg-[var(--color-mastery-mastered)]',
@@ -36,44 +28,32 @@ const MASTERY_BAR_COLORS: Record<MasteryLevel, string> = {
 
 interface PracticeModePanelProps {
   mapId: string
-  onClose: () => void
+  /** Currently selected node — shown as context card at top */
+  selectedNode?: Node | null
   onStartQuickSession?: () => void
+  onStartReview?: () => void
   className?: string
 }
 
 export const PracticeModePanel = ({
-  mapId,
-  onClose,
+  mapId: _mapId,
+  selectedNode,
   onStartQuickSession,
+  onStartReview,
   className
 }: PracticeModePanelProps) => {
   const { t } = useTranslation()
   const stats = usePracticeModeStats()
   const isLoading = usePracticeModeStore((s) => s.isLoadingMastery)
+  const selectedNodeMastery = useNodeMastery(selectedNode?.id ?? '')
 
   return (
     <div
       className={cn(
-        'flex h-full flex-col border-l border-border/60 bg-background',
+        'flex h-full flex-col',
         className
       )}
     >
-      {/* Header */}
-      <div className='flex items-center justify-between border-b border-border/60 px-4 py-3'>
-        <div className='flex items-center gap-2'>
-          <GraduationHat01Icon className='h-4 w-4 text-muted-foreground' />
-          <span className='text-sm font-medium'>{t('practice.mode.title', 'Practice')}</span>
-        </div>
-        <Button
-          variant='ghost'
-          size='icon'
-          className='h-7 w-7 rounded-xs'
-          onClick={onClose}
-        >
-          <XCloseIcon className='h-4 w-4' />
-        </Button>
-      </div>
-
       {/* Content */}
       <div className='flex-1 overflow-y-auto p-4'>
         {isLoading ? (
@@ -82,16 +62,21 @@ export const PracticeModePanel = ({
           </div>
         ) : (
           <div className='space-y-5'>
-            {/* Mastery distribution */}
+            {/* Selected node context */}
+            {selectedNode && (
+              <SelectedNodeCard node={selectedNode} mastery={selectedNodeMastery} />
+            )}
+
+            {/* Map mastery overview */}
             <div className='space-y-3'>
-              <h3 className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+              <h3 className='text-xs font-medium text-muted-foreground'>
                 {t('practice.mode.mastery', 'Mastery')}
               </h3>
 
-              {/* Stacked bar */}
-              <div className='flex h-2 w-full overflow-hidden rounded-full bg-muted'>
-                {stats.total > 0 && (
-                  <>
+              {/* Overall progress bar */}
+              {stats.total > 0 && (
+                <div className='space-y-1.5'>
+                  <div className='flex h-2 w-full overflow-hidden rounded-full bg-muted'>
                     {stats.mastered > 0 && (
                       <div
                         className={cn('transition-all duration-500', MASTERY_BAR_COLORS.mastered)}
@@ -110,9 +95,13 @@ export const PracticeModePanel = ({
                         style={{ width: `${(stats.learning / stats.total) * 100}%` }}
                       />
                     )}
-                  </>
-                )}
-              </div>
+                  </div>
+                  <p className='text-xs text-muted-foreground tabular-nums'>
+                    {Math.round(((stats.mastered + stats.practicing) / stats.total) * 100)}%{' '}
+                    {t('practice.mode.progress', 'progress')}
+                  </p>
+                </div>
+              )}
 
               {/* Legend */}
               <div className='grid grid-cols-2 gap-2'>
@@ -139,52 +128,107 @@ export const PracticeModePanel = ({
               </div>
             </div>
 
-            {/* Due for review */}
+            {/* Due for review — calm inline text, not alert */}
             {stats.dueCount > 0 && (
-              <div className='rounded-lg border border-[var(--color-mastery-due)] border-opacity-30 bg-[var(--color-mastery-due-muted)] p-3 space-y-2'>
-                <div className='flex items-center justify-between'>
-                  <span className='text-sm font-medium'>
-                    {t('practice.mode.dueForReview', 'Due for review')}
-                  </span>
-                  <Badge variant='destructive' className='text-xs'>
-                    {stats.dueCount}
-                  </Badge>
-                </div>
-                <p className='text-xs text-muted-foreground'>
-                  {t('practice.mode.dueDescription', 'These nodes are scheduled for spaced repetition review.')}
-                </p>
-              </div>
+              <p className='text-sm text-muted-foreground'>
+                <span className='font-medium text-foreground tabular-nums'>{stats.dueCount}</span>{' '}
+                {t('practice.mode.dueInline', 'nodes due for review')}
+              </p>
             )}
 
-            {/* Quick session hint */}
+            {/* No reviews hint */}
             {stats.total > 0 && stats.dueCount === 0 && stats.notStarted > 0 && (
-              <div className='rounded-lg border border-border/60 bg-muted/30 p-3'>
-                <p className='text-xs text-muted-foreground'>
-                  {t('practice.mode.noReviewDue', 'No reviews due. Click a node to deep dive, or start a quick session to practice weak areas.')}
-                </p>
-              </div>
+              <p className='text-xs text-muted-foreground'>
+                {t('practice.mode.noReviewDue', 'No reviews due. Click a node to deep dive, or start a quick session to practice weak areas.')}
+              </p>
             )}
           </div>
         )}
       </div>
 
-      {/* Footer actions */}
+      {/* Footer actions — two distinct buttons */}
       <div className='border-t border-border/60 p-4 space-y-2'>
+        {stats.dueCount > 0 && (
+          <Button
+            className='w-full'
+            size='sm'
+            onClick={onStartReview ?? onStartQuickSession}
+            disabled={isLoading}
+          >
+            <PlayIcon className='mr-2 h-4 w-4' />
+            {t('practice.mode.reviewDue', { count: stats.dueCount, defaultValue: `Review ${stats.dueCount} due` })}
+          </Button>
+        )}
         <Button
+          variant={stats.dueCount > 0 ? 'outline' : 'default'}
           className='w-full'
           size='sm'
           onClick={onStartQuickSession}
           disabled={stats.total === 0 || isLoading}
         >
-          <PlayIcon className='mr-2 h-4 w-4' />
-          {stats.dueCount > 0
-            ? t('practice.mode.reviewDue', { count: stats.dueCount, defaultValue: `Review ${stats.dueCount} due` })
-            : t('practice.mode.quickSession', 'Quick Session')}
+          <ZapIcon className='mr-2 h-4 w-4' />
+          {t('practice.mode.quickSession', 'Quick Session')}
         </Button>
       </div>
     </div>
   )
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Selected Node Context Card
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+interface SelectedNodeCardProps {
+  node: Node
+  mastery: { mastery: MasteryLevel; confidence: number; isDue: boolean } | undefined
+}
+
+const SelectedNodeCard = ({ node, mastery }: SelectedNodeCardProps) => {
+  const { t } = useTranslation()
+  const NodeIcon = getNodeIcon(node.type)
+  const iconColor = getNodeTextColor(node.type)
+  const iconBg = getNodeBgColor(node.type)
+
+  const masteryLabel = mastery?.mastery
+    ? t(`practice.mode.${mastery.mastery === 'not_started' ? 'notStarted' : mastery.mastery}`, mastery.mastery)
+    : t('practice.mode.notStarted', 'Not started')
+
+  return (
+    <div className='rounded-lg border border-border/60 bg-muted/20 p-3'>
+      <div className='flex items-start gap-3'>
+        <div className={cn('flex h-8 w-8 shrink-0 items-center justify-center rounded-md', iconBg)}>
+          <NodeIcon className={cn('h-4 w-4', iconColor)} />
+        </div>
+        <div className='min-w-0 flex-1'>
+          <p className='text-sm font-medium truncate'>{node.label}</p>
+          <div className='flex items-center gap-2 mt-1'>
+            <span className='text-xs text-muted-foreground'>{masteryLabel}</span>
+            {mastery?.confidence != null && (
+              <>
+                <span className='text-muted-foreground/40'>·</span>
+                <span className='text-xs text-muted-foreground tabular-nums'>
+                  {Math.round(mastery.confidence * 100)}%
+                </span>
+              </>
+            )}
+            {mastery?.isDue && (
+              <>
+                <span className='text-muted-foreground/40'>·</span>
+                <span className='text-xs text-[var(--color-mastery-due)]'>
+                  {t('practice.mode.due', 'Due')}
+                </span>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Mastery Legend Item
+ * ───────────────────────────────────────────────────────────────────────────── */
 
 const MasteryItem = ({
   level,

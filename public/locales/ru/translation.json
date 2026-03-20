@@ -116,7 +116,8 @@
     "collapseSidebar": "Свернуть боковую панель",
     "upgrade": "Улучшить",
     "collapse": "Свернуть",
-    "expand": "Развернуть"
+    "expand": "Развернуть",
+    "toggleLanguage": "Сменить язык"
   },
   "userNav": {
     "dashboard": "Дашборд",
@@ -170,7 +171,13 @@
     "true": "Верно",
     "false": "Неверно",
     "optional": "необязательно",
-    "loadMore": "Загрузить ещё"
+    "loadMore": "Загрузить ещё",
+    "close": "Закрыть"
+  },
+  "commandPalette": {
+    "navigate": "Навигация",
+    "select": "Выбрать",
+    "resultsCount": "{{count}} результатов"
   },
   "imageCrop": {
     "title": "Обрезка изображения",
@@ -433,6 +440,9 @@
     "loading": "Загрузка графа знаний...",
     "loadingError": "Ошибка загрузки",
     "loadingErrorMessage": "Не удалось загрузить карту знаний",
+    "webgl": {
+      "wasmError": "Ошибка WASM"
+    },
     "viewModes": {
       "overview": "Обзор",
       "focus": "Фокус",
@@ -1537,6 +1547,7 @@
         "requirements": "JPG, PNG или WebP. Максимум 5МБ.",
         "uploaded": "Фото успешно загружено",
         "deleted": "Фото удалено",
+        "alt": "Аватар",
         "crop": {
           "title": "Обрезка фото",
           "description": "Выберите область для аватара"
@@ -1707,6 +1718,7 @@
           "remaining_one": "Остался {{count}} код",
           "remaining_few": "Осталось {{count}} кода",
           "remaining_many": "Осталось {{count}} кодов",
+          "remaining_other": "Осталось {{count}} кодов",
           "regenerate": "Перегенерировать",
           "regenerateTitle": "Перегенерация резервных кодов",
           "enterCodeToRegenerate": "Введите код из приложения-аутентификатора",
@@ -1729,7 +1741,8 @@
         "confirmTitle": "Удаление аккаунта",
         "confirmDescription": "Это действие нельзя отменить. Все ваши данные будут безвозвратно удалены с наших серверов.",
         "confirmPassword": "Введите пароль для подтверждения",
-        "typeDelete": "Введите DELETE для подтверждения",
+        "typeDelete": "Введите УДАЛИТЬ для подтверждения",
+        "deletePlaceholder": "УДАЛИТЬ",
         "deleted": "Аккаунт успешно удален"
       }
     },

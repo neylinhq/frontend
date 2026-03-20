@@ -13,7 +13,7 @@ import {
 import { LANGUAGES } from '../language-switcher.constants'
 
 export const LanguageSwitcher = () => {
-  const { i18n } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   const handleChange = (lng: string) => {
     if (lng === i18n.language) {
@@ -27,7 +27,7 @@ export const LanguageSwitcher = () => {
       <DropdownMenuTrigger asChild>
         <Button variant='ghost' size='icon' className='h-9 w-9'>
           <Globe01Icon className='h-4 w-4' />
-          <span className='sr-only'>Toggle language</span>
+          <span className='sr-only'>{t('nav.toggleLanguage', 'Toggle language')}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end'>

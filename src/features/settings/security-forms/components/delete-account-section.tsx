@@ -105,7 +105,7 @@ export const DeleteAccountSection = () => {
                   <FormItem>
                     <FormLabel>{t('settings.security.danger.typeDelete')}</FormLabel>
                     <FormControl>
-                      <Input placeholder='DELETE' {...field} />
+                      <Input placeholder={t('settings.security.danger.deletePlaceholder', 'DELETE')} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

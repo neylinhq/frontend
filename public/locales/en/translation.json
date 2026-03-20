@@ -1,4 +1,30 @@
 {
+  "meta": {
+    "home": {
+      "title": "Neylin — Home",
+      "description": "Knowledge management platform"
+    },
+    "overview": {
+      "title": "Neylin — Overview",
+      "description": "Your knowledge maps"
+    },
+    "mapView": {
+      "title": "Neylin — Knowledge map",
+      "description": "Knowledge graph visualization"
+    },
+    "signIn": {
+      "title": "Neylin — Sign in",
+      "description": "Sign in to your account"
+    },
+    "signUp": {
+      "title": "Neylin — Sign up",
+      "description": "Create a new account"
+    },
+    "resetPassword": {
+      "title": "Neylin — Reset password",
+      "description": "Restore access to your account"
+    }
+  },
   "auth": {
     "signIn": {
       "title": "Sign in to an account",
@@ -116,7 +142,8 @@
     "collapseSidebar": "Collapse sidebar",
     "upgrade": "Upgrade",
     "collapse": "Collapse",
-    "expand": "Expand"
+    "expand": "Expand",
+    "toggleLanguage": "Toggle language"
   },
   "userNav": {
     "dashboard": "Dashboard",
@@ -170,7 +197,13 @@
     "true": "True",
     "false": "False",
     "optional": "optional",
-    "loadMore": "Load more"
+    "loadMore": "Load more",
+    "close": "Close"
+  },
+  "commandPalette": {
+    "navigate": "Navigate",
+    "select": "Select",
+    "resultsCount": "{{count}} results"
   },
   "imageCrop": {
     "title": "Crop image",
@@ -433,6 +466,9 @@
     "loading": "Loading knowledge graph...",
     "loadingError": "Loading error",
     "loadingErrorMessage": "Failed to load knowledge map",
+    "webgl": {
+      "wasmError": "WASM error"
+    },
     "viewModes": {
       "overview": "Overview",
       "focus": "Focus",
@@ -1327,6 +1363,8 @@
         "summary": "Summarize"
       },
       "emptyHint": "Type anything or use /commands",
+      "improveContent": "Improve content",
+      "sources": "Sources",
       "status": {
         "thinking": "Thinking",
         "analyzing": "Analyzing",
@@ -1509,6 +1547,7 @@
         "requirements": "JPG, PNG or WebP. Max 5MB.",
         "uploaded": "Photo uploaded successfully",
         "deleted": "Photo removed",
+        "alt": "Avatar",
         "crop": {
           "title": "Crop photo",
           "description": "Select the area for your avatar"
@@ -1701,6 +1740,7 @@
         "confirmDescription": "This action cannot be undone. This will permanently delete your account and remove all your data from our servers.",
         "confirmPassword": "Enter your password to confirm",
         "typeDelete": "Type DELETE to confirm",
+        "deletePlaceholder": "DELETE",
         "deleted": "Account deleted successfully"
       }
     },
@@ -1897,7 +1937,8 @@
         "transactionFailed": "Transaction failed",
         "insufficientBalance": "Insufficient balance",
         "userRejected": "Transaction rejected",
-        "networkMismatch": "Wrong network in wallet"
+        "networkMismatch": "Wrong network in wallet",
+        "walletAlreadyAdded": "This wallet is already added"
       },
       "providerAlreadyOpen": "Provider window is already open",
       "walletAdded": "{{network}} wallet added",

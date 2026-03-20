@@ -5,7 +5,11 @@ import type { ViewportState } from '@/features/graph/graph-webgl'
 import { ReadOnlyBanner, useMapPermissions } from '@/features/map-permissions'
 import { NodeConnectionsPanel } from '@/features/node-connections-panel'
 import { AddNodeFab, QuickAddDialogWebGL, useNodeCreationStore } from '@/features/node-creation'
-import { PracticeFab } from '@/features/practice-mode'
+import {
+  PracticeFab,
+  PracticeModePanel,
+  usePracticeModeActive
+} from '@/features/practice-mode'
 import type { FullMap, Node } from '@/entities/map'
 import { Fab } from '@/shared/components/fab'
 import { useKeyboardShortcut } from '@/shared/hooks/use-keyboard-shortcut'
@@ -26,6 +30,7 @@ interface MapPageProps {
 
 export const MapPage = ({ map, mapId }: MapPageProps) => {
   const { canEdit, isReadOnly } = useMapPermissions(map)
+  const isPracticeActive = usePracticeModeActive()
   const { openQuickAdd } = useNodeCreationStore()
   const { isOpen, activeTab, open, close, setTab } = useMapSidebarStore()
   const [selectedNode, setSelectedNode] = useState<Node | null>(null)
@@ -153,6 +158,8 @@ export const MapPage = ({ map, mapId }: MapPageProps) => {
           )}
           renderChatPanel={() => <ChatPanel mapId={mapId} />}
           renderSettingsPanel={() => <SettingsPanel mapId={mapId} isOwner={canEdit} />}
+          isPracticeActive={isPracticeActive}
+          renderPracticePanel={() => <PracticeModePanel mapId={mapId} selectedNode={selectedNode} />}
         />
       </div>
     </ReactFlowProvider>

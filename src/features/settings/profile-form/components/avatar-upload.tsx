@@ -70,7 +70,7 @@ export const AvatarUpload = ({
     <>
       <div className='flex items-center gap-4'>
         <Avatar className='h-20 w-20'>
-          <AvatarImage src={currentUrl} alt='Avatar' />
+          <AvatarImage src={currentUrl} alt={t('settings.profile.avatar.alt', 'Avatar')} />
           <AvatarFallback className='text-lg'>{fallback || 'U'}</AvatarFallback>
         </Avatar>
         <div className='space-y-2'>

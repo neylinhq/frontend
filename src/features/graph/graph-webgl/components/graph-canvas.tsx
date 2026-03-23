@@ -67,6 +67,7 @@ interface WasmGraphEngine {
   set_selected(node_id: string | null): void
   set_selected_nodes(node_ids: string): void
   set_focused(node_id: string | null): void
+  set_active_node(node_id: string | null): void
   set_dimmed(node_ids: string): void
   hit_test(screen_x: number, screen_y: number): string | undefined
   hit_test_edge_badge(screen_x: number, screen_y: number): string | undefined
@@ -821,7 +822,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
 
   // Mouse handlers
   const handleMouseDown = useCallback(
-    (e: React.MouseEvent) => {
+    (e: React.PointerEvent) => {
       if (e.button !== 0) {
         return
       }
@@ -876,10 +877,17 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
           y: world.y - baseY
         }
 
+        // Bring node to front (highest z-index) — like clicking a window
+        engine.set_active_node(nodeId)
+
+        // Capture pointer so drag continues even outside canvas bounds
+        canvasRef.current?.setPointerCapture(e.pointerId)
+
         onNodeDragStart?.(nodeId, baseX, baseY)
       } else {
         draggingNodeRef.current = null
         isPanningRef.current = true
+        canvasRef.current?.setPointerCapture(e.pointerId)
         if (!isMultiSelect) {
           updateSelection([])
           onNodeClick?.(null)
@@ -897,7 +905,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
   )
 
   const handleMouseMove = useCallback(
-    (e: React.MouseEvent) => {
+    (e: React.PointerEvent) => {
       const engine = engineRef.current
       if (!engine) {
         return
@@ -972,7 +980,10 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
   )
 
   const handleMouseUp = useCallback(
-    (e: React.MouseEvent) => {
+    (e: React.PointerEvent) => {
+      // Release pointer capture (acquired on mousedown for drag/pan)
+      canvasRef.current?.releasePointerCapture(e.pointerId)
+
       const engine = engineRef.current
       if (!engine) {
         return
@@ -1097,10 +1108,9 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
         ref={canvasRef}
         className='absolute inset-0 cursor-grab active:cursor-grabbing'
         style={{ touchAction: 'none' }}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
+        onPointerDown={handleMouseDown}
+        onPointerMove={handleMouseMove}
+        onPointerUp={handleMouseUp}
         onWheel={handleWheel}
         onDoubleClick={handleDoubleClick}
       />

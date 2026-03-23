@@ -1,38 +1,12 @@
 import { XCloseIcon } from '@untitledui/icons-react/outline'
-import { memo, useCallback, useEffect, useRef } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import type { Edge, Node } from '@/entities/map'
+import { OverflowNav, type OverflowNavItem } from '@/shared/components/overflow-nav'
 import { ResizableSidebar } from '@/shared/components/resizable-sidebar'
-import { cn } from '@/shared/lib/cn'
 
 import { useMapSidebarStore } from '../model'
-
-/* ─── Tab button ─── */
-function TabButton({
-  active,
-  onClick,
-  children
-}: {
-  active: boolean
-  onClick: () => void
-  children: React.ReactNode
-}) {
-  return (
-    <button
-      type='button'
-      onClick={onClick}
-      className={cn(
-        'px-1.5 py-0.5 text-xs font-medium transition-colors',
-        active
-          ? 'text-foreground'
-          : 'text-muted-foreground hover:text-foreground'
-      )}
-    >
-      {children}
-    </button>
-  )
-}
 
 interface MapSidebarProps {
   mapId: string
@@ -52,10 +26,14 @@ interface MapSidebarProps {
   renderChatPanel?: () => React.ReactNode
   /** Render prop for settings panel content */
   renderSettingsPanel?: () => React.ReactNode
-  /** Render prop for practice panel (shown when practice mode active) */
+  /** Render prop for practice panel */
   renderPracticePanel?: () => React.ReactNode
   /** Whether practice mode is active */
   isPracticeActive?: boolean
+  /** Extra items shown inline before tabs, overflow into popover top (e.g. focus, open editor) */
+  getExtraMenuItems?: (node: Node) => OverflowNavItem[]
+  /** Items always in popover at bottom regardless of space (e.g. copy ID, delete) */
+  getMenuItems?: (node: Node) => OverflowNavItem[]
   /** Callback when node is closed */
   onCloseNode?: () => void
   className?: string
@@ -71,6 +49,8 @@ export const MapSidebar = memo(function MapSidebar({
   renderSettingsPanel,
   renderPracticePanel,
   isPracticeActive = false,
+  getExtraMenuItems,
+  getMenuItems,
   onCloseNode,
   className
 }: MapSidebarProps) {
@@ -102,6 +82,32 @@ export const MapSidebar = memo(function MapSidebar({
     }
   }, [close, activeTab, onCloseNode])
 
+  // Build nav items
+  const navItems = useMemo(() => {
+    const items: OverflowNavItem[] = []
+    if (selectedNode) {
+      items.push({ id: 'node', label: t('mapSidebar.tabs.node'), active: activeTab === 'node', onClick: () => setTab('node') })
+    }
+    if (canEdit) {
+      items.push({ id: 'chat', label: t('mapSidebar.tabs.chat'), active: activeTab === 'chat', onClick: () => setTab('chat') })
+    }
+    items.push({ id: 'practice', label: t('practice.mode.title'), active: activeTab === 'practice', onClick: () => setTab('practice') })
+    items.push({ id: 'settings', label: t('mapSidebar.tabs.settings'), active: activeTab === 'settings', onClick: () => setTab('settings') })
+    return items
+  }, [selectedNode, canEdit, activeTab, setTab, t])
+
+  const extraItems = useMemo(() => {
+    if (!selectedNode || !getExtraMenuItems) return undefined
+    return getExtraMenuItems(selectedNode)
+  }, [selectedNode, getExtraMenuItems])
+
+  const menuItems = useMemo(() => {
+    if (!selectedNode || !getMenuItems) { return undefined }
+    return getMenuItems(selectedNode)
+  }, [selectedNode, getMenuItems])
+
+  const { nav, trigger } = OverflowNav({ items: navItems, extraItems, menuItems })
+
   if (!isOpen) {
     return null
   }
@@ -115,36 +121,22 @@ export const MapSidebar = memo(function MapSidebar({
       className={className}
     >
       <div className='flex flex-1 flex-col min-h-0'>
-        {/* Nav bar — pill tabs + close */}
-        <div className='flex items-center border-b border-border/60 px-2 py-1.5 shrink-0'>
-          <nav className='flex items-center gap-0.5 flex-1 min-w-0'>
-            {selectedNode && (
-              <TabButton active={activeTab === 'node'} onClick={() => setTab('node')}>
-                {t('mapSidebar.tabs.node')}
-              </TabButton>
-            )}
-            {canEdit && (
-              <TabButton active={activeTab === 'chat'} onClick={() => setTab('chat')}>
-                {t('mapSidebar.tabs.chat')}
-              </TabButton>
-            )}
-            <TabButton active={activeTab === 'practice'} onClick={() => setTab('practice')}>
-              {t('practice.mode.title')}
-            </TabButton>
-            <TabButton active={activeTab === 'settings'} onClick={() => setTab('settings')}>
-              {t('mapSidebar.tabs.settings')}
-            </TabButton>
-          </nav>
-          <button
-            type='button'
-            onClick={handleClose}
-            className='relative h-7 w-7 flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors before:absolute before:-inset-1 before:content-[""]'
-          >
-            <XCloseIcon className='h-3.5 w-3.5' />
-          </button>
+        {/* Nav bar — inline tabs ... | [⋯] [✕] */}
+        <div className='flex items-center border-b border-border/60 px-2 py-1 shrink-0'>
+          {nav}
+          <div className='flex items-center shrink-0'>
+            {trigger}
+            <button
+              type='button'
+              onClick={handleClose}
+              className='h-7 w-7 flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors'
+            >
+              <XCloseIcon className='h-3.5 w-3.5' />
+            </button>
+          </div>
         </div>
 
-        {/* Content area — renders based on active tab */}
+        {/* Content area */}
         <div className='flex-1 min-h-0 overflow-hidden'>
           {activeTab === 'node' && (
             <div className='h-full overflow-y-auto'>

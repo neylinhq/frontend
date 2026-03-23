@@ -1,16 +1,10 @@
 import {
   ChevronDownIcon,
-  Copy06Icon,
-  DotsHorizontalIcon,
-  Maximize01Icon,
-  Target01Icon,
   Trash01Icon
 } from '@untitledui/icons-react/outline'
 import { memo, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router'
 
-import { useFocusMode } from '@/features/graph/graph-core'
 import { NodeMetadataForm, type NodeMetadataFormValues } from '@/features/node-metadata-form'
 import type { Edge, Node } from '@/entities/map'
 import { useDeleteNode, useUpdateNode } from '@/entities/map'
@@ -25,18 +19,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle
 } from '@/shared/components/alert-dialog'
+import { Button } from '@/shared/components/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/card'
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger
 } from '@/shared/components/collapsible'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/shared/components/dropdown-menu'
 import { Field } from '@/shared/components/field'
 import { Input } from '@/shared/components/input'
 import { Label } from '@/shared/components/label'
@@ -76,7 +65,6 @@ export const NodePanel = memo(function NodePanel({
   const { t } = useTranslation()
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [connectionsOpen, setConnectionsOpen] = useState(true)
-  const { focusedNodeId, focusNode, clearFocus } = useFocusMode()
   const [localLabel, setLocalLabel] = useState(node.label)
 
   // Sync local label when node label changes externally
@@ -90,8 +78,6 @@ export const NodePanel = memo(function NodePanel({
   // User progress for this node (includes confidence)
   const { data: nodeProgress } = useNodeProgress(node.mapId, node.id)
   const updateProgressMutation = useUpdateNodeProgress(node.mapId, node.id)
-
-  const isFocused = focusedNodeId === node.id
 
   // Debounced label save
   const debouncedLabelSave = useDebouncedCallback((value: string) => {
@@ -156,71 +142,9 @@ export const NodePanel = memo(function NodePanel({
     }
   }, [node.id, deleteNodeMutation, onClose, t])
 
-  // Copy node ID
-  const handleCopyId = useCallback(() => {
-    navigator.clipboard.writeText(node.id)
-    toast.success(t('common.copied', 'Copied'))
-  }, [node.id, t])
-
   return (
     <>
       <div className='flex flex-col h-full'>
-        {/* Action bar — [Focus, Expand] ···spacer··· [⋯] */}
-        <div className='flex items-center gap-1 border-b border-border/60 px-2 py-1 shrink-0'>
-          {/* Primary actions — left */}
-          <button
-            type='button'
-            onClick={() => (isFocused ? clearFocus() : focusNode(node.id))}
-            title={
-              isFocused ? t('graph.nodeControls.clearFocus') : t('graph.nodeControls.focusMode')
-            }
-            className={cn(
-              'h-8 w-8 rounded-md inline-flex items-center justify-center transition-colors text-muted-foreground hover:bg-muted/80 hover:text-foreground',
-              isFocused && 'bg-muted text-foreground'
-            )}
-          >
-            <Target01Icon className='h-4 w-4' />
-          </button>
-          <Link
-            to={`/dashboard/maps/${node.mapId}/node/${node.id}`}
-            title={t('nodeDrawer.openFullEditor')}
-            className='h-8 w-8 rounded-md inline-flex items-center justify-center transition-colors text-muted-foreground hover:bg-muted/80 hover:text-foreground'
-          >
-            <Maximize01Icon className='h-4 w-4' />
-          </Link>
-
-          {/* Spacer */}
-          <div className='flex-1' />
-
-          {/* Overflow menu — right */}
-          {!isReadOnly && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button
-                  type='button'
-                  className='h-8 w-8 rounded-md inline-flex items-center justify-center transition-colors text-muted-foreground hover:bg-muted/80 hover:text-foreground'
-                >
-                  <DotsHorizontalIcon className='h-4 w-4' />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align='end' className='w-48'>
-                <DropdownMenuItem onClick={handleCopyId}>
-                  <Copy06Icon className='mr-2 h-4 w-4' />
-                  {t('nodeEdit.copyId', 'Copy node ID')}
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={() => setDeleteDialogOpen(true)}
-                  className='text-destructive focus:text-destructive'
-                >
-                  <Trash01Icon className='mr-2 h-4 w-4' />
-                  {t('nodeEdit.deleteNode', 'Delete node')}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
-        </div>
-
         {/* Single scrollable content — properties + connections */}
         <div className='flex-1 overflow-y-auto'>
           {/* Node title — editable field */}

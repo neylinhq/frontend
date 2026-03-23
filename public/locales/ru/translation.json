@@ -1298,6 +1298,7 @@
     },
     "dangerZone": "Опасная зона",
     "deleteWarning": "Удаление узла также удалит все его связи.",
+    "copyId": "Копировать ID узла",
     "deleteNode": "Удалить узел",
     "deleteConfirmTitle": "Удалить узел?",
     "deleteConfirmDescription": "«{{label}}» и {{count}} связей будут удалены навсегда.",

@@ -17,11 +17,12 @@ import {
 
 import { useTranslation } from 'react-i18next'
 
-import type { Edge, Node } from '@/entities/map'
+import { useTheme } from '@/shared/core/theme'
 import { cn } from '@/shared/lib/cn'
+import type { Edge, Node } from '@/entities/map'
 
 import { generateSdfIconAtlas } from '../lib/sdf-icon-atlas'
-import { useTheme } from '@/shared/core/theme'
+import { ICON_PATHS } from '../lib/svg-icon-atlas'
 import { themeToJson } from '../lib/theme-bridge'
 import { layoutOptionsToWasm, transformToWasm } from '../lib/transform'
 import { initWasmModule } from '../lib/wasm-loader'
@@ -113,6 +114,12 @@ interface WasmGraphEngine {
     height: number,
     icons_json: string
   ): void
+  /** Load Slug font from raw TTF bytes. Call set_text_renderer_mode("slug") after. */
+  load_slug_font_ttf(ttf_data: Uint8Array): void
+  /** Add SVG icons to the Slug atlas. Must be called after load_slug_font_ttf. */
+  add_slug_icons(icons_json: string): void
+  /** Switch active text renderer: "msdf" | "sdf" | "bitmap" | "slug" */
+  set_text_renderer_mode(mode: string): void
 }
 
 /** Position data returned after layout completes */
@@ -183,6 +190,8 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
   const viewportRef = useRef<ViewportState | null>(null)
   const [viewportState, setViewportState] = useState<ViewportState | null>(null)
   const positionsRef = useRef<Map<string, { x: number; y: number }>>(new Map())
+  const renderParamsRef = useRef(renderParams)
+  useEffect(() => { renderParamsRef.current = renderParams }, [renderParams])
 
   const [isReady, setIsReady] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -217,8 +226,8 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
   const theta = layoutOptions?.theta ?? DEFAULT_LAYOUT_OPTIONS.theta
   const ignoreExistingPositions = layoutOptions?.ignoreExistingPositions ?? DEFAULT_LAYOUT_OPTIONS.ignoreExistingPositions
 
-  // resolvedLayoutOptions drives layout re-computation.
-  // focusedNodeId is NOT in the deps — focus changes only affect dimming, not layout.
+  // Full options object — always up to date, used when actually calling run_layout().
+  // NOT used directly as effect deps to avoid spurious re-layouts.
   const resolvedLayoutOptions = useMemo(
     () => ({
       viewMode,
@@ -230,9 +239,20 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
       ignoreExistingPositions,
       focusedNodeId: focusedNodeId ?? undefined
     }),
-    // biome-ignore lint/correctness/useExhaustiveDependencies: focusedNodeId excluded intentionally
-    [viewMode, spacingPercent, directionStrength, iterations, coolingFactor, theta, ignoreExistingPositions]
+    [viewMode, spacingPercent, directionStrength, iterations, coolingFactor, theta, ignoreExistingPositions, focusedNodeId]
   )
+
+  // Ref so the layout effect always reads the latest options without needing
+  // them in its deps (avoids stale-closure issues).
+  const layoutOptionsRef = useRef(resolvedLayoutOptions)
+  useEffect(() => { layoutOptionsRef.current = resolvedLayoutOptions }, [resolvedLayoutOptions])
+
+  // The 3 things that should trigger a fresh layout:
+  //   1. spacingPercent changed
+  //   2. directionStrength changed
+  //   3. switched to/from path mode (different algorithm)
+  // NOT: overview↔focus toggle, focusedNodeId — those are visual filters only.
+  const isPathMode = viewMode === 'path'
 
   const getViewportFromEngine = useCallback((useCanvasRect: boolean): ViewportState | null => {
     const engine = engineRef.current
@@ -470,7 +490,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
 
         // Set initial render params — always apply defaults, then override if provided
         try {
-          engine.set_render_params(JSON.stringify(renderParams ?? DEFAULT_RENDER_PARAMS))
+          engine.set_render_params(JSON.stringify(renderParamsRef.current ?? DEFAULT_RENDER_PARAMS))
         } catch {
           // ignore
         }
@@ -501,6 +521,27 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
           }
         } catch (err) {
           console.error('[GraphCanvas] Font atlas load failed:', err)
+        }
+
+        // Slug font: Söhne Regular converted to TTF via infra/tools/woff2-to-ttf.
+        // Falls back to MSDF silently if the TTF is unavailable.
+        try {
+          const ttfResponse = await fetch('/assets/soehne-regular.ttf')
+          if (ttfResponse.ok) {
+            const ttfBuffer = await ttfResponse.arrayBuffer()
+            engine.load_slug_font_ttf(new Uint8Array(ttfBuffer))
+            // Add SVG icons to the atlas (stroke-based, 24×24 viewBox, 1.75px stroke)
+            const iconsJson = JSON.stringify(
+              Object.entries(ICON_PATHS).map(([name, d]) => ({
+                name, d, viewbox: 24, stroke_width: 1.75,
+              }))
+            )
+            engine.add_slug_icons(iconsJson)
+            engine.set_text_renderer_mode('slug')
+            console.log('[Slug] active — font + icons loaded')
+          }
+        } catch (err) {
+          console.error('[Slug] load failed — falling back to MSDF:', err)
         }
 
         try {
@@ -574,7 +615,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
     // Delay one frame to ensure CSS vars have updated after class/attribute toggle
     const timer = requestAnimationFrame(() => {
       const engine = engineRef.current
-      if (!engine) return
+      if (!engine) { return }
       engine.set_theme(themeToJson())
     })
     return () => cancelAnimationFrame(timer)
@@ -627,7 +668,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
       if (rafId !== null) { cancelAnimationFrame(rafId) }
       observer.disconnect()
     }
-  }, [isReady])
+  }, [isReady, notifyViewportChange])
 
   // Load graph data (only when nodes/edges change)
   const graphLoadedRef = useRef(false)
@@ -696,12 +737,19 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
     }
 
     // When layout options change, start fresh to avoid ratcheting effect
-    engine.run_layout(layoutOptionsToWasm({ ...resolvedLayoutOptions, ignoreExistingPositions: true }))
+    // Override only the 3 trigger fields from deps; everything else from ref.
+    engine.run_layout(layoutOptionsToWasm({
+      ...layoutOptionsRef.current,
+      spacingPercent,
+      directionStrength,
+      viewMode: isPathMode ? 'path' : 'overview',
+      ignoreExistingPositions: true,
+    }))
     engine.fit_view(0.1)
 
     // Notify about new positions
     notifyLayoutComplete()
-  }, [isReady, notifyLayoutComplete, resolvedLayoutOptions, autoLayout])
+  }, [isReady, notifyLayoutComplete, spacingPercent, directionStrength, isPathMode, autoLayout])
 
   // Sync selection
   useEffect(() => {

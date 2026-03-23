@@ -27,9 +27,9 @@ const ICON_PATHS: Record<string, string> = {
 }
 
 /** Cell size in pixels for each icon in the SDF atlas */
-const RENDER_SIZE = 512 // High-res render before distance transform (4× supersampling)
-const SDF_SIZE = 128 // Final SDF cell size in atlas
-const SDF_RADIUS = 16 // Distance field radius in pixels
+const RENDER_SIZE = 1024 // High-res render before distance transform (4× supersampling)
+const SDF_SIZE = 256  // Final SDF cell size — 2× higher res than before, crisp up to 8× zoom
+const SDF_RADIUS = 20 // Distance field radius in SDF pixels (larger atlas = can afford more)
 const STROKE_WIDTH = 1.75 // SVG stroke width (viewBox units)
 
 export interface SdfIconAtlasResult {

@@ -1,6 +1,8 @@
 import { useCallback, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ReactFlowProvider } from '@xyflow/react'
 
+import { useFocusMode } from '@/features/graph/graph-core'
 import type { ViewportState } from '@/features/graph/graph-webgl'
 import { ReadOnlyBanner, useMapPermissions } from '@/features/map-permissions'
 import { NodeConnectionsPanel } from '@/features/node-connections-panel'
@@ -11,6 +13,9 @@ import {
   usePracticeModeActive
 } from '@/features/practice-mode'
 import type { FullMap, Node } from '@/entities/map'
+import type { OverflowNavItem } from '@/shared/components/overflow-nav'
+import { useDeleteNode } from '@/entities/map'
+import { toast } from '@/shared/components/toast'
 import { Fab } from '@/shared/components/fab'
 import { useKeyboardShortcut } from '@/shared/hooks/use-keyboard-shortcut'
 import { GraphView } from '@/widgets/graph-view'
@@ -29,10 +34,13 @@ interface MapPageProps {
 }
 
 export const MapPage = ({ map, mapId }: MapPageProps) => {
+  const { t } = useTranslation()
   const { canEdit, isReadOnly } = useMapPermissions(map)
   const isPracticeActive = usePracticeModeActive()
+  const { focusedNodeId, focusNode, clearFocus } = useFocusMode()
   const { openQuickAdd } = useNodeCreationStore()
   const { isOpen, activeTab, open, close, setTab } = useMapSidebarStore()
+  const deleteNodeMutation = useDeleteNode(mapId)
   const [selectedNode, setSelectedNode] = useState<Node | null>(null)
   const [viewport, setViewport] = useState<ViewportState | null>(null)
   const [useWebGL, setUseWebGL] = useState(true)
@@ -138,6 +146,48 @@ export const MapPage = ({ map, mapId }: MapPageProps) => {
           canEdit={canEdit}
           isOwner={canEdit}
           onCloseNode={handleCloseNode}
+          getExtraMenuItems={node => [
+            {
+              id: 'focus',
+              label: focusedNodeId === node.id ? t('graph.toolbar.clearFocus') : t('graph.toolbar.focusMode'),
+              onClick: () => focusedNodeId === node.id ? clearFocus() : focusNode(node.id)
+            },
+            {
+              id: 'open',
+              label: t('nodeDrawer.openFullEditor', 'Open'),
+              onClick: () => window.location.assign(`/dashboard/maps/${mapId}/node/${node.id}`)
+            }
+          ]}
+          getMenuItems={node => {
+            const items: OverflowNavItem[] = [
+              {
+                id: 'copy-id',
+                label: t('nodeEdit.copyId'),
+                onClick: () => {
+                  navigator.clipboard.writeText(node.id)
+                  toast.success(t('common.copied'))
+                }
+              }
+            ]
+            if (canEdit) {
+              items.push({
+                id: 'delete',
+                label: t('nodeEdit.deleteNode'),
+                destructive: true,
+                onClick: () => {
+                  if (confirm(t('nodeEdit.deleteConfirmTitle'))) {
+                    deleteNodeMutation.mutate(node.id, {
+                      onSuccess: () => {
+                        toast.success(t('nodeEdit.nodeDeleted'))
+                        handleCloseNode()
+                      }
+                    })
+                  }
+                }
+              })
+            }
+            return items
+          }}
           renderNodePanel={node => (
             <NodePanel
               node={node}

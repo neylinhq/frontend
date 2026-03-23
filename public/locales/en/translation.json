@@ -1298,6 +1298,7 @@
     },
     "dangerZone": "Danger zone",
     "deleteWarning": "Deleting this node will also remove all its connections.",
+    "copyId": "Copy node ID",
     "deleteNode": "Delete node",
     "deleteConfirmTitle": "Delete node?",
     "deleteConfirmDescription": "\"{{label}}\" and {{count}} connections will be permanently deleted.",

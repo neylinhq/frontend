@@ -134,13 +134,16 @@ export function ExerciseView({ mapId, nodeLabels, className }: ExerciseViewProps
   const total = session.nodeQueue.length
   const current = session.currentIndex + 1
 
-  // Loading state
+  // Loading state (may take a few seconds if auto-generating exercises)
   if (isLoading) {
     return (
       <div className={cn('flex flex-col gap-4 p-4', className)}>
         <ProgressHeader current={current} total={total} />
-        <div className="flex items-center justify-center py-12">
+        <div className="flex flex-col items-center justify-center gap-2 py-12">
           <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          <p className="text-xs text-muted-foreground animate-pulse">
+            {t('practice.mode.preparingExercise', 'Preparing exercise...')}
+          </p>
         </div>
       </div>
     )
@@ -178,12 +181,6 @@ export function ExerciseView({ mapId, nodeLabels, className }: ExerciseViewProps
         <span className="rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
           {t(`practice.types.${exercise.type}`, exercise.type)}
         </span>
-        {exercise.difficulty > 0 && (
-          <span className="text-xs text-muted-foreground">
-            {'●'.repeat(Math.min(exercise.difficulty, 5))}
-            {'○'.repeat(Math.max(0, 5 - exercise.difficulty))}
-          </span>
-        )}
       </div>
 
       {/* Exercise content or feedback */}

@@ -209,7 +209,7 @@ export const MapPage = ({ map, mapId }: MapPageProps) => {
           renderChatPanel={() => <ChatPanel mapId={mapId} />}
           renderSettingsPanel={() => <SettingsPanel mapId={mapId} isOwner={canEdit} />}
           isPracticeActive={isPracticeActive}
-          renderPracticePanel={() => <PracticeModePanel mapId={mapId} selectedNode={selectedNode} />}
+          renderPracticePanel={() => <PracticeModePanel mapId={mapId} selectedNode={selectedNode} nodes={map.nodes} edges={map.edges} />}
         />
       </div>
     </ReactFlowProvider>

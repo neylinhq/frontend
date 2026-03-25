@@ -551,7 +551,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
               }))
             )
             engine.add_slug_icons(iconsJson)
-            engine.set_text_renderer_mode('slug')
+            // engine.set_text_renderer_mode('slug') // using MSDF for now
             console.log('[Slug] active — font + icons loaded')
           }
         } catch (err) {

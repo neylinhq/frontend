@@ -55,7 +55,7 @@ export const GraphView = memo(({
   const isPracticeModeActive = usePracticeModeActive()
   const masteryMap = useMasteryMap()
   const { selectNode: selectPracticeNode } = usePracticeModeActions()
-  useMasteryOverlay(mapId)
+  useMasteryOverlay(mapId, initialData?.nodes)
 
   // In practice mode, clicking a node opens its detail in the practice panel
   const handleNodeSelect = (node: Node | null) => {

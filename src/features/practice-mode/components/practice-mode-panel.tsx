@@ -71,8 +71,13 @@ export const PracticeModePanel = ({
         />
       )
 
-    case 'exercise':
-      return <ExerciseView mapId={mapId} className={className} />
+    case 'exercise': {
+      const nodeLabels = new Map<string, string>()
+      for (const n of nodes) {
+        nodeLabels.set(n.id, n.label ?? n.id.slice(0, 8))
+      }
+      return <ExerciseView mapId={mapId} nodeLabels={nodeLabels} className={className} />
+    }
 
     case 'session_end':
       return <PracticeSessionEnd className={className} />

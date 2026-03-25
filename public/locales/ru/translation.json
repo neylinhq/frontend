@@ -1603,7 +1603,26 @@
       "continue": "Дальше",
       "expandKnowledge": "Расширить знания?",
       "expandDescription": "В этом уроке использовались понятия из: {{domains}}. Добавить основы?",
-      "addFoundations": "+ Добавить основы"
+      "addFoundations": "+ Добавить основы",
+      "askAboutThis": "Спросить",
+      "aiHelp": "Помощь AI",
+      "askQuestion": "Задайте вопрос...",
+      "learn": "Изучить",
+      "starting": "Запуск...",
+      "helpUnavailable": "Не удалось получить помощь. Попробуйте ещё раз."
+    },
+    "scope": {
+      "entireMap": "Вся карта"
+    },
+    "tutor": {
+      "startHint": "Тьютор начнёт диалог. Напишите что-нибудь, чтобы начать.",
+      "placeholder": "Ваш ответ...",
+      "errorMessage": "Что-то пошло не так. Попробуйте снова."
+    },
+    "session": {
+      "tutorSummary": "{{nodes}} концептов пройдено",
+      "expandTitle": "Расширить карту?",
+      "loadingSuggestions": "Ищу идеи для расширения..."
     },
     "types": {
       "explain_to_ai": "Объяснить AI",

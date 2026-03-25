@@ -1601,7 +1601,26 @@
       "continue": "Continue",
       "expandKnowledge": "Expand your knowledge?",
       "expandDescription": "This lesson used concepts from {{domains}}. Adding these foundations could help.",
-      "addFoundations": "+ Add foundations"
+      "addFoundations": "+ Add foundations",
+      "askAboutThis": "Ask about this",
+      "aiHelp": "AI Help",
+      "askQuestion": "Ask a question...",
+      "learn": "Learn",
+      "starting": "Starting...",
+      "helpUnavailable": "Could not get help right now. Try again."
+    },
+    "scope": {
+      "entireMap": "Entire map"
+    },
+    "tutor": {
+      "startHint": "The tutor will start the conversation. Type anything to begin.",
+      "placeholder": "Your answer...",
+      "errorMessage": "Something went wrong. Try again."
+    },
+    "session": {
+      "tutorSummary": "{{nodes}} concepts covered",
+      "expandTitle": "Expand your map?",
+      "loadingSuggestions": "Looking for expansion ideas..."
     },
     "types": {
       "explain_to_ai": "Explain to AI",

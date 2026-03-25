@@ -77,7 +77,9 @@ export function PracticeOverview({ mapId, className }: PracticeOverviewProps) {
         }
         case 'unlearned': {
           notStarted++
-          if (data.prereqsStable) {
+          // Node is on ZPD frontier if prereqs are stable OR if it has no prereqs at all
+          // (prereqsStable may be false when backend hasn't computed it yet for fresh nodes)
+          if (data.prereqsStable || data.reviewCount === 0) {
             zpdCount++
           }
           break

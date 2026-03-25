@@ -41,7 +41,6 @@ export interface PracticeSession {
 }
 
 export interface PracticeModeState {
-  isActive: boolean
   view: PracticeView
   selectedNodeId: string | null
   masteryMap: Map<string, NodeMasteryData>
@@ -67,18 +66,16 @@ export interface PracticeModeActions {
 
 export const usePracticeModeStore = create<PracticeModeState & PracticeModeActions>()(
   (set, get) => ({
-    isActive: false,
     view: 'overview',
     selectedNodeId: null,
     masteryMap: new Map(),
     session: null,
     isLoadingMastery: false,
 
-    enter: () => set({ isActive: true, view: 'overview' }),
+    enter: () => set({ view: 'overview' }),
 
     exit: () =>
       set({
-        isActive: false,
         view: 'overview',
         session: null,
         selectedNodeId: null,
@@ -181,8 +178,6 @@ function isNodeDue(p: UserNodeProgress): boolean {
 }
 
 // --- Selector hooks ---
-
-export const usePracticeModeActive = () => usePracticeModeStore((s) => s.isActive)
 
 export const usePracticeView = () => usePracticeModeStore((s) => s.view)
 

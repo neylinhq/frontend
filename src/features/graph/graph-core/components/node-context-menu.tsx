@@ -7,8 +7,8 @@ import {
   ZoomInIcon
 } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
-import { useShallow } from 'zustand/react/shallow'
 
+import { useMapActions, useMapFocus } from '@/entities/map-ui'
 import {
   ContextMenu,
   ContextMenuContent,
@@ -20,10 +20,9 @@ import {
   ContextMenuTrigger
 } from '@/shared/components/context-menu'
 
-import { useGraphViewStore } from '../model/graph.store'
-
 interface NodeContextMenuProps {
   children: React.ReactNode
+  mapId: string
   nodeId: string
   nodeLabel: string
   onEdit?: () => void
@@ -33,6 +32,7 @@ interface NodeContextMenuProps {
 
 export const NodeContextMenu = ({
   children,
+  mapId,
   nodeId,
   nodeLabel,
   onEdit,
@@ -40,14 +40,8 @@ export const NodeContextMenu = ({
   onZoomToNode
 }: NodeContextMenuProps) => {
   const { t } = useTranslation()
-  const { focusNode, focusedNodeId, clearFocus, setFocusDepth } = useGraphViewStore(
-    useShallow(s => ({
-      focusNode: s.focusNode,
-      focusedNodeId: s.focusedNodeId,
-      clearFocus: s.clearFocus,
-      setFocusDepth: s.setFocusDepth
-    }))
-  )
+  const { focusedNodeId } = useMapFocus(mapId)
+  const { focusNode, clearFocus, setFocusDepth } = useMapActions(mapId)
 
   const isFocused = focusedNodeId === nodeId
 

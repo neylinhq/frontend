@@ -29,6 +29,13 @@ import {
   useUpdateNodePosition,
   useUpdateNodePositions
 } from '@/entities/map'
+import {
+  useGlobalUIPrefs,
+  useMapActions,
+  useMapFilters,
+  useMapFocus,
+  useMapViewMode
+} from '@/entities/map-ui'
 import { Card } from '@/shared/components/card'
 import { useDarkMode } from '@/shared/hooks'
 import { cn } from '@/shared/lib/cn'
@@ -43,14 +50,7 @@ import { useGraphKeyboard } from '../model/graph.keyboard.hooks'
 import { easeOutCubic, useAnimatedLayout } from '../model/graph.layout.hooks'
 import { useLayoutHistory } from '../model/graph.layout-history.store'
 import { useNodeSelection } from '../model/graph.selection.hooks'
-import {
-  layoutEvent,
-  useFilters,
-  useFocusMode,
-  useGraphUI,
-  useNodeSpacing,
-  useViewMode
-} from '../model/graph.store'
+import { layoutEvent } from '../model/graph.store'
 import { useDebouncedZoom } from '../model/graph.zoom.hooks'
 import { EdgeEditPopover } from './edge-edit-popover'
 import { EdgeTypeSelector } from './edge-type-selector'
@@ -180,8 +180,9 @@ const GraphVisualizationContent = ({
   )
 
   // Store hooks for view settings
-  const { viewMode } = useViewMode()
-  const { focusedNodeId, focusDepth, focusNode } = useFocusMode()
+  const viewMode = useMapViewMode(mapId)
+  const { focusedNodeId, focusDepth } = useMapFocus(mapId)
+  const { focusNode } = useMapActions(mapId)
 
   // Pan to node and zoom in (for connections panel eye icon)
   // Does NOT enable focus mode - just centers on the node
@@ -211,9 +212,9 @@ const GraphVisualizationContent = ({
     [deleteEdgeMutation]
   )
 
-  const { visibleNodeTypes, visibleEdgeTypes, connectionRange } = useFilters()
-  const { showMinimap } = useGraphUI()
-  const { nodeSpacing, directionStrength, animationDuration } = useNodeSpacing()
+  const { visibleNodeTypes, visibleEdgeTypes, connectionRange } = useMapFilters(mapId)
+  const prefs = useGlobalUIPrefs()
+  const { showMinimap, nodeSpacing, directionStrength, animationDuration } = prefs
   const { animateToPositions } = useAnimatedLayout()
   const { saveSnapshot, undo, redo } = useLayoutHistory()
   const [settingsOpen, setSettingsOpen] = useState(false)
@@ -385,14 +386,6 @@ const GraphVisualizationContent = ({
 
   // Get the appropriate anchor node based on current view mode
   const getAnchorNodeId = useCallback(() => {
-    // TODO: Consider anchoring to focused node in focus mode
-    // Currently disabled because user might explore far from focused node,
-    // and layout changes would jump camera back unexpectedly
-    // const params = layoutParamsRef.current
-    // if (params.viewMode === 'focus' && params.focusedNodeId) {
-    //   return params.focusedNodeId
-    // }
-
     // Always anchor to the node closest to viewport center
     return getClosestNodeToViewportCenter()
   }, [getClosestNodeToViewportCenter])
@@ -796,6 +789,7 @@ const GraphVisualizationContent = ({
 
   // Keyboard shortcuts (must be after handlers are defined)
   useGraphKeyboard({
+    mapId,
     selectedNodeId,
     onFitView: () => fitView({ padding: 0.2, duration: layoutParamsRef.current.animationDuration }),
     onZoomIn: zoomIn,
@@ -971,6 +965,7 @@ const GraphVisualizationContent = ({
 
       {/* Toolbar - view modes, focus controls, filters */}
       <GraphToolbar
+        mapId={mapId}
         nodeCountsByType={nodeCountsByType}
         edgeCountsByType={edgeCountsByType}
         connectionStats={connectionStats}
@@ -984,6 +979,7 @@ const GraphVisualizationContent = ({
       {/* Node drawer - only shown when onNodeSelect is NOT provided (internal mode) */}
       {!onNodeSelect && (
         <NodeDrawer
+          mapId={mapId}
           node={selectedNode}
           onClose={clearSelection}
           isReadOnly={!interactive}

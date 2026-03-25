@@ -1,14 +1,17 @@
 import { LayoutRightIcon } from '@untitledui/icons-react/outline'
-import { memo } from 'react'
+import { memo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { useMapUIStore, useSidebarOpen } from '@/entities/map-ui'
 import { Button } from '@/shared/components/button'
-
-import { useMapSidebarStore } from '../model'
 
 export const SidebarToggleFab = memo(function SidebarToggleFab() {
   const { t } = useTranslation()
-  const { isOpen, toggle } = useMapSidebarStore()
+  const isOpen = useSidebarOpen()
+
+  const toggle = useCallback(() => {
+    useMapUIStore.getState().toggleSidebar()
+  }, [])
 
   return (
     <Button

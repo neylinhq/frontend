@@ -198,7 +198,9 @@ export const NodeChatWrapper = ({ nodeId, mapId }: NodeChatWrapperProps) => {
         isMobile={false}
       />
       <div className='flex-1 overflow-hidden'>
-        <NodeChatPanel nodeId={nodeId} mapId={mapId} sessionId={activeSessionId ?? undefined} />
+        {activeSessionId ? (
+          <NodeChatPanel nodeId={nodeId} mapId={mapId} sessionId={activeSessionId} />
+        ) : null}
       </div>
     </div>
   )

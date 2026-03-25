@@ -2,9 +2,8 @@ import { Dataflow03Icon, RouteIcon, Target01Icon } from '@untitledui/icons-react
 import type { ComponentType, SVGProps } from 'react'
 
 import type { RelationType } from '@/entities/edge'
+import type { ViewMode } from '@/entities/map-ui'
 import type { NodeType } from '@/entities/node'
-
-import type { ViewMode } from './graph.store'
 
 // View mode icons and labels
 export const VIEW_MODE_CONFIG: Record<

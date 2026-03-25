@@ -27,6 +27,18 @@ export function PracticeSessionEnd({
   const incorrect = total - correct
   const durationMin = Math.round((Date.now() - session.startedAt) / 60000)
   const freshDueNodeIds = [...masteryMap.values()].filter((d) => d.isDue).map((d) => d.nodeId)
+  const zpdNodeIds = [...masteryMap.values()]
+    .filter((d) => d.mastery === 'unlearned' && d.prereqsStable)
+    .map((d) => d.nodeId)
+  const hasNextSession = freshDueNodeIds.length > 0 || zpdNodeIds.length > 0
+
+  const handleAnotherSession = () => {
+    if (freshDueNodeIds.length > 0) {
+      startSession('review', freshDueNodeIds)
+    } else if (zpdNodeIds.length > 0) {
+      startSession('learn', zpdNodeIds)
+    }
+  }
 
   return (
     <div className={cn('flex flex-col gap-4 p-4', className)}>
@@ -60,10 +72,12 @@ export function PracticeSessionEnd({
 
       {/* Actions */}
       <div className="flex flex-col gap-2 mt-auto">
-        <Button onClick={() => startSession('review', freshDueNodeIds)}>
-          {t('practice.mode.anotherSession')}
-          <ArrowRightIcon className="ml-1 h-3.5 w-3.5" />
-        </Button>
+        {hasNextSession && (
+          <Button onClick={handleAnotherSession}>
+            {t('practice.mode.anotherSession')}
+            <ArrowRightIcon className="ml-1 h-3.5 w-3.5" />
+          </Button>
+        )}
         <Button variant="outline" onClick={endSession}>
           {t('practice.mode.done')}
         </Button>

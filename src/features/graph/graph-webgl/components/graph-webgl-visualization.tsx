@@ -19,11 +19,6 @@ import {
   useFilteredGraphData,
   useGraphKeyboard,
   useNodeSelection,
-  useFilters,
-  useFocusMode,
-  useGraphUI,
-  useNodeSpacing,
-  useViewMode,
   useEdgeManagementStore,
   EdgeEditPopover,
   EdgeTypeSelector
@@ -37,6 +32,13 @@ import {
 import { MiniMapWebGL } from '@/features/graph/graph-webgl/components/minimap-webgl'
 import type { Edge, FullMap, Node } from '@/entities/map'
 import { useFullMap, useUpdateNodePosition } from '@/entities/map'
+import {
+  useGlobalUIPrefs,
+  useMapActions,
+  useMapFilters,
+  useMapFocus,
+  useMapViewMode
+} from '@/entities/map-ui'
 import { Card } from '@/shared/components/card'
 import { useDarkMode } from '@/shared/hooks'
 import { cn } from '@/shared/lib/cn'
@@ -113,11 +115,12 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
   const { controls, toggleFullscreen } = useGraphControls()
 
   // Store hooks for view settings
-  const { viewMode } = useViewMode()
-  const { focusedNodeId, focusDepth, focusNode } = useFocusMode()
-  const { visibleNodeTypes, visibleEdgeTypes, connectionRange } = useFilters()
-  const { showMinimap } = useGraphUI()
-  const { nodeSpacing, directionStrength } = useNodeSpacing()
+  const viewMode = useMapViewMode(mapId)
+  const { focusedNodeId, focusDepth } = useMapFocus(mapId)
+  const { focusNode } = useMapActions(mapId)
+  const { visibleNodeTypes, visibleEdgeTypes, connectionRange } = useMapFilters(mapId)
+  const prefs = useGlobalUIPrefs()
+  const { showMinimap, nodeSpacing, directionStrength } = prefs
   const { startEdgeEditing, startEdgeCreation } = useEdgeManagementStore()
 
   // Handle edge badge click — open edge edit popover
@@ -271,6 +274,7 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
   }, [])
 
   useGraphKeyboard({
+    mapId,
     selectedNodeId,
     onFitView: handleCenter,
     onZoomIn: handleZoomIn,
@@ -364,6 +368,7 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
 
       {/* View controls panel - top left */}
       <ViewControlsPanel
+        mapId={mapId}
         zoom={Math.round(viewport.zoom * 100)}
         isFullscreen={controls.isFullscreen}
         onZoomIn={handleZoomIn}
@@ -379,6 +384,7 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
 
       {/* Toolbar - view modes, focus controls, filters */}
       <GraphToolbar
+        mapId={mapId}
         nodeCountsByType={nodeCountsByType}
         edgeCountsByType={edgeCountsByType}
         selectedNodeId={selectedNodeId}
@@ -389,6 +395,7 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
       {/* Node drawer - only shown when onNodeSelect is NOT provided (internal mode) */}
       {!onNodeSelect && (
         <NodeDrawer
+          mapId={mapId}
           node={selectedNode}
           onClose={clearSelection}
           connectionsCount={

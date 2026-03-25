@@ -11,6 +11,7 @@ import { Link } from 'react-router'
 
 import type { Node } from '@/entities/map'
 import { useDeleteNode, useUpdateNode } from '@/entities/map'
+import { useMapActions, useMapFocus } from '@/entities/map-ui'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,10 +30,10 @@ import { toast } from '@/shared/components/toast'
 import { cn } from '@/shared/lib/cn'
 
 import { useDrawerTabs } from '../model/graph.drawer.hooks'
-import { useFocusMode } from '../model/graph.store'
 import { DrawerOverviewTab } from './drawer-overview-tab'
 
 interface NodeDrawerProps {
+  mapId: string
   node: Node | null
   onClose: () => void
   /** Number of connections for delete warning */
@@ -52,6 +53,7 @@ interface NodeDrawerProps {
 
 export const NodeDrawer = memo(
   ({
+    mapId,
     node,
     onClose,
     connectionsCount = 0,
@@ -64,7 +66,8 @@ export const NodeDrawer = memo(
     const [isMobile, setIsMobile] = useState(false)
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
     const { activeTab, switchTab } = useDrawerTabs()
-    const { focusedNodeId, focusNode, clearFocus } = useFocusMode()
+    const { focusedNodeId } = useMapFocus(mapId)
+    const { focusNode, clearFocus } = useMapActions(mapId)
 
     // Keep track of the displayed node in state for smooth transitions
     // This prevents drawer from closing/reopening when switching nodes

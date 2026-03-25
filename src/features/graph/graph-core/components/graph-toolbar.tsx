@@ -8,6 +8,19 @@ import { memo, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import type { RelationType } from '@/entities/edge'
+import {
+  ALL_EDGE_TYPES,
+  ALL_NODE_TYPES,
+  type ConnectionPreset,
+  useMapActions,
+  useMapActiveFiltersCount,
+  useMapConnectionPreset,
+  useMapFilters,
+  useMapFocus,
+  useMapUIStore,
+  useMapViewMode,
+  type ViewMode
+} from '@/entities/map-ui'
 import type { NodeType } from '@/entities/node'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
@@ -25,15 +38,6 @@ import { cn } from '@/shared/lib/cn'
 
 import type { ConnectionStats } from '../model/graph.data.hooks'
 import {
-  ALL_EDGE_TYPES,
-  ALL_NODE_TYPES,
-  type ConnectionPreset,
-  useFilters,
-  useFocusMode,
-  useViewMode,
-  type ViewMode
-} from '../model/graph.store'
-import {
   EDGE_TYPE_LABELS,
   NODE_TYPE_LABELS,
   VIEW_MODE_CONFIG
@@ -42,6 +46,7 @@ import {
 const CONNECTION_PRESET_ORDER: ConnectionPreset[] = ['leaves', 'medium', 'hubs']
 
 interface GraphToolbarProps {
+  mapId: string
   nodeCountsByType?: Record<NodeType, number>
   edgeCountsByType?: Record<RelationType, number>
   connectionStats?: ConnectionStats
@@ -56,6 +61,7 @@ interface GraphToolbarProps {
 
 export const GraphToolbar = memo(
   ({
+    mapId,
     nodeCountsByType,
     edgeCountsByType,
     connectionStats,
@@ -66,22 +72,12 @@ export const GraphToolbar = memo(
     className
   }: GraphToolbarProps) => {
     const { t } = useTranslation()
-    const { viewMode, setViewMode } = useViewMode()
-    const { focusedNodeId, focusDepth, setFocusDepth, clearFocus, focusNode } = useFocusMode()
-    const {
-      visibleNodeTypes,
-      visibleEdgeTypes,
-      connectionRange,
-      toggleNodeType,
-      toggleEdgeType,
-      setConnectionRange,
-      setConnectionPreset,
-      getActiveFiltersCount,
-      getActiveConnectionPreset
-    } = useFilters()
-
-    const activeFiltersCount = getActiveFiltersCount()
-    const activePreset = getActiveConnectionPreset()
+    const viewMode = useMapViewMode(mapId)
+    const { focusedNodeId, focusDepth } = useMapFocus(mapId)
+    const { setViewMode, focusNode, clearFocus, setFocusDepth } = useMapActions(mapId)
+    const { visibleNodeTypes, visibleEdgeTypes, connectionRange } = useMapFilters(mapId)
+    const activeFiltersCount = useMapActiveFiltersCount(mapId)
+    const activePreset = useMapConnectionPreset(mapId)
 
     // Connection filter slider state
     const sliderMax = Math.max(connectionStats?.max || 0, 1)
@@ -93,10 +89,10 @@ export const GraphToolbar = memo(
     useEffect(() => {
       if (!initialized && connectionStats?.max > 0) {
         setLocalRange([0, connectionStats.max])
-        setConnectionRange([0, Infinity])
+        useMapUIStore.getState().setConnectionRange(mapId, [0, Infinity])
         setInitialized(true)
       }
-    }, [initialized, connectionStats?.max, setConnectionRange])
+    }, [initialized, connectionStats?.max, mapId])
 
     // Sync slider with store (for preset buttons)
     useEffect(() => {
@@ -125,8 +121,25 @@ export const GraphToolbar = memo(
         clearTimeout(debounceRef.current)
       }
       debounceRef.current = setTimeout(() => {
-        setConnectionRange([value[0], value[1] >= sliderMax ? Infinity : value[1]])
+        useMapUIStore.getState().setConnectionRange(mapId, [value[0], value[1] >= sliderMax ? Infinity : value[1]])
       }, 150)
+    }
+
+    const handleToggleNodeType = (type: NodeType) => {
+      useMapUIStore.getState().toggleNodeType(mapId, type)
+    }
+
+    const handleToggleEdgeType = (type: RelationType) => {
+      useMapUIStore.getState().toggleEdgeType(mapId, type)
+    }
+
+    const handleSetConnectionPreset = (preset: ConnectionPreset) => {
+      useMapUIStore.getState().setConnectionRange(mapId,
+        preset === 'all' ? [0, Infinity] :
+        preset === 'leaves' ? [0, 2] :
+        preset === 'medium' ? [3, 4] :
+        [5, Infinity]
+      )
     }
 
     return (
@@ -269,7 +282,7 @@ export const GraphToolbar = memo(
                   <DropdownMenuCheckboxItem
                     key={type}
                     checked={visibleNodeTypes.has(type)}
-                    onCheckedChange={() => toggleNodeType(type)}
+                    onCheckedChange={() => handleToggleNodeType(type)}
                     onSelect={e => e.preventDefault()}
                     disabled={count === 0}
                     className='text-xs'
@@ -295,7 +308,7 @@ export const GraphToolbar = memo(
                   <DropdownMenuCheckboxItem
                     key={type}
                     checked={visibleEdgeTypes.has(type)}
-                    onCheckedChange={() => toggleEdgeType(type)}
+                    onCheckedChange={() => handleToggleEdgeType(type)}
                     onSelect={e => e.preventDefault()}
                     disabled={count === 0}
                     className='text-xs'
@@ -325,7 +338,7 @@ export const GraphToolbar = memo(
                     size='sm'
                     variant={activePreset === preset ? 'secondary' : 'ghost'}
                     className='h-7 px-2 text-xs flex-1 rounded-xs'
-                    onClick={() => setConnectionPreset(preset)}
+                    onClick={() => handleSetConnectionPreset(preset)}
                   >
                     {t(`graph.filters.preset.${preset}`)}
                   </Button>
@@ -356,7 +369,7 @@ export const GraphToolbar = memo(
                     size='sm'
                     variant='ghost'
                     className='h-7 px-2.5 text-xs w-full text-muted-foreground rounded-xs'
-                    onClick={() => setConnectionPreset('all')}
+                    onClick={() => handleSetConnectionPreset('all')}
                   >
                     {t('graph.filters.resetConnections')}
                   </Button>

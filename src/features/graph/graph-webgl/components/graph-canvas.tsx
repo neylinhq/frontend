@@ -699,7 +699,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
 
   useEffect(() => {
     const engine = engineRef.current
-    if (!engine || !isReady || nodes.length === 0) {
+    if (!engine || !isReady) {
       return
     }
 
@@ -720,18 +720,19 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
       const json = transformToWasm(nodes, edges)
 
       if (isFirstLoad) {
-        // First load: positions come from backend (or layout will be run below)
         engine.load_graph(json)
       } else {
-        // Subsequent updates (filter changes, backend refetch, node edits):
-        // preserve in-engine positions so manual drags are not overwritten
         engine.update_graph(json)
       }
 
-      if (autoLayout && isFirstLoad) {
-        // Only run layout on first load — subsequent node changes (focus filter,
-        // live edits) should preserve existing positions
-        engine.run_layout(layoutOptionsToWasm(resolvedLayoutOptions))
+      if (autoLayout && isFirstLoad && nodes.length > 0) {
+        // Skip layout if all nodes already have saved positions from DB
+        const allHavePositions = nodes.every(
+          n => n.position && (n.position.x !== 0 || n.position.y !== 0)
+        )
+        if (!allHavePositions) {
+          engine.run_layout(layoutOptionsToWasm(resolvedLayoutOptions))
+        }
         engine.fit_view(0.1)
       }
 
@@ -1087,8 +1088,15 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
     [getCanvasPoint, notifyLayoutComplete, onConnect, onEdgeBadgeClick, onNodeClick, onNodeDragEnd, resolvedSelectedNodeIds, screenToWorld, updateSelection]
   )
 
-  const handleWheel = useCallback(
-    (e: React.WheelEvent) => {
+  // Native wheel handler — React registers onWheel as passive, so preventDefault() fails.
+  // Use native addEventListener with { passive: false } instead.
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) {
+      return
+    }
+
+    const handleWheel = (e: WheelEvent) => {
       e.preventDefault()
       const engine = engineRef.current
       if (!engine) {
@@ -1096,14 +1104,15 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
       }
 
       const { x, y } = getCanvasPoint(e.clientX, e.clientY)
-      // Reduced zoom sensitivity: 1.05 instead of 1.1
       const factor = e.deltaY < 0 ? 1.05 : 1 / 1.05
 
       engine.zoom_at(x, y, factor)
       notifyViewportChange()
-    },
-    [getCanvasPoint, notifyViewportChange]
-  )
+    }
+
+    canvas.addEventListener('wheel', handleWheel, { passive: false })
+    return () => canvas.removeEventListener('wheel', handleWheel)
+  }, [getCanvasPoint, notifyViewportChange])
 
   const handleDoubleClick = useCallback(
     (e: React.MouseEvent) => {
@@ -1135,7 +1144,6 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
         onPointerDown={handleMouseDown}
         onPointerMove={handleMouseMove}
         onPointerUp={handleMouseUp}
-        onWheel={handleWheel}
         onDoubleClick={handleDoubleClick}
       />
 

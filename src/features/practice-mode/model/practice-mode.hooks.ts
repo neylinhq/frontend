@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useRef } from 'react'
 
 import { useFullMap } from '@/entities/map'
+import { useMapPracticeActive } from '@/entities/map-ui'
 import { DEFAULT_NODE_PROGRESS, useAllNodeProgress, type UserNodeProgress } from '@/entities/progress'
 
-import { usePracticeModeActions, usePracticeModeActive } from '../model/practice-mode.store'
+import { learnSessionApi } from '../api/practice-mode.api'
+import { usePracticeModeActions, usePracticeModeStore } from '../model/practice-mode.store'
 
 /**
  * Fetches node progress when practice mode is active and syncs to store.
@@ -14,7 +16,7 @@ import { usePracticeModeActions, usePracticeModeActive } from '../model/practice
  * when AI chat creates new nodes.
  */
 export const useMasteryOverlay = (mapId: string) => {
-  const isActive = usePracticeModeActive()
+  const isActive = useMapPracticeActive(mapId)
   const { setMasteryData, setLoadingMastery } = usePracticeModeActions()
 
   const { data: fullMap } = useFullMap(mapId, { enabled: isActive })
@@ -70,4 +72,24 @@ export const useMasteryOverlay = (mapId: string) => {
 
     setMasteryData(merged)
   }, [nodeProgress, nodeIdSet, setMasteryData])
+
+  // Prefetch lesson for first ZPD frontier node so it's ready when user clicks "Learn New"
+  const prefetchedRef = useRef<string | null>(null)
+  const masteryMapSize = usePracticeModeStore((s) => s.masteryMap.size)
+  useEffect(() => {
+    if (!isActive || masteryMapSize === 0) {
+      return
+    }
+    const { masteryMap } = usePracticeModeStore.getState()
+    const firstZpd = [...masteryMap.values()].find(
+      (d) => d.mastery === 'unlearned' && d.prereqsStable
+    )
+    if (!firstZpd || prefetchedRef.current === firstZpd.nodeId) {
+      return
+    }
+    prefetchedRef.current = firstZpd.nodeId
+    learnSessionApi.startLesson(mapId, firstZpd.nodeId).catch(() => {
+      // Prefetch failed — user will see normal loading when they click
+    })
+  }, [isActive, mapId, masteryMapSize])
 }

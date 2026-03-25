@@ -1,9 +1,16 @@
 import { useCallback, useEffect } from 'react'
-import { useShallow } from 'zustand/react/shallow'
 
-import { triggerLayout, useGraphViewStore } from './graph.store'
+import {
+  useMapActions,
+  useMapFocus,
+  useMapUIStore,
+  useMapViewMode
+} from '@/entities/map-ui'
+
+import { triggerLayout } from './graph.store'
 
 interface UseGraphKeyboardOptions {
+  mapId: string
   selectedNodeId: string | null
   onFitView?: () => void
   onZoomIn?: () => void
@@ -14,6 +21,7 @@ interface UseGraphKeyboardOptions {
 }
 
 export const useGraphKeyboard = ({
+  mapId,
   selectedNodeId,
   onFitView,
   onZoomIn,
@@ -22,27 +30,9 @@ export const useGraphKeyboard = ({
   onRedo,
   enabled = true
 }: UseGraphKeyboardOptions) => {
-  const {
-    viewMode,
-    setViewMode,
-    focusNode,
-    clearFocus,
-    focusedNodeId,
-    focusDepth,
-    setFocusDepth,
-    resetFilters
-  } = useGraphViewStore(
-    useShallow(s => ({
-      viewMode: s.viewMode,
-      setViewMode: s.setViewMode,
-      focusNode: s.focusNode,
-      clearFocus: s.clearFocus,
-      focusedNodeId: s.focusedNodeId,
-      focusDepth: s.focusDepth,
-      setFocusDepth: s.setFocusDepth,
-      resetFilters: s.resetFilters
-    }))
-  )
+  const viewMode = useMapViewMode(mapId)
+  const { focusedNodeId, focusDepth } = useMapFocus(mapId)
+  const { setViewMode, focusNode, clearFocus, setFocusDepth } = useMapActions(mapId)
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -105,7 +95,7 @@ export const useGraphKeyboard = ({
 
       // R - Reset filters
       if ((e.key === 'r' || e.key === 'R') && !e.ctrlKey && !e.metaKey) {
-        resetFilters()
+        useMapUIStore.getState().resetFilters(mapId)
         e.preventDefault()
       }
 
@@ -146,6 +136,7 @@ export const useGraphKeyboard = ({
       }
     },
     [
+      mapId,
       selectedNodeId,
       viewMode,
       focusedNodeId,
@@ -154,7 +145,6 @@ export const useGraphKeyboard = ({
       focusNode,
       clearFocus,
       setFocusDepth,
-      resetFilters,
       onFitView,
       onZoomIn,
       onZoomOut,

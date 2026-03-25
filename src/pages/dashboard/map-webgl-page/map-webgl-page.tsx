@@ -1,18 +1,30 @@
 import { useCallback, useState } from 'react'
 
-import { GraphWebGLVisualization, type ViewportState } from '@/features/graph/graph-webgl'
+import type { FullMap, Node } from '@/entities/map'
+import {
+  useMapActions,
+  useMapActiveTab,
+  useMapUIStore,
+  useSidebarOpen
+} from '@/entities/map-ui'
+import {
+  GraphWebGLVisualization,
+  type ViewportState
+} from '@/features/graph/graph-webgl'
 import { ReadOnlyBanner, useMapPermissions } from '@/features/map-permissions'
 import { NodeConnectionsPanel } from '@/features/node-connections-panel'
-import { AddNodeFab, QuickAddDialogWebGL, useNodeCreationStore } from '@/features/node-creation'
-import type { FullMap, Node } from '@/entities/map'
+import {
+  AddNodeFab,
+  QuickAddDialogWebGL,
+  useNodeCreationStore
+} from '@/features/node-creation'
 import { useKeyboardShortcut } from '@/shared/hooks/use-keyboard-shortcut'
 import {
   ChatPanel,
   MapSidebar,
   NodePanel,
   SettingsPanel,
-  SidebarToggleFab,
-  useMapSidebarStore
+  SidebarToggleFab
 } from '@/widgets/map-sidebar'
 
 interface MapWebGLPageProps {
@@ -23,7 +35,9 @@ interface MapWebGLPageProps {
 export const MapWebGLPage = ({ map, mapId }: MapWebGLPageProps) => {
   const { openQuickAdd } = useNodeCreationStore()
   const { canEdit, isReadOnly } = useMapPermissions(map)
-  const { isOpen, activeTab, open, close, setTab } = useMapSidebarStore()
+  const isOpen = useSidebarOpen()
+  const activeTab = useMapActiveTab(mapId)
+  const { setActiveTab } = useMapActions(mapId)
   const [selectedNode, setSelectedNode] = useState<Node | null>(null)
   const [viewport, setViewport] = useState<ViewportState | null>(null)
 
@@ -33,28 +47,21 @@ export const MapWebGLPage = ({ map, mapId }: MapWebGLPageProps) => {
 
   // Keyboard shortcut: Cmd+B / Ctrl+B - toggle sidebar
   useKeyboardShortcut({ key: 'b', meta: true }, () => {
-    if (isOpen) {
-      useMapSidebarStore.getState().close()
-    } else {
-      open()
-    }
+    useMapUIStore.getState().toggleSidebar()
   })
   useKeyboardShortcut({ key: 'b', ctrl: true }, () => {
-    if (isOpen) {
-      useMapSidebarStore.getState().close()
-    } else {
-      open()
-    }
+    useMapUIStore.getState().toggleSidebar()
   })
 
   // Toggle AI chat in sidebar
   const handleToggleAIPanel = useCallback(() => {
     if (isOpen && activeTab === 'chat') {
-      close()
+      useMapUIStore.getState().setSidebarOpen(false)
     } else {
-      setTab('chat')
+      setActiveTab('chat')
+      useMapUIStore.getState().setSidebarOpen(true)
     }
-  }, [isOpen, activeTab, close, setTab])
+  }, [isOpen, activeTab, setActiveTab])
 
   const isAIPanelOpen = isOpen && activeTab === 'chat'
 
@@ -63,10 +70,11 @@ export const MapWebGLPage = ({ map, mapId }: MapWebGLPageProps) => {
     (node: Node | null) => {
       setSelectedNode(node)
       if (node) {
-        setTab('node')
+        setActiveTab('node')
+        useMapUIStore.getState().setSidebarOpen(true)
       }
     },
-    [setTab]
+    [setActiveTab]
   )
 
   // Handle close node in sidebar

@@ -3,24 +3,25 @@
 import { GraduationHat01Icon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
 
+import { useMapPracticeActive, useMapUIStore } from '@/entities/map-ui'
 import { Badge } from '@/shared/components/badge'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/components/tooltip'
 import { cn } from '@/shared/lib/cn'
 
 import {
   usePracticeModeActions,
-  usePracticeModeActive,
   usePracticeModeStats
 } from '../model/practice-mode.store'
 
 interface PracticeFabProps {
+  mapId: string
   /** Called when practice mode toggles — parent can switch renderer */
   onToggle?: (isActive: boolean) => void
 }
 
-export const PracticeFab = ({ onToggle }: PracticeFabProps) => {
+export const PracticeFab = ({ mapId, onToggle }: PracticeFabProps) => {
   const { t } = useTranslation()
-  const isActive = usePracticeModeActive()
+  const isActive = useMapPracticeActive(mapId)
   const stats = usePracticeModeStats()
   const { enter, exit } = usePracticeModeActions()
 
@@ -28,9 +29,12 @@ export const PracticeFab = ({ onToggle }: PracticeFabProps) => {
 
   const handleClick = () => {
     if (isActive) {
+      useMapUIStore.getState().setPracticeActive(mapId, false)
       exit()
       onToggle?.(false)
     } else {
+      useMapUIStore.getState().setPracticeActive(mapId, true)
+      useMapUIStore.getState().setActiveTab(mapId, 'practice')
       enter()
       onToggle?.(true)
     }

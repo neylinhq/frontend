@@ -10,7 +10,7 @@ import {
   usePracticeView,
 } from '../model/practice-mode.store'
 import { ExerciseView } from './exercise-view'
-import { LearnChat } from './learn-chat'
+import { LearnSessionView } from './learn-session-view'
 import { PracticeNodeDetail } from './practice-node-detail'
 import { PracticeOverview } from './practice-overview'
 import { PracticeSessionEnd } from './practice-session-end'
@@ -80,7 +80,7 @@ export const PracticeModePanel = ({
       // Learn session → chat-based tutoring
       if (session?.type === 'learn' && currentNodeId) {
         return (
-          <LearnChat
+          <LearnSessionView
             mapId={mapId}
             nodeId={currentNodeId}
             nodeLabel={currentNode?.label ?? ''}

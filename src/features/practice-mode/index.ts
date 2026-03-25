@@ -14,7 +14,6 @@ export {
   useMasteryMap,
   useNodeMastery,
   usePracticeModeActions,
-  usePracticeModeActive,
   usePracticeModeSession,
   usePracticeModeStats,
   usePracticeModeStore,

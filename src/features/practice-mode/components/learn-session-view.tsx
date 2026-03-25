@@ -17,24 +17,7 @@ import type {
 import { learnSessionApi } from '../api/practice-mode.api'
 import type { StabilityDelta } from '../model/practice-mode.store'
 import { usePracticeModeActions } from '../model/practice-mode.store'
-
-function GlossaryMarkdown({ children, className }: { children: string; className?: string }) {
-  const processed = children.replace(
-    /\{\{([^|]+)\|([^}]+)\}\}/g,
-    (_, term: string, definition: string) => {
-      if (glossarySeenTerms.has(term.toLowerCase())) {
-        return `**${term}**`
-      }
-      glossarySeenTerms.add(term.toLowerCase())
-      return `**${term}** _(${definition})_`
-    }
-  )
-  return (
-    <div className={className}>
-      <RichMarkdown>{processed}</RichMarkdown>
-    </div>
-  )
-}
+import { StepAIHelp } from './step-ai-help'
 
 // --- Types ---
 
@@ -71,6 +54,7 @@ export function LearnSessionView({ mapId, nodeId, nodeLabel, className }: LearnS
   })
   const [error, setError] = useState<string | null>(null)
   const [isEvaluating, setIsEvaluating] = useState(false)
+  const [usedAIHelp, setUsedAIHelp] = useState(false)
 
   // Load lesson on mount
   useEffect(() => {
@@ -148,19 +132,20 @@ export function LearnSessionView({ mapId, nodeId, nodeLabel, className }: LearnS
   }, [handleSubmitAnswer])
 
   const handleFinish = useCallback(() => {
-    // Record as learned in store
     if (lesson) {
+      // Lower stability gain if AI help was used (Hard vs Good rating)
+      const stabilityGain = usedAIHelp ? 0.5 : 1
       const delta: StabilityDelta = {
         nodeId,
         nodeLabel,
         before: 0,
-        after: 1,
-        delta: 1
+        after: stabilityGain,
+        delta: stabilityGain,
       }
       recordAnswer(nodeId, true, delta)
     }
     setView('session_end')
-  }, [lesson, nodeId, nodeLabel, recordAnswer, setView])
+  }, [lesson, nodeId, nodeLabel, recordAnswer, setView, usedAIHelp])
 
   // --- Loading ---
   if (phase === 'loading') {
@@ -270,6 +255,9 @@ export function LearnSessionView({ mapId, nodeId, nodeLabel, className }: LearnS
           onSubmit={handleSubmitAnswer}
           onSkip={handleSkip}
           isEvaluating={isEvaluating}
+          mapId={mapId}
+          conceptTitle={lesson.concept}
+          onHelpUsed={() => setUsedAIHelp(true)}
         />
       )}
     </div>
@@ -284,7 +272,10 @@ function StepContent({
   setStepState,
   onSubmit,
   onSkip,
-  isEvaluating
+  isEvaluating,
+  mapId,
+  conceptTitle,
+  onHelpUsed,
 }: {
   step: LessonStep
   stepState: StepState
@@ -292,59 +283,85 @@ function StepContent({
   onSubmit: (answer: string) => void
   onSkip: () => void
   isEvaluating: boolean
+  mapId: string
+  conceptTitle: string
+  onHelpUsed: () => void
 }) {
+  const stepQuestion = step.prompt || step.question || ''
+
+  const aiHelp = (
+    <StepAIHelp
+      mapId={mapId}
+      conceptTitle={conceptTitle}
+      stepQuestion={stepQuestion}
+      onHelpUsed={onHelpUsed}
+    />
+  )
+
   switch (step.type) {
     case 'activation':
       return (
-        <ActivationStep
-          prompt={step.prompt ?? ''}
-          hint={step.hint}
-          value={stepState.answer}
-          onChange={v => setStepState(s => ({ ...s, answer: v }))}
-          onSubmit={() => onSubmit(stepState.answer)}
-          onSkip={onSkip}
-          disabled={isEvaluating}
-        />
+        <>
+          <ActivationStep
+            prompt={step.prompt || t('practice.mode.activationDefault', 'What do you already know about this topic? Write anything that comes to mind.')}
+            hint={step.hint}
+            value={stepState.answer}
+            onChange={v => setStepState(s => ({ ...s, answer: v }))}
+            onSubmit={() => onSubmit(stepState.answer)}
+            onSkip={onSkip}
+            disabled={isEvaluating}
+          />
+          {aiHelp}
+        </>
       )
 
     case 'explanation':
       return (
-        <ExplanationStep
-          chunks={step.chunks ?? []}
-          chunkIndex={stepState.chunkIndex}
-          chunkAnswer={stepState.chunkAnswer}
-          onChunkAnswer={id => setStepState(s => ({ ...s, chunkAnswer: id }))}
-          onNextChunk={() =>
-            setStepState(s => ({ ...s, chunkIndex: s.chunkIndex + 1, chunkAnswer: null }))
-          }
-          onComplete={() => onSubmit('explanation_complete')}
-        />
+        <>
+          <ExplanationStep
+            chunks={step.chunks ?? []}
+            chunkIndex={stepState.chunkIndex}
+            chunkAnswer={stepState.chunkAnswer}
+            onChunkAnswer={id => setStepState(s => ({ ...s, chunkAnswer: id }))}
+            onNextChunk={() =>
+              setStepState(s => ({ ...s, chunkIndex: s.chunkIndex + 1, chunkAnswer: null }))
+            }
+            onComplete={() => onSubmit('explanation_complete')}
+          />
+          {aiHelp}
+        </>
       )
 
     case 'self_explanation':
     case 'connection':
     case 'application':
       return (
-        <FreeTextStep
-          prompt={step.type === 'application' ? (step.scenario ?? '') : ''}
-          question={step.prompt || step.question || ''}
-          relatedConcept={step.related_concept}
-          value={stepState.answer}
-          onChange={v => setStepState(s => ({ ...s, answer: v }))}
-          onSubmit={() => onSubmit(stepState.answer)}
-          disabled={isEvaluating}
-        />
+        <>
+          <FreeTextStep
+            prompt={step.type === 'application' ? (step.scenario ?? '') : ''}
+            question={step.prompt || step.question || ''}
+            relatedConcept={step.related_concept}
+            value={stepState.answer}
+            onChange={v => setStepState(s => ({ ...s, answer: v }))}
+            onSubmit={() => onSubmit(stepState.answer)}
+            disabled={isEvaluating}
+          />
+          {aiHelp}
+        </>
       )
 
     case 'recall':
       return (
-        <FreeTextStep
-          question={step.prompt || ''}
-          value={stepState.answer}
-          onChange={v => setStepState(s => ({ ...s, answer: v }))}
-          onSubmit={() => onSubmit(stepState.answer)}
-          disabled={isEvaluating}
-        />
+        <>
+          <FreeTextStep
+            question={step.prompt || ''}
+            value={stepState.answer}
+            onChange={v => setStepState(s => ({ ...s, answer: v }))}
+            onSubmit={() => onSubmit(stepState.answer)}
+            disabled={isEvaluating}
+          />
+          {aiHelp}
+        </>
       )
 
     default:

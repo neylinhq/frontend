@@ -47,14 +47,25 @@ interface ApiResponse<T> {
   data: T
 }
 
+// --- Lesson cache (for prefetch → use on mount) ---
+
+const lessonCache = new Map<string, { plan: LessonPlan; ts: number }>()
+const LESSON_CACHE_TTL = 5 * 60 * 1000 // 5 min
+
 // --- API ---
 
 export const learnSessionApi = {
   startLesson: async (mapId: string, nodeId: string): Promise<LessonPlan> => {
+    const key = `${mapId}:${nodeId}`
+    const cached = lessonCache.get(key)
+    if (cached && Date.now() - cached.ts < LESSON_CACHE_TTL) {
+      return cached.plan
+    }
     const response = await api.post<ApiResponse<LessonPlan>>(
       `/maps/${mapId}/learn/start`,
       { nodeId }
     )
+    lessonCache.set(key, { plan: response.data, ts: Date.now() })
     return response.data
   },
 

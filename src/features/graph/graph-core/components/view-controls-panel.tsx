@@ -11,6 +11,7 @@ import {
 import { memo, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { useGlobalUIPrefs, useMapUIStore } from '@/entities/map-ui'
 import type { LightweightNode } from '@/entities/node'
 import { Button } from '@/shared/components/button'
 import { Card } from '@/shared/components/card'
@@ -23,7 +24,6 @@ import { Slider } from '@/shared/components/slider'
 import { cn } from '@/shared/lib/cn'
 import { isMac } from '@/shared/lib/platform'
 
-import { useGraphUI, useNodeSpacing } from '../model/graph.store'
 import { NodeSearch } from './node-search'
 
 interface ViewControlsPanelProps {
@@ -65,21 +65,17 @@ export const ViewControlsPanel = memo(
     className
   }: ViewControlsPanelProps) => {
     const { t } = useTranslation()
-    const { showMinimap, toggleMinimap } = useGraphUI()
+    const prefs = useGlobalUIPrefs()
+    const { toggleMinimap, setNodeSpacing, setDirectionStrength, setAnimationDuration } =
+      useMapUIStore.getState()
     const [searchOpen, setSearchOpen] = useState(false)
     const [internalSettingsOpen, setInternalSettingsOpen] = useState(false)
     const isSettingsControlled = settingsOpen !== undefined
     const resolvedSettingsOpen = isSettingsControlled ? settingsOpen : internalSettingsOpen
     const setSettingsOpen =
       isSettingsControlled && onSettingsOpenChange ? onSettingsOpenChange : setInternalSettingsOpen
-    const {
-      nodeSpacing,
-      setNodeSpacing,
-      directionStrength,
-      setDirectionStrength,
-      animationDuration,
-      setAnimationDuration
-    } = useNodeSpacing()
+
+    const { showMinimap, nodeSpacing, directionStrength, animationDuration } = prefs
 
     // Local state for smooth slider movement - only sync to store on commit
     const [localSpacing, setLocalSpacing] = useState(nodeSpacing)
@@ -118,7 +114,7 @@ export const ViewControlsPanel = memo(
                 variant='ghost'
                 onClick={() => setSearchOpen(true)}
                 className='h-8 w-8 p-0'
-                title={`${t('graph.search.title', 'Search nodes')} (${isMac ? '⌘' : 'Ctrl+'}K)`}
+                title={`${t('graph.search.title', 'Search nodes')} (${isMac ? '\u2318' : 'Ctrl+'}K)`}
               >
                 <SearchMdIcon className='w-4 h-4' />
               </Button>

@@ -247,13 +247,20 @@ export const ChatMessageList = ({
                   <LoadingDots />
                 </div>
               ) : (
-                <div
-                  className='prose prose-sm max-w-none dark:prose-invert'
-                  aria-live={message.isStreaming ? 'polite' : 'off'}
-                  aria-atomic='false'
-                >
-                  <RichMarkdown>{parseContent(message.content)}</RichMarkdown>
-                </div>
+                <>
+                  <div
+                    className='prose prose-sm max-w-none dark:prose-invert'
+                    aria-live={message.isStreaming ? 'polite' : 'off'}
+                    aria-atomic='false'
+                  >
+                    <RichMarkdown>{parseContent(message.content)}</RichMarkdown>
+                  </div>
+                  {message.isStreaming && (
+                    <div className='py-0.5'>
+                      <LoadingDots />
+                    </div>
+                  )}
+                </>
               )}
 
               {/* Source Nodes */}

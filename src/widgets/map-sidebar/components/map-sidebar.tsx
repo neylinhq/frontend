@@ -3,10 +3,16 @@ import { memo, useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import type { Edge, Node } from '@/entities/map'
+import {
+  type MapSidebarTab,
+  useMapActions,
+  useMapActiveTab,
+  useMapUIStore,
+  useSidebarOpen,
+  useSidebarWidth
+} from '@/entities/map-ui'
 import { OverflowNav, type OverflowNavItem } from '@/shared/components/overflow-nav'
 import { ResizableSidebar } from '@/shared/components/resizable-sidebar'
-
-import { useMapSidebarStore } from '../model'
 
 interface MapSidebarProps {
   mapId: string
@@ -40,7 +46,7 @@ interface MapSidebarProps {
 }
 
 export const MapSidebar = memo(function MapSidebar({
-  mapId: _mapId,
+  mapId,
   selectedNode,
   canEdit,
   isOwner: _isOwner = true,
@@ -55,7 +61,26 @@ export const MapSidebar = memo(function MapSidebar({
   className
 }: MapSidebarProps) {
   const { t } = useTranslation()
-  const { isOpen, activeTab, width, close, setTab, setWidth } = useMapSidebarStore()
+  const isOpen = useSidebarOpen()
+  const width = useSidebarWidth()
+  const activeTab = useMapActiveTab(mapId)
+  const { setActiveTab } = useMapActions(mapId)
+
+  const handleClose = useCallback(() => {
+    useMapUIStore.getState().setSidebarOpen(false)
+    if (activeTab === 'node') {
+      onCloseNode?.()
+    }
+  }, [activeTab, onCloseNode])
+
+  const setTab = useCallback((tab: MapSidebarTab) => {
+    setActiveTab(tab)
+    useMapUIStore.getState().setSidebarOpen(true)
+  }, [setActiveTab])
+
+  const handleSetWidth = useCallback((w: number) => {
+    useMapUIStore.getState().setSidebarWidth(w)
+  }, [])
 
   // Open sidebar to node tab only when node selected while sidebar is closed
   const prevNodeIdRef = useRef<string | null>(null)
@@ -67,20 +92,14 @@ export const MapSidebar = memo(function MapSidebar({
     prevNodeIdRef.current = newId
   }, [selectedNode?.id, isOpen, setTab])
 
-  // Open sidebar on practice tab when practice mode activates
+  // Open sidebar on practice tab only when practice mode transitions to active
+  const prevPracticeRef = useRef(isPracticeActive)
   useEffect(() => {
-    if (isPracticeActive) {
+    if (isPracticeActive && !prevPracticeRef.current) {
       setTab('practice')
     }
+    prevPracticeRef.current = isPracticeActive
   }, [isPracticeActive, setTab])
-
-  // Handle close
-  const handleClose = useCallback(() => {
-    close()
-    if (activeTab === 'node') {
-      onCloseNode?.()
-    }
-  }, [close, activeTab, onCloseNode])
 
   // Build nav items
   const navItems = useMemo(() => {
@@ -117,7 +136,7 @@ export const MapSidebar = memo(function MapSidebar({
       open={isOpen}
       onClose={handleClose}
       width={width}
-      onWidthChange={setWidth}
+      onWidthChange={handleSetWidth}
       className={className}
     >
       <div className='flex flex-1 flex-col min-h-0'>

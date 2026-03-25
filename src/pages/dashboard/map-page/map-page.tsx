@@ -2,21 +2,27 @@ import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ReactFlowProvider } from '@xyflow/react'
 
-import { useFocusMode } from '@/features/graph/graph-core'
+import type { FullMap, Node } from '@/entities/map'
+import { useDeleteNode } from '@/entities/map'
+import {
+  useMapActions,
+  useMapActiveTab,
+  useMapFocus,
+  useMapPracticeActive,
+  useMapUIStore,
+  useSidebarOpen
+} from '@/entities/map-ui'
 import type { ViewportState } from '@/features/graph/graph-webgl'
 import { ReadOnlyBanner, useMapPermissions } from '@/features/map-permissions'
 import { NodeConnectionsPanel } from '@/features/node-connections-panel'
 import { AddNodeFab, QuickAddDialogWebGL, useNodeCreationStore } from '@/features/node-creation'
 import {
   PracticeFab,
-  PracticeModePanel,
-  usePracticeModeActive
+  PracticeModePanel
 } from '@/features/practice-mode'
-import type { FullMap, Node } from '@/entities/map'
-import type { OverflowNavItem } from '@/shared/components/overflow-nav'
-import { useDeleteNode } from '@/entities/map'
-import { toast } from '@/shared/components/toast'
 import { Fab } from '@/shared/components/fab'
+import type { OverflowNavItem } from '@/shared/components/overflow-nav'
+import { toast } from '@/shared/components/toast'
 import { useKeyboardShortcut } from '@/shared/hooks/use-keyboard-shortcut'
 import { GraphView } from '@/widgets/graph-view'
 import {
@@ -24,8 +30,7 @@ import {
   MapSidebar,
   NodePanel,
   SettingsPanel,
-  SidebarToggleFab,
-  useMapSidebarStore
+  SidebarToggleFab
 } from '@/widgets/map-sidebar'
 
 interface MapPageProps {
@@ -36,10 +41,12 @@ interface MapPageProps {
 export const MapPage = ({ map, mapId }: MapPageProps) => {
   const { t } = useTranslation()
   const { canEdit, isReadOnly } = useMapPermissions(map)
-  const isPracticeActive = usePracticeModeActive()
-  const { focusedNodeId, focusNode, clearFocus } = useFocusMode()
+  const isPracticeActive = useMapPracticeActive(mapId)
+  const { focusedNodeId } = useMapFocus(mapId)
+  const { focusNode, clearFocus, setActiveTab } = useMapActions(mapId)
   const { openQuickAdd } = useNodeCreationStore()
-  const { isOpen, activeTab, open, close, setTab } = useMapSidebarStore()
+  const isOpen = useSidebarOpen()
+  const activeTab = useMapActiveTab(mapId)
   const deleteNodeMutation = useDeleteNode(mapId)
   const [selectedNode, setSelectedNode] = useState<Node | null>(null)
   const [viewport, setViewport] = useState<ViewportState | null>(null)
@@ -51,28 +58,21 @@ export const MapPage = ({ map, mapId }: MapPageProps) => {
 
   // Keyboard shortcut: Cmd+B / Ctrl+B — toggle sidebar
   useKeyboardShortcut({ key: 'b', meta: true }, () => {
-    if (isOpen) {
-      useMapSidebarStore.getState().close()
-    } else {
-      open()
-    }
+    useMapUIStore.getState().toggleSidebar()
   })
   useKeyboardShortcut({ key: 'b', ctrl: true }, () => {
-    if (isOpen) {
-      useMapSidebarStore.getState().close()
-    } else {
-      open()
-    }
+    useMapUIStore.getState().toggleSidebar()
   })
 
   // Toggle AI chat in sidebar
   const handleToggleAIPanel = useCallback(() => {
     if (isOpen && activeTab === 'chat') {
-      close()
+      useMapUIStore.getState().setSidebarOpen(false)
     } else {
-      setTab('chat')
+      setActiveTab('chat')
+      useMapUIStore.getState().setSidebarOpen(true)
     }
-  }, [isOpen, activeTab, close, setTab])
+  }, [isOpen, activeTab, setActiveTab])
 
   const isAIPanelOpen = isOpen && activeTab === 'chat'
 
@@ -80,11 +80,12 @@ export const MapPage = ({ map, mapId }: MapPageProps) => {
   // Ignore null (click on canvas) — node stays selected until user picks another or closes panel
   const handleNodeSelect = useCallback(
     (node: Node | null) => {
-      if (!node) return
+      if (!node) { return }
       setSelectedNode(node)
-      setTab('node')
+      setActiveTab('node')
+      useMapUIStore.getState().setSidebarOpen(true)
     },
-    [setTab]
+    [setActiveTab]
   )
 
   // Handle close node in sidebar
@@ -104,7 +105,10 @@ export const MapPage = ({ map, mapId }: MapPageProps) => {
             interactive={canEdit}
             isAIPanelOpen={isAIPanelOpen}
             onToggleAIPanel={handleToggleAIPanel}
-            onOpenSettings={() => setTab('settings')}
+            onOpenSettings={() => {
+              setActiveTab('settings')
+              useMapUIStore.getState().setSidebarOpen(true)
+            }}
             onNodeSelect={handleNodeSelect}
             onViewportChange={setViewport}
             useWebGL={useWebGL}
@@ -119,7 +123,7 @@ export const MapPage = ({ map, mapId }: MapPageProps) => {
             <Fab.Item position='bottom-right'>
               <div className='flex flex-col-reverse items-center gap-3'>
                 {canEdit && <AddNodeFab />}
-                <PracticeFab onToggle={(active) => {
+                <PracticeFab mapId={mapId} onToggle={(active) => {
                   if (active) setUseWebGL(false)
                 }} />
                 <button

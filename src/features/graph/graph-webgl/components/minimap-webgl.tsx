@@ -214,9 +214,10 @@ export const MiniMapWebGL = memo(function MiniMapWebGL({
         <div
           key={dot.id}
           className='absolute rounded-full pointer-events-none'
+          suppressHydrationWarning
           style={{
-            left: dot.x - 2,
-            top: dot.y - 2,
+            left: `${dot.x - 2}px`,
+            top: `${dot.y - 2}px`,
             width: 4,
             height: 4,
             backgroundColor: dot.color

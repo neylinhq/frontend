@@ -29,32 +29,6 @@ const MASTERY_DOT_COLORS: Record<MasteryLevel, string> = {
   unlearned: 'bg-muted-foreground/30',
 }
 
-// Mastery-based progression tiers (replaces Elo segments).
-// Based on % of map nodes at proficient+ level.
-const MASTERY_TIERS = [
-  { threshold: 0, label: 'beginner' },
-  { threshold: 0.1, label: 'explorer' },
-  { threshold: 0.25, label: 'learner' },
-  { threshold: 0.5, label: 'practitioner' },
-  { threshold: 0.75, label: 'expert' },
-  { threshold: 0.9, label: 'master' },
-] as const
-
-function getMasteryTier(masteryPercent: number) {
-  let tier = MASTERY_TIERS[0]
-  for (const t of MASTERY_TIERS) {
-    if (masteryPercent / 100 >= t.threshold) {
-      tier = t
-    }
-  }
-  const idx = MASTERY_TIERS.indexOf(tier)
-  const nextTier = idx < MASTERY_TIERS.length - 1 ? MASTERY_TIERS[idx + 1] : null
-  const progressInTier = nextTier
-    ? (masteryPercent / 100 - tier.threshold) / (nextTier.threshold - tier.threshold)
-    : 1
-  return { current: tier, next: nextTier, progress: Math.min(1, Math.max(0, progressInTier)) }
-}
-
 interface PracticeOverviewProps {
   className?: string
 }
@@ -70,8 +44,6 @@ export function PracticeOverview({ className }: PracticeOverviewProps) {
     stats.total > 0
       ? Math.round(((stats.mastered + stats.proficient) / stats.total) * 100)
       : 0
-
-  const tier = getMasteryTier(masteryPercent)
 
   const dueNodeIds = [...masteryMap.values()].filter((d) => d.isDue).map((d) => d.nodeId)
   const zpdNodeIds = [...masteryMap.values()]
@@ -176,30 +148,27 @@ export function PracticeOverview({ className }: PracticeOverviewProps) {
         </Card>
       )}
 
-      {/* Mastery Tier Card (replaces Elo rating) */}
-      <Card>
-        <CardContent className="p-4">
-          <div className="flex items-baseline justify-between mb-2">
-            <span className="text-sm font-medium text-muted-foreground">
-              {t('practice.mode.yourProgress')}
-            </span>
-            <span className="text-sm font-semibold capitalize">
-              {t(`practice.mode.tier.${tier.current.label}`)}
-            </span>
-          </div>
-          <div className="flex h-1.5 rounded-full overflow-hidden bg-muted mb-1.5">
-            <div
-              className="bg-primary transition-all duration-500 rounded-full"
-              style={{ width: `${Math.round(tier.progress * 100)}%` }}
-            />
-          </div>
-          {tier.next && (
-            <div className="text-xs text-muted-foreground">
-              → {t(`practice.mode.tier.${tier.next.label}`)}
+      {/* Mastery tier — only show when there's actual progress */}
+      {masteryPercent > 0 && (
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-baseline justify-between mb-2">
+              <span className="text-sm font-medium text-muted-foreground">
+                {t('practice.mode.yourProgress')}
+              </span>
+              <span className="text-sm font-semibold">
+                {masteryPercent}%
+              </span>
             </div>
-          )}
-        </CardContent>
-      </Card>
+            <div className="flex h-1.5 rounded-full overflow-hidden bg-muted">
+              <div
+                className="bg-primary transition-all duration-500 rounded-full"
+                style={{ width: `${masteryPercent}%` }}
+              />
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Secondary session buttons — only show when there are nodes to practice */}
       {practicingNodeIds.length > 0 && (

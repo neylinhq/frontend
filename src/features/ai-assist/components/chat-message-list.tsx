@@ -13,6 +13,7 @@ import remarkGfm from 'remark-gfm'
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import { CopyButton } from '@/shared/components/copy-button'
+import { LoadingDots } from '@/shared/components/loading-dots'
 import { Textarea } from '@/shared/components/textarea'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/components/tooltip'
 import { cn } from '@/shared/lib/cn'
@@ -20,7 +21,6 @@ import { cn } from '@/shared/lib/cn'
 import type { ChatMessage, PreviewCard, ResolvedPreview } from '../model/ai-assist.types'
 import { CollapsibleProposal } from './collapsible-proposal'
 import { PreviewCardComponent } from './preview-card'
-import { ThinkingIndicator } from './thinking-indicator'
 
 interface ChatMessageListProps {
   messages: ChatMessage[]
@@ -245,7 +245,7 @@ export const ChatMessageList = ({
             <div className='pl-3 space-y-3'>
               {isThinking ? (
                 <div className='py-1'>
-                  <ThinkingIndicator />
+                  <LoadingDots />
                 </div>
               ) : (
                 <div

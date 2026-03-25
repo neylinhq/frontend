@@ -10,7 +10,40 @@ import { cn } from '@/shared/lib/cn'
 
 import type { EvaluateStepOutput, ExplanationChunk, LessonPlan, LessonStep } from '../api/practice-mode.api'
 import { learnSessionApi } from '../api/practice-mode.api'
+
 import type { StabilityDelta } from '../model/practice-mode.store'
+
+// --- Glossary ---
+
+// Module-level set tracking which glossary terms have been shown with inline definition.
+// Reset when a new LearnSessionView mounts.
+let glossarySeenTerms = new Set<string>()
+
+function resetGlossary() {
+  glossarySeenTerms = new Set<string>()
+}
+
+/**
+ * Processes {{term|definition}} markup then renders via Markdown.
+ * First occurrence of a term shows inline definition, subsequent just bold.
+ */
+function GlossaryMarkdown({ children, className }: { children: string; className?: string }) {
+  const processed = children.replace(
+    /\{\{([^|]+)\|([^}]+)\}\}/g,
+    (_, term: string, definition: string) => {
+      if (glossarySeenTerms.has(term.toLowerCase())) {
+        return `**${term}**`
+      }
+      glossarySeenTerms.add(term.toLowerCase())
+      return `**${term}** _(${definition})_`
+    }
+  )
+  return (
+    <div className={className}>
+      <Markdown>{processed}</Markdown>
+    </div>
+  )
+}
 import { usePracticeModeActions } from '../model/practice-mode.store'
 
 // --- Types ---
@@ -36,6 +69,9 @@ interface LearnSessionViewProps {
 export function LearnSessionView({ mapId, nodeId, nodeLabel, className }: LearnSessionViewProps) {
   const { t } = useTranslation()
   const { recordAnswer, setView } = usePracticeModeActions()
+
+  // Reset glossary tracking on mount (new lesson = fresh set of terms)
+  resetGlossary()
 
   const [phase, setPhase] = useState<Phase>('loading')
   const [lesson, setLesson] = useState<LessonPlan | null>(null)
@@ -181,6 +217,23 @@ export function LearnSessionView({ mapId, nodeId, nodeLabel, className }: LearnS
         <p className="text-xs text-muted-foreground">
           {t('practice.mode.firstReview', 'First review: tomorrow')}
         </p>
+
+        {/* Go Deeper — suggest adding foundation nodes */}
+        {lesson.prerequisite_domains && lesson.prerequisite_domains.length > 0 && (
+          <div className="rounded-lg border border-info/30 bg-info/5 p-3">
+            <p className="text-sm font-medium mb-1">
+              {t('practice.mode.expandKnowledge', 'Expand your knowledge?')}
+            </p>
+            <p className="text-xs text-muted-foreground mb-2">
+              {t('practice.mode.expandDescription', 'This lesson used concepts from {{domains}}. Adding these foundations could help.', {
+                domains: lesson.prerequisite_domains.join(', '),
+              })}
+            </p>
+            <Button variant="outline" size="sm" className="text-xs">
+              {t('practice.mode.addFoundations', '+ Add foundations')}
+            </Button>
+          </div>
+        )}
 
         <div className="flex flex-col gap-2 mt-2">
           <Button onClick={handleFinish}>
@@ -337,9 +390,7 @@ function ActivationStep({
         {t('practice.mode.beforeWeBegin', 'Before we begin —')}
       </p>
 
-      <div className="prose prose-sm dark:prose-invert max-w-none">
-        <Markdown>{prompt}</Markdown>
-      </div>
+      <GlossaryMarkdown className="prose prose-sm dark:prose-invert max-w-none">{prompt}</GlossaryMarkdown>
 
       <Textarea
         value={value}
@@ -400,15 +451,15 @@ function ExplanationStep({
     <div className="flex flex-col gap-4">
       {/* Show all previous chunks as context */}
       {chunks.slice(0, chunkIndex).map((c) => (
-        <div key={c.text.slice(0, 30)} className="prose prose-sm dark:prose-invert max-w-none opacity-60">
-          <Markdown>{c.text}</Markdown>
-        </div>
+        <GlossaryMarkdown key={c.text.slice(0, 30)} className="prose prose-sm dark:prose-invert max-w-none opacity-60">
+          {c.text}
+        </GlossaryMarkdown>
       ))}
 
       {/* Current chunk */}
-      <div className="prose prose-sm dark:prose-invert max-w-none">
-        <Markdown>{chunk.text}</Markdown>
-      </div>
+      <GlossaryMarkdown className="prose prose-sm dark:prose-invert max-w-none">
+        {chunk.text}
+      </GlossaryMarkdown>
 
       {/* Micro-check */}
       {chunk.check && !checkAnswered && (
@@ -484,11 +535,9 @@ function FreeTextStep({
   return (
     <div className="flex flex-col gap-4">
       {prompt && (
-        <div className="rounded-lg border bg-muted/30 p-3">
-          <div className="prose prose-sm dark:prose-invert max-w-none">
-            <Markdown>{prompt}</Markdown>
-          </div>
-        </div>
+        <GlossaryMarkdown className="rounded-lg border bg-muted/30 p-3 prose prose-sm dark:prose-invert max-w-none">
+          {prompt}
+        </GlossaryMarkdown>
       )}
 
       {relatedConcept && (
@@ -497,9 +546,9 @@ function FreeTextStep({
         </p>
       )}
 
-      <div className="prose prose-sm dark:prose-invert max-w-none">
-        <Markdown>{question}</Markdown>
-      </div>
+      <GlossaryMarkdown className="prose prose-sm dark:prose-invert max-w-none">
+        {question}
+      </GlossaryMarkdown>
 
       <Textarea
         value={value}

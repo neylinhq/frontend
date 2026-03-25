@@ -1,4 +1,5 @@
 import { api } from '@/shared/api/client'
+import { STREAM_API_URL } from '@/shared/config/env'
 
 // --- Types ---
 
@@ -6,6 +7,7 @@ export interface LessonPlan {
   concept: string
   steps: LessonStep[]
   takeaway: string
+  prerequisite_domains?: string[]
 }
 
 export interface LessonStep {
@@ -33,6 +35,11 @@ export interface EvaluateStepOutput {
   has_key_ideas: boolean[]
   feedback: string
   encouragement: string
+}
+
+export interface LearnChatChunk {
+  type: 'text' | 'done' | 'error'
+  content?: string
 }
 
 interface ApiResponse<T> {
@@ -66,5 +73,96 @@ export const learnSessionApi = {
       input
     )
     return response.data
+  },
+
+  /**
+   * Stream a chat message to the learn tutor. Returns a promise that resolves when done.
+   */
+  chatStream: async (
+    mapId: string,
+    message: string,
+    onChunk: (chunk: LearnChatChunk) => void,
+    options: {
+      lessonPlan: LessonPlan
+      history: Array<{ role: 'user' | 'assistant'; content: string }>
+      currentStep: string
+      conceptTitle: string
+      locale?: string
+      signal?: AbortSignal
+    }
+  ): Promise<void> => {
+    const abortController = options.signal ? null : new AbortController()
+    const signal = options.signal ?? abortController?.signal
+
+    const timeoutId = setTimeout(() => {
+      abortController?.abort()
+      onChunk({ type: 'error', content: 'Request timed out' })
+    }, 3 * 60 * 1000)
+
+    try {
+      const response = await fetch(`${STREAM_API_URL}/maps/${mapId}/learn/chat/stream`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          message,
+          lessonPlan: options.lessonPlan,
+          history: options.history,
+          currentStep: options.currentStep,
+          conceptTitle: options.conceptTitle,
+          locale: options.locale,
+        }),
+        signal,
+      })
+
+      if (!response.ok) {
+        let errorMessage = `HTTP ${response.status}`
+        try {
+          const errorData = await response.json()
+          if (errorData?.error?.message) {
+            errorMessage = errorData.error.message
+          }
+        } catch {
+          // ignore
+        }
+        throw new Error(errorMessage)
+      }
+
+      const reader = response.body?.getReader()
+      if (!reader) {
+        throw new Error('No response body')
+      }
+
+      const decoder = new TextDecoder()
+      let buffer = ''
+
+      for (;;) {
+        const { done, value } = await reader.read()
+        if (done) {
+          break
+        }
+
+        buffer += decoder.decode(value, { stream: true })
+        const lines = buffer.split('\n')
+        buffer = lines.pop() || ''
+
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            try {
+              const chunk = JSON.parse(line.slice(6)) as LearnChatChunk
+              onChunk(chunk)
+            } catch {
+              // skip unparseable
+            }
+          }
+        }
+      }
+    } catch (error) {
+      if ((error as Error).name !== 'AbortError') {
+        throw error
+      }
+    } finally {
+      clearTimeout(timeoutId)
+    }
   },
 }

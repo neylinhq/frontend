@@ -1536,9 +1536,9 @@
       "nodesDue_few": "{{count}} узла на повторение",
       "nodesDue_many": "{{count}} узлов на повторение",
       "readyToLearn": "Готово к изучению",
-      "conceptsOnFrontier_one": "{{count}} концепт на границе",
-      "conceptsOnFrontier_few": "{{count}} концепта на границе",
-      "conceptsOnFrontier_many": "{{count}} концептов на границе",
+      "conceptsOnFrontier_one": "{{count}} концепт готов к изучению",
+      "conceptsOnFrontier_few": "{{count}} концепта готовы к изучению",
+      "conceptsOnFrontier_many": "{{count}} концептов готовы к изучению",
       "learnNew": "Изучить новое",
       "review": "Повторить",
       "yourProgress": "Ваш прогресс",
@@ -1600,7 +1600,10 @@
       "noIdea": "Без понятия",
       "almostRight": "Почти — продолжим, и станет понятнее.",
       "gotIt": "Понятно",
-      "continue": "Дальше"
+      "continue": "Дальше",
+      "expandKnowledge": "Расширить знания?",
+      "expandDescription": "В этом уроке использовались понятия из: {{domains}}. Добавить основы?",
+      "addFoundations": "+ Добавить основы"
     },
     "types": {
       "explain_to_ai": "Объяснить AI",

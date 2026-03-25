@@ -10,7 +10,7 @@ import {
   usePracticeView,
 } from '../model/practice-mode.store'
 import { ExerciseView } from './exercise-view'
-import { LearnSessionView } from './learn-session-view'
+import { LearnChat } from './learn-chat'
 import { PracticeNodeDetail } from './practice-node-detail'
 import { PracticeOverview } from './practice-overview'
 import { PracticeSessionEnd } from './practice-session-end'
@@ -77,10 +77,10 @@ export const PracticeModePanel = ({
       const currentNodeId = session?.nodeQueue[session.currentIndex]
       const currentNode = nodes.find((n) => n.id === currentNodeId)
 
-      // Learn session → structured lesson flow
+      // Learn session → chat-based tutoring
       if (session?.type === 'learn' && currentNodeId) {
         return (
-          <LearnSessionView
+          <LearnChat
             mapId={mapId}
             nodeId={currentNodeId}
             nodeLabel={currentNode?.label ?? ''}

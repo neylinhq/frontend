@@ -909,6 +909,8 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
         draggingNodeRef.current = null
         isPanningRef.current = true
         canvasRef.current?.setPointerCapture(e.pointerId)
+        // Clicked on empty space — clear active node z-ordering
+        engine.set_active_node(null)
         if (!isMultiSelect) {
           updateSelection([])
           onNodeClick?.(null)
@@ -1064,8 +1066,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
           }
         }
         draggingNodeRef.current = null
-        // Clear two-pass z-index: no active node
-        engine.set_active_node(null)
+        // Don't clear active node here — keep it on top until user clicks elsewhere
       } else if (!hasDraggedRef.current) {
         // No node was dragged/clicked — check edge badge hit
         const badgeHit = engine.hit_test_edge_badge(x, y)

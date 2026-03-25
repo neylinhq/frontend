@@ -1535,8 +1535,8 @@
       "nodesDue_one": "{{count}} node due",
       "nodesDue_other": "{{count}} nodes due",
       "readyToLearn": "Ready to learn",
-      "conceptsOnFrontier_one": "{{count}} concept on frontier",
-      "conceptsOnFrontier_other": "{{count}} concepts on frontier",
+      "conceptsOnFrontier_one": "{{count}} concept ready to learn",
+      "conceptsOnFrontier_other": "{{count}} concepts ready to learn",
       "learnNew": "Learn New",
       "review": "Review",
       "yourProgress": "Your progress",
@@ -1598,7 +1598,10 @@
       "noIdea": "No idea",
       "almostRight": "Almost — let's continue and it'll click.",
       "gotIt": "Got it",
-      "continue": "Continue"
+      "continue": "Continue",
+      "expandKnowledge": "Expand your knowledge?",
+      "expandDescription": "This lesson used concepts from {{domains}}. Adding these foundations could help.",
+      "addFoundations": "+ Add foundations"
     },
     "types": {
       "explain_to_ai": "Explain to AI",

@@ -67,7 +67,6 @@ interface WasmGraphEngine {
   set_selected(node_id: string | null): void
   set_selected_nodes(node_ids: string): void
   set_focused(node_id: string | null): void
-  set_active_node(node_id: string | null): void
   set_dimmed(node_ids: string): void
   hit_test(screen_x: number, screen_y: number): string | undefined
   hit_test_edge_badge(screen_x: number, screen_y: number): string | undefined
@@ -527,7 +526,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
         // Slug font: Söhne Regular converted to TTF via infra/tools/woff2-to-ttf.
         // Falls back to MSDF silently if the TTF is unavailable.
         try {
-          const ttfResponse = await fetch('/assets/soehne-regular.ttf')
+          const ttfResponse = await fetch('/assets/geist-regular.ttf')
           if (ttfResponse.ok) {
             const ttfBuffer = await ttfResponse.arrayBuffer()
             engine.load_slug_font_ttf(new Uint8Array(ttfBuffer))
@@ -877,8 +876,6 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
           y: world.y - baseY
         }
 
-        // Bring node to front (highest z-index) — like clicking a window
-        engine.set_active_node(nodeId)
 
         // Capture pointer so drag continues even outside canvas bounds
         canvasRef.current?.setPointerCapture(e.pointerId)

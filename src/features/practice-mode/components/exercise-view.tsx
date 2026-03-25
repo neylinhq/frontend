@@ -2,18 +2,15 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import Markdown from 'react-markdown'
 
 import type { Exercise, ExerciseType, SubmitAnswerOutput } from '@/entities/exercise'
 import { useNextExercise, useSubmitAnswer } from '@/entities/exercise'
 import { Button } from '@/shared/components/button'
+import { RichMarkdown } from '@/shared/components/rich-markdown'
 import { cn } from '@/shared/lib/cn'
 
 import type { StabilityDelta } from '../model/practice-mode.store'
-import {
-  usePracticeModeActions,
-  usePracticeModeSession,
-} from '../model/practice-mode.store'
+import { usePracticeModeActions, usePracticeModeSession } from '../model/practice-mode.store'
 import { ConnectConceptsExercise } from './connect-concepts-exercise'
 import { ExplainToAIExercise } from './explain-to-ai-exercise'
 import { FillGapsExercise } from './fill-gaps-exercise'
@@ -62,7 +59,7 @@ export function ExerciseView({ mapId, nodeLabels, className }: ExerciseViewProps
     data: exercise,
     isLoading,
     error,
-    refetch,
+    refetch
   } = useNextExercise(mapId, currentNodeId, !!currentNodeId)
 
   const submitMutation = useSubmitAnswer()
@@ -83,7 +80,7 @@ export function ExerciseView({ mapId, nodeLabels, className }: ExerciseViewProps
               explanation: data.explanation,
               stabilityBefore: data.stabilityBefore,
               stabilityAfter: data.stabilityAfter,
-              nextReviewDays: data.nextReviewDays,
+              nextReviewDays: data.nextReviewDays
             })
             setPhase('feedback')
 
@@ -96,11 +93,11 @@ export function ExerciseView({ mapId, nodeLabels, className }: ExerciseViewProps
                     nodeLabel: nodeLabels?.get(nodeId) ?? nodeId.slice(0, 8),
                     before: data.stabilityBefore,
                     after: data.stabilityAfter,
-                    delta: data.stabilityAfter - data.stabilityBefore,
+                    delta: data.stabilityAfter - data.stabilityBefore
                   }
                 : undefined
             recordAnswer(nodeId, data.isCorrect, delta)
-          },
+          }
         }
       )
     },
@@ -140,9 +137,9 @@ export function ExerciseView({ mapId, nodeLabels, className }: ExerciseViewProps
     return (
       <div className={cn('flex flex-col gap-4 p-4', className)}>
         <ProgressHeader current={current} total={total} />
-        <div className="flex flex-col items-center justify-center gap-2 py-12">
-          <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-          <p className="text-xs text-muted-foreground animate-pulse">
+        <div className='flex flex-col items-center justify-center gap-2 py-12'>
+          <div className='h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent' />
+          <p className='text-xs text-muted-foreground animate-pulse'>
             {t('practice.mode.preparingExercise', 'Preparing exercise...')}
           </p>
         </div>
@@ -155,15 +152,13 @@ export function ExerciseView({ mapId, nodeLabels, className }: ExerciseViewProps
     return (
       <div className={cn('flex flex-col gap-4 p-4', className)}>
         <ProgressHeader current={current} total={total} />
-        <div className="flex flex-col items-center gap-3 py-8 text-center">
-          <p className="text-sm text-muted-foreground">
-            {t('practice.noExercises')}
-          </p>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={() => refetch()}>
+        <div className='flex flex-col items-center gap-3 py-8 text-center'>
+          <p className='text-sm text-muted-foreground'>{t('practice.noExercises')}</p>
+          <div className='flex gap-2'>
+            <Button variant='outline' size='sm' onClick={() => refetch()}>
               {t('common.retry', 'Retry')}
             </Button>
-            <Button variant="ghost" size="sm" onClick={handleNext}>
+            <Button variant='ghost' size='sm' onClick={handleNext}>
               {t('practice.mode.skip', 'Skip')}
             </Button>
           </div>
@@ -185,10 +180,7 @@ export function ExerciseView({ mapId, nodeLabels, className }: ExerciseViewProps
           disabled={submitMutation.isPending}
         />
       ) : (
-        <AnswerFeedback
-          result={result!}
-          onNext={handleNext}
-        />
+        <AnswerFeedback result={result!} onNext={handleNext} />
       )}
     </div>
   )
@@ -199,14 +191,14 @@ export function ExerciseView({ mapId, nodeLabels, className }: ExerciseViewProps
 function ProgressHeader({ current, total }: { current: number; total: number }) {
   const progress = total > 0 ? (current / total) * 100 : 0
   return (
-    <div className="flex items-center gap-3">
-      <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
+    <div className='flex items-center gap-3'>
+      <div className='flex-1 h-1.5 rounded-full bg-muted overflow-hidden'>
         <div
-          className="h-full rounded-full bg-primary transition-all duration-300"
+          className='h-full rounded-full bg-primary transition-all duration-300'
           style={{ width: `${progress}%` }}
         />
       </div>
-      <span className="text-xs tabular-nums text-muted-foreground shrink-0">
+      <span className='text-xs tabular-nums text-muted-foreground shrink-0'>
         {current}/{total}
       </span>
     </div>
@@ -216,7 +208,7 @@ function ProgressHeader({ current, total }: { current: number; total: number }) 
 function ExerciseRenderer({
   exercise,
   onSubmit,
-  disabled,
+  disabled
 }: {
   exercise: Exercise
   onSubmit: (answer: unknown) => void
@@ -240,27 +232,19 @@ function ExerciseRenderer({
         <FlashcardExercise
           front={exercise.question}
           back={exercise.explanation ?? ''}
-          onSubmit={(recalled) => onSubmit(recalled)}
+          onSubmit={recalled => onSubmit(recalled)}
           disabled={disabled}
         />
       )
 
     case 'true_false':
       return (
-        <TrueFalseExercise
-          question={exercise.question}
-          onSubmit={onSubmit}
-          disabled={disabled}
-        />
+        <TrueFalseExercise question={exercise.question} onSubmit={onSubmit} disabled={disabled} />
       )
 
     case 'fill_gaps':
       return (
-        <FillGapsExercise
-          question={exercise.question}
-          onSubmit={onSubmit}
-          disabled={disabled}
-        />
+        <FillGapsExercise question={exercise.question} onSubmit={onSubmit} disabled={disabled} />
       )
 
     case 'match': {
@@ -288,11 +272,7 @@ function ExerciseRenderer({
 
     case 'explain_to_ai':
       return (
-        <ExplainToAIExercise
-          question={exercise.question}
-          onSubmit={onSubmit}
-          disabled={disabled}
-        />
+        <ExplainToAIExercise question={exercise.question} onSubmit={onSubmit} disabled={disabled} />
       )
 
     case 'connect_concepts':
@@ -308,36 +288,22 @@ function ExerciseRenderer({
 
     case 'find_error':
       return (
-        <FindErrorExercise
-          question={exercise.question}
-          onSubmit={onSubmit}
-          disabled={disabled}
-        />
+        <FindErrorExercise question={exercise.question} onSubmit={onSubmit} disabled={disabled} />
       )
 
     default:
       return (
-        <OpenEndedExercise
-          question={exercise.question}
-          onSubmit={onSubmit}
-          disabled={disabled}
-        />
+        <OpenEndedExercise question={exercise.question} onSubmit={onSubmit} disabled={disabled} />
       )
   }
 }
 
-function AnswerFeedback({
-  result,
-  onNext,
-}: {
-  result: AnswerResult
-  onNext: () => void
-}) {
+function AnswerFeedback({ result, onNext }: { result: AnswerResult; onNext: () => void }) {
   const { t } = useTranslation()
   const stabilityDelta = result.stabilityAfter - result.stabilityBefore
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className='flex flex-col gap-4'>
       {/* Correct/Incorrect banner */}
       <div
         className={cn(
@@ -358,31 +324,31 @@ function AnswerFeedback({
             : t('practice.mode.incorrect_feedback')}
         </p>
         {result.feedback && (
-          <div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground mt-1"><Markdown>{result.feedback}</Markdown></div>
+          <div className='prose prose-sm dark:prose-invert max-w-none text-muted-foreground mt-1'>
+            <RichMarkdown>{result.feedback}</RichMarkdown>
+          </div>
         )}
       </div>
 
       {/* Explanation */}
       {result.explanation && (
-        <div className="rounded-lg border bg-muted/30 p-3">
-          <p className="text-xs font-medium text-muted-foreground mb-1">
+        <div className='rounded-lg border bg-muted/30 p-3'>
+          <p className='text-xs font-medium text-muted-foreground mb-1'>
             {t('practice.mode.explanation', 'Explanation')}
           </p>
-          <div className="prose prose-sm dark:prose-invert max-w-none"><Markdown>{result.explanation}</Markdown></div>
+          <div className='prose prose-sm dark:prose-invert max-w-none'>
+            <RichMarkdown>{result.explanation}</RichMarkdown>
+          </div>
         </div>
       )}
 
       {/* Stability change */}
-      <div className="flex items-center justify-between rounded-lg border bg-card p-3">
-        <span className="text-xs text-muted-foreground">
-          {t('practice.mode.stability')}
-        </span>
-        <div className="flex items-center gap-2 text-xs">
-          <span className="tabular-nums">
-            {Math.round(result.stabilityBefore * 10) / 10}d
-          </span>
-          <span className="text-muted-foreground">→</span>
-          <span className="tabular-nums font-medium">
+      <div className='flex items-center justify-between rounded-lg border bg-card p-3'>
+        <span className='text-xs text-muted-foreground'>{t('practice.mode.stability')}</span>
+        <div className='flex items-center gap-2 text-xs'>
+          <span className='tabular-nums'>{Math.round(result.stabilityBefore * 10) / 10}d</span>
+          <span className='text-muted-foreground'>→</span>
+          <span className='tabular-nums font-medium'>
             {Math.round(result.stabilityAfter * 10) / 10}d
           </span>
           {stabilityDelta !== 0 && (
@@ -392,14 +358,15 @@ function AnswerFeedback({
                 stabilityDelta > 0 ? 'text-success' : 'text-destructive'
               )}
             >
-              ({stabilityDelta > 0 ? '+' : ''}{Math.round(stabilityDelta * 10) / 10}d)
+              ({stabilityDelta > 0 ? '+' : ''}
+              {Math.round(stabilityDelta * 10) / 10}d)
             </span>
           )}
         </div>
       </div>
 
       {/* Next button */}
-      <Button onClick={onNext} className="mt-1">
+      <Button onClick={onNext} className='mt-1'>
         {t('practice.next')}
       </Button>
     </div>

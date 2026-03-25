@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import Markdown from 'react-markdown'
 
 import { Button } from '@/shared/components/button'
+import { RichMarkdown } from '@/shared/components/rich-markdown'
 import { cn } from '@/shared/lib/cn'
 
 interface FlashcardExerciseProps {
@@ -26,9 +26,9 @@ export function FlashcardExercise({ front, back, onSubmit, disabled }: Flashcard
   }
 
   return (
-    <div className="flex flex-col gap-4" onKeyDown={handleKeyDown} tabIndex={-1}>
+    <div className='flex flex-col gap-4' onKeyDown={handleKeyDown} tabIndex={-1}>
       <button
-        type="button"
+        type='button'
         disabled={disabled}
         className={cn(
           'relative min-h-[160px] rounded-xl border p-6 text-center transition-all duration-300',
@@ -38,32 +38,32 @@ export function FlashcardExercise({ front, back, onSubmit, disabled }: Flashcard
         onClick={() => !isFlipped && setIsFlipped(true)}
       >
         {!isFlipped ? (
-          <div className="flex flex-col items-center justify-center h-full">
-            <div className="prose prose-sm dark:prose-invert max-w-none"><Markdown>{front}</Markdown></div>
-            <p className="text-xs text-muted-foreground mt-4">{t('practice.mode.tapToReveal')}</p>
+          <div className='flex flex-col items-center justify-center h-full'>
+            <div className='prose prose-sm dark:prose-invert max-w-none'>
+              <RichMarkdown>{front}</RichMarkdown>
+            </div>
+            <p className='text-xs text-muted-foreground mt-4'>{t('practice.mode.tapToReveal')}</p>
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center h-full">
-            <div className="prose prose-sm dark:prose-invert max-w-none font-medium"><Markdown>{back}</Markdown></div>
+          <div className='flex flex-col items-center justify-center h-full'>
+            <div className='prose prose-sm dark:prose-invert max-w-none font-medium'>
+              <RichMarkdown>{back}</RichMarkdown>
+            </div>
           </div>
         )}
       </button>
 
       {isFlipped && (
-        <div className="flex gap-2">
+        <div className='flex gap-2'>
           <Button
-            variant="outline"
-            className="flex-1 border-destructive/30 text-destructive hover:bg-destructive/10"
+            variant='outline'
+            className='flex-1 border-destructive/30 text-destructive hover:bg-destructive/10'
             onClick={() => onSubmit(false)}
             disabled={disabled}
           >
             {t('practice.mode.didntKnow')}
           </Button>
-          <Button
-            className="flex-1"
-            onClick={() => onSubmit(true)}
-            disabled={disabled}
-          >
+          <Button className='flex-1' onClick={() => onSubmit(true)} disabled={disabled}>
             {t('practice.mode.knewIt')}
           </Button>
         </div>

@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import Markdown from 'react-markdown'
 
 import { Button } from '@/shared/components/button'
+import { RichMarkdown } from '@/shared/components/rich-markdown'
 import { cn } from '@/shared/lib/cn'
 
 interface QuizOption {
@@ -32,27 +32,27 @@ export function QuizExercise({ question, options, onSubmit, disabled }: QuizExer
   }
 
   return (
-    <div className="flex flex-col gap-4" onKeyDown={handleKeyDown} tabIndex={-1}>
-      <div className="prose prose-sm dark:prose-invert max-w-none"><Markdown>{question}</Markdown></div>
+    <div className='flex flex-col gap-4' onKeyDown={handleKeyDown} tabIndex={-1}>
+      <div className='prose prose-sm dark:prose-invert max-w-none'>
+        <RichMarkdown>{question}</RichMarkdown>
+      </div>
 
-      <div className="flex flex-col gap-2">
+      <div className='flex flex-col gap-2'>
         {options.map((option, idx) => (
           <button
             key={option.id}
-            type="button"
+            type='button'
             disabled={disabled}
             className={cn(
               'flex items-start gap-3 rounded-lg border p-3 text-left text-sm transition-colors',
               'hover:border-primary/50 hover:bg-primary/5',
               'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
-              selectedId === option.id
-                ? 'border-primary bg-primary/10'
-                : 'border-border',
+              selectedId === option.id ? 'border-primary bg-primary/10' : 'border-border',
               disabled && 'opacity-60 pointer-events-none'
             )}
             onClick={() => setSelectedId(option.id)}
           >
-            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-xs font-medium">
+            <span className='flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-xs font-medium'>
               {idx + 1}
             </span>
             <span>{option.content}</span>
@@ -63,7 +63,7 @@ export function QuizExercise({ question, options, onSubmit, disabled }: QuizExer
       <Button
         onClick={() => selectedId && onSubmit(selectedId)}
         disabled={!selectedId || disabled}
-        className="mt-1"
+        className='mt-1'
       >
         {t('practice.mode.submit')}
       </Button>

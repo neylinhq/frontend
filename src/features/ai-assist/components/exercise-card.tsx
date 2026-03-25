@@ -6,27 +6,16 @@ import {
 } from '@untitledui/icons-react/outline'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import Markdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
 
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
+import { InlineRichMarkdown } from '@/shared/components/rich-markdown'
 import { cn } from '@/shared/lib/cn'
 
 import type { ExercisePreviewData } from '../model/ai-assist.types'
 
 /** Inline markdown renderer for exercise text */
-const InlineMarkdown = ({ children }: { children: string }) => (
-  <Markdown
-    remarkPlugins={[remarkGfm]}
-    components={{
-      // Override block elements to inline
-      p: ({ children }) => <span>{children}</span>
-    }}
-  >
-    {children}
-  </Markdown>
-)
+const InlineMarkdown = InlineRichMarkdown
 
 interface ExerciseCardProps {
   data: ExercisePreviewData

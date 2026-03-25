@@ -7,13 +7,12 @@ import {
 } from '@untitledui/icons-react/outline'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import Markdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
 
 import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import { CopyButton } from '@/shared/components/copy-button'
 import { LoadingDots } from '@/shared/components/loading-dots'
+import { RichMarkdown } from '@/shared/components/rich-markdown'
 import { Textarea } from '@/shared/components/textarea'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/components/tooltip'
 import { cn } from '@/shared/lib/cn'
@@ -253,7 +252,7 @@ export const ChatMessageList = ({
                   aria-live={message.isStreaming ? 'polite' : 'off'}
                   aria-atomic='false'
                 >
-                  <Markdown remarkPlugins={[remarkGfm]}>{parseContent(message.content)}</Markdown>
+                  <RichMarkdown>{parseContent(message.content)}</RichMarkdown>
                 </div>
               )}
 

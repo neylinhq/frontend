@@ -2,11 +2,9 @@ import { CheckIcon, Loading02Icon, Pencil01Icon, XCloseIcon } from '@untitledui/
 import type { ReactNode } from 'react'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import Markdown from 'react-markdown'
-import rehypeRaw from 'rehype-raw'
-import remarkGfm from 'remark-gfm'
 
 import { Button } from '@/shared/components/button'
+import { RichMarkdown } from '@/shared/components/rich-markdown'
 import { cn } from '@/shared/lib/cn'
 import { sanitizeHtml } from '@/shared/lib/sanitize'
 
@@ -150,9 +148,7 @@ export const DiffBlock = ({ current, proposed, className, renderHtml }: DiffBloc
       <DiffLine type='add'>
         {renderHtml ? (
           <div className={proseClasses}>
-            <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
-              {proposed}
-            </Markdown>
+            <RichMarkdown>{proposed}</RichMarkdown>
           </div>
         ) : (
           proposed

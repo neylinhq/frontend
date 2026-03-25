@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import Markdown from 'react-markdown'
 
 import type { Exercise, ExerciseType, SubmitAnswerOutput } from '@/entities/exercise'
 import { useNextExercise, useSubmitAnswer } from '@/entities/exercise'
@@ -13,16 +14,16 @@ import {
   usePracticeModeActions,
   usePracticeModeSession,
 } from '../model/practice-mode.store'
-import { ConnectConceptsExercise } from './exercises/connect-concepts-exercise'
-import { ExplainToAIExercise } from './exercises/explain-to-ai-exercise'
-import { FillGapsExercise } from './exercises/fill-gaps-exercise'
-import { FindErrorExercise } from './exercises/find-error-exercise'
-import { FlashcardExercise } from './exercises/flashcard-exercise'
-import { MatchPairsExercise } from './exercises/match-pairs-exercise'
-import { OpenEndedExercise } from './exercises/open-ended-exercise'
-import { QuizExercise } from './exercises/quiz-exercise'
-import { SequenceExercise } from './exercises/sequence-exercise'
-import { TrueFalseExercise } from './exercises/true-false-exercise'
+import { ConnectConceptsExercise } from './connect-concepts-exercise'
+import { ExplainToAIExercise } from './explain-to-ai-exercise'
+import { FillGapsExercise } from './fill-gaps-exercise'
+import { FindErrorExercise } from './find-error-exercise'
+import { FlashcardExercise } from './flashcard-exercise'
+import { MatchPairsExercise } from './match-pairs-exercise'
+import { OpenEndedExercise } from './open-ended-exercise'
+import { QuizExercise } from './quiz-exercise'
+import { SequenceExercise } from './sequence-exercise'
+import { TrueFalseExercise } from './true-false-exercise'
 
 // --- Types ---
 
@@ -175,13 +176,6 @@ export function ExerciseView({ mapId, nodeLabels, className }: ExerciseViewProps
     <div className={cn('flex flex-col gap-4 p-4', className)}>
       {/* Progress bar */}
       <ProgressHeader current={current} total={total} />
-
-      {/* Exercise type badge */}
-      <div className="flex items-center gap-2">
-        <span className="rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
-          {t(`practice.types.${exercise.type}`, exercise.type)}
-        </span>
-      </div>
 
       {/* Exercise content or feedback */}
       {phase === 'answering' ? (
@@ -364,7 +358,7 @@ function AnswerFeedback({
             : t('practice.mode.incorrect_feedback')}
         </p>
         {result.feedback && (
-          <p className="text-sm text-muted-foreground mt-1">{result.feedback}</p>
+          <div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground mt-1"><Markdown>{result.feedback}</Markdown></div>
         )}
       </div>
 
@@ -374,7 +368,7 @@ function AnswerFeedback({
           <p className="text-xs font-medium text-muted-foreground mb-1">
             {t('practice.mode.explanation', 'Explanation')}
           </p>
-          <p className="text-sm leading-relaxed">{result.explanation}</p>
+          <div className="prose prose-sm dark:prose-invert max-w-none"><Markdown>{result.explanation}</Markdown></div>
         </div>
       )}
 

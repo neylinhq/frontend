@@ -1,29 +1,27 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 
+import { useFullMap } from '@/entities/map'
 import { DEFAULT_NODE_PROGRESS, useAllNodeProgress, type UserNodeProgress } from '@/entities/progress'
 
 import { usePracticeModeActions, usePracticeModeActive } from '../model/practice-mode.store'
-
-interface NodeLike {
-  id: string
-}
 
 /**
  * Fetches node progress when practice mode is active and syncs to store.
  * Creates default "unlearned" entries for nodes that have no progress yet,
  * so the overview shows all nodes from the start.
  *
- * @param mapId - The map ID to fetch progress for
- * @param nodes - All nodes on the map (to populate defaults for unseen nodes)
+ * Reads nodes from react-query cache (useFullMap) so it stays in sync
+ * when AI chat creates new nodes.
  */
-export const useMasteryOverlay = (mapId: string, nodes?: NodeLike[]) => {
+export const useMasteryOverlay = (mapId: string) => {
   const isActive = usePracticeModeActive()
   const { setMasteryData, setLoadingMastery } = usePracticeModeActions()
 
+  const { data: fullMap } = useFullMap(mapId, { enabled: isActive })
   const { data: nodeProgress, isLoading } = useAllNodeProgress(isActive ? mapId : '')
 
-  // Build a stable string key from node IDs to avoid re-running effect on every render
-  const nodeIdKey = nodes ? nodes.map((n) => n.id).join(',') : ''
+  // Stable set of node IDs from the live map data
+  const nodeIdKey = fullMap?.nodes ? fullMap.nodes.map((n) => n.id).join(',') : ''
   const nodeIdSet = useMemo(() => {
     if (!nodeIdKey) {
       return null
@@ -31,12 +29,18 @@ export const useMasteryOverlay = (mapId: string, nodes?: NodeLike[]) => {
     return new Set(nodeIdKey.split(','))
   }, [nodeIdKey])
 
+  // Reset mastery data when map changes
+  const prevMapId = useRef(mapId)
+  if (prevMapId.current !== mapId) {
+    prevMapId.current = mapId
+    setMasteryData([])
+  }
+
   useEffect(() => {
     setLoadingMastery(isLoading)
   }, [isLoading, setLoadingMastery])
 
   useEffect(() => {
-    // Wait for query to settle (not loading, data arrived or empty array)
     if (nodeProgress === undefined) {
       return
     }
@@ -48,7 +52,6 @@ export const useMasteryOverlay = (mapId: string, nodes?: NodeLike[]) => {
 
     const merged: UserNodeProgress[] = [...nodeProgress]
 
-    // Fill in defaults for nodes that have no backend progress yet
     if (nodeIdSet) {
       const now = new Date().toISOString()
       for (const nodeId of nodeIdSet) {

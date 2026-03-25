@@ -201,15 +201,17 @@ export function PracticeOverview({ className }: PracticeOverviewProps) {
         </CardContent>
       </Card>
 
-      {/* Secondary session buttons */}
-      <div className="flex gap-2">
-        <Button variant="outline" size="sm" className="flex-1" onClick={() => startSession('deep_dive', practicingNodeIds.slice(0, 1))}>
-          {t('practice.mode.deepDive')}
-        </Button>
-        <Button variant="outline" size="sm" className="flex-1" onClick={() => startSession('challenge', practicingNodeIds)}>
-          {t('practice.mode.challenge')}
-        </Button>
-      </div>
+      {/* Secondary session buttons — only show when there are nodes to practice */}
+      {practicingNodeIds.length > 0 && (
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" className="flex-1" onClick={() => startSession('deep_dive', practicingNodeIds.slice(0, 1))}>
+            {t('practice.mode.deepDive')}
+          </Button>
+          <Button variant="outline" size="sm" className="flex-1" onClick={() => startSession('challenge', practicingNodeIds)}>
+            {t('practice.mode.challenge')}
+          </Button>
+        </div>
+      )}
     </div>
   )
 }

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import Markdown from 'react-markdown'
 
 import { Button } from '@/shared/components/button'
 import { cn } from '@/shared/lib/cn'
@@ -26,7 +27,6 @@ export function FlashcardExercise({ front, back, onSubmit, disabled }: Flashcard
 
   return (
     <div className="flex flex-col gap-4" onKeyDown={handleKeyDown} tabIndex={-1}>
-      {/* Card — Space/Enter to flip */}
       <button
         type="button"
         disabled={disabled}
@@ -39,18 +39,16 @@ export function FlashcardExercise({ front, back, onSubmit, disabled }: Flashcard
       >
         {!isFlipped ? (
           <div className="flex flex-col items-center justify-center h-full">
-            <p className="text-sm leading-relaxed">{front}</p>
+            <div className="prose prose-sm dark:prose-invert max-w-none"><Markdown>{front}</Markdown></div>
             <p className="text-xs text-muted-foreground mt-4">{t('practice.mode.tapToReveal')}</p>
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center h-full">
-            <p className="text-xs text-muted-foreground mb-2">{t('practice.mode.answer')}</p>
-            <p className="text-sm leading-relaxed font-medium">{back}</p>
+            <div className="prose prose-sm dark:prose-invert max-w-none font-medium"><Markdown>{back}</Markdown></div>
           </div>
         )}
       </button>
 
-      {/* Self-assessment buttons (visible after flip) */}
       {isFlipped && (
         <div className="flex gap-2">
           <Button

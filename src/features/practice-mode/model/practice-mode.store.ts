@@ -82,6 +82,7 @@ export const usePracticeModeStore = create<PracticeModeState & PracticeModeActio
         view: 'overview',
         session: null,
         selectedNodeId: null,
+        masteryMap: new Map(),
       }),
 
     setView: (view) => set({ view }),

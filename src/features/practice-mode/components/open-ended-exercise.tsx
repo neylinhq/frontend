@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import Markdown from 'react-markdown'
 
 import { Button } from '@/shared/components/button'
 import { Textarea } from '@/shared/components/textarea'
@@ -35,7 +36,7 @@ export function OpenEndedExercise({
         </p>
       )}
 
-      <p className="text-sm leading-relaxed">{question}</p>
+      <div className="prose prose-sm dark:prose-invert max-w-none"><Markdown>{question}</Markdown></div>
 
       <Textarea
         value={answer}

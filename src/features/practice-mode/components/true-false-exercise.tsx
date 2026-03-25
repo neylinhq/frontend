@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import Markdown from 'react-markdown'
 
 import { Button } from '@/shared/components/button'
 import { cn } from '@/shared/lib/cn'
@@ -20,7 +21,7 @@ export function TrueFalseExercise({ question, onSubmit, disabled }: TrueFalseExe
 
   return (
     <div className="flex flex-col gap-4" onKeyDown={handleKeyDown} tabIndex={-1}>
-      <p className="text-sm leading-relaxed">{question}</p>
+      <div className="prose prose-sm dark:prose-invert max-w-none"><Markdown>{question}</Markdown></div>
 
       <div className="flex gap-2">
         <Button

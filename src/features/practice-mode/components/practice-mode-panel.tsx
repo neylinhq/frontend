@@ -10,6 +10,7 @@ import {
   usePracticeView,
 } from '../model/practice-mode.store'
 import { ExerciseView } from './exercise-view'
+import { LearnSessionView } from './learn-session-view'
 import { PracticeNodeDetail } from './practice-node-detail'
 import { PracticeOverview } from './practice-overview'
 import { PracticeSessionEnd } from './practice-session-end'
@@ -72,6 +73,23 @@ export const PracticeModePanel = ({
       )
 
     case 'exercise': {
+      const session = usePracticeModeStore.getState().session
+      const currentNodeId = session?.nodeQueue[session.currentIndex]
+      const currentNode = nodes.find((n) => n.id === currentNodeId)
+
+      // Learn session → structured lesson flow
+      if (session?.type === 'learn' && currentNodeId) {
+        return (
+          <LearnSessionView
+            mapId={mapId}
+            nodeId={currentNodeId}
+            nodeLabel={currentNode?.label ?? ''}
+            className={className}
+          />
+        )
+      }
+
+      // Review/deep_dive/challenge → exercise flow
       const nodeLabels = new Map<string, string>()
       for (const n of nodes) {
         nodeLabels.set(n.id, n.label ?? n.id.slice(0, 8))

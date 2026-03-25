@@ -1591,7 +1591,16 @@
       "correct_feedback": "Верно!",
       "incorrect_feedback": "Не совсем.",
       "explanation": "Объяснение",
-      "skip": "Пропустить"
+      "skip": "Пропустить",
+      "preparingLesson": "Готовлю урок...",
+      "takeaway": "Ключевое",
+      "firstReview": "Первое повторение: завтра",
+      "beforeWeBegin": "Прежде чем начнём —",
+      "yourThoughts": "Ваши мысли...",
+      "noIdea": "Без понятия",
+      "almostRight": "Почти — продолжим, и станет понятнее.",
+      "gotIt": "Понятно",
+      "continue": "Дальше"
     },
     "types": {
       "explain_to_ai": "Объяснить AI",

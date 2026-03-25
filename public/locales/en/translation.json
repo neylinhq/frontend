@@ -1589,7 +1589,16 @@
       "correct_feedback": "Correct!",
       "incorrect_feedback": "Not quite.",
       "explanation": "Explanation",
-      "skip": "Skip"
+      "skip": "Skip",
+      "preparingLesson": "Preparing lesson...",
+      "takeaway": "Key takeaway",
+      "firstReview": "First review: tomorrow",
+      "beforeWeBegin": "Before we begin —",
+      "yourThoughts": "Your thoughts...",
+      "noIdea": "No idea",
+      "almostRight": "Almost — let's continue and it'll click.",
+      "gotIt": "Got it",
+      "continue": "Continue"
     },
     "types": {
       "explain_to_ai": "Explain to AI",

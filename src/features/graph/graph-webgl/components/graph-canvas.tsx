@@ -121,6 +121,8 @@ interface WasmGraphEngine {
   add_slug_icons(icons_json: string): void
   /** Switch active text renderer: "msdf" | "sdf" | "bitmap" | "slug" */
   set_text_renderer_mode(mode: string): void
+  /** Set active (dragged) node for two-pass z-index rendering. Active node renders on top. */
+  set_active_node(node_id: string | null): void
 }
 
 /** Position data returned after layout completes */
@@ -884,6 +886,8 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
         // Selection + click deferred to mouseup (only if not dragged)
         draggingNodeRef.current = nodeId
         isPanningRef.current = false
+        // Two-pass z-index: active node renders on top of all others
+        engine.set_active_node(nodeId)
 
         const world = screenToWorld(x, y)
         const storedPos = positionsRef.current.get(nodeId)
@@ -1060,6 +1064,8 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
           }
         }
         draggingNodeRef.current = null
+        // Clear two-pass z-index: no active node
+        engine.set_active_node(null)
       } else if (!hasDraggedRef.current) {
         // No node was dragged/clicked — check edge badge hit
         const badgeHit = engine.hit_test_edge_badge(x, y)

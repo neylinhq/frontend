@@ -35,30 +35,26 @@ describe('ExerciseSchema', () => {
 })
 
 describe('SubmitAnswerOutputSchema', () => {
-  it('parses submit answer results', () => {
+  it('parses FSRS-based submit answer results', () => {
     const payload = {
-      is_correct: true,
+      isCorrect: true,
+      feedback: 'Correct! Well done.',
       explanation: 'Because it is correct.',
-      progress: {
-        id: 'progress-1',
-        user_id: 'user-1',
-        node_id: 'node-1',
-        map_id: 'map-1',
-        ease_factor: 2.5,
-        interval_days: 4,
-        repetitions: 2,
-        next_review_at: null,
-        total_reviews: 3,
-        correct_count: 2,
-        incorrect_count: 1,
-        average_time_ms: 5000,
-        last_review_at: null,
-        mastery_level: 'learning',
-        accuracy: 0.67,
-        created_at: '2024-01-15T00:00:00.000Z',
-        updated_at: '2024-01-15T00:00:00.000Z'
-      },
-      mastery_change: 'improved'
+      masteryChange: 'practicing',
+      stabilityBefore: 3.2,
+      stabilityAfter: 5.1,
+      nextReviewDays: 5,
+      retrievability: 0.92,
+      nodeResults: [
+        {
+          nodeId: 'node-1',
+          stabilityBefore: 3.2,
+          stabilityAfter: 5.1,
+          retrievability: 0.92,
+          masteryLevel: 'practicing',
+          nextReviewDays: 5,
+        },
+      ],
     }
 
     expect(SubmitAnswerOutputSchema.parse(payload)).toEqual(payload)

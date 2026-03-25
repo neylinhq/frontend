@@ -9,6 +9,7 @@ import {
   usePracticeModeStore,
   usePracticeView,
 } from '../model/practice-mode.store'
+import { ExerciseView } from './exercise-view'
 import { PracticeNodeDetail } from './practice-node-detail'
 import { PracticeOverview } from './practice-overview'
 import { PracticeSessionEnd } from './practice-session-end'
@@ -32,6 +33,7 @@ interface PracticeModePanelProps {
  * - session_end: session summary with stability deltas
  */
 export const PracticeModePanel = ({
+  mapId,
   selectedNode,
   nodes = [],
   edges = [],
@@ -70,7 +72,7 @@ export const PracticeModePanel = ({
       )
 
     case 'exercise':
-      return null
+      return <ExerciseView mapId={mapId} className={className} />
 
     case 'session_end':
       return <PracticeSessionEnd className={className} />

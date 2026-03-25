@@ -16,7 +16,7 @@ export type {
   ExerciseSessionState,
   ExerciseType,
   GenerateExercisesRequest,
-  LearningProgress,
+  NodeResultEntry,
   SubmitAnswerOutput
 } from './exercise.schema'
 export {
@@ -24,6 +24,6 @@ export {
   ExerciseOptionSchema,
   ExerciseSchema,
   ExerciseTypeSchema,
-  LearningProgressSchema,
+  NodeResultEntrySchema,
   SubmitAnswerOutputSchema
 } from './exercise.schema'

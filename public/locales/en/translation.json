@@ -1587,7 +1587,9 @@
       "didntKnow": "Didn't know",
       "knewIt": "Knew it",
       "correct_feedback": "Correct!",
-      "incorrect_feedback": "Not quite."
+      "incorrect_feedback": "Not quite.",
+      "explanation": "Explanation",
+      "skip": "Skip"
     },
     "types": {
       "explain_to_ai": "Explain to AI",

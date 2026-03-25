@@ -1589,7 +1589,9 @@
       "didntKnow": "Не знал",
       "knewIt": "Знал",
       "correct_feedback": "Верно!",
-      "incorrect_feedback": "Не совсем."
+      "incorrect_feedback": "Не совсем.",
+      "explanation": "Объяснение",
+      "skip": "Пропустить"
     },
     "types": {
       "explain_to_ai": "Объяснить AI",

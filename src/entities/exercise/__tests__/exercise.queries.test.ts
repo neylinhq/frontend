@@ -32,27 +32,14 @@ describe('exercise queries', () => {
   }
 
   const submitOutput = {
-    is_correct: true,
+    isCorrect: true,
+    feedback: 'Correct!',
     explanation: 'ok',
-    progress: {
-      id: 'progress-1',
-      user_id: 'user-1',
-      node_id: 'node-1',
-      map_id: 'map-1',
-      ease_factor: 2.5,
-      interval_days: 1,
-      repetitions: 1,
-      next_review_at: null,
-      total_reviews: 1,
-      correct_count: 1,
-      incorrect_count: 0,
-      average_time_ms: 1000,
-      last_review_at: null,
-      mastery_level: 'learning',
-      accuracy: 1,
-      created_at: '2024-01-01T00:00:00.000Z',
-      updated_at: '2024-01-01T00:00:00.000Z'
-    }
+    masteryChange: 'learning',
+    stabilityBefore: 0,
+    stabilityAfter: 1.5,
+    nextReviewDays: 1,
+    retrievability: 1.0,
   }
 
   it('fetches next exercise', async () => {

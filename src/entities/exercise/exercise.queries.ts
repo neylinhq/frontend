@@ -45,11 +45,11 @@ export const useSubmitAnswer = () => {
       exerciseId: string
       answer: unknown
     }) => exerciseApi.submitAnswer(mapId, exerciseId, answer),
-    onSuccess: data => {
-      // Invalidate progress queries
-      queryClient.invalidateQueries({ queryKey: exerciseKeys.progress(data.progress.map_id) })
-      // Also invalidate next exercise query to get a new one
-      queryClient.invalidateQueries({ queryKey: exerciseKeys.next(data.progress.map_id) })
+    onSuccess: (_, variables) => {
+      // Invalidate progress queries so mastery data refreshes
+      queryClient.invalidateQueries({ queryKey: exerciseKeys.progress(variables.mapId) })
+      // Invalidate next exercise query to get a new one
+      queryClient.invalidateQueries({ queryKey: exerciseKeys.next(variables.mapId) })
     }
   })
 }

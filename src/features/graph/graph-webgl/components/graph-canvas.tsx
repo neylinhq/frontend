@@ -67,6 +67,7 @@ interface WasmGraphEngine {
   set_selected(node_id: string | null): void
   set_selected_nodes(node_ids: string): void
   set_focused(node_id: string | null): void
+  set_edge_labels(json: string): void
   set_dimmed(node_ids: string): void
   hit_test(screen_x: number, screen_y: number): string | undefined
   hit_test_edge_badge(screen_x: number, screen_y: number): string | undefined
@@ -454,6 +455,16 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
     [getViewportFromEngine, notifyViewportChange]
   )
 
+  // Pre-compute localized edge labels (stable unless language changes)
+  const edgeLabelsJson = useMemo(() => {
+    const types = ['is-a','has-a','causes','explains','related-to','influences','part-of','prerequisite','contradicts','similar-to']
+    const labels: Record<string, string> = {}
+    for (const type of types) {
+      labels[type] = t(`graph.edgeTypes.${type}`, type)
+    }
+    return JSON.stringify(labels)
+  }, [t])
+
   // Initialize WASM engine
   useEffect(() => {
     const canvas = canvasRef.current
@@ -487,6 +498,9 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
 
         // Set initial theme
         engine.set_theme(themeToJson())
+
+        // Set localized edge type labels from i18n
+        engine.set_edge_labels(edgeLabelsJson)
 
         // Set initial render params — always apply defaults, then override if provided
         try {
@@ -584,7 +598,13 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
         engineRef.current = null
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // Sync edge labels when language changes
+  useEffect(() => {
+    engineRef.current?.set_edge_labels(edgeLabelsJson)
+  }, [edgeLabelsJson])
 
   // Sync render params (playground) - avoid redundant JSON churn.
   const lastRenderParamsJsonRef = useRef<string | null>(null)

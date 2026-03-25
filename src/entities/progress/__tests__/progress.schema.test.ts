@@ -13,7 +13,7 @@ describe('UserNodeProgressSchema', () => {
     })
 
     expect(result.confidence).toBe(0)
-    expect(result.masteryLevel).toBe('not_started')
+    expect(result.masteryLevel).toBe('unlearned')
     expect(result.reviewCount).toBe(0)
     expect(result.isBookmarked).toBe(false)
   })
@@ -30,7 +30,7 @@ describe('UserMapProgressSchema', () => {
     })
 
     expect(result.viewport).toEqual({ x: 0, y: 0, zoom: 1 })
-    expect(result.preferredRatingSystem).toBe('elo')
-    expect(result.eloRating).toBe(1500)
+    expect(result.isFavorite).toBe(false)
+    expect(result.overallProgress).toBe(0)
   })
 })

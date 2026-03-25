@@ -7,7 +7,13 @@ export const ExerciseTypeSchema = z.enum([
   'match',
   'sequence',
   'true_false',
-  'open_ended'
+  'open_ended',
+  'explain_to_ai',
+  'create_example',
+  'connect_concepts',
+  'find_error',
+  'prerequisite_check',
+  'transfer',
 ])
 
 export const ExerciseOptionSchema = z.object({
@@ -48,7 +54,7 @@ export const LearningProgressSchema = z.object({
   incorrect_count: z.number(),
   average_time_ms: z.number(),
   last_review_at: z.string().nullable(),
-  mastery_level: z.enum(['novice', 'learning', 'proficient', 'expert']),
+  mastery_level: z.enum(['unlearned', 'learning', 'practicing', 'proficient', 'mastered']),
   accuracy: z.number(),
   created_at: z.string(),
   updated_at: z.string()

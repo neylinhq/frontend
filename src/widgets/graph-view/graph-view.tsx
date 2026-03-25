@@ -9,7 +9,8 @@ import { NodeMetadataForm } from '@/features/node-metadata-form'
 import {
   useMasteryMap,
   useMasteryOverlay,
-  usePracticeModeActive
+  usePracticeModeActions,
+  usePracticeModeActive,
 } from '@/features/practice-mode'
 import type { Edge, FullMap, Node } from '@/entities/map'
 import { ErrorBoundary } from '@/shared/components/error-boundary'
@@ -53,7 +54,16 @@ export const GraphView = memo(({
   // Practice mode
   const isPracticeModeActive = usePracticeModeActive()
   const masteryMap = useMasteryMap()
+  const { selectNode: selectPracticeNode } = usePracticeModeActions()
   useMasteryOverlay(mapId)
+
+  // In practice mode, clicking a node opens its detail in the practice panel
+  const handleNodeSelect = (node: Node | null) => {
+    if (isPracticeModeActive && node) {
+      selectPracticeNode(node.id)
+    }
+    onNodeSelect?.(node)
+  }
 
   return (
     <ErrorBoundary level='widget'>
@@ -66,7 +76,7 @@ export const GraphView = memo(({
         isAIPanelOpen={isAIPanelOpen}
         onToggleAIPanel={onToggleAIPanel}
         onOpenSettings={onOpenSettings}
-        onNodeSelect={onNodeSelect}
+        onNodeSelect={handleNodeSelect}
         onViewportChange={onViewportChange}
         isPracticeModeActive={isPracticeModeActive}
         masteryMap={masteryMap}

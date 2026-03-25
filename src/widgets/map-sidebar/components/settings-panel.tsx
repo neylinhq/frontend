@@ -7,9 +7,9 @@ import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
-import { MapHistoryList, RatingSystemSelector } from '@/features/map-settings'
+import { MapHistoryList } from '@/features/map-settings'
 import { useDeleteMap, useMap, useSetVisibility, useUpdateMap } from '@/entities/map'
-import { type RatingSystem, useMapProgress } from '@/entities/progress'
+import { useMapProgress } from '@/entities/progress'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -35,7 +35,6 @@ import { Textarea } from '@/shared/components/textarea'
 import { toast } from '@/shared/components/toast'
 import { useAutoSave } from '@/shared/hooks'
 import { cn } from '@/shared/lib/cn'
-import { getComplexityTier } from '@/shared/lib/rating'
 
 interface SettingsPanelProps {
   mapId: string
@@ -63,7 +62,6 @@ export const SettingsPanel = memo(function SettingsPanel({
   const setVisibilityMutation = useSetVisibility()
   const deleteMapMutation = useDeleteMap()
 
-  const currentRatingSystem = (mapProgress?.preferredRatingSystem ?? 'elo') as RatingSystem
 
   // Sync local state when map data loads
   useEffect(() => {
@@ -149,10 +147,6 @@ export const SettingsPanel = memo(function SettingsPanel({
     }
   }, [mapId, deleteMapMutation, navigate, t])
 
-  // Get current rating for display
-  const currentRating =
-    currentRatingSystem === 'elo' ? mapProgress?.eloRating : mapProgress?.glickoRating
-  const tier = currentRating != null ? getComplexityTier(currentRating) : null
 
   // Saving indicator
   const isSaving = updateMapMutation.isPending
@@ -229,68 +223,39 @@ export const SettingsPanel = memo(function SettingsPanel({
               {t('mapSettings.tabs.progress', 'Progress')}
             </h3>
 
-            {currentRating != null ? (
-              <>
-                {/* Rating — compact single row */}
-                <div className='flex items-center justify-between'>
-                  <div className='flex items-baseline gap-2'>
-                    <span className='text-2xl font-bold tabular-nums'>{currentRating}</span>
-                    <span className='text-xs text-muted-foreground'>
-                      {currentRatingSystem.toUpperCase()}
-                    </span>
-                  </div>
-                  {tier && (
-                    <span
-                      className='text-xs font-medium px-2 py-0.5 rounded'
-                      style={{ backgroundColor: `${tier.color}15`, color: tier.color }}
-                    >
-                      {tier.name}
-                    </span>
-                  )}
-                </div>
-
-                {/* Stats — compact 2×2 */}
-                <div className='grid grid-cols-2 gap-2'>
-                  <div className='flex items-baseline justify-between rounded-md bg-muted/30 px-3 py-2'>
-                    <span className='text-xs text-muted-foreground'>
-                      {t('mapSettings.progress.nodesTotal')}
-                    </span>
-                    <span className='text-sm font-semibold tabular-nums'>{map?.nodesCount ?? 0}</span>
-                  </div>
-                  <div className='flex items-baseline justify-between rounded-md bg-muted/30 px-3 py-2'>
-                    <span className='text-xs text-muted-foreground'>
-                      {t('mapSettings.progress.overallProgress')}
-                    </span>
-                    <span className='text-sm font-semibold tabular-nums'>
-                      {Math.round((mapProgress?.overallProgress ?? 0) * 100)}%
-                    </span>
-                  </div>
-                  <div className='flex items-baseline justify-between rounded-md bg-muted/30 px-3 py-2'>
-                    <span className='text-xs text-muted-foreground'>
-                      {t('mapSettings.progress.nodesMastered')}
-                    </span>
-                    <span className='text-sm font-semibold tabular-nums'>
-                      {mapProgress?.nodesMastered ?? 0}
-                    </span>
-                  </div>
-                  <div className='flex items-baseline justify-between rounded-md bg-muted/30 px-3 py-2'>
-                    <span className='text-xs text-muted-foreground'>
-                      {t('mapSettings.progress.nodesLearning')}
-                    </span>
-                    <span className='text-sm font-semibold tabular-nums'>
-                      {mapProgress?.nodesLearning ?? 0}
-                    </span>
-                  </div>
-                </div>
-              </>
-            ) : (
-              /* Empty state — no rating yet */
-              <div className='rounded-lg border border-border/60 bg-muted/20 p-4 text-center space-y-2'>
-                <p className='text-sm text-muted-foreground'>
-                  {t('mapSettings.progress.noRating', 'Start a practice session to get your rating')}
-                </p>
+            {/* Stats — compact 2×2 */}
+            <div className='grid grid-cols-2 gap-2'>
+              <div className='flex items-baseline justify-between rounded-md bg-muted/30 px-3 py-2'>
+                <span className='text-xs text-muted-foreground'>
+                  {t('mapSettings.progress.nodesTotal')}
+                </span>
+                <span className='text-sm font-semibold tabular-nums'>{map?.nodesCount ?? 0}</span>
               </div>
-            )}
+              <div className='flex items-baseline justify-between rounded-md bg-muted/30 px-3 py-2'>
+                <span className='text-xs text-muted-foreground'>
+                  {t('mapSettings.progress.overallProgress')}
+                </span>
+                <span className='text-sm font-semibold tabular-nums'>
+                  {Math.round((mapProgress?.overallProgress ?? 0) * 100)}%
+                </span>
+              </div>
+              <div className='flex items-baseline justify-between rounded-md bg-muted/30 px-3 py-2'>
+                <span className='text-xs text-muted-foreground'>
+                  {t('mapSettings.progress.nodesMastered')}
+                </span>
+                <span className='text-sm font-semibold tabular-nums'>
+                  {mapProgress?.nodesMastered ?? 0}
+                </span>
+              </div>
+              <div className='flex items-baseline justify-between rounded-md bg-muted/30 px-3 py-2'>
+                <span className='text-xs text-muted-foreground'>
+                  {t('mapSettings.progress.nodesLearning')}
+                </span>
+                <span className='text-sm font-semibold tabular-nums'>
+                  {mapProgress?.nodesLearning ?? 0}
+                </span>
+              </div>
+            </div>
           </div>
 
           {/* === History — collapsible === */}
@@ -336,9 +301,7 @@ export const SettingsPanel = memo(function SettingsPanel({
                 </button>
               </CollapsibleTrigger>
               <CollapsibleContent>
-                <div className='px-2 pt-1 pb-2 space-y-4'>
-                  <RatingSystemSelector mapId={mapId} currentSystem={currentRatingSystem} />
-                </div>
+                <div className='px-2 pt-1 pb-2 space-y-4' />
               </CollapsibleContent>
             </Collapsible>
           </div>

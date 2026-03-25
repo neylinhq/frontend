@@ -20,22 +20,38 @@ interface KnowledgeNodeProps {
     masteryLevel?: MasteryLevel
     isDue?: boolean
     isPracticeMode?: boolean
+    /** Retrievability 0-1 for stability bar */
+    retrievability?: number
+    /** Whether this node is on the ZPD frontier */
+    isZPDFrontier?: boolean
+    /** Flash color for answer feedback ('correct' | 'incorrect' | null) */
+    answerFlash?: 'correct' | 'incorrect' | null
   }
   id: string
 }
 
 const MASTERY_RING_CLASSES: Record<MasteryLevel, string> = {
   mastered: 'ring-2 ring-[var(--color-mastery-mastered)]',
+  proficient: 'ring-2 ring-[var(--color-mastery-proficient,var(--color-mastery-mastered))]',
   practicing: 'ring-2 ring-[var(--color-mastery-practicing)]',
   learning: 'ring-2 ring-[var(--color-mastery-learning)]',
-  not_started: ''
+  unlearned: '',
 }
 
 const MASTERY_OPACITY_CLASSES: Record<MasteryLevel, string> = {
   mastered: 'opacity-100',
-  practicing: 'opacity-90',
-  learning: 'opacity-80',
-  not_started: 'opacity-45'
+  proficient: 'opacity-95',
+  practicing: 'opacity-85',
+  learning: 'opacity-70',
+  unlearned: 'opacity-45',
+}
+
+const MASTERY_BAR_COLORS: Record<MasteryLevel, string> = {
+  mastered: 'bg-[var(--color-mastery-mastered)]',
+  proficient: 'bg-[var(--color-mastery-proficient)]',
+  practicing: 'bg-[var(--color-mastery-practicing)]',
+  learning: 'bg-[var(--color-mastery-learning)]',
+  unlearned: 'bg-muted-foreground/30',
 }
 
 /** Zoom threshold for showing description and rating tier badge */
@@ -54,11 +70,16 @@ const KnowledgeNodeComponent = ({ data }: KnowledgeNodeProps) => {
   const isFocused = data.isFocused
   const zoom = data.zoom ?? 1
   const isPracticeMode = data.isPracticeMode
-  const masteryLevel = data.masteryLevel ?? 'not_started'
+  const masteryLevel = data.masteryLevel ?? 'unlearned'
   const isDue = data.isDue
+  const isZPDFrontier = data.isZPDFrontier
+  const answerFlash = data.answerFlash
+  const retrievability = data.retrievability ?? 0
 
   // LOD: Show description and rating tier only at high zoom (> 20%)
   const showDetails = zoom >= DETAIL_ZOOM_THRESHOLD
+  // Stability bar visible at higher zoom in practice mode
+  const showStabilityBar = isPracticeMode && zoom >= 0.5
 
   // Calculate tier from complexity value
   const complexityTier = getComplexityTier(data.complexity)
@@ -79,7 +100,12 @@ const KnowledgeNodeComponent = ({ data }: KnowledgeNodeProps) => {
         // Practice mode mastery overlay
         isPracticeMode && !isDimmed && MASTERY_OPACITY_CLASSES[masteryLevel],
         isPracticeMode && !isDimmed && !isSelected && MASTERY_RING_CLASSES[masteryLevel],
-        isPracticeMode && isDue && 'animate-due-pulse'
+        isPracticeMode && isDue && 'animate-due-pulse',
+        // ZPD frontier glow — static teal glow for unlearned nodes with stable prereqs
+        isPracticeMode && isZPDFrontier && 'shadow-[0_0_12px_var(--color-mastery-zpd-glow)]',
+        // Answer flash feedback
+        answerFlash === 'correct' && 'animate-[flash-correct_0.7s_ease-out]',
+        answerFlash === 'incorrect' && 'animate-[flash-incorrect_0.7s_ease-out]',
       )}
     >
       <Handle
@@ -123,6 +149,19 @@ const KnowledgeNodeComponent = ({ data }: KnowledgeNodeProps) => {
             </Badge>
           </div>
         )}
+
+        {/* Stability bar - practice mode only, high zoom */}
+        {showStabilityBar && (
+          <div className='h-1 w-full rounded-full bg-muted/50 overflow-hidden mt-2'>
+            <div
+              className={cn(
+                'h-full rounded-full transition-all duration-300 ease-out',
+                MASTERY_BAR_COLORS[masteryLevel],
+              )}
+              style={{ width: `${Math.round(Math.max(0, Math.min(1, retrievability)) * 100)}%` }}
+            />
+          </div>
+        )}
       </div>
     </Card>
   )
@@ -162,6 +201,9 @@ export const KnowledgeNode = memo(KnowledgeNodeComponent, (prevProps, nextProps)
     prevData.isPracticeMode === nextData.isPracticeMode &&
     prevData.masteryLevel === nextData.masteryLevel &&
     prevData.isDue === nextData.isDue &&
+    prevData.isZPDFrontier === nextData.isZPDFrontier &&
+    prevData.answerFlash === nextData.answerFlash &&
+    prevData.retrievability === nextData.retrievability &&
     tagsEqual &&
     prevShowDetails === nextShowDetails
   )

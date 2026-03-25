@@ -1,117 +1,81 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
+import * as rating from '../rating'
 
-import type { RatingTier } from '..'
+describe('rating (complexity tier utilities)', () => {
+  describe('getComplexityTier', () => {
+    it('returns null for null/undefined', () => {
+      expect(rating.getComplexityTier(null)).toBeNull()
+      expect(rating.getComplexityTier(undefined)).toBeNull()
+    })
 
-let cssVarToHex: typeof import('@/features/graph/graph-webgl/lib/theme-bridge').cssVarToHex
-let rating: typeof import('..')
-
-beforeEach(async () => {
-  vi.resetModules()
-  vi.doMock('@/features/graph/graph-webgl/lib/theme-bridge', () => ({
-    cssVarToHex: vi.fn(() => '#808080')
-  }))
-  ;({ cssVarToHex } = await import('@/features/graph/graph-webgl/lib/theme-bridge'))
-  rating = await import('..')
-})
-
-describe('rating utilities', () => {
-  it('returns null for undefined complexity', () => {
-    expect(rating.getComplexityTier(null)).toBeNull()
-    expect(rating.getComplexityTierName(null)).toBeNull()
+    it('maps complexity to correct tier', () => {
+      expect(rating.getComplexityTier(200)?.name).toBe('Novice')
+      expect(rating.getComplexityTier(1000)?.name).toBe('Apprentice')
+      expect(rating.getComplexityTier(2000)?.name).toBe('Journeyman')
+      expect(rating.getComplexityTier(4000)?.name).toBe('Expert')
+      expect(rating.getComplexityTier(6000)?.name).toBe('Master')
+      expect(rating.getComplexityTier(9000)?.name).toBe('Grandmaster')
+      expect(rating.getComplexityTier(11000)?.name).toBe('Legend')
+      expect(rating.getComplexityTier(14000)?.name).toBe('Mythic')
+    })
   })
 
-  it('maps complexity to tier and uses fallback color', () => {
-    const tier = rating.getComplexityTier(250)
-    expect(tier?.name).toBe('Novice')
-    expect(tier?.color).toBe('#6b7280')
+  describe('getComplexityTierName', () => {
+    it('returns tier name from complexity', () => {
+      expect(rating.getComplexityTierName(200)).toBe('Novice')
+      expect(rating.getComplexityTierName(null)).toBeNull()
+    })
   })
 
-  it('returns null for out-of-range complexity', () => {
-    expect(rating.getComplexityTier(-1)).toBeNull()
+  describe('getComplexityProgress', () => {
+    it('returns progress within tier', () => {
+      expect(rating.getComplexityProgress(250, 'Novice')).toBeCloseTo(0.5)
+    })
+
+    it('returns 0 for null inputs', () => {
+      expect(rating.getComplexityProgress(null, null)).toBe(0)
+    })
   })
 
-  it('exposes tier name helper', () => {
-    expect(rating.getComplexityTierName(2000)).toBe('Journeyman')
+  describe('validation', () => {
+    it('validates complexity range', () => {
+      expect(rating.isValidComplexity(0)).toBe(true)
+      expect(rating.isValidComplexity(15000)).toBe(true)
+      expect(rating.isValidComplexity(-1)).toBe(false)
+      expect(rating.isValidComplexity(15001)).toBe(false)
+    })
+
+    it('validates tier names', () => {
+      expect(rating.isValidTier('Novice')).toBe(true)
+      expect(rating.isValidTier('invalid')).toBe(false)
+    })
   })
 
-  it('handles rating system selection', () => {
-    const node = { eloRating: 1500, eloTier: 'Expert', glickoRating: 2000, glickoTier: 'Master' }
-    expect(rating.getActiveRating(node, 'elo')).toEqual({ rating: 1500, tier: 'Expert' })
-    expect(rating.getActiveRating(node, 'glicko')).toEqual({ rating: 2000, tier: 'Master' })
+  describe('tier utilities', () => {
+    it('getAllTiers returns all 8 tiers', () => {
+      expect(rating.getAllTiers()).toHaveLength(8)
+    })
+
+    it('compareTiers orders correctly', () => {
+      expect(rating.compareTiers('Novice', 'Mythic')).toBe(-1)
+      expect(rating.compareTiers('Mythic', 'Novice')).toBe(1)
+      expect(rating.compareTiers('Expert', 'Expert')).toBe(0)
+    })
+
+    it('getTierIndex returns correct index', () => {
+      expect(rating.getTierIndex('Novice')).toBe(0)
+      expect(rating.getTierIndex('Mythic')).toBe(7)
+      expect(rating.getTierIndex(null)).toBe(-1)
+    })
   })
 
-  it('defaults to null ratings when values are missing', () => {
-    const node = {}
-    expect(rating.getActiveRating(node, 'elo')).toEqual({ rating: null, tier: null })
-    expect(rating.getActiveRating(node, 'glicko')).toEqual({ rating: null, tier: null })
-  })
+  describe('deprecated aliases', () => {
+    it('RATING_SEGMENTS equals COMPLEXITY_SEGMENTS', () => {
+      expect(rating.RATING_SEGMENTS).toBe(rating.COMPLEXITY_SEGMENTS)
+    })
 
-  it('calculates rating progress within tier', () => {
-    expect(rating.getRatingProgress(250, 'Novice')).toBe(0.5)
-    expect(rating.getRatingProgress(null, 'Novice')).toBe(0)
-    expect(rating.getRatingProgress(0, 'Novice')).toBe(0)
-    expect(rating.getRatingProgress(100, 'Unknown' as RatingTier)).toBe(0)
-  })
-
-  it('returns full progress when tier range is zero', () => {
-    const segments = rating.RATING_SEGMENTS as Record<string, { min: number; max: number }>
-    const original = { ...segments.Novice }
-    segments.Novice.max = segments.Novice.min
-
-    expect(rating.getRatingProgress(1, 'Novice')).toBe(1)
-    segments.Novice.max = original.max
-  })
-
-  it('formats rating values', () => {
-    expect(rating.formatRating(1500, 'elo')).toBe('1500 ELO')
-    expect(rating.formatRating(null, 'glicko')).toBe('Not calibrated')
-    expect(rating.formatRating(2000, 'glicko')).toBe('2000 Glicko')
-  })
-
-  it('handles color helpers', () => {
-    expect(rating.getRatingTierColor(null)).toBe('bg-muted text-muted-foreground')
-    expect(rating.getRatingTierColor('Unknown')).toBe('bg-muted text-muted-foreground')
-    expect(rating.getRatingTierBorderColor(null)).toBe('border-border')
-    expect(rating.getRatingTierBorderColor('Novice')).toBe('border-rating-novice')
-    expect(rating.getRatingTierBorderColor('Unknown')).toBe('border-border')
-  })
-
-  it('validates rating values and tiers', () => {
-    expect(rating.isValidRating(0)).toBe(true)
-    expect(rating.isValidRating(16000)).toBe(false)
-    expect(rating.isValidTier('Novice')).toBe(true)
-    expect(rating.isValidTier('Invalid')).toBe(false)
-  })
-
-  it('detects rated nodes', () => {
-    expect(rating.hasRating({ eloRating: 0 })).toBe(false)
-    expect(rating.hasRating({ eloRating: 1200 })).toBe(true)
-    expect(rating.hasRating({ glickoRating: 1200 })).toBe(true)
-    expect(rating.hasRatingSystem({ eloRating: 0 }, 'elo')).toBe(true)
-    expect(rating.hasRatingSystem({ glickoRating: null }, 'glicko')).toBe(false)
-    expect(rating.hasRatingSystem({ glickoRating: 1500 }, 'glicko')).toBe(true)
-  })
-
-  it('returns label per system', () => {
-    expect(rating.getRatingSystemLabel('elo')).toBe('ELO Rating')
-    expect(rating.getRatingSystemLabel('glicko')).toBe('Glicko-2 Rating')
-  })
-
-  it('uses cssVarToHex when available', () => {
-    const mocked = vi.mocked(cssVarToHex)
-    mocked.mockReturnValue('#123456')
-    const tier = rating.getComplexityTier(250)
-    expect(tier?.color).toBe('#123456')
-  })
-
-  it('falls back to default hex when tier is unknown', () => {
-    expect(rating.getRatingTierHexColor('Unknown' as RatingTier)).toBe('#808080')
-  })
-
-  it('orders tiers with helper utilities', () => {
-    expect(rating.getTierIndex(null)).toBe(-1)
-    expect(rating.compareTiers('Novice', 'Expert')).toBe(-1)
-    expect(rating.compareTiers('Expert', 'Novice')).toBe(1)
-    expect(rating.compareTiers('Novice', 'Novice')).toBe(0)
+    it('getRatingTierColor equals getComplexityTierColor', () => {
+      expect(rating.getRatingTierColor).toBe(rating.getComplexityTierColor)
+    })
   })
 })

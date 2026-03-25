@@ -39,13 +39,18 @@ describe('progress queries', () => {
     userId: 'user-1',
     nodeId: 'node-1',
     confidence: 0.5,
-    masteryLevel: 'learning',
+    masteryLevel: 'learning' as const,
     reviewCount: 0,
     correctStreak: 0,
+    fsrsDifficulty: 5,
+    fsrsStability: 0,
+    fsrsLastReview: null,
+    effectiveStability: 0,
+    prereqsStable: true,
     notes: null,
     isBookmarked: false,
     createdAt: '2024-01-01T00:00:00.000Z',
-    updatedAt: '2024-01-01T00:00:00.000Z'
+    updatedAt: '2024-01-01T00:00:00.000Z',
   }
 
   const mapProgress = {
@@ -58,10 +63,7 @@ describe('progress queries', () => {
     nodesMastered: 0,
     nodesLearning: 0,
     nodesTotal: 0,
-    eloRating: 1500,
-    glickoRating: 1500,
     studySettings: {},
-    preferredRatingSystem: 'elo',
     createdAt: '2024-01-01T00:00:00.000Z',
     updatedAt: '2024-01-01T00:00:00.000Z'
   }

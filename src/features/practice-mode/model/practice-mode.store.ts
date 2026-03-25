@@ -3,87 +3,96 @@ import { useShallow } from 'zustand/react/shallow'
 
 import type { MasteryLevel, UserNodeProgress } from '@/entities/progress'
 
-/**
- * Mastery data for a single node, derived from UserNodeProgress.
- */
+// --- Types ---
+
+export type SessionType = 'review' | 'learn' | 'deep_dive' | 'challenge'
+
+/** Practice sidebar view state */
+export type PracticeView = 'overview' | 'node_detail' | 'exercise' | 'session_end'
+
 export interface NodeMasteryData {
   nodeId: string
   mastery: MasteryLevel
   confidence: number
   isDue: boolean
   nextReviewAt: string | null
+  fsrsStability: number
+  fsrsDifficulty: number
+  effectiveStability: number
+  prereqsStable: boolean
+  reviewCount: number
 }
 
-/**
- * Practice session state — tracks an active quick session or deep dive.
- */
+export interface StabilityDelta {
+  nodeId: string
+  nodeLabel: string
+  before: number
+  after: number
+  delta: number
+}
+
 export interface PracticeSession {
-  type: 'quick' | 'deep'
-  /** Currently active node in the session */
-  activeNodeId: string | null
-  /** Ordered list of node IDs to practice */
+  type: SessionType
   nodeQueue: string[]
-  /** Current index in the queue */
   currentIndex: number
-  /** Answers this session: nodeId → correct */
   results: Map<string, boolean>
+  stabilityDeltas: StabilityDelta[]
+  startedAt: number
 }
 
 export interface PracticeModeState {
-  /** Whether practice mode is active */
   isActive: boolean
-  /** Node mastery map: nodeId → mastery data (populated from API) */
+  view: PracticeView
+  selectedNodeId: string | null
   masteryMap: Map<string, NodeMasteryData>
-  /** Active practice session (null when idle in practice mode) */
   session: PracticeSession | null
-  /** Whether mastery data is loading */
   isLoadingMastery: boolean
 }
 
 export interface PracticeModeActions {
-  /** Enter practice mode */
   enter: () => void
-  /** Exit practice mode */
   exit: () => void
-  /** Set mastery data from API response */
+  setView: (view: PracticeView) => void
+  selectNode: (nodeId: string | null) => void
   setMasteryData: (progress: UserNodeProgress[]) => void
-  /** Set loading state */
   setLoadingMastery: (loading: boolean) => void
-  /** Start a quick session with node queue */
-  startQuickSession: (nodeIds: string[]) => void
-  /** Start a deep dive on a specific node */
-  startDeepDive: (nodeId: string) => void
-  /** Record answer and advance session */
-  recordAnswer: (nodeId: string, correct: boolean) => void
-  /** Move to next exercise in session */
+  startSession: (type: SessionType, nodeIds: string[]) => void
+  recordAnswer: (nodeId: string, correct: boolean, stabilityDelta?: StabilityDelta) => void
   nextExercise: () => void
-  /** End active session */
   endSession: () => void
-  /** Update mastery for a single node (after answer) */
-  updateNodeMastery: (nodeId: string, mastery: MasteryLevel, confidence: number) => void
+  updateNodeMastery: (nodeId: string, data: Partial<NodeMasteryData>) => void
 }
 
-const isNodeDue = (progress: UserNodeProgress): boolean => {
-  if (!progress.nextReviewAt) return false
-  return new Date(progress.nextReviewAt) <= new Date()
-}
+// --- Store ---
 
 export const usePracticeModeStore = create<PracticeModeState & PracticeModeActions>()(
   (set, get) => ({
-    // State
     isActive: false,
+    view: 'overview',
+    selectedNodeId: null,
     masteryMap: new Map(),
     session: null,
     isLoadingMastery: false,
 
-    // Actions
-    enter: () => set({ isActive: true }),
+    enter: () => set({ isActive: true, view: 'overview' }),
 
     exit: () =>
       set({
         isActive: false,
-        session: null
+        view: 'overview',
+        session: null,
+        selectedNodeId: null,
       }),
+
+    setView: (view) => set({ view }),
+
+    selectNode: (nodeId) => {
+      if (nodeId) {
+        set({ selectedNodeId: nodeId, view: 'node_detail' })
+      } else {
+        set({ selectedNodeId: null, view: 'overview' })
+      }
+    },
 
     setMasteryData: (progress) => {
       const map = new Map<string, NodeMasteryData>()
@@ -92,8 +101,13 @@ export const usePracticeModeStore = create<PracticeModeState & PracticeModeActio
           nodeId: p.nodeId,
           mastery: p.masteryLevel,
           confidence: p.confidence,
-          isDue: isNodeDue(p),
-          nextReviewAt: p.nextReviewAt ?? null
+          isDue: p.reviewCount > 0 && isNodeDue(p),
+          nextReviewAt: p.nextReviewAt ?? null,
+          fsrsStability: p.fsrsStability,
+          fsrsDifficulty: p.fsrsDifficulty,
+          effectiveStability: p.effectiveStability,
+          prereqsStable: p.prereqsStable,
+          reviewCount: p.reviewCount,
         })
       }
       set({ masteryMap: map, isLoadingMastery: false })
@@ -101,35 +115,30 @@ export const usePracticeModeStore = create<PracticeModeState & PracticeModeActio
 
     setLoadingMastery: (loading) => set({ isLoadingMastery: loading }),
 
-    startQuickSession: (nodeIds) =>
+    startSession: (type, nodeIds) =>
       set({
+        view: 'exercise',
         session: {
-          type: 'quick',
-          activeNodeId: nodeIds[0] ?? null,
+          type,
           nodeQueue: nodeIds,
           currentIndex: 0,
-          results: new Map()
-        }
+          results: new Map(),
+          stabilityDeltas: [],
+          startedAt: Date.now(),
+        },
       }),
 
-    startDeepDive: (nodeId) =>
-      set({
-        session: {
-          type: 'deep',
-          activeNodeId: nodeId,
-          nodeQueue: [nodeId],
-          currentIndex: 0,
-          results: new Map()
-        }
-      }),
-
-    recordAnswer: (nodeId, correct) => {
+    recordAnswer: (nodeId, correct, stabilityDelta) => {
       const { session } = get()
       if (!session) return
 
       const results = new Map(session.results)
       results.set(nodeId, correct)
-      set({ session: { ...session, results } })
+      const deltas = stabilityDelta
+        ? [...session.stabilityDeltas, stabilityDelta]
+        : session.stabilityDeltas
+
+      set({ session: { ...session, results, stabilityDeltas: deltas } })
     },
 
     nextExercise: () => {
@@ -138,7 +147,7 @@ export const usePracticeModeStore = create<PracticeModeState & PracticeModeActio
 
       const nextIndex = session.currentIndex + 1
       if (nextIndex >= session.nodeQueue.length) {
-        // Session complete — keep session for summary
+        set({ view: 'session_end' })
         return
       }
 
@@ -146,34 +155,39 @@ export const usePracticeModeStore = create<PracticeModeState & PracticeModeActio
         session: {
           ...session,
           currentIndex: nextIndex,
-          activeNodeId: session.nodeQueue[nextIndex]
-        }
+        },
       })
     },
 
-    endSession: () => set({ session: null }),
+    endSession: () => set({ session: null, view: 'overview' }),
 
-    updateNodeMastery: (nodeId, mastery, confidence) => {
+    updateNodeMastery: (nodeId, data) => {
       const { masteryMap } = get()
       const existing = masteryMap.get(nodeId)
+      if (!existing) return
       const updated = new Map(masteryMap)
-      updated.set(nodeId, {
-        nodeId,
-        mastery,
-        confidence,
-        isDue: false, // just answered — not due
-        nextReviewAt: existing?.nextReviewAt ?? null
-      })
+      updated.set(nodeId, { ...existing, ...data })
       set({ masteryMap: updated })
-    }
+    },
   })
 )
+
+// --- Helpers ---
+
+function isNodeDue(p: UserNodeProgress): boolean {
+  if (!p.nextReviewAt) return false
+  return new Date(p.nextReviewAt) <= new Date()
+}
 
 // --- Selector hooks ---
 
 export const usePracticeModeActive = () => usePracticeModeStore((s) => s.isActive)
 
+export const usePracticeView = () => usePracticeModeStore((s) => s.view)
+
 export const usePracticeModeSession = () => usePracticeModeStore((s) => s.session)
+
+export const useSelectedPracticeNodeId = () => usePracticeModeStore((s) => s.selectedNodeId)
 
 export const useMasteryMap = () => usePracticeModeStore((s) => s.masteryMap)
 
@@ -185,14 +199,15 @@ export const usePracticeModeActions = () =>
     useShallow((s) => ({
       enter: s.enter,
       exit: s.exit,
+      setView: s.setView,
+      selectNode: s.selectNode,
       setMasteryData: s.setMasteryData,
       setLoadingMastery: s.setLoadingMastery,
-      startQuickSession: s.startQuickSession,
-      startDeepDive: s.startDeepDive,
+      startSession: s.startSession,
       recordAnswer: s.recordAnswer,
       nextExercise: s.nextExercise,
       endSession: s.endSession,
-      updateNodeMastery: s.updateNodeMastery
+      updateNodeMastery: s.updateNodeMastery,
     }))
   )
 
@@ -201,8 +216,9 @@ export const usePracticeModeStats = () =>
     useShallow((s) => {
       const mastery = s.masteryMap
       let mastered = 0
-      let learning = 0
+      let proficient = 0
       let practicing = 0
+      let learning = 0
       let notStarted = 0
       let dueCount = 0
 
@@ -211,13 +227,16 @@ export const usePracticeModeStats = () =>
           case 'mastered':
             mastered++
             break
+          case 'proficient':
+            proficient++
+            break
           case 'practicing':
             practicing++
             break
           case 'learning':
             learning++
             break
-          case 'not_started':
+          case 'unlearned':
             notStarted++
             break
         }
@@ -227,10 +246,23 @@ export const usePracticeModeStats = () =>
       return {
         total: mastery.size,
         mastered,
-        learning,
+        proficient,
         practicing,
+        learning,
         notStarted,
-        dueCount
+        dueCount,
       }
     })
   )
+
+/** Nodes on the ZPD frontier: unlearned with stable prerequisites */
+export const useZPDFrontierCount = () =>
+  usePracticeModeStore((s) => {
+    let count = 0
+    for (const data of s.masteryMap.values()) {
+      if (data.mastery === 'unlearned' && data.prereqsStable) {
+        count++
+      }
+    }
+    return count
+  })

@@ -44,10 +44,10 @@ export function enrichNodesWithProgress<T extends Node | LightweightNode>(
 export function getProgressStats(nodes: EnrichedNode[] | EnrichedLightweightNode[]) {
   const total = nodes.length
   const mastered = nodes.filter(n => n.progress.masteryLevel === 'mastered').length
-  const learning = nodes.filter(
-    n => n.progress.masteryLevel === 'learning' || n.progress.masteryLevel === 'practicing'
-  ).length
-  const notStarted = nodes.filter(n => n.progress.masteryLevel === 'not_started').length
+  const proficient = nodes.filter(n => n.progress.masteryLevel === 'proficient').length
+  const practicing = nodes.filter(n => n.progress.masteryLevel === 'practicing').length
+  const learning = nodes.filter(n => n.progress.masteryLevel === 'learning').length
+  const notStarted = nodes.filter(n => n.progress.masteryLevel === 'unlearned').length
   const bookmarked = nodes.filter(n => n.progress.isBookmarked).length
 
   const avgConfidence =
@@ -56,10 +56,12 @@ export function getProgressStats(nodes: EnrichedNode[] | EnrichedLightweightNode
   return {
     total,
     mastered,
+    proficient,
+    practicing,
     learning,
     notStarted,
     bookmarked,
     avgConfidence,
-    masteryPercent: total > 0 ? (mastered / total) * 100 : 0
+    masteryPercent: total > 0 ? ((mastered + proficient) / total) * 100 : 0,
   }
 }

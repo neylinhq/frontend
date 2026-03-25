@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
 import { useDeleteMap, useMap, useSetVisibility, useUpdateMap } from '@/entities/map'
-import { type RatingSystem, useMapProgress } from '@/entities/progress'
+import { useMapProgress } from '@/entities/progress'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -35,10 +35,7 @@ import { Textarea } from '@/shared/components/textarea'
 import { toast } from '@/shared/components/toast'
 import { useAutoSave } from '@/shared/hooks'
 import { cn } from '@/shared/lib/cn'
-import { getComplexityTier } from '@/shared/lib/rating'
-
 import { MapHistoryList } from './map-history-list'
-import { RatingSystemSelector } from './rating-system-selector'
 
 interface MapSettingsDrawerProps {
   mapId: string
@@ -66,8 +63,6 @@ export const MapSettingsDrawer = memo(
     const updateMapMutation = useUpdateMap(mapId)
     const setVisibilityMutation = useSetVisibility()
     const deleteMapMutation = useDeleteMap()
-
-    const currentRatingSystem = (mapProgress?.preferredRatingSystem ?? 'elo') as RatingSystem
 
     // Sync local state when map data loads
     useEffect(() => {
@@ -170,11 +165,6 @@ export const MapSettingsDrawer = memo(
         toast.error(t('errors.failedDelete'))
       }
     }, [mapId, deleteMapMutation, handleClose, navigate, t])
-
-    // Get current rating for display
-    const currentRating =
-      currentRatingSystem === 'elo' ? mapProgress?.eloRating : mapProgress?.glickoRating
-    const tier = currentRating != null ? getComplexityTier(currentRating) : null
 
     // Saving indicator
     const isSaving = updateMapMutation.isPending
@@ -310,31 +300,6 @@ export const MapSettingsDrawer = memo(
               {/* Progress Tab - Stats + Rating */}
               <TabsContent value='progress' className='flex-1 overflow-y-auto mt-0 p-4'>
                 <div className='space-y-6'>
-                  {/* Your Rating - prominent display */}
-                  <div className='p-4 rounded-md bg-muted/30 border'>
-                    <div className='flex items-center justify-between mb-2'>
-                      <span className='text-xs text-muted-foreground'>
-                        {t('mapSettings.progress.yourRating')}
-                      </span>
-                      {tier && (
-                        <span
-                          className='text-xs font-medium px-2 py-0.5 rounded-xs'
-                          style={{ backgroundColor: `${tier.color}15`, color: tier.color }}
-                        >
-                          {tier.name}
-                        </span>
-                      )}
-                    </div>
-                    <div className='flex items-baseline gap-2'>
-                      <span className='text-3xl font-bold tabular-nums'>
-                        {currentRating ?? '?'}
-                      </span>
-                      <span className='text-xs text-muted-foreground'>
-                        {currentRatingSystem.toUpperCase()}
-                      </span>
-                    </div>
-                  </div>
-
                   {/* Stats Grid */}
                   <div className='grid grid-cols-2 gap-3'>
                     <div className='p-3 rounded-md bg-muted/30'>
@@ -379,9 +344,7 @@ export const MapSettingsDrawer = memo(
               {/* Settings Tab - Rating System + Danger Zone */}
               <TabsContent value='settings' className='flex-1 overflow-y-auto mt-0'>
                 <div className='flex flex-col min-h-full'>
-                  <div className='p-4'>
-                    <RatingSystemSelector mapId={mapId} currentSystem={currentRatingSystem} />
-                  </div>
+                  <div className='p-4' />
 
                   {/* Danger Zone - mt-auto pushes to bottom (only for owners) */}
                   {isOwner && (

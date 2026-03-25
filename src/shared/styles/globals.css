@@ -245,17 +245,20 @@
   --color-node-school: oklch(var(--node-school));
   --color-node-school-muted: oklch(var(--node-school-muted));
 
-  /* Mastery level colors — practice mode overlay */
+  /* Mastery level colors — practice mode overlay (5 levels) */
   --color-mastery-mastered: oklch(var(--mastery-mastered));
   --color-mastery-mastered-muted: oklch(var(--mastery-mastered-muted));
+  --color-mastery-proficient: oklch(var(--mastery-proficient));
+  --color-mastery-proficient-muted: oklch(var(--mastery-proficient-muted));
   --color-mastery-practicing: oklch(var(--mastery-practicing));
   --color-mastery-practicing-muted: oklch(var(--mastery-practicing-muted));
   --color-mastery-learning: oklch(var(--mastery-learning));
   --color-mastery-learning-muted: oklch(var(--mastery-learning-muted));
-  --color-mastery-not-started: oklch(var(--mastery-not-started));
-  --color-mastery-not-started-muted: oklch(var(--mastery-not-started-muted));
+  --color-mastery-unlearned: oklch(var(--mastery-unlearned));
+  --color-mastery-unlearned-muted: oklch(var(--mastery-unlearned-muted));
   --color-mastery-due: oklch(var(--mastery-due));
   --color-mastery-due-muted: oklch(var(--mastery-due-muted));
+  --color-mastery-zpd-glow: oklch(0.70 0.15 185);
 
   /* Edge colors - 10 unique types */
   --color-edge-prerequisite: oklch(var(--edge-prerequisite));
@@ -402,6 +405,19 @@
     }
   }
 
+  /* Practice mode — answer feedback flash */
+  @keyframes flash-correct {
+    0% { box-shadow: 0 0 0 0 oklch(var(--mastery-mastered) / 0.6); }
+    20% { box-shadow: 0 0 12px 4px oklch(var(--mastery-mastered) / 0.4); }
+    100% { box-shadow: 0 0 0 0 oklch(var(--mastery-mastered) / 0); }
+  }
+
+  @keyframes flash-incorrect {
+    0% { box-shadow: 0 0 0 0 oklch(var(--mastery-due) / 0.6); }
+    20% { box-shadow: 0 0 12px 4px oklch(var(--mastery-due) / 0.4); }
+    100% { box-shadow: 0 0 0 0 oklch(var(--mastery-due) / 0); }
+  }
+
   /* Menu fade-in animation (Design Manifesto: 200-300ms ease-out) */
   --animate-menu-in: menu-fade-in 0.2s ease-out;
 
@@ -531,14 +547,16 @@
     /* Practice mode — mastery level colors
        Reuses semantic hues (success/warning/destructive) for consistency.
        Ring variants are used for node border glow in practice overlay. */
-    --mastery-mastered: 0.58 0.17 145;        /* Green — same hue as success */
+    --mastery-mastered: 0.58 0.17 145;        /* Green — long-term memory */
     --mastery-mastered-muted: 0.94 0.04 145;
+    --mastery-proficient: 0.60 0.15 185;      /* Teal — between blue and green */
+    --mastery-proficient-muted: 0.94 0.04 185;
     --mastery-practicing: 0.62 0.14 230;      /* Blue — active learning */
     --mastery-practicing-muted: 0.94 0.04 230;
-    --mastery-learning: 0.78 0.16 85;         /* Amber — same hue as warning */
+    --mastery-learning: 0.78 0.16 85;         /* Amber — early stage */
     --mastery-learning-muted: 0.94 0.04 85;
-    --mastery-not-started: 0.50 0 0;          /* Gray — neutral */
-    --mastery-not-started-muted: 0.94 0 0;
+    --mastery-unlearned: 0.50 0 0;            /* Gray — not started */
+    --mastery-unlearned-muted: 0.94 0 0;
     --mastery-due: 0.60 0.22 25;              /* Red — needs attention */
     --mastery-due-muted: 0.94 0.04 25;
 

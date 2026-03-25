@@ -20,8 +20,6 @@ export {
   DEFAULT_NODE_PROGRESS,
   type MasteryLevel,
   MasteryLevelEnum,
-  type RatingSystem,
-  RatingSystemEnum,
   type ReviewNodeRequest,
   type UpdateMapProgressRequest,
   type UpdateNodeProgressRequest,

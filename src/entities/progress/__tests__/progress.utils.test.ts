@@ -2,6 +2,14 @@ import { describe, expect, it } from 'vitest'
 
 import { enrichNodesWithProgress, getProgressStats } from '../progress.utils'
 
+const FSRS_DEFAULTS = {
+  fsrsDifficulty: 5,
+  fsrsStability: 0,
+  fsrsLastReview: null,
+  effectiveStability: 0,
+  prereqsStable: true,
+}
+
 describe('progress utilities', () => {
   it('enriches nodes with progress data', () => {
     const nodes = [
@@ -33,13 +41,14 @@ describe('progress utilities', () => {
         userId: 'user-1',
         nodeId: 'node-1',
         confidence: 0.5,
-        masteryLevel: 'learning',
+        masteryLevel: 'learning' as const,
         lastReviewedAt: null,
         nextReviewAt: null,
         reviewCount: 1,
         correctStreak: 0,
         notes: null,
         isBookmarked: true,
+        ...FSRS_DEFAULTS,
         createdAt: '2024-01-01T00:00:00.000Z',
         updatedAt: '2024-01-01T00:00:00.000Z'
       }
@@ -67,13 +76,14 @@ describe('progress utilities', () => {
           userId: 'user-1',
           nodeId: 'node-1',
           confidence: 1,
-          masteryLevel: 'mastered',
+          masteryLevel: 'mastered' as const,
           lastReviewedAt: null,
           nextReviewAt: null,
           reviewCount: 2,
           correctStreak: 2,
           notes: null,
           isBookmarked: false,
+          ...FSRS_DEFAULTS,
           createdAt: '2024-01-01T00:00:00.000Z',
           updatedAt: '2024-01-01T00:00:00.000Z'
         }
@@ -92,13 +102,14 @@ describe('progress utilities', () => {
           userId: 'user-1',
           nodeId: 'node-2',
           confidence: 0,
-          masteryLevel: 'not_started',
+          masteryLevel: 'unlearned' as const,
           lastReviewedAt: null,
           nextReviewAt: null,
           reviewCount: 0,
           correctStreak: 0,
           notes: null,
           isBookmarked: true,
+          ...FSRS_DEFAULTS,
           createdAt: '2024-01-01T00:00:00.000Z',
           updatedAt: '2024-01-01T00:00:00.000Z'
         }

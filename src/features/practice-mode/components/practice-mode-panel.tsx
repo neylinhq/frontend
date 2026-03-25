@@ -12,7 +12,7 @@ import {
 import { ExerciseView } from './exercise-view'
 import { PracticeOverview } from './practice-overview'
 import { PracticeSessionEnd } from './practice-session-end'
-import { TutorChatPlaceholder } from './tutor-chat-placeholder'
+import { TutorChatView } from './tutor-chat-view'
 
 interface PracticeModePanelProps {
   mapId: string
@@ -54,7 +54,11 @@ export const PracticeModePanel = ({
     }
 
     case 'tutor': {
-      return <TutorChatPlaceholder className={className} />
+      const tutorNodeLabels = new Map<string, string>()
+      for (const n of nodes) {
+        tutorNodeLabels.set(n.id, n.label ?? n.id.slice(0, 8))
+      }
+      return <TutorChatView mapId={mapId} nodeLabels={tutorNodeLabels} className={className} />
     }
 
     case 'review': {
@@ -66,7 +70,7 @@ export const PracticeModePanel = ({
     }
 
     case 'session_end': {
-      return <PracticeSessionEnd className={className} />
+      return <PracticeSessionEnd mapId={mapId} className={className} />
     }
 
     default: {

@@ -526,7 +526,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
         // Slug font: Söhne Regular converted to TTF via infra/tools/woff2-to-ttf.
         // Falls back to MSDF silently if the TTF is unavailable.
         try {
-          const ttfResponse = await fetch('/assets/soehne-regular.ttf')
+          const ttfResponse = await fetch('/assets/geist-regular.ttf')
           if (ttfResponse.ok) {
             const ttfBuffer = await ttfResponse.arrayBuffer()
             engine.load_slug_font_ttf(new Uint8Array(ttfBuffer))

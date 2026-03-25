@@ -7,6 +7,16 @@ import remarkMath from 'remark-math'
 
 import 'katex/dist/katex.min.css'
 
+/**
+ * Convert LaTeX-style delimiters \(...\) and \[...\] to $...$ and $$...$$
+ * that remark-math understands. Many AI models output LaTeX delimiters.
+ */
+function normalizeLatexDelimiters(text: string): string {
+  return text
+    .replace(/\\\[(.+?)\\\]/gs, (_match, inner: string) => `$$${inner}$$`)
+    .replace(/\\\((.+?)\\\)/gs, (_match, inner: string) => `$${inner}$`)
+}
+
 type MarkdownProps = ComponentPropsWithoutRef<typeof Markdown>
 
 interface RichMarkdownProps {
@@ -28,7 +38,7 @@ export function RichMarkdown({
       rehypePlugins={[rehypeKatex, rehypeRaw, ...(rehypePlugins ?? [])]}
       components={components}
     >
-      {children}
+      {normalizeLatexDelimiters(children)}
     </Markdown>
   )
 }

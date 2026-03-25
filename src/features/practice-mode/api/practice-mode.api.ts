@@ -37,9 +37,27 @@ export interface EvaluateStepOutput {
   encouragement: string
 }
 
-export interface LearnChatChunk {
+export interface TutorChunk {
   type: 'text' | 'done' | 'error'
   content?: string
+}
+
+export interface TutorMessageInput {
+  message: string
+  nodeId: string
+  history: Array<{ role: 'user' | 'assistant'; content: string }>
+  locale?: string
+}
+
+export interface StartSessionResult {
+  sessionId: string
+  chain: string[]
+}
+
+export interface ExpandSuggestion {
+  nodeId: string
+  label: string
+  reason: string
 }
 
 interface ApiResponse<T> {
@@ -47,7 +65,7 @@ interface ApiResponse<T> {
   data: T
 }
 
-// --- Lesson cache (for prefetch → use on mount) ---
+// --- Lesson cache (for prefetch -> use on mount) ---
 
 const lessonCache = new Map<string, { plan: LessonPlan; ts: number }>()
 const LESSON_CACHE_TTL = 5 * 60 * 1000 // 5 min
@@ -85,25 +103,39 @@ export const learnSessionApi = {
     )
     return response.data
   },
+}
+
+export const practiceModeApi = {
+  /**
+   * Start a scoped session and get the node chain.
+   */
+  startScopedSession: async (
+    mapId: string,
+    mode: 'tutor' | 'review',
+    scopeNodeIds: string[]
+  ): Promise<StartSessionResult> => {
+    const response = await api.post<StartSessionResult>(
+      `/maps/${mapId}/practice/sessions`,
+      {
+        type: mode === 'tutor' ? 'learn' : 'review',
+        mode,
+        scopeNodeIds,
+      }
+    )
+    return response.data
+  },
 
   /**
-   * Stream a chat message to the learn tutor. Returns a promise that resolves when done.
+   * Send a tutor message via SSE streaming.
    */
-  chatStream: async (
+  tutorMessage: async (
     mapId: string,
-    message: string,
-    onChunk: (chunk: LearnChatChunk) => void,
-    options: {
-      lessonPlan: LessonPlan
-      history: Array<{ role: 'user' | 'assistant'; content: string }>
-      currentStep: string
-      conceptTitle: string
-      locale?: string
-      signal?: AbortSignal
-    }
+    input: TutorMessageInput,
+    onChunk: (chunk: TutorChunk) => void,
+    signal?: AbortSignal
   ): Promise<void> => {
-    const abortController = options.signal ? null : new AbortController()
-    const signal = options.signal ?? abortController?.signal
+    const abortController = signal ? null : new AbortController()
+    const effectiveSignal = signal ?? abortController?.signal
 
     const timeoutId = setTimeout(() => {
       abortController?.abort()
@@ -111,19 +143,17 @@ export const learnSessionApi = {
     }, 3 * 60 * 1000)
 
     try {
-      const response = await fetch(`${STREAM_API_URL}/maps/${mapId}/learn/chat/stream`, {
+      const response = await fetch(`${STREAM_API_URL}/maps/${mapId}/practice/tutor/stream`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({
-          message,
-          lessonPlan: options.lessonPlan,
-          history: options.history,
-          currentStep: options.currentStep,
-          conceptTitle: options.conceptTitle,
-          locale: options.locale,
+          message: input.message,
+          nodeId: input.nodeId,
+          history: input.history,
+          locale: input.locale,
         }),
-        signal,
+        signal: effectiveSignal,
       })
 
       if (!response.ok) {
@@ -160,7 +190,7 @@ export const learnSessionApi = {
         for (const line of lines) {
           if (line.startsWith('data: ')) {
             try {
-              const chunk = JSON.parse(line.slice(6)) as LearnChatChunk
+              const chunk = JSON.parse(line.slice(6)) as TutorChunk
               onChunk(chunk)
             } catch {
               // skip unparseable
@@ -175,5 +205,19 @@ export const learnSessionApi = {
     } finally {
       clearTimeout(timeoutId)
     }
+  },
+
+  /**
+   * Get expand suggestions for nodes not yet covered.
+   */
+  getExpandSuggestions: async (
+    mapId: string,
+    coveredNodeIds: string[]
+  ): Promise<ExpandSuggestion[]> => {
+    const response = await api.post<ExpandSuggestion[]>(
+      `/maps/${mapId}/practice/expand-suggestions`,
+      { coveredNodeIds }
+    )
+    return response.data
   },
 }

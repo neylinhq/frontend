@@ -1,15 +1,14 @@
 export { PracticeFab } from './components/practice-fab'
 export { PracticeModePanel } from './components/practice-mode-panel'
 export { PracticeOverview } from './components/practice-overview'
-export { PracticeNodeDetail } from './components/practice-node-detail'
 export { PracticeSessionEnd } from './components/practice-session-end'
 export { MemoryUpdateCard } from './components/memory-update-card'
 export { StabilityBar } from './components/stability-bar'
 export { QuizExercise } from './components/quiz-exercise'
 export { FlashcardExercise } from './components/flashcard-exercise'
 export { OpenEndedExercise } from './components/open-ended-exercise'
-export { useMasteryOverlay } from './model/practice-mode.hooks'
-export type { NodeMasteryData, PracticeSession, SessionType, StabilityDelta } from './model/practice-mode.store'
+export { useMasteryOverlay, usePracticeScope } from './model/practice-mode.hooks'
+export type { NodeMasteryData, PracticeSession, PracticeView, StabilityDelta, TutorMessage } from './model/practice-mode.store'
 export {
   useMasteryMap,
   useNodeMastery,
@@ -18,6 +17,5 @@ export {
   usePracticeModeStats,
   usePracticeModeStore,
   usePracticeView,
-  useSelectedPracticeNodeId,
   useZPDFrontierCount,
 } from './model/practice-mode.store'

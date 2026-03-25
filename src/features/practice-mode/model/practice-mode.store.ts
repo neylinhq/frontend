@@ -5,10 +5,7 @@ import type { MasteryLevel, UserNodeProgress } from '@/entities/progress'
 
 // --- Types ---
 
-export type SessionType = 'review' | 'learn' | 'deep_dive' | 'challenge'
-
-/** Practice sidebar view state */
-export type PracticeView = 'overview' | 'node_detail' | 'exercise' | 'session_end'
+export type PracticeView = 'overview' | 'tutor' | 'review' | 'session_end'
 
 export interface NodeMasteryData {
   nodeId: string
@@ -31,18 +28,24 @@ export interface StabilityDelta {
   delta: number
 }
 
+export interface TutorMessage {
+  role: 'user' | 'assistant'
+  content: string
+}
+
 export interface PracticeSession {
-  type: SessionType
-  nodeQueue: string[]
-  currentIndex: number
+  mode: 'tutor' | 'review'
+  chain: string[]
+  currentChainIndex: number
   results: Map<string, boolean>
   stabilityDeltas: StabilityDelta[]
   startedAt: number
+  tutorHistory: TutorMessage[]
 }
 
 export interface PracticeModeState {
   view: PracticeView
-  selectedNodeId: string | null
+  scopeNodeIds: string[]
   masteryMap: Map<string, NodeMasteryData>
   session: PracticeSession | null
   isLoadingMastery: boolean
@@ -52,14 +55,18 @@ export interface PracticeModeActions {
   enter: () => void
   exit: () => void
   setView: (view: PracticeView) => void
-  selectNode: (nodeId: string | null) => void
   setMasteryData: (progress: UserNodeProgress[]) => void
   setLoadingMastery: (loading: boolean) => void
-  startSession: (type: SessionType, nodeIds: string[]) => void
+  setScopeNodeIds: (nodeIds: string[]) => void
+  startTutorSession: (chain: string[]) => void
+  startReviewSession: (chain: string[]) => void
+  addTutorMessage: (msg: TutorMessage) => void
+  advanceChain: () => void
   recordAnswer: (nodeId: string, correct: boolean, stabilityDelta?: StabilityDelta) => void
-  nextExercise: () => void
   endSession: () => void
   updateNodeMastery: (nodeId: string, data: Partial<NodeMasteryData>) => void
+  /** @deprecated No longer navigates to node_detail — kept as no-op for backward compatibility */
+  selectNode: (nodeId: string | null) => void
 }
 
 // --- Store ---
@@ -67,7 +74,7 @@ export interface PracticeModeActions {
 export const usePracticeModeStore = create<PracticeModeState & PracticeModeActions>()(
   (set, get) => ({
     view: 'overview',
-    selectedNodeId: null,
+    scopeNodeIds: [],
     masteryMap: new Map(),
     session: null,
     isLoadingMastery: false,
@@ -78,19 +85,11 @@ export const usePracticeModeStore = create<PracticeModeState & PracticeModeActio
       set({
         view: 'overview',
         session: null,
-        selectedNodeId: null,
+        scopeNodeIds: [],
         masteryMap: new Map(),
       }),
 
     setView: (view) => set({ view }),
-
-    selectNode: (nodeId) => {
-      if (nodeId) {
-        set({ selectedNodeId: nodeId, view: 'node_detail' })
-      } else {
-        set({ selectedNodeId: null, view: 'overview' })
-      }
-    },
 
     setMasteryData: (progress) => {
       const map = new Map<string, NodeMasteryData>()
@@ -113,22 +112,75 @@ export const usePracticeModeStore = create<PracticeModeState & PracticeModeActio
 
     setLoadingMastery: (loading) => set({ isLoadingMastery: loading }),
 
-    startSession: (type, nodeIds) =>
+    setScopeNodeIds: (nodeIds) => set({ scopeNodeIds: nodeIds }),
+
+    startTutorSession: (chain) =>
       set({
-        view: 'exercise',
+        view: 'tutor',
         session: {
-          type,
-          nodeQueue: nodeIds,
-          currentIndex: 0,
+          mode: 'tutor',
+          chain,
+          currentChainIndex: 0,
           results: new Map(),
           stabilityDeltas: [],
           startedAt: Date.now(),
+          tutorHistory: [],
         },
       }),
 
+    startReviewSession: (chain) =>
+      set({
+        view: 'review',
+        session: {
+          mode: 'review',
+          chain,
+          currentChainIndex: 0,
+          results: new Map(),
+          stabilityDeltas: [],
+          startedAt: Date.now(),
+          tutorHistory: [],
+        },
+      }),
+
+    addTutorMessage: (msg) => {
+      const { session } = get()
+      if (!session) {
+        return
+      }
+      set({
+        session: {
+          ...session,
+          tutorHistory: [...session.tutorHistory, msg],
+        },
+      })
+    },
+
+    advanceChain: () => {
+      const { session } = get()
+      if (!session) {
+        return
+      }
+
+      const nextIndex = session.currentChainIndex + 1
+      if (nextIndex >= session.chain.length) {
+        set({ view: 'session_end' })
+        return
+      }
+
+      set({
+        session: {
+          ...session,
+          currentChainIndex: nextIndex,
+          tutorHistory: [],
+        },
+      })
+    },
+
     recordAnswer: (nodeId, correct, stabilityDelta) => {
       const { session } = get()
-      if (!session) return
+      if (!session) {
+        return
+      }
 
       const results = new Map(session.results)
       results.set(nodeId, correct)
@@ -139,33 +191,21 @@ export const usePracticeModeStore = create<PracticeModeState & PracticeModeActio
       set({ session: { ...session, results, stabilityDeltas: deltas } })
     },
 
-    nextExercise: () => {
-      const { session } = get()
-      if (!session) return
-
-      const nextIndex = session.currentIndex + 1
-      if (nextIndex >= session.nodeQueue.length) {
-        set({ view: 'session_end' })
-        return
-      }
-
-      set({
-        session: {
-          ...session,
-          currentIndex: nextIndex,
-        },
-      })
-    },
-
     endSession: () => set({ session: null, view: 'overview' }),
 
     updateNodeMastery: (nodeId, data) => {
       const { masteryMap } = get()
       const existing = masteryMap.get(nodeId)
-      if (!existing) return
+      if (!existing) {
+        return
+      }
       const updated = new Map(masteryMap)
       updated.set(nodeId, { ...existing, ...data })
       set({ masteryMap: updated })
+    },
+
+    selectNode: () => {
+      // No-op: node_detail view removed in v2
     },
   })
 )
@@ -183,8 +223,6 @@ export const usePracticeView = () => usePracticeModeStore((s) => s.view)
 
 export const usePracticeModeSession = () => usePracticeModeStore((s) => s.session)
 
-export const useSelectedPracticeNodeId = () => usePracticeModeStore((s) => s.selectedNodeId)
-
 export const useMasteryMap = () => usePracticeModeStore((s) => s.masteryMap)
 
 export const useNodeMastery = (nodeId: string) =>
@@ -196,14 +234,17 @@ export const usePracticeModeActions = () =>
       enter: s.enter,
       exit: s.exit,
       setView: s.setView,
-      selectNode: s.selectNode,
       setMasteryData: s.setMasteryData,
       setLoadingMastery: s.setLoadingMastery,
-      startSession: s.startSession,
+      setScopeNodeIds: s.setScopeNodeIds,
+      startTutorSession: s.startTutorSession,
+      startReviewSession: s.startReviewSession,
+      addTutorMessage: s.addTutorMessage,
+      advanceChain: s.advanceChain,
       recordAnswer: s.recordAnswer,
-      nextExercise: s.nextExercise,
       endSession: s.endSession,
       updateNodeMastery: s.updateNodeMastery,
+      selectNode: s.selectNode,
     }))
   )
 

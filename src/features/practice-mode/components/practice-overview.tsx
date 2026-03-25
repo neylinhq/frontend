@@ -1,17 +1,18 @@
-import { ArrowRightIcon } from '@untitledui/icons-react/outline'
+'use client'
+
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import type { MasteryLevel } from '@/entities/progress'
 import { Button } from '@/shared/components/button'
-import { Card, CardContent } from '@/shared/components/card'
 import { cn } from '@/shared/lib/cn'
 
+import { practiceModeApi } from '../api/practice-mode.api'
 import {
   useMasteryMap,
   usePracticeModeActions,
-  usePracticeModeStats,
-  useZPDFrontierCount,
 } from '../model/practice-mode.store'
+import { usePracticeScope } from '../model/practice-mode.hooks'
 
 const MASTERY_BAR_COLORS: Record<MasteryLevel, string> = {
   mastered: 'bg-[var(--color-mastery-mastered)]',
@@ -30,157 +31,174 @@ const MASTERY_DOT_COLORS: Record<MasteryLevel, string> = {
 }
 
 interface PracticeOverviewProps {
+  mapId: string
   className?: string
 }
 
-export function PracticeOverview({ className }: PracticeOverviewProps) {
+export function PracticeOverview({ mapId, className }: PracticeOverviewProps) {
   const { t } = useTranslation()
-  const stats = usePracticeModeStats()
-  const zpdCount = useZPDFrontierCount()
+  const { scopeNodeIds, scopeLabel } = usePracticeScope(mapId)
   const masteryMap = useMasteryMap()
-  const { startSession } = usePracticeModeActions()
+  const { startTutorSession, startReviewSession, setScopeNodeIds } = usePracticeModeActions()
+  const [isStarting, setIsStarting] = useState<'tutor' | 'review' | null>(null)
 
-  const masteryPercent =
-    stats.total > 0
-      ? Math.round(((stats.mastered + stats.proficient) / stats.total) * 100)
-      : 0
+  const scopeStats = useMemo(() => {
+    const scopeSet = new Set(scopeNodeIds)
+    let mastered = 0
+    let proficient = 0
+    let practicing = 0
+    let learning = 0
+    let notStarted = 0
+    let dueCount = 0
+    let zpdCount = 0
+    let total = 0
 
-  const dueNodeIds = [...masteryMap.values()].filter((d) => d.isDue).map((d) => d.nodeId)
-  const zpdNodeIds = [...masteryMap.values()]
-    .filter((d) => d.mastery === 'unlearned' && d.prereqsStable)
-    .map((d) => d.nodeId)
-  const practicingNodeIds = [...masteryMap.values()]
-    .filter((d) => d.mastery === 'practicing' || d.mastery === 'proficient' || d.mastery === 'mastered')
-    .map((d) => d.nodeId)
+    for (const data of masteryMap.values()) {
+      if (!scopeSet.has(data.nodeId)) {
+        continue
+      }
+      total++
+      switch (data.mastery) {
+        case 'mastered': {
+          mastered++
+          break
+        }
+        case 'proficient': {
+          proficient++
+          break
+        }
+        case 'practicing': {
+          practicing++
+          break
+        }
+        case 'learning': {
+          learning++
+          break
+        }
+        case 'unlearned': {
+          notStarted++
+          if (data.prereqsStable) {
+            zpdCount++
+          }
+          break
+        }
+      }
+      if (data.isDue) {
+        dueCount++
+      }
+    }
+
+    const masteryPercent =
+      total > 0 ? Math.round(((mastered + proficient) / total) * 100) : 0
+
+    return { total, mastered, proficient, practicing, learning, notStarted, dueCount, zpdCount, masteryPercent }
+  }, [masteryMap, scopeNodeIds])
+
+  const handleStartTutor = async () => {
+    setIsStarting('tutor')
+    try {
+      setScopeNodeIds(scopeNodeIds)
+      const result = await practiceModeApi.startScopedSession(mapId, 'tutor', scopeNodeIds)
+      startTutorSession(result.chain)
+    } catch {
+      // Error handled by caller — user stays on overview
+    } finally {
+      setIsStarting(null)
+    }
+  }
+
+  const handleStartReview = async () => {
+    setIsStarting('review')
+    try {
+      setScopeNodeIds(scopeNodeIds)
+      const result = await practiceModeApi.startScopedSession(mapId, 'review', scopeNodeIds)
+      startReviewSession(result.chain)
+    } catch {
+      // Error handled by caller — user stays on overview
+    } finally {
+      setIsStarting(null)
+    }
+  }
 
   return (
     <div className={cn('flex flex-col gap-4 p-4', className)}>
-      {/* Map Mastery Card */}
-      <Card>
-        <CardContent className="p-4">
-          <div className="flex items-baseline justify-between mb-3">
-            <span className="text-sm font-medium text-muted-foreground">
-              {t('practice.mode.mapMastery')}
-            </span>
-            <span className="text-lg font-semibold">{masteryPercent}%</span>
-          </div>
+      {/* Scope label */}
+      <span className="text-xs font-medium text-muted-foreground">{scopeLabel}</span>
 
-          {/* Stacked mastery bar */}
-          <div className="flex h-2.5 rounded-full overflow-hidden bg-muted mb-4">
-            {stats.total > 0 && (
-              <>
-                {stats.mastered > 0 && (
-                  <div
-                    className={cn('transition-all duration-500', MASTERY_BAR_COLORS.mastered)}
-                    style={{ width: `${(stats.mastered / stats.total) * 100}%` }}
-                  />
-                )}
-                {stats.proficient > 0 && (
-                  <div
-                    className={cn('transition-all duration-500', MASTERY_BAR_COLORS.proficient)}
-                    style={{ width: `${(stats.proficient / stats.total) * 100}%` }}
-                  />
-                )}
-                {stats.practicing > 0 && (
-                  <div
-                    className={cn('transition-all duration-500', MASTERY_BAR_COLORS.practicing)}
-                    style={{ width: `${(stats.practicing / stats.total) * 100}%` }}
-                  />
-                )}
-                {stats.learning > 0 && (
-                  <div
-                    className={cn('transition-all duration-500', MASTERY_BAR_COLORS.learning)}
-                    style={{ width: `${(stats.learning / stats.total) * 100}%` }}
-                  />
-                )}
-              </>
-            )}
-          </div>
-
-          {/* Legend */}
-          <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-xs">
-            <LegendItem color={MASTERY_DOT_COLORS.mastered} label={t('practice.mode.mastered')} count={stats.mastered} />
-            <LegendItem color={MASTERY_DOT_COLORS.proficient} label={t('practice.mode.proficient')} count={stats.proficient} />
-            <LegendItem color={MASTERY_DOT_COLORS.practicing} label={t('practice.mode.practicing')} count={stats.practicing} />
-            <LegendItem color={MASTERY_DOT_COLORS.learning} label={t('practice.mode.learning')} count={stats.learning} />
-            <LegendItem color={MASTERY_DOT_COLORS.unlearned} label={t('practice.mode.unlearned')} count={stats.notStarted} />
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Ready to Review */}
-      {stats.dueCount > 0 && (
-        <Card className="border-[var(--color-mastery-due)]/30 bg-[var(--color-mastery-due)]/5">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-sm font-medium">{t('practice.mode.readyToReview')}</div>
-                <div className="text-xs text-muted-foreground">
-                  {t('practice.mode.nodesDue', { count: stats.dueCount })}
-                </div>
-              </div>
-              <Button size="sm" onClick={() => startSession('review', dueNodeIds)}>
-                {t('practice.mode.review')}
-                <ArrowRightIcon className="ml-1 h-3.5 w-3.5" />
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Ready to Learn */}
-      {zpdCount > 0 && (
-        <Card className="border-info/30 bg-info/5">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-sm font-medium">{t('practice.mode.readyToLearn')}</div>
-                <div className="text-xs text-muted-foreground">
-                  {t('practice.mode.conceptsOnFrontier', { count: zpdCount })}
-                </div>
-              </div>
-              <Button size="sm" variant="outline" onClick={() => startSession('learn', zpdNodeIds)}>
-                {t('practice.mode.learnNew')}
-                <ArrowRightIcon className="ml-1 h-3.5 w-3.5" />
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Mastery tier — only show when there's actual progress */}
-      {masteryPercent > 0 && (
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-baseline justify-between mb-2">
-              <span className="text-sm font-medium text-muted-foreground">
-                {t('practice.mode.yourProgress')}
-              </span>
-              <span className="text-sm font-semibold">
-                {masteryPercent}%
-              </span>
-            </div>
-            <div className="flex h-1.5 rounded-full overflow-hidden bg-muted">
-              <div
-                className="bg-primary transition-all duration-500 rounded-full"
-                style={{ width: `${masteryPercent}%` }}
-              />
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Secondary session buttons — only show when there are nodes to practice */}
-      {practicingNodeIds.length > 0 && (
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" className="flex-1" onClick={() => startSession('deep_dive', practicingNodeIds.slice(0, 1))}>
-            {t('practice.mode.deepDive')}
-          </Button>
-          <Button variant="outline" size="sm" className="flex-1" onClick={() => startSession('challenge', practicingNodeIds)}>
-            {t('practice.mode.challenge')}
-          </Button>
+      {/* Progress bar */}
+      <div>
+        <div className="flex items-baseline justify-between mb-2">
+          <span className="text-sm font-medium text-muted-foreground">
+            {t('practice.mode.mapMastery')}
+          </span>
+          <span className="text-lg font-semibold">{scopeStats.masteryPercent}%</span>
         </div>
-      )}
+        <div className="flex h-2.5 rounded-full overflow-hidden bg-muted">
+          {scopeStats.total > 0 && (
+            <>
+              {scopeStats.mastered > 0 && (
+                <div
+                  className={cn('transition-all duration-500', MASTERY_BAR_COLORS.mastered)}
+                  style={{ width: `${(scopeStats.mastered / scopeStats.total) * 100}%` }}
+                />
+              )}
+              {scopeStats.proficient > 0 && (
+                <div
+                  className={cn('transition-all duration-500', MASTERY_BAR_COLORS.proficient)}
+                  style={{ width: `${(scopeStats.proficient / scopeStats.total) * 100}%` }}
+                />
+              )}
+              {scopeStats.practicing > 0 && (
+                <div
+                  className={cn('transition-all duration-500', MASTERY_BAR_COLORS.practicing)}
+                  style={{ width: `${(scopeStats.practicing / scopeStats.total) * 100}%` }}
+                />
+              )}
+              {scopeStats.learning > 0 && (
+                <div
+                  className={cn('transition-all duration-500', MASTERY_BAR_COLORS.learning)}
+                  style={{ width: `${(scopeStats.learning / scopeStats.total) * 100}%` }}
+                />
+              )}
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Mastery legend */}
+      <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-xs">
+        <LegendItem color={MASTERY_DOT_COLORS.mastered} label={t('practice.mode.mastered')} count={scopeStats.mastered} />
+        <LegendItem color={MASTERY_DOT_COLORS.proficient} label={t('practice.mode.proficient')} count={scopeStats.proficient} />
+        <LegendItem color={MASTERY_DOT_COLORS.practicing} label={t('practice.mode.practicing')} count={scopeStats.practicing} />
+        <LegendItem color={MASTERY_DOT_COLORS.learning} label={t('practice.mode.learning')} count={scopeStats.learning} />
+        <LegendItem color={MASTERY_DOT_COLORS.unlearned} label={t('practice.mode.unlearned')} count={scopeStats.notStarted} />
+      </div>
+
+      {/* Session buttons */}
+      <div className="flex flex-col gap-2 mt-2">
+        <Button
+          onClick={handleStartTutor}
+          disabled={scopeStats.zpdCount === 0 || isStarting !== null}
+        >
+          {isStarting === 'tutor'
+            ? t('practice.mode.starting')
+            : t('practice.mode.learn')}
+        </Button>
+        <Button
+          variant="outline"
+          onClick={handleStartReview}
+          disabled={scopeStats.dueCount === 0 || isStarting !== null}
+        >
+          {isStarting === 'review'
+            ? t('practice.mode.starting')
+            : t('practice.mode.review')}
+          {scopeStats.dueCount > 0 && (
+            <span className="ml-1.5 text-xs text-muted-foreground">
+              ({scopeStats.dueCount})
+            </span>
+          )}
+        </Button>
+      </div>
     </div>
   )
 }

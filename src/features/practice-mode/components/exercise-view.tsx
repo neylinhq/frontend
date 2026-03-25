@@ -47,12 +47,12 @@ interface ExerciseViewProps {
 export function ExerciseView({ mapId, nodeLabels, className }: ExerciseViewProps) {
   const { t } = useTranslation()
   const session = usePracticeModeSession()
-  const { recordAnswer, nextExercise } = usePracticeModeActions()
+  const { recordAnswer, advanceChain } = usePracticeModeActions()
 
   const [phase, setPhase] = useState<AnswerPhase>('answering')
   const [result, setResult] = useState<AnswerResult | null>(null)
 
-  const currentNodeId = session?.nodeQueue[session.currentIndex]
+  const currentNodeId = session?.chain[session.currentChainIndex]
 
   // Fetch exercise for the current node in the queue
   const {
@@ -107,8 +107,8 @@ export function ExerciseView({ mapId, nodeLabels, className }: ExerciseViewProps
   const handleNext = useCallback(() => {
     setPhase('answering')
     setResult(null)
-    nextExercise()
-  }, [nextExercise])
+    advanceChain()
+  }, [advanceChain])
 
   // Keyboard shortcut: Enter to go next during feedback
   useEffect(() => {
@@ -129,8 +129,8 @@ export function ExerciseView({ mapId, nodeLabels, className }: ExerciseViewProps
     return null
   }
 
-  const total = session.nodeQueue.length
-  const current = session.currentIndex + 1
+  const total = session.chain.length
+  const current = session.currentChainIndex + 1
 
   // Loading state (may take a few seconds if auto-generating exercises)
   if (isLoading) {

@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { useFullMap } from '@/entities/map'
-import { useMapPracticeActive } from '@/entities/map-ui'
-import { DEFAULT_NODE_PROGRESS, useAllNodeProgress, type UserNodeProgress } from '@/entities/progress'
+import { useMapFocus, useMapPracticeActive, useMapViewMode } from '@/entities/map-ui'
+import { DEFAULT_NODE_PROGRESS, type UserNodeProgress, useAllNodeProgress } from '@/entities/progress'
 
-import { learnSessionApi } from '../api/practice-mode.api'
-import { usePracticeModeActions, usePracticeModeStore } from '../model/practice-mode.store'
+import { usePracticeModeActions } from '../model/practice-mode.store'
 
 /**
  * Fetches node progress when practice mode is active and syncs to store.
@@ -72,24 +72,66 @@ export const useMasteryOverlay = (mapId: string) => {
 
     setMasteryData(merged)
   }, [nodeProgress, nodeIdSet, setMasteryData])
+}
 
-  // Prefetch lesson for first ZPD frontier node so it's ready when user clicks "Learn New"
-  const prefetchedRef = useRef<string | null>(null)
-  const masteryMapSize = usePracticeModeStore((s) => s.masteryMap.size)
-  useEffect(() => {
-    if (!isActive || masteryMapSize === 0) {
-      return
+/**
+ * Determines the practice scope based on the current map view mode.
+ *
+ * - In focus mode: BFS from the focused node up to focusDepth levels.
+ * - In overview mode: all node IDs from the map.
+ */
+export function usePracticeScope(mapId: string): {
+  scopeNodeIds: string[]
+  scopeLabel: string
+} {
+  const { t } = useTranslation()
+  const viewMode = useMapViewMode(mapId)
+  const { focusedNodeId, focusDepth } = useMapFocus(mapId)
+  const { data: fullMap } = useFullMap(mapId)
+
+  return useMemo(() => {
+    if (!fullMap?.nodes?.length) {
+      return { scopeNodeIds: [], scopeLabel: '' }
     }
-    const { masteryMap } = usePracticeModeStore.getState()
-    const firstZpd = [...masteryMap.values()].find(
-      (d) => d.mastery === 'unlearned' && d.prereqsStable
-    )
-    if (!firstZpd || prefetchedRef.current === firstZpd.nodeId) {
-      return
+
+    if (viewMode === 'focus' && focusedNodeId) {
+      const adjacency = new Map<string, string[]>()
+      for (const node of fullMap.nodes) {
+        adjacency.set(node.id, [])
+      }
+      for (const edge of fullMap.edges) {
+        adjacency.get(edge.sourceNodeId)?.push(edge.targetNodeId)
+        adjacency.get(edge.targetNodeId)?.push(edge.sourceNodeId)
+      }
+
+      const visited = new Set<string>()
+      const queue: Array<{ id: string; depth: number }> = [{ id: focusedNodeId, depth: 0 }]
+      visited.add(focusedNodeId)
+
+      while (queue.length > 0) {
+        const current = queue.shift()!
+        if (current.depth < focusDepth) {
+          const neighbors = adjacency.get(current.id) ?? []
+          for (const neighbor of neighbors) {
+            if (!visited.has(neighbor)) {
+              visited.add(neighbor)
+              queue.push({ id: neighbor, depth: current.depth + 1 })
+            }
+          }
+        }
+      }
+
+      const scopeNodeIds = [...visited]
+      const focusedNode = fullMap.nodes.find((n) => n.id === focusedNodeId)
+      const scopeLabel = focusedNode
+        ? `${focusedNode.label} +${focusDepth}`
+        : `+${focusDepth}`
+
+      return { scopeNodeIds, scopeLabel }
     }
-    prefetchedRef.current = firstZpd.nodeId
-    learnSessionApi.startLesson(mapId, firstZpd.nodeId).catch(() => {
-      // Prefetch failed — user will see normal loading when they click
-    })
-  }, [isActive, mapId, masteryMapSize])
+
+    // Overview mode — all nodes
+    const scopeNodeIds = fullMap.nodes.map((n) => n.id)
+    return { scopeNodeIds, scopeLabel: t('practice.scope.entireMap') }
+  }, [fullMap, viewMode, focusedNodeId, focusDepth, t])
 }

@@ -14,21 +14,16 @@ import type { TutorChunk } from '../api/practice-mode.api'
 import type { StabilityDelta, TutorMessage } from '../model/practice-mode.store'
 import { usePracticeModeActions, usePracticeModeSession } from '../model/practice-mode.store'
 
-// --- Types ---
-
 interface TutorChatViewProps {
   mapId: string
-  /** Map of nodeId → label for chain breadcrumb */
   nodeLabels: Map<string, string>
   className?: string
 }
 
-// --- Component ---
-
 export function TutorChatView({ mapId, nodeLabels, className }: TutorChatViewProps) {
   const { t } = useTranslation()
   const session = usePracticeModeSession()
-  const { addTutorMessage, advanceChain, recordAnswer, setView } = usePracticeModeActions()
+  const { addTutorMessage, recordAnswer, setView } = usePracticeModeActions()
 
   const [input, setInput] = useState('')
   const [isStreaming, setIsStreaming] = useState(false)
@@ -36,51 +31,51 @@ export function TutorChatView({ mapId, nodeLabels, className }: TutorChatViewPro
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const abortRef = useRef<AbortController | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
-
-  // Scroll to bottom on new messages
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [session?.tutorHistory.length, streamedContent])
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      abortRef.current?.abort()
-    }
-  }, [])
-
-  // Focus textarea when chain advances to new node
-  useEffect(() => {
-    textareaRef.current?.focus()
-  }, [session?.currentChainIndex])
+  const startedRef = useRef(false)
 
   const chain = session?.chain ?? []
   const currentNodeId = chain[session?.currentChainIndex ?? 0] ?? null
   const currentNodeLabel = currentNodeId ? (nodeLabels.get(currentNodeId) ?? '') : ''
   const chainLabels = chain.map((id) => nodeLabels.get(id) ?? id.slice(0, 6))
   const chainProgress = chain.length > 0 ? `${(session?.currentChainIndex ?? 0) + 1}/${chain.length}` : ''
+  const messages = session?.tutorHistory ?? []
 
-  const handleSend = useCallback(async () => {
-    const text = input.trim()
-    if (!text || isStreaming || !currentNodeId || !session) {
+  // Scroll to bottom
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages.length, streamedContent])
+
+  // Cleanup
+  useEffect(() => {
+    return () => {
+      abortRef.current?.abort()
+    }
+  }, [])
+
+  // Core: send a message to tutor and stream response
+  const sendMessage = useCallback(async (text: string) => {
+    if (isStreaming || !currentNodeId || !session) {
       return
     }
 
-    // Add user message
-    const userMsg: TutorMessage = { role: 'user', content: text }
-    addTutorMessage(userMsg)
-    setInput('')
+    // Add user message (skip for initial AI-starts-first call)
+    const isStart = text === ''
+    if (!isStart) {
+      addTutorMessage({ role: 'user', content: text })
+    }
+
     setIsStreaming(true)
     setStreamedContent('')
 
-    const history = [...session.tutorHistory, userMsg].map((m) => ({
-      role: m.role as 'user' | 'assistant',
-      content: m.content,
-    }))
+    const history = isStart
+      ? []
+      : [...session.tutorHistory, { role: 'user' as const, content: text }].map((m) => ({
+          role: m.role as 'user' | 'assistant',
+          content: m.content,
+        }))
 
     const abort = new AbortController()
     abortRef.current = abort
-
     let accumulated = ''
 
     try {
@@ -90,7 +85,7 @@ export function TutorChatView({ mapId, nodeLabels, className }: TutorChatViewPro
         credentials: 'include',
         body: JSON.stringify({
           nodeId: currentNodeId,
-          message: text,
+          message: isStart ? '__start__' : text,
           history,
         }),
         signal: abort.signal,
@@ -136,7 +131,6 @@ export function TutorChatView({ mapId, nodeLabels, className }: TutorChatViewPro
             }
 
             if (chunk.type === 'quality' && chunk.quality !== undefined) {
-              // Record FSRS update
               const delta: StabilityDelta | undefined =
                 chunk.stabilityBefore !== undefined && chunk.stabilityAfter !== undefined
                   ? {
@@ -149,10 +143,6 @@ export function TutorChatView({ mapId, nodeLabels, className }: TutorChatViewPro
                   : undefined
               recordAnswer(currentNodeId, chunk.quality >= 3, delta)
             }
-
-            if (chunk.type === 'chain_advance' && chunk.nextNodeId) {
-              // Will advance after message is committed
-            }
           } catch {
             // skip unparseable
           }
@@ -160,10 +150,9 @@ export function TutorChatView({ mapId, nodeLabels, className }: TutorChatViewPro
       }
     } catch (error) {
       if ((error as Error).name !== 'AbortError') {
-        accumulated = accumulated || t('practice.tutor.errorMessage', 'Something went wrong. Try again.')
+        accumulated = accumulated || t('practice.tutor.errorMessage')
       }
     } finally {
-      // Commit assistant message
       if (accumulated) {
         addTutorMessage({ role: 'assistant', content: accumulated })
       }
@@ -171,7 +160,25 @@ export function TutorChatView({ mapId, nodeLabels, className }: TutorChatViewPro
       setIsStreaming(false)
       abortRef.current = null
     }
-  }, [input, isStreaming, currentNodeId, session, mapId, addTutorMessage, recordAnswer, currentNodeLabel, t])
+  }, [isStreaming, currentNodeId, session, mapId, addTutorMessage, recordAnswer, currentNodeLabel, t])
+
+  // Auto-start: AI sends first message when tutor view mounts
+  useEffect(() => {
+    if (startedRef.current || !currentNodeId) {
+      return
+    }
+    startedRef.current = true
+    sendMessage('')
+  }, [currentNodeId, sendMessage])
+
+  const handleSend = useCallback(() => {
+    const text = input.trim()
+    if (!text) {
+      return
+    }
+    setInput('')
+    sendMessage(text)
+  }, [input, sendMessage])
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -189,11 +196,9 @@ export function TutorChatView({ mapId, nodeLabels, className }: TutorChatViewPro
     return null
   }
 
-  const messages = session.tutorHistory
-
   return (
     <div className={cn('flex flex-col h-full', className)}>
-      {/* Header: back + chain breadcrumb */}
+      {/* Header */}
       <div className="flex items-center gap-2 px-3 py-2 border-b border-border/40 shrink-0">
         <button
           type="button"
@@ -212,7 +217,7 @@ export function TutorChatView({ mapId, nodeLabels, className }: TutorChatViewPro
         </span>
       </div>
 
-      {/* Current node indicator */}
+      {/* Current node */}
       <div className="px-4 py-2 shrink-0">
         <span className="text-sm font-semibold">{currentNodeLabel}</span>
       </div>
@@ -220,26 +225,16 @@ export function TutorChatView({ mapId, nodeLabels, className }: TutorChatViewPro
       {/* Messages */}
       <div className="flex-1 min-h-0 overflow-y-auto px-4 pb-2">
         <div className="flex flex-col gap-3">
-          {messages.length === 0 && !isStreaming && (
-            <p className="text-xs text-muted-foreground py-4 text-center">
-              {t('practice.tutor.startHint', 'The tutor will start the conversation. Type anything to begin.')}
-            </p>
-          )}
-
           {messages.map((msg, i) => (
             <MessageBubble key={`${msg.role}-${i}`} message={msg} />
           ))}
 
-          {/* Streaming assistant message */}
           {isStreaming && streamedContent && (
-            <div className="space-y-1">
-              <div className="prose prose-sm dark:prose-invert max-w-none text-sm">
-                <RichMarkdown>{streamedContent}</RichMarkdown>
-              </div>
+            <div className="prose prose-sm dark:prose-invert max-w-none text-sm">
+              <RichMarkdown>{streamedContent}</RichMarkdown>
             </div>
           )}
 
-          {/* Streaming indicator */}
           {isStreaming && !streamedContent && (
             <div className="flex gap-1 py-2">
               <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/40 animate-bounce [animation-delay:0ms]" />
@@ -260,7 +255,7 @@ export function TutorChatView({ mapId, nodeLabels, className }: TutorChatViewPro
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={t('practice.tutor.placeholder', 'Your answer...')}
+            placeholder={t('practice.tutor.placeholder')}
             className="min-h-[40px] max-h-[120px] text-sm resize-none"
             disabled={isStreaming}
             rows={1}
@@ -279,8 +274,6 @@ export function TutorChatView({ mapId, nodeLabels, className }: TutorChatViewPro
   )
 }
 
-// --- Message Bubble ---
-
 function MessageBubble({ message }: { message: TutorMessage }) {
   if (message.role === 'user') {
     return (
@@ -293,10 +286,8 @@ function MessageBubble({ message }: { message: TutorMessage }) {
   }
 
   return (
-    <div className="space-y-1">
-      <div className="prose prose-sm dark:prose-invert max-w-none text-sm">
-        <RichMarkdown>{message.content}</RichMarkdown>
-      </div>
+    <div className="prose prose-sm dark:prose-invert max-w-none text-sm">
+      <RichMarkdown>{message.content}</RichMarkdown>
     </div>
   )
 }

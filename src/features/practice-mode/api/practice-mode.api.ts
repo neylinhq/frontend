@@ -114,7 +114,7 @@ export const practiceModeApi = {
     mode: 'tutor' | 'review',
     scopeNodeIds: string[]
   ): Promise<StartSessionResult> => {
-    const response = await api.post<StartSessionResult>(
+    const response = await api.post<ApiResponse<StartSessionResult>>(
       `/maps/${mapId}/practice/sessions`,
       {
         type: mode === 'tutor' ? 'learn' : 'review',
@@ -122,7 +122,7 @@ export const practiceModeApi = {
         scopeNodeIds,
       }
     )
-    return response.data
+    return (response as ApiResponse<StartSessionResult>).data
   },
 
   /**
@@ -214,10 +214,10 @@ export const practiceModeApi = {
     mapId: string,
     coveredNodeIds: string[]
   ): Promise<ExpandSuggestion[]> => {
-    const response = await api.post<ExpandSuggestion[]>(
+    const response = await api.post<ApiResponse<ExpandSuggestion[]>>(
       `/maps/${mapId}/practice/expand-suggestions`,
       { coveredNodeIds }
     )
-    return response.data
+    return (response as ApiResponse<ExpandSuggestion[]>).data
   },
 }

@@ -54,10 +54,11 @@ export function TutorChatView({ mapId, nodeLabels, className }: TutorChatViewPro
     textareaRef.current?.focus()
   }, [session?.currentChainIndex])
 
-  const currentNodeId = session ? session.chain[session.currentChainIndex] ?? null : null
+  const chain = session?.chain ?? []
+  const currentNodeId = chain[session?.currentChainIndex ?? 0] ?? null
   const currentNodeLabel = currentNodeId ? (nodeLabels.get(currentNodeId) ?? '') : ''
-  const chainLabels = session ? session.chain.map((id) => nodeLabels.get(id) ?? id.slice(0, 6)) : []
-  const chainProgress = session ? `${session.currentChainIndex + 1}/${session.chain.length}` : ''
+  const chainLabels = chain.map((id) => nodeLabels.get(id) ?? id.slice(0, 6))
+  const chainProgress = chain.length > 0 ? `${(session?.currentChainIndex ?? 0) + 1}/${chain.length}` : ''
 
   const handleSend = useCallback(async () => {
     const text = input.trim()

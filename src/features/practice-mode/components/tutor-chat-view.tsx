@@ -1,18 +1,18 @@
 'use client'
 
-import { ArrowLeftIcon, ArrowUpIcon } from '@untitledui/icons-react/outline'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { Button } from '@/shared/components/button'
-import { RichMarkdown } from '@/shared/components/rich-markdown'
-import { Textarea } from '@/shared/components/textarea'
-const API_URL_FOR_STREAM = import.meta.env.VITE_API_URL || 'http://localhost:8080/v1'
+import type { ChatMessageItem } from '@/shared/components/chat-messages'
+import { ChatMessages } from '@/shared/components/chat-messages'
+import { ChatInput } from '@/shared/components/chat-input'
 import { cn } from '@/shared/lib/cn'
 
 import type { TutorChunk } from '../api/practice-mode.api'
-import type { StabilityDelta, TutorMessage } from '../model/practice-mode.store'
+import type { StabilityDelta } from '../model/practice-mode.store'
 import { usePracticeModeActions, usePracticeModeSession } from '../model/practice-mode.store'
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/v1'
 
 interface TutorChatViewProps {
   mapId: string
@@ -23,42 +23,37 @@ interface TutorChatViewProps {
 export function TutorChatView({ mapId, nodeLabels, className }: TutorChatViewProps) {
   const { t } = useTranslation()
   const session = usePracticeModeSession()
-  const { addTutorMessage, recordAnswer, setView } = usePracticeModeActions()
+  const { addTutorMessage, recordAnswer } = usePracticeModeActions()
 
-  const [input, setInput] = useState('')
   const [isStreaming, setIsStreaming] = useState(false)
   const [streamedContent, setStreamedContent] = useState('')
-  const messagesEndRef = useRef<HTMLDivElement>(null)
   const abortRef = useRef<AbortController | null>(null)
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
   const startedRef = useRef(false)
 
   const chain = session?.chain ?? []
-  const currentNodeId = chain[session?.currentChainIndex ?? 0] ?? null
+  const currentNodeId = session ? chain[session.currentChainIndex] ?? null : null
   const currentNodeLabel = currentNodeId ? (nodeLabels.get(currentNodeId) ?? '') : ''
-  const chainLabels = chain.map((id) => nodeLabels.get(id) ?? id.slice(0, 6))
-  const chainProgress = chain.length > 0 ? `${(session?.currentChainIndex ?? 0) + 1}/${chain.length}` : ''
-  const messages = session?.tutorHistory ?? []
 
-  // Scroll to bottom
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages.length, streamedContent])
-
-  // Cleanup
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
       abortRef.current?.abort()
     }
   }, [])
 
-  // Core: send a message to tutor and stream response
+  // Convert tutor history to ChatMessageItem format
+  const chatMessages: ChatMessageItem[] = (session?.tutorHistory ?? []).map((msg, i) => ({
+    id: `tutor-${i}`,
+    role: msg.role,
+    content: msg.content
+  }))
+
+  // Core: send a message and stream response
   const sendMessage = useCallback(async (text: string) => {
     if (isStreaming || !currentNodeId || !session) {
       return
     }
 
-    // Add user message (skip for initial AI-starts-first call)
     const isStart = text === ''
     if (!isStart) {
       addTutorMessage({ role: 'user', content: text })
@@ -79,7 +74,7 @@ export function TutorChatView({ mapId, nodeLabels, className }: TutorChatViewPro
     let accumulated = ''
 
     try {
-      const response = await fetch(`${API_URL_FOR_STREAM}/maps/${mapId}/practice/tutor/message`, {
+      const response = await fetch(`${API_URL}/maps/${mapId}/practice/tutor/message`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -120,7 +115,6 @@ export function TutorChatView({ mapId, nodeLabels, className }: TutorChatViewPro
           try {
             const chunk = JSON.parse(line.slice(6)) as TutorChunk & {
               quality?: number
-              nextNodeId?: string
               stabilityBefore?: number
               stabilityAfter?: number
             }
@@ -144,7 +138,7 @@ export function TutorChatView({ mapId, nodeLabels, className }: TutorChatViewPro
               recordAnswer(currentNodeId, chunk.quality >= 3, delta)
             }
           } catch {
-            // skip unparseable
+            // skip
           }
         }
       }
@@ -162,7 +156,7 @@ export function TutorChatView({ mapId, nodeLabels, className }: TutorChatViewPro
     }
   }, [isStreaming, currentNodeId, session, mapId, addTutorMessage, recordAnswer, currentNodeLabel, t])
 
-  // Auto-start: AI sends first message when tutor view mounts
+  // Auto-start: AI sends first message
   useEffect(() => {
     if (startedRef.current || !currentNodeId) {
       return
@@ -171,123 +165,56 @@ export function TutorChatView({ mapId, nodeLabels, className }: TutorChatViewPro
     sendMessage('')
   }, [currentNodeId, sendMessage])
 
-  const handleSend = useCallback(() => {
-    const text = input.trim()
-    if (!text) {
-      return
-    }
-    setInput('')
+  const handleSend = useCallback((text: string) => {
     sendMessage(text)
-  }, [input, sendMessage])
+  }, [sendMessage])
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
-      handleSend()
-    }
-  }
-
-  const handleBack = useCallback(() => {
+  const handleStop = useCallback(() => {
     abortRef.current?.abort()
-    setView('overview')
-  }, [setView])
+  }, [])
 
   if (!session) {
     return null
   }
 
+  // Chain info shown inline above messages
+  const chainInfo = chain.length > 1
+    ? chain.map((id) => nodeLabels.get(id) ?? id.slice(0, 6)).join(' → ')
+    : null
+
   return (
     <div className={cn('flex flex-col h-full', className)}>
-      {/* Header */}
-      <div className="flex items-center gap-2 px-3 py-2 border-b border-border/40 shrink-0">
-        <button
-          type="button"
-          onClick={handleBack}
-          className="h-7 w-7 flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors shrink-0"
-        >
-          <ArrowLeftIcon className="h-3.5 w-3.5" />
-        </button>
-        <div className="flex-1 min-w-0">
-          <div className="text-xs text-muted-foreground truncate">
-            {chainLabels.join(' → ')}
+      {/* Messages area */}
+      <div className='flex-1 min-h-0 overflow-y-auto px-4'>
+        {/* Chain breadcrumb + current node — compact, inline */}
+        {chainInfo && (
+          <div className='text-xs text-muted-foreground truncate pt-3 pb-1'>
+            {chainInfo}
           </div>
-        </div>
-        <span className="text-xs tabular-nums text-muted-foreground shrink-0">
-          {chainProgress}
-        </span>
+        )}
+        {currentNodeLabel && (
+          <div className='text-sm font-semibold pb-2'>
+            {currentNodeLabel}
+          </div>
+        )}
+
+        <ChatMessages
+          messages={chatMessages}
+          streamingContent={streamedContent}
+          isStreaming={isStreaming}
+        />
       </div>
 
-      {/* Current node */}
-      <div className="px-4 py-2 shrink-0">
-        <span className="text-sm font-semibold">{currentNodeLabel}</span>
+      {/* Input — same as main chat */}
+      <div className='shrink-0 p-3'>
+        <ChatInput
+          onSend={handleSend}
+          onStop={handleStop}
+          isLoading={isStreaming}
+          disabled={!currentNodeId}
+          placeholder={t('practice.tutor.placeholder')}
+        />
       </div>
-
-      {/* Messages */}
-      <div className="flex-1 min-h-0 overflow-y-auto px-4 pb-2">
-        <div className="flex flex-col gap-3">
-          {messages.map((msg, i) => (
-            <MessageBubble key={`${msg.role}-${i}`} message={msg} />
-          ))}
-
-          {isStreaming && streamedContent && (
-            <div className="prose prose-sm dark:prose-invert max-w-none text-sm">
-              <RichMarkdown>{streamedContent}</RichMarkdown>
-            </div>
-          )}
-
-          {isStreaming && !streamedContent && (
-            <div className="flex gap-1 py-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/40 animate-bounce [animation-delay:0ms]" />
-              <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/40 animate-bounce [animation-delay:150ms]" />
-              <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/40 animate-bounce [animation-delay:300ms]" />
-            </div>
-          )}
-
-          <div ref={messagesEndRef} />
-        </div>
-      </div>
-
-      {/* Input */}
-      <div className="shrink-0 border-t border-border/40 p-3">
-        <div className="flex gap-2">
-          <Textarea
-            ref={textareaRef}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder={t('practice.tutor.placeholder')}
-            className="min-h-[40px] max-h-[120px] text-sm resize-none"
-            disabled={isStreaming}
-            rows={1}
-          />
-          <Button
-            size="sm"
-            onClick={handleSend}
-            disabled={!input.trim() || isStreaming}
-            className="shrink-0 self-end h-9 w-9 p-0"
-          >
-            <ArrowUpIcon className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function MessageBubble({ message }: { message: TutorMessage }) {
-  if (message.role === 'user') {
-    return (
-      <div className="flex justify-end">
-        <div className="rounded-2xl rounded-br-md bg-primary/10 px-3 py-2 max-w-[85%]">
-          <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-        </div>
-      </div>
-    )
-  }
-
-  return (
-    <div className="prose prose-sm dark:prose-invert max-w-none text-sm">
-      <RichMarkdown>{message.content}</RichMarkdown>
     </div>
   )
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { GraduationHat01Icon } from '@untitledui/icons-react/outline'
+import { GraduationHat01Icon, XCloseIcon } from '@untitledui/icons-react/outline'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -84,7 +84,7 @@ export const PracticeFab = ({ mapId, onToggle }: PracticeFabProps) => {
               hasDue && !isActive && 'animate-due-pulse'
             )}
           >
-            <GraduationHat01Icon className='h-5 w-5' />
+            {isActive ? <XCloseIcon className='h-5 w-5' /> : <GraduationHat01Icon className='h-5 w-5' />}
 
             {/* Due count badge */}
             {hasDue && !isActive && (

@@ -159,7 +159,7 @@ interface GraphCanvasProps {
   className?: string
 }
 
-export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(function GraphCanvas(
+export const GraphCanvas = memo(forwardRef<GraphCanvasHandle, GraphCanvasProps>(function GraphCanvas(
   {
     nodes,
     edges,
@@ -1052,7 +1052,6 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
           const nextY = world.y - dragOffsetRef.current.y
           positionsRef.current.set(nodeId, { x: nextX, y: nextY })
           onNodeDragEnd?.(nodeId, nextX, nextY)
-          notifyLayoutComplete()
         } else {
           // Was a clean click (no drag) — fire selection + click
           const isMultiSelect = e.shiftKey || e.metaKey || e.ctrlKey
@@ -1085,7 +1084,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
       isPanningRef.current = false
       hasDraggedRef.current = false
     },
-    [getCanvasPoint, notifyLayoutComplete, onConnect, onEdgeBadgeClick, onNodeClick, onNodeDragEnd, resolvedSelectedNodeIds, screenToWorld, updateSelection]
+    [getCanvasPoint, onConnect, onEdgeBadgeClick, onNodeClick, onNodeDragEnd, resolvedSelectedNodeIds, screenToWorld, updateSelection]
   )
 
   // Native wheel handler — React registers onWheel as passive, so preventDefault() fails.
@@ -1163,4 +1162,4 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(funct
       )}
     </div>
   )
-})
+}))

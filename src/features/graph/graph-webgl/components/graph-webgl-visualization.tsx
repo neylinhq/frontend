@@ -254,6 +254,9 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
         id: nodeId,
         position: { x: Math.round(x), y: Math.round(y) }
       })
+      // Update minimap with new position without triggering layout complete
+      const positions = canvasRef.current?.getLayoutPositions()
+      if (positions) { setLayoutPositions(positions) }
     },
     [updatePositionMutation]
   )

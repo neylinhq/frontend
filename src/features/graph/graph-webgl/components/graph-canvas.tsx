@@ -49,6 +49,7 @@ export interface GraphCanvasHandle {
   getZoom(): number
   getViewport(): ViewportState | null
   cancelConnect(): void
+  getLayoutPositions(): LayoutPosition[] | null
 }
 
 // WASM types
@@ -453,9 +454,12 @@ export const GraphCanvas = memo(forwardRef<GraphCanvasHandle, GraphCanvasProps>(
       },
       cancelConnect() {
         engineRef.current?.cancel_connect()
+      },
+      getLayoutPositions() {
+        return syncPositionsFromEngine()
       }
     }),
-    [getViewportFromEngine, notifyViewportChange]
+    [getViewportFromEngine, notifyViewportChange, syncPositionsFromEngine]
   )
 
   // Pre-compute localized edge labels (stable unless language changes)

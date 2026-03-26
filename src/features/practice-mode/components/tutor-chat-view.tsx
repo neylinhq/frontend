@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { Button } from '@/shared/components/button'
 import { RichMarkdown } from '@/shared/components/rich-markdown'
 import { Textarea } from '@/shared/components/textarea'
-import { STREAM_API_URL } from '@/shared/config/env'
+const API_URL_FOR_STREAM = import.meta.env.VITE_API_URL || 'http://localhost:8080/v1'
 import { cn } from '@/shared/lib/cn'
 
 import type { TutorChunk } from '../api/practice-mode.api'
@@ -79,7 +79,7 @@ export function TutorChatView({ mapId, nodeLabels, className }: TutorChatViewPro
     let accumulated = ''
 
     try {
-      const response = await fetch(`${STREAM_API_URL}/maps/${mapId}/practice/tutor/message`, {
+      const response = await fetch(`${API_URL_FOR_STREAM}/maps/${mapId}/practice/tutor/message`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

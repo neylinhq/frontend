@@ -682,6 +682,7 @@ export const GraphCanvas = memo(forwardRef<GraphCanvasHandle, GraphCanvasProps>(
         canvas.style.height = `${height}px`
         engineRef.current.resize(canvas.width, canvas.height)
         engineRef.current.set_dpr(dpr)
+        engineRef.current.render()
         notifyViewportChange()
       })
     })

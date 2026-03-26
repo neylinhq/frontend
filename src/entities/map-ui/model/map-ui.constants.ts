@@ -49,8 +49,7 @@ export const DEFAULT_PER_MAP: PerMapState = {
   focusDepth: 2,
   visibleNodeTypes: new Set(ALL_NODE_TYPES),
   visibleEdgeTypes: new Set(ALL_EDGE_TYPES),
-  connectionRange: [0, Infinity],
-  practiceActive: false
+  connectionRange: [0, Infinity]
 }
 
 export const DEFAULT_PREFS: GlobalUIPrefs = {

@@ -37,8 +37,6 @@ interface MapUIActions {
   setAllEdgeTypesVisible: (mapId: string, visible: boolean) => void
   setConnectionRange: (mapId: string, range: [number, number]) => void
   resetFilters: (mapId: string) => void
-  setPracticeActive: (mapId: string, active: boolean) => void
-
   // Global preference setters
   setSidebarWidth: (width: number) => void
   setSidebarOpen: (open: boolean) => void
@@ -75,8 +73,7 @@ function materialize(partial: Partial<PerMapState>): PerMapState {
     focusDepth: partial.focusDepth ?? DEFAULT_PER_MAP.focusDepth,
     visibleNodeTypes: partial.visibleNodeTypes ?? new Set(ALL_NODE_TYPES),
     visibleEdgeTypes: partial.visibleEdgeTypes ?? new Set(ALL_EDGE_TYPES),
-    connectionRange: partial.connectionRange ?? DEFAULT_PER_MAP.connectionRange,
-    practiceActive: partial.practiceActive ?? DEFAULT_PER_MAP.practiceActive
+    connectionRange: partial.connectionRange ?? DEFAULT_PER_MAP.connectionRange
   }
 }
 
@@ -111,7 +108,7 @@ function serializeMap(m: PerMapState): SerializedPerMap {
       m.connectionRange[0],
       m.connectionRange[1] === Infinity ? 'Infinity' : m.connectionRange[1]
     ]
-    // viewMode, focusedNodeId, practiceActive: session-only, not persisted
+    // viewMode, focusedNodeId: session-only, not persisted
   }
 }
 
@@ -210,9 +207,6 @@ export const useMapUIStore = create<MapUIState & MapUIActions>()(
           visibleEdgeTypes: new Set(ALL_EDGE_TYPES),
           connectionRange: [0, Infinity]
         })),
-
-      setPracticeActive: (mapId, active) =>
-        set((s) => patchMap(s, mapId, { practiceActive: active })),
 
       // --- Global preference actions ---
 

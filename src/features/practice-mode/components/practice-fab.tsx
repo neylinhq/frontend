@@ -4,7 +4,7 @@ import { GraduationHat01Icon, XCloseIcon } from '@untitledui/icons-react/outline
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { useMapPracticeActive, useMapUIStore } from '@/entities/map-ui'
+import { useMapUIStore } from '@/entities/map-ui'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -27,40 +27,30 @@ import {
 
 interface PracticeFabProps {
   mapId: string
-  /** Called when practice mode toggles — parent can switch renderer */
-  onToggle?: (isActive: boolean) => void
 }
 
-export const PracticeFab = ({ mapId, onToggle }: PracticeFabProps) => {
+export const PracticeFab = ({ mapId }: PracticeFabProps) => {
   const { t } = useTranslation()
-  const isActive = useMapPracticeActive(mapId)
-  const stats = usePracticeModeStats()
   const session = usePracticeModeSession()
-  const { enter, exit } = usePracticeModeActions()
+  const stats = usePracticeModeStats()
+  const { endSession } = usePracticeModeActions()
   const [showConfirm, setShowConfirm] = useState(false)
 
+  const hasSession = session !== null
   const hasDue = stats.dueCount > 0
 
   const handleClick = () => {
-    if (isActive) {
-      // If a session is active, confirm before exiting
-      if (session) {
-        setShowConfirm(true)
-        return
-      }
-      handleExit()
+    if (hasSession) {
+      setShowConfirm(true)
     } else {
-      useMapUIStore.getState().setPracticeActive(mapId, true)
+      // Open practice tab
       useMapUIStore.getState().setActiveTab(mapId, 'practice')
-      enter()
-      onToggle?.(true)
+      useMapUIStore.getState().setSidebarOpen(true)
     }
   }
 
-  const handleExit = () => {
-    useMapUIStore.getState().setPracticeActive(mapId, false)
-    exit()
-    onToggle?.(false)
+  const handleEndSession = () => {
+    endSession()
     setShowConfirm(false)
   }
 
@@ -78,16 +68,15 @@ export const PracticeFab = ({ mapId, onToggle }: PracticeFabProps) => {
               'transition-all duration-300',
               'shadow-lg hover:shadow-xl',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-              isActive
+              hasSession
                 ? 'bg-foreground text-background hover:bg-foreground/90'
                 : 'bg-background border border-border/60 text-foreground hover:bg-muted',
-              hasDue && !isActive && 'animate-due-pulse'
+              hasDue && !hasSession && 'animate-due-pulse'
             )}
           >
-            {session ? <XCloseIcon className='h-5 w-5' /> : <GraduationHat01Icon className='h-5 w-5' />}
+            {hasSession ? <XCloseIcon className='h-5 w-5' /> : <GraduationHat01Icon className='h-5 w-5' />}
 
-            {/* Due count badge */}
-            {hasDue && !isActive && (
+            {hasDue && !hasSession && (
               <Badge
                 variant='destructive'
                 className='absolute -top-1 -right-1 h-5 min-w-5 px-1 text-xs rounded-full'
@@ -98,7 +87,7 @@ export const PracticeFab = ({ mapId, onToggle }: PracticeFabProps) => {
           </button>
         </TooltipTrigger>
         <TooltipContent side='left'>
-          <span>{isActive ? t('practice.mode.title') : t('practice.mode.quickSession')}</span>
+          <span>{hasSession ? t('practice.mode.endSessionTitle') : t('practice.mode.title')}</span>
         </TooltipContent>
       </Tooltip>
 
@@ -112,7 +101,7 @@ export const PracticeFab = ({ mapId, onToggle }: PracticeFabProps) => {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
-            <AlertDialogAction onClick={handleExit}>
+            <AlertDialogAction onClick={handleEndSession}>
               {t('practice.mode.endSessionConfirm')}
             </AlertDialogAction>
           </AlertDialogFooter>

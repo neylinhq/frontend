@@ -27,8 +27,6 @@ export interface PerMapState {
   visibleEdgeTypes: Set<RelationType>
   connectionRange: [number, number] // [min, max]
 
-  // Practice
-  practiceActive: boolean
 }
 
 // --- Global preferences ---

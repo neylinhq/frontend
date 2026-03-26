@@ -12,7 +12,7 @@ import {
   usePracticeModeActions,
   useSessionScopeGuard,
 } from '@/features/practice-mode'
-import { useMapPracticeActive } from '@/entities/map-ui'
+import { useMapActiveTab } from '@/entities/map-ui'
 import type { Edge, FullMap, Node } from '@/entities/map'
 import { ErrorBoundary } from '@/shared/components/error-boundary'
 
@@ -53,7 +53,8 @@ export const GraphView = memo(({
   const GraphVisualization = useWebGLProp ? GraphWebGL : GraphXYFlow
 
   // Practice mode
-  const isPracticeModeActive = useMapPracticeActive(mapId)
+  const activeTab = useMapActiveTab(mapId)
+  const isPracticeModeActive = activeTab === 'practice'
   const masteryMap = useMasteryMap()
   const { selectNode: selectPracticeNode } = usePracticeModeActions()
   useMasteryOverlay(mapId)

@@ -1,10 +1,8 @@
 'use client'
 
 import { Loading02Icon } from '@untitledui/icons-react/outline'
-import { useEffect } from 'react'
 
 import type { Edge, Node } from '@/entities/map'
-import { useMapPracticeActive, useMapUIStore } from '@/entities/map-ui'
 import { cn } from '@/shared/lib/cn'
 
 import {
@@ -41,14 +39,6 @@ export const PracticeModePanel = ({
 }: PracticeModePanelProps) => {
   const view = usePracticeView()
   const isLoading = usePracticeModeStore((s) => s.isLoadingMastery)
-  const isActive = useMapPracticeActive(mapId)
-
-  // Auto-activate practice mode when this panel is rendered (user clicked Practice tab)
-  useEffect(() => {
-    if (!isActive) {
-      useMapUIStore.getState().setPracticeActive(mapId, true)
-    }
-  }, [mapId, isActive])
 
   if (isLoading) {
     return (

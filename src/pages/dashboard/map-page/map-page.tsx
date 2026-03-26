@@ -8,7 +8,6 @@ import {
   useMapActions,
   useMapActiveTab,
   useMapFocus,
-  useMapPracticeActive,
   useMapUIStore,
   useSidebarOpen
 } from '@/entities/map-ui'
@@ -41,7 +40,6 @@ interface MapPageProps {
 export const MapPage = ({ map, mapId }: MapPageProps) => {
   const { t } = useTranslation()
   const { canEdit, isReadOnly } = useMapPermissions(map)
-  const isPracticeActive = useMapPracticeActive(mapId)
   const { focusedNodeId } = useMapFocus(mapId)
   const { focusNode, clearFocus, setActiveTab } = useMapActions(mapId)
   const { openQuickAdd } = useNodeCreationStore()
@@ -210,7 +208,6 @@ export const MapPage = ({ map, mapId }: MapPageProps) => {
           )}
           renderChatPanel={() => <ChatPanel mapId={mapId} />}
           renderSettingsPanel={() => <SettingsPanel mapId={mapId} isOwner={canEdit} />}
-          isPracticeActive={isPracticeActive}
           renderPracticePanel={() => <PracticeModePanel mapId={mapId} selectedNode={selectedNode} nodes={map.nodes} edges={map.edges} />}
         />
       </div>

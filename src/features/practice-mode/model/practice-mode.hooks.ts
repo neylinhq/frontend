@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useFullMap } from '@/entities/map'
-import { useMapFocus, useMapPracticeActive, useMapViewMode } from '@/entities/map-ui'
+import { useMapActiveTab, useMapFocus, useMapViewMode } from '@/entities/map-ui'
 import { DEFAULT_NODE_PROGRESS, type UserNodeProgress, useAllNodeProgress } from '@/entities/progress'
 
 import { usePracticeModeActions, usePracticeModeStore } from '../model/practice-mode.store'
@@ -16,7 +16,8 @@ import { usePracticeModeActions, usePracticeModeStore } from '../model/practice-
  * when AI chat creates new nodes.
  */
 export const useMasteryOverlay = (mapId: string) => {
-  const isActive = useMapPracticeActive(mapId)
+  const activeTab = useMapActiveTab(mapId)
+  const isActive = activeTab === 'practice'
   const { setMasteryData, setLoadingMastery } = usePracticeModeActions()
 
   const { data: fullMap } = useFullMap(mapId, { enabled: isActive })

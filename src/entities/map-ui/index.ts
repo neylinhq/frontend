@@ -12,7 +12,6 @@ export {
   useMapFocus,
   useMapFocusDepth,
   useMapFocusedNodeId,
-  useMapPracticeActive,
   useMapViewMode,
   useNodeSpacing,
   useShowMinimap,

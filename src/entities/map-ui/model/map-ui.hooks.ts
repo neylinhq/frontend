@@ -18,9 +18,6 @@ export const useMapFocusedNodeId = (mapId: string) =>
 export const useMapFocusDepth = (mapId: string) =>
   useMapUIStore((s) => s.getMapState(mapId).focusDepth)
 
-export const useMapPracticeActive = (mapId: string) =>
-  useMapUIStore((s) => s.getMapState(mapId).practiceActive)
-
 // --- Per-map selectors (object values — need stable references) ---
 
 export const useMapFocus = (mapId: string) => {
@@ -87,14 +84,9 @@ export const useMapActions = (mapId: string) => {
     (depth: number) => useMapUIStore.getState().setFocusDepth(mapId, depth),
     [mapId]
   )
-  const setPracticeActive = useCallback(
-    (active: boolean) => useMapUIStore.getState().setPracticeActive(mapId, active),
-    [mapId]
-  )
-
   return useMemo(
-    () => ({ setActiveTab, setViewMode, focusNode, clearFocus, setFocusDepth, setPracticeActive }),
-    [setActiveTab, setViewMode, focusNode, clearFocus, setFocusDepth, setPracticeActive]
+    () => ({ setActiveTab, setViewMode, focusNode, clearFocus, setFocusDepth }),
+    [setActiveTab, setViewMode, focusNode, clearFocus, setFocusDepth]
   )
 }
 

@@ -51,7 +51,6 @@ export interface TutorMessageInput {
 
 export interface StartSessionResult {
   sessionId: string
-  chain: string[]
   nodeQueue: string[]
 }
 
@@ -123,12 +122,7 @@ export const practiceModeApi = {
         scopeNodeIds,
       }
     )
-    const data = (response as ApiResponse<StartSessionResult>).data
-    // Backend returns nodeQueue, normalize to chain
-    if (!data.chain && data.nodeQueue) {
-      data.chain = data.nodeQueue
-    }
-    return data
+    return (response as ApiResponse<StartSessionResult>).data
   },
 
   /**

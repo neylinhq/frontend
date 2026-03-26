@@ -35,7 +35,7 @@ export interface TutorMessage {
 
 export interface PracticeSession {
   mode: 'tutor' | 'review'
-  chain: string[]
+  nodeQueue: string[]
   currentChainIndex: number
   results: Map<string, boolean>
   stabilityDeltas: StabilityDelta[]
@@ -58,8 +58,8 @@ export interface PracticeModeActions {
   setMasteryData: (progress: UserNodeProgress[]) => void
   setLoadingMastery: (loading: boolean) => void
   setScopeNodeIds: (nodeIds: string[]) => void
-  startTutorSession: (chain: string[]) => void
-  startReviewSession: (chain: string[]) => void
+  startTutorSession: (nodeQueue: string[]) => void
+  startReviewSession: (nodeQueue: string[]) => void
   addTutorMessage: (msg: TutorMessage) => void
   advanceChain: () => void
   recordAnswer: (nodeId: string, correct: boolean, stabilityDelta?: StabilityDelta) => void
@@ -114,12 +114,12 @@ export const usePracticeModeStore = create<PracticeModeState & PracticeModeActio
 
     setScopeNodeIds: (nodeIds) => set({ scopeNodeIds: nodeIds }),
 
-    startTutorSession: (chain) =>
+    startTutorSession: (nodeQueue) =>
       set({
         view: 'tutor',
         session: {
           mode: 'tutor',
-          chain,
+          nodeQueue,
           currentChainIndex: 0,
           results: new Map(),
           stabilityDeltas: [],
@@ -128,12 +128,12 @@ export const usePracticeModeStore = create<PracticeModeState & PracticeModeActio
         },
       }),
 
-    startReviewSession: (chain) =>
+    startReviewSession: (nodeQueue) =>
       set({
         view: 'review',
         session: {
           mode: 'review',
-          chain,
+          nodeQueue,
           currentChainIndex: 0,
           results: new Map(),
           stabilityDeltas: [],
@@ -162,7 +162,7 @@ export const usePracticeModeStore = create<PracticeModeState & PracticeModeActio
       }
 
       const nextIndex = session.currentChainIndex + 1
-      if (nextIndex >= session.chain.length) {
+      if (nextIndex >= session.nodeQueue.length) {
         set({ view: 'session_end' })
         return
       }

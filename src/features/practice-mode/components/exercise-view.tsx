@@ -52,7 +52,7 @@ export function ExerciseView({ mapId, nodeLabels, className }: ExerciseViewProps
   const [phase, setPhase] = useState<AnswerPhase>('answering')
   const [result, setResult] = useState<AnswerResult | null>(null)
 
-  const currentNodeId = session?.chain[session.currentChainIndex]
+  const currentNodeId = session?.nodeQueue[session.currentChainIndex]
 
   // Fetch exercise for the current node in the queue
   const {
@@ -129,7 +129,7 @@ export function ExerciseView({ mapId, nodeLabels, className }: ExerciseViewProps
     return null
   }
 
-  const total = session.chain.length
+  const total = session.nodeQueue.length
   const current = session.currentChainIndex + 1
 
   // Loading state (may take a few seconds if auto-generating exercises)

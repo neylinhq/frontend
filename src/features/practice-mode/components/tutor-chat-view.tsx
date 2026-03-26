@@ -30,7 +30,7 @@ export function TutorChatView({ mapId, nodeLabels, className }: TutorChatViewPro
   const abortRef = useRef<AbortController | null>(null)
   const startedRef = useRef(false)
 
-  const chain = session?.chain ?? []
+  const chain = session?.nodeQueue ?? []
   const currentNodeId = session ? chain[session.currentChainIndex] ?? null : null
   const currentNodeLabel = currentNodeId ? (nodeLabels.get(currentNodeId) ?? '') : ''
 

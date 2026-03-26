@@ -30,7 +30,7 @@ export function PracticeSessionEnd({ mapId, className }: PracticeSessionEndProps
     if (!session) {
       return
     }
-    const coveredNodeIds = session.chain
+    const coveredNodeIds = session.nodeQueue
     if (coveredNodeIds.length === 0) {
       return
     }
@@ -71,7 +71,7 @@ export function PracticeSessionEnd({ mapId, className }: PracticeSessionEndProps
       <div className="text-sm text-muted-foreground">
         {isTutor
           ? t('practice.session.tutorSummary', {
-              nodes: session.chain.length,
+              nodes: session.nodeQueue.length,
               defaultValue: '{{nodes}} concepts covered',
             })
           : `${total} ${t('practice.mode.exercises')} · ${correct} ${t('practice.mode.correct')} · ${incorrect} ${t('practice.mode.incorrect')}`}

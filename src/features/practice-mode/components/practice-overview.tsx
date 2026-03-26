@@ -124,7 +124,7 @@ export function PracticeOverview({ mapId, className }: PracticeOverviewProps) {
       // Use prefetched result if available
       const result = prefetchRef.current.tutor
         ?? await practiceModeApi.startScopedSession(mapId, 'tutor', scopeNodeIds)
-      startTutorSession(result.chain)
+      startTutorSession(result.nodeQueue)
     } catch {
       // user stays on overview
     } finally {
@@ -138,7 +138,7 @@ export function PracticeOverview({ mapId, className }: PracticeOverviewProps) {
       setScopeNodeIds(scopeNodeIds)
       const result = prefetchRef.current.review
         ?? await practiceModeApi.startScopedSession(mapId, 'review', scopeNodeIds)
-      startReviewSession(result.chain)
+      startReviewSession(result.nodeQueue)
     } catch {
       // user stays on overview
     } finally {

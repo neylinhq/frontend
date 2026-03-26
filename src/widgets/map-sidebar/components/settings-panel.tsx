@@ -9,7 +9,6 @@ import { useNavigate } from 'react-router'
 
 import { MapHistoryList } from '@/features/map-settings'
 import { useDeleteMap, useMap, useSetVisibility, useUpdateMap } from '@/entities/map'
-import { useMapProgress } from '@/entities/progress'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -49,7 +48,6 @@ export const SettingsPanel = memo(function SettingsPanel({
   const navigate = useNavigate()
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [historyOpen, setHistoryOpen] = useState(false)
-  const [advancedOpen, setAdvancedOpen] = useState(false)
 
   // Local state for form fields
   const [title, setTitle] = useState('')
@@ -57,7 +55,7 @@ export const SettingsPanel = memo(function SettingsPanel({
   const initialDataRef = useRef({ title: '', description: '' })
 
   const { data: map } = useMap(mapId)
-  const { data: mapProgress } = useMapProgress(mapId)
+  // const { data: mapProgress } = useMapProgress(mapId)
   const updateMapMutation = useUpdateMap(mapId)
   const setVisibilityMutation = useSetVisibility()
   const deleteMapMutation = useDeleteMap()
@@ -217,47 +215,6 @@ export const SettingsPanel = memo(function SettingsPanel({
           {/* Separator */}
           <div className='mx-4 border-t border-border/60' />
 
-          {/* === Progress Section === */}
-          <div className='p-4 space-y-3'>
-            <h3 className='text-xs font-medium text-muted-foreground'>
-              {t('mapSettings.tabs.progress', 'Progress')}
-            </h3>
-
-            {/* Stats — compact 2×2 */}
-            <div className='grid grid-cols-2 gap-2'>
-              <div className='flex items-baseline justify-between rounded-md bg-muted/30 px-3 py-2'>
-                <span className='text-xs text-muted-foreground'>
-                  {t('mapSettings.progress.nodesTotal')}
-                </span>
-                <span className='text-sm font-semibold tabular-nums'>{map?.nodesCount ?? 0}</span>
-              </div>
-              <div className='flex items-baseline justify-between rounded-md bg-muted/30 px-3 py-2'>
-                <span className='text-xs text-muted-foreground'>
-                  {t('mapSettings.progress.overallProgress')}
-                </span>
-                <span className='text-sm font-semibold tabular-nums'>
-                  {Math.round((mapProgress?.overallProgress ?? 0) * 100)}%
-                </span>
-              </div>
-              <div className='flex items-baseline justify-between rounded-md bg-muted/30 px-3 py-2'>
-                <span className='text-xs text-muted-foreground'>
-                  {t('mapSettings.progress.nodesMastered')}
-                </span>
-                <span className='text-sm font-semibold tabular-nums'>
-                  {mapProgress?.nodesMastered ?? 0}
-                </span>
-              </div>
-              <div className='flex items-baseline justify-between rounded-md bg-muted/30 px-3 py-2'>
-                <span className='text-xs text-muted-foreground'>
-                  {t('mapSettings.progress.nodesLearning')}
-                </span>
-                <span className='text-sm font-semibold tabular-nums'>
-                  {mapProgress?.nodesLearning ?? 0}
-                </span>
-              </div>
-            </div>
-          </div>
-
           {/* === History — collapsible === */}
           <div className='px-2 py-1'>
             <Collapsible open={historyOpen} onOpenChange={setHistoryOpen}>
@@ -283,28 +240,6 @@ export const SettingsPanel = memo(function SettingsPanel({
             </Collapsible>
           </div>
 
-          {/* === Advanced — collapsible (rating system + danger zone) === */}
-          <div className='px-2 py-1'>
-            <Collapsible open={advancedOpen} onOpenChange={setAdvancedOpen}>
-              <CollapsibleTrigger asChild>
-                <button
-                  type='button'
-                  className='flex w-full items-center justify-between rounded-md px-2 py-2 text-sm font-medium hover:bg-muted/50 transition-colors'
-                >
-                  <span>{t('mapSettings.tabs.settings', 'Advanced')}</span>
-                  <ChevronDownIcon
-                    className={cn(
-                      'h-4 w-4 text-muted-foreground transition-transform duration-200',
-                      advancedOpen && 'rotate-180'
-                    )}
-                  />
-                </button>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <div className='px-2 pt-1 pb-2 space-y-4' />
-              </CollapsibleContent>
-            </Collapsible>
-          </div>
         </div>
 
         {/* Danger Zone — pinned to bottom */}

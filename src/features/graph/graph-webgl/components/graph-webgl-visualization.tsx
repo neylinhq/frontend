@@ -33,11 +33,13 @@ import { MiniMapWebGL } from '@/features/graph/graph-webgl/components/minimap-we
 import type { Edge, FullMap, Node } from '@/entities/map'
 import { useFullMap, useUpdateNodePosition } from '@/entities/map'
 import {
-  useGlobalUIPrefs,
+  useDirectionStrength,
   useMapActions,
   useMapFilters,
   useMapFocus,
-  useMapViewMode
+  useMapViewMode,
+  useNodeSpacing,
+  useShowMinimap
 } from '@/entities/map-ui'
 import { Card } from '@/shared/components/card'
 import { useDarkMode } from '@/shared/hooks'
@@ -119,8 +121,9 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
   const { focusedNodeId, focusDepth } = useMapFocus(mapId)
   const { focusNode } = useMapActions(mapId)
   const { visibleNodeTypes, visibleEdgeTypes, connectionRange } = useMapFilters(mapId)
-  const prefs = useGlobalUIPrefs()
-  const { showMinimap, nodeSpacing, directionStrength } = prefs
+  const showMinimap = useShowMinimap()
+  const nodeSpacing = useNodeSpacing()
+  const directionStrength = useDirectionStrength()
   const { startEdgeEditing, startEdgeCreation } = useEdgeManagementStore()
 
   // Handle edge badge click — open edge edit popover

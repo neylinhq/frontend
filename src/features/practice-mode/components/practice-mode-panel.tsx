@@ -1,7 +1,5 @@
 'use client'
 
-import { Loading02Icon } from '@untitledui/icons-react/outline'
-
 import type { Edge, Node } from '@/entities/map'
 import { cn } from '@/shared/lib/cn'
 
@@ -39,18 +37,9 @@ export const PracticeModePanel = ({
 }: PracticeModePanelProps) => {
   const view = usePracticeView()
   const session = usePracticeModeStore((s) => s.session)
-  const isLoading = usePracticeModeStore((s) => s.isLoadingMastery)
 
   // Guard: if view requires session but session is null, reset to overview
   const effectiveView = (view === 'tutor' || view === 'review') && !session ? 'overview' : view
-
-  if (isLoading) {
-    return (
-      <div className={cn('flex h-full items-center justify-center', className)}>
-        <Loading02Icon className="h-6 w-6 animate-spin text-muted-foreground" />
-      </div>
-    )
-  }
 
   switch (effectiveView) {
     case 'overview': {

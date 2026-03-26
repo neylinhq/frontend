@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query'
 import { Loading02Icon } from '@untitledui/icons-react/outline'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -9,7 +10,6 @@ import { Button } from '@/shared/components/button'
 import { Icon, telegramIcon } from '@/shared/components/icon'
 import { toast } from '@/shared/components/toast'
 
-// Telegram Login Widget types
 interface TelegramUser {
   id: number
   first_name: string
@@ -18,12 +18,6 @@ interface TelegramUser {
   photo_url?: string
   auth_date: number
   hash: string
-}
-
-declare global {
-  interface Window {
-    onTelegramAuth?: (user: TelegramUser) => void
-  }
 }
 
 type TelegramLoginButtonProps = {
@@ -36,8 +30,8 @@ export const TelegramLoginButton = ({ className }: TelegramLoginButtonProps) => 
   const [searchParams] = useSearchParams()
   const [isLoading, setIsLoading] = useState(false)
   const [botId, setBotId] = useState('')
+  const queryClient = useQueryClient()
 
-  // Fetch bot info from API
   useEffect(() => {
     sessionApi
       .getTelegramBotInfo()
@@ -49,7 +43,6 @@ export const TelegramLoginButton = ({ className }: TelegramLoginButtonProps) => 
       })
   }, [])
 
-  // Handle Telegram auth callback
   const handleTelegramAuth = useCallback(
     async (user: TelegramUser) => {
       setIsLoading(true)
@@ -63,6 +56,7 @@ export const TelegramLoginButton = ({ className }: TelegramLoginButtonProps) => 
           auth_date: user.auth_date,
           hash: user.hash
         })
+        queryClient.clear()
         const returnUrl = searchParams.get('from') || '/dashboard/overview'
         navigate(returnUrl)
       } catch (error) {
@@ -80,30 +74,20 @@ export const TelegramLoginButton = ({ className }: TelegramLoginButtonProps) => 
         setIsLoading(false)
       }
     },
-    [navigate, searchParams, t]
+    [navigate, queryClient, searchParams, t]
   )
-
-  // Set up global callback for Telegram widget
-  useEffect(() => {
-    window.onTelegramAuth = handleTelegramAuth
-    return () => {
-      delete window.onTelegramAuth
-    }
-  }, [handleTelegramAuth])
 
   const openTelegramLogin = () => {
     if (!botId) {
       return
     }
 
-    // Open Telegram Login Widget in popup
     const width = 550
     const height = 470
     const left = window.screenX + (window.outerWidth - width) / 2
     const top = window.screenY + (window.outerHeight - height) / 2
 
-    // TODO: Remove hardcoded origin after testing
-    const origin = 'http://neylin.io:5173'
+    const origin = window.location.origin
 
     const popup = window.open(
       `https://oauth.telegram.org/auth?bot_id=${botId}&origin=${encodeURIComponent(origin)}&request_access=write`,
@@ -111,24 +95,25 @@ export const TelegramLoginButton = ({ className }: TelegramLoginButtonProps) => 
       `width=${width},height=${height},left=${left},top=${top}`
     )
 
-    // Listen for message from popup
     const handleMessage = (event: MessageEvent) => {
       if (event.origin !== 'https://oauth.telegram.org') {
         return
       }
 
-      // Parse JSON string if needed
-      const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data
+      try {
+        const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data
 
-      if (data?.event === 'auth_result' && data?.result) {
-        handleTelegramAuth(data.result)
-        popup?.close()
+        if (data?.event === 'auth_result' && data?.result) {
+          handleTelegramAuth(data.result)
+          popup?.close()
+        }
+      } catch {
+        // Ignore malformed messages
       }
     }
 
     window.addEventListener('message', handleMessage)
 
-    // Cleanup when popup closes
     const checkClosed = setInterval(() => {
       if (popup?.closed) {
         clearInterval(checkClosed)

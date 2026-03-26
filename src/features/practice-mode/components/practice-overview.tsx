@@ -1,12 +1,13 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import type { MasteryLevel } from '@/entities/progress'
 import { Button } from '@/shared/components/button'
 import { cn } from '@/shared/lib/cn'
 
+import type { StartSessionResult } from '../api/practice-mode.api'
 import { practiceModeApi } from '../api/practice-mode.api'
 import {
   useMasteryMap,
@@ -96,14 +97,36 @@ export function PracticeOverview({ mapId, className }: PracticeOverviewProps) {
     return { total, mastered, proficient, practicing, learning, notStarted, dueCount, zpdCount, masteryPercent }
   }, [masteryMap, scopeNodeIds])
 
+  // Prefetch chains for both modes as soon as overview mounts
+  const prefetchRef = useRef<{ tutor?: StartSessionResult; review?: StartSessionResult }>({})
+  const prefetchKeyRef = useRef('')
+  useEffect(() => {
+    const key = scopeNodeIds.join(',')
+    if (!key || key === prefetchKeyRef.current) {
+      return
+    }
+    prefetchKeyRef.current = key
+    prefetchRef.current = {}
+
+    // Fire-and-forget prefetch for both modes
+    practiceModeApi.startScopedSession(mapId, 'tutor', scopeNodeIds)
+      .then((result) => { prefetchRef.current.tutor = result })
+      .catch(() => {})
+    practiceModeApi.startScopedSession(mapId, 'review', scopeNodeIds)
+      .then((result) => { prefetchRef.current.review = result })
+      .catch(() => {})
+  }, [mapId, scopeNodeIds])
+
   const handleStartTutor = async () => {
     setIsStarting('tutor')
     try {
       setScopeNodeIds(scopeNodeIds)
-      const result = await practiceModeApi.startScopedSession(mapId, 'tutor', scopeNodeIds)
+      // Use prefetched result if available
+      const result = prefetchRef.current.tutor
+        ?? await practiceModeApi.startScopedSession(mapId, 'tutor', scopeNodeIds)
       startTutorSession(result.chain)
     } catch {
-      // Error handled by caller — user stays on overview
+      // user stays on overview
     } finally {
       setIsStarting(null)
     }
@@ -113,10 +136,11 @@ export function PracticeOverview({ mapId, className }: PracticeOverviewProps) {
     setIsStarting('review')
     try {
       setScopeNodeIds(scopeNodeIds)
-      const result = await practiceModeApi.startScopedSession(mapId, 'review', scopeNodeIds)
+      const result = prefetchRef.current.review
+        ?? await practiceModeApi.startScopedSession(mapId, 'review', scopeNodeIds)
       startReviewSession(result.chain)
     } catch {
-      // Error handled by caller — user stays on overview
+      // user stays on overview
     } finally {
       setIsStarting(null)
     }

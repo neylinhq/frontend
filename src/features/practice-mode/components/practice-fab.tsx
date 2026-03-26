@@ -84,7 +84,7 @@ export const PracticeFab = ({ mapId, onToggle }: PracticeFabProps) => {
               hasDue && !isActive && 'animate-due-pulse'
             )}
           >
-            {isActive ? <XCloseIcon className='h-5 w-5' /> : <GraduationHat01Icon className='h-5 w-5' />}
+            {session ? <XCloseIcon className='h-5 w-5' /> : <GraduationHat01Icon className='h-5 w-5' />}
 
             {/* Due count badge */}
             {hasDue && !isActive && (

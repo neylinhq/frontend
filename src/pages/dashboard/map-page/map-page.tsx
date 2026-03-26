@@ -19,7 +19,7 @@ import {
   PracticeFab,
   PracticeModePanel
 } from '@/features/practice-mode'
-import { Fab } from '@/shared/components/fab'
+import { FloatingLayer } from '@/shared/components/floating-layer'
 import type { OverflowNavItem } from '@/shared/components/overflow-nav'
 import { toast } from '@/shared/components/toast'
 import { useKeyboardShortcut } from '@/shared/hooks/use-keyboard-shortcut'
@@ -114,11 +114,11 @@ export const MapPage = ({ map, mapId }: MapPageProps) => {
 
           {canEdit && <QuickAddDialogWebGL viewport={viewport} />}
 
-          <Fab.Root>
-            <Fab.Item position='top-right'>
+          <FloatingLayer.Root>
+            <FloatingLayer.Item position='top-right'>
               <SidebarToggleFab />
-            </Fab.Item>
-            <Fab.Item position='bottom-right'>
+            </FloatingLayer.Item>
+            <FloatingLayer.Item position='bottom-right'>
               <div className='flex flex-col-reverse items-center gap-3'>
                 {canEdit && <AddNodeFab />}
                 <PracticeFab mapId={mapId} />
@@ -130,8 +130,8 @@ export const MapPage = ({ map, mapId }: MapPageProps) => {
                   {useWebGL ? 'WebGL' : 'Flow'}
                 </button>
               </div>
-            </Fab.Item>
-          </Fab.Root>
+            </FloatingLayer.Item>
+          </FloatingLayer.Root>
 
           {/* Read-only banner */}
           {isReadOnly && <ReadOnlyBanner mapId={mapId} />}

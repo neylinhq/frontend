@@ -18,6 +18,7 @@ import {
   QuickAddDialogWebGL,
   useNodeCreationStore
 } from '@/features/node-creation'
+import { FloatingLayer } from '@/shared/components/floating-layer'
 import { useKeyboardShortcut } from '@/shared/hooks/use-keyboard-shortcut'
 import {
   ChatPanel,
@@ -83,46 +84,46 @@ export const MapWebGLPage = ({ map, mapId }: MapWebGLPageProps) => {
   }, [])
 
   return (
-    <div className='h-screen flex'>
-      {/* Main canvas area - flex-1 to shrink when sidebar opens */}
-      <div className='flex-1 min-w-0 relative'>
-        <GraphWebGLVisualization
-          mapId={mapId}
-          initialData={map}
-          className='h-full w-full'
-          interactive={canEdit}
-          isAIPanelOpen={isAIPanelOpen}
-          onToggleAIPanel={handleToggleAIPanel}
-          onNodeSelect={handleNodeSelect}
-          onViewportChange={nextViewport => setViewport(nextViewport)}
-          renderConnectionsPanel={(node, edges, allNodes, onOpenNode, onPanToNode) => (
-            <NodeConnectionsPanel
-              node={node}
-              edges={edges}
-              allNodes={allNodes}
-              onOpenNode={onOpenNode}
-              onPanToNode={onPanToNode}
-            />
-          )}
-        />
-
-        {/* Owner-only components */}
-        {canEdit && (
-          <>
-            <QuickAddDialogWebGL viewport={viewport} />
-            <AddNodeFab />
-          </>
+    <div className='h-screen relative'>
+      <GraphWebGLVisualization
+        mapId={mapId}
+        initialData={map}
+        className='h-full w-full'
+        interactive={canEdit}
+        isAIPanelOpen={isAIPanelOpen}
+        onToggleAIPanel={handleToggleAIPanel}
+        onNodeSelect={handleNodeSelect}
+        onViewportChange={nextViewport => setViewport(nextViewport)}
+        renderConnectionsPanel={(node, edges, allNodes, onOpenNode, onPanToNode) => (
+          <NodeConnectionsPanel
+            node={node}
+            edges={edges}
+            allNodes={allNodes}
+            onOpenNode={onOpenNode}
+            onPanToNode={onPanToNode}
+          />
         )}
+      />
 
-        {/* Sidebar toggle FAB */}
-        <SidebarToggleFab />
+      <FloatingLayer.Root>
+        <FloatingLayer.Item position='top-right'>
+          <SidebarToggleFab />
+        </FloatingLayer.Item>
+        {canEdit && (
+          <FloatingLayer.Item position='bottom-right'>
+            <div className='flex flex-col-reverse items-center gap-3'>
+              <AddNodeFab />
+            </div>
+          </FloatingLayer.Item>
+        )}
+      </FloatingLayer.Root>
 
-        {/* Read-only banner with copy button */}
-        {isReadOnly && <ReadOnlyBanner mapId={mapId} />}
-      </div>
+      {canEdit && <QuickAddDialogWebGL viewport={viewport} />}
+      {isReadOnly && <ReadOnlyBanner mapId={mapId} />}
 
-      {/* Sidebar — full widget with tabs (node/chat/settings), resize, mobile drawer */}
+      {/* Sidebar overlays the graph — no layout shift */}
       <MapSidebar
+        className='absolute right-0 top-0 h-full z-10'
         mapId={mapId}
         selectedNode={selectedNode}
         edges={map.edges}

@@ -93,9 +93,8 @@ export const MapPage = ({ map, mapId }: MapPageProps) => {
 
   return (
     <ReactFlowProvider>
-      <div className='h-screen flex'>
-        {/* Main canvas area */}
-        <div className='flex-1 min-w-0 relative'>
+      <div className='h-screen relative'>
+        <div className='h-full w-full relative'>
           <GraphView
             mapId={mapId}
             initialData={map}
@@ -137,8 +136,9 @@ export const MapPage = ({ map, mapId }: MapPageProps) => {
           {isReadOnly && <ReadOnlyBanner mapId={mapId} />}
         </div>
 
-        {/* Sidebar — tabs node/chat/settings, resize, mobile drawer */}
+        {/* Sidebar overlays the graph — no layout shift */}
         <MapSidebar
+          className='absolute right-0 top-0 h-full z-10'
           mapId={mapId}
           selectedNode={selectedNode}
           edges={map.edges}

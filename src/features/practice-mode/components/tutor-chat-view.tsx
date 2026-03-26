@@ -28,7 +28,8 @@ export function TutorChatView({ mapId, nodeLabels, className }: TutorChatViewPro
   const [isStreaming, setIsStreaming] = useState(false)
   const [streamedContent, setStreamedContent] = useState('')
   const abortRef = useRef<AbortController | null>(null)
-  const startedRef = useRef(false)
+  // Track which nodeId was last auto-started so we re-trigger when chain advances
+  const startedNodeRef = useRef<string | null>(null)
 
   const chain = session?.nodeQueue ?? []
   const currentNodeId = session ? chain[session.currentChainIndex] ?? null : null
@@ -158,12 +159,12 @@ export function TutorChatView({ mapId, nodeLabels, className }: TutorChatViewPro
     }
   }, [isStreaming, currentNodeId, mapId, addTutorMessage, recordAnswer, currentNodeLabel, t])
 
-  // Auto-start: AI sends first message
+  // Auto-start: AI sends first message for each node in the chain
   useEffect(() => {
-    if (startedRef.current || !currentNodeId) {
+    if (!currentNodeId || startedNodeRef.current === currentNodeId) {
       return
     }
-    startedRef.current = true
+    startedNodeRef.current = currentNodeId
     sendMessage('')
   }, [currentNodeId, sendMessage])
 

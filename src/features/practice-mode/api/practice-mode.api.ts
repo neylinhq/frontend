@@ -52,6 +52,7 @@ export interface TutorMessageInput {
 export interface StartSessionResult {
   sessionId: string
   chain: string[]
+  nodeQueue: string[]
 }
 
 export interface ExpandSuggestion {
@@ -122,7 +123,12 @@ export const practiceModeApi = {
         scopeNodeIds,
       }
     )
-    return (response as ApiResponse<StartSessionResult>).data
+    const data = (response as ApiResponse<StartSessionResult>).data
+    // Backend returns nodeQueue, normalize to chain
+    if (!data.chain && data.nodeQueue) {
+      data.chain = data.nodeQueue
+    }
+    return data
   },
 
   /**

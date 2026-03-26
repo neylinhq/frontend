@@ -10,7 +10,7 @@ import { cn } from '@/shared/lib/cn'
 
 import type { TutorChunk } from '../api/practice-mode.api'
 import type { StabilityDelta } from '../model/practice-mode.store'
-import { usePracticeModeActions, usePracticeModeSession } from '../model/practice-mode.store'
+import { usePracticeModeActions, usePracticeModeSession, usePracticeModeStore } from '../model/practice-mode.store'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/v1'
 
@@ -50,7 +50,9 @@ export function TutorChatView({ mapId, nodeLabels, className }: TutorChatViewPro
 
   // Core: send a message and stream response
   const sendMessage = useCallback(async (text: string) => {
-    if (isStreaming || !currentNodeId || !session) {
+    // Read session from store directly to avoid stale closure
+    const currentSession = usePracticeModeStore.getState().session
+    if (isStreaming || !currentNodeId || !currentSession) {
       return
     }
 
@@ -64,7 +66,7 @@ export function TutorChatView({ mapId, nodeLabels, className }: TutorChatViewPro
 
     const history = isStart
       ? []
-      : [...session.tutorHistory, { role: 'user' as const, content: text }].map((m) => ({
+      : [...currentSession.tutorHistory, { role: 'user' as const, content: text }].map((m) => ({
           role: m.role as 'user' | 'assistant',
           content: m.content,
         }))
@@ -154,7 +156,7 @@ export function TutorChatView({ mapId, nodeLabels, className }: TutorChatViewPro
       setIsStreaming(false)
       abortRef.current = null
     }
-  }, [isStreaming, currentNodeId, session, mapId, addTutorMessage, recordAnswer, currentNodeLabel, t])
+  }, [isStreaming, currentNodeId, mapId, addTutorMessage, recordAnswer, currentNodeLabel, t])
 
   // Auto-start: AI sends first message
   useEffect(() => {

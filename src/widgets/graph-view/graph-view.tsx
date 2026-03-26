@@ -10,6 +10,7 @@ import {
   useMasteryMap,
   useMasteryOverlay,
   usePracticeModeActions,
+  useSessionScopeGuard,
 } from '@/features/practice-mode'
 import { useMapPracticeActive } from '@/entities/map-ui'
 import type { Edge, FullMap, Node } from '@/entities/map'
@@ -56,6 +57,7 @@ export const GraphView = memo(({
   const masteryMap = useMasteryMap()
   const { selectNode: selectPracticeNode } = usePracticeModeActions()
   useMasteryOverlay(mapId)
+  useSessionScopeGuard(mapId)
 
   // In practice mode, clicking a node opens its detail in the practice panel
   const handleNodeSelect = (node: Node | null) => {

@@ -5,7 +5,7 @@ import { useFullMap } from '@/entities/map'
 import { useMapFocus, useMapPracticeActive, useMapViewMode } from '@/entities/map-ui'
 import { DEFAULT_NODE_PROGRESS, type UserNodeProgress, useAllNodeProgress } from '@/entities/progress'
 
-import { usePracticeModeActions } from '../model/practice-mode.store'
+import { usePracticeModeActions, usePracticeModeStore } from '../model/practice-mode.store'
 
 /**
  * Fetches node progress when practice mode is active and syncs to store.
@@ -134,4 +134,26 @@ export function usePracticeScope(mapId: string): {
     const scopeNodeIds = fullMap.nodes.map((n) => n.id)
     return { scopeNodeIds, scopeLabel: t('practice.scope.entireMap') }
   }, [fullMap, viewMode, focusedNodeId, focusDepth, t])
+}
+
+/**
+ * Auto-ends active practice session when view scope changes
+ * (user switched focus node, depth, or view mode).
+ * FSRS progress is already saved per-exchange, so no data loss.
+ */
+export const useSessionScopeGuard = (mapId: string) => {
+  const viewMode = useMapViewMode(mapId)
+  const { focusedNodeId, focusDepth } = useMapFocus(mapId)
+  const scopeKey = `${viewMode}:${focusedNodeId ?? ''}:${focusDepth}`
+  const prevScopeRef = useRef(scopeKey)
+
+  useEffect(() => {
+    if (prevScopeRef.current !== scopeKey) {
+      prevScopeRef.current = scopeKey
+      const { session } = usePracticeModeStore.getState()
+      if (session) {
+        usePracticeModeStore.getState().endSession()
+      }
+    }
+  }, [scopeKey])
 }

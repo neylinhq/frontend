@@ -7,7 +7,7 @@ export { StabilityBar } from './components/stability-bar'
 export { QuizExercise } from './components/quiz-exercise'
 export { FlashcardExercise } from './components/flashcard-exercise'
 export { OpenEndedExercise } from './components/open-ended-exercise'
-export { useMasteryOverlay, usePracticeScope } from './model/practice-mode.hooks'
+export { useMasteryOverlay, usePracticeScope, useSessionScopeGuard } from './model/practice-mode.hooks'
 export type { NodeMasteryData, PracticeSession, PracticeView, StabilityDelta, TutorMessage } from './model/practice-mode.store'
 export {
   useMasteryMap,

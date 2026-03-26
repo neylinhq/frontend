@@ -215,7 +215,7 @@ export const practiceModeApi = {
     coveredNodeIds: string[]
   ): Promise<ExpandSuggestion[]> => {
     const response = await api.post<ApiResponse<ExpandSuggestion[]>>(
-      `/maps/${mapId}/practice/expand-suggestions`,
+      `/maps/${mapId}/practice/sessions/expand-suggestions`,
       { coveredNodeIds }
     )
     return (response as ApiResponse<ExpandSuggestion[]>).data

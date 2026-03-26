@@ -204,7 +204,7 @@ export function PracticeOverview({ mapId, className }: PracticeOverviewProps) {
       <div className="flex flex-col gap-2 mt-2">
         <Button
           onClick={handleStartTutor}
-          disabled={scopeStats.zpdCount === 0 || isStarting !== null}
+          disabled={isStarting !== null}
         >
           {isStarting === 'tutor'
             ? t('practice.mode.starting')
@@ -213,7 +213,7 @@ export function PracticeOverview({ mapId, className }: PracticeOverviewProps) {
         <Button
           variant="outline"
           onClick={handleStartReview}
-          disabled={scopeStats.dueCount === 0 || isStarting !== null}
+          disabled={isStarting !== null}
         >
           {isStarting === 'review'
             ? t('practice.mode.starting')

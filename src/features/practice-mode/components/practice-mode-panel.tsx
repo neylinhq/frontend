@@ -38,7 +38,11 @@ export const PracticeModePanel = ({
   className,
 }: PracticeModePanelProps) => {
   const view = usePracticeView()
+  const session = usePracticeModeStore((s) => s.session)
   const isLoading = usePracticeModeStore((s) => s.isLoadingMastery)
+
+  // Guard: if view requires session but session is null, reset to overview
+  const effectiveView = (view === 'tutor' || view === 'review') && !session ? 'overview' : view
 
   if (isLoading) {
     return (
@@ -48,7 +52,7 @@ export const PracticeModePanel = ({
     )
   }
 
-  switch (view) {
+  switch (effectiveView) {
     case 'overview': {
       return <PracticeOverview mapId={mapId} className={className} />
     }

@@ -101,7 +101,9 @@ export function PracticeOverview({ mapId, className }: PracticeOverviewProps) {
     try {
       setScopeNodeIds(scopeNodeIds)
       const result = await practiceModeApi.startScopedSession(mapId, 'tutor', scopeNodeIds)
-      startTutorSession(result.nodeQueue)
+      if (result.nodeQueue.length > 0) {
+        startTutorSession(result.nodeQueue)
+      }
     } catch {
       // user stays on overview
     } finally {
@@ -114,7 +116,9 @@ export function PracticeOverview({ mapId, className }: PracticeOverviewProps) {
     try {
       setScopeNodeIds(scopeNodeIds)
       const result = await practiceModeApi.startScopedSession(mapId, 'review', scopeNodeIds)
-      startReviewSession(result.nodeQueue)
+      if (result.nodeQueue.length > 0) {
+        startReviewSession(result.nodeQueue)
+      }
     } catch {
       // user stays on overview
     } finally {

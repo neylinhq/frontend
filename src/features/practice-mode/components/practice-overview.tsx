@@ -123,7 +123,7 @@ export function PracticeOverview({ mapId, className }: PracticeOverviewProps) {
       setScopeNodeIds(scopeNodeIds)
       const result = prefetchRef.current.tutor
         ?? await practiceModeApi.startScopedSession(mapId, 'tutor', scopeNodeIds)
-      console.log('[practice] tutor session result:', result)
+      console.log('[practice] tutor start, scopeNodeIds:', scopeNodeIds.length, 'result:', result)
       startTutorSession(result.nodeQueue)
     } catch (err) {
       console.error('[practice] failed to start tutor:', err)

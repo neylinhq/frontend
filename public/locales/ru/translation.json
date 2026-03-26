@@ -1609,7 +1609,10 @@
       "askQuestion": "Задайте вопрос...",
       "learn": "Изучить",
       "starting": "Запуск...",
-      "helpUnavailable": "Не удалось получить помощь. Попробуйте ещё раз."
+      "helpUnavailable": "Не удалось получить помощь. Попробуйте ещё раз.",
+      "endSessionTitle": "Завершить сессию?",
+      "endSessionDescription": "Текущая сессия будет завершена. Прогресс сохранён.",
+      "endSessionConfirm": "Завершить"
     },
     "scope": {
       "entireMap": "Вся карта"

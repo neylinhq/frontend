@@ -1607,7 +1607,10 @@
       "askQuestion": "Ask a question...",
       "learn": "Learn",
       "starting": "Starting...",
-      "helpUnavailable": "Could not get help right now. Try again."
+      "helpUnavailable": "Could not get help right now. Try again.",
+      "endSessionTitle": "End session?",
+      "endSessionDescription": "The current session will end. Progress is saved.",
+      "endSessionConfirm": "End session"
     },
     "scope": {
       "entireMap": "Entire map"

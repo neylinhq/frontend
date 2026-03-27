@@ -1,8 +1,4 @@
-import {
-  AlertCircleIcon,
-  ChevronDownIcon,
-  Trash01Icon
-} from '@untitledui/icons-react/outline'
+import { AlertCircleIcon, ChevronDownIcon, Trash01Icon } from '@untitledui/icons-react/outline'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
@@ -59,7 +55,6 @@ export const SettingsPanel = memo(function SettingsPanel({
   const updateMapMutation = useUpdateMap(mapId)
   const setVisibilityMutation = useSetVisibility()
   const deleteMapMutation = useDeleteMap()
-
 
   // Sync local state when map data loads
   useEffect(() => {
@@ -144,7 +139,6 @@ export const SettingsPanel = memo(function SettingsPanel({
       toast.error(t('errors.failedDelete'))
     }
   }, [mapId, deleteMapMutation, navigate, t])
-
 
   // Saving indicator
   const isSaving = updateMapMutation.isPending
@@ -239,7 +233,6 @@ export const SettingsPanel = memo(function SettingsPanel({
               </CollapsibleContent>
             </Collapsible>
           </div>
-
         </div>
 
         {/* Danger Zone — pinned to bottom */}

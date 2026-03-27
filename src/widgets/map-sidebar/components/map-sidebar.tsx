@@ -1,8 +1,15 @@
-import { XCloseIcon } from '@untitledui/icons-react/outline'
-import { memo, useCallback, useEffect, useMemo, useRef } from 'react'
+import {
+  LinkExternal01Icon,
+  MessageDotsSquareIcon,
+  PlusIcon,
+  Target01Icon,
+  XCloseIcon
+} from '@untitledui/icons-react/outline'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import type { Edge, Node } from '@/entities/map'
+import { ChatSelectorPopover } from '@/features/ai-assist'
+import type { Node } from '@/entities/map'
 import {
   type MapSidebarTab,
   useMapActions,
@@ -12,20 +19,25 @@ import {
   useSidebarWidth
 } from '@/entities/map-ui'
 import { OverflowNav, type OverflowNavItem } from '@/shared/components/overflow-nav'
+import { Popover, PopoverContent, PopoverTrigger } from '@/shared/components/popover'
 import { ResizableSidebar } from '@/shared/components/resizable-sidebar'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/components/tooltip'
+import { cn } from '@/shared/lib/cn'
+
+import { useChatActionsStore } from '../model'
 
 interface MapSidebarProps {
   mapId: string
   /** Selected node for Node tab */
   selectedNode: Node | null
-  /** All edges for connections panel */
-  edges: Edge[]
-  /** All nodes for connections panel */
-  allNodes: Node[]
-  /** Whether user can edit (owner) */
+  /** Whether user can edit */
   canEdit: boolean
-  /** Whether current user is owner */
-  isOwner?: boolean
+  /** Whether the selected node is focused in the graph */
+  isFocused?: boolean
+  /** Toggle focus on/off for the selected node */
+  onToggleFocus?: () => void
+  /** Navigate to full node editor page */
+  onOpenFullEditor?: () => void
   /** Render prop for node panel content */
   renderNodePanel?: (node: Node) => React.ReactNode
   /** Render prop for chat panel content */
@@ -36,10 +48,6 @@ interface MapSidebarProps {
   renderPracticePanel?: () => React.ReactNode
   /** Whether practice mode is active */
   isPracticeActive?: boolean
-  /** Extra items shown inline before tabs, overflow into popover top (e.g. focus, open editor) */
-  getExtraMenuItems?: (node: Node) => OverflowNavItem[]
-  /** Items always in popover at bottom regardless of space (e.g. copy ID, delete) */
-  getMenuItems?: (node: Node) => OverflowNavItem[]
   /** Callback when node is closed */
   onCloseNode?: () => void
   className?: string
@@ -49,14 +57,14 @@ export const MapSidebar = memo(function MapSidebar({
   mapId,
   selectedNode,
   canEdit,
-  isOwner: _isOwner = true,
+  isFocused = false,
+  onToggleFocus,
+  onOpenFullEditor,
   renderNodePanel,
   renderChatPanel,
   renderSettingsPanel,
   renderPracticePanel,
   isPracticeActive = false,
-  getExtraMenuItems,
-  getMenuItems,
   onCloseNode,
   className
 }: MapSidebarProps) {
@@ -73,10 +81,13 @@ export const MapSidebar = memo(function MapSidebar({
     }
   }, [activeTab, onCloseNode])
 
-  const setTab = useCallback((tab: MapSidebarTab) => {
-    setActiveTab(tab)
-    useMapUIStore.getState().setSidebarOpen(true)
-  }, [setActiveTab])
+  const setTab = useCallback(
+    (tab: MapSidebarTab) => {
+      setActiveTab(tab)
+      useMapUIStore.getState().setSidebarOpen(true)
+    },
+    [setActiveTab]
+  )
 
   const handleSetWidth = useCallback((w: number) => {
     useMapUIStore.getState().setSidebarWidth(w)
@@ -105,27 +116,48 @@ export const MapSidebar = memo(function MapSidebar({
   const navItems = useMemo(() => {
     const items: OverflowNavItem[] = []
     if (selectedNode) {
-      items.push({ id: 'node', label: t('mapSidebar.tabs.node'), active: activeTab === 'node', onClick: () => setTab('node') })
+      items.push({
+        id: 'node',
+        label: t('mapSidebar.tabs.node'),
+        active: activeTab === 'node',
+        onClick: () => setTab('node')
+      })
     }
     if (canEdit) {
-      items.push({ id: 'chat', label: t('mapSidebar.tabs.chat'), active: activeTab === 'chat', onClick: () => setTab('chat') })
+      items.push({
+        id: 'chat',
+        label: t('mapSidebar.tabs.chat'),
+        active: activeTab === 'chat',
+        onClick: () => setTab('chat')
+      })
     }
-    items.push({ id: 'practice', label: t('practice.mode.title'), active: activeTab === 'practice', onClick: () => setTab('practice') })
-    items.push({ id: 'settings', label: t('mapSidebar.tabs.settings'), active: activeTab === 'settings', onClick: () => setTab('settings') })
+    items.push({
+      id: 'practice',
+      label: t('practice.mode.title'),
+      active: activeTab === 'practice',
+      onClick: () => setTab('practice')
+    })
+    items.push({
+      id: 'settings',
+      label: t('mapSidebar.tabs.settings'),
+      active: activeTab === 'settings',
+      onClick: () => setTab('settings')
+    })
     return items
   }, [selectedNode, canEdit, activeTab, setTab, t])
 
-  const extraItems = useMemo(() => {
-    if (!selectedNode || !getExtraMenuItems) return undefined
-    return getExtraMenuItems(selectedNode)
-  }, [selectedNode, getExtraMenuItems])
+  const { nav, trigger } = OverflowNav({ items: navItems })
 
-  const menuItems = useMemo(() => {
-    if (!selectedNode || !getMenuItems) { return undefined }
-    return getMenuItems(selectedNode)
-  }, [selectedNode, getMenuItems])
+  // Chat session actions from store (populated by ChatPanel)
+  const chatCreateSession = useChatActionsStore(s => s.createSession)
+  const chatSessions = useChatActionsStore(s => s.sessions)
+  const chatActiveSessionId = useChatActionsStore(s => s.activeSessionId)
+  const chatSelectSession = useChatActionsStore(s => s.selectSession)
+  const chatDeleteSession = useChatActionsStore(s => s.deleteSession)
+  const [selectorOpen, setSelectorOpen] = useState(false)
 
-  const { nav, trigger } = OverflowNav({ items: navItems, extraItems, menuItems })
+  const showNodeActions = activeTab === 'node' && !!selectedNode
+  const showChatActions = activeTab === 'chat' && canEdit
 
   if (!isOpen) {
     return null
@@ -140,10 +172,110 @@ export const MapSidebar = memo(function MapSidebar({
       className={className}
     >
       <div className='flex flex-1 flex-col min-h-0'>
-        {/* Nav bar — inline tabs ... | [⋯] [✕] */}
+        {/* Nav bar: [tabs] [contextual icons] [✕] */}
         <div className='flex items-center border-b border-border/60 px-2 py-1 shrink-0'>
           {nav}
           <div className='flex items-center shrink-0'>
+            {/* Node tab: [⊙ focus] [↗ open] */}
+            {showNodeActions && (
+              <>
+                {onToggleFocus && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        type='button'
+                        onClick={onToggleFocus}
+                        className={cn(
+                          'h-7 w-7 flex items-center justify-center rounded-md transition-colors',
+                          isFocused
+                            ? 'text-foreground bg-muted'
+                            : 'text-muted-foreground hover:text-foreground hover:bg-muted/80'
+                        )}
+                      >
+                        <Target01Icon className='h-3.5 w-3.5' />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side='bottom'>
+                      <p className='text-xs'>
+                        {isFocused ? t('graph.toolbar.clearFocus') : t('graph.toolbar.focusMode')}
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+                {onOpenFullEditor && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        type='button'
+                        onClick={onOpenFullEditor}
+                        className='h-7 w-7 flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors'
+                      >
+                        <LinkExternal01Icon className='h-3.5 w-3.5' />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side='bottom'>
+                      <p className='text-xs'>{t('nodeDrawer.openFullEditor', 'Open')}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+              </>
+            )}
+
+            {/* Chat tab: [💬 sessions] [+ new] */}
+            {showChatActions && (
+              <>
+                <Popover open={selectorOpen} onOpenChange={setSelectorOpen}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <PopoverTrigger asChild>
+                        <button
+                          type='button'
+                          className='h-7 w-7 flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors'
+                        >
+                          <MessageDotsSquareIcon className='h-3.5 w-3.5' />
+                        </button>
+                      </PopoverTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent side='bottom'>
+                      <p className='text-xs'>{t('ai.chat.chats', 'Chats')}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <PopoverContent
+                    className='w-72 p-0 rounded-lg border-border/60 bg-background overflow-hidden'
+                    align='end'
+                    sideOffset={6}
+                  >
+                    <ChatSelectorPopover
+                      sessions={chatSessions}
+                      activeSessionId={chatActiveSessionId}
+                      onSelectSession={id => {
+                        chatSelectSession?.(id)
+                        setSelectorOpen(false)
+                      }}
+                      onDeleteSession={chatDeleteSession ?? undefined}
+                    />
+                  </PopoverContent>
+                </Popover>
+
+                {chatCreateSession && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        type='button'
+                        onClick={chatCreateSession}
+                        className='h-7 w-7 flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors'
+                      >
+                        <PlusIcon className='h-3.5 w-3.5' />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side='bottom'>
+                      <p className='text-xs'>{t('ai.chat.newChat', 'New chat')}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+              </>
+            )}
+
             {trigger}
             <button
               type='button'
@@ -172,21 +304,15 @@ export const MapSidebar = memo(function MapSidebar({
           )}
 
           {activeTab === 'chat' && canEdit && (
-            <div className='flex flex-col h-full overflow-hidden'>
-              {renderChatPanel?.()}
-            </div>
+            <div className='flex flex-col h-full overflow-hidden'>{renderChatPanel?.()}</div>
           )}
 
           {activeTab === 'practice' && (
-            <div className='h-full overflow-y-auto'>
-              {renderPracticePanel?.()}
-            </div>
+            <div className='h-full overflow-y-auto'>{renderPracticePanel?.()}</div>
           )}
 
           {activeTab === 'settings' && (
-            <div className='h-full overflow-y-auto'>
-              {renderSettingsPanel?.()}
-            </div>
+            <div className='h-full overflow-y-auto'>{renderSettingsPanel?.()}</div>
           )}
         </div>
       </div>

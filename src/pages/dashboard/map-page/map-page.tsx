@@ -134,6 +134,22 @@ export const MapPage = ({ map, mapId }: MapPageProps) => {
           mapId={mapId}
           selectedNode={selectedNode}
           canEdit={canEdit}
+          isFocused={focusedNodeId === selectedNode?.id}
+          onToggleFocus={() => {
+            if (!selectedNode) {
+              return
+            }
+            if (focusedNodeId === selectedNode.id) {
+              clearFocus()
+            } else {
+              focusNode(selectedNode.id)
+            }
+          }}
+          onOpenFullEditor={
+            selectedNode
+              ? () => window.location.assign(`/dashboard/maps/${mapId}/node/${selectedNode.id}`)
+              : undefined
+          }
           onCloseNode={handleCloseNode}
           renderNodePanel={node => (
             <NodePanel
@@ -142,17 +158,6 @@ export const MapPage = ({ map, mapId }: MapPageProps) => {
               allNodes={map.nodes}
               isReadOnly={!canEdit}
               onClose={handleCloseNode}
-              isFocused={focusedNodeId === node.id}
-              onToggleFocus={() => {
-                if (focusedNodeId === node.id) {
-                  clearFocus()
-                } else {
-                  focusNode(node.id)
-                }
-              }}
-              onOpenFullEditor={() =>
-                window.location.assign(`/dashboard/maps/${mapId}/node/${node.id}`)
-              }
               renderConnectionsPanel={(n, edges, allNodes, onOpenNode, onPanToNode) => (
                 <NodeConnectionsPanel
                   node={n}

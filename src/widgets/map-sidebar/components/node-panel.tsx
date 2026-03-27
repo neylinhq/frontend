@@ -1,5 +1,7 @@
 import {
   ChevronDownIcon,
+  Copy01Icon,
+  DotsHorizontalIcon,
   Trash01Icon
 } from '@untitledui/icons-react/outline'
 import { memo, useCallback, useEffect, useState } from 'react'
@@ -19,13 +21,18 @@ import {
   AlertDialogHeader,
   AlertDialogTitle
 } from '@/shared/components/alert-dialog'
-import { Button } from '@/shared/components/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/card'
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger
 } from '@/shared/components/collapsible'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from '@/shared/components/dropdown-menu'
 import { Field } from '@/shared/components/field'
 import { Input } from '@/shared/components/input'
 import { Label } from '@/shared/components/label'
@@ -142,14 +149,23 @@ export const NodePanel = memo(function NodePanel({
     }
   }, [node.id, deleteNodeMutation, onClose, t])
 
+  // Handle copy ID
+  const handleCopyId = useCallback(() => {
+    navigator.clipboard.writeText(node.id)
+    toast.success(t('common.copied'))
+  }, [node.id, t])
+
   return (
     <>
       <div className='flex flex-col h-full'>
-        {/* Single scrollable content — properties + connections */}
         <div className='flex-1 overflow-y-auto'>
-          {/* Node title — editable field */}
-          <div className='px-4 pt-4 pb-1.5'>
-            <Field label={t('nodeEdit.nameLabel')} labelClassName='text-xs'>
+          {/* Node name + inline [⋯] menu */}
+          <div className='flex items-end gap-1.5 px-4 pt-4 pb-1.5'>
+            <Field
+              label={t('nodeEdit.nameLabel')}
+              labelClassName='text-xs'
+              className='flex-1 min-w-0'
+            >
               <Input
                 value={localLabel}
                 readOnly={isReadOnly}
@@ -158,6 +174,34 @@ export const NodePanel = memo(function NodePanel({
                 placeholder={t('nodeEdit.namePlaceholder')}
               />
             </Field>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  type='button'
+                  className='h-9 w-7 flex items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors shrink-0'
+                >
+                  <DotsHorizontalIcon className='h-3.5 w-3.5' />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align='end' className='min-w-36'>
+                <DropdownMenuItem onClick={handleCopyId} className='text-xs'>
+                  <Copy01Icon className='mr-2 h-3.5 w-3.5' />
+                  {t('nodeEdit.copyId')}
+                </DropdownMenuItem>
+                {!isReadOnly && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={() => setDeleteDialogOpen(true)}
+                      className='text-xs text-destructive focus:text-destructive'
+                    >
+                      <Trash01Icon className='mr-2 h-3.5 w-3.5' />
+                      {t('nodeEdit.deleteNode')}
+                    </DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           {/* Node Metadata Form — type & tags */}

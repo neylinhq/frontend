@@ -21,7 +21,6 @@ import '@/shared/lib/rating.ts'
 import '@/shared/lib/sanitize.ts'
 import '@/shared/lib/use-copy-to-clipboard.ts'
 import '@/shared/lib/viewport.ts'
-import '@/shared/lib/websocket-client.ts'
 import { describe, expect, it } from 'vitest'
 
 describe('barrel exports', () => {

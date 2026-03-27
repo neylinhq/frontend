@@ -67,8 +67,9 @@ export const UserNav = ({ isExpanded }: UserNavProps) => {
       <DropdownMenuTrigger asChild>
         <Button
           variant='ghost'
+          size='icon'
           className={cn(
-            'justify-start gap-3 h-10 px-0 overflow-hidden',
+            'justify-start gap-3 h-10 overflow-hidden',
             isExpanded ? 'w-full' : 'w-10'
           )}
         >

@@ -26,7 +26,7 @@ export const MapViewPage = ({ map, mapId }: MapViewPageProps) => {
         <GraphView
           mapId={mapId}
           initialData={map}
-          className='h-full w-full'
+          className='absolute inset-0'
           interactive={canEdit}
         />
 

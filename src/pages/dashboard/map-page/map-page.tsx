@@ -1,28 +1,6 @@
-import { useCallback, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import { ReactFlowProvider } from '@xyflow/react'
+import { useCallback, useState } from 'react'
 
-import type { FullMap, Node } from '@/entities/map'
-import { useDeleteNode } from '@/entities/map'
-import {
-  useMapActions,
-  useMapActiveTab,
-  useMapFocus,
-  useMapUIStore,
-  useSidebarOpen
-} from '@/entities/map-ui'
-import type { ViewportState } from '@/features/graph/graph-webgl'
-import { ReadOnlyBanner, useMapPermissions } from '@/features/map-permissions'
-import { NodeConnectionsPanel } from '@/features/node-connections-panel'
-import { AddNodeFab, QuickAddDialogWebGL, useNodeCreationStore } from '@/features/node-creation'
-import {
-  PracticeFab,
-  PracticeModePanel
-} from '@/features/practice-mode'
-import { FloatingLayer } from '@/shared/components/floating-layer'
-import type { OverflowNavItem } from '@/shared/components/overflow-nav'
-import { toast } from '@/shared/components/toast'
-import { useKeyboardShortcut } from '@/shared/hooks/use-keyboard-shortcut'
 import { GraphView } from '@/widgets/graph-view'
 import {
   ChatPanel,
@@ -31,6 +9,21 @@ import {
   SettingsPanel,
   SidebarToggleFab
 } from '@/widgets/map-sidebar'
+import type { ViewportState } from '@/features/graph/graph-webgl'
+import { ReadOnlyBanner, useMapPermissions } from '@/features/map-permissions'
+import { NodeConnectionsPanel } from '@/features/node-connections-panel'
+import { AddNodeFab, QuickAddDialogWebGL, useNodeCreationStore } from '@/features/node-creation'
+import { PracticeFab, PracticeModePanel } from '@/features/practice-mode'
+import type { FullMap, Node } from '@/entities/map'
+import {
+  useMapActions,
+  useMapActiveTab,
+  useMapFocus,
+  useMapUIStore,
+  useSidebarOpen
+} from '@/entities/map-ui'
+import { FloatingLayer } from '@/shared/components/floating-layer'
+import { useKeyboardShortcut } from '@/shared/hooks/use-keyboard-shortcut'
 
 interface MapPageProps {
   map: FullMap
@@ -38,14 +31,12 @@ interface MapPageProps {
 }
 
 export const MapPage = ({ map, mapId }: MapPageProps) => {
-  const { t } = useTranslation()
   const { canEdit, isReadOnly } = useMapPermissions(map)
   const { focusedNodeId } = useMapFocus(mapId)
   const { focusNode, clearFocus, setActiveTab } = useMapActions(mapId)
   const { openQuickAdd } = useNodeCreationStore()
   const isOpen = useSidebarOpen()
   const activeTab = useMapActiveTab(mapId)
-  const deleteNodeMutation = useDeleteNode(mapId)
   const [selectedNode, setSelectedNode] = useState<Node | null>(null)
   const [viewport, setViewport] = useState<ViewportState | null>(null)
   const [useWebGL, setUseWebGL] = useState(true)
@@ -78,7 +69,9 @@ export const MapPage = ({ map, mapId }: MapPageProps) => {
   // Ignore null (click on canvas) — node stays selected until user picks another or closes panel
   const handleNodeSelect = useCallback(
     (node: Node | null) => {
-      if (!node) { return }
+      if (!node) {
+        return
+      }
       setSelectedNode(node)
       setActiveTab('node')
       useMapUIStore.getState().setSidebarOpen(true)
@@ -98,7 +91,7 @@ export const MapPage = ({ map, mapId }: MapPageProps) => {
           <GraphView
             mapId={mapId}
             initialData={map}
-            className='absolute inset-0'
+            className='h-full w-full'
             interactive={canEdit}
             isAIPanelOpen={isAIPanelOpen}
             onToggleAIPanel={handleToggleAIPanel}
@@ -140,53 +133,8 @@ export const MapPage = ({ map, mapId }: MapPageProps) => {
         <MapSidebar
           mapId={mapId}
           selectedNode={selectedNode}
-          edges={map.edges}
-          allNodes={map.nodes}
           canEdit={canEdit}
-          isOwner={canEdit}
           onCloseNode={handleCloseNode}
-          getExtraMenuItems={node => [
-            {
-              id: 'focus',
-              label: focusedNodeId === node.id ? t('graph.toolbar.clearFocus') : t('graph.toolbar.focusMode'),
-              onClick: () => focusedNodeId === node.id ? clearFocus() : focusNode(node.id)
-            },
-            {
-              id: 'open',
-              label: t('nodeDrawer.openFullEditor', 'Open'),
-              onClick: () => window.location.assign(`/dashboard/maps/${mapId}/node/${node.id}`)
-            }
-          ]}
-          getMenuItems={node => {
-            const items: OverflowNavItem[] = [
-              {
-                id: 'copy-id',
-                label: t('nodeEdit.copyId'),
-                onClick: () => {
-                  navigator.clipboard.writeText(node.id)
-                  toast.success(t('common.copied'))
-                }
-              }
-            ]
-            if (canEdit) {
-              items.push({
-                id: 'delete',
-                label: t('nodeEdit.deleteNode'),
-                destructive: true,
-                onClick: () => {
-                  if (confirm(t('nodeEdit.deleteConfirmTitle'))) {
-                    deleteNodeMutation.mutate(node.id, {
-                      onSuccess: () => {
-                        toast.success(t('nodeEdit.nodeDeleted'))
-                        handleCloseNode()
-                      }
-                    })
-                  }
-                }
-              })
-            }
-            return items
-          }}
           renderNodePanel={node => (
             <NodePanel
               node={node}
@@ -194,6 +142,17 @@ export const MapPage = ({ map, mapId }: MapPageProps) => {
               allNodes={map.nodes}
               isReadOnly={!canEdit}
               onClose={handleCloseNode}
+              isFocused={focusedNodeId === node.id}
+              onToggleFocus={() => {
+                if (focusedNodeId === node.id) {
+                  clearFocus()
+                } else {
+                  focusNode(node.id)
+                }
+              }}
+              onOpenFullEditor={() =>
+                window.location.assign(`/dashboard/maps/${mapId}/node/${node.id}`)
+              }
               renderConnectionsPanel={(n, edges, allNodes, onOpenNode, onPanToNode) => (
                 <NodeConnectionsPanel
                   node={n}
@@ -207,7 +166,14 @@ export const MapPage = ({ map, mapId }: MapPageProps) => {
           )}
           renderChatPanel={() => <ChatPanel mapId={mapId} />}
           renderSettingsPanel={() => <SettingsPanel mapId={mapId} isOwner={canEdit} />}
-          renderPracticePanel={() => <PracticeModePanel mapId={mapId} selectedNode={selectedNode} nodes={map.nodes} edges={map.edges} />}
+          renderPracticePanel={() => (
+            <PracticeModePanel
+              mapId={mapId}
+              selectedNode={selectedNode}
+              nodes={map.nodes}
+              edges={map.edges}
+            />
+          )}
         />
       </div>
     </ReactFlowProvider>

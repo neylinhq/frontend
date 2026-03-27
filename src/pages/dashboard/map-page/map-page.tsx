@@ -98,7 +98,7 @@ export const MapPage = ({ map, mapId }: MapPageProps) => {
           <GraphView
             mapId={mapId}
             initialData={map}
-            className='h-full w-full'
+            className='absolute inset-0'
             interactive={canEdit}
             isAIPanelOpen={isAIPanelOpen}
             onToggleAIPanel={handleToggleAIPanel}

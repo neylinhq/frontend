@@ -1,11 +1,6 @@
-import { api } from '@/shared/api/client'
+import { api, type ApiResponse } from '@/shared/api/client'
 
 import type { Exercise, GenerateExercisesRequest, SubmitAnswerOutput } from './exercise.schema'
-
-interface ApiResponse<T> {
-  success: boolean
-  data: T
-}
 
 export const exerciseApi = {
   // Generate exercises for a map

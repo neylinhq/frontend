@@ -21,7 +21,7 @@ import {
   DropdownMenuTrigger
 } from '@/shared/components/dropdown-menu'
 import { Slider } from '@/shared/components/slider'
-import { useSidebarExpanded } from '@/shared/hooks/use-sidebar-expanded'
+import { useSidebarExpanded } from '@/shared/hooks'
 import { cn } from '@/shared/lib/cn'
 import { isMac } from '@/shared/lib/platform'
 

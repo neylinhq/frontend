@@ -1,15 +1,10 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
-import {
-  useChatSessions,
-  useCreateChatSession,
-  useDeleteChatSession,
-  useRenameChatSession
-} from '../model'
-import { useChatHistoryStore } from '../model/ai-assist.chat.store'
 import { useStreamingStore } from '../model/ai-assist.streaming.store'
+import { useChatKeyboardShortcuts } from '../model/use-chat-keyboard-shortcuts'
+import { useChatSessionManager } from '../model/use-chat-session-manager'
 import { ChatHeader } from './chat-header'
-import { NodeChatPanel } from './node-chat-panel'
+import { ChatPanel } from './chat-panel'
 
 interface NodeChatWrapperProps {
   nodeId: string
@@ -17,171 +12,34 @@ interface NodeChatWrapperProps {
 }
 
 export const NodeChatWrapper = ({ nodeId, mapId }: NodeChatWrapperProps) => {
-  // Chat sessions state - filter by nodeId
   const {
-    data: sessions = [],
-    isLoading: sessionsLoading,
-    isError
-  } = useChatSessions(mapId, nodeId)
-  const createSession = useCreateChatSession(mapId)
-  const renameSession = useRenameChatSession(mapId)
-  const deleteSession = useDeleteChatSession(mapId)
-  const [activeSessionId, setActiveSessionId] = useState<string | null>(null)
-  const [autoCreateAttempted, setAutoCreateAttempted] = useState(false)
+    sessions,
+    sessionsLoading,
+    activeSessionId,
+    setActiveSessionId,
+    isCreating,
+    handleCreateSession,
+    handleCloseSession,
+    handleRenameSession,
+    handleCloseAll,
+    handleCloseOthers,
+    handleNextTab,
+    handlePrevTab
+  } = useChatSessionManager({ mapId, nodeId })
 
-  // Abort all active streams when leaving the node page
   const clearAll = useStreamingStore(s => s.clearAll)
   useEffect(() => {
     return () => clearAll()
   }, [clearAll])
 
-  // Auto-select first session or create one if none exist
-  useEffect(() => {
-    if (sessions.length > 0 && !activeSessionId) {
-      setActiveSessionId(sessions[0].id)
-      setAutoCreateAttempted(false)
-    } else if (
-      sessions.length === 0 &&
-      !sessionsLoading &&
-      !isError &&
-      !createSession.isPending &&
-      !autoCreateAttempted
-    ) {
-      // Auto-create first session
-      setAutoCreateAttempted(true)
-      createSession.mutate(
-        { contextType: 'node', nodeId },
-        {
-          onSuccess: session => {
-            setActiveSessionId(session.id)
-          }
-        }
-      )
-    }
-  }, [
-    sessions,
-    activeSessionId,
-    sessionsLoading,
-    isError,
-    createSession.isPending,
-    autoCreateAttempted,
-    nodeId
-  ])
-
-  // Reset when nodeId changes
-  useEffect(() => {
-    setActiveSessionId(null)
-    setAutoCreateAttempted(false)
-  }, [nodeId])
-
-  const handleCloseSession = useCallback(
-    (sessionId: string) => {
-      deleteSession.mutate(sessionId, {
-        onSuccess: () => {
-          if (activeSessionId === sessionId) {
-            const remaining = sessions.filter(s => s.id !== sessionId)
-            setActiveSessionId(remaining[0]?.id || null)
-          }
-        }
-      })
-    },
-    [deleteSession, activeSessionId, sessions]
-  )
-
-  const handleCreateSession = useCallback(() => {
-    // Don't create another empty session — reuse current one
-    if (activeSessionId) {
-      const currentMessages = useChatHistoryStore.getState().sessions[activeSessionId]?.messages
-      if (!currentMessages || currentMessages.length === 0) {
-        return
-      }
-    }
-    createSession.mutate(
-      { contextType: 'node', nodeId },
-      {
-        onSuccess: session => {
-          setActiveSessionId(session.id)
-        }
-      }
-    )
-  }, [createSession, nodeId, activeSessionId])
-
-  const handleRenameSession = useCallback(
-    (sessionId: string, title: string) => {
-      renameSession.mutate({ sessionId, title })
-    },
-    [renameSession]
-  )
-
-  const handleCloseAll = useCallback(() => {
-    sessions.forEach(s => {
-      deleteSession.mutate(s.id)
-    })
-    setTimeout(() => {
-      createSession.mutate(
-        { contextType: 'node', nodeId },
-        {
-          onSuccess: session => {
-            setActiveSessionId(session.id)
-          }
-        }
-      )
-    }, 100)
-  }, [sessions, deleteSession, createSession, nodeId])
-
-  const handleCloseOthers = useCallback(() => {
-    sessions
-      .filter(s => s.id !== activeSessionId)
-      .forEach(s => {
-        deleteSession.mutate(s.id)
-      })
-  }, [sessions, activeSessionId, deleteSession])
-
-  // Keyboard shortcuts for tab navigation
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const isMod = e.metaKey || e.ctrlKey
-
-      // Cmd/Ctrl + T — new chat
-      if (isMod && e.key === 't') {
-        e.preventDefault()
-        handleCreateSession()
-        return
-      }
-
-      // Cmd/Ctrl + W — close current tab (only if more than 1 session)
-      if (isMod && e.key === 'w' && !e.shiftKey && sessions.length > 1 && activeSessionId) {
-        e.preventDefault()
-        handleCloseSession(activeSessionId)
-        return
-      }
-
-      // Cmd/Ctrl + Shift + W — close all tabs
-      if (isMod && e.shiftKey && e.key === 'W') {
-        e.preventDefault()
-        handleCloseAll()
-        return
-      }
-
-      // Cmd/Ctrl + [ or ] — switch tabs
-      if (isMod && (e.key === '[' || e.key === ']') && sessions.length > 1 && activeSessionId) {
-        e.preventDefault()
-        const currentIndex = sessions.findIndex(s => s.id === activeSessionId)
-        if (currentIndex === -1) return
-
-        let newIndex: number
-        if (e.key === '[') {
-          newIndex = currentIndex === 0 ? sessions.length - 1 : currentIndex - 1
-        } else {
-          newIndex = currentIndex === sessions.length - 1 ? 0 : currentIndex + 1
-        }
-        setActiveSessionId(sessions[newIndex].id)
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [sessions, activeSessionId, handleCreateSession, handleCloseSession, handleCloseAll])
+  useChatKeyboardShortcuts({
+    canCloseCurrent: sessions.length > 1 && !!activeSessionId,
+    onCreateSession: handleCreateSession,
+    onCloseSession: () => activeSessionId && handleCloseSession(activeSessionId),
+    onCloseAll: handleCloseAll,
+    onNextTab: handleNextTab,
+    onPrevTab: handlePrevTab
+  })
 
   return (
     <div className='flex h-full flex-col'>
@@ -194,12 +52,12 @@ export const NodeChatWrapper = ({ nodeId, mapId }: NodeChatWrapperProps) => {
         onCloseAll={handleCloseAll}
         onCloseOthers={handleCloseOthers}
         onRenameSession={handleRenameSession}
-        isLoading={sessionsLoading || createSession.isPending}
+        isLoading={sessionsLoading || isCreating}
         isMobile={false}
       />
       <div className='flex-1 overflow-hidden'>
         {activeSessionId ? (
-          <NodeChatPanel nodeId={nodeId} mapId={mapId} sessionId={activeSessionId} />
+          <ChatPanel scope='node' nodeId={nodeId} mapId={mapId} sessionId={activeSessionId} />
         ) : null}
       </div>
     </div>

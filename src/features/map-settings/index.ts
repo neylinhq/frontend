@@ -1,3 +1,5 @@
 export { MapHistoryList } from './components/map-history-list'
 export { MapSettingsDrawer } from './components/map-settings-drawer'
+export { MapSettingsFormContent, MapSettingsDangerZone } from './components/map-settings-form-content'
 export { MapSettingsPopover } from './components/map-settings-popover'
+export { useMapSettingsForm } from './model/use-map-settings-form'

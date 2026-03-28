@@ -1,4 +1,4 @@
-import { api } from '@/shared/api/client'
+import { api, type ApiResponse } from '@/shared/api/client'
 
 import type { Edge } from '../edge'
 import type { LightweightNode, Node } from '../node'
@@ -13,17 +13,6 @@ import type {
   MapSearchMode,
   MapSearchResponse
 } from './map.schema'
-
-// Response types
-interface ApiResponse<T> {
-  success: boolean
-  data: T
-  meta?: {
-    total: number
-    limit: number
-    offset: number
-  }
-}
 
 interface CreateMapRequest {
   title: string

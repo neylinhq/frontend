@@ -3,22 +3,10 @@ import { useCallback, useEffect, useRef } from 'react'
 
 import type { ViewportState } from '@/shared/lib/viewport'
 import { type FullMap, mapApi, mapKeys, type Node } from '@/entities/map'
-import type { NodeType } from '@/entities/node'
 
 import { calculatePositionNearConnections, calculateSmartPosition } from '../lib/smart-positioning'
+import type { CreateNodeInput, MutationContext } from './node-creation.hooks'
 import { useNodeCreationStore } from './node-creation.store'
-
-interface CreateNodeInput {
-  mapId: string
-  label: string
-  type: NodeType
-  description?: string
-}
-
-interface MutationContext {
-  previousFullMap: FullMap | undefined
-  optimisticNode: Node
-}
 
 interface CreateNodeWebGLOptions {
   nodes?: Node[]

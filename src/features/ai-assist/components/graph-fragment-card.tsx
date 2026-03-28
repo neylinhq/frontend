@@ -18,13 +18,7 @@ import type {
   GraphFragmentPreviewData,
   PreviewStatus
 } from '../model/ai-assist.types'
-
-/** Decode HTML entities like &#39; -> ' */
-const decodeHtmlEntities = (text: string): string => {
-  const textarea = document.createElement('textarea')
-  textarea.innerHTML = text
-  return textarea.value
-}
+import { decodeHtmlEntities } from '../lib/decode-html'
 
 /** Node type colors - using theme tokens from globals.css */
 const NODE_TYPE_COLORS: Record<string, string> = {

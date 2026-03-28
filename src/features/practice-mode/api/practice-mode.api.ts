@@ -1,5 +1,6 @@
-import { api } from '@/shared/api/client'
+import { api, type ApiResponse } from '@/shared/api/client'
 import { STREAM_API_URL } from '@/shared/config/env'
+import { parseSSEStream } from '@/shared/lib/sse'
 
 // --- Types ---
 
@@ -60,11 +61,6 @@ export interface ExpandDirection {
 
 /** @deprecated use ExpandDirection */
 export type ExpandSuggestion = ExpandDirection
-
-interface ApiResponse<T> {
-  success: boolean
-  data: T
-}
 
 export const practiceModeApi = {
   /**
@@ -131,35 +127,11 @@ export const practiceModeApi = {
         throw new Error(errorMessage)
       }
 
-      const reader = response.body?.getReader()
-      if (!reader) {
-        throw new Error('No response body')
-      }
-
-      const decoder = new TextDecoder()
-      let buffer = ''
-
-      for (;;) {
-        const { done, value } = await reader.read()
-        if (done) {
-          break
-        }
-
-        buffer += decoder.decode(value, { stream: true })
-        const lines = buffer.split('\n')
-        buffer = lines.pop() || ''
-
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            try {
-              const chunk = JSON.parse(line.slice(6)) as TutorChunk
-              onChunk(chunk)
-            } catch {
-              // skip unparseable
-            }
-          }
-        }
-      }
+      await parseSSEStream(
+        response,
+        (chunk) => onChunk(chunk as TutorChunk),
+        effectiveSignal
+      )
     } catch (error) {
       if ((error as Error).name !== 'AbortError') {
         throw error

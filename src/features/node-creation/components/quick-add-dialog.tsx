@@ -26,17 +26,10 @@ import {
   parseQuickInput
 } from '../lib/parse-quick-input'
 import { NODE_CREATION_CONFIG } from '../model/node-creation.constants'
-import { useCreateNodeMutation } from '../model/node-creation.hooks'
+import { type CreateNodeInput, useCreateNodeMutation } from '../model/node-creation.hooks'
 import { useNodeCreationStore } from '../model/node-creation.store'
 import { useCreateNodeMutationWebGL } from '../model/node-creation.webgl.hooks'
 import { ConnectionSelector } from './connection-selector'
-
-interface CreateNodeInput {
-  mapId: string
-  label: string
-  type: NodeType
-  description?: string
-}
 
 interface CreateNodeMutation {
   mutateAsync: (input: CreateNodeInput) => Promise<Node>

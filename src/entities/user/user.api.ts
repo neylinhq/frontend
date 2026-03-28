@@ -1,4 +1,4 @@
-import { api } from '@/shared/api/client'
+import { api, type ApiResponse } from '@/shared/api/client'
 import { API_URL } from '@/shared/config/env'
 
 import type {
@@ -8,12 +8,6 @@ import type {
   User,
   UserPreferences
 } from './user.schema'
-
-// Response types
-interface ApiResponse<T> {
-  success: boolean
-  data: T
-}
 
 interface MessageResponse {
   message: string

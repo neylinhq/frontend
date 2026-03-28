@@ -1,4 +1,4 @@
-import { api } from '@/shared/api/client'
+import { api, type ApiResponse } from '@/shared/api/client'
 
 import type {
   ReviewNodeRequest,
@@ -7,11 +7,6 @@ import type {
   UserMapProgress,
   UserNodeProgress
 } from './progress.schema'
-
-interface ApiResponse<T> {
-  success: boolean
-  data: T
-}
 
 export const progressApi = {
   // Node progress operations

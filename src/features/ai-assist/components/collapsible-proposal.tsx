@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { Badge } from '@/shared/components/badge'
 import { cn } from '@/shared/lib/cn'
 
+import { decodeHtmlEntities } from '../lib/decode-html'
 import type {
   ConnectionPreviewData,
   EnrichmentPreviewData,
@@ -14,13 +15,6 @@ import type {
   ResolvedPreview
 } from '../model/ai-assist.types'
 import { DiffBlock } from './proposal-card'
-
-/** Decode HTML entities like &#39; -> ' */
-const decodeHtmlEntities = (text: string): string => {
-  const textarea = document.createElement('textarea')
-  textarea.innerHTML = text
-  return textarea.value
-}
 
 /** Node type colors - using theme tokens from globals.css */
 const NODE_TYPE_COLORS: Record<string, string> = {

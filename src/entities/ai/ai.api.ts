@@ -1,13 +1,9 @@
-import { api } from '@/shared/api/client'
+import { api, type ApiResponse } from '@/shared/api/client'
 import { STREAM_API_URL } from '@/shared/config/env'
 import { logger } from '@/shared/lib/logger'
+import { parseSSEStream } from '@/shared/lib/sse'
 
 import type { AIModel, EnrichType } from './ai.schema'
-
-interface ApiResponse<T> {
-  success: boolean
-  data: T
-}
 
 export interface NodeReference {
   id: string
@@ -138,7 +134,7 @@ export const aiApi = {
   },
 
   // Streaming RAG Chat
-  chatWithMapStream: (
+  chatWithMapStream: async (
     mapId: string,
     question: string,
     onChunk: (chunk: ChatStreamChunk) => void,
@@ -153,107 +149,72 @@ export const aiApi = {
       timeout?: number
     }
   ): Promise<void> => {
-    return new Promise(async (resolve, reject) => {
-      // Setup timeout (default 5 minutes)
-      const timeoutMs = options?.timeout ?? 5 * 60 * 1000
-      let timeoutId: ReturnType<typeof setTimeout> | null = null
-      let abortController: AbortController | null = null
+    // Setup timeout (default 5 minutes)
+    const timeoutMs = options?.timeout ?? 5 * 60 * 1000
+    let timeoutId: ReturnType<typeof setTimeout> | null = null
+    let abortController: AbortController | null = null
 
-      // Create internal AbortController for timeout
-      if (!options?.signal) {
-        abortController = new AbortController()
+    // Create internal AbortController for timeout
+    if (!options?.signal) {
+      abortController = new AbortController()
+    }
+
+    const signal = options?.signal ?? abortController?.signal
+
+    // Setup timeout handler
+    if (timeoutMs > 0) {
+      timeoutId = setTimeout(() => {
+        abortController?.abort()
+        onChunk({ type: 'error', content: 'Request timed out' })
+      }, timeoutMs)
+    }
+
+    try {
+      const response = await fetch(`${STREAM_API_URL}/maps/${mapId}/chat/stream`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          question,
+          model: options?.model,
+          topK: options?.topK,
+          nodeId: options?.nodeId,
+          currentNodeId: options?.currentNodeId,
+          history: options?.history
+        }),
+        signal
+      })
+
+      if (!response.ok) {
+        let errorMessage = `HTTP error! status: ${response.status}`
+        try {
+          const errorData = await response.json()
+          if (errorData?.error?.message) {
+            errorMessage = errorData.error.message
+          }
+        } catch {
+          // Ignore JSON parse errors
+        }
+        throw new Error(errorMessage)
       }
 
-      const signal = options?.signal ?? abortController?.signal
-
-      // Setup timeout handler
-      if (timeoutMs > 0) {
-        timeoutId = setTimeout(() => {
-          abortController?.abort()
-          onChunk({ type: 'error', content: 'Request timed out' })
-        }, timeoutMs)
+      await parseSSEStream(
+        response,
+        (chunk) => onChunk(chunk as ChatStreamChunk),
+        signal
+      )
+    } catch (error) {
+      logger.error('[AI Stream] Stream error:', error)
+      if ((error as Error).name !== 'AbortError') {
+        throw error
       }
-
-      try {
-        const response = await fetch(`${STREAM_API_URL}/maps/${mapId}/chat/stream`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          credentials: 'include', // Use cookie-based auth (same as api client)
-          body: JSON.stringify({
-            question,
-            model: options?.model,
-            topK: options?.topK,
-            nodeId: options?.nodeId,
-            currentNodeId: options?.currentNodeId,
-            history: options?.history
-          }),
-          signal
-        })
-
-        if (!response.ok) {
-          // Try to parse error response for better error message
-          let errorMessage = `HTTP error! status: ${response.status}`
-          try {
-            const errorData = await response.json()
-            if (errorData?.error?.message) {
-              errorMessage = errorData.error.message
-            }
-          } catch {
-            // Ignore JSON parse errors
-          }
-          throw new Error(errorMessage)
-        }
-
-        const reader = response.body?.getReader()
-        if (!reader) {
-          throw new Error('No response body')
-        }
-
-        const decoder = new TextDecoder()
-        let buffer = ''
-
-        while (true) {
-          const { done, value } = await reader.read()
-          if (done) {
-            break
-          }
-
-          buffer += decoder.decode(value, { stream: true })
-
-          // Parse SSE events
-          const lines = buffer.split('\n')
-          buffer = lines.pop() || '' // Keep incomplete line in buffer
-
-          for (const line of lines) {
-            if (line.startsWith('data: ')) {
-              const data = line.slice(6)
-              try {
-                const chunk = JSON.parse(data) as ChatStreamChunk
-                onChunk(chunk)
-              } catch (parseError) {
-                logger.warn('[AI Stream] Failed to parse chunk:', data, parseError)
-              }
-            }
-          }
-        }
-
-        resolve()
-      } catch (error) {
-        logger.error('[AI Stream] Stream error:', error)
-        if ((error as Error).name === 'AbortError') {
-          resolve() // Aborted, not an error
-        } else {
-          reject(error)
-        }
-      } finally {
-        // Clear timeout to prevent memory leak
-        if (timeoutId) {
-          clearTimeout(timeoutId)
-        }
+    } finally {
+      if (timeoutId) {
+        clearTimeout(timeoutId)
       }
-    })
+    }
   },
 
   // Generate embeddings for all nodes in a map

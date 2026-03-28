@@ -1,34 +1,13 @@
-import { AlertCircleIcon, ChevronDownIcon, Trash01Icon } from '@untitledui/icons-react/outline'
-import { memo, useCallback, useEffect, useRef, useState } from 'react'
+import { ChevronDownIcon } from '@untitledui/icons-react/outline'
+import { memo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router'
 
-import { MapHistoryList } from '@/features/map-settings'
-import { useDeleteMap, useMap, useSetVisibility, useUpdateMap } from '@/entities/map'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle
-} from '@/shared/components/alert-dialog'
-import { Badge } from '@/shared/components/badge'
-import { Button } from '@/shared/components/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/card'
+import { MapHistoryList, MapSettingsDangerZone, MapSettingsFormContent, useMapSettingsForm } from '@/features/map-settings'
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger
 } from '@/shared/components/collapsible'
-import { Field } from '@/shared/components/field'
-import { Input } from '@/shared/components/input'
-import { Switch } from '@/shared/components/switch'
-import { Textarea } from '@/shared/components/textarea'
-import { toast } from '@/shared/components/toast'
-import { useAutoSave } from '@/shared/hooks'
 import { cn } from '@/shared/lib/cn'
 
 interface SettingsPanelProps {
@@ -41,113 +20,14 @@ export const SettingsPanel = memo(function SettingsPanel({
   isOwner = true
 }: SettingsPanelProps) {
   const { t } = useTranslation()
-  const navigate = useNavigate()
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [historyOpen, setHistoryOpen] = useState(false)
 
-  // Local state for form fields
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
-  const initialDataRef = useRef({ title: '', description: '' })
-
-  const { data: map } = useMap(mapId)
-  // const { data: mapProgress } = useMapProgress(mapId)
-  const updateMapMutation = useUpdateMap(mapId)
-  const setVisibilityMutation = useSetVisibility()
-  const deleteMapMutation = useDeleteMap()
-
-  // Sync local state when map data loads
-  useEffect(() => {
-    if (map) {
-      setTitle(map.title)
-      setDescription(map.description ?? '')
-      initialDataRef.current = {
-        title: map.title,
-        description: map.description ?? ''
-      }
-    }
-  }, [map])
-
-  // Autosave callback
-  const saveChanges = useCallback(
-    (data: { title: string; description: string }) => {
-      if (
-        data.title === initialDataRef.current.title &&
-        data.description === initialDataRef.current.description
-      ) {
-        return
-      }
-
-      updateMapMutation.mutate(
-        {
-          title: data.title,
-          description: data.description || undefined
-        },
-        {
-          onSuccess: () => {
-            initialDataRef.current = data
-          },
-          onError: () => {
-            toast.error(t('errors.failedSave'))
-          }
-        }
-      )
-    },
-    [updateMapMutation, t]
-  )
-
-  const debouncedSave = useAutoSave(saveChanges, 1500)
-
-  // Handle field changes with autosave
-  const handleTitleChange = useCallback(
-    (value: string) => {
-      setTitle(value)
-      debouncedSave({ title: value, description })
-    },
-    [description, debouncedSave]
-  )
-
-  const handleDescriptionChange = useCallback(
-    (value: string) => {
-      setDescription(value)
-      debouncedSave({ title, description: value })
-    },
-    [title, debouncedSave]
-  )
-
-  // Handle visibility toggle
-  const handleVisibilityChange = useCallback(
-    (isPublic: boolean) => {
-      setVisibilityMutation.mutate(
-        { mapId, isPublic },
-        {
-          onError: () => {
-            toast.error(t('errors.failedSave'))
-          }
-        }
-      )
-    },
-    [mapId, setVisibilityMutation, t]
-  )
-
-  // Handle map deletion
-  const handleDeleteMap = useCallback(async () => {
-    try {
-      await deleteMapMutation.mutateAsync(mapId)
-      navigate('/dashboard')
-    } catch {
-      toast.error(t('errors.failedDelete'))
-    }
-  }, [mapId, deleteMapMutation, navigate, t])
-
-  // Saving indicator
-  const isSaving = updateMapMutation.isPending
+  const form = useMapSettingsForm({ mapId })
 
   return (
-    <>
       <div className='flex flex-col h-full'>
         {/* Saving indicator */}
-        {isSaving && (
+        {form.isSaving && (
           <div className='px-panel py-1 text-xs text-muted-foreground border-b border-border/60 shrink-0'>
             {t('common.saving')}
           </div>
@@ -157,53 +37,26 @@ export const SettingsPanel = memo(function SettingsPanel({
         <div className='flex-1 overflow-y-auto [scrollbar-gutter:stable]'>
           {/* === Overview Section === */}
           <div className='p-panel space-y-4'>
-            {/* Visibility Badge + Switch (only for owners) */}
-            {isOwner && (
-              <div className='flex items-center justify-between'>
-                {map?.isPublic ? (
-                  <Badge variant='info'>{t('mapSettings.visibility.public')}</Badge>
-                ) : (
-                  <Badge variant='secondary'>{t('mapSettings.visibility.private')}</Badge>
-                )}
-                <Switch
-                  checked={map?.isPublic ?? false}
-                  onCheckedChange={handleVisibilityChange}
-                  disabled={setVisibilityMutation.isPending}
-                />
-              </div>
-            )}
-
-            {/* Author (for non-owners) */}
-            {!isOwner && map?.authorName && (
-              <div className='space-y-1.5'>
-                <span className='text-xs text-muted-foreground'>
-                  {t('mapSettings.overview.author')}
-                </span>
-                <div className='text-sm font-medium'>{map.authorName}</div>
-              </div>
-            )}
-
-            {/* Title & Description with autosave */}
-            <Field label={t('mapSettings.overview.mapTitle')} labelClassName='text-xs'>
-              <Input
-                value={title}
-                onChange={e => handleTitleChange(e.target.value)}
-                readOnly={!isOwner}
-                disabled={!isOwner}
-              />
-            </Field>
-
-            <Field label={t('mapSettings.overview.description')} labelClassName='text-xs'>
-              <Textarea
-                value={description}
-                onChange={e => handleDescriptionChange(e.target.value)}
-                placeholder={t('mapSettings.overview.descriptionPlaceholder')}
-                rows={3}
-                className='resize-none'
-                readOnly={!isOwner}
-                disabled={!isOwner}
-              />
-            </Field>
+            <MapSettingsFormContent
+              title={form.title}
+              description={form.description}
+              isPublic={form.map?.isPublic ?? false}
+              authorName={form.map?.authorName}
+              nodesCount={form.map?.nodesCount ?? 0}
+              mapTitle={form.map?.title}
+              isOwner={isOwner}
+              isSaving={form.isSaving}
+              isVisibilityPending={form.isVisibilityPending}
+              isDeletePending={form.isDeletePending}
+              deleteDialogOpen={form.deleteDialogOpen}
+              setDeleteDialogOpen={form.setDeleteDialogOpen}
+              onTitleChange={form.handleTitleChange}
+              onDescriptionChange={form.handleDescriptionChange}
+              onVisibilityChange={form.handleVisibilityChange}
+              onDelete={form.handleDeleteMap}
+              labelClassName='text-xs'
+              descriptionRows={3}
+            />
           </div>
 
           {/* Separator */}
@@ -238,57 +91,9 @@ export const SettingsPanel = memo(function SettingsPanel({
         {/* Danger Zone — pinned to bottom */}
         {isOwner && (
           <div className='shrink-0 p-4 mt-auto'>
-            <Card className='border-destructive/30'>
-              <CardHeader className='pb-2 pt-3 px-3'>
-                <CardTitle className='text-xs font-medium text-destructive flex items-center gap-1.5'>
-                  <AlertCircleIcon className='h-3.5 w-3.5' />
-                  {t('mapSettings.dangerZone.title')}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className='px-3 pb-3'>
-                <p className='text-xs text-muted-foreground mb-3'>
-                  {t('mapSettings.dangerZone.warning')}
-                </p>
-                <Button
-                  variant='ghost'
-                  size='sm'
-                  className='text-muted-foreground hover:text-destructive hover:bg-destructive/10'
-                  onClick={() => setDeleteDialogOpen(true)}
-                >
-                  <Trash01Icon className='mr-1.5 h-3.5 w-3.5' />
-                  {t('mapSettings.dangerZone.delete')}
-                </Button>
-              </CardContent>
-            </Card>
+            <MapSettingsDangerZone onRequestDelete={() => form.setDeleteDialogOpen(true)} />
           </div>
         )}
       </div>
-
-      {/* Delete Confirmation Dialog */}
-      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t('mapSettings.dangerZone.confirmTitle')}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t('mapSettings.dangerZone.confirmDescription', {
-                title: map?.title,
-                nodesCount: map?.nodesCount ?? 0
-              })}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDeleteMap}
-              disabled={deleteMapMutation.isPending}
-              className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
-            >
-              <Trash01Icon className='mr-1.5 h-3.5 w-3.5' />
-              {t('mapSettings.dangerZone.delete')}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </>
   )
 })

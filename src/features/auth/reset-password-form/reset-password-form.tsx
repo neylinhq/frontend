@@ -20,18 +20,10 @@ import {
 import { Input } from '@/shared/components/input'
 import { OtpInput } from '@/shared/components/otp-input'
 import { toast } from '@/shared/components/toast'
+import { maskEmail } from '@/shared/lib/mask-email'
 
 const RESEND_COOLDOWN = 60 // seconds
 const RESEND_COOLDOWN_TICK_MS = 1000
-
-const maskEmail = (email: string): string => {
-  const [local, domain] = email.split('@')
-  if (!local || !domain) {
-    return email
-  }
-  const visible = local.slice(0, 2)
-  return `${visible}***@${domain}`
-}
 
 export const ResetPasswordForm = () => {
   const { t } = useTranslation()

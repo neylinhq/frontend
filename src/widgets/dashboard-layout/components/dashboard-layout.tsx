@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { Button } from '@/shared/components/button'
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/shared/components/sheet'
 import { cn } from '@/shared/lib/cn'
-import { useDashboardSidebarStore } from '@/shared/store/dashboard-sidebar'
+import { useDashboardSidebarStore } from '@/shared/store'
 
 import { Sidebar } from './sidebar'
 

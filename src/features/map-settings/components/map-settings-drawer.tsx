@@ -7,34 +7,17 @@ import {
   TrendUp01Icon,
   XCloseIcon
 } from '@untitledui/icons-react/outline'
-import { memo, useCallback, useEffect, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router'
 
-import { useDeleteMap, useMap, useSetVisibility, useUpdateMap } from '@/entities/map'
 import { useMapProgress } from '@/entities/progress'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle
-} from '@/shared/components/alert-dialog'
-import { Badge } from '@/shared/components/badge'
 import { Button } from '@/shared/components/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/card'
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/shared/components/drawer'
-import { Field } from '@/shared/components/field'
-import { Input } from '@/shared/components/input'
-import { Switch } from '@/shared/components/switch'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/components/tabs'
-import { Textarea } from '@/shared/components/textarea'
-import { toast } from '@/shared/components/toast'
-import { useAutoSave } from '@/shared/hooks'
 import { cn } from '@/shared/lib/cn'
+import { useMapSettingsForm } from '../model/use-map-settings-form'
+import { MapSettingsFormContent } from './map-settings-form-content'
 import { MapHistoryList } from './map-history-list'
 
 interface MapSettingsDrawerProps {
@@ -49,32 +32,18 @@ interface MapSettingsDrawerProps {
 export const MapSettingsDrawer = memo(
   ({ mapId, open, onOpenChange, isOwner = true, className }: MapSettingsDrawerProps) => {
     const { t } = useTranslation()
-    const navigate = useNavigate()
     const [isMobile, setIsMobile] = useState(false)
-    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
 
-    // Local state for form fields
-    const [title, setTitle] = useState('')
-    const [description, setDescription] = useState('')
-    const initialDataRef = useRef({ title: '', description: '' })
+    const handleClose = useCallback(() => {
+      onOpenChange(false)
+    }, [onOpenChange])
 
-    const { data: map } = useMap(mapId)
+    const form = useMapSettingsForm({
+      mapId,
+      onDeleted: handleClose,
+    })
+
     const { data: mapProgress } = useMapProgress(mapId)
-    const updateMapMutation = useUpdateMap(mapId)
-    const setVisibilityMutation = useSetVisibility()
-    const deleteMapMutation = useDeleteMap()
-
-    // Sync local state when map data loads
-    useEffect(() => {
-      if (map) {
-        setTitle(map.title)
-        setDescription(map.description ?? '')
-        initialDataRef.current = {
-          title: map.title,
-          description: map.description ?? ''
-        }
-      }
-    }, [map])
 
     // Check mobile via matchMedia
     useEffect(() => {
@@ -87,324 +56,183 @@ export const MapSettingsDrawer = memo(
       return () => window.removeEventListener('resize', checkMobile)
     }, [])
 
-    const handleClose = useCallback(() => {
-      onOpenChange(false)
-    }, [onOpenChange])
-
-    // Autosave callback
-    const saveChanges = useCallback(
-      (data: { title: string; description: string }) => {
-        // Only save if something changed
-        if (
-          data.title === initialDataRef.current.title &&
-          data.description === initialDataRef.current.description
-        ) {
-          return
-        }
-
-        updateMapMutation.mutate(
-          {
-            title: data.title,
-            description: data.description || undefined
-          },
-          {
-            onSuccess: () => {
-              initialDataRef.current = data
-            },
-            onError: () => {
-              toast.error(t('errors.failedSave'))
-            }
-          }
-        )
-      },
-      [updateMapMutation, t]
-    )
-
-    const debouncedSave = useAutoSave(saveChanges, 1500)
-
-    // Handle field changes with autosave
-    const handleTitleChange = useCallback(
-      (value: string) => {
-        setTitle(value)
-        debouncedSave({ title: value, description })
-      },
-      [description, debouncedSave]
-    )
-
-    const handleDescriptionChange = useCallback(
-      (value: string) => {
-        setDescription(value)
-        debouncedSave({ title, description: value })
-      },
-      [title, debouncedSave]
-    )
-
-    // Handle visibility toggle
-    const handleVisibilityChange = useCallback(
-      (isPublic: boolean) => {
-        setVisibilityMutation.mutate(
-          { mapId, isPublic },
-          {
-            onError: () => {
-              toast.error(t('errors.failedSave'))
-            }
-          }
-        )
-      },
-      [mapId, setVisibilityMutation, t]
-    )
-
-    // Handle map deletion
-    const handleDeleteMap = useCallback(async () => {
-      try {
-        await deleteMapMutation.mutateAsync(mapId)
-        // No toast - redirect to dashboard = obvious feedback
-        handleClose()
-        navigate('/dashboard')
-      } catch {
-        toast.error(t('errors.failedDelete'))
-      }
-    }, [mapId, deleteMapMutation, handleClose, navigate, t])
-
-    // Saving indicator
-    const isSaving = updateMapMutation.isPending
-
     return (
-      <>
-        <Drawer open={open} onOpenChange={onOpenChange} modal={false}>
-          <DrawerContent
-            side={isMobile ? 'bottom' : 'right'}
-            size={isMobile ? '85vh' : '420px'}
-            showOverlay={isMobile}
-            showClose={false}
-            className={cn('p-0 flex flex-col', className)}
-            onInteractOutside={e => e.preventDefault()}
-          >
-            {/* Minimal header */}
-            <DrawerHeader className='px-4 py-2.5 shrink-0'>
-              <div className='flex items-center justify-between'>
-                <div className='flex items-center gap-2'>
-                  <DrawerTitle className='text-sm font-medium'>
-                    {t('mapSettings.title')}
-                  </DrawerTitle>
-                  {isSaving && (
-                    <span className='text-xs text-muted-foreground'>{t('common.saving')}</span>
-                  )}
-                </div>
-                <Button
-                  variant='ghost'
-                  size='icon'
-                  className='h-7 w-7 rounded-sm -mr-1'
-                  onClick={handleClose}
-                >
-                  <XCloseIcon className='h-4 w-4' />
-                </Button>
+      <Drawer open={open} onOpenChange={onOpenChange} modal={false}>
+        <DrawerContent
+          side={isMobile ? 'bottom' : 'right'}
+          size={isMobile ? '85vh' : '420px'}
+          showOverlay={isMobile}
+          showClose={false}
+          className={cn('p-0 flex flex-col', className)}
+          onInteractOutside={e => e.preventDefault()}
+        >
+          {/* Minimal header */}
+          <DrawerHeader className='px-4 py-2.5 shrink-0'>
+            <div className='flex items-center justify-between'>
+              <div className='flex items-center gap-2'>
+                <DrawerTitle className='text-sm font-medium'>
+                  {t('mapSettings.title')}
+                </DrawerTitle>
+                {form.isSaving && (
+                  <span className='text-xs text-muted-foreground'>{t('common.saving')}</span>
+                )}
               </div>
-            </DrawerHeader>
+              <Button
+                variant='ghost'
+                size='icon'
+                className='h-7 w-7 rounded-sm -mr-1'
+                onClick={handleClose}
+              >
+                <XCloseIcon className='h-4 w-4' />
+              </Button>
+            </div>
+          </DrawerHeader>
 
-            {/* Tabs */}
-            <Tabs defaultValue='overview' className='flex flex-col flex-1 min-h-0'>
-              <TabsList
+          {/* Tabs */}
+          <Tabs defaultValue='overview' className='flex flex-col flex-1 min-h-0'>
+            <TabsList
+              variant='underline'
+              className='shrink-0 grid grid-cols-4 bg-background px-4'
+            >
+              <TabsTrigger
                 variant='underline'
-                className='shrink-0 grid grid-cols-4 bg-background px-4'
+                value='overview'
+                title={t('mapSettings.tabs.overview')}
+                className='h-10 w-full text-muted-foreground data-[state=active]:text-foreground'
               >
-                <TabsTrigger
-                  variant='underline'
-                  value='overview'
-                  title={t('mapSettings.tabs.overview')}
-                  className='h-10 w-full text-muted-foreground data-[state=active]:text-foreground'
-                >
-                  <InfoCircleIcon className='h-4 w-4' />
-                </TabsTrigger>
-                <TabsTrigger
-                  variant='underline'
-                  value='progress'
-                  title={t('mapSettings.tabs.progress')}
-                  className='h-10 w-full text-muted-foreground data-[state=active]:text-foreground'
-                >
-                  <TrendUp01Icon className='h-4 w-4' />
-                </TabsTrigger>
-                <TabsTrigger
-                  variant='underline'
-                  value='history'
-                  title={t('mapSettings.tabs.history')}
-                  className='h-10 w-full text-muted-foreground data-[state=active]:text-foreground'
-                >
-                  <ClockRewindIcon className='h-4 w-4' />
-                </TabsTrigger>
-                <TabsTrigger
-                  variant='underline'
-                  value='settings'
-                  title={t('mapSettings.tabs.settings')}
-                  className='h-10 w-full text-muted-foreground data-[state=active]:text-foreground'
-                >
-                  <Sliders04Icon className='h-4 w-4' />
-                </TabsTrigger>
-              </TabsList>
+                <InfoCircleIcon className='h-4 w-4' />
+              </TabsTrigger>
+              <TabsTrigger
+                variant='underline'
+                value='progress'
+                title={t('mapSettings.tabs.progress')}
+                className='h-10 w-full text-muted-foreground data-[state=active]:text-foreground'
+              >
+                <TrendUp01Icon className='h-4 w-4' />
+              </TabsTrigger>
+              <TabsTrigger
+                variant='underline'
+                value='history'
+                title={t('mapSettings.tabs.history')}
+                className='h-10 w-full text-muted-foreground data-[state=active]:text-foreground'
+              >
+                <ClockRewindIcon className='h-4 w-4' />
+              </TabsTrigger>
+              <TabsTrigger
+                variant='underline'
+                value='settings'
+                title={t('mapSettings.tabs.settings')}
+                className='h-10 w-full text-muted-foreground data-[state=active]:text-foreground'
+              >
+                <Sliders04Icon className='h-4 w-4' />
+              </TabsTrigger>
+            </TabsList>
 
-              {/* Overview Tab - Title, Description, Visibility, Author */}
-              <TabsContent value='overview' className='flex-1 overflow-y-auto mt-0 p-4'>
-                <div className='space-y-6'>
-                  {/* Visibility Badge + Switch (only for owners) */}
-                  {isOwner && (
-                    <div className='flex items-center justify-between'>
-                      {map?.isPublic ? (
-                        <Badge variant='info'>{t('mapSettings.visibility.public')}</Badge>
-                      ) : (
-                        <Badge variant='secondary'>{t('mapSettings.visibility.private')}</Badge>
-                      )}
-                      <Switch
-                        checked={map?.isPublic ?? false}
-                        onCheckedChange={handleVisibilityChange}
-                        disabled={setVisibilityMutation.isPending}
-                      />
-                    </div>
-                  )}
+            {/* Overview Tab - Title, Description, Visibility, Author */}
+            <TabsContent value='overview' className='flex-1 overflow-y-auto mt-0 p-4'>
+              <div className='space-y-6'>
+                <MapSettingsFormContent
+                  title={form.title}
+                  description={form.description}
+                  isPublic={form.map?.isPublic ?? false}
+                  authorName={form.map?.authorName}
+                  nodesCount={form.map?.nodesCount ?? 0}
+                  mapTitle={form.map?.title}
+                  isOwner={isOwner}
+                  isSaving={form.isSaving}
+                  isVisibilityPending={form.isVisibilityPending}
+                  isDeletePending={form.isDeletePending}
+                  deleteDialogOpen={form.deleteDialogOpen}
+                  setDeleteDialogOpen={form.setDeleteDialogOpen}
+                  onTitleChange={form.handleTitleChange}
+                  onDescriptionChange={form.handleDescriptionChange}
+                  onVisibilityChange={form.handleVisibilityChange}
+                  onDelete={form.handleDeleteMap}
+                />
+              </div>
+            </TabsContent>
 
-                  {/* Author (for non-owners) */}
-                  {!isOwner && map?.authorName && (
-                    <div className='space-y-1.5'>
-                      <span className='text-xs text-muted-foreground'>
-                        {t('mapSettings.overview.author')}
-                      </span>
-                      <div className='text-sm font-medium'>{map.authorName}</div>
-                    </div>
-                  )}
-
-                  {/* Title & Description with autosave */}
-                  <div className='space-y-4'>
-                    <Field label={t('mapSettings.overview.mapTitle')}>
-                      <Input
-                        value={title}
-                        onChange={e => handleTitleChange(e.target.value)}
-                        readOnly={!isOwner}
-                        disabled={!isOwner}
-                      />
-                    </Field>
-
-                    <Field label={t('mapSettings.overview.description')}>
-                      <Textarea
-                        value={description}
-                        onChange={e => handleDescriptionChange(e.target.value)}
-                        placeholder={t('mapSettings.overview.descriptionPlaceholder')}
-                        rows={4}
-                        className='resize-none'
-                        readOnly={!isOwner}
-                        disabled={!isOwner}
-                      />
-                    </Field>
+            {/* Progress Tab - Stats + Rating */}
+            <TabsContent value='progress' className='flex-1 overflow-y-auto mt-0 p-4'>
+              <div className='space-y-6'>
+                {/* Stats Grid */}
+                <div className='grid grid-cols-2 gap-3'>
+                  <div className='p-3 rounded-md bg-muted/30'>
+                    <p className='text-xs text-muted-foreground mb-1'>
+                      {t('mapSettings.progress.nodesTotal')}
+                    </p>
+                    <p className='text-xl font-semibold tabular-nums'>{form.map?.nodesCount ?? 0}</p>
+                  </div>
+                  <div className='p-3 rounded-md bg-muted/30'>
+                    <p className='text-xs text-muted-foreground mb-1'>
+                      {t('mapSettings.progress.overallProgress')}
+                    </p>
+                    <p className='text-xl font-semibold tabular-nums'>
+                      {Math.round((mapProgress?.overallProgress ?? 0) * 100)}%
+                    </p>
+                  </div>
+                  <div className='p-3 rounded-md bg-muted/30'>
+                    <p className='text-xs text-muted-foreground mb-1'>
+                      {t('mapSettings.progress.nodesMastered')}
+                    </p>
+                    <p className='text-xl font-semibold tabular-nums'>
+                      {mapProgress?.nodesMastered ?? 0}
+                    </p>
+                  </div>
+                  <div className='p-3 rounded-md bg-muted/30'>
+                    <p className='text-xs text-muted-foreground mb-1'>
+                      {t('mapSettings.progress.nodesLearning')}
+                    </p>
+                    <p className='text-xl font-semibold tabular-nums'>
+                      {mapProgress?.nodesLearning ?? 0}
+                    </p>
                   </div>
                 </div>
-              </TabsContent>
+              </div>
+            </TabsContent>
 
-              {/* Progress Tab - Stats + Rating */}
-              <TabsContent value='progress' className='flex-1 overflow-y-auto mt-0 p-4'>
-                <div className='space-y-6'>
-                  {/* Stats Grid */}
-                  <div className='grid grid-cols-2 gap-3'>
-                    <div className='p-3 rounded-md bg-muted/30'>
-                      <p className='text-xs text-muted-foreground mb-1'>
-                        {t('mapSettings.progress.nodesTotal')}
-                      </p>
-                      <p className='text-xl font-semibold tabular-nums'>{map?.nodesCount ?? 0}</p>
-                    </div>
-                    <div className='p-3 rounded-md bg-muted/30'>
-                      <p className='text-xs text-muted-foreground mb-1'>
-                        {t('mapSettings.progress.overallProgress')}
-                      </p>
-                      <p className='text-xl font-semibold tabular-nums'>
-                        {Math.round((mapProgress?.overallProgress ?? 0) * 100)}%
-                      </p>
-                    </div>
-                    <div className='p-3 rounded-md bg-muted/30'>
-                      <p className='text-xs text-muted-foreground mb-1'>
-                        {t('mapSettings.progress.nodesMastered')}
-                      </p>
-                      <p className='text-xl font-semibold tabular-nums'>
-                        {mapProgress?.nodesMastered ?? 0}
-                      </p>
-                    </div>
-                    <div className='p-3 rounded-md bg-muted/30'>
-                      <p className='text-xs text-muted-foreground mb-1'>
-                        {t('mapSettings.progress.nodesLearning')}
-                      </p>
-                      <p className='text-xl font-semibold tabular-nums'>
-                        {mapProgress?.nodesLearning ?? 0}
-                      </p>
-                    </div>
+            {/* History Tab - Change history */}
+            <TabsContent value='history' className='flex-1 overflow-y-auto mt-0 p-4'>
+              <MapHistoryList mapId={mapId} />
+            </TabsContent>
+
+            {/* Settings Tab - Rating System + Danger Zone */}
+            <TabsContent value='settings' className='flex-1 overflow-y-auto mt-0'>
+              <div className='flex flex-col min-h-full'>
+                <div className='p-4' />
+
+                {/* Danger Zone - mt-auto pushes to bottom (only for owners) */}
+                {isOwner && (
+                  <div className='p-4 mt-auto'>
+                    <Card className='border-destructive/30 rounded-md'>
+                      <CardHeader className='py-2.5 px-3'>
+                        <CardTitle className='text-xs font-medium text-destructive flex items-center gap-1.5'>
+                          <AlertCircleIcon className='h-3.5 w-3.5' />
+                          {t('mapSettings.dangerZone.title')}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className='px-3 pb-2.5'>
+                        <p className='text-xs text-muted-foreground mb-3'>
+                          {t('mapSettings.dangerZone.warning')}
+                        </p>
+                        <Button
+                          variant='ghost'
+                          size='sm'
+                          className='text-muted-foreground hover:text-destructive hover:bg-destructive/10'
+                          onClick={() => form.setDeleteDialogOpen(true)}
+                        >
+                          <Trash01Icon className='mr-1.5 h-3.5 w-3.5' />
+                          {t('mapSettings.dangerZone.delete')}
+                        </Button>
+                      </CardContent>
+                    </Card>
                   </div>
-                </div>
-              </TabsContent>
-
-              {/* History Tab - Change history */}
-              <TabsContent value='history' className='flex-1 overflow-y-auto mt-0 p-4'>
-                <MapHistoryList mapId={mapId} />
-              </TabsContent>
-
-              {/* Settings Tab - Rating System + Danger Zone */}
-              <TabsContent value='settings' className='flex-1 overflow-y-auto mt-0'>
-                <div className='flex flex-col min-h-full'>
-                  <div className='p-4' />
-
-                  {/* Danger Zone - mt-auto pushes to bottom (only for owners) */}
-                  {isOwner && (
-                    <div className='p-4 mt-auto'>
-                      <Card className='border-destructive/30 rounded-md'>
-                        <CardHeader className='py-2.5 px-3'>
-                          <CardTitle className='text-xs font-medium text-destructive flex items-center gap-1.5'>
-                            <AlertCircleIcon className='h-3.5 w-3.5' />
-                            {t('mapSettings.dangerZone.title')}
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent className='px-3 pb-2.5'>
-                          <p className='text-xs text-muted-foreground mb-3'>
-                            {t('mapSettings.dangerZone.warning')}
-                          </p>
-                          <Button
-                            variant='ghost'
-                            size='sm'
-                            className='text-muted-foreground hover:text-destructive hover:bg-destructive/10'
-                            onClick={() => setDeleteDialogOpen(true)}
-                          >
-                            <Trash01Icon className='mr-1.5 h-3.5 w-3.5' />
-                            {t('mapSettings.dangerZone.delete')}
-                          </Button>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  )}
-                </div>
-              </TabsContent>
-            </Tabs>
-          </DrawerContent>
-        </Drawer>
-
-        {/* Delete Confirmation Dialog */}
-        <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>{t('mapSettings.dangerZone.confirmTitle')}</AlertDialogTitle>
-              <AlertDialogDescription>
-                {t('mapSettings.dangerZone.confirmDescription', {
-                  title: map?.title,
-                  nodesCount: map?.nodesCount ?? 0
-                })}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={handleDeleteMap}
-                disabled={deleteMapMutation.isPending}
-                className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
-              >
-                <Trash01Icon className='mr-1.5 h-3.5 w-3.5' />
-                {t('mapSettings.dangerZone.delete')}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </>
+                )}
+              </div>
+            </TabsContent>
+          </Tabs>
+        </DrawerContent>
+      </Drawer>
     )
   }
 )

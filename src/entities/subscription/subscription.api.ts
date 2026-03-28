@@ -1,4 +1,4 @@
-import { api } from '@/shared/api/client'
+import { api, type ApiResponse } from '@/shared/api/client'
 
 import type {
   PaymentHistory,
@@ -14,12 +14,6 @@ import type {
   CheckoutSession,
   UpdatePaymentMethodInput
 } from './subscription.types'
-
-// Response types matching backend API
-interface ApiResponse<T> {
-  success: boolean
-  data: T
-}
 
 interface PlansResponse {
   success: boolean

@@ -4,17 +4,12 @@ import { Drawer as VaulDrawer } from 'vaul'
 import { Drawer, DrawerContent } from '@/shared/components/drawer'
 import { cn } from '@/shared/lib/cn'
 
-import {
-  useAIPanelStore,
-  useChatSessions,
-  useCreateChatSession,
-  useDeleteChatSession,
-  useRenameChatSession
-} from '../model'
-import { useChatHistoryStore } from '../model/ai-assist.chat.store'
+import { useAIPanelStore } from '../model'
 import { useStreamingStore } from '../model/ai-assist.streaming.store'
+import { useChatKeyboardShortcuts } from '../model/use-chat-keyboard-shortcuts'
+import { useChatSessionManager } from '../model/use-chat-session-manager'
 import { ChatHeader } from './chat-header'
-import { MapChatPanel } from './map-chat-panel'
+import { ChatPanel } from './chat-panel'
 
 const STORAGE_KEY = 'ai-panel-width'
 const MIN_WIDTH = 440
@@ -38,180 +33,38 @@ export const MapChatDrawer = ({ mapId }: MapChatDrawerProps) => {
   const [isResizing, setIsResizing] = useState(false)
   const startXRef = useRef(0)
   const startWidthRef = useRef(width)
-
-  // Chat sessions state
-  const { data: sessions = [], isLoading: sessionsLoading, isError } = useChatSessions(mapId)
-  const createSession = useCreateChatSession(mapId)
-  const renameSession = useRenameChatSession(mapId)
-  const deleteSession = useDeleteChatSession(mapId)
-  const [activeSessionId, setActiveSessionId] = useState<string | null>(null)
-  const [autoCreateAttempted, setAutoCreateAttempted] = useState(false)
   const [selectorOpen, setSelectorOpen] = useState(false)
 
-  // Abort all active streams when leaving the map page
+  const {
+    sessions,
+    sessionsLoading,
+    activeSessionId,
+    setActiveSessionId,
+    isCreating,
+    handleCreateSession,
+    handleCloseSession,
+    handleRenameSession,
+    handleCloseAll,
+    handleCloseOthers,
+    handleNextTab,
+    handlePrevTab
+  } = useChatSessionManager({ mapId, isOpen })
+
   const clearAll = useStreamingStore(s => s.clearAll)
   useEffect(() => {
     return () => clearAll()
   }, [clearAll])
 
-  // Auto-select first session or create one if none exist
-  useEffect(() => {
-    if (sessions.length > 0 && !activeSessionId) {
-      setActiveSessionId(sessions[0].id)
-      setAutoCreateAttempted(false) // Reset on successful load
-    } else if (
-      sessions.length === 0 &&
-      !sessionsLoading &&
-      !isError &&
-      isOpen &&
-      !createSession.isPending &&
-      !autoCreateAttempted
-    ) {
-      // Auto-create first session when drawer opens (only once)
-      setAutoCreateAttempted(true)
-      createSession.mutate(
-        { contextType: 'map' },
-        {
-          onSuccess: session => {
-            setActiveSessionId(session.id)
-          }
-        }
-      )
-    }
-  }, [
-    sessions,
-    activeSessionId,
-    sessionsLoading,
-    isError,
+  useChatKeyboardShortcuts({
     isOpen,
-    createSession.isPending,
-    autoCreateAttempted
-  ])
-
-  // Handle session deletion - switch to another session
-  const handleCloseSession = useCallback(
-    (sessionId: string) => {
-      deleteSession.mutate(sessionId, {
-        onSuccess: () => {
-          if (activeSessionId === sessionId) {
-            // Switch to another session
-            const remaining = sessions.filter(s => s.id !== sessionId)
-            setActiveSessionId(remaining[0]?.id || null)
-          }
-        }
-      })
-    },
-    [deleteSession, activeSessionId, sessions]
-  )
-
-  const handleCreateSession = useCallback(() => {
-    // Don't create another empty session — reuse current one
-    if (activeSessionId) {
-      const currentMessages = useChatHistoryStore.getState().sessions[activeSessionId]?.messages
-      if (!currentMessages || currentMessages.length === 0) {
-        return
-      }
-    }
-    createSession.mutate(
-      { contextType: 'map' },
-      {
-        onSuccess: session => {
-          setActiveSessionId(session.id)
-        }
-      }
-    )
-  }, [createSession, activeSessionId])
-
-  const handleRenameSession = useCallback(
-    (sessionId: string, title: string) => {
-      renameSession.mutate({ sessionId, title })
-    },
-    [renameSession]
-  )
-
-  const handleCloseAll = useCallback(() => {
-    // Close all sessions except create a new one
-    sessions.forEach(s => {
-      deleteSession.mutate(s.id)
-    })
-    // Create a new session after closing all
-    setTimeout(() => {
-      createSession.mutate(
-        { contextType: 'map' },
-        {
-          onSuccess: session => {
-            setActiveSessionId(session.id)
-          }
-        }
-      )
-    }, 100)
-  }, [sessions, deleteSession, createSession])
-
-  const handleCloseOthers = useCallback(() => {
-    // Close all sessions except the active one
-    sessions
-      .filter(s => s.id !== activeSessionId)
-      .forEach(s => {
-        deleteSession.mutate(s.id)
-      })
-  }, [sessions, activeSessionId, deleteSession])
-
-  // Keyboard shortcuts for tab navigation
-  useEffect(() => {
-    if (!isOpen) return
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const isMod = e.metaKey || e.ctrlKey
-
-      // Cmd/Ctrl + T — new chat
-      if (isMod && e.key === 't') {
-        e.preventDefault()
-        handleCreateSession()
-        return
-      }
-
-      // Cmd/Ctrl + K — open chat selector (like VS Code command palette)
-      if (isMod && e.key === 'k') {
-        e.preventDefault()
-        setSelectorOpen(true)
-        return
-      }
-
-      // Cmd/Ctrl + W — close current tab (only if more than 1 session)
-      if (isMod && e.key === 'w' && !e.shiftKey && sessions.length > 1 && activeSessionId) {
-        e.preventDefault()
-        handleCloseSession(activeSessionId)
-        return
-      }
-
-      // Cmd/Ctrl + Shift + W — close all tabs
-      if (isMod && e.shiftKey && e.key === 'W') {
-        e.preventDefault()
-        handleCloseAll()
-        return
-      }
-
-      // Cmd/Ctrl + [ or ] — switch tabs
-      if (isMod && (e.key === '[' || e.key === ']') && sessions.length > 1 && activeSessionId) {
-        e.preventDefault()
-        const currentIndex = sessions.findIndex(s => s.id === activeSessionId)
-        if (currentIndex === -1) return
-
-        let newIndex: number
-        if (e.key === '[') {
-          // Previous tab
-          newIndex = currentIndex === 0 ? sessions.length - 1 : currentIndex - 1
-        } else {
-          // Next tab
-          newIndex = currentIndex === sessions.length - 1 ? 0 : currentIndex + 1
-        }
-        setActiveSessionId(sessions[newIndex].id)
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [isOpen, sessions, activeSessionId, handleCreateSession, handleCloseSession, handleCloseAll])
+    canCloseCurrent: sessions.length > 1 && !!activeSessionId,
+    onCreateSession: handleCreateSession,
+    onCloseSession: () => activeSessionId && handleCloseSession(activeSessionId),
+    onCloseAll: handleCloseAll,
+    onNextTab: handleNextTab,
+    onPrevTab: handlePrevTab,
+    onOpenSelector: () => setSelectorOpen(true)
+  })
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768)
@@ -220,7 +73,6 @@ export const MapChatDrawer = ({ mapId }: MapChatDrawerProps) => {
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  // Save width to localStorage
   useEffect(() => {
     if (!isResizing) {
       localStorage.setItem(STORAGE_KEY, String(width))
@@ -243,7 +95,6 @@ export const MapChatDrawer = ({ mapId }: MapChatDrawerProps) => {
     }
 
     const handleMouseMove = (e: MouseEvent) => {
-      // Resize from left edge: moving left increases width
       const delta = startXRef.current - e.clientX
       const newWidth = Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, startWidthRef.current + delta))
       setWidth(newWidth)
@@ -262,7 +113,6 @@ export const MapChatDrawer = ({ mapId }: MapChatDrawerProps) => {
     }
   }, [isResizing])
 
-  // Header component with tabs and selector
   const chatHeader = (
     <ChatHeader
       sessions={sessions}
@@ -273,7 +123,7 @@ export const MapChatDrawer = ({ mapId }: MapChatDrawerProps) => {
       onCloseAll={handleCloseAll}
       onCloseOthers={handleCloseOthers}
       onRenameSession={handleRenameSession}
-      isLoading={sessionsLoading || createSession.isPending}
+      isLoading={sessionsLoading || isCreating}
       isMobile={isMobile}
       selectorOpen={selectorOpen}
       onSelectorOpenChange={setSelectorOpen}
@@ -290,7 +140,7 @@ export const MapChatDrawer = ({ mapId }: MapChatDrawerProps) => {
             <div className='mx-auto mt-3 h-1 w-12 shrink-0 rounded-full bg-muted-foreground/30' />
             {chatHeader}
             <div className='flex-1 overflow-hidden'>
-              <MapChatPanel mapId={mapId} sessionId={activeSessionId} />
+              <ChatPanel scope='map' mapId={mapId} sessionId={activeSessionId} />
             </div>
           </VaulDrawer.Content>
         </VaulDrawer.Portal>
@@ -320,7 +170,7 @@ export const MapChatDrawer = ({ mapId }: MapChatDrawerProps) => {
         <div className='flex min-h-0 flex-1 flex-col'>
           {chatHeader}
           <div className='min-h-0 flex-1'>
-            <MapChatPanel mapId={mapId} sessionId={activeSessionId} />
+            <ChatPanel scope='map' mapId={mapId} sessionId={activeSessionId} />
           </div>
         </div>
       </DrawerContent>

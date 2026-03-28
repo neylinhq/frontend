@@ -9,6 +9,7 @@ import type { ChatMessageItem } from '@/shared/components/chat-messages'
 import { ChatMessages } from '@/shared/components/chat-messages'
 import { ModelSelector } from '@/shared/components/model-selector'
 import { cn } from '@/shared/lib/cn'
+import { parseSSEStream } from '@/shared/lib/sse'
 import { useStreamingStore } from '@/shared/lib/streaming-store'
 
 import { usePracticeModeActions, usePracticeModeSession, usePracticeModeStore } from '../model/practice-mode.store'
@@ -97,64 +98,24 @@ export function TutorChatView({ mapId, className }: TutorChatViewProps) {
           throw new Error(`HTTP ${response.status}`)
         }
 
-        const reader = response.body?.getReader()
-        if (!reader) {
-          throw new Error('No body')
-        }
-
-        const decoder = new TextDecoder()
-        let buffer = ''
-
-        for (;;) {
-          const { done, value } = await reader.read()
-          if (done) {
-            break
+        await parseSSEStream(response, (chunk) => {
+          if (chunk.type === 'text' && chunk.content) {
+            accumulated += chunk.content as string
+            setStreamedContent(accumulated)
           }
 
-          buffer += decoder.decode(value, { stream: true })
-          const lines = buffer.split('\n')
-          buffer = lines.pop() || ''
-
-          for (const line of lines) {
-            if (!line.startsWith('data: ')) {
-              continue
-            }
-            try {
-              const chunk = JSON.parse(line.slice(6)) as {
-                type: string
-                content?: string
-                evaluations?: Array<{ nodeId: string; quality: number }>
-                quality?: number
-                stabilityBefore?: number
-                stabilityAfter?: number
-              }
-
-              if (chunk.type === 'text' && chunk.content) {
-                accumulated += chunk.content
-                setStreamedContent(accumulated)
-              }
-
-              // Handle inline evaluations from AI
-              if (chunk.type === 'node_evaluations' && chunk.evaluations) {
-                for (const evaluation of chunk.evaluations) {
-                  markSubgraphNodeCompleted(evaluation.nodeId, evaluation.quality)
-                }
-              }
-
-              // Handle content correction (eval tags stripped)
-              if (chunk.type === 'content_correction' && chunk.content) {
-                accumulated = chunk.content
-              }
-
-              // Legacy quality chunk (fallback when no inline evals)
-              if (chunk.type === 'quality') {
-                // Quality handled by backend, no action needed on frontend
-              }
-            } catch {
-              // skip unparseable chunks
+          // Handle inline evaluations from AI
+          if (chunk.type === 'node_evaluations' && chunk.evaluations) {
+            for (const evaluation of chunk.evaluations as Array<{ nodeId: string; quality: number }>) {
+              markSubgraphNodeCompleted(evaluation.nodeId, evaluation.quality)
             }
           }
-        }
+
+          // Handle content correction (eval tags stripped)
+          if (chunk.type === 'content_correction' && chunk.content) {
+            accumulated = chunk.content as string
+          }
+        }, abort.signal)
       } catch (error) {
         if ((error as Error).name !== 'AbortError') {
           accumulated = accumulated || t('practice.tutor.errorMessage')

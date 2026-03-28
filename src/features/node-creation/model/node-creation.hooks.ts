@@ -7,14 +7,14 @@ import type { NodeType } from '@/entities/node'
 import { calculatePositionNearConnections, calculateSmartPosition } from '../lib/smart-positioning'
 import { useNodeCreationStore } from './node-creation.store'
 
-interface CreateNodeInput {
+export interface CreateNodeInput {
   mapId: string
   label: string
   type: NodeType
   description?: string
 }
 
-interface MutationContext {
+export interface MutationContext {
   previousFullMap: FullMap | undefined
   optimisticNode: Node
 }

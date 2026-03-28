@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-import { api } from '@/shared/api/client'
+import { api, type ApiResponse } from '@/shared/api/client'
 
 import type {
   AddMessageInput,
@@ -10,12 +10,6 @@ import type {
   CreateSessionInput,
   RenameSessionInput
 } from './ai-assist.sessions.types'
-
-// Response types (API wraps data in { success, data })
-interface ApiResponse<T> {
-  success: boolean
-  data: T
-}
 
 // Query keys
 export const chatSessionKeys = {

@@ -8,6 +8,7 @@ import { ApiError } from '@/shared/api/client'
 import { Button } from '@/shared/components/button'
 import { OtpInput } from '@/shared/components/otp-input'
 import { toast } from '@/shared/components/toast'
+import { maskEmail } from '@/shared/lib/mask-email'
 
 interface VerifyEmailFormProps {
   email?: string
@@ -15,15 +16,6 @@ interface VerifyEmailFormProps {
 
 const RESEND_COOLDOWN = 60 // seconds
 const RESEND_COOLDOWN_TICK_MS = 1000
-
-const maskEmail = (email: string): string => {
-  const [local, domain] = email.split('@')
-  if (!local || !domain) {
-    return email
-  }
-  const visible = local.slice(0, 2)
-  return `${visible}***@${domain}`
-}
 
 export const VerifyEmailForm = ({ email }: VerifyEmailFormProps) => {
   const { t } = useTranslation()

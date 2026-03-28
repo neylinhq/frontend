@@ -9,7 +9,7 @@ import {
   SettingsPanel,
   SidebarToggleFab
 } from '@/widgets/map-sidebar'
-import type { ViewportState } from '@/features/graph/graph-webgl'
+import type { ViewportState } from '@/shared/lib/viewport'
 import { ReadOnlyBanner, useMapPermissions } from '@/features/map-permissions'
 import { NodeConnectionsPanel } from '@/features/node-connections-panel'
 import { AddNodeFab, QuickAddDialogWebGL, useNodeCreationStore } from '@/features/node-creation'

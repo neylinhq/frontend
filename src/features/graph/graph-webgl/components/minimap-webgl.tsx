@@ -11,28 +11,13 @@ import { memo, useMemo } from 'react'
 import type { Node } from '@/entities/map'
 import { cn } from '@/shared/lib/cn'
 
+import { useLayoutStore } from '../../graph-core/model/graph-visualization.layout.store'
 import { getNodeColorHex } from '../lib/theme-bridge'
-
-interface ViewportState {
-  x: number // Camera center X in world coords
-  y: number // Camera center Y in world coords
-  zoom: number // Zoom level
-  width: number // Canvas width in pixels
-  height: number // Canvas height in pixels
-}
-
-/** Position data from WASM layout */
-interface LayoutPosition {
-  id: string
-  x: number
-  y: number
-}
+import type { ViewportState } from '@/shared/lib/viewport'
 
 interface MiniMapWebGLProps {
   nodes: Node[]
-  layoutPositions?: LayoutPosition[] // Positions from WASM layout
-  viewport?: ViewportState
-  isDark?: boolean
+  viewport: ViewportState
   className?: string
   onNavigate?: (x: number, y: number) => void
 }
@@ -49,12 +34,12 @@ const MAP_HEIGHT = 100
  */
 export const MiniMapWebGL = memo(function MiniMapWebGL({
   nodes,
-  layoutPositions,
   viewport,
-  isDark: _isDark = false,
   className,
   onNavigate
 }: MiniMapWebGLProps) {
+  const layoutPositions = useLayoutStore(state => state.layoutPositions)
+
   // Build position map from WASM layout (or use node.position as fallback)
   const positionMap = useMemo(() => {
     const map = new Map<string, { x: number; y: number }>()
@@ -214,10 +199,9 @@ export const MiniMapWebGL = memo(function MiniMapWebGL({
         <div
           key={dot.id}
           className='absolute rounded-full pointer-events-none'
-          suppressHydrationWarning
           style={{
-            left: `${dot.x - 2}px`,
-            top: `${dot.y - 2}px`,
+            left: dot.x - 2,
+            top: dot.y - 2,
             width: 4,
             height: 4,
             backgroundColor: dot.color

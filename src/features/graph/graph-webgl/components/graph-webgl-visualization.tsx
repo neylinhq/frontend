@@ -23,11 +23,11 @@ import {
   useNodeSelection,
   ViewControlsPanel
 } from '@/features/graph/graph-core'
+import type { LayoutPosition } from '@/features/graph/graph-core/model/graph.types'
+import { useLayoutStore } from '@/features/graph/graph-core/model/graph-visualization.layout.store'
 import {
   GraphCanvas,
-  type GraphCanvasHandle,
-  type LayoutPosition,
-  type ViewportState
+  type GraphCanvasHandle
 } from '@/features/graph/graph-webgl/components/graph-canvas'
 import { MiniMapWebGL } from '@/features/graph/graph-webgl/components/minimap-webgl'
 import type { Edge, FullMap, Node } from '@/entities/map'
@@ -42,8 +42,8 @@ import {
   useShowMinimap
 } from '@/entities/map-ui'
 import { Card } from '@/shared/components/card'
-import { useDarkMode } from '@/shared/hooks'
 import { cn } from '@/shared/lib/cn'
+import type { ViewportState } from '@/shared/lib/viewport'
 
 interface GraphWebGLVisualizationProps {
   mapId: string
@@ -147,9 +147,6 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
     [viewMode, nodeSpacing, directionStrength, focusedNodeId]
   )
 
-  // Track dark mode for theme-aware styling
-  const isDark = useDarkMode()
-
   // Ref to GraphCanvas for imperative control
   const canvasRef = useRef<GraphCanvasHandle>(null)
 
@@ -162,9 +159,6 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
     height: 600
   })
 
-  // Layout positions from WASM for minimap sync
-  const [layoutPositions, setLayoutPositions] = useState<LayoutPosition[]>([])
-
   // Get filtered data using existing hook (used for dimming, minimap, counts)
   const { filteredData, nodeCountsByType, edgeCountsByType } = useFilteredGraphData({
     fullMap,
@@ -175,6 +169,8 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
     focusedNodeId,
     focusDepth
   })
+
+  const { setLayoutPositions } = useLayoutStore()
 
   // Handle node click
   const handleNodeClick = useCallback(
@@ -363,7 +359,6 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
       {showMinimap && (
         <MiniMapWebGL
           nodes={filteredData.nodes}
-          layoutPositions={layoutPositions}
           viewport={viewport}
           onNavigate={handleMinimapNavigate}
         />

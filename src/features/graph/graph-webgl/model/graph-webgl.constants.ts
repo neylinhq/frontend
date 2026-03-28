@@ -1,4 +1,6 @@
-import type { LayoutOptions, ViewportState } from './graph-webgl.types'
+import type { ViewportState } from '@/shared/lib/viewport'
+
+import type { LayoutOptions } from './graph-webgl.types'
 
 /**
  * Default layout options

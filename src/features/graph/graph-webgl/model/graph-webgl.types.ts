@@ -4,13 +4,8 @@
  */
 
 import type { Edge, Node } from '@/entities/map'
-import type { ViewportState } from '@/shared/lib/viewport'
-
 // Re-export entity types
 export type { Node, Edge }
-
-// Re-export from shared
-export type { ViewportState }
 
 /**
  * Graph engine state from WASM

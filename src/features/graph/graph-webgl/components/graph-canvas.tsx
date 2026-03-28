@@ -15,12 +15,13 @@ import {
   useRef,
   useState
 } from 'react'
-
 import { useTranslation } from 'react-i18next'
 
+import type { LayoutPosition } from '@/features/graph/graph-core/model/graph.types'
+import type { Edge, Node } from '@/entities/map'
 import { useTheme } from '@/shared/core/theme'
 import { cn } from '@/shared/lib/cn'
-import type { Edge, Node } from '@/entities/map'
+import type { ViewportState } from '@/shared/lib/viewport'
 
 import { generateSdfIconAtlas } from '../lib/sdf-icon-atlas'
 import { ICON_PATHS } from '../lib/svg-icon-atlas'
@@ -28,17 +29,11 @@ import { themeToJson } from '../lib/theme-bridge'
 import { layoutOptionsToWasm, transformToWasm } from '../lib/transform'
 import { initWasmModule } from '../lib/wasm-loader'
 import { DEFAULT_LAYOUT_OPTIONS } from '../model/graph-webgl.constants'
-import { DEFAULT_RENDER_PARAMS, type GraphWebGLRenderParams } from '../model/graph-webgl.render-params'
+import {
+  DEFAULT_RENDER_PARAMS,
+  type GraphWebGLRenderParams
+} from '../model/graph-webgl.render-params'
 import type { LayoutOptions } from '../model/graph-webgl.types'
-
-/** Viewport state returned by WASM engine */
-export interface ViewportState {
-  x: number // Camera center X in world coords
-  y: number // Camera center Y in world coords
-  zoom: number // Zoom level
-  width: number // Canvas width in pixels
-  height: number // Canvas height in pixels
-}
 
 /** Imperative handle for controlling GraphCanvas */
 export interface GraphCanvasHandle {
@@ -127,13 +122,6 @@ interface WasmGraphEngine {
   set_active_node(node_id: string | null): void
 }
 
-/** Position data returned after layout completes */
-export interface LayoutPosition {
-  id: string
-  x: number
-  y: number
-}
-
 interface GraphCanvasProps {
   nodes: Node[]
   edges: Edge[]
@@ -161,1011 +149,1073 @@ interface GraphCanvasProps {
   className?: string
 }
 
-export const GraphCanvas = memo(forwardRef<GraphCanvasHandle, GraphCanvasProps>(function GraphCanvas(
-  {
-    nodes,
-    edges,
-    layoutOptions,
-    autoLayout = true,
-    backgroundMode = 'dots',
-    renderParams,
-    selectedNodeIds,
-    selectedNodeId,
-    focusedNodeId,
-    dimmedNodeIds = [],
-    onNodeClick,
-    onNodeDoubleClick,
-    onSelectionChange,
-    onNodeDragStart,
-    onNodeDrag,
-    onNodeDragEnd,
-    onViewportChange,
-    onLayoutComplete,
-    onEdgeBadgeClick,
-    onConnect,
-    className
-  },
-  ref
-) {
-  const { t } = useTranslation()
-  const containerRef = useRef<HTMLDivElement>(null)
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const engineRef = useRef<WasmGraphEngine | null>(null)
-  const animationRef = useRef<number | null>(null)
-  const viewportRef = useRef<ViewportState | null>(null)
-  const [viewportState, setViewportState] = useState<ViewportState | null>(null)
-  const positionsRef = useRef<Map<string, { x: number; y: number }>>(new Map())
-  const renderParamsRef = useRef(renderParams)
-  useEffect(() => { renderParamsRef.current = renderParams }, [renderParams])
+export const GraphCanvas = memo(
+  forwardRef<GraphCanvasHandle, GraphCanvasProps>(function GraphCanvas(
+    {
+      nodes,
+      edges,
+      layoutOptions,
+      autoLayout = true,
+      backgroundMode = 'dots',
+      renderParams,
+      selectedNodeIds,
+      selectedNodeId,
+      focusedNodeId,
+      dimmedNodeIds = [],
+      onNodeClick,
+      onNodeDoubleClick,
+      onSelectionChange,
+      onNodeDragStart,
+      onNodeDrag,
+      onNodeDragEnd,
+      onViewportChange,
+      onLayoutComplete,
+      onEdgeBadgeClick,
+      onConnect,
+      className
+    },
+    ref
+  ) {
+    const { t } = useTranslation()
+    const containerRef = useRef<HTMLDivElement>(null)
+    const canvasRef = useRef<HTMLCanvasElement>(null)
+    const engineRef = useRef<WasmGraphEngine | null>(null)
+    const animationRef = useRef<number | null>(null)
+    const viewportRef = useRef<ViewportState | null>(null)
+    const [viewportState, setViewportState] = useState<ViewportState | null>(null)
+    const positionsRef = useRef<Map<string, { x: number; y: number }>>(new Map())
+    const renderParamsRef = useRef(renderParams)
+    useEffect(() => {
+      renderParamsRef.current = renderParams
+    }, [renderParams])
 
-  const [isReady, setIsReady] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+    const [isReady, setIsReady] = useState(false)
+    const [error, setError] = useState<string | null>(null)
 
-  // Track dark mode for theme sync
-  const { palette, resolvedMode } = useTheme()
+    // Track dark mode for theme sync
+    const { palette, resolvedMode } = useTheme()
 
-  // Interaction state
-  const isPanningRef = useRef(false)
-  const connectingRef = useRef<{ sourceId?: string; targetId?: string; reverse: boolean } | null>(null)
-  const draggingNodeRef = useRef<string | null>(null)
-  const dragOffsetRef = useRef({ x: 0, y: 0 })
-  const lastMouseRef = useRef({ x: 0, y: 0 })
-  const dragStartRef = useRef({ x: 0, y: 0 })
-  const hasDraggedRef = useRef(false)
-  const DRAG_THRESHOLD = 5 // pixels before considering it a drag
+    // Interaction state
+    const isPanningRef = useRef(false)
+    const connectingRef = useRef<{ sourceId?: string; targetId?: string; reverse: boolean } | null>(
+      null
+    )
+    const draggingNodeRef = useRef<string | null>(null)
+    const dragOffsetRef = useRef({ x: 0, y: 0 })
+    const lastMouseRef = useRef({ x: 0, y: 0 })
+    const dragStartRef = useRef({ x: 0, y: 0 })
+    const hasDraggedRef = useRef(false)
+    const DRAG_THRESHOLD = 5 // pixels before considering it a drag
 
-  const resolvedSelectedNodeIds = useMemo(() => {
-    if (selectedNodeIds && selectedNodeIds.length > 0) {
-      return selectedNodeIds
-    }
-    return selectedNodeId ? [selectedNodeId] : []
-  }, [selectedNodeIds, selectedNodeId])
+    const resolvedSelectedNodeIds = useMemo(() => {
+      if (selectedNodeIds && selectedNodeIds.length > 0) {
+        return selectedNodeIds
+      }
+      return selectedNodeId ? [selectedNodeId] : []
+    }, [selectedNodeIds, selectedNodeId])
 
-  // Extract layout-triggering fields (excludes focusedNodeId — focus changes
-  // should only affect visibility/dimming, NOT trigger re-layout)
-  const viewMode = layoutOptions?.viewMode ?? DEFAULT_LAYOUT_OPTIONS.viewMode
-  const spacingPercent = layoutOptions?.spacingPercent ?? DEFAULT_LAYOUT_OPTIONS.spacingPercent
-  const directionStrength = layoutOptions?.directionStrength ?? DEFAULT_LAYOUT_OPTIONS.directionStrength
-  const iterations = layoutOptions?.iterations ?? DEFAULT_LAYOUT_OPTIONS.iterations
-  const coolingFactor = layoutOptions?.coolingFactor ?? DEFAULT_LAYOUT_OPTIONS.coolingFactor
-  const theta = layoutOptions?.theta ?? DEFAULT_LAYOUT_OPTIONS.theta
-  const ignoreExistingPositions = layoutOptions?.ignoreExistingPositions ?? DEFAULT_LAYOUT_OPTIONS.ignoreExistingPositions
+    // Extract layout-triggering fields (excludes focusedNodeId — focus changes
+    // should only affect visibility/dimming, NOT trigger re-layout)
+    const viewMode = layoutOptions?.viewMode ?? DEFAULT_LAYOUT_OPTIONS.viewMode
+    const spacingPercent = layoutOptions?.spacingPercent ?? DEFAULT_LAYOUT_OPTIONS.spacingPercent
+    const directionStrength =
+      layoutOptions?.directionStrength ?? DEFAULT_LAYOUT_OPTIONS.directionStrength
+    const iterations = layoutOptions?.iterations ?? DEFAULT_LAYOUT_OPTIONS.iterations
+    const coolingFactor = layoutOptions?.coolingFactor ?? DEFAULT_LAYOUT_OPTIONS.coolingFactor
+    const theta = layoutOptions?.theta ?? DEFAULT_LAYOUT_OPTIONS.theta
+    const ignoreExistingPositions =
+      layoutOptions?.ignoreExistingPositions ?? DEFAULT_LAYOUT_OPTIONS.ignoreExistingPositions
 
-  // Full options object — always up to date, used when actually calling run_layout().
-  // NOT used directly as effect deps to avoid spurious re-layouts.
-  const resolvedLayoutOptions = useMemo(
-    () => ({
-      viewMode,
-      spacingPercent,
-      directionStrength,
-      iterations,
-      coolingFactor,
-      theta,
-      ignoreExistingPositions,
-      focusedNodeId: focusedNodeId ?? undefined
-    }),
-    [viewMode, spacingPercent, directionStrength, iterations, coolingFactor, theta, ignoreExistingPositions, focusedNodeId]
-  )
+    // Full options object — always up to date, used when actually calling run_layout().
+    // NOT used directly as effect deps to avoid spurious re-layouts.
+    const resolvedLayoutOptions = useMemo(
+      () => ({
+        viewMode,
+        spacingPercent,
+        directionStrength,
+        iterations,
+        coolingFactor,
+        theta,
+        ignoreExistingPositions,
+        focusedNodeId: focusedNodeId ?? undefined
+      }),
+      [
+        viewMode,
+        spacingPercent,
+        directionStrength,
+        iterations,
+        coolingFactor,
+        theta,
+        ignoreExistingPositions,
+        focusedNodeId
+      ]
+    )
 
-  // Ref so the layout effect always reads the latest options without needing
-  // them in its deps (avoids stale-closure issues).
-  const layoutOptionsRef = useRef(resolvedLayoutOptions)
-  useEffect(() => { layoutOptionsRef.current = resolvedLayoutOptions }, [resolvedLayoutOptions])
+    // Ref so the layout effect always reads the latest options without needing
+    // them in its deps (avoids stale-closure issues).
+    const layoutOptionsRef = useRef(resolvedLayoutOptions)
+    useEffect(() => {
+      layoutOptionsRef.current = resolvedLayoutOptions
+    }, [resolvedLayoutOptions])
 
-  // The 3 things that should trigger a fresh layout:
-  //   1. spacingPercent changed
-  //   2. directionStrength changed
-  //   3. switched to/from path mode (different algorithm)
-  // NOT: overview↔focus toggle, focusedNodeId — those are visual filters only.
-  const isPathMode = viewMode === 'path'
+    // The 3 things that should trigger a fresh layout:
+    //   1. spacingPercent changed
+    //   2. directionStrength changed
+    //   3. switched to/from path mode (different algorithm)
+    // NOT: overview↔focus toggle, focusedNodeId — those are visual filters only.
+    const isPathMode = viewMode === 'path'
 
-  const getViewportFromEngine = useCallback((useCanvasRect: boolean): ViewportState | null => {
-    const engine = engineRef.current
-    const canvas = canvasRef.current
-    if (!engine) {
-      return null
-    }
-    try {
-      const json = engine.get_viewport()
-      const viewport = JSON.parse(json) as ViewportState
-      if (!useCanvasRect || !canvas) {
-        return viewport
+    const getViewportFromEngine = useCallback((useCanvasRect: boolean): ViewportState | null => {
+      const engine = engineRef.current
+      const canvas = canvasRef.current
+      if (!engine) {
+        return null
+      }
+      try {
+        const json = engine.get_viewport()
+        const viewport = JSON.parse(json) as ViewportState
+        if (!useCanvasRect || !canvas) {
+          return viewport
+        }
+        const rect = canvas.getBoundingClientRect()
+        return {
+          ...viewport,
+          width: rect.width,
+          height: rect.height
+        }
+      } catch {
+        return null
+      }
+    }, [])
+
+    // Notify parent of viewport change
+    const notifyViewportChange = useCallback(() => {
+      const rawViewport = getViewportFromEngine(false)
+      if (rawViewport) {
+        viewportRef.current = rawViewport
+      }
+      const viewport = getViewportFromEngine(true)
+      if (viewport) {
+        setViewportState(viewport)
+        onViewportChange?.(viewport)
+      }
+    }, [getViewportFromEngine, onViewportChange])
+
+    const getCanvasPoint = useCallback((clientX: number, clientY: number) => {
+      const canvas = canvasRef.current
+      if (!canvas) {
+        return { x: 0, y: 0 }
       }
       const rect = canvas.getBoundingClientRect()
+      const dpr = window.devicePixelRatio || 1
       return {
-        ...viewport,
-        width: rect.width,
-        height: rect.height
+        x: (clientX - rect.left) * dpr,
+        y: (clientY - rect.top) * dpr
       }
-    } catch {
-      return null
-    }
-  }, [])
+    }, [])
 
-  // Notify parent of viewport change
-  const notifyViewportChange = useCallback(() => {
-    const rawViewport = getViewportFromEngine(false)
-    if (rawViewport) {
-      viewportRef.current = rawViewport
-    }
-    const viewport = getViewportFromEngine(true)
-    if (viewport) {
-      setViewportState(viewport)
-      onViewportChange?.(viewport)
-    }
-  }, [getViewportFromEngine, onViewportChange])
+    const screenToWorld = useCallback(
+      (screenX: number, screenY: number) => {
+        const viewport = viewportRef.current ?? getViewportFromEngine(false)
+        if (!viewport) {
+          return { x: screenX, y: screenY }
+        }
+        if (!viewportRef.current) {
+          viewportRef.current = viewport
+        }
+        return {
+          x: (screenX - viewport.width / 2) / viewport.zoom + viewport.x,
+          y: (screenY - viewport.height / 2) / viewport.zoom + viewport.y
+        }
+      },
+      [getViewportFromEngine]
+    )
 
-  const getCanvasPoint = useCallback((clientX: number, clientY: number) => {
-    const canvas = canvasRef.current
-    if (!canvas) {
-      return { x: 0, y: 0 }
-    }
-    const rect = canvas.getBoundingClientRect()
-    const dpr = window.devicePixelRatio || 1
-    return {
-      x: (clientX - rect.left) * dpr,
-      y: (clientY - rect.top) * dpr
-    }
-  }, [])
+    const containerStyle = useMemo(() => {
+      const base = { backgroundColor: 'oklch(var(--background))' }
+      const gridSize = 24
 
-  const screenToWorld = useCallback(
-    (screenX: number, screenY: number) => {
-      const viewport = viewportRef.current ?? getViewportFromEngine(false)
-      if (!viewport) {
-        return { x: screenX, y: screenY }
+      // Subtle paper grain (cheap): SVG turbulence layer, static in screen space.
+      // Kept low-contrast so it doesn't shimmer under motion.
+      const paperGrain =
+        "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='matrix' values='1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>\")"
+
+      if (backgroundMode === 'none') {
+        return base
       }
-      if (!viewportRef.current) {
-        viewportRef.current = viewport
-      }
-      return {
-        x: (screenX - viewport.width / 2) / viewport.zoom + viewport.x,
-        y: (screenY - viewport.height / 2) / viewport.zoom + viewport.y
-      }
-    },
-    [getViewportFromEngine]
-  )
-
-  const containerStyle = useMemo(() => {
-    const base = { backgroundColor: 'oklch(var(--background))' }
-    const gridSize = 24
-
-    // Subtle paper grain (cheap): SVG turbulence layer, static in screen space.
-    // Kept low-contrast so it doesn't shimmer under motion.
-    const paperGrain =
-      "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='matrix' values='1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>\")"
-
-    if (backgroundMode === 'none') {
-      return base
-    }
-    if (!viewportState) {
-      if (backgroundMode === 'paper') {
-        const size = `${gridSize}px ${gridSize}px`
+      if (!viewportState) {
+        if (backgroundMode === 'paper') {
+          const size = `${gridSize}px ${gridSize}px`
+          return {
+            ...base,
+            backgroundImage: `linear-gradient(to right, oklch(var(--canvas-grid) / 0.10) 1px, transparent 1px), linear-gradient(to bottom, oklch(var(--canvas-grid) / 0.10) 1px, transparent 1px), radial-gradient(oklch(var(--canvas-grid) / 0.35) 0.5px, transparent 0.5px), ${paperGrain}`,
+            backgroundSize: `${size}, ${size}, ${size}, 160px 160px`
+          }
+        }
         return {
           ...base,
-          backgroundImage: `linear-gradient(to right, oklch(var(--canvas-grid) / 0.10) 1px, transparent 1px), linear-gradient(to bottom, oklch(var(--canvas-grid) / 0.10) 1px, transparent 1px), radial-gradient(oklch(var(--canvas-grid) / 0.35) 0.5px, transparent 0.5px), ${paperGrain}`,
-          backgroundSize: `${size}, ${size}, ${size}, 160px 160px`
+          backgroundImage:
+            'radial-gradient(oklch(var(--canvas-grid) / 0.5) 0.5px, transparent 0.5px)',
+          backgroundSize: `${gridSize}px ${gridSize}px`
+        }
+      }
+      const zoom = Math.max(viewportState.zoom, 0.05)
+      const size = Math.max(8, gridSize * zoom)
+      const mod = (value: number, m: number) => ((value % m) + m) % m
+      const offsetX = mod(-viewportState.x * zoom + viewportState.width / 2, size)
+      const offsetY = mod(-viewportState.y * zoom + viewportState.height / 2, size)
+
+      if (backgroundMode === 'paper') {
+        const layerSize = `${size}px ${size}px`
+        const layerPos = `${offsetX}px ${offsetY}px`
+        return {
+          ...base,
+          backgroundImage: `linear-gradient(to right, oklch(var(--canvas-grid) / 0.10) 1px, transparent 1px), linear-gradient(to bottom, oklch(var(--canvas-grid) / 0.10) 1px, transparent 1px), radial-gradient(oklch(var(--canvas-grid) / 0.30) 0.5px, transparent 0.5px), ${paperGrain}`,
+          backgroundSize: `${layerSize}, ${layerSize}, ${layerSize}, 160px 160px`,
+          backgroundPosition: `${layerPos}, ${layerPos}, ${layerPos}, 0 0`
         }
       }
       return {
         ...base,
         backgroundImage:
           'radial-gradient(oklch(var(--canvas-grid) / 0.5) 0.5px, transparent 0.5px)',
-        backgroundSize: `${gridSize}px ${gridSize}px`
+        backgroundSize: `${size}px ${size}px`,
+        backgroundPosition: `${offsetX}px ${offsetY}px`
       }
-    }
-    const zoom = Math.max(viewportState.zoom, 0.05)
-    const size = Math.max(8, gridSize * zoom)
-    const mod = (value: number, m: number) => ((value % m) + m) % m
-    const offsetX = mod(-viewportState.x * zoom + viewportState.width / 2, size)
-    const offsetY = mod(-viewportState.y * zoom + viewportState.height / 2, size)
+    }, [viewportState, backgroundMode])
 
-    if (backgroundMode === 'paper') {
-      const layerSize = `${size}px ${size}px`
-      const layerPos = `${offsetX}px ${offsetY}px`
-      return {
-        ...base,
-        backgroundImage: `linear-gradient(to right, oklch(var(--canvas-grid) / 0.10) 1px, transparent 1px), linear-gradient(to bottom, oklch(var(--canvas-grid) / 0.10) 1px, transparent 1px), radial-gradient(oklch(var(--canvas-grid) / 0.30) 0.5px, transparent 0.5px), ${paperGrain}`,
-        backgroundSize: `${layerSize}, ${layerSize}, ${layerSize}, 160px 160px`,
-        backgroundPosition: `${layerPos}, ${layerPos}, ${layerPos}, 0 0`
-      }
-    }
-    return {
-      ...base,
-      backgroundImage: 'radial-gradient(oklch(var(--canvas-grid) / 0.5) 0.5px, transparent 0.5px)',
-      backgroundSize: `${size}px ${size}px`,
-      backgroundPosition: `${offsetX}px ${offsetY}px`
-    }
-  }, [viewportState, backgroundMode])
-
-  const syncPositionsFromEngine = useCallback((): LayoutPosition[] | null => {
-    const engine = engineRef.current
-    if (!engine) {
-      return null
-    }
-    try {
-      const positionsJson = engine.get_all_positions()
-      const positions = JSON.parse(positionsJson) as LayoutPosition[]
-      positionsRef.current = new Map(positions.map(pos => [pos.id, { x: pos.x, y: pos.y }]))
-      return positions
-    } catch {
-      return null
-    }
-  }, [])
-
-  // Get positions from WASM and notify parent
-  const notifyLayoutComplete = useCallback(() => {
-    const positions = syncPositionsFromEngine()
-    if (positions && onLayoutComplete) {
-      onLayoutComplete(positions)
-    }
-  }, [onLayoutComplete, syncPositionsFromEngine])
-
-  // Expose imperative handle for parent control
-  useImperativeHandle(
-    ref,
-    () => ({
-      zoomIn() {
-        const engine = engineRef.current
-        const canvas = canvasRef.current
-        if (!engine || !canvas) {
-          return
-        }
-        // Zoom at center
-        const rect = canvas.getBoundingClientRect()
-        engine.zoom_at(rect.width / 2, rect.height / 2, 1.2)
-        notifyViewportChange()
-      },
-      zoomOut() {
-        const engine = engineRef.current
-        const canvas = canvasRef.current
-        if (!engine || !canvas) {
-          return
-        }
-        const rect = canvas.getBoundingClientRect()
-        engine.zoom_at(rect.width / 2, rect.height / 2, 1 / 1.2)
-        notifyViewportChange()
-      },
-      fitView() {
-        const engine = engineRef.current
-        if (!engine) {
-          return
-        }
-        engine.fit_view(0.1)
-        notifyViewportChange()
-      },
-      panTo(worldX: number, worldY: number) {
-        const engine = engineRef.current
-        if (!engine) {
-          return
-        }
-        // Set viewport position directly
-        const viewport = getViewportFromEngine(false)
-        if (viewport) {
-          const newViewport = { ...viewport, x: worldX, y: worldY }
-          engine.set_viewport(JSON.stringify(newViewport))
-          notifyViewportChange()
-        }
-      },
-      getZoom() {
-        return engineRef.current?.get_zoom() ?? 1
-      },
-      getViewport() {
-        return getViewportFromEngine(true)
-      },
-      cancelConnect() {
-        engineRef.current?.cancel_connect()
-      },
-      getLayoutPositions() {
-        return syncPositionsFromEngine()
-      }
-    }),
-    [getViewportFromEngine, notifyViewportChange, syncPositionsFromEngine]
-  )
-
-  // Pre-compute localized edge labels (stable unless language changes)
-  const edgeLabelsJson = useMemo(() => {
-    const types = ['is-a','has-a','causes','explains','related-to','influences','part-of','prerequisite','contradicts','similar-to']
-    const labels: Record<string, string> = {}
-    for (const type of types) {
-      labels[type] = t(`graph.edgeTypes.${type}`, type)
-    }
-    return JSON.stringify(labels)
-  }, [t])
-
-  // Initialize WASM engine
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) {
-      return
-    }
-
-    let mounted = true
-
-    const init = async () => {
-      try {
-        const wasm = await import('../wasm/graph_engine')
-        await initWasmModule(wasm)
-
-        if (!mounted) {
-          return
-        }
-
-        const engine = new wasm.GraphEngine() as unknown as WasmGraphEngine
-        engine.init_renderer(canvas)
-
-        // Set initial size
-        const rect = canvas.getBoundingClientRect()
-        const dpr = window.devicePixelRatio || 1
-        canvas.width = rect.width * dpr
-        canvas.height = rect.height * dpr
-        canvas.style.width = `${rect.width}px`
-        canvas.style.height = `${rect.height}px`
-        engine.resize(canvas.width, canvas.height)
-        engine.set_dpr(dpr)
-
-        // Set initial theme
-        engine.set_theme(themeToJson())
-
-        // Set localized edge type labels from i18n
-        engine.set_edge_labels(edgeLabelsJson)
-
-        // Set initial render params — always apply defaults, then override if provided
-        try {
-          engine.set_render_params(JSON.stringify(renderParamsRef.current ?? DEFAULT_RENDER_PARAMS))
-        } catch {
-          // ignore
-        }
-
-        // Load atlases (GPU text/icon rendering)
-        try {
-          // MSDF font atlas: resolution-independent, crisp at any zoom.
-          {
-            const [pngResponse, jsonResponse] = await Promise.all([
-              fetch('/assets/inter-msdf.png'),
-              fetch('/assets/inter-msdf.json')
-            ])
-            const metricsJson = await jsonResponse.text()
-            const pngBlob = await pngResponse.blob()
-            const bitmap = await createImageBitmap(pngBlob)
-            const tmpCanvas = document.createElement('canvas')
-            tmpCanvas.width = bitmap.width
-            tmpCanvas.height = bitmap.height
-            const ctx = tmpCanvas.getContext('2d')!
-            ctx.drawImage(bitmap, 0, 0)
-            const imageData = ctx.getImageData(0, 0, bitmap.width, bitmap.height)
-            engine.load_font_atlas_data(
-              new Uint8Array(imageData.data.buffer),
-              bitmap.width,
-              bitmap.height,
-              metricsJson
-            )
-          }
-        } catch (err) {
-          console.error('[GraphCanvas] Font atlas load failed:', err)
-        }
-
-        // Slug font: Söhne Regular converted to TTF via infra/tools/woff2-to-ttf.
-        // Falls back to MSDF silently if the TTF is unavailable.
-        try {
-          const ttfResponse = await fetch('/assets/geist-semibold.ttf')
-          if (ttfResponse.ok) {
-            const ttfBuffer = await ttfResponse.arrayBuffer()
-            engine.load_slug_font_ttf(new Uint8Array(ttfBuffer))
-            // Add SVG icons to the atlas (stroke-based, 24×24 viewBox, 1.75px stroke)
-            const iconsJson = JSON.stringify(
-              Object.entries(ICON_PATHS).map(([name, d]) => ({
-                name, d, viewbox: 24, stroke_width: 1.75,
-              }))
-            )
-            engine.add_slug_icons(iconsJson)
-            // engine.set_text_renderer_mode('slug') // using MSDF for now
-            console.log('[Slug] active — font + icons loaded')
-          }
-        } catch (err) {
-          console.error('[Slug] load failed — falling back to MSDF:', err)
-        }
-
-        try {
-          const sdfAtlas = generateSdfIconAtlas()
-          console.log('[icons] atlas', sdfAtlas.width, 'x', sdfAtlas.height, 'coords:', sdfAtlas.coordsJson.slice(0, 120))
-          engine.load_icon_atlas_data(
-            sdfAtlas.imageData,
-            sdfAtlas.width,
-            sdfAtlas.height,
-            sdfAtlas.coordsJson
-          )
-          console.log('[icons] loaded OK, sdf_mode should be true')
-        } catch (err) {
-          console.error('[icons] FAILED:', err)
-        }
-
-        engineRef.current = engine
-        setIsReady(true)
-        setError(null)
-      } catch (err) {
-        if (mounted) {
-          setError(err instanceof Error ? err.message : 'Failed to initialize WASM')
-        }
-      }
-    }
-
-    init()
-
-    return () => {
-      mounted = false
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current)
-      }
-      if (engineRef.current) {
-        try {
-          engineRef.current.free()
-        } catch (_e) {
-          // ignore
-        }
-        engineRef.current = null
-      }
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  // Sync edge labels when language changes
-  useEffect(() => {
-    engineRef.current?.set_edge_labels(edgeLabelsJson)
-  }, [edgeLabelsJson])
-
-  // Sync render params (playground) - avoid redundant JSON churn.
-  const lastRenderParamsJsonRef = useRef<string | null>(null)
-  useEffect(() => {
-    const engine = engineRef.current
-    if (!engine || !isReady || !renderParams) {
-      return
-    }
-    const json = JSON.stringify(renderParams)
-    if (json === lastRenderParamsJsonRef.current) {
-      return
-    }
-    lastRenderParamsJsonRef.current = json
-    try {
-      engine.set_render_params(json)
-    } catch {
-      // ignore
-    }
-  }, [isReady, renderParams])
-
-  // Sync theme when mode or palette changes — all CSS vars may update
-  // resolvedMode + palette in deps trigger re-extraction of CSS vars
-  const themeKey = `${resolvedMode}-${palette}`
-  useEffect(() => {
-    if (!isReady || !engineRef.current || !themeKey) {
-      return
-    }
-    // Delay one frame to ensure CSS vars have updated after class/attribute toggle
-    const timer = requestAnimationFrame(() => {
-      const engine = engineRef.current
-      if (!engine) { return }
-      engine.set_theme(themeToJson())
-    })
-    return () => cancelAnimationFrame(timer)
-  }, [isReady, themeKey])
-
-  const updateSelection = useCallback(
-    (nextNodeIds: string[]) => {
-      onSelectionChange?.({ nodes: nextNodeIds, edges: [] })
-    },
-    [onSelectionChange]
-  )
-
-  // Handle resize — batched via rAF to prevent canvas-clear flicker.
-  // Setting canvas.width instantly clears the canvas; if ResizeObserver fires
-  // dozens of times per second during sidebar drag the result is epileptic
-  // blank flashes. Coalescing to one resize per animation frame fixes it.
-  useEffect(() => {
-    const container = containerRef.current
-    const canvas = canvasRef.current
-    if (!container || !canvas || !isReady) {
-      return
-    }
-
-    let rafId: number | null = null
-
-    const observer = new ResizeObserver(entries => {
-      const entry = entries[0]
-      if (!entry || !engineRef.current) { return }
-
-      // Cancel any pending resize — only the last one in a given frame matters
-      if (rafId !== null) { cancelAnimationFrame(rafId) }
-
-      rafId = requestAnimationFrame(() => {
-        rafId = null
-        if (!engineRef.current) { return }
-        const { width, height } = entry.contentRect
-        const dpr = window.devicePixelRatio || 1
-        canvas.width = width * dpr
-        canvas.height = height * dpr
-        canvas.style.width = `${width}px`
-        canvas.style.height = `${height}px`
-        engineRef.current.resize(canvas.width, canvas.height)
-        engineRef.current.set_dpr(dpr)
-        engineRef.current.render()
-        notifyViewportChange()
-      })
-    })
-
-    observer.observe(container)
-    return () => {
-      if (rafId !== null) { cancelAnimationFrame(rafId) }
-      observer.disconnect()
-    }
-  }, [isReady, notifyViewportChange])
-
-  // Load graph data (only when nodes/edges change)
-  const graphLoadedRef = useRef(false)
-  const lastNodesRef = useRef<Node[]>([])
-  const lastEdgesRef = useRef<Edge[]>([])
-
-  useEffect(() => {
-    const engine = engineRef.current
-    if (!engine || !isReady) {
-      return
-    }
-
-    // Check if nodes/edges actually changed (by reference)
-    const nodesChanged = nodes !== lastNodesRef.current
-    const edgesChanged = edges !== lastEdgesRef.current
-
-    if (graphLoadedRef.current && !nodesChanged && !edgesChanged) {
-      return
-    }
-
-    const isFirstLoad = !graphLoadedRef.current
-    graphLoadedRef.current = true
-    lastNodesRef.current = nodes
-    lastEdgesRef.current = edges
-
-    try {
-      const json = transformToWasm(nodes, edges)
-
-      if (isFirstLoad) {
-        engine.load_graph(json)
-      } else {
-        engine.update_graph(json)
-      }
-
-      if (autoLayout && isFirstLoad && nodes.length > 0) {
-        // Skip layout if all nodes already have saved positions from DB
-        const allHavePositions = nodes.every(
-          n => n.position && (n.position.x !== 0 || n.position.y !== 0)
-        )
-        if (!allHavePositions) {
-          engine.run_layout(layoutOptionsToWasm(resolvedLayoutOptions))
-        }
-        engine.fit_view(0.1)
-      }
-
-      // Notify parent about layout positions for minimap
-      notifyLayoutComplete()
-      notifyViewportChange()
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load graph')
-    }
-  }, [
-    isReady,
-    nodes,
-    edges,
-    notifyLayoutComplete,
-    notifyViewportChange,
-    resolvedLayoutOptions,
-    autoLayout
-  ])
-
-  // Re-run layout when layout options change
-  useEffect(() => {
-    const engine = engineRef.current
-    if (!engine || !isReady || !graphLoadedRef.current || !autoLayout) {
-      return
-    }
-
-    // When layout options change, start fresh to avoid ratcheting effect
-    // Override only the 3 trigger fields from deps; everything else from ref.
-    engine.run_layout(layoutOptionsToWasm({
-      ...layoutOptionsRef.current,
-      spacingPercent,
-      directionStrength,
-      viewMode: isPathMode ? 'path' : 'overview',
-      ignoreExistingPositions: true,
-    }))
-    engine.fit_view(0.1)
-
-    // Notify about new positions
-    notifyLayoutComplete()
-  }, [isReady, notifyLayoutComplete, spacingPercent, directionStrength, isPathMode, autoLayout])
-
-  // Sync selection
-  useEffect(() => {
-    const engine = engineRef.current
-    if (!engine || !isReady) {
-      return
-    }
-    engine.set_selected_nodes(JSON.stringify(resolvedSelectedNodeIds))
-  }, [isReady, resolvedSelectedNodeIds])
-
-  useEffect(() => {
-    const engine = engineRef.current
-    if (!engine || !isReady) {
-      return
-    }
-    engine.set_focused(focusedNodeId ?? null)
-  }, [isReady, focusedNodeId])
-
-  useEffect(() => {
-    const engine = engineRef.current
-    if (!engine || !isReady) {
-      return
-    }
-    engine.set_dimmed(JSON.stringify(dimmedNodeIds))
-  }, [isReady, dimmedNodeIds])
-
-  // Render loop
-  useEffect(() => {
-    if (!isReady) {
-      return
-    }
-
-    let running = true
-    const render = () => {
-      if (!running) {
-        return
-      }
-      const engine = engineRef.current
-      if (engine) {
-        engine.render()
-      }
-      animationRef.current = requestAnimationFrame(render)
-    }
-
-    animationRef.current = requestAnimationFrame(render)
-
-    return () => {
-      running = false
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current)
-      }
-    }
-  }, [isReady])
-
-  // Escape cancels edge creation
-  useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && connectingRef.current) {
-        engineRef.current?.cancel_connect()
-        connectingRef.current = null
-        if (canvasRef.current) {
-          canvasRef.current.style.cursor = 'default'
-        }
-      }
-    }
-    window.addEventListener('keydown', onKeyDown)
-    return () => window.removeEventListener('keydown', onKeyDown)
-  }, [])
-
-  // Mouse handlers
-  const handleMouseDown = useCallback(
-    (e: React.PointerEvent) => {
-      if (e.button !== 0) {
-        return
-      }
-
+    const syncPositionsFromEngine = useCallback((): LayoutPosition[] | null => {
       const engine = engineRef.current
       if (!engine) {
-        return
+        return null
       }
+      try {
+        const positionsJson = engine.get_all_positions()
+        const positions = JSON.parse(positionsJson) as LayoutPosition[]
+        positionsRef.current = new Map(positions.map(pos => [pos.id, { x: pos.x, y: pos.y }]))
+        return positions
+      } catch {
+        return null
+      }
+    }, [])
 
-      const { x, y } = getCanvasPoint(e.clientX, e.clientY)
-      lastMouseRef.current = { x, y }
-      dragStartRef.current = { x, y }
-      hasDraggedRef.current = false
+    // Get positions from WASM and notify parent
+    const notifyLayoutComplete = useCallback(() => {
+      const positions = syncPositionsFromEngine()
+      if (positions && onLayoutComplete) {
+        onLayoutComplete(positions)
+      }
+    }, [onLayoutComplete, syncPositionsFromEngine])
 
-      // Check connector hit FIRST — drag from any connector starts edge creation
-      const connectorHit = engine.hit_test_connector(x, y)
-      if (connectorHit) {
-        try {
-          const { nodeId: connNodeId, handle } = JSON.parse(connectorHit)
-          if (handle === 'bottom') {
-            engine.begin_connect(connNodeId)
-            connectingRef.current = { sourceId: connNodeId, reverse: false }
-          } else if (handle === 'top') {
-            engine.begin_connect_reverse(connNodeId)
-            connectingRef.current = { targetId: connNodeId, reverse: true }
-          }
-          if (connectingRef.current) {
-            if (canvasRef.current) {
-              canvasRef.current.style.cursor = 'crosshair'
-            }
+    // Expose imperative handle for parent control
+    useImperativeHandle(
+      ref,
+      () => ({
+        zoomIn() {
+          const engine = engineRef.current
+          const canvas = canvasRef.current
+          if (!engine || !canvas) {
             return
           }
-        } catch { /* ignore */ }
+          // Zoom at center
+          const rect = canvas.getBoundingClientRect()
+          engine.zoom_at(rect.width / 2, rect.height / 2, 1.2)
+          notifyViewportChange()
+        },
+        zoomOut() {
+          const engine = engineRef.current
+          const canvas = canvasRef.current
+          if (!engine || !canvas) {
+            return
+          }
+          const rect = canvas.getBoundingClientRect()
+          engine.zoom_at(rect.width / 2, rect.height / 2, 1 / 1.2)
+          notifyViewportChange()
+        },
+        fitView() {
+          const engine = engineRef.current
+          if (!engine) {
+            return
+          }
+          engine.fit_view(0.1)
+          notifyViewportChange()
+        },
+        panTo(worldX: number, worldY: number) {
+          const engine = engineRef.current
+          if (!engine) {
+            return
+          }
+          // Set viewport position directly
+          const viewport = getViewportFromEngine(false)
+          if (viewport) {
+            const newViewport = { ...viewport, x: worldX, y: worldY }
+            engine.set_viewport(JSON.stringify(newViewport))
+            notifyViewportChange()
+          }
+        },
+        getZoom() {
+          return engineRef.current?.get_zoom() ?? 1
+        },
+        getViewport() {
+          return getViewportFromEngine(true)
+        },
+        cancelConnect() {
+          engineRef.current?.cancel_connect()
+        },
+        getLayoutPositions() {
+          return syncPositionsFromEngine()
+        }
+      }),
+      [getViewportFromEngine, notifyViewportChange, syncPositionsFromEngine]
+    )
+
+    // Pre-compute localized edge labels (stable unless language changes)
+    const edgeLabelsJson = useMemo(() => {
+      const types = [
+        'is-a',
+        'has-a',
+        'causes',
+        'explains',
+        'related-to',
+        'influences',
+        'part-of',
+        'prerequisite',
+        'contradicts',
+        'similar-to'
+      ]
+      const labels: Record<string, string> = {}
+      for (const type of types) {
+        labels[type] = t(`graph.edgeTypes.${type}`, type)
+      }
+      return JSON.stringify(labels)
+    }, [t])
+
+    // Initialize WASM engine
+    useEffect(() => {
+      const canvas = canvasRef.current
+      if (!canvas) {
+        return
       }
 
-      const nodeId = engine.hit_test(x, y)
-      const isMultiSelect = e.shiftKey || e.metaKey || e.ctrlKey
+      let mounted = true
 
-      if (nodeId) {
-        // Selection + click deferred to mouseup (only if not dragged)
-        draggingNodeRef.current = nodeId
-        isPanningRef.current = false
-        // Two-pass z-index: active node renders on top of all others
-        engine.set_active_node(nodeId)
+      const init = async () => {
+        try {
+          const wasm = await import('../wasm/graph_engine')
+          await initWasmModule(wasm)
 
-        const world = screenToWorld(x, y)
-        const storedPos = positionsRef.current.get(nodeId)
-        const fallbackPos = nodes.find(node => node.id === nodeId)?.position
-        const baseX = storedPos?.x ?? fallbackPos?.x ?? world.x
-        const baseY = storedPos?.y ?? fallbackPos?.y ?? world.y
+          if (!mounted) {
+            return
+          }
 
-        dragOffsetRef.current = {
-          x: world.x - baseX,
-          y: world.y - baseY
-        }
+          const engine = new wasm.GraphEngine() as unknown as WasmGraphEngine
+          engine.init_renderer(canvas)
 
+          // Set initial size
+          const rect = canvas.getBoundingClientRect()
+          const dpr = window.devicePixelRatio || 1
+          canvas.width = rect.width * dpr
+          canvas.height = rect.height * dpr
+          canvas.style.width = `${rect.width}px`
+          canvas.style.height = `${rect.height}px`
+          engine.resize(canvas.width, canvas.height)
+          engine.set_dpr(dpr)
 
-        // Capture pointer so drag continues even outside canvas bounds
-        canvasRef.current?.setPointerCapture(e.pointerId)
+          // Set initial theme
+          engine.set_theme(themeToJson())
 
-        onNodeDragStart?.(nodeId, baseX, baseY)
-      } else {
-        draggingNodeRef.current = null
-        isPanningRef.current = true
-        canvasRef.current?.setPointerCapture(e.pointerId)
-        // Clicked on empty space — clear active node z-ordering
-        engine.set_active_node(null)
-        if (!isMultiSelect) {
-          updateSelection([])
-          onNodeClick?.(null)
+          // Set localized edge type labels from i18n
+          engine.set_edge_labels(edgeLabelsJson)
+
+          // Set initial render params — always apply defaults, then override if provided
+          try {
+            engine.set_render_params(
+              JSON.stringify(renderParamsRef.current ?? DEFAULT_RENDER_PARAMS)
+            )
+          } catch {
+            // ignore
+          }
+
+          // Load atlases (GPU text/icon rendering)
+          try {
+            // MSDF font atlas: resolution-independent, crisp at any zoom.
+            {
+              const [pngResponse, jsonResponse] = await Promise.all([
+                fetch('/assets/inter-msdf.png'),
+                fetch('/assets/inter-msdf.json')
+              ])
+              const metricsJson = await jsonResponse.text()
+              const pngBlob = await pngResponse.blob()
+              const bitmap = await createImageBitmap(pngBlob)
+              const tmpCanvas = document.createElement('canvas')
+              tmpCanvas.width = bitmap.width
+              tmpCanvas.height = bitmap.height
+              const ctx = tmpCanvas.getContext('2d')!
+              ctx.drawImage(bitmap, 0, 0)
+              const imageData = ctx.getImageData(0, 0, bitmap.width, bitmap.height)
+              engine.load_font_atlas_data(
+                new Uint8Array(imageData.data.buffer),
+                bitmap.width,
+                bitmap.height,
+                metricsJson
+              )
+            }
+          } catch (err) {
+            console.error('[GraphCanvas] Font atlas load failed:', err)
+          }
+
+          // Slug font: Söhne Regular converted to TTF via infra/tools/woff2-to-ttf.
+          // Falls back to MSDF silently if the TTF is unavailable.
+          try {
+            const ttfResponse = await fetch('/assets/geist-semibold.ttf')
+            if (ttfResponse.ok) {
+              const ttfBuffer = await ttfResponse.arrayBuffer()
+              engine.load_slug_font_ttf(new Uint8Array(ttfBuffer))
+              // Add SVG icons to the atlas (stroke-based, 24×24 viewBox, 1.75px stroke)
+              const iconsJson = JSON.stringify(
+                Object.entries(ICON_PATHS).map(([name, d]) => ({
+                  name,
+                  d,
+                  viewbox: 24,
+                  stroke_width: 1.75
+                }))
+              )
+              engine.add_slug_icons(iconsJson)
+              // engine.set_text_renderer_mode('slug') // using MSDF for now
+              console.log('[Slug] active — font + icons loaded')
+            }
+          } catch (err) {
+            console.error('[Slug] load failed — falling back to MSDF:', err)
+          }
+
+          try {
+            const sdfAtlas = generateSdfIconAtlas()
+            console.log(
+              '[icons] atlas',
+              sdfAtlas.width,
+              'x',
+              sdfAtlas.height,
+              'coords:',
+              sdfAtlas.coordsJson.slice(0, 120)
+            )
+            engine.load_icon_atlas_data(
+              sdfAtlas.imageData,
+              sdfAtlas.width,
+              sdfAtlas.height,
+              sdfAtlas.coordsJson
+            )
+            console.log('[icons] loaded OK, sdf_mode should be true')
+          } catch (err) {
+            console.error('[icons] FAILED:', err)
+          }
+
+          engineRef.current = engine
+          setIsReady(true)
+          setError(null)
+        } catch (err) {
+          if (mounted) {
+            setError(err instanceof Error ? err.message : 'Failed to initialize WASM')
+          }
         }
       }
-    },
-    [
-      getCanvasPoint,
-      nodes,
-      onNodeClick,
-      onNodeDragStart,
-      screenToWorld,
-      updateSelection
-    ]
-  )
 
-  const handleMouseMove = useCallback(
-    (e: React.PointerEvent) => {
+      init()
+
+      return () => {
+        mounted = false
+        if (animationRef.current) {
+          cancelAnimationFrame(animationRef.current)
+        }
+        if (engineRef.current) {
+          try {
+            engineRef.current.free()
+          } catch (_e) {
+            // ignore
+          }
+          engineRef.current = null
+        }
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    // Sync edge labels when language changes
+    useEffect(() => {
+      engineRef.current?.set_edge_labels(edgeLabelsJson)
+    }, [edgeLabelsJson])
+
+    // Sync render params (playground) - avoid redundant JSON churn.
+    const lastRenderParamsJsonRef = useRef<string | null>(null)
+    useEffect(() => {
       const engine = engineRef.current
-      if (!engine) {
+      if (!engine || !isReady || !renderParams) {
         return
       }
-
-      const { x, y } = getCanvasPoint(e.clientX, e.clientY)
-      const dx = x - lastMouseRef.current.x
-      const dy = y - lastMouseRef.current.y
-      lastMouseRef.current = { x, y }
-
-      const totalDx = x - dragStartRef.current.x
-      const totalDy = y - dragStartRef.current.y
-      if (Math.abs(totalDx) > DRAG_THRESHOLD || Math.abs(totalDy) > DRAG_THRESHOLD) {
-        hasDraggedRef.current = true
-      }
-
-      // Connecting mode — update cursor position and snap to target
-      if (connectingRef.current) {
-        engine.update_connect_cursor(x, y)
-        canvasRef.current?.style.setProperty('cursor', 'crosshair')
+      const json = JSON.stringify(renderParams)
+      if (json === lastRenderParamsJsonRef.current) {
         return
       }
+      lastRenderParamsJsonRef.current = json
+      try {
+        engine.set_render_params(json)
+      } catch {
+        // ignore
+      }
+    }, [isReady, renderParams])
 
-      if (draggingNodeRef.current) {
-        if (!hasDraggedRef.current) {
+    // Sync theme when mode or palette changes — all CSS vars may update
+    // resolvedMode + palette in deps trigger re-extraction of CSS vars
+    const themeKey = `${resolvedMode}-${palette}`
+    useEffect(() => {
+      if (!isReady || !engineRef.current || !themeKey) {
+        return
+      }
+      // Delay one frame to ensure CSS vars have updated after class/attribute toggle
+      const timer = requestAnimationFrame(() => {
+        const engine = engineRef.current
+        if (!engine) {
           return
         }
-        const nodeId = draggingNodeRef.current
-        const world = screenToWorld(x, y)
-        const nextX = world.x - dragOffsetRef.current.x
-        const nextY = world.y - dragOffsetRef.current.y
+        engine.set_theme(themeToJson())
+      })
+      return () => cancelAnimationFrame(timer)
+    }, [isReady, themeKey])
 
-        engine.update_node_position(nodeId, nextX, nextY)
-        positionsRef.current.set(nodeId, { x: nextX, y: nextY })
-        onNodeDrag?.(nodeId, nextX, nextY)
+    const updateSelection = useCallback(
+      (nextNodeIds: string[]) => {
+        onSelectionChange?.({ nodes: nextNodeIds, edges: [] })
+      },
+      [onSelectionChange]
+    )
+
+    // Handle resize — batched via rAF to prevent canvas-clear flicker.
+    // Setting canvas.width instantly clears the canvas; if ResizeObserver fires
+    // dozens of times per second during sidebar drag the result is epileptic
+    // blank flashes. Coalescing to one resize per animation frame fixes it.
+    useEffect(() => {
+      const container = containerRef.current
+      const canvas = canvasRef.current
+      if (!container || !canvas || !isReady) {
         return
       }
 
-      if (isPanningRef.current && hasDraggedRef.current) {
-        engine.pan(-dx, -dy)
-        notifyViewportChange()
-        return
-      }
+      let rafId: number | null = null
 
-      // Any connector proximity → crosshair (invite to drag to create edge)
-      const connHover = engine.hit_test_connector(x, y)
-      if (connHover) {
-        engine.set_hovered_edge('')
-        canvasRef.current?.style.setProperty('cursor', 'crosshair')
-        return
-      }
-
-      const nodeId = engine.hit_test(x, y)
-      if (nodeId) {
-        canvasRef.current?.style.setProperty('cursor', 'grab')
-        engine.set_hovered_edge('')
-      } else {
-        const badgeHit = engine.hit_test_edge_badge(x, y)
-        if (badgeHit) {
-          try {
-            const { edgeId } = JSON.parse(badgeHit)
-            engine.set_hovered_edge(edgeId)
-          } catch { /* ignore */ }
-          canvasRef.current?.style.setProperty('cursor', 'pointer')
-        } else {
-          engine.set_hovered_edge('')
-          canvasRef.current?.style.setProperty('cursor', 'default')
+      const observer = new ResizeObserver(entries => {
+        const entry = entries[0]
+        if (!entry || !engineRef.current) {
+          return
         }
+
+        // Cancel any pending resize — only the last one in a given frame matters
+        if (rafId !== null) {
+          cancelAnimationFrame(rafId)
+        }
+
+        rafId = requestAnimationFrame(() => {
+          rafId = null
+          if (!engineRef.current) {
+            return
+          }
+          const { width, height } = entry.contentRect
+          const dpr = window.devicePixelRatio || 1
+          canvas.width = width * dpr
+          canvas.height = height * dpr
+          canvas.style.width = `${width}px`
+          canvas.style.height = `${height}px`
+          engineRef.current.resize(canvas.width, canvas.height)
+          engineRef.current.set_dpr(dpr)
+          engineRef.current.render()
+          notifyViewportChange()
+        })
+      })
+
+      observer.observe(container)
+      return () => {
+        if (rafId !== null) {
+          cancelAnimationFrame(rafId)
+        }
+        observer.disconnect()
       }
-    },
-    [getCanvasPoint, notifyViewportChange, onNodeDrag, screenToWorld]
-  )
+    }, [isReady, notifyViewportChange])
 
-  const handleMouseUp = useCallback(
-    (e: React.PointerEvent) => {
-      // Release pointer capture (acquired on mousedown for drag/pan)
-      canvasRef.current?.releasePointerCapture(e.pointerId)
+    // Load graph data (only when nodes/edges change)
+    const graphLoadedRef = useRef(false)
+    const lastNodesRef = useRef<Node[]>([])
+    const lastEdgesRef = useRef<Edge[]>([])
 
+    useEffect(() => {
       const engine = engineRef.current
-      if (!engine) {
+      if (!engine || !isReady) {
         return
       }
 
-      const { x, y } = getCanvasPoint(e.clientX, e.clientY)
+      // Check if nodes/edges actually changed (by reference)
+      const nodesChanged = nodes !== lastNodesRef.current
+      const edgesChanged = edges !== lastEdgesRef.current
 
-      // Connecting mode — commit or cancel
-      if (connectingRef.current) {
-        const result = engine.commit_connect()
-        if (result) {
-          try {
-            const { sourceId, targetId, midX, midY } = JSON.parse(result)
-            // midX/midY are canvas-pixel coords; convert to CSS coords via DPR
-            const dpr = window.devicePixelRatio || 1
-            const canvas = canvasRef.current
-            const rect = canvas?.getBoundingClientRect()
-            const cssX = (rect?.left ?? 0) + midX / dpr
-            const cssY = (rect?.top ?? 0) + midY / dpr
-            onConnect?.(sourceId, targetId, cssX, cssY)
-            // Draft edge stays visible — cleared by cancelConnect() when dialog closes
-          } catch { /* ignore */ }
+      if (graphLoadedRef.current && !nodesChanged && !edgesChanged) {
+        return
+      }
+
+      const isFirstLoad = !graphLoadedRef.current
+      graphLoadedRef.current = true
+      lastNodesRef.current = nodes
+      lastEdgesRef.current = edges
+
+      try {
+        const json = transformToWasm(nodes, edges)
+
+        if (isFirstLoad) {
+          engine.load_graph(json)
         } else {
-          // No target snapped — discard
-          engine.cancel_connect()
+          engine.update_graph(json)
         }
-        connectingRef.current = null
-        if (canvasRef.current) {
-          canvasRef.current.style.cursor = 'default'
+
+        if (autoLayout && isFirstLoad && nodes.length > 0) {
+          // Skip layout if all nodes already have saved positions from DB
+          const allHavePositions = nodes.every(
+            n => n.position && (n.position.x !== 0 || n.position.y !== 0)
+          )
+          if (!allHavePositions) {
+            engine.run_layout(layoutOptionsToWasm(resolvedLayoutOptions))
+          }
+          engine.fit_view(0.1)
         }
-        isPanningRef.current = false
-        hasDraggedRef.current = false
+
+        // Notify parent about layout positions for minimap
+        notifyLayoutComplete()
+        notifyViewportChange()
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load graph')
+      }
+    }, [
+      isReady,
+      nodes,
+      edges,
+      notifyLayoutComplete,
+      notifyViewportChange,
+      resolvedLayoutOptions,
+      autoLayout
+    ])
+
+    // Re-run layout when layout options change
+    useEffect(() => {
+      const engine = engineRef.current
+      if (!engine || !isReady || !graphLoadedRef.current || !autoLayout) {
         return
       }
 
-      if (draggingNodeRef.current) {
-        const nodeId = draggingNodeRef.current
-        if (hasDraggedRef.current) {
-          // Was a drag — commit position, no click
+      // When layout options change, start fresh to avoid ratcheting effect
+      // Override only the 3 trigger fields from deps; everything else from ref.
+      engine.run_layout(
+        layoutOptionsToWasm({
+          ...layoutOptionsRef.current,
+          spacingPercent,
+          directionStrength,
+          viewMode: isPathMode ? 'path' : 'overview',
+          ignoreExistingPositions: true
+        })
+      )
+      engine.fit_view(0.1)
+
+      // Notify about new positions
+      notifyLayoutComplete()
+    }, [isReady, notifyLayoutComplete, spacingPercent, directionStrength, isPathMode, autoLayout])
+
+    // Sync selection
+    useEffect(() => {
+      const engine = engineRef.current
+      if (!engine || !isReady) {
+        return
+      }
+      engine.set_selected_nodes(JSON.stringify(resolvedSelectedNodeIds))
+    }, [isReady, resolvedSelectedNodeIds])
+
+    useEffect(() => {
+      const engine = engineRef.current
+      if (!engine || !isReady) {
+        return
+      }
+      engine.set_focused(focusedNodeId ?? null)
+    }, [isReady, focusedNodeId])
+
+    useEffect(() => {
+      const engine = engineRef.current
+      if (!engine || !isReady) {
+        return
+      }
+      engine.set_dimmed(JSON.stringify(dimmedNodeIds))
+    }, [isReady, dimmedNodeIds])
+
+    // Render loop
+    useEffect(() => {
+      if (!isReady) {
+        return
+      }
+
+      let running = true
+      const render = () => {
+        if (!running) {
+          return
+        }
+        const engine = engineRef.current
+        if (engine) {
+          engine.render()
+        }
+        animationRef.current = requestAnimationFrame(render)
+      }
+
+      animationRef.current = requestAnimationFrame(render)
+
+      return () => {
+        running = false
+        if (animationRef.current) {
+          cancelAnimationFrame(animationRef.current)
+        }
+      }
+    }, [isReady])
+
+    // Escape cancels edge creation
+    useEffect(() => {
+      const onKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape' && connectingRef.current) {
+          engineRef.current?.cancel_connect()
+          connectingRef.current = null
+          if (canvasRef.current) {
+            canvasRef.current.style.cursor = 'default'
+          }
+        }
+      }
+      window.addEventListener('keydown', onKeyDown)
+      return () => window.removeEventListener('keydown', onKeyDown)
+    }, [])
+
+    // Mouse handlers
+    const handleMouseDown = useCallback(
+      (e: React.PointerEvent) => {
+        if (e.button !== 0) {
+          return
+        }
+
+        const engine = engineRef.current
+        if (!engine) {
+          return
+        }
+
+        const { x, y } = getCanvasPoint(e.clientX, e.clientY)
+        lastMouseRef.current = { x, y }
+        dragStartRef.current = { x, y }
+        hasDraggedRef.current = false
+
+        // Check connector hit FIRST — drag from any connector starts edge creation
+        const connectorHit = engine.hit_test_connector(x, y)
+        if (connectorHit) {
+          try {
+            const { nodeId: connNodeId, handle } = JSON.parse(connectorHit)
+            if (handle === 'bottom') {
+              engine.begin_connect(connNodeId)
+              connectingRef.current = { sourceId: connNodeId, reverse: false }
+            } else if (handle === 'top') {
+              engine.begin_connect_reverse(connNodeId)
+              connectingRef.current = { targetId: connNodeId, reverse: true }
+            }
+            if (connectingRef.current) {
+              if (canvasRef.current) {
+                canvasRef.current.style.cursor = 'crosshair'
+              }
+              return
+            }
+          } catch {
+            /* ignore */
+          }
+        }
+
+        const nodeId = engine.hit_test(x, y)
+        const isMultiSelect = e.shiftKey || e.metaKey || e.ctrlKey
+
+        if (nodeId) {
+          // Selection + click deferred to mouseup (only if not dragged)
+          draggingNodeRef.current = nodeId
+          isPanningRef.current = false
+          // Two-pass z-index: active node renders on top of all others
+          engine.set_active_node(nodeId)
+
+          const world = screenToWorld(x, y)
+          const storedPos = positionsRef.current.get(nodeId)
+          const fallbackPos = nodes.find(node => node.id === nodeId)?.position
+          const baseX = storedPos?.x ?? fallbackPos?.x ?? world.x
+          const baseY = storedPos?.y ?? fallbackPos?.y ?? world.y
+
+          dragOffsetRef.current = {
+            x: world.x - baseX,
+            y: world.y - baseY
+          }
+
+          // Capture pointer so drag continues even outside canvas bounds
+          canvasRef.current?.setPointerCapture(e.pointerId)
+
+          onNodeDragStart?.(nodeId, baseX, baseY)
+        } else {
+          draggingNodeRef.current = null
+          isPanningRef.current = true
+          canvasRef.current?.setPointerCapture(e.pointerId)
+          // Clicked on empty space — clear active node z-ordering
+          engine.set_active_node(null)
+          if (!isMultiSelect) {
+            updateSelection([])
+            onNodeClick?.(null)
+          }
+        }
+      },
+      [getCanvasPoint, nodes, onNodeClick, onNodeDragStart, screenToWorld, updateSelection]
+    )
+
+    const handleMouseMove = useCallback(
+      (e: React.PointerEvent) => {
+        const engine = engineRef.current
+        if (!engine) {
+          return
+        }
+
+        const { x, y } = getCanvasPoint(e.clientX, e.clientY)
+        const dx = x - lastMouseRef.current.x
+        const dy = y - lastMouseRef.current.y
+        lastMouseRef.current = { x, y }
+
+        const totalDx = x - dragStartRef.current.x
+        const totalDy = y - dragStartRef.current.y
+        if (Math.abs(totalDx) > DRAG_THRESHOLD || Math.abs(totalDy) > DRAG_THRESHOLD) {
+          hasDraggedRef.current = true
+        }
+
+        // Connecting mode — update cursor position and snap to target
+        if (connectingRef.current) {
+          engine.update_connect_cursor(x, y)
+          canvasRef.current?.style.setProperty('cursor', 'crosshair')
+          return
+        }
+
+        if (draggingNodeRef.current) {
+          if (!hasDraggedRef.current) {
+            return
+          }
+          const nodeId = draggingNodeRef.current
           const world = screenToWorld(x, y)
           const nextX = world.x - dragOffsetRef.current.x
           const nextY = world.y - dragOffsetRef.current.y
+
+          engine.update_node_position(nodeId, nextX, nextY)
           positionsRef.current.set(nodeId, { x: nextX, y: nextY })
-          onNodeDragEnd?.(nodeId, nextX, nextY)
+          onNodeDrag?.(nodeId, nextX, nextY)
+          return
+        }
+
+        if (isPanningRef.current && hasDraggedRef.current) {
+          engine.pan(-dx, -dy)
+          notifyViewportChange()
+          return
+        }
+
+        // Any connector proximity → crosshair (invite to drag to create edge)
+        const connHover = engine.hit_test_connector(x, y)
+        if (connHover) {
+          engine.set_hovered_edge('')
+          canvasRef.current?.style.setProperty('cursor', 'crosshair')
+          return
+        }
+
+        const nodeId = engine.hit_test(x, y)
+        if (nodeId) {
+          canvasRef.current?.style.setProperty('cursor', 'grab')
+          engine.set_hovered_edge('')
         } else {
-          // Was a clean click (no drag) — fire selection + click
-          const isMultiSelect = e.shiftKey || e.metaKey || e.ctrlKey
-          if (isMultiSelect) {
-            const next = resolvedSelectedNodeIds.includes(nodeId)
-              ? resolvedSelectedNodeIds.filter(id => id !== nodeId)
-              : [...resolvedSelectedNodeIds, nodeId]
-            updateSelection(next)
+          const badgeHit = engine.hit_test_edge_badge(x, y)
+          if (badgeHit) {
+            try {
+              const { edgeId } = JSON.parse(badgeHit)
+              engine.set_hovered_edge(edgeId)
+            } catch {
+              /* ignore */
+            }
+            canvasRef.current?.style.setProperty('cursor', 'pointer')
           } else {
-            updateSelection([nodeId])
-            onNodeClick?.(nodeId)
+            engine.set_hovered_edge('')
+            canvasRef.current?.style.setProperty('cursor', 'default')
           }
         }
-        draggingNodeRef.current = null
-        // Don't clear active node here — keep it on top until user clicks elsewhere
-      } else if (!hasDraggedRef.current) {
-        // No node was dragged/clicked — check edge badge hit
-        const badgeHit = engine.hit_test_edge_badge(x, y)
-        if (badgeHit) {
-          try {
-            const { edgeId } = JSON.parse(badgeHit)
-            // Use mouse event clientX/Y + offset below cursor
-            onEdgeBadgeClick?.(edgeId, e.clientX, e.clientY + 20)
-          } catch {
-            // ignore parse errors
+      },
+      [getCanvasPoint, notifyViewportChange, onNodeDrag, screenToWorld]
+    )
+
+    const handleMouseUp = useCallback(
+      (e: React.PointerEvent) => {
+        // Release pointer capture (acquired on mousedown for drag/pan)
+        canvasRef.current?.releasePointerCapture(e.pointerId)
+
+        const engine = engineRef.current
+        if (!engine) {
+          return
+        }
+
+        const { x, y } = getCanvasPoint(e.clientX, e.clientY)
+
+        // Connecting mode — commit or cancel
+        if (connectingRef.current) {
+          const result = engine.commit_connect()
+          if (result) {
+            try {
+              const { sourceId, targetId, midX, midY } = JSON.parse(result)
+              // midX/midY are canvas-pixel coords; convert to CSS coords via DPR
+              const dpr = window.devicePixelRatio || 1
+              const canvas = canvasRef.current
+              const rect = canvas?.getBoundingClientRect()
+              const cssX = (rect?.left ?? 0) + midX / dpr
+              const cssY = (rect?.top ?? 0) + midY / dpr
+              onConnect?.(sourceId, targetId, cssX, cssY)
+              // Draft edge stays visible — cleared by cancelConnect() when dialog closes
+            } catch {
+              /* ignore */
+            }
+          } else {
+            // No target snapped — discard
+            engine.cancel_connect()
+          }
+          connectingRef.current = null
+          if (canvasRef.current) {
+            canvasRef.current.style.cursor = 'default'
+          }
+          isPanningRef.current = false
+          hasDraggedRef.current = false
+          return
+        }
+
+        if (draggingNodeRef.current) {
+          const nodeId = draggingNodeRef.current
+          if (hasDraggedRef.current) {
+            // Was a drag — commit position, no click
+            const world = screenToWorld(x, y)
+            const nextX = world.x - dragOffsetRef.current.x
+            const nextY = world.y - dragOffsetRef.current.y
+            positionsRef.current.set(nodeId, { x: nextX, y: nextY })
+            onNodeDragEnd?.(nodeId, nextX, nextY)
+          } else {
+            // Was a clean click (no drag) — fire selection + click
+            const isMultiSelect = e.shiftKey || e.metaKey || e.ctrlKey
+            if (isMultiSelect) {
+              const next = resolvedSelectedNodeIds.includes(nodeId)
+                ? resolvedSelectedNodeIds.filter(id => id !== nodeId)
+                : [...resolvedSelectedNodeIds, nodeId]
+              updateSelection(next)
+            } else {
+              updateSelection([nodeId])
+              onNodeClick?.(nodeId)
+            }
+          }
+          draggingNodeRef.current = null
+          // Don't clear active node here — keep it on top until user clicks elsewhere
+        } else if (!hasDraggedRef.current) {
+          // No node was dragged/clicked — check edge badge hit
+          const badgeHit = engine.hit_test_edge_badge(x, y)
+          if (badgeHit) {
+            try {
+              const { edgeId } = JSON.parse(badgeHit)
+              // Use mouse event clientX/Y + offset below cursor
+              onEdgeBadgeClick?.(edgeId, e.clientX, e.clientY + 20)
+            } catch {
+              // ignore parse errors
+            }
           }
         }
-      }
 
-      isPanningRef.current = false
-      hasDraggedRef.current = false
-    },
-    [getCanvasPoint, onConnect, onEdgeBadgeClick, onNodeClick, onNodeDragEnd, resolvedSelectedNodeIds, screenToWorld, updateSelection]
-  )
+        isPanningRef.current = false
+        hasDraggedRef.current = false
+      },
+      [
+        getCanvasPoint,
+        onConnect,
+        onEdgeBadgeClick,
+        onNodeClick,
+        onNodeDragEnd,
+        resolvedSelectedNodeIds,
+        screenToWorld,
+        updateSelection
+      ]
+    )
 
-  // Native wheel handler — React registers onWheel as passive, so preventDefault() fails.
-  // Use native addEventListener with { passive: false } instead.
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) {
-      return
-    }
-
-    const handleWheel = (e: WheelEvent) => {
-      e.preventDefault()
-      const engine = engineRef.current
-      if (!engine) {
+    // Native wheel handler — React registers onWheel as passive, so preventDefault() fails.
+    // Use native addEventListener with { passive: false } instead.
+    useEffect(() => {
+      const canvas = canvasRef.current
+      if (!canvas) {
         return
       }
 
-      const { x, y } = getCanvasPoint(e.clientX, e.clientY)
-      const factor = e.deltaY < 0 ? 1.05 : 1 / 1.05
+      const handleWheel = (e: WheelEvent) => {
+        e.preventDefault()
+        const engine = engineRef.current
+        if (!engine) {
+          return
+        }
 
-      engine.zoom_at(x, y, factor)
-      notifyViewportChange()
-    }
+        const { x, y } = getCanvasPoint(e.clientX, e.clientY)
+        const factor = e.deltaY < 0 ? 1.05 : 1 / 1.05
 
-    canvas.addEventListener('wheel', handleWheel, { passive: false })
-    return () => canvas.removeEventListener('wheel', handleWheel)
-  }, [getCanvasPoint, notifyViewportChange])
-
-  const handleDoubleClick = useCallback(
-    (e: React.MouseEvent) => {
-      const engine = engineRef.current
-      if (!engine || !onNodeDoubleClick) {
-        return
+        engine.zoom_at(x, y, factor)
+        notifyViewportChange()
       }
 
-      const { x, y } = getCanvasPoint(e.clientX, e.clientY)
+      canvas.addEventListener('wheel', handleWheel, { passive: false })
+      return () => canvas.removeEventListener('wheel', handleWheel)
+    }, [getCanvasPoint, notifyViewportChange])
 
-      const nodeId = engine.hit_test(x, y)
-      if (nodeId) {
-        onNodeDoubleClick(nodeId)
-      }
-    },
-    [getCanvasPoint, onNodeDoubleClick]
-  )
+    const handleDoubleClick = useCallback(
+      (e: React.MouseEvent) => {
+        const engine = engineRef.current
+        if (!engine || !onNodeDoubleClick) {
+          return
+        }
 
-  return (
-    <div
-      ref={containerRef}
-      className={cn('relative w-full h-full overflow-hidden', className)}
-      style={containerStyle}
-    >
-      <canvas
-        ref={canvasRef}
-        className='absolute inset-0 cursor-grab active:cursor-grabbing'
-        style={{ touchAction: 'none' }}
-        onPointerDown={handleMouseDown}
-        onPointerMove={handleMouseMove}
-        onPointerUp={handleMouseUp}
-        onDoubleClick={handleDoubleClick}
-      />
+        const { x, y } = getCanvasPoint(e.clientX, e.clientY)
 
-      {!isReady && !error && (
-        <div className='absolute inset-0 flex items-center justify-center bg-background/80'>
-          <div className='text-muted-foreground'>Loading...</div>
-        </div>
-      )}
+        const nodeId = engine.hit_test(x, y)
+        if (nodeId) {
+          onNodeDoubleClick(nodeId)
+        }
+      },
+      [getCanvasPoint, onNodeDoubleClick]
+    )
 
-      {error && (
-        <div className='absolute inset-0 flex items-center justify-center bg-background/80'>
-          <div className='text-destructive text-center p-4'>
-            <div className='font-semibold'>{t('graph.webgl.wasmError', 'WASM error')}</div>
-            <div className='text-sm mt-1'>{error}</div>
+    return (
+      <div
+        ref={containerRef}
+        className={cn('relative w-full h-full overflow-hidden', className)}
+        style={containerStyle}
+      >
+        <canvas
+          ref={canvasRef}
+          className='absolute inset-0 cursor-grab active:cursor-grabbing'
+          style={{ touchAction: 'none' }}
+          onPointerDown={handleMouseDown}
+          onPointerMove={handleMouseMove}
+          onPointerUp={handleMouseUp}
+          onDoubleClick={handleDoubleClick}
+        />
+
+        {!isReady && !error && (
+          <div className='absolute inset-0 flex items-center justify-center bg-background/80'>
+            <div className='text-muted-foreground'>Loading...</div>
           </div>
-        </div>
-      )}
-    </div>
-  )
-}))
+        )}
+
+        {error && (
+          <div className='absolute inset-0 flex items-center justify-center bg-background/80'>
+            <div className='text-destructive text-center p-4'>
+              <div className='font-semibold'>{t('graph.webgl.wasmError', 'WASM error')}</div>
+              <div className='text-sm mt-1'>{error}</div>
+            </div>
+          </div>
+        )}
+      </div>
+    )
+  })
+)

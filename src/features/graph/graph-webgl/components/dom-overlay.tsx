@@ -11,7 +11,7 @@ import { EdgeOverlay } from '@/features/graph/graph-webgl/components/edge-overla
 import { NodeOverlay } from '@/features/graph/graph-webgl/components/node-overlay'
 import type { Edge, Node } from '@/entities/map'
 
-import type { ViewportState } from '../model/graph-webgl.types'
+import type { ViewportState } from '@/shared/lib/viewport'
 
 /** Fixed node dimensions for culling calculations */
 const NODE_WIDTH = 250

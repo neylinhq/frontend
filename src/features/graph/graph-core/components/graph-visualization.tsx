@@ -37,10 +37,9 @@ import {
   useMapViewMode
 } from '@/entities/map-ui'
 import { Card } from '@/shared/components/card'
-import { useDarkMode } from '@/shared/hooks'
+import { useDarkMode } from '@/shared/core/theme'
 import { cn } from '@/shared/lib/cn'
 
-import { useTheme } from '../../../../app/theme'
 import { type EdgeTranslations, getEdgeTranslations } from '../lib/edge-translations'
 import { applyLayout } from '../lib/layout-algorithms-optimized'
 import { transformEdgesToFlow, transformNodesToFlow } from '../lib/transform-data'
@@ -224,7 +223,8 @@ const GraphVisualizationContent = ({
   const { saveSnapshot, undo, redo } = useLayoutHistory()
   const [settingsOpen, setSettingsOpen] = useState(false)
 
-  const { mode } = useTheme()
+  // Track dark mode for theme-aware styling
+  const isDark = useDarkMode()
 
   useEffect(() => {
     if (settingsOpen) {

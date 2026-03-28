@@ -17,7 +17,7 @@
 export { DomOverlay } from './components/dom-overlay'
 export { EdgeOverlay } from './components/edge-overlay'
 // New Hybrid WebGL + DOM components
-export { GraphCanvas, type LayoutPosition } from './components/graph-canvas'
+export { GraphCanvas } from './components/graph-canvas'
 // Legacy exports (for backward compatibility)
 export {
   GraphWebGLVisualization as GraphVisualization,
@@ -48,7 +48,6 @@ export type {
   LayoutOptions,
   LayoutResult,
   NodePosition,
-  ViewportState,
   VisibleNode
 } from './model/graph-webgl.types'
 

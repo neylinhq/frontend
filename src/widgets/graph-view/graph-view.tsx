@@ -2,7 +2,7 @@ import { memo } from 'react'
 
 import { GraphXYFlowVisualization as GraphXYFlow } from '@/features/graph/graph-core'
 import { GraphWebGLVisualization as GraphWebGL } from '@/features/graph/graph-webgl'
-import type { ViewportState } from '@/features/graph/graph-webgl'
+import type { ViewportState } from '@/shared/lib/viewport'
 import { MapSettingsDrawer } from '@/features/map-settings'
 import { NodeConnectionsPanel } from '@/features/node-connections-panel'
 import { NodeMetadataForm } from '@/features/node-metadata-form'

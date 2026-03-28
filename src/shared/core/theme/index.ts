@@ -6,5 +6,6 @@ export {
   PALETTE_STORAGE_KEY,
   PALETTES
 } from './theme.constants'
+export { useDarkMode } from './theme.hooks'
 export type { Mode, Palette, ThemeContextState } from './theme.types'
 export { ThemeContext, useTheme } from './theme-context'

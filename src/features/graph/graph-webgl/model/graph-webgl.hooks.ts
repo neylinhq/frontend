@@ -10,14 +10,15 @@ import { applyPositions, layoutOptionsToWasm, transformToWasm } from '../lib/tra
 import type { GraphEngine as LegacyGraphEngineType } from '../lib/wasm-adapter'
 import { initWasmModule } from '../lib/wasm-loader'
 import { DEFAULT_VIEWPORT } from './graph-webgl.constants'
+import type { ViewportState } from '@/shared/lib/viewport'
+
 import type {
   Edge,
   GraphEngineState,
   InteractionState,
   LayoutOptions,
   LayoutResult,
-  Node,
-  ViewportState
+  Node
 } from './graph-webgl.types'
 
 // ─────────────────────────────────────────────────────────────────────────────

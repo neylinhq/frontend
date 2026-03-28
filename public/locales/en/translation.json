@@ -1607,10 +1607,31 @@
       "askQuestion": "Ask a question...",
       "learn": "Learn",
       "starting": "Starting...",
+      "startFailed": "Couldn't start session. Please try again.",
+      "noConceptsReady": "No concepts ready for this session.",
       "helpUnavailable": "Could not get help right now. Try again.",
       "endSessionTitle": "End session?",
       "endSessionDescription": "The current session will end. Progress is saved.",
-      "endSessionConfirm": "End session"
+      "endSessionConfirm": "End session",
+      "startSession": "Start session",
+      "sessionBriefReview": "{{due}} to review",
+      "sessionBriefLearn": "{{zpd}} new ready"
+    },
+    "learn": {
+      "exit": "Exit",
+      "next": "Enter ↵",
+      "correct": "correct",
+      "min": "m",
+      "continue": "Continue",
+      "stop": "Stop",
+      "done": "Done",
+      "questions": "questions",
+      "new": "new",
+      "tomorrow": "Tomorrow",
+      "toReview": "to review",
+      "close": "Close",
+      "noExercise": "No exercise available",
+      "overconfident": "Predicted known — worth revisiting"
     },
     "scope": {
       "entireMap": "Entire map"
@@ -1618,7 +1639,8 @@
     "tutor": {
       "startHint": "The tutor will start the conversation. Type anything to begin.",
       "placeholder": "Your answer...",
-      "errorMessage": "Something went wrong. Try again."
+      "errorMessage": "Something went wrong. Try again.",
+      "nextNode": "Next concept →"
     },
     "session": {
       "tutorSummary": "{{nodes}} concepts covered",

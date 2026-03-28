@@ -1609,10 +1609,31 @@
       "askQuestion": "Задайте вопрос...",
       "learn": "Изучить",
       "starting": "Запуск...",
+      "startFailed": "Не удалось запустить сессию. Попробуйте ещё раз.",
+      "noConceptsReady": "Нет концептов для этой сессии.",
       "helpUnavailable": "Не удалось получить помощь. Попробуйте ещё раз.",
       "endSessionTitle": "Завершить сессию?",
       "endSessionDescription": "Текущая сессия будет завершена. Прогресс сохранён.",
-      "endSessionConfirm": "Завершить"
+      "endSessionConfirm": "Завершить",
+      "startSession": "Начать сессию",
+      "sessionBriefReview": "{{due}} к повторению",
+      "sessionBriefLearn": "{{zpd}} новых готовы"
+    },
+    "learn": {
+      "exit": "Выйти",
+      "next": "Enter ↵",
+      "correct": "верно",
+      "min": "м",
+      "continue": "Продолжить",
+      "stop": "Стоп",
+      "done": "Готово",
+      "questions": "вопросов",
+      "new": "новый",
+      "tomorrow": "Завтра",
+      "toReview": "к повторению",
+      "close": "Закрыть",
+      "noExercise": "Нет упражнений",
+      "overconfident": "Ожидалось верно — стоит повторить"
     },
     "scope": {
       "entireMap": "Вся карта"
@@ -1620,7 +1641,8 @@
     "tutor": {
       "startHint": "Тьютор начнёт диалог. Напишите что-нибудь, чтобы начать.",
       "placeholder": "Ваш ответ...",
-      "errorMessage": "Что-то пошло не так. Попробуйте снова."
+      "errorMessage": "Что-то пошло не так. Попробуйте снова.",
+      "nextNode": "Следующий концепт →"
     },
     "session": {
       "tutorSummary": "{{nodes}} концептов пройдено",

@@ -1,3 +1,4 @@
+import rehypeShiki from '@shikijs/rehype'
 import type { ComponentPropsWithoutRef } from 'react'
 import Markdown from 'react-markdown'
 import rehypeKatex from 'rehype-katex'
@@ -35,7 +36,12 @@ export function RichMarkdown({
   return (
     <Markdown
       remarkPlugins={[remarkGfm, remarkMath, ...(remarkPlugins ?? [])]}
-      rehypePlugins={[rehypeKatex, rehypeRaw, ...(rehypePlugins ?? [])]}
+      rehypePlugins={[
+        rehypeKatex,
+        rehypeRaw,
+        [rehypeShiki, { theme: 'github-dark ' }],
+        ...(rehypePlugins ?? [])
+      ]}
       components={components}
     >
       {normalizeLatexDelimiters(children)}

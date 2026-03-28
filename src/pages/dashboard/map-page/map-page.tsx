@@ -13,7 +13,12 @@ import type { ViewportState } from '@/features/graph/graph-webgl'
 import { ReadOnlyBanner, useMapPermissions } from '@/features/map-permissions'
 import { NodeConnectionsPanel } from '@/features/node-connections-panel'
 import { AddNodeFab, QuickAddDialogWebGL, useNodeCreationStore } from '@/features/node-creation'
-import { PracticeFab, PracticeModePanel } from '@/features/practice-mode'
+import {
+  LearnMode,
+  PracticeFab,
+  PracticeModePanel,
+  usePracticeView
+} from '@/features/practice-mode'
 import type { FullMap, Node } from '@/entities/map'
 import {
   useMapActions,
@@ -37,6 +42,7 @@ export const MapPage = ({ map, mapId }: MapPageProps) => {
   const { openQuickAdd } = useNodeCreationStore()
   const isOpen = useSidebarOpen()
   const activeTab = useMapActiveTab(mapId)
+  const practiceView = usePracticeView()
   const [selectedNode, setSelectedNode] = useState<Node | null>(null)
   const [viewport, setViewport] = useState<ViewportState | null>(null)
   const [useWebGL, setUseWebGL] = useState(true)
@@ -88,21 +94,23 @@ export const MapPage = ({ map, mapId }: MapPageProps) => {
     <ReactFlowProvider>
       <div className='h-screen flex'>
         <div className='flex-1 min-w-0 relative'>
-          <GraphView
-            mapId={mapId}
-            initialData={map}
-            className='h-full w-full'
-            interactive={canEdit}
-            isAIPanelOpen={isAIPanelOpen}
-            onToggleAIPanel={handleToggleAIPanel}
-            onOpenSettings={() => {
-              setActiveTab('settings')
-              useMapUIStore.getState().setSidebarOpen(true)
-            }}
-            onNodeSelect={handleNodeSelect}
-            onViewportChange={setViewport}
-            useWebGL={useWebGL}
-          />
+          <div className='fixed inset-0'>
+            <GraphView
+              mapId={mapId}
+              initialData={map}
+              className='h-full w-full'
+              interactive={canEdit}
+              isAIPanelOpen={isAIPanelOpen}
+              onToggleAIPanel={handleToggleAIPanel}
+              onOpenSettings={() => {
+                setActiveTab('settings')
+                useMapUIStore.getState().setSidebarOpen(true)
+              }}
+              onNodeSelect={handleNodeSelect}
+              onViewportChange={setViewport}
+              useWebGL={useWebGL}
+            />
+          </div>
 
           {canEdit && <QuickAddDialogWebGL viewport={viewport} />}
 
@@ -180,6 +188,14 @@ export const MapPage = ({ map, mapId }: MapPageProps) => {
             />
           )}
         />
+
+        {/* Learn Mode — fullscreen overlay */}
+        {practiceView === 'learn_mode' && (
+          <LearnMode
+            mapId={mapId}
+            nodeLabels={new Map(map.nodes.map(n => [n.id, n.label ?? n.id.slice(0, 8)]))}
+          />
+        )}
       </div>
     </ReactFlowProvider>
   )

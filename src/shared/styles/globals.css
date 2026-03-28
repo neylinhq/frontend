@@ -336,14 +336,52 @@
   --color-syntax-property: oklch(var(--syntax-property));
   --color-syntax-punctuation: oklch(var(--syntax-punctuation));
 
-  /* Radii */
-  --radius-lg: var(--radius);
-  --radius-md: 0.75rem;
-  --radius-sm: 0.625rem;
-  --radius-xs: 0.5rem;
-  --radius-xl: 1rem;
-  --radius-2xl: 1.25rem;
-  --radius-3xl: 1.5rem;
+  /* Z-index */
+
+  --z-base: 0;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-overlay: 300;
+  --z-modal: 400;
+  --z-popover: 500;
+  --z-toast: 600;
+  --z-tooltip: 700;
+
+  /* Radii — composite system, all derived from --radius (0.875rem = 14px in :root)
+     Changing --radius in :root rescales the entire app proportionally */
+  --radius-xs: calc(var(--radius) - 0.375rem);   /* 8px  — icon buttons, tooltips, tags */
+  --radius-sm: calc(var(--radius) - 0.25rem);    /* 10px — secondary buttons, menu items */
+  --radius-md: calc(var(--radius) - 0.125rem);   /* 12px — buttons, inputs, dropdowns */
+  --radius-lg: var(--radius);                     /* 14px — cards, dialogs (base) */
+  --radius-xl: calc(var(--radius) + 0.125rem);   /* 16px — popovers, chat messages */
+  --radius-2xl: calc(var(--radius) + 0.375rem);  /* 20px — chat input, modals */
+
+  /* ─── Spacing System ────────────────────────────────────────────────────
+     Semantic aliases over the 4px grid. Changing these values enables
+     compact/comfortable/spacious density modes without touching components.
+
+     Layout — structural panel/page spacing */
+  --spacing-panel:       1rem;       /* 16px — panel content padding (horizontal) */
+  --spacing-panel-sm:    0.5rem;     /* 8px  — toolbar / header padding */
+  --spacing-section:     0.75rem;    /* 12px — vertical gap between panel sections */
+  --spacing-card:        1.5rem;     /* 24px — card internal padding */
+  --spacing-page:        2rem;       /* 32px — page-level outer margins */
+
+  /* Gaps — space between sibling elements */
+  --spacing-gap-xs:      0.25rem;    /* 4px  — icon + label, tight pairs */
+  --spacing-gap-sm:      0.5rem;     /* 8px  — related elements, label–value */
+  --spacing-gap-md:      0.75rem;    /* 12px — form fields, list items */
+  --spacing-gap-lg:      1rem;       /* 16px — distinct sections */
+  --spacing-gap-xl:      1.5rem;     /* 24px — major layout blocks */
+
+  /* Components — inline element padding */
+  --spacing-input-x:     0.75rem;    /* 12px — input horizontal padding */
+  --spacing-input-y:     0.25rem;    /* 4px  — input vertical padding */
+  --spacing-btn-x:       1rem;       /* 16px — button default horizontal */
+  --spacing-btn-x-sm:    0.75rem;    /* 12px — button sm horizontal */
+  --spacing-btn-x-lg:    2rem;       /* 32px — button lg horizontal */
+  --spacing-badge-x:     0.5rem;     /* 8px  — badge horizontal */
+  --spacing-badge-y:     0.125rem;   /* 2px  — badge vertical */
 
   /* Animations */
   --animate-accordion-down: accordion-down 0.2s ease-out;
@@ -432,6 +470,68 @@
     }
   }
 
+}
+
+/* Spacing utilities — use instead of raw px-4 / px-2 in panel components */
+@utility px-panel {
+  padding-inline: var(--spacing-panel);
+}
+@utility px-panel-sm {
+  padding-inline: var(--spacing-panel-sm);
+}
+@utility py-panel {
+  padding-block: var(--spacing-panel);
+}
+@utility p-panel {
+  padding: var(--spacing-panel);
+}
+@utility px-section {
+  padding-inline: var(--spacing-section);
+}
+@utility p-section {
+  padding: var(--spacing-section);
+}
+@utility px-card {
+  padding-inline: var(--spacing-card);
+}
+@utility p-card {
+  padding: var(--spacing-card);
+}
+@utility gap-xs {
+  gap: var(--spacing-gap-xs);
+}
+@utility gap-sm {
+  gap: var(--spacing-gap-sm);
+}
+@utility gap-md {
+  gap: var(--spacing-gap-md);
+}
+@utility gap-lg {
+  gap: var(--spacing-gap-lg);
+}
+@utility gap-xl {
+  gap: var(--spacing-gap-xl);
+}
+@utility px-btn {
+  padding-inline: var(--spacing-btn-x);
+}
+@utility px-btn-sm {
+  padding-inline: var(--spacing-btn-x-sm);
+}
+@utility px-btn-lg {
+  padding-inline: var(--spacing-btn-x-lg);
+}
+@utility px-input {
+  padding-inline: var(--spacing-input-x);
+}
+@utility py-input {
+  padding-block: var(--spacing-input-y);
+}
+@utility px-badge {
+  padding-inline: var(--spacing-badge-x);
+}
+@utility py-badge {
+  padding-block: var(--spacing-badge-y);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════

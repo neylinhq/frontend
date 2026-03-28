@@ -146,7 +146,7 @@ export const ChatMessageList = ({
                       value={editValue}
                       onChange={e => setEditValue(e.target.value)}
                       onKeyDown={handleEditKeyDown}
-                      className='min-h-24 resize-none text-sm w-full rounded-xl border-border/50 bg-background'
+                      className='min-h-24 resize-none text-sm w-full rounded-xl border-border/40 bg-background'
                       placeholder={t('ai.chat.placeholder')}
                     />
                     <div className='flex items-center justify-between gap-4'>
@@ -174,7 +174,7 @@ export const ChatMessageList = ({
                 ) : (
                   <>
                     {/* User bubble - compact, muted */}
-                    <div className='rounded-xl border border-border/50 bg-muted/50 px-3 py-2 text-sm leading-relaxed'>
+                    <div className='rounded-xl border border-border/40 bg-muted/50 px-3 py-2 text-sm leading-relaxed'>
                       <p className='whitespace-pre-wrap break-words'>{message.content}</p>
                     </div>
 

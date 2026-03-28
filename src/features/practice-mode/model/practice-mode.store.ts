@@ -2,10 +2,11 @@ import { create } from 'zustand'
 import { useShallow } from 'zustand/react/shallow'
 
 import type { MasteryLevel, UserNodeProgress } from '@/entities/progress'
+import type { SessionSubgraph } from '../api/practice-mode.api'
 
 // --- Types ---
 
-export type PracticeView = 'overview' | 'tutor' | 'review' | 'session_end'
+export type PracticeView = 'overview' | 'learn_mode' | 'tutor' | 'review' | 'session_end'
 
 export interface NodeMasteryData {
   nodeId: string
@@ -41,6 +42,9 @@ export interface PracticeSession {
   stabilityDeltas: StabilityDelta[]
   startedAt: number
   tutorHistory: TutorMessage[]
+  productiveFailureNodes: Set<string>
+  overconfidentNodes: Set<string>
+  sessionSubgraph: SessionSubgraph | null
 }
 
 export interface PracticeModeState {
@@ -58,11 +62,15 @@ export interface PracticeModeActions {
   setMasteryData: (progress: UserNodeProgress[]) => void
   setLoadingMastery: (loading: boolean) => void
   setScopeNodeIds: (nodeIds: string[]) => void
-  startTutorSession: (nodeQueue: string[]) => void
+  startLearnSession: (nodeQueue: string[], productiveFailureNodes?: string[]) => void
+  startTutorSession: (nodeQueue: string[], sessionSubgraph?: SessionSubgraph) => void
   startReviewSession: (nodeQueue: string[]) => void
   addTutorMessage: (msg: TutorMessage) => void
   advanceChain: () => void
   recordAnswer: (nodeId: string, correct: boolean, stabilityDelta?: StabilityDelta) => void
+  insertReturnSlot: (nodeId: string) => void
+  markOverconfident: (nodeId: string) => void
+  markSubgraphNodeCompleted: (nodeId: string, quality: number) => void
   endSession: () => void
   updateNodeMastery: (nodeId: string, data: Partial<NodeMasteryData>) => void
   /** @deprecated No longer navigates to node_detail — kept as no-op for backward compatibility */
@@ -114,7 +122,24 @@ export const usePracticeModeStore = create<PracticeModeState & PracticeModeActio
 
     setScopeNodeIds: (nodeIds) => set({ scopeNodeIds: nodeIds }),
 
-    startTutorSession: (nodeQueue) =>
+    startLearnSession: (nodeQueue, productiveFailureNodes) =>
+      set({
+        view: 'learn_mode',
+        session: {
+          mode: 'review',
+          nodeQueue,
+          currentChainIndex: 0,
+          results: new Map(),
+          stabilityDeltas: [],
+          startedAt: Date.now(),
+          tutorHistory: [],
+          productiveFailureNodes: new Set(productiveFailureNodes ?? []),
+          overconfidentNodes: new Set(),
+          sessionSubgraph: null,
+        },
+      }),
+
+    startTutorSession: (nodeQueue, sessionSubgraph) =>
       set({
         view: 'tutor',
         session: {
@@ -125,6 +150,9 @@ export const usePracticeModeStore = create<PracticeModeState & PracticeModeActio
           stabilityDeltas: [],
           startedAt: Date.now(),
           tutorHistory: [],
+          productiveFailureNodes: new Set(),
+          overconfidentNodes: new Set(),
+          sessionSubgraph: sessionSubgraph ?? null,
         },
       }),
 
@@ -139,6 +167,9 @@ export const usePracticeModeStore = create<PracticeModeState & PracticeModeActio
           stabilityDeltas: [],
           startedAt: Date.now(),
           tutorHistory: [],
+          productiveFailureNodes: new Set(),
+          overconfidentNodes: new Set(),
+          sessionSubgraph: null,
         },
       }),
 
@@ -191,6 +222,43 @@ export const usePracticeModeStore = create<PracticeModeState & PracticeModeActio
       set({ session: { ...session, results, stabilityDeltas: deltas } })
     },
 
+    insertReturnSlot: (nodeId) => {
+      const { session } = get()
+      if (!session) {
+        return
+      }
+      const insertAt = Math.min(session.currentChainIndex + 3, session.nodeQueue.length)
+      const newQueue = [...session.nodeQueue]
+      newQueue.splice(insertAt, 0, nodeId)
+      set({ session: { ...session, nodeQueue: newQueue } })
+    },
+
+    markOverconfident: (nodeId) => {
+      const { session } = get()
+      if (!session) {
+        return
+      }
+      const overconfidentNodes = new Set(session.overconfidentNodes)
+      overconfidentNodes.add(nodeId)
+      set({ session: { ...session, overconfidentNodes } })
+    },
+
+    markSubgraphNodeCompleted: (nodeId, quality) => {
+      const { session } = get()
+      if (!session?.sessionSubgraph) {
+        return
+      }
+      const updatedNodes = session.sessionSubgraph.nodes.map((n) =>
+        n.nodeId === nodeId ? { ...n, status: 'completed' as const, quality } : n
+      )
+      set({
+        session: {
+          ...session,
+          sessionSubgraph: { ...session.sessionSubgraph, nodes: updatedNodes },
+        },
+      })
+    },
+
     endSession: () => set({ session: null, view: 'overview' }),
 
     updateNodeMastery: (nodeId, data) => {
@@ -237,11 +305,15 @@ export const usePracticeModeActions = () =>
       setMasteryData: s.setMasteryData,
       setLoadingMastery: s.setLoadingMastery,
       setScopeNodeIds: s.setScopeNodeIds,
+      startLearnSession: s.startLearnSession,
       startTutorSession: s.startTutorSession,
       startReviewSession: s.startReviewSession,
       addTutorMessage: s.addTutorMessage,
       advanceChain: s.advanceChain,
       recordAnswer: s.recordAnswer,
+      insertReturnSlot: s.insertReturnSlot,
+      markOverconfident: s.markOverconfident,
+      markSubgraphNodeCompleted: s.markSubgraphNodeCompleted,
       endSession: s.endSession,
       updateNodeMastery: s.updateNodeMastery,
       selectNode: s.selectNode,

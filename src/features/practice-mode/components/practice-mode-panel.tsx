@@ -41,6 +41,11 @@ export const PracticeModePanel = ({
   // Guard: if view requires session but session is null, reset to overview
   const effectiveView = (view === 'tutor' || view === 'review') && !session ? 'overview' : view
 
+  // LearnMode is a fullscreen overlay rendered at map-page level, not in sidebar
+  if (effectiveView === 'learn_mode') {
+    return <PracticeOverview mapId={mapId} className={className} />
+  }
+
   switch (effectiveView) {
     case 'overview': {
       return <PracticeOverview mapId={mapId} className={className} />

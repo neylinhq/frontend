@@ -1,8 +1,11 @@
 import {
+  Copy01Icon,
+  DotsHorizontalIcon,
   LinkExternal01Icon,
   MessageDotsSquareIcon,
   PlusIcon,
   Target01Icon,
+  Trash01Icon,
   XCloseIcon
 } from '@untitledui/icons-react/outline'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -18,13 +21,20 @@ import {
   useSidebarOpen,
   useSidebarWidth
 } from '@/entities/map-ui'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from '@/shared/components/dropdown-menu'
 import { OverflowNav, type OverflowNavItem } from '@/shared/components/overflow-nav'
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/components/popover'
 import { ResizableSidebar } from '@/shared/components/resizable-sidebar'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/components/tooltip'
 import { cn } from '@/shared/lib/cn'
 
-import { useChatActionsStore } from '../model'
+import { useChatActionsStore, useNodeActionsStore } from '../model'
 
 interface MapSidebarProps {
   mapId: string
@@ -156,6 +166,9 @@ export const MapSidebar = memo(function MapSidebar({
   const chatDeleteSession = useChatActionsStore(s => s.deleteSession)
   const [selectorOpen, setSelectorOpen] = useState(false)
 
+  const nodeOnCopyId = useNodeActionsStore(s => s.onCopyId)
+  const nodeOnDeleteRequest = useNodeActionsStore(s => s.onDeleteRequest)
+
   const showNodeActions = activeTab === 'node' && !!selectedNode
   const showChatActions = activeTab === 'chat' && canEdit
 
@@ -218,6 +231,34 @@ export const MapSidebar = memo(function MapSidebar({
                     </TooltipContent>
                   </Tooltip>
                 )}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      type='button'
+                      className='h-7 w-7 flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors'
+                    >
+                      <DotsHorizontalIcon className='h-3.5 w-3.5' />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align='end' className='min-w-36'>
+                    <DropdownMenuItem onClick={() => nodeOnCopyId?.()} className='text-xs'>
+                      <Copy01Icon className='mr-2 h-3.5 w-3.5' />
+                      {t('nodeEdit.copyId')}
+                    </DropdownMenuItem>
+                    {canEdit && nodeOnDeleteRequest && (
+                      <>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          onClick={nodeOnDeleteRequest}
+                          className='text-xs text-destructive focus:text-destructive'
+                        >
+                          <Trash01Icon className='mr-2 h-3.5 w-3.5' />
+                          {t('nodeEdit.deleteNode')}
+                        </DropdownMenuItem>
+                      </>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </>
             )}
 

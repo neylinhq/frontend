@@ -8,7 +8,7 @@ import { Button } from '@/shared/components/button'
 import { Card, CardContent } from '@/shared/components/card'
 import { cn } from '@/shared/lib/cn'
 
-import type { ExpandSuggestion } from '../api/practice-mode.api'
+import type { ExpandDirection } from '../api/practice-mode.api'
 import { practiceModeApi } from '../api/practice-mode.api'
 import type { StabilityDelta } from '../model/practice-mode.store'
 import { usePracticeModeActions, usePracticeModeSession } from '../model/practice-mode.store'
@@ -22,7 +22,7 @@ export function PracticeSessionEnd({ mapId, className }: PracticeSessionEndProps
   const { t } = useTranslation()
   const session = usePracticeModeSession()
   const { endSession } = usePracticeModeActions()
-  const [suggestions, setSuggestions] = useState<ExpandSuggestion[]>([])
+  const [suggestions, setSuggestions] = useState<ExpandDirection[]>([])
   const [loadingSuggestions, setLoadingSuggestions] = useState(false)
 
   // Fetch expand suggestions on mount
@@ -105,15 +105,15 @@ export function PracticeSessionEnd({ mapId, className }: PracticeSessionEndProps
             <div className="space-y-2">
               {suggestions.map((s) => (
                 <div
-                  key={s.nodeId || s.label}
+                  key={s.direction}
                   className="flex items-start gap-2 text-sm"
                 >
                   <span className="text-muted-foreground shrink-0">+</span>
                   <div className="min-w-0">
-                    <span className="font-medium">{s.label}</span>
-                    {s.reason && (
+                    <span className="font-medium">{s.direction}</span>
+                    {s.description && (
                       <p className="text-xs text-muted-foreground mt-0.5">
-                        {s.reason}
+                        {s.description}
                       </p>
                     )}
                   </div>

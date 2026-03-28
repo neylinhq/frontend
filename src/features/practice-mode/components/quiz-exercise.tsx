@@ -45,9 +45,9 @@ export function QuizExercise({ question, options, onSubmit, disabled }: QuizExer
             disabled={disabled}
             className={cn(
               'flex items-start gap-3 rounded-lg border p-3 text-left text-sm transition-colors',
-              'hover:border-primary/50 hover:bg-primary/5',
+              'hover:border-primary/50 hover:bg-primary/10',
               'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
-              selectedId === option.id ? 'border-primary bg-primary/10' : 'border-border',
+              selectedId === option.id ? 'border-primary bg-primary/10' : 'border-border/40',
               disabled && 'opacity-60 pointer-events-none'
             )}
             onClick={() => setSelectedId(option.id)}

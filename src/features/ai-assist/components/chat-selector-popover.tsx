@@ -139,9 +139,9 @@ export const ChatSelectorPopover = ({
           groupedSessions.map(group => (
             <div key={group.label} className='space-y-0'>
               {/* Group header */}
-              <div className='px-2 mb-0.75 text-2xs font-medium tracking-wide text-muted-foreground uppercase'>
+              {/* <div className='px-2 mb-0.75 text-2xs font-medium tracking-wide text-muted-foreground uppercase'>
                 {group.label}
-              </div>
+              </div> */}
               {/* Group items */}
               <div className='space-y-0.5'>
                 {group.sessions.map(session => {

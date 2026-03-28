@@ -13,7 +13,7 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
+  AlertDialogTitle
 } from '@/shared/components/alert-dialog'
 import { Badge } from '@/shared/components/badge'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/components/tooltip'
@@ -22,7 +22,7 @@ import { cn } from '@/shared/lib/cn'
 import {
   usePracticeModeActions,
   usePracticeModeSession,
-  usePracticeModeStats,
+  usePracticeModeStats
 } from '../model/practice-mode.store'
 
 interface PracticeFabProps {
@@ -63,6 +63,7 @@ export const PracticeFab = ({ mapId }: PracticeFabProps) => {
             onClick={handleClick}
             aria-label={t('practice.mode.title')}
             className={cn(
+              'relative',
               'h-12 w-12 rounded-full',
               'flex items-center justify-center',
               'transition-all duration-300',
@@ -74,7 +75,11 @@ export const PracticeFab = ({ mapId }: PracticeFabProps) => {
               hasDue && !hasSession && 'animate-due-pulse'
             )}
           >
-            {hasSession ? <XCloseIcon className='h-5 w-5' /> : <GraduationHat01Icon className='h-5 w-5' />}
+            {hasSession ? (
+              <XCloseIcon className='h-5 w-5' />
+            ) : (
+              <GraduationHat01Icon className='h-5 w-5' />
+            )}
 
             {hasDue && !hasSession && (
               <Badge

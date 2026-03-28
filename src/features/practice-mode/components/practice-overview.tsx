@@ -5,21 +5,19 @@ import { useTranslation } from 'react-i18next'
 
 import type { MasteryLevel } from '@/entities/progress'
 import { Button } from '@/shared/components/button'
+import { toast } from '@/shared/components/toast'
 import { cn } from '@/shared/lib/cn'
 
 import { practiceModeApi } from '../api/practice-mode.api'
-import {
-  useMasteryMap,
-  usePracticeModeActions,
-} from '../model/practice-mode.store'
 import { usePracticeScope } from '../model/practice-mode.hooks'
+import { useMasteryMap, usePracticeModeActions } from '../model/practice-mode.store'
 
 const MASTERY_BAR_COLORS: Record<MasteryLevel, string> = {
   mastered: 'bg-[var(--color-mastery-mastered)]',
   proficient: 'bg-[var(--color-mastery-proficient,var(--color-mastery-mastered))]',
   practicing: 'bg-[var(--color-mastery-practicing)]',
   learning: 'bg-[var(--color-mastery-learning)]',
-  unlearned: 'bg-muted-foreground/20',
+  unlearned: 'bg-muted-foreground/20'
 }
 
 const MASTERY_DOT_COLORS: Record<MasteryLevel, string> = {
@@ -27,7 +25,7 @@ const MASTERY_DOT_COLORS: Record<MasteryLevel, string> = {
   proficient: 'bg-[var(--color-mastery-proficient,var(--color-mastery-mastered))]',
   practicing: 'bg-[var(--color-mastery-practicing)]',
   learning: 'bg-[var(--color-mastery-learning)]',
-  unlearned: 'bg-muted-foreground/30',
+  unlearned: 'bg-muted-foreground/30'
 }
 
 interface PracticeOverviewProps {
@@ -37,10 +35,10 @@ interface PracticeOverviewProps {
 
 export function PracticeOverview({ mapId, className }: PracticeOverviewProps) {
   const { t } = useTranslation()
-  const { scopeNodeIds, scopeLabel } = usePracticeScope(mapId)
+  const { scopeNodeIds } = usePracticeScope(mapId)
   const masteryMap = useMasteryMap()
-  const { startTutorSession, startReviewSession, setScopeNodeIds } = usePracticeModeActions()
-  const [isStarting, setIsStarting] = useState<'tutor' | 'review' | null>(null)
+  const { startTutorSession, setScopeNodeIds } = usePracticeModeActions()
+  const [isStarting, setIsStarting] = useState<'learn' | 'tutor' | 'review' | null>(null)
 
   const scopeStats = useMemo(() => {
     const scopeSet = new Set(scopeNodeIds)
@@ -77,8 +75,6 @@ export function PracticeOverview({ mapId, className }: PracticeOverviewProps) {
         }
         case 'unlearned': {
           notStarted++
-          // Node is on ZPD frontier if prereqs are stable OR if it has no prereqs at all
-          // (prereqsStable may be false when backend hasn't computed it yet for fresh nodes)
           if (data.prereqsStable || data.reviewCount === 0) {
             zpdCount++
           }
@@ -90,56 +86,56 @@ export function PracticeOverview({ mapId, className }: PracticeOverviewProps) {
       }
     }
 
-    const masteryPercent =
-      total > 0 ? Math.round(((mastered + proficient) / total) * 100) : 0
+    const masteryPercent = total > 0 ? Math.round(((mastered + proficient) / total) * 100) : 0
 
-    return { total, mastered, proficient, practicing, learning, notStarted, dueCount, zpdCount, masteryPercent }
+    return {
+      total,
+      mastered,
+      proficient,
+      practicing,
+      learning,
+      notStarted,
+      dueCount,
+      zpdCount,
+      masteryPercent
+    }
   }, [masteryMap, scopeNodeIds])
 
-  const handleStartTutor = async () => {
-    setIsStarting('tutor')
+  const handleStartLearn = async () => {
+    setIsStarting('learn')
     try {
       setScopeNodeIds(scopeNodeIds)
       const result = await practiceModeApi.startScopedSession(mapId, 'tutor', scopeNodeIds)
       if (result.nodeQueue.length > 0) {
-        startTutorSession(result.nodeQueue)
+        startTutorSession(result.nodeQueue, result.sessionSubgraph)
+      } else {
+        toast.error(t('practice.mode.noConceptsReady'))
       }
     } catch {
-      // user stays on overview
+      toast.error(t('practice.mode.startFailed'))
     } finally {
       setIsStarting(null)
     }
   }
 
-  const handleStartReview = async () => {
-    setIsStarting('review')
-    try {
-      setScopeNodeIds(scopeNodeIds)
-      const result = await practiceModeApi.startScopedSession(mapId, 'review', scopeNodeIds)
-      if (result.nodeQueue.length > 0) {
-        startReviewSession(result.nodeQueue)
-      }
-    } catch {
-      // user stays on overview
-    } finally {
-      setIsStarting(null)
-    }
-  }
+  // Summary for session briefing
+  const sessionSummary = scopeStats.dueCount > 0
+    ? t('practice.mode.sessionBriefReview', '{{due}} to review', { due: scopeStats.dueCount })
+    : scopeStats.zpdCount > 0
+      ? t('practice.mode.sessionBriefLearn', '{{zpd}} new ready', { zpd: scopeStats.zpdCount })
+      : ''
 
   return (
-    <div className={cn('flex flex-col gap-4 p-4', className)}>
-      {/* Scope label */}
-      <span className="text-xs font-medium text-muted-foreground">{scopeLabel}</span>
-
-      {/* Progress bar */}
-      <div>
-        <div className="flex items-baseline justify-between mb-2">
-          <span className="text-sm font-medium text-muted-foreground">
-            {t('practice.mode.mapMastery')}
+    <div className={cn('flex flex-col gap-4 p-panel', className)}>
+      {/* Mastery hero + bar */}
+      <div className='space-y-2'>
+        <div className='flex items-baseline justify-between'>
+          <span className='text-xs text-muted-foreground'>{t('practice.mode.mapMastery')}</span>
+          <span className='text-xl font-bold tabular-nums leading-none'>
+            {scopeStats.masteryPercent}%
           </span>
-          <span className="text-lg font-semibold">{scopeStats.masteryPercent}%</span>
         </div>
-        <div className="flex h-2.5 rounded-full overflow-hidden bg-muted">
+        <div className='flex h-2 rounded-full overflow-hidden bg-muted'>
           {scopeStats.total > 0 && (
             <>
               {scopeStats.mastered > 0 && (
@@ -172,37 +168,44 @@ export function PracticeOverview({ mapId, className }: PracticeOverviewProps) {
       </div>
 
       {/* Mastery legend */}
-      <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-xs">
-        <LegendItem color={MASTERY_DOT_COLORS.mastered} label={t('practice.mode.mastered')} count={scopeStats.mastered} />
-        <LegendItem color={MASTERY_DOT_COLORS.proficient} label={t('practice.mode.proficient')} count={scopeStats.proficient} />
-        <LegendItem color={MASTERY_DOT_COLORS.practicing} label={t('practice.mode.practicing')} count={scopeStats.practicing} />
-        <LegendItem color={MASTERY_DOT_COLORS.learning} label={t('practice.mode.learning')} count={scopeStats.learning} />
-        <LegendItem color={MASTERY_DOT_COLORS.unlearned} label={t('practice.mode.unlearned')} count={scopeStats.notStarted} />
+      <div className='grid grid-cols-2 gap-x-4 gap-y-1 text-xs'>
+        <LegendItem
+          color={MASTERY_DOT_COLORS.mastered}
+          label={t('practice.mode.mastered')}
+          count={scopeStats.mastered}
+        />
+        <LegendItem
+          color={MASTERY_DOT_COLORS.proficient}
+          label={t('practice.mode.proficient')}
+          count={scopeStats.proficient}
+        />
+        <LegendItem
+          color={MASTERY_DOT_COLORS.practicing}
+          label={t('practice.mode.practicing')}
+          count={scopeStats.practicing}
+        />
+        <LegendItem
+          color={MASTERY_DOT_COLORS.learning}
+          label={t('practice.mode.learning')}
+          count={scopeStats.learning}
+        />
+        <LegendItem
+          color={MASTERY_DOT_COLORS.unlearned}
+          label={t('practice.mode.unlearned')}
+          count={scopeStats.notStarted}
+        />
       </div>
 
-      {/* Session buttons */}
-      <div className="flex flex-col gap-2 mt-2">
+      {/* Session start */}
+      <div className='flex flex-col gap-2 mt-1'>
+        {sessionSummary && (
+          <p className='text-xs text-muted-foreground'>{sessionSummary}</p>
+        )}
         <Button
-          onClick={handleStartTutor}
+          onClick={handleStartLearn}
           disabled={isStarting !== null}
         >
-          {isStarting === 'tutor'
-            ? t('practice.mode.starting')
-            : t('practice.mode.learn')}
-        </Button>
-        <Button
-          variant="outline"
-          onClick={handleStartReview}
-          disabled={isStarting !== null}
-        >
-          {isStarting === 'review'
-            ? t('practice.mode.starting')
-            : t('practice.mode.review')}
-          {scopeStats.dueCount > 0 && (
-            <span className="ml-1.5 text-xs text-muted-foreground">
-              ({scopeStats.dueCount})
-            </span>
-          )}
+          {isStarting === 'learn' ? t('practice.mode.starting') : t('practice.mode.startSession', 'Start session')}
         </Button>
       </div>
     </div>
@@ -211,10 +214,10 @@ export function PracticeOverview({ mapId, className }: PracticeOverviewProps) {
 
 function LegendItem({ color, label, count }: { color: string; label: string; count: number }) {
   return (
-    <div className="flex items-center gap-1.5">
-      <div className={cn('h-2 w-2 rounded-full', color)} />
-      <span className="text-muted-foreground">{label}</span>
-      <span className="ml-auto font-medium">{count}</span>
+    <div className='flex items-center gap-1.5'>
+      <div className={cn('h-2 w-2 shrink-0 rounded-full', color)} />
+      <span className='truncate text-muted-foreground'>{label}</span>
+      <span className='ml-auto font-medium tabular-nums'>{count}</span>
     </div>
   )
 }

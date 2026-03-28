@@ -53,7 +53,7 @@ export const DEFAULT_PER_MAP: PerMapState = {
 }
 
 export const DEFAULT_PREFS: GlobalUIPrefs = {
-  sidebarWidth: 400,
+  sidebarWidth: 320,
   sidebarOpen: false,
   showMinimap: true,
   nodeSpacing: 100,
@@ -61,5 +61,5 @@ export const DEFAULT_PREFS: GlobalUIPrefs = {
   animationDuration: 300
 }
 
-export const SIDEBAR_MIN_WIDTH = 360
-export const SIDEBAR_MAX_WIDTH = 800
+export const SIDEBAR_MIN_WIDTH = 240
+export const SIDEBAR_MAX_WIDTH = 480

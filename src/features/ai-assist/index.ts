@@ -5,6 +5,7 @@ export { AIChatCore } from './components/ai-chat-core'
 export { AIChatPanel } from './components/ai-chat-panel'
 export { AISuggestionsPanel } from './components/ai-suggestions-panel'
 export { ChatHeader } from './components/chat-header'
+export { ChatSelectorPopover } from './components/chat-selector-popover'
 export { MapChatDrawer } from './components/map-chat-drawer'
 export { MapChatPanel } from './components/map-chat-panel'
 export { NodeChatPanel } from './components/node-chat-panel'
@@ -13,7 +14,7 @@ export { NodeChatWrapper } from './components/node-chat-wrapper'
 export { DiffBlock, DiffLine, ProposalCard } from './components/proposal-card'
 export { SimilarNodesPanel } from './components/similar-nodes-panel'
 // Store
-export { useAIPanelStore } from './model'
+export { useAIPanelStore, useStreamingStore } from './model'
 // Chat session hooks
 export {
   useChatSessions,
@@ -21,6 +22,7 @@ export {
   useDeleteChatSession,
   useRenameChatSession
 } from './model/ai-assist.sessions.hooks'
+export type { ChatSession } from './model/ai-assist.sessions.types'
 export type {
   ChatContext,
   ChatContextType,

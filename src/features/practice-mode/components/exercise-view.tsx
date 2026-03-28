@@ -309,8 +309,8 @@ function AnswerFeedback({ result, onNext }: { result: AnswerResult; onNext: () =
         className={cn(
           'rounded-lg border p-3',
           result.isCorrect
-            ? 'border-success/30 bg-success/5'
-            : 'border-destructive/30 bg-destructive/5'
+            ? 'border-success/40 bg-success/10'
+            : 'border-destructive/40 bg-destructive/10'
         )}
       >
         <p
@@ -332,7 +332,7 @@ function AnswerFeedback({ result, onNext }: { result: AnswerResult; onNext: () =
 
       {/* Explanation */}
       {result.explanation && (
-        <div className='rounded-lg border bg-muted/30 p-3'>
+        <div className='rounded-lg border border-border/40 bg-muted/50 p-3'>
           <p className='text-xs font-medium text-muted-foreground mb-1'>
             {t('practice.mode.explanation', 'Explanation')}
           </p>
@@ -343,7 +343,7 @@ function AnswerFeedback({ result, onNext }: { result: AnswerResult; onNext: () =
       )}
 
       {/* Stability change */}
-      <div className='flex items-center justify-between rounded-lg border bg-card p-3'>
+      <div className='flex items-center justify-between rounded-lg border border-border/40 bg-card p-3'>
         <span className='text-xs text-muted-foreground'>{t('practice.mode.stability')}</span>
         <div className='flex items-center gap-2 text-xs'>
           <span className='tabular-nums'>{Math.round(result.stabilityBefore * 10) / 10}d</span>

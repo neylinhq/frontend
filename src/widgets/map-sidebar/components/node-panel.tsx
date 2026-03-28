@@ -1,16 +1,10 @@
-import {
-  ChevronDownIcon,
-  Copy01Icon,
-  DotsHorizontalIcon,
-  Trash01Icon
-} from '@untitledui/icons-react/outline'
+import { ChevronDownIcon, Trash01Icon } from '@untitledui/icons-react/outline'
 import { memo, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { NodeMetadataForm, type NodeMetadataFormValues } from '@/features/node-metadata-form'
 import type { Edge, Node } from '@/entities/map'
 import { useDeleteNode, useUpdateNode } from '@/entities/map'
-import { useNodeProgress, useUpdateNodeProgress } from '@/entities/progress'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,20 +20,13 @@ import {
   CollapsibleContent,
   CollapsibleTrigger
 } from '@/shared/components/collapsible'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/shared/components/dropdown-menu'
 import { Field } from '@/shared/components/field'
 import { Input } from '@/shared/components/input'
-import { Label } from '@/shared/components/label'
-import { Slider } from '@/shared/components/slider'
 import { toast } from '@/shared/components/toast'
 import { useDebouncedCallback } from '@/shared/hooks'
 import { cn } from '@/shared/lib/cn'
+
+import { useNodeActionsStore } from '../model'
 
 interface NodePanelProps {
   node: Node
@@ -82,10 +69,6 @@ export const NodePanel = memo(function NodePanel({
   const updateNodeMutation = useUpdateNode(node.mapId)
   const deleteNodeMutation = useDeleteNode(node.mapId)
 
-  // User progress for this node (includes confidence)
-  const { data: nodeProgress } = useNodeProgress(node.mapId, node.id)
-  const updateProgressMutation = useUpdateNodeProgress(node.mapId, node.id)
-
   // Debounced label save
   const debouncedLabelSave = useDebouncedCallback((value: string) => {
     updateNodeMutation.mutate({ id: node.id, data: { label: value } })
@@ -97,18 +80,6 @@ export const NodePanel = memo(function NodePanel({
       debouncedLabelSave(value)
     },
     [debouncedLabelSave]
-  )
-
-  // Debounced confidence update
-  const debouncedConfidenceUpdate = useDebouncedCallback((value: number) => {
-    updateProgressMutation.mutate({ confidence: value })
-  }, 300)
-
-  const handleConfidenceChange = useCallback(
-    (values: number[]) => {
-      debouncedConfidenceUpdate(values[0])
-    },
-    [debouncedConfidenceUpdate]
   )
 
   // Count connections
@@ -155,17 +126,22 @@ export const NodePanel = memo(function NodePanel({
     toast.success(t('common.copied'))
   }, [node.id, t])
 
+  // Register node actions in shell header store
+  useEffect(() => {
+    useNodeActionsStore.setState({
+      onCopyId: handleCopyId,
+      onDeleteRequest: () => setDeleteDialogOpen(true)
+    })
+    return () => useNodeActionsStore.setState({ onCopyId: null, onDeleteRequest: null })
+  }, [handleCopyId])
+
   return (
     <>
       <div className='flex flex-col h-full'>
         <div className='flex-1 overflow-y-auto'>
-          {/* Node name + inline [⋯] menu */}
-          <div className='flex items-end gap-1.5 px-4 pt-4 pb-1.5'>
-            <Field
-              label={t('nodeEdit.nameLabel')}
-              labelClassName='text-xs'
-              className='flex-1 min-w-0'
-            >
+          {/* Node name */}
+          <div className='px-panel pt-4 pb-1.5'>
+            <Field label={t('nodeEdit.nameLabel')} labelClassName='text-xs'>
               <Input
                 value={localLabel}
                 readOnly={isReadOnly}
@@ -174,38 +150,10 @@ export const NodePanel = memo(function NodePanel({
                 placeholder={t('nodeEdit.namePlaceholder')}
               />
             </Field>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button
-                  type='button'
-                  className='h-9 w-7 flex items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors shrink-0'
-                >
-                  <DotsHorizontalIcon className='h-3.5 w-3.5' />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align='end' className='min-w-36'>
-                <DropdownMenuItem onClick={handleCopyId} className='text-xs'>
-                  <Copy01Icon className='mr-2 h-3.5 w-3.5' />
-                  {t('nodeEdit.copyId')}
-                </DropdownMenuItem>
-                {!isReadOnly && (
-                  <>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onClick={() => setDeleteDialogOpen(true)}
-                      className='text-xs text-destructive focus:text-destructive'
-                    >
-                      <Trash01Icon className='mr-2 h-3.5 w-3.5' />
-                      {t('nodeEdit.deleteNode')}
-                    </DropdownMenuItem>
-                  </>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
           </div>
 
           {/* Node Metadata Form — type & tags */}
-          <div className='px-4 pb-4 pt-2.5'>
+          <div className='px-panel pb-4 pt-2.5'>
             <NodeMetadataForm
               node={node}
               onSubmit={handleMetadataSubmit}
@@ -214,31 +162,8 @@ export const NodePanel = memo(function NodePanel({
             />
           </div>
 
-          {/* Confidence Slider */}
-          <div className='px-4 pb-4'>
-            <div className='space-y-1.5'>
-              <div className='flex items-center justify-between'>
-                <Label className='text-xs text-muted-foreground'>
-                  {t('form.confidence.label', 'Confidence')}
-                </Label>
-                <span className='text-xs tabular-nums text-muted-foreground'>
-                  {Math.round((nodeProgress?.confidence ?? 0) * 100)}%
-                </span>
-              </div>
-              <Slider
-                min={0}
-                max={1}
-                step={0.1}
-                value={[nodeProgress?.confidence ?? 0]}
-                onValueChange={handleConfidenceChange}
-                className='py-1'
-                disabled={updateProgressMutation.isPending}
-              />
-            </div>
-          </div>
-
           {/* Connections — collapsible section */}
-          <div className='px-2 py-1'>
+          <div className='px-panel-sm py-1'>
             <Collapsible open={connectionsOpen} onOpenChange={setConnectionsOpen}>
               <CollapsibleTrigger asChild>
                 <button
@@ -262,7 +187,7 @@ export const NodePanel = memo(function NodePanel({
                 </button>
               </CollapsibleTrigger>
               <CollapsibleContent>
-                <div className='px-2 pt-1 pb-2'>
+                <div className='px-panel-sm pb-2'>
                   {renderConnectionsPanel?.(node, edges, allNodes, onOpenNode, onPanToNode)}
                 </div>
               </CollapsibleContent>

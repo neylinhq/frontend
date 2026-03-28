@@ -160,11 +160,7 @@ export const ChatSelectorRow = ({
             >
               {t('ai.chat.closeOthers', 'Close others')}
             </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={onCloseAll}
-              disabled={!canCloseAll}
-              className='text-xs'
-            >
+            <DropdownMenuItem onClick={onCloseAll} disabled={!canCloseAll} className='text-xs'>
               {t('ai.chat.closeAll', 'Delete all chats')}
             </DropdownMenuItem>
             <DropdownMenuSeparator className='my-0.5' />

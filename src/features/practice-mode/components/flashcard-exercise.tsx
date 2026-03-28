@@ -31,7 +31,7 @@ export function FlashcardExercise({ front, back, onSubmit, disabled }: Flashcard
         type='button'
         disabled={disabled}
         className={cn(
-          'relative min-h-[160px] rounded-xl border p-6 text-center transition-all duration-300',
+          'relative min-h-[160px] rounded-xl border border-border/40 p-6 text-center transition-all duration-300',
           'hover:shadow-sm cursor-pointer',
           isFlipped ? 'bg-muted/50' : 'bg-card'
         )}

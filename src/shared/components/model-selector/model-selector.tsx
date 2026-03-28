@@ -1,0 +1,105 @@
+import { CheckIcon } from '@untitledui/icons-react/outline'
+import { useMemo } from 'react'
+
+import { Button } from '@/shared/components/button'
+import { aiBrandIcons, Icon } from '@/shared/components/icon'
+import { Popover, PopoverContent, PopoverTrigger } from '@/shared/components/popover'
+import { cn } from '@/shared/lib/cn'
+
+type ModelTier = 'ultra' | 'pro' | 'lite' | 'free'
+
+export interface ModelOption {
+  id: string
+  name: string
+  provider: string
+  tier: ModelTier
+}
+
+const TIER_CONFIG: Record<ModelTier, { label: string }> = {
+  ultra: { label: 'Ultra' },
+  pro: { label: 'Pro' },
+  lite: { label: 'Lite' },
+  free: { label: 'Free' }
+}
+
+const TIER_ORDER: ModelTier[] = ['ultra', 'pro', 'lite', 'free']
+
+interface ModelSelectorProps {
+  value?: string
+  onChange: (modelId: string) => void
+  models: ModelOption[]
+  disabled?: boolean
+}
+
+export const ModelSelector = ({ value, onChange, models, disabled }: ModelSelectorProps) => {
+  const currentModel = models.find(m => m.id === value)
+
+  const modelsByTier = useMemo(() => {
+    const grouped: Record<ModelTier, ModelOption[]> = { ultra: [], pro: [], lite: [], free: [] }
+    for (const model of models) {
+      if (grouped[model.tier]) {
+        grouped[model.tier].push(model)
+      }
+    }
+    return grouped
+  }, [models])
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          variant='ghost'
+          size='sm'
+          disabled={disabled}
+          className='h-7 px-2.5 gap-2 bg-muted/60 hover:bg-muted/70 data-[state=open]:bg-muted/70 [&&_svg]:size-3.5'
+        >
+          {currentModel && aiBrandIcons[currentModel.provider] && (
+            <Icon data={aiBrandIcons[currentModel.provider]} size={16} />
+          )}
+          <span className='truncate max-w-28 text-2xs'>{currentModel?.name || 'Select model'}</span>
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className='w-60 p-0' align='start'>
+        <div className='p-2'>
+          {TIER_ORDER.map((tier, tierIndex) => {
+            const tierModels = modelsByTier[tier]
+            if (tierModels.length === 0) return null
+            return (
+              <div key={tier}>
+                {tierIndex > 0 && <div className='h-1.5' />}
+                <div className='text-2xs uppercase tracking-wide text-muted-foreground px-2 mb-0.5 font-medium'>
+                  {TIER_CONFIG[tier].label}
+                </div>
+                <div className='flex flex-col gap-0.5'>
+                  {tierModels.map(model => (
+                    <button
+                      key={model.id}
+                      type='button'
+                      onClick={() => onChange(model.id)}
+                      className={cn(
+                        'flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded-sm',
+                        'hover:bg-[var(--surface-hover)] hover:text-foreground',
+                        'focus-visible:bg-[var(--surface-hover)] focus-visible:text-foreground focus-visible:outline-none',
+                        value === model.id && 'bg-[var(--surface-hover)] text-foreground'
+                      )}
+                    >
+                      {aiBrandIcons[model.provider] ? (
+                        <Icon data={aiBrandIcons[model.provider]} size={14} className='shrink-0' />
+                      ) : (
+                        <div className='w-3 h-3 shrink-0' />
+                      )}
+                      <span className='flex-1 text-left truncate'>{model.name}</span>
+                      <span className='ml-auto h-4 w-4 shrink-0 flex items-center justify-center'>
+                        {value === model.id && <CheckIcon className='h-3 w-3' />}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </PopoverContent>
+    </Popover>
+  )
+}

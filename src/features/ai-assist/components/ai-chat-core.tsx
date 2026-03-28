@@ -582,7 +582,7 @@ export const AIChatCore = ({
         )}
       </div>
 
-      <div className='px-3.5 pb-4'>
+      <div className='px-panel pb-4'>
         <ChatInput
           onSend={handleSendMessage}
           onStop={handleStop}

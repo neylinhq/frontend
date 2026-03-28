@@ -148,7 +148,7 @@ export const SettingsPanel = memo(function SettingsPanel({
       <div className='flex flex-col h-full'>
         {/* Saving indicator */}
         {isSaving && (
-          <div className='px-4 py-1 text-xs text-muted-foreground border-b border-border/60 shrink-0'>
+          <div className='px-panel py-1 text-xs text-muted-foreground border-b border-border/60 shrink-0'>
             {t('common.saving')}
           </div>
         )}
@@ -156,7 +156,7 @@ export const SettingsPanel = memo(function SettingsPanel({
         {/* Single scrollable content */}
         <div className='flex-1 overflow-y-auto [scrollbar-gutter:stable]'>
           {/* === Overview Section === */}
-          <div className='p-4 space-y-4'>
+          <div className='p-panel space-y-4'>
             {/* Visibility Badge + Switch (only for owners) */}
             {isOwner && (
               <div className='flex items-center justify-between'>
@@ -210,7 +210,7 @@ export const SettingsPanel = memo(function SettingsPanel({
           <div className='mx-4 border-t border-border/60' />
 
           {/* === History — collapsible === */}
-          <div className='px-2 py-1'>
+          <div className='px-panel-sm py-1'>
             <Collapsible open={historyOpen} onOpenChange={setHistoryOpen}>
               <CollapsibleTrigger asChild>
                 <button
@@ -227,7 +227,7 @@ export const SettingsPanel = memo(function SettingsPanel({
                 </button>
               </CollapsibleTrigger>
               <CollapsibleContent>
-                <div className='px-2 pt-1 pb-2'>
+                <div className='px-panel-sm pb-2'>
                   <MapHistoryList mapId={mapId} />
                 </div>
               </CollapsibleContent>

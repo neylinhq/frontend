@@ -59,6 +59,7 @@ export const SubmitAnswerOutputSchema = z.object({
   stabilityAfter: z.number(),
   nextReviewDays: z.number(),
   retrievability: z.number(),
+  overconfident: z.boolean().optional(),
   nodeResults: z.array(NodeResultEntrySchema).optional(),
 })
 

@@ -1,3 +1,4 @@
+export { LearnMode } from './components/learn-mode'
 export { PracticeFab } from './components/practice-fab'
 export { PracticeModePanel } from './components/practice-mode-panel'
 export { PracticeOverview } from './components/practice-overview'

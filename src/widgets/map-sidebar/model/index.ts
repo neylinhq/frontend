@@ -4,8 +4,8 @@ import type { ChatSession } from '@/features/ai-assist'
 
 export type { MapSidebarTab } from '@/entities/map-ui'
 export {
-  SIDEBAR_MAX_WIDTH as MAP_SIDEBAR_DEFAULT_WIDTH,
   SIDEBAR_MAX_WIDTH as MAP_SIDEBAR_MAX_WIDTH,
+  SIDEBAR_MIN_WIDTH as MAP_SIDEBAR_DEFAULT_WIDTH,
   SIDEBAR_MIN_WIDTH as MAP_SIDEBAR_MIN_WIDTH
 } from '@/entities/map-ui'
 
@@ -23,4 +23,14 @@ export const useChatActionsStore = create<ChatActionsState>(() => ({
   activeSessionId: null,
   selectSession: null,
   deleteSession: null
+}))
+
+interface NodeActionsState {
+  onCopyId: (() => void) | null
+  onDeleteRequest: (() => void) | null
+}
+
+export const useNodeActionsStore = create<NodeActionsState>(() => ({
+  onCopyId: null,
+  onDeleteRequest: null
 }))

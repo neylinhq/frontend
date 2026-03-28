@@ -65,7 +65,6 @@ export default [
     route('dashboard/overview', 'routes/dashboard/overview.tsx'),
     route('dashboard/maps/new', 'routes/dashboard/maps/new.tsx'),
     route('dashboard/maps/:mapId/view', 'routes/dashboard/maps/$mapId/view.tsx'),
-    route('dashboard/maps/:mapId/webgl', 'routes/dashboard/maps/$mapId/webgl.tsx'),
     route('dashboard/maps/:mapId/node/:nodeId', 'routes/dashboard/maps/$mapId/node.$nodeId.tsx'),
     route('dashboard/maps/:mapId/practice', 'routes/dashboard/maps/$mapId/practice.tsx'),
 

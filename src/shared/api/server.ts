@@ -44,20 +44,5 @@ export const serverFetch = async <T>(
   return response.json()
 }
 
-/**
- * Get cookies from request for passing to API calls
- */
-export const getCookies = (request: Request): string | undefined => {
-  return request.headers.get('Cookie') || undefined
-}
-
-/**
- * Get a specific cookie value from cookie header string
- * Works both server-side (from request.headers) and client-side (from document.cookie)
- */
-export const getCookie = (cookieHeader: string, name: string): string | undefined =>
-  cookieHeader
-    .split(';')
-    .find(c => c.trim().startsWith(`${name}=`))
-    ?.split('=')[1]
-    ?.trim()
+// Cookie utilities re-exported for backward compatibility
+export { getCookieHeader, parseCookieHeader } from '@/shared/lib/cookies'

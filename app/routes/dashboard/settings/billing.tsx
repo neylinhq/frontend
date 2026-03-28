@@ -20,14 +20,14 @@ import {
   PaymentMethodDetailsDialog
 } from '@/features/billing/payment-method-card'
 import { ApiError } from '@/shared/api/client'
-import { getCookies } from '@/shared/api/server'
+import { getCookieHeader } from '@/shared/lib/cookies'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/card'
 import { toast } from '@/shared/components/toast'
 import { Typography } from '@/shared/components/typography'
 import { logger } from '@/shared/lib/logger'
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const cookies = getCookies(request)
+  const cookies = getCookieHeader(request)
 
   try {
     const [paymentMethods, paymentHistoryData] = await Promise.all([

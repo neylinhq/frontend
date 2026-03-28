@@ -40,6 +40,7 @@ import { Card } from '@/shared/components/card'
 import { useDarkMode } from '@/shared/hooks'
 import { cn } from '@/shared/lib/cn'
 
+import { useTheme } from '../../../../app/theme'
 import { type EdgeTranslations, getEdgeTranslations } from '../lib/edge-translations'
 import { applyLayout } from '../lib/layout-algorithms-optimized'
 import { transformEdgesToFlow, transformNodesToFlow } from '../lib/transform-data'
@@ -90,7 +91,11 @@ interface GraphVisualizationProps {
     isPending: boolean
   ) => React.ReactNode
   /** Render prop for map settings drawer - injected by widget */
-  renderSettingsDrawer?: (mapId: string, open: boolean, onOpenChange: (open: boolean) => void) => React.ReactNode
+  renderSettingsDrawer?: (
+    mapId: string,
+    open: boolean,
+    onOpenChange: (open: boolean) => void
+  ) => React.ReactNode
   /** Callback when node is selected — for external management (sidebar) */
   onNodeSelect?: (node: Node | null) => void
   /** Callback when viewport changes (pan/zoom) */
@@ -219,8 +224,7 @@ const GraphVisualizationContent = ({
   const { saveSnapshot, undo, redo } = useLayoutHistory()
   const [settingsOpen, setSettingsOpen] = useState(false)
 
-  // Track dark mode for theme-aware styling
-  const isDark = useDarkMode()
+  const { mode } = useTheme()
 
   useEffect(() => {
     if (settingsOpen) {

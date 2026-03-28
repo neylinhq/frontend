@@ -119,16 +119,19 @@ export const MapPage = ({ map, mapId }: MapPageProps) => {
               <SidebarToggleFab />
             </FloatingLayer.Item>
             <FloatingLayer.Item position='bottom-right'>
-              <div className='flex flex-col-reverse items-center gap-3'>
-                {canEdit && <AddNodeFab />}
-                <PracticeFab mapId={mapId} />
-                <button
-                  type='button'
-                  onClick={() => setUseWebGL(v => !v)}
-                  className='h-8 rounded-lg border border-border/60 bg-background/80 backdrop-blur-sm px-2.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors'
-                >
-                  {useWebGL ? 'WebGL' : 'Flow'}
-                </button>
+              <div className='flex items-end gap-3'>
+                MiniMap
+                <div className='flex flex-col-reverse items-center gap-3'>
+                  {canEdit && <AddNodeFab />}
+                  <PracticeFab mapId={mapId} />
+                  <button
+                    type='button'
+                    onClick={() => setUseWebGL(v => !v)}
+                    className='h-8 rounded-lg border border-border/60 bg-background/80 backdrop-blur-sm px-2.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors'
+                  >
+                    {useWebGL ? 'WebGL' : 'Flow'}
+                  </button>
+                </div>
               </div>
             </FloatingLayer.Item>
           </FloatingLayer.Root>

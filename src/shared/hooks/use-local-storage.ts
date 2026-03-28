@@ -1,19 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
-const COOKIE_MAX_AGE = 60 * 60 * 24 * 365 // 1 year
-
-const setCookie = (name: string, value: string) => {
-  document.cookie = `${name}=${value}; path=/; max-age=${COOKIE_MAX_AGE}; SameSite=Lax`
-}
-
-const getCookie = (name: string): string | undefined => {
-  if (typeof document === 'undefined') return undefined
-  return document.cookie
-    .split(';')
-    .find(c => c.trim().startsWith(`${name}=`))
-    ?.split('=')[1]
-    ?.trim()
-}
+import { getCookie, setCookie } from '@/shared/lib/cookies'
 
 /**
  * Hook for persisting state in localStorage + cookie with SSR support

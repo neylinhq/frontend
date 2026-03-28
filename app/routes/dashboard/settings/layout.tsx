@@ -12,11 +12,11 @@ import { type TwoFactorStatus, twoFactorApi } from '@/entities/two-factor'
 import { type User, userApi } from '@/entities/user'
 import { SETTINGS_NAV_ITEMS } from '@/shared/config'
 import { cn } from '@/shared/lib/cn'
-import { getCookies } from '@/shared/api/server'
+import { getCookieHeader } from '@/shared/lib/cookies'
 
 // Server-side loader
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const cookies = getCookies(request)
+  const cookies = getCookieHeader(request)
 
   try {
     const [user, twoFactorStatus] = await Promise.all([

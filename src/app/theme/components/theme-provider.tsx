@@ -8,11 +8,7 @@ import {
   PALETTE_STORAGE_KEY,
   ThemeContext
 } from '@/shared/core/theme'
-
-const setCookie = (name: string, value: string) => {
-  const maxAge = 60 * 60 * 24 * 365 // 1 year
-  document.cookie = `${name}=${value}; path=/; max-age=${maxAge}; SameSite=Lax`
-}
+import { setCookie } from '@/shared/lib/cookies'
 
 const withoutTransitions = (callback: () => void) => {
   const root = document.documentElement

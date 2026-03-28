@@ -2,7 +2,7 @@ import type { LoaderFunctionArgs } from 'react-router'
 
 import { mapApi } from '@/entities/map'
 import { OverviewPage } from '@/pages/dashboard/overview-page/overview-page'
-import { getCookies } from '@/shared/api/server'
+import { getCookieHeader } from '@/shared/lib/cookies'
 import { getMeta } from '@/shared/lib/get-meta'
 
 export const meta = () => {
@@ -10,7 +10,7 @@ export const meta = () => {
 }
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const cookies = getCookies(request)
+  const cookies = getCookieHeader(request)
   const initialData = await mapApi.getDashboardMaps({}, { cookies })
   return { initialData }
 }

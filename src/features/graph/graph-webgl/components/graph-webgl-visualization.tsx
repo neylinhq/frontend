@@ -12,16 +12,16 @@ import { memo, useCallback, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import {
+  EdgeEditPopover,
+  EdgeTypeSelector,
   GraphToolbar,
   NodeDrawer,
-  ViewControlsPanel,
-  useGraphControls,
+  useEdgeManagementStore,
   useFilteredGraphData,
+  useGraphControls,
   useGraphKeyboard,
   useNodeSelection,
-  useEdgeManagementStore,
-  EdgeEditPopover,
-  EdgeTypeSelector
+  ViewControlsPanel
 } from '@/features/graph/graph-core'
 import {
   GraphCanvas,
@@ -176,7 +176,6 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
     focusDepth
   })
 
-
   // Handle node click
   const handleNodeClick = useCallback(
     (nodeId: string | null) => {
@@ -236,7 +235,9 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
     (sourceId: string, targetId: string, midX: number, midY: number) => {
       const sourceNode = fullMap?.nodes.find(n => n.id === sourceId)
       const targetNode = fullMap?.nodes.find(n => n.id === targetId)
-      if (!sourceNode || !targetNode) { return }
+      if (!sourceNode || !targetNode) {
+        return
+      }
       startEdgeCreation({
         sourceId,
         targetId,
@@ -254,9 +255,6 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
         id: nodeId,
         position: { x: Math.round(x), y: Math.round(y) }
       })
-      // Update minimap with new position without triggering layout complete
-      const positions = canvasRef.current?.getLayoutPositions()
-      if (positions) { setLayoutPositions(positions) }
     },
     [updatePositionMutation]
   )
@@ -367,7 +365,6 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
           nodes={filteredData.nodes}
           layoutPositions={layoutPositions}
           viewport={viewport}
-          isDark={isDark}
           onNavigate={handleMinimapNavigate}
         />
       )}

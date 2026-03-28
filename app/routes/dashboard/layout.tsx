@@ -6,17 +6,19 @@ import {
   useLoaderData,
   useMatches
 } from 'react-router'
-import { API_URL } from '@/shared/config/env'
-import { getCookie } from '@/shared/api/server'
+
+import { DashboardLayout } from '@/widgets/dashboard-layout'
 import { ErrorBoundary } from '@/shared/components/error-boundary'
-import { DashboardLayout, SIDEBAR_STORAGE_KEY } from '@/widgets/dashboard-layout'
+import { API_URL } from '@/shared/config/env'
+import { getCookie, getCookieHeader, parseCookieHeader } from '@/shared/lib/cookies'
+const SIDEBAR_STORAGE_KEY = 'neylin-sidebar-expanded'
 
 // Server-side loader (SSR, initial page load)
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const cookieHeader = request.headers.get('Cookie') ?? ''
+  const cookieHeader = getCookieHeader(request)
 
   // Read sidebar state from cookie for SSR
-  const sidebarCookie = getCookie(cookieHeader, SIDEBAR_STORAGE_KEY)
+  const sidebarCookie = parseCookieHeader(cookieHeader, SIDEBAR_STORAGE_KEY)
   const sidebarExpanded = sidebarCookie ? sidebarCookie === 'true' : true
 
   try {
@@ -42,21 +44,12 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   }
 }
 
-// Helper to read cookie on client
-const getClientCookie = (name: string): string | undefined =>
-  document.cookie
-    .split(';')
-    .find(c => c.trim().startsWith(`${name}=`))
-    ?.split('=')[1]
-    ?.trim()
-
 // Client-side loader (client navigation after login)
 export const clientLoader = async ({ request }: ClientLoaderFunctionArgs) => {
-  // Read sidebar state from cookie
-  const sidebarCookie = getClientCookie(SIDEBAR_STORAGE_KEY)
-  const sidebarExpanded = sidebarCookie ? sidebarCookie === 'true' : true
-
   try {
+    const sidebarCookie = getCookie(SIDEBAR_STORAGE_KEY)
+    const sidebarExpanded = sidebarCookie ? sidebarCookie === 'true' : true
+
     const response = await fetch(`${API_URL}/users/me`, {
       credentials: 'include'
     })
@@ -67,7 +60,7 @@ export const clientLoader = async ({ request }: ClientLoaderFunctionArgs) => {
     }
 
     const data = await response.json()
-    return { user: data.data, sidebarExpanded }
+    return { user: data.data, defaultExpanded: sidebarExpanded }
   } catch (error) {
     if (error instanceof Response) {
       throw error

@@ -8,7 +8,7 @@ import { mapApi } from '@/entities/map'
 import { NodeEditPage, SIDEBAR_COOKIE_KEY } from '@/pages/dashboard/node-edit-page'
 import { getMeta } from '@/shared/lib/get-meta'
 import { ApiError } from '@/shared/api/client'
-import { getCookie, getCookies } from '@/shared/api/server'
+import { getCookieHeader, parseCookieHeader } from '@/shared/lib/cookies'
 import { logger } from '@/shared/lib/logger'
 
 // Tell parent layout to disable scroll
@@ -25,11 +25,10 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     throw new Response('Map ID and Node ID are required', { status: 400 })
   }
 
-  const cookies = getCookies(request)
+  const cookies = getCookieHeader(request)
 
   // Read sidebar state from cookie (default: true)
-  const cookieHeader = request.headers.get('Cookie') ?? ''
-  const sidebarCookie = getCookie(cookieHeader, SIDEBAR_COOKIE_KEY)
+  const sidebarCookie = parseCookieHeader(cookies, SIDEBAR_COOKIE_KEY)
   const sidebarOpen = sidebarCookie !== 'false' // Default to true
 
   try {
@@ -61,7 +60,7 @@ export const clientLoader = async ({ params }: ClientLoaderFunctionArgs) => {
   }
 
   // Read sidebar state from cookie on client
-  const sidebarCookie = getCookie(document.cookie, SIDEBAR_COOKIE_KEY)
+  const sidebarCookie = parseCookieHeader(document.cookie, SIDEBAR_COOKIE_KEY)
   const sidebarOpen = sidebarCookie !== 'false'
 
   try {

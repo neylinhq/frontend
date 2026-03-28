@@ -1,15 +1,13 @@
 import { Menu01Icon } from '@untitledui/icons-react/outline'
-import { useCallback } from 'react'
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '@/shared/components/button'
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/shared/components/sheet'
-import { useLocalStorage } from '@/shared/hooks/use-local-storage'
 import { cn } from '@/shared/lib/cn'
+import { useDashboardSidebarStore } from '@/shared/store/dashboard-sidebar'
 
 import { Sidebar } from './sidebar'
-
-export const SIDEBAR_STORAGE_KEY = 'neylin-sidebar-expanded'
 
 interface DashboardLayoutProps {
   /** Disable layout-level scroll for pages with their own scroll management (e.g., multi-pane layouts) */
@@ -24,12 +22,14 @@ export const DashboardLayout = ({
   defaultExpanded = true,
   children
 }: DashboardLayoutProps) => {
-  const [isExpanded, setIsExpanded] = useLocalStorage(SIDEBAR_STORAGE_KEY, defaultExpanded)
+  const { isExpanded, toggleSidebar } = useDashboardSidebarStore()
   const { t } = useTranslation()
 
-  const toggleSidebar = useCallback(() => {
-    setIsExpanded(prev => !prev)
-  }, [setIsExpanded])
+  useEffect(() => {
+    if (defaultExpanded !== undefined) {
+      useDashboardSidebarStore.setState({ isExpanded: defaultExpanded })
+    }
+  }, [])
 
   return (
     <div className='h-screen flex overflow-hidden'>
@@ -37,7 +37,7 @@ export const DashboardLayout = ({
       <aside
         className={cn(
           'hidden md:flex flex-col bg-card border-r flex-shrink-0 transition-[width] duration-200 z-(--z-sticky)',
-          isExpanded ? 'w-64' : 'w-16'
+          `w-(--sidebar-width-${isExpanded ? 'expanded' : 'collapsed'})`
         )}
       >
         <Sidebar isExpanded={isExpanded} onToggle={toggleSidebar} />

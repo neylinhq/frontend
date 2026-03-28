@@ -21,6 +21,7 @@ import {
   DropdownMenuTrigger
 } from '@/shared/components/dropdown-menu'
 import { Slider } from '@/shared/components/slider'
+import { useSidebarExpanded } from '@/shared/hooks/use-sidebar-expanded'
 import { cn } from '@/shared/lib/cn'
 import { isMac } from '@/shared/lib/platform'
 
@@ -42,7 +43,11 @@ interface ViewControlsPanelProps {
   /** Callback when map title is clicked — opens settings in sidebar */
   onOpenSettings?: () => void
   /** Render prop for map settings drawer — injected by widget */
-  renderSettingsDrawer?: (mapId: string, open: boolean, onOpenChange: (open: boolean) => void) => React.ReactNode
+  renderSettingsDrawer?: (
+    mapId: string,
+    open: boolean,
+    onOpenChange: (open: boolean) => void
+  ) => React.ReactNode
   className?: string
 }
 
@@ -65,6 +70,7 @@ export const ViewControlsPanel = memo(
     className
   }: ViewControlsPanelProps) => {
     const { t } = useTranslation()
+    const isExpanded = useSidebarExpanded()
     const prefs = useGlobalUIPrefs()
     const { toggleMinimap, setNodeSpacing, setDirectionStrength, setAnimationDuration } =
       useMapUIStore.getState()
@@ -91,13 +97,21 @@ export const ViewControlsPanel = memo(
       nodeSpacing !== 100 || directionStrength !== 100 || animationDuration !== 300
 
     return (
-      <div className={cn('absolute top-4 left-4 z-10', className)}>
+      <div
+        className={cn(
+          'absolute top-4 z-10',
+          isExpanded
+            ? 'left-[calc(var(--sidebar-width-expanded)+1.25rem)]'
+            : 'left-[calc(var(--sidebar-width-collapsed)+0.75rem)]',
+          className
+        )}
+      >
         <Card className='flex items-center gap-2 px-2 py-1.5 border border-border rounded-xl'>
           {/* 1. Map Title — context first */}
           <Button
             size='sm'
             variant='ghost'
-            onClick={() => onOpenSettings ? onOpenSettings() : setSettingsOpen(true)}
+            onClick={() => (onOpenSettings ? onOpenSettings() : setSettingsOpen(true))}
             className='h-8 px-2.5 max-w-48 group'
             title={t('mapSettings.title')}
           >

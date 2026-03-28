@@ -8,7 +8,7 @@ import { mapApi } from '@/entities/map'
 import { MapPage } from '@/pages/dashboard/map-page'
 import { getMeta } from '@/shared/lib/get-meta'
 import { ApiError } from '@/shared/api/client'
-import { getCookies } from '@/shared/api/server'
+import { getCookieHeader } from '@/shared/lib/cookies'
 
 export const meta = () => {
   return getMeta('mapView')
@@ -22,7 +22,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   }
 
   try {
-    const map = await mapApi.getFullMap(mapId, { cookies: getCookies(request) })
+    const map = await mapApi.getFullMap(mapId, { cookies: getCookieHeader(request) })
 
     if (!map) {
       throw new Response('Map not found', { status: 404 })

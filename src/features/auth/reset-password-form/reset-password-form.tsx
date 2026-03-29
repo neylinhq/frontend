@@ -1,11 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Key01Icon, Loading02Icon, RefreshCw01Icon } from '@untitledui/icons-react/outline'
-import { useEffect, useState } from 'react'
+import { type Dispatch, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import { z } from 'zod'
 
+import type { Step } from '@/pages/auth/reset-password-page'
 import { sessionApi } from '@/entities/session'
 import { ApiError } from '@/shared/api/client'
 import { Button } from '@/shared/components/button'
@@ -25,11 +26,15 @@ import { maskEmail } from '@/shared/lib/mask-email'
 const RESEND_COOLDOWN = 60 // seconds
 const RESEND_COOLDOWN_TICK_MS = 1000
 
-export const ResetPasswordForm = () => {
+interface Props {
+  step: Step
+  setStep: Dispatch<Step>
+}
+
+export const ResetPasswordForm = ({ step, setStep }: Props) => {
   const { t } = useTranslation()
   const navigate = useNavigate()
 
-  const [step, setStep] = useState<'email' | 'code' | 'complete'>('email')
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
   const [resendCooldown, setResendCooldown] = useState(0)
@@ -159,14 +164,14 @@ export const ResetPasswordForm = () => {
     return (
       <div className='space-y-6'>
         <div className='flex flex-col items-center gap-4 text-center'>
-          <div className='flex h-16 w-16 items-center justify-center rounded-full bg-primary/5'>
+          {/* <div className='flex h-16 w-16 items-center justify-center rounded-full bg-primary/5'>
             <Key01Icon className='h-8 w-8 text-primary' />
-          </div>
+          </div> */}
           <div className='space-y-2'>
-            <h1 className='text-xl font-semibold'>{t('auth.resetPassword.codeTitle')}</h1>
-            <p className='text-sm text-muted-foreground'>
+            {/* <h1 className='text-xl font-semibold'>{t('auth.resetPassword.codeTitle')}</h1> */}
+            {/* <p className='text-sm text-muted-foreground'>
               {t('auth.resetPassword.codeDescription')}
-            </p>
+            </p> */}
             <p className='text-sm font-medium'>{maskEmail(email)}</p>
           </div>
         </div>

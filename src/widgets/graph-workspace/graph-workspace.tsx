@@ -10,7 +10,6 @@ import {
   SidebarToggleFab
 } from '@/widgets/map-sidebar'
 import type { ViewportState } from '@/shared/lib/viewport'
-import { ReadOnlyBanner } from '@/features/map-permissions'
 import { NodeConnectionsPanel } from '@/features/node-connections-panel'
 import { AddNodeFab, QuickAddDialogWebGL, useNodeCreationStore } from '@/features/node-creation'
 import {
@@ -96,54 +95,49 @@ export const GraphWorkspace = ({
 
   return (
     <ReactFlowProvider>
-      <div className={cn('flex', className)}>
-        <div className='flex-1 min-w-0 relative'>
-          <div className='fixed inset-0'>
-            <GraphView
-              mapId={mapId}
-              initialData={data}
-              className='h-full w-full'
-              interactive={canEdit}
-              isAIPanelOpen={isAIPanelOpen}
-              onToggleAIPanel={handleToggleAIPanel}
-              onOpenSettings={() => {
-                setActiveTab('settings')
-                useMapUIStore.getState().setSidebarOpen(true)
-              }}
-              onNodeSelect={handleNodeSelect}
-              onViewportChange={setViewport}
-              useWebGL={useWebGL}
-            />
-          </div>
+      <div className={cn('relative overflow-hidden', className)}>
+        {/* Graph canvas — fills entire container */}
+        <GraphView
+          mapId={mapId}
+          initialData={data}
+          className='absolute inset-0'
+          interactive={canEdit}
+          isAIPanelOpen={isAIPanelOpen}
+          onToggleAIPanel={handleToggleAIPanel}
+          onOpenSettings={() => {
+            setActiveTab('settings')
+            useMapUIStore.getState().setSidebarOpen(true)
+          }}
+          onNodeSelect={handleNodeSelect}
+          onViewportChange={setViewport}
+          useWebGL={useWebGL}
+        />
 
-          {canEdit && <QuickAddDialogWebGL viewport={viewport} />}
+        {canEdit && <QuickAddDialogWebGL viewport={viewport} />}
 
-          <FloatingLayer.Root>
-            {!readOnly && (
-              <FloatingLayer.Item position='top-right'>
-                <SidebarToggleFab />
-              </FloatingLayer.Item>
-            )}
-            <FloatingLayer.Item position='bottom-right'>
-              <div className='flex items-end gap-3'>
-                MiniMap
-                <div className='flex flex-col-reverse items-center gap-3'>
-                  {canEdit && <AddNodeFab />}
-                  {!readOnly && <PracticeFab mapId={mapId} />}
-                  <button
-                    type='button'
-                    onClick={() => setUseWebGL(v => !v)}
-                    className='h-8 rounded-lg border border-border/60 bg-background/80 backdrop-blur-sm px-2.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors'
-                  >
-                    {useWebGL ? 'WebGL' : 'Flow'}
-                  </button>
-                </div>
-              </div>
+        <FloatingLayer.Root>
+          {!readOnly && (
+            <FloatingLayer.Item position='top-right'>
+              <SidebarToggleFab />
             </FloatingLayer.Item>
-          </FloatingLayer.Root>
+          )}
+          <FloatingLayer.Item position='bottom-right'>
+            <div className='flex items-end gap-3'>
+              <div className='flex flex-col-reverse items-center gap-3'>
+                {canEdit && <AddNodeFab />}
+                {!readOnly && <PracticeFab mapId={mapId} />}
+                <button
+                  type='button'
+                  onClick={() => setUseWebGL(v => !v)}
+                  className='h-8 rounded-lg border border-border/60 bg-background/80 backdrop-blur-sm px-2.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors'
+                >
+                  {useWebGL ? 'WebGL' : 'Flow'}
+                </button>
+              </div>
+            </div>
+          </FloatingLayer.Item>
+        </FloatingLayer.Root>
 
-          {readOnly && <ReadOnlyBanner mapId={mapId} />}
-        </div>
 
         {!readOnly && (
           <MapSidebar

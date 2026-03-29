@@ -1,12 +1,10 @@
-import { ArrowRightIcon, Expand01Icon, XCloseIcon } from '@untitledui/icons-react/outline'
-import { useState } from 'react'
+import { ArrowRightIcon } from '@untitledui/icons-react/outline'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
 import { Button } from '@/shared/components/button'
 import { Typography } from '@/shared/components/typography'
 import { AUTH_ROUTES } from '@/shared/config'
-import { cn } from '@/shared/lib/cn'
 import { GraphWorkspace } from '@/widgets/graph-workspace'
 
 import { DEMO_MAP } from './home-page.demo.constants'
@@ -14,7 +12,6 @@ import { HOME_FEATURES } from './home-page.constants'
 
 export const HomePage = () => {
   const { t } = useTranslation()
-  const [isFullscreen, setIsFullscreen] = useState(false)
 
   return (
     <>
@@ -52,25 +49,8 @@ export const HomePage = () => {
       {/* Interactive Demo */}
       <section className='pb-20'>
         <div className='max-w-5xl mx-auto px-6'>
-          <div
-            className={cn(
-              isFullscreen
-                ? 'fixed inset-0 z-(--z-overlay)'
-                : 'rounded-lg border overflow-hidden h-[500px] relative'
-            )}
-          >
-            <GraphWorkspace mapId='demo' data={DEMO_MAP} readOnly />
-            <button
-              type='button'
-              onClick={() => setIsFullscreen(v => !v)}
-              className='absolute top-3 right-3 z-10 h-8 w-8 flex items-center justify-center rounded-md bg-background/80 backdrop-blur-sm border border-border/60 text-muted-foreground hover:text-foreground transition-colors'
-            >
-              {isFullscreen ? (
-                <XCloseIcon className='h-4 w-4' />
-              ) : (
-                <Expand01Icon className='h-4 w-4' />
-              )}
-            </button>
+          <div className='rounded-lg border overflow-hidden h-[500px] relative'>
+            <GraphWorkspace mapId='demo' data={DEMO_MAP} readOnly className='h-full w-full' />
           </div>
         </div>
       </section>

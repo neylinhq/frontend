@@ -21,7 +21,6 @@ import {
   DropdownMenuTrigger
 } from '@/shared/components/dropdown-menu'
 import { Slider } from '@/shared/components/slider'
-import { useSidebarExpanded } from '@/shared/hooks'
 import { cn } from '@/shared/lib/cn'
 import { isMac } from '@/shared/lib/platform'
 
@@ -70,7 +69,6 @@ export const ViewControlsPanel = memo(
     className
   }: ViewControlsPanelProps) => {
     const { t } = useTranslation()
-    const isExpanded = useSidebarExpanded()
     const prefs = useGlobalUIPrefs()
     const { toggleMinimap, setNodeSpacing, setDirectionStrength, setAnimationDuration } =
       useMapUIStore.getState()
@@ -100,9 +98,7 @@ export const ViewControlsPanel = memo(
       <div
         className={cn(
           'absolute top-4 z-10',
-          isExpanded
-            ? 'left-[calc(var(--sidebar-width-expanded)+1.25rem)]'
-            : 'left-[calc(var(--sidebar-width-collapsed)+0.75rem)]',
+          'left-[calc(var(--dashboard-sidebar-offset,0px)+1rem)]',
           className
         )}
       >

@@ -145,13 +145,13 @@ export const ResetPasswordForm = ({ step, setStep }: Props) => {
   if (step === 'complete') {
     return (
       <div className='text-center space-y-4 flex flex-col items-center'>
-        <div className='h-16 w-16 bg-success/10 rounded-full flex items-center justify-center mb-4'>
+        {/* <div className='h-16 w-16 bg-success/10 rounded-full flex items-center justify-center mb-4'>
           <Key01Icon className='h-8 w-8 text-success' />
         </div>
         <h3 className='text-xl font-semibold'>{t('auth.resetPassword.successTitle')}</h3>
         <p className='text-sm text-muted-foreground'>
           {t('auth.resetPassword.successDescription')}
-        </p>
+        </p> */}
         <Button className='w-full' onClick={() => navigate('/auth/sign-in')}>
           {t('auth.resetPassword.backToSignIn')}
         </Button>

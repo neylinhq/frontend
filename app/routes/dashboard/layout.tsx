@@ -77,13 +77,15 @@ const DashboardRoute = () => {
   const { sidebarExpanded } = useLoaderData<typeof loader>()
   const matches = useMatches()
 
-  // Check if any child route has disableScroll in handle
   const disableScroll = matches.some(
     match => (match.handle as { disableScroll?: boolean })?.disableScroll
   )
+  const sidebarMode = matches.some(
+    match => (match.handle as { sidebarMode?: string })?.sidebarMode === 'cover'
+  ) ? 'cover' as const : 'push' as const
 
   return (
-    <DashboardLayout disableScroll={disableScroll} defaultExpanded={sidebarExpanded}>
+    <DashboardLayout disableScroll={disableScroll} defaultExpanded={sidebarExpanded} sidebarMode={sidebarMode}>
       <ErrorBoundary level='page'>
         <Outlet />
       </ErrorBoundary>

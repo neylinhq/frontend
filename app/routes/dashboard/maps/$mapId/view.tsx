@@ -68,7 +68,7 @@ export const clientLoader = async ({ params, serverLoader }: ClientLoaderFunctio
 clientLoader.hydrate = true
 
 // Disable layout scroll - ReactFlow needs full height container
-export const handle = { disableScroll: true }
+export const handle = { disableScroll: true, sidebarMode: 'cover' as const }
 
 const MapViewRoute = () => {
   const { map, mapId } = useLoaderData<typeof loader>()

@@ -18,7 +18,7 @@ export const ResetPasswordPage = () => {
       ? t('auth.resetPassword.description')
       : step === 'code'
         ? t('auth.resetPassword.codeDescription')
-        : null
+        : t('auth.resetPassword.successDescription')
 
   return (
     <div className='space-y-6'>
@@ -29,12 +29,14 @@ export const ResetPasswordPage = () => {
 
       <ResetPasswordForm step={step} setStep={setStep} />
 
-      <div className='mt-4 text-center text-sm text-muted-foreground'>
-        {t('auth.resetPassword.rememberPassword')}{' '}
-        <Link to={AUTH_ROUTES.signIn} className='underline hover:text-primary' prefetch='intent'>
-          {t('auth.resetPassword.signInLink')}
-        </Link>
-      </div>
+      {step !== 'complete' && (
+        <div className='mt-4 text-center text-sm text-muted-foreground'>
+          {t('auth.resetPassword.rememberPassword')}{' '}
+          <Link to={AUTH_ROUTES.signIn} className='underline hover:text-primary' prefetch='intent'>
+            {t('auth.resetPassword.signInLink')}
+          </Link>
+        </div>
+      )}
     </div>
   )
 }

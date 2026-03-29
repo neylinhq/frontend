@@ -104,11 +104,12 @@ export const ResizableSidebar = ({
     )
   }
 
-  // Desktop: inline resizable sidebar
+  // Desktop: overlay resizable sidebar (cover mode)
   return (
     <aside
       className={cn(
-        'flex flex-col flex-shrink-0 border-l border-border/60 h-full overflow-hidden relative bg-background',
+        'absolute right-0 top-0 bottom-0 z-(--z-overlay)',
+        'flex flex-col border-l border-border/60 overflow-hidden bg-background',
         'transition-[width] duration-200',
         isResizing && 'select-none',
         className

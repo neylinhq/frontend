@@ -14,12 +14,15 @@ interface DashboardLayoutProps {
   disableScroll?: boolean
   /** Initial sidebar state from SSR (read from cookie) */
   defaultExpanded?: boolean
+  /** Sidebar positioning: 'push' (default) shrinks content, 'cover' overlays content */
+  sidebarMode?: 'push' | 'cover'
   children: React.ReactNode
 }
 
 export const DashboardLayout = ({
   disableScroll = false,
   defaultExpanded = true,
+  sidebarMode = 'push',
   children
 }: DashboardLayoutProps) => {
   const { isExpanded, toggleSidebar } = useDashboardSidebarStore()
@@ -31,20 +34,26 @@ export const DashboardLayout = ({
     }
   }, [])
 
+  const isCover = sidebarMode === 'cover'
+
   return (
     <div className='h-screen flex overflow-hidden'>
       {/* Desktop Sidebar */}
       <aside
         className={cn(
           'hidden md:flex flex-col bg-card border-r flex-shrink-0 transition-[width] duration-200 z-(--z-sticky)',
-          `w-(--sidebar-width-${isExpanded ? 'expanded' : 'collapsed'})`
+          `w-(--sidebar-width-${isExpanded ? 'expanded' : 'collapsed'})`,
+          isCover && 'absolute left-0 top-0 bottom-0'
         )}
       >
         <Sidebar isExpanded={isExpanded} onToggle={toggleSidebar} />
       </aside>
 
       {/* Main Content */}
-      <div className='flex-1 flex flex-col min-w-0'>
+      <div
+        className={cn('flex-1 flex flex-col min-w-0', isCover && 'w-full')}
+        style={isCover ? { '--dashboard-sidebar-offset': `var(--sidebar-width-${isExpanded ? 'expanded' : 'collapsed'})` } as React.CSSProperties : undefined}
+      >
         {/* Mobile Header */}
         <header className='md:hidden h-14 flex items-center px-4 border-b bg-background'>
           <Sheet>

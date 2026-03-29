@@ -97,8 +97,8 @@ export const ViewControlsPanel = memo(
     return (
       <div
         className={cn(
-          'absolute top-4 z-10',
-          'left-[calc(var(--dashboard-sidebar-offset,0px)+1rem)]',
+          'absolute top-(--floating-inset) z-10 transition-[left] duration-[var(--sidebar-transition)]',
+          'left-[calc(var(--dashboard-sidebar-offset,0px)+var(--floating-inset))]',
           className
         )}
       >

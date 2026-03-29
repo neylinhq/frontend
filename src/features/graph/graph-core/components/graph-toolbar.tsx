@@ -145,7 +145,7 @@ export const GraphToolbar = memo(
     return (
       <div
         className={cn(
-          'absolute bottom-8 left-1/2 -translate-x-1/2 z-20',
+          'absolute bottom-(--floating-inset) left-1/2 -translate-x-1/2 z-20',
           'pointer-events-none',
           className
         )}

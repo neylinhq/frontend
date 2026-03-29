@@ -24,7 +24,8 @@ import {
   useMapActiveTab,
   useMapFocus,
   useMapUIStore,
-  useSidebarOpen
+  useSidebarOpen,
+  useSidebarWidth
 } from '@/entities/map-ui'
 import { FloatingLayer } from '@/shared/components/floating-layer'
 import { useKeyboardShortcut } from '@/shared/hooks/use-keyboard-shortcut'
@@ -50,6 +51,7 @@ export const GraphWorkspace = ({
   const { focusNode, clearFocus, setActiveTab } = useMapActions(mapId)
   const { openQuickAdd } = useNodeCreationStore()
   const isOpen = useSidebarOpen()
+  const sidebarWidth = useSidebarWidth()
   const activeTab = useMapActiveTab(mapId)
   const practiceView = usePracticeView()
   const [selectedNode, setSelectedNode] = useState<Node | null>(null)
@@ -95,7 +97,10 @@ export const GraphWorkspace = ({
 
   return (
     <ReactFlowProvider>
-      <div className={cn('relative overflow-hidden', className)}>
+      <div
+        className={cn('relative overflow-hidden', className)}
+        style={{ '--map-sidebar-width': isOpen && !readOnly ? `${sidebarWidth}px` : '0px' } as React.CSSProperties}
+      >
         {/* Graph canvas — fills entire container */}
         <GraphView
           mapId={mapId}

@@ -3,10 +3,10 @@ import { cn } from '@/shared/lib/cn'
 type FloatingLayerPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
 
 const POSITION_CLASSES: Record<FloatingLayerPosition, string> = {
-  'top-left': 'top-4 left-4',
-  'top-right': 'top-4 right-4',
-  'bottom-left': 'bottom-6 left-6',
-  'bottom-right': 'bottom-6 right-6'
+  'top-left': 'top-(--floating-inset) left-(--floating-inset)',
+  'top-right': 'top-(--floating-inset) right-[calc(var(--map-sidebar-width,0px)+var(--floating-inset))]',
+  'bottom-left': 'bottom-(--floating-inset) left-(--floating-inset)',
+  'bottom-right': 'bottom-(--floating-inset) right-[calc(var(--map-sidebar-width,0px)+var(--floating-inset))]'
 }
 
 interface FloatingLayerRootProps {
@@ -46,4 +46,4 @@ export const FloatingLayer = {
   Item: FloatingLayerItem
 }
 
-export { type FloatingLayerPosition }
+export type { FloatingLayerPosition }

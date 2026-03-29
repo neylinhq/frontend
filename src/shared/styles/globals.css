@@ -336,6 +336,10 @@
   --color-syntax-property: oklch(var(--syntax-property));
   --color-syntax-punctuation: oklch(var(--syntax-punctuation));
 
+  /* Floating layer */
+  --floating-inset: 1rem;
+  --sidebar-transition: 200ms;
+
   /* Z-index */
   --z-base: 0;
   --z-dropdown: 100;

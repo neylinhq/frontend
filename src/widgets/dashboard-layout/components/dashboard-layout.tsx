@@ -41,8 +41,9 @@ export const DashboardLayout = ({
       {/* Desktop Sidebar */}
       <aside
         className={cn(
-          'hidden md:flex flex-col bg-card border-r flex-shrink-0 transition-[width] duration-200 z-(--z-sticky)',
-          `w-(--sidebar-width-${isExpanded ? 'expanded' : 'collapsed'})`,
+          'hidden md:flex flex-col bg-card border-r flex-shrink-0 z-(--z-sticky) transition-[width]',
+          'duration-[var(--sidebar-transition)]',
+          isExpanded ? 'w-(--sidebar-width-expanded)' : 'w-(--sidebar-width-collapsed)',
           isCover && 'absolute left-0 top-0 bottom-0'
         )}
       >

@@ -1,5 +1,6 @@
 export { useAutoSave } from './use-auto-save'
 export { useDebouncedCallback } from './use-debounced-callback'
+export { useFullscreen } from './use-fullscreen'
 export { useLocalStorage } from './use-local-storage'
 export { useResizable } from './use-resizable'
 export { useSidebarExpanded } from './use-sidebar-expanded'

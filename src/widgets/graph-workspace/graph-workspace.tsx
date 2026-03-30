@@ -12,6 +12,7 @@ import {
   useSidebarOpen,
   useSidebarWidth
 } from '@/entities/map-ui'
+import { useFullscreen } from '@/shared/hooks/use-fullscreen'
 import { useKeyboardShortcut } from '@/shared/hooks/use-keyboard-shortcut'
 import { cn } from '@/shared/lib/cn'
 
@@ -34,6 +35,7 @@ export const GraphWorkspace = ({
   children
 }: GraphWorkspaceProps) => {
   const canEdit = !readOnly
+  const isFullscreen = useFullscreen(s => s.isFullscreen)
   const { setActiveTab } = useMapActions(mapId)
   const { openQuickAdd } = useNodeCreationStore()
   const isOpen = useSidebarOpen()
@@ -77,7 +79,10 @@ export const GraphWorkspace = ({
   return (
     <ReactFlowProvider>
       <div
-        className={cn('relative overflow-hidden', className)}
+        className={cn(
+          'relative overflow-hidden',
+          isFullscreen ? 'fixed inset-0 z-(--z-fullscreen) !w-screen !h-screen' : className
+        )}
         style={{ '--map-sidebar-width': isOpen ? `${sidebarWidth}px` : '0px' } as React.CSSProperties}
       >
         {/* Graph canvas — fills entire container */}

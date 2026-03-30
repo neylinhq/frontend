@@ -15,7 +15,6 @@ import {
   useReactFlow
 } from '@xyflow/react'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 
 import { cssVarToHex, getNodeColorHex } from '@/features/graph/graph-webgl'
@@ -896,7 +895,7 @@ const GraphVisualizationContent = ({
     <div
       className={cn(
         'relative bg-background',
-        controls.isFullscreen ? 'fixed inset-0 z-(--z-fullscreen) !w-screen !h-screen' : 'h-full w-full',
+        'h-full w-full',
         className
       )}
     >
@@ -1023,7 +1022,7 @@ const GraphVisualizationContent = ({
     </div>
   )
 
-  return controls.isFullscreen ? createPortal(content, document.body) : content
+  return content
 }
 
 export const GraphVisualization = memo((props: GraphVisualizationProps) => {

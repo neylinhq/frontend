@@ -9,7 +9,6 @@
 
 import { Loading02Icon } from '@untitledui/icons-react/outline'
 import { memo, useCallback, useMemo, useRef, useState } from 'react'
-import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 
 import {
@@ -323,7 +322,7 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
     <div
       className={cn(
         'relative bg-background',
-        controls.isFullscreen ? 'fixed inset-0 z-(--z-fullscreen) !w-screen !h-screen' : 'h-full w-full',
+        'h-full w-full',
         className
       )}
     >
@@ -426,5 +425,5 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
     </div>
   )
 
-  return controls.isFullscreen ? createPortal(content, document.body) : content
+  return content
 })

@@ -1,5 +1,7 @@
 import { useCallback, useState } from 'react'
 
+import { useFullscreen } from '@/shared/hooks/use-fullscreen'
+
 import type { GraphControls } from './graph-visualization.types'
 
 export const useGraphControls = () => {
@@ -9,12 +11,10 @@ export const useGraphControls = () => {
     showMinimap: true
   })
 
+  const { isFullscreen, toggleFullscreen } = useFullscreen()
+
   const setZoom = useCallback((zoom: number) => {
     setControls(prev => ({ ...prev, zoom }))
-  }, [])
-
-  const toggleFullscreen = useCallback(() => {
-    setControls(prev => ({ ...prev, isFullscreen: !prev.isFullscreen }))
   }, [])
 
   const toggleMinimap = useCallback(() => {
@@ -22,7 +22,7 @@ export const useGraphControls = () => {
   }, [])
 
   return {
-    controls,
+    controls: { ...controls, isFullscreen },
     setZoom,
     toggleFullscreen,
     toggleMinimap

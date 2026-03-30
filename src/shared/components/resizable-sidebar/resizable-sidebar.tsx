@@ -95,7 +95,7 @@ export const ResizableSidebar = ({
       <VaulDrawer.Root open={open} onOpenChange={isOpen => !isOpen && onClose?.()}>
         <VaulDrawer.Portal>
           <VaulDrawer.Overlay className='fixed inset-0 z-40 bg-overlay' />
-          <VaulDrawer.Content className='fixed inset-x-0 bottom-0 z-50 flex h-[calc(100vh-6rem)] flex-col rounded-t-xl bg-background'>
+          <VaulDrawer.Content className='fixed inset-x-0 bottom-0 z-(--z-modal) flex h-[calc(100vh-6rem)] flex-col rounded-t-xl bg-background'>
             <div className='mx-auto mt-3 h-1 w-12 shrink-0 rounded-full bg-muted-foreground/30' />
             {children}
           </VaulDrawer.Content>

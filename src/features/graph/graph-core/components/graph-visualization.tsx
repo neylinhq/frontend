@@ -24,7 +24,6 @@ import {
   mapKeys,
   type Node,
   useCreateEdge,
-  useDeleteEdge,
   useFullMap,
   useUpdateNodePosition,
   useUpdateNodePositions
@@ -57,7 +56,6 @@ import { EdgeTypeSelector } from './edge-type-selector'
 import { GraphToolbar } from './graph-toolbar'
 import { KnowledgeEdge } from './knowledge-edge'
 import { KnowledgeNode } from './knowledge-node'
-import { NodeDrawer } from './node-drawer'
 import { ViewControlsPanel } from './view-controls-panel'
 
 const nodeTypes = {
@@ -73,28 +71,6 @@ interface GraphVisualizationProps {
   className?: string
   interactive?: boolean
   initialData?: FullMap
-  /** Render prop for connections panel - injected by widget to avoid cross-feature import */
-  renderConnectionsPanel?: (
-    node: Node,
-    edges: Edge[],
-    allNodes: Node[],
-    onOpenNode?: (id: string) => void,
-    onPanToNode?: (id: string) => void,
-    onEditEdge?: (edge: Edge) => void,
-    onDeleteEdge?: (edgeId: string) => void
-  ) => React.ReactNode
-  /** Render prop for node metadata form in drawer - injected by widget */
-  renderMetadataForm?: (
-    node: Node,
-    onSubmit: (values: Record<string, unknown>) => void,
-    isPending: boolean
-  ) => React.ReactNode
-  /** Render prop for map settings drawer - injected by widget */
-  renderSettingsDrawer?: (
-    mapId: string,
-    open: boolean,
-    onOpenChange: (open: boolean) => void
-  ) => React.ReactNode
   /** Callback when node is selected — for external management (sidebar) */
   onNodeSelect?: (node: Node | null) => void
   /** Callback when viewport changes (pan/zoom) */
@@ -115,9 +91,6 @@ const GraphVisualizationContent = ({
   className,
   interactive = true,
   initialData,
-  renderConnectionsPanel,
-  renderMetadataForm,
-  renderSettingsDrawer,
   onNodeSelect,
   onViewportChange,
   isAIPanelOpen = false,
@@ -149,9 +122,7 @@ const GraphVisualizationContent = ({
   const updatePositionMutation = useUpdateNodePosition(mapId)
   const updatePositionsMutation = useUpdateNodePositions(mapId)
   useCreateEdge(mapId)
-  const deleteEdgeMutation = useDeleteEdge(mapId)
-
-  // Edge management store (needed early for handleEditEdge)
+  // Edge management store
   const { pendingEdge, startEdgeCreation, cancelEdgeCreation, startEdgeEditing } =
     useEdgeManagementStore()
 
@@ -187,34 +158,6 @@ const GraphVisualizationContent = ({
   const viewMode = useMapViewMode(mapId)
   const { focusedNodeId, focusDepth } = useMapFocus(mapId)
   const { focusNode } = useMapActions(mapId)
-
-  // Pan to node and zoom in (for connections panel eye icon)
-  // Does NOT enable focus mode - just centers on the node
-  const handlePanToNodeWithZoom = useCallback(
-    (nodeId: string) => {
-      handlePanToNode(nodeId, 1) // Zoom to 100%
-    },
-    [handlePanToNode]
-  )
-
-  // Edit edge from connections panel - opens EdgeEditPopover
-  const handleEditEdge = useCallback(
-    (edge: Edge) => {
-      // Position popover at center of viewport
-      const centerX = window.innerWidth / 2
-      const centerY = window.innerHeight / 2
-      startEdgeEditing(edge, { x: centerX, y: centerY })
-    },
-    [startEdgeEditing]
-  )
-
-  // Delete edge from connections panel
-  const handleDeleteEdge = useCallback(
-    (edgeId: string) => {
-      deleteEdgeMutation.mutate(edgeId)
-    },
-    [deleteEdgeMutation]
-  )
 
   const { visibleNodeTypes, visibleEdgeTypes, connectionRange } = useMapFilters(mapId)
   const prefs = useGlobalUIPrefs()
@@ -889,8 +832,6 @@ const GraphVisualizationContent = ({
     return null
   }
 
-  const selectedNode = fullMap.nodes.find(n => n.id === selectedNodeId) || null
-
   const content = (
     <div
       className={cn(
@@ -964,7 +905,6 @@ const GraphVisualizationContent = ({
         settingsOpen={settingsOpen}
         onSettingsOpenChange={setSettingsOpen}
         onOpenSettings={onOpenSettings}
-        renderSettingsDrawer={renderSettingsDrawer}
       />
 
       {/* Toolbar - view modes, focus controls, filters */}
@@ -978,37 +918,6 @@ const GraphVisualizationContent = ({
         isAIPanelOpen={isAIPanelOpen}
         onToggleAIPanel={onToggleAIPanel}
       />
-
-      {/* Node drawer */}
-      {/* Node drawer - only shown when onNodeSelect is NOT provided (internal mode) */}
-      {!onNodeSelect && (
-        <NodeDrawer
-          mapId={mapId}
-          node={selectedNode}
-          onClose={clearSelection}
-          isReadOnly={!interactive}
-          renderMetadataForm={renderMetadataForm}
-          connectionsCount={
-            selectedNode
-              ? fullMap.edges.filter(
-                  e => e.sourceNodeId === selectedNode.id || e.targetNodeId === selectedNode.id
-                ).length
-              : 0
-          }
-          connectionsTab={
-            selectedNode &&
-            renderConnectionsPanel?.(
-              selectedNode,
-              fullMap.edges,
-              fullMap.nodes,
-              selectNode,
-              handlePanToNodeWithZoom,
-              interactive ? handleEditEdge : undefined,
-              interactive ? handleDeleteEdge : undefined
-            )
-          }
-        />
-      )}
 
       {/* Edge type selector - appears when creating new edge */}
       <EdgeTypeSelector

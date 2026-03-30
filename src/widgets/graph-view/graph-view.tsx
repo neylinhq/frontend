@@ -3,9 +3,6 @@ import { memo } from 'react'
 import { GraphXYFlowVisualization as GraphXYFlow } from '@/features/graph/graph-core'
 import { GraphWebGLVisualization as GraphWebGL } from '@/features/graph/graph-webgl'
 import type { ViewportState } from '@/shared/lib/viewport'
-import { MapSettingsDrawer } from '@/features/map-settings'
-import { NodeConnectionsPanel } from '@/features/node-connections-panel'
-import { NodeMetadataForm } from '@/features/node-metadata-form'
 import {
   useMasteryMap,
   useMasteryOverlay,
@@ -13,7 +10,7 @@ import {
   useSessionScopeGuard,
 } from '@/features/practice-mode'
 import { useMapActiveTab } from '@/entities/map-ui'
-import type { Edge, FullMap, Node } from '@/entities/map'
+import type { FullMap, Node } from '@/entities/map'
 import { ErrorBoundary } from '@/shared/components/error-boundary'
 
 interface GraphViewProps {
@@ -83,31 +80,6 @@ export const GraphView = memo(({
         onViewportChange={onViewportChange}
         isPracticeModeActive={isPracticeModeActive}
         masteryMap={masteryMap}
-        renderConnectionsPanel={(
-          node: Node,
-          edges: Edge[],
-          allNodes: Node[],
-          onOpenNode?: (id: string) => void,
-          onPanToNode?: (id: string) => void,
-          onEditEdge?: (edge: Edge) => void,
-          onDeleteEdge?: (edgeId: string) => void
-        ) => (
-          <NodeConnectionsPanel
-            node={node}
-            edges={edges}
-            allNodes={allNodes}
-            onOpenNode={onOpenNode}
-            onPanToNode={onPanToNode}
-            onEditEdge={onEditEdge}
-            onDeleteEdge={onDeleteEdge}
-          />
-        )}
-        renderMetadataForm={(node, onSubmit, isPending) => (
-          <NodeMetadataForm node={node} onSubmit={onSubmit} isPending={isPending} />
-        )}
-        renderSettingsDrawer={(settingsMapId, open, onOpenChange) => (
-          <MapSettingsDrawer mapId={settingsMapId} open={open} onOpenChange={onOpenChange} />
-        )}
       />
     </ErrorBoundary>
   )

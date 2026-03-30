@@ -15,7 +15,6 @@ import {
   EdgeEditPopover,
   EdgeTypeSelector,
   GraphToolbar,
-  NodeDrawer,
   useEdgeManagementStore,
   useFilteredGraphData,
   useGraphControls,
@@ -30,7 +29,7 @@ import {
   type GraphCanvasHandle
 } from '@/features/graph/graph-webgl/components/graph-canvas'
 import { MiniMapWebGL } from '@/features/graph/graph-webgl/components/minimap-webgl'
-import type { Edge, FullMap, Node } from '@/entities/map'
+import type { FullMap, Node } from '@/entities/map'
 import { useFullMap, useUpdateNodePosition } from '@/entities/map'
 import {
   useDirectionStrength,
@@ -63,27 +62,6 @@ interface GraphWebGLVisualizationProps {
   /** Practice mode — injected from widget layer */
   isPracticeModeActive?: boolean
   masteryMap?: Map<string, { mastery: import('@/entities/progress').MasteryLevel; isDue: boolean }>
-  renderConnectionsPanel?: (
-    node: Node,
-    edges: Edge[],
-    allNodes: Node[],
-    onOpenNode?: (id: string) => void,
-    onPanToNode?: (id: string) => void,
-    onEditEdge?: (edge: Edge) => void,
-    onDeleteEdge?: (edgeId: string) => void
-  ) => React.ReactNode
-  /** Render prop for metadata form — injected by widget to avoid cross-feature import */
-  renderMetadataForm?: (
-    node: Node,
-    onSubmit: (values: Record<string, unknown>) => void,
-    isPending: boolean
-  ) => React.ReactNode
-  /** Render prop for settings drawer — injected by widget to avoid cross-feature import */
-  renderSettingsDrawer?: (
-    mapId: string,
-    open: boolean,
-    onOpenChange: (open: boolean) => void
-  ) => React.ReactNode
 }
 
 export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
@@ -99,9 +77,6 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
   onOpenSettings: _onOpenSettings,
   isPracticeModeActive: _isPracticeModeActive = false,
   masteryMap: _masteryMap,
-  renderConnectionsPanel,
-  renderMetadataForm,
-  renderSettingsDrawer: _renderSettingsDrawer
 }: GraphWebGLVisualizationProps) {
   const { t } = useTranslation()
 
@@ -112,7 +87,7 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
   const updatePositionMutation = useUpdateNodePosition(mapId)
 
   // Selection state
-  const { selectedElements, setSelection, setDrawerNodeId, clearSelection, selectedNodeId } =
+  const { selectedElements, setSelection, setDrawerNodeId, selectedNodeId } =
     useNodeSelection()
   const { controls, toggleFullscreen } = useGraphControls()
 
@@ -282,13 +257,6 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
     enabled: _interactive
   })
 
-  // Pan to node (for connections panel eye icon)
-  // Does NOT enable focus mode - just centers on the node
-  const handlePanToNodeWithZoom = useCallback((nodeId: string) => {
-    // TODO: Pan to node in WebGL
-    canvasRef.current?.centerOnNode?.(nodeId)
-  }, [])
-
   // Show loading only when fetching client-side (no initialData)
   if (!initialData && isLoading) {
     return (
@@ -315,8 +283,6 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
   if (!fullMap) {
     return null
   }
-
-  const selectedNode = fullMap.nodes.find(n => n.id === selectedNodeId) || null
 
   const content = (
     <div
@@ -389,33 +355,6 @@ export const GraphWebGLVisualization = memo(function GraphWebGLVisualization({
         isAIPanelOpen={isAIPanelOpen}
         onToggleAIPanel={onToggleAIPanel}
       />
-
-      {/* Node drawer - only shown when onNodeSelect is NOT provided (internal mode) */}
-      {!onNodeSelect && (
-        <NodeDrawer
-          mapId={mapId}
-          node={selectedNode}
-          onClose={clearSelection}
-          connectionsCount={
-            selectedNode
-              ? fullMap.edges.filter(
-                  e => e.sourceNodeId === selectedNode.id || e.targetNodeId === selectedNode.id
-                ).length
-              : 0
-          }
-          connectionsTab={
-            selectedNode &&
-            renderConnectionsPanel?.(
-              selectedNode,
-              fullMap.edges,
-              fullMap.nodes,
-              handleSelectNode,
-              handlePanToNodeWithZoom
-            )
-          }
-          renderMetadataForm={renderMetadataForm}
-        />
-      )}
 
       {/* WebGL indicator */}
       <div className='absolute bottom-2 left-2 bg-background/80 border rounded px-2 py-1 text-xs font-mono'>

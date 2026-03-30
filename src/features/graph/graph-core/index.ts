@@ -1,6 +1,5 @@
 // Components
 export { GraphToolbar } from './components/graph-toolbar'
-export { NodeDrawer } from './components/node-drawer'
 
 // GraphVisualization - switches between xyflow and WebGL based on feature flag
 import { GraphVisualization as GraphWebGL, USE_WEBGL_RENDERER } from '@/features/graph/graph-webgl'

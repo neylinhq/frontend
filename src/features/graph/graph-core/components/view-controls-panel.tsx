@@ -41,12 +41,6 @@ interface ViewControlsPanelProps {
   onSettingsOpenChange?: (open: boolean) => void
   /** Callback when map title is clicked — opens settings in sidebar */
   onOpenSettings?: () => void
-  /** Render prop for map settings drawer — injected by widget */
-  renderSettingsDrawer?: (
-    mapId: string,
-    open: boolean,
-    onOpenChange: (open: boolean) => void
-  ) => React.ReactNode
   className?: string
 }
 
@@ -65,7 +59,6 @@ export const ViewControlsPanel = memo(
     settingsOpen,
     onSettingsOpenChange,
     onOpenSettings,
-    renderSettingsDrawer,
     className
   }: ViewControlsPanelProps) => {
     const { t } = useTranslation()
@@ -73,9 +66,8 @@ export const ViewControlsPanel = memo(
     const { toggleMinimap, setNodeSpacing, setDirectionStrength, setAnimationDuration } =
       useMapUIStore.getState()
     const [searchOpen, setSearchOpen] = useState(false)
-    const [internalSettingsOpen, setInternalSettingsOpen] = useState(false)
+    const [_internalSettingsOpen, setInternalSettingsOpen] = useState(false)
     const isSettingsControlled = settingsOpen !== undefined
-    const resolvedSettingsOpen = isSettingsControlled ? settingsOpen : internalSettingsOpen
     const setSettingsOpen =
       isSettingsControlled && onSettingsOpenChange ? onSettingsOpenChange : setInternalSettingsOpen
 
@@ -113,7 +105,6 @@ export const ViewControlsPanel = memo(
           >
             <span className='truncate text-sm font-medium'>{mapTitle || t('common.untitled')}</span>
           </Button>
-          {renderSettingsDrawer?.(mapId, resolvedSettingsOpen, setSettingsOpen)}
 
           {/* 2. Search — high frequency action */}
           {nodes && nodes.length > 0 && onNodeSelect && (

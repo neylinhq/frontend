@@ -1,20 +1,22 @@
 import { ArrowRightIcon } from '@untitledui/icons-react/outline'
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
 import { GraphSidebar } from '@/widgets/graph-sidebar'
 import { GraphWorkspace } from '@/widgets/graph-workspace'
+import { ChatPanel } from '@/widgets/map-sidebar'
 import { Button } from '@/shared/components/button'
 import { Typography } from '@/shared/components/typography'
 import { AUTH_ROUTES } from '@/shared/config'
 
-import { ChatPanel } from '@/widgets/map-sidebar'
 import { DemoNodePanel } from './components/demo-node-panel'
-import { DEMO_MAP } from './home-page.demo.constants'
+import { DEMO_MAP_ID, getDemoMap } from './home-page.demo.constants'
 import { HOME_FEATURES } from './home-page.constants'
 
 export const HomePage = () => {
   const { t } = useTranslation()
+  const demoMap = useMemo(() => getDemoMap(t), [t])
 
   return (
     <>
@@ -53,14 +55,14 @@ export const HomePage = () => {
       <section className='pb-20'>
         <div className='max-w-5xl mx-auto px-6'>
           <div className='rounded-lg border overflow-hidden h-[500px] relative'>
-            <GraphWorkspace mapId='demo' data={DEMO_MAP} readOnly className='h-full w-full'>
-              <GraphSidebar mapId='demo'>
+            <GraphWorkspace mapId={DEMO_MAP_ID} data={demoMap} readOnly className='h-full w-full'>
+              <GraphSidebar mapId={DEMO_MAP_ID}>
                 <GraphSidebar.ToggleFab />
                 <GraphSidebar.Panel id='node' label={t('mapSidebar.tabs.node', 'Node')}>
-                  <DemoNodePanel data={DEMO_MAP} />
+                  <DemoNodePanel data={demoMap} />
                 </GraphSidebar.Panel>
                 <GraphSidebar.Panel id='chat' label={t('mapSidebar.tabs.chat', 'Chat')}>
-                  <ChatPanel mapId='demo' />
+                  <ChatPanel mapId={DEMO_MAP_ID} />
                 </GraphSidebar.Panel>
               </GraphSidebar>
             </GraphWorkspace>

@@ -298,7 +298,8 @@
       "getStartedFree": "Get Started",
       "ready": "Ready to start?",
       "freeInfo": "Free tier available. No credit card required.",
-      "createAccount": "Create"
+      "createAccount": "Create",
+      "signUpToApply": "Sign up to apply"
     },
     "stats": {
       "users": "Users",
@@ -397,6 +398,69 @@
     },
     "footer": {
       "rights": "All rights reserved."
+    }
+  },
+  "demo": {
+    "map": {
+      "title": "How Learning Works",
+      "description": "A cognitive science map exploring the mechanisms behind effective learning"
+    },
+    "nodes": {
+      "cognitiveScience": "Cognitive Science",
+      "cognitiveScience.desc": "The interdisciplinary study of the mind and its processes",
+      "memory": "Memory",
+      "memory.desc": "The faculty of encoding, storing, and retrieving information",
+      "workingMemory": "Working Memory",
+      "workingMemory.desc": "Limited-capacity system for temporary information storage and manipulation",
+      "longTermMemory": "Long-Term Memory",
+      "longTermMemory.desc": "Virtually unlimited store for knowledge and past events",
+      "chunking": "Chunking",
+      "chunking.desc": "Grouping individual pieces of information into larger meaningful units",
+      "forgettingCurve": "Forgetting Curve",
+      "forgettingCurve.desc": "Memory retention decays exponentially without reinforcement",
+      "spacedRepetition": "Spaced Repetition",
+      "spacedRepetition.desc": "Reviewing material at increasing intervals to optimize retention",
+      "ebbinghaus": "Hermann Ebbinghaus",
+      "ebbinghaus.desc": "Pioneer of memory research who discovered the forgetting curve",
+      "attention": "Attention",
+      "attention.desc": "Selective concentration on relevant information while ignoring distractions",
+      "cognitiveLoad": "Cognitive Load Theory",
+      "cognitiveLoad.desc": "Instructional design must respect working memory limitations",
+      "schemaTheory": "Schema Theory",
+      "schemaTheory.desc": "Knowledge is organized into mental frameworks that guide understanding",
+      "piaget": "Jean Piaget",
+      "piaget.desc": "Developmental psychologist who formalized schema theory",
+      "metacognition": "Metacognition",
+      "metacognition.desc": "Awareness and control of one's own thinking and learning processes",
+      "transfer": "Transfer of Learning",
+      "transfer.desc": "Applying knowledge or skills learned in one context to new situations",
+      "retrievalPractice": "Retrieval Practice",
+      "retrievalPractice.desc": "Actively recalling information strengthens memory more than re-reading",
+      "interleaving": "Interleaving",
+      "interleaving.desc": "Mixing different topics during study improves discrimination and retention",
+      "zpd": "Zone of Proximal Development",
+      "zpd.desc": "The gap between what a learner can do alone and with guidance",
+      "vygotsky": "Lev Vygotsky",
+      "vygotsky.desc": "Psychologist who introduced the concept of ZPD and scaffolding"
+    },
+    "edges": {
+      "studies": "studies",
+      "encodesInto": "encodes into",
+      "expandsCapacity": "expands effective capacity",
+      "decayOverTime": "decay over time",
+      "counteracts": "counteracts",
+      "discovered": "discovered",
+      "strengthens": "strengthens",
+      "gatesInput": "gates input",
+      "limitedCapacity": "limited capacity",
+      "organizesKnowledge": "organization of knowledge",
+      "formalized": "formalized",
+      "enables": "enables",
+      "strengthensTraces": "strengthens traces",
+      "complementary": "complementary strategy",
+      "promotes": "promotes",
+      "introduced": "introduced",
+      "optimalChallenge": "optimal challenge level"
     }
   },
   "footer": {

@@ -1,10 +1,13 @@
-import { CheckIcon, Loading02Icon, Pencil01Icon, XCloseIcon } from '@untitledui/icons-react/outline'
+import { ArrowRightIcon, CheckIcon, Loading02Icon, Pencil01Icon, XCloseIcon } from '@untitledui/icons-react/outline'
 import type { ReactNode } from 'react'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router'
 
+import { useLoaderUser } from '@/entities/user'
 import { Button } from '@/shared/components/button'
 import { RichMarkdown } from '@/shared/components/rich-markdown'
+import { AUTH_ROUTES } from '@/shared/config'
 import { cn } from '@/shared/lib/cn'
 import { sanitizeHtml } from '@/shared/lib/sanitize'
 
@@ -42,6 +45,7 @@ export const ProposalCard = ({
   isLoading = false
 }: ProposalCardProps) => {
   const { t } = useTranslation()
+  const user = useLoaderUser()
 
   return (
     <div className={cn('border border-border/60 rounded-lg overflow-hidden bg-card', className)}>
@@ -80,14 +84,23 @@ export const ProposalCard = ({
             {t('common.edit', 'Edit')}
           </Button>
         )}
-        <Button size='sm' onClick={onAccept} disabled={isLoading}>
-          {isLoading ? (
-            <Loading02Icon className='h-3.5 w-3.5 mr-1 animate-spin' />
-          ) : (
-            <CheckIcon className='h-3.5 w-3.5 mr-1' />
-          )}
-          {t('common.apply', 'Apply')}
-        </Button>
+        {user ? (
+          <Button size='sm' onClick={onAccept} disabled={isLoading}>
+            {isLoading ? (
+              <Loading02Icon className='h-3.5 w-3.5 mr-1 animate-spin' />
+            ) : (
+              <CheckIcon className='h-3.5 w-3.5 mr-1' />
+            )}
+            {t('common.apply', 'Apply')}
+          </Button>
+        ) : (
+          <Button size='sm' asChild>
+            <Link to={AUTH_ROUTES.signUp}>
+              {t('home.cta.signUpToApply', 'Sign up to apply')}
+              <ArrowRightIcon className='h-3.5 w-3.5 ml-1' />
+            </Link>
+          </Button>
+        )}
       </div>
     </div>
   )

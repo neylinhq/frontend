@@ -8,7 +8,7 @@ import { Button } from '@/shared/components/button'
 import { Typography } from '@/shared/components/typography'
 import { AUTH_ROUTES } from '@/shared/config'
 
-import { DemoChatPanel } from './components/demo-chat-panel'
+import { ChatPanel } from '@/widgets/map-sidebar'
 import { DemoNodePanel } from './components/demo-node-panel'
 import { DEMO_MAP } from './home-page.demo.constants'
 import { HOME_FEATURES } from './home-page.constants'
@@ -60,7 +60,7 @@ export const HomePage = () => {
                   <DemoNodePanel data={DEMO_MAP} />
                 </GraphSidebar.Panel>
                 <GraphSidebar.Panel id='chat' label={t('mapSidebar.tabs.chat', 'Chat')}>
-                  <DemoChatPanel />
+                  <ChatPanel mapId='demo' />
                 </GraphSidebar.Panel>
               </GraphSidebar>
             </GraphWorkspace>

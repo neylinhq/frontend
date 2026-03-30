@@ -7,5 +7,7 @@ export type { MapSidebarTab } from './model'
 export {
   MAP_SIDEBAR_DEFAULT_WIDTH,
   MAP_SIDEBAR_MAX_WIDTH,
-  MAP_SIDEBAR_MIN_WIDTH
+  MAP_SIDEBAR_MIN_WIDTH,
+  useChatActionsStore,
+  useNodeActionsStore
 } from './model'

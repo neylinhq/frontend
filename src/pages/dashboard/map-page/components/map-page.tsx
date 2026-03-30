@@ -20,7 +20,7 @@ import {
 import type { FullMap, Node } from '@/entities/map'
 import { useMapFocus, useMapActions } from '@/entities/map-ui'
 
-import { NodeHeaderActions, ChatHeaderActions } from './components/map-page-header-actions'
+import { NodeHeaderActions, ChatHeaderActions } from './map-page-header-actions'
 
 interface MapPageProps {
   map: FullMap

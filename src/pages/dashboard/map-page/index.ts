@@ -1,1 +1,1 @@
-export { MapPage } from './map-page'
+export { MapPage } from './components/map-page'
